@@ -90,8 +90,8 @@ header.nav{
 .hero::before{
   content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(900px 460px at 88% -8%, rgba(124,252,144,.20), transparent 60%),
-    radial-gradient(700px 420px at 6% 6%, rgba(82,204,122,.10), transparent 55%);
+    linear-gradient(90deg, rgba(244,245,242,.92) 0%, rgba(244,245,242,.55) 36%, rgba(244,245,242,.05) 66%, rgba(244,245,242,0) 100%),
+    url("assets/art/hero.jpg") center/cover no-repeat;
 }
 .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.25fr .9fr;gap:56px;align-items:center}
 .hero h1{font-size:clamp(40px,6vw,72px)}
@@ -183,6 +183,17 @@ section.block{padding:84px 0}
 .tile .stage img{max-width:62%;max-height:62%;object-fit:contain;
   filter:drop-shadow(0 10px 22px rgba(0,0,0,.28))}
 .tile .stage.cover img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:cover;filter:none}
+/* cinematic scene backdrop + real logo composited on top */
+.tile .stage.scene{background-size:cover;background-position:center}
+.tile .stage.scene::before{content:"";position:absolute;inset:0;z-index:1;
+  background:
+    radial-gradient(64% 66% at 50% 46%, rgba(9,17,25,.52), transparent 72%),
+    linear-gradient(0deg, rgba(9,17,25,.66) 0%, rgba(9,17,25,.12) 42%, rgba(9,17,25,.18) 100%);}
+.tile .stage.scene > img{position:relative;z-index:2;max-width:60%;max-height:58%;
+  filter:drop-shadow(0 12px 26px rgba(0,0,0,.55))}
+.tile .stage.scene .status,.tile .stage.scene .vlabel{z-index:3}
+.tile:hover .stage.scene{transform:scale(1.03);transition:transform .5s ease}
+.tile .stage{transition:transform .5s ease}
 .tile .status{position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
   text-transform:uppercase;padding:5px 10px;border-radius:999px;font-weight:700;backdrop-filter:blur(4px)}
 .status.live{background:rgba(82,204,122,.92);color:#06371d}
@@ -226,10 +237,11 @@ section.block{padding:84px 0}
   display:flex;align-items:center;justify-content:center;color:var(--shamrock-dark);margin-top:2px}
 
 /* ---------- CTA ---------- */
-.cta{background:var(--navy);color:#fff;border-radius:var(--r-lg);padding:64px 48px;text-align:center;
+.cta{background:var(--navy);color:#fff;border-radius:var(--r-lg);padding:72px 48px;text-align:center;
   position:relative;overflow:hidden}
 .cta::before{content:"";position:absolute;inset:0;background:
-  radial-gradient(600px 320px at 80% 0%, rgba(124,252,144,.22),transparent 60%);}
+  linear-gradient(180deg, rgba(29,43,58,.62), rgba(29,43,58,.82)),
+  url("assets/art/band-cta.jpg") center/cover no-repeat;}
 .cta h2{color:#fff;font-size:clamp(28px,4vw,46px);position:relative}
 .cta p{color:rgba(255,255,255,.78);max-width:520px;margin:18px auto 0;position:relative;font-size:17px}
 .cta .hero-cta{justify-content:center;position:relative}
