@@ -1,493 +1,478 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-brand="3s" data-mode="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3Shamrocks Studio — Product Design that Ships</title>
-<meta name="description" content="3Shamrocks Studio — a product & brand studio led by Dave Markovich. 20+ years of HealthTech, SaaS and consumer design, and a portfolio of self-shipped products built with AI-augmented production.">
+<meta name="description" content="3Shamrocks Studio — a product & brand studio led by Dave Markovich. 20+ years of HealthTech & SaaS design, and a portfolio of self-shipped products built with AI-augmented production.">
 <meta property="og:title" content="3Shamrocks Studio — Product Design that Ships">
 <meta property="og:description" content="A product & brand studio. Client work for AposHealth & Vibrant Gastro, plus a full portfolio of self-shipped products.">
 <meta property="og:type" content="website">
+<link rel="icon" href="assets/studio/3shamrocks.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="icon" href="assets/studio/3shamrocks.png">
-<link rel="stylesheet" href="styles.css">
+
+<!-- ── 3S Design System v3.0 — inherited, never edited (INTEGRATION.md §0) ── -->
+<link rel="stylesheet" href="tokens.css">      <!-- Layer 0 + 2 -->
+<link rel="stylesheet" href="brands.css">       <!-- Layer 1 · house brand "3s" -->
+<link rel="stylesheet" href="components.css">    <!-- Layer 3 -->
+
+<style>
+  /* Page layout only — every colour comes from design-system tokens (var()). */
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);
+    line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .wrap{max-width:var(--container,1180px);margin:0 auto;padding:0 var(--space-5)}
+  h1,h2,h3{font-family:var(--font-display);font-weight:var(--display-weight);
+    letter-spacing:var(--display-tracking);line-height:1.06;color:var(--text)}
+  .kicker{font-family:var(--font-mono,"Space Mono",monospace);font-size:var(--text-xs);
+    letter-spacing:.28em;text-transform:uppercase;color:var(--accent-text);font-weight:700}
+
+  /* focus + motion (compliance: visible focus ring, reduced motion) */
+  a:focus-visible,button:focus-visible,.btn:focus-visible,.tile:focus-visible{
+    outline:2px solid transparent;box-shadow:var(--focus-ring);border-radius:var(--radius-sm)}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;scroll-behavior:auto}
+    .reveal{opacity:1 !important;transform:none !important}
+  }
+
+  /* nav */
+  header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);
+    backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--border)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand img{height:32px;width:auto}
+  .nav-links{display:flex;align-items:center;gap:var(--space-6)}
+  .nav-links a{font-size:var(--text-sm);color:var(--text-secondary);font-weight:500}
+  .nav-links a:hover{color:var(--accent-text)}
+  .btn{min-height:44px}
+  @media(max-width:760px){.nav-links a:not(.btn){display:none}}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;padding:var(--space-9) 0 var(--space-8)}
+  .hero::before{content:"";position:absolute;inset:0;z-index:0;
+    background:linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb,var(--bg) 55%,transparent) 38%, transparent 70%),
+      url("assets/art/hero.jpg") center/cover no-repeat}
+  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.2fr .85fr;
+    gap:var(--space-7);align-items:center}
+  .hero h1{font-size:clamp(40px,6vw,68px)}
+  .hero h1 em{font-style:normal;color:var(--accent-text)}
+  .hero .lede{margin-top:var(--space-5);max-width:34rem;font-size:var(--text-lg);color:var(--text-secondary)}
+  .hero-cta{display:flex;gap:var(--space-3);margin-top:var(--space-6);flex-wrap:wrap}
+  .stats{display:flex;gap:var(--space-7);margin-top:var(--space-7);flex-wrap:wrap}
+  .stats .n{font-family:var(--font-display);font-size:var(--text-3xl);font-weight:600;color:var(--text)}
+  .stats .l{font-family:var(--font-mono,monospace);font-size:var(--text-xs);letter-spacing:.05em;
+    text-transform:uppercase;color:var(--text-muted)}
+  .portrait{border-radius:var(--radius-xl);overflow:hidden;border:1px solid var(--border);
+    box-shadow:var(--shadow-lg);aspect-ratio:4/5}
+  .portrait img{width:100%;height:100%;object-fit:cover;object-position:30% 35%}
+  @media(max-width:860px){.hero-grid{grid-template-columns:1fr}.portrait{display:none}}
+
+  /* proof strip */
+  .proof{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface)}
+  .proof-in{display:flex;flex-wrap:wrap;gap:var(--space-6);align-items:center;justify-content:space-between;
+    padding:var(--space-5) 0}
+  .proof-lab{font-family:var(--font-mono,monospace);font-size:var(--text-xs);letter-spacing:.2em;
+    text-transform:uppercase;color:var(--text-muted)}
+  .proof-items{display:flex;flex-wrap:wrap;gap:var(--space-6)}
+  .proof-item .m{font-family:var(--font-display);font-weight:600;font-size:var(--text-xl);color:var(--accent-text)}
+  .proof-item .t{font-size:var(--text-sm);color:var(--text-secondary)}
+  .proof-item .t b{color:var(--text)}
+
+  /* sections */
+  section.block{padding:var(--space-9) 0}
+  .alt{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .sec-head{max-width:42rem;margin-bottom:var(--space-7)}
+  .sec-head h2{font-size:clamp(28px,3.4vw,42px);margin-top:var(--space-2)}
+  .sec-head p{color:var(--text-secondary);margin-top:var(--space-3);font-size:var(--text-lg)}
+  .subhead{font-family:var(--font-mono,monospace);font-size:var(--text-xs);letter-spacing:.18em;
+    text-transform:uppercase;color:var(--text-muted);margin:var(--space-7) 0 var(--space-5);
+    display:flex;align-items:center;gap:var(--space-4)}
+  .subhead::after{content:"";flex:1;height:1px;background:var(--border)}
+
+  /* case studies */
+  .cases{display:flex;flex-direction:column;gap:var(--space-5)}
+  .case{display:grid;grid-template-columns:1fr 1.1fr;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-md)}
+  .case.flip .ci{order:2}
+  .ci{padding:var(--space-7);display:flex;flex-direction:column;justify-content:center}
+  .ci img.logo{height:30px;width:auto;align-self:flex-start;margin-bottom:var(--space-4);object-fit:contain}
+  .ci h3{font-size:var(--text-3xl);margin-bottom:var(--space-2)}
+  .tagrow{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-bottom:var(--space-4)}
+  .ci p{color:var(--text-secondary);font-size:var(--text-base)}
+  .metrics{display:flex;gap:var(--space-6);margin-top:var(--space-5)}
+  .metrics .n{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:600;color:var(--text)}
+  .metrics .l{font-family:var(--font-mono,monospace);font-size:var(--text-xs);text-transform:uppercase;
+    letter-spacing:.05em;color:var(--text-muted)}
+  .cv{position:relative;background:var(--bg-subtle);min-height:320px;display:grid;
+    grid-template-columns:1fr 1fr;gap:var(--space-3);padding:var(--space-5)}
+  .cv img{border-radius:var(--radius-md);object-fit:contain;background:var(--surface);
+    box-shadow:var(--shadow-sm);width:100%;height:100%}
+  @media(max-width:820px){.case,.case.flip{grid-template-columns:1fr}.case.flip .ci{order:0}}
+
+  /* product grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-5)}
+  @media(max-width:880px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  .tile{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);
+    transition:transform var(--dur-base,.18s) var(--ease,ease),box-shadow var(--dur-base,.18s) var(--ease,ease),
+      border-color var(--dur-base,.18s) var(--ease,ease)}
+  .tile:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--border-strong)}
+  .stage{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--bg-subtle);
+    display:flex;align-items:center;justify-content:center}
+  .stage.scene{background-size:cover;background-position:center}
+  .stage.scene::before{content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(0deg, color-mix(in srgb,var(--n-950) 80%,transparent) 0%,
+      color-mix(in srgb,var(--n-950) 18%,transparent) 46%, transparent 72%),
+      radial-gradient(62% 64% at 50% 46%, color-mix(in srgb,var(--n-950) 42%,transparent), transparent 72%)}
+  .stage img{position:relative;z-index:2;max-width:60%;max-height:58%;object-fit:contain;
+    filter:drop-shadow(0 12px 26px color-mix(in srgb,var(--n-950) 55%,transparent))}
+  .stage.cover img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:cover;filter:none;z-index:2;position:relative}
+  .tile .status{position:absolute;top:var(--space-3);right:var(--space-3);z-index:3}
+  .tile .vlabel{position:absolute;top:var(--space-3);left:var(--space-3);z-index:3;
+    font-family:var(--font-mono,monospace);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+    font-weight:700;padding:var(--space-1) var(--space-3);border-radius:var(--radius-pill);
+    color:var(--text-inverse);background:color-mix(in srgb,var(--n-0) 16%,transparent);
+    border:1px solid color-mix(in srgb,var(--n-0) 28%,transparent)}
+  .tbody{padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-2);flex:1}
+  .tname{font-family:var(--font-display);font-size:var(--text-xl);font-weight:600;color:var(--text)}
+  .ttag{font-family:var(--font-mono,monospace);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--text-muted)}
+  .tdesc{font-size:var(--text-sm);color:var(--text-secondary);flex:1}
+  .tlink{margin-top:var(--space-2);font-weight:600;font-size:var(--text-sm);color:var(--accent-text);
+    display:inline-flex;align-items:center;gap:var(--space-2)}
+
+  /* services */
+  .svc{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-5)}
+  @media(max-width:760px){.svc{grid-template-columns:1fr}}
+  .svc .card{display:flex;gap:var(--space-4);align-items:flex-start}
+  .svc .dot{flex:0 0 auto;width:42px;height:42px;border-radius:var(--radius-md);display:flex;
+    align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent-text);
+    font-family:var(--font-display);font-weight:600}
+  .svc h3{font-size:var(--text-lg)}
+  .svc p{color:var(--text-secondary);font-size:var(--text-sm);margin-top:var(--space-1)}
+
+  /* CTA */
+  .cta{position:relative;overflow:hidden;border-radius:var(--radius-2xl);padding:var(--space-9) var(--space-7);
+    text-align:center;background:var(--brand-gradient);color:var(--brand-contrast)}
+  .cta::before{content:"";position:absolute;inset:0;background:color-mix(in srgb,var(--n-950) 30%,transparent)}
+  .cta>*{position:relative;z-index:1}
+  .cta h2{color:var(--text-inverse);font-size:clamp(28px,4vw,46px)}
+  .cta p{color:color-mix(in srgb,var(--n-0) 86%,transparent);max-width:34rem;margin:var(--space-4) auto 0;
+    font-size:var(--text-lg)}
+  .cta .hero-cta{justify-content:center;margin-top:var(--space-6)}
+
+  /* footer — quiet studio credit (COMPLIANCE §5) */
+  footer.site{background:var(--n-950);color:color-mix(in srgb,var(--n-0) 72%,transparent);
+    padding:var(--space-8) 0 var(--space-7)}
+  .foot-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(--space-6)}
+  .foot-links{display:flex;gap:var(--space-7);flex-wrap:wrap}
+  .foot-col h4{font-family:var(--font-mono,monospace);font-size:var(--text-xs);letter-spacing:.16em;
+    text-transform:uppercase;color:color-mix(in srgb,var(--n-0) 50%,transparent);margin-bottom:var(--space-3);font-weight:700}
+  .foot-col a{display:block;font-size:var(--text-sm);color:color-mix(in srgb,var(--n-0) 74%,transparent);margin-bottom:var(--space-2)}
+  .foot-col a:hover{color:var(--brand-300)}
+  .foot-bottom{margin-top:var(--space-7);padding-top:var(--space-5);
+    border-top:1px solid color-mix(in srgb,var(--n-0) 12%,transparent);
+    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:var(--space-2);text-align:center}
+  .foot-bottom img{height:14px;width:auto;opacity:.7}
+  .foot-bottom .cline{font-size:var(--text-xs);color:color-mix(in srgb,var(--n-0) 55%,transparent)}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease,ease),transform .6s var(--ease,ease)}
+  .reveal.in{opacity:1;transform:none}
+</style>
 </head>
 <body>
 
-<!-- ============ NAV ============ -->
 <header class="nav">
-  <div class="wrap nav-inner">
-    <a class="brand" href="#top">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="3Shamrocks Studio home">
       <img src="assets/studio/3shamrocks_black.png" alt="3Shamrocks Studio">
     </a>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Primary">
       <a href="#work">Client Work</a>
       <a href="#products">Products</a>
-      <a href="#studio">Studio</a>
-      <a class="btn sm" href="#contact">Start a project</a>
+      <a href="#services">Services</a>
+      <a class="btn btn--accent-fill btn--sm" href="#contact">Start a project</a>
     </nav>
   </div>
 </header>
-
 <a id="top"></a>
 
-<!-- ============ HERO ============ -->
+<!-- HERO -->
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="reveal">
-      <p class="kicker">Product &amp; Brand Studio · Est. Tel&nbsp;Aviv</p>
+      <p class="kicker">Product &amp; Brand Studio · Tel Aviv</p>
       <h1>Design that doesn't just look shipped — <em>it ships.</em></h1>
       <p class="lede">3Shamrocks is the studio of <b>Dave Markovich</b> — 20+ years turning clinical
       complexity, SaaS and consumer ideas into products people actually use. Then we proved it on
       ourselves: a whole portfolio of apps, designed and built end-to-end.</p>
       <div class="hero-cta">
-        <a class="btn accent" href="#products">See the portfolio</a>
-        <a class="btn ghost" href="#work">Client case studies</a>
+        <a class="btn btn--accent-fill btn--lg" href="#products">See the portfolio</a>
+        <a class="btn btn--ghost btn--lg" href="#work">Client case studies</a>
       </div>
-      <div class="hero-stats">
-        <div class="stat"><div class="n">20+</div><div class="l">Years designing</div></div>
-        <div class="stat"><div class="n">11</div><div class="l">Products shipped</div></div>
-        <div class="stat"><div class="n">+25%</div><div class="l">Engagement lift</div></div>
+      <div class="stats">
+        <div><div class="n">20+</div><div class="l">Years designing</div></div>
+        <div><div class="n">12</div><div class="l">Products shipped</div></div>
+        <div><div class="n">+25%</div><div class="l">Engagement lift</div></div>
       </div>
     </div>
-    <div class="hero-portrait reveal">
-      <img src="assets/studio/dave-studio.jpg" alt="Dave Markovich — 3Shamrocks Studio">
-      <div class="badge"><b>Dave Markovich</b>Founder · Product Design Director</div>
+    <div class="portrait reveal">
+      <img src="assets/studio/dave-studio.jpg" alt="Dave Markovich, founder of 3Shamrocks Studio">
     </div>
   </div>
 </section>
 
-<!-- ============ PROOF BAR ============ -->
+<!-- PROOF -->
 <div class="proof">
-  <div class="wrap proof-inner">
+  <div class="wrap proof-in">
     <span class="proof-lab">Trusted with</span>
     <div class="proof-items">
-      <div class="proof-item"><span class="m">+25%</span><span class="t"><b>AposHealth</b> engagement</span></div>
-      <div class="proof-item"><span class="m">0→Launch</span><span class="t"><b>Vibrant Gastro</b> solo build</span></div>
-      <div class="proof-item"><span class="m">Rebrand</span><span class="t"><b>WinPlant</b> AgriTech SaaS</span></div>
-      <div class="proof-item"><span class="m">Identity</span><span class="t"><b>Eldan</b> enterprise</span></div>
-      <div class="proof-item"><span class="m">Brand</span><span class="t"><b>Guberman</b> B2B</span></div>
+      <div class="proof-item"><span class="m">+25%</span> <span class="t"><b>AposHealth</b> engagement</span></div>
+      <div class="proof-item"><span class="m">0→Launch</span> <span class="t"><b>Vibrant Gastro</b> solo build</span></div>
+      <div class="proof-item"><span class="m">Rebrand</span> <span class="t"><b>WinPlant</b> AgriTech SaaS</span></div>
+      <div class="proof-item"><span class="m">Identity</span> <span class="t"><b>Eldan</b> enterprise</span></div>
     </div>
   </div>
 </div>
 
-<!-- ============ CLIENT WORK ============ -->
+<!-- CLIENT WORK -->
 <section class="block" id="work">
   <div class="wrap">
     <div class="sec-head">
-      <div class="left">
-        <p class="kicker">Selected client work</p>
-        <h2>Two decades of product design, in the room where it ships.</h2>
-        <p>Embedded design leadership for HealthTech and MedTech teams — from clinical complexity to
-        intuitive product journeys, brand systems, and zero-to-market launches.</p>
-      </div>
+      <p class="kicker">Selected client work</p>
+      <h2>Two decades of product design, in the room where it ships.</h2>
+      <p>Embedded design leadership for HealthTech and MedTech teams — clinical complexity turned into
+      intuitive product journeys, brand systems, and zero-to-market launches.</p>
     </div>
-
     <div class="cases">
-
-      <!-- AposHealth -->
       <article class="case reveal">
-        <div class="case-info">
-          <img class="case-logo" src="assets/work/aposhealth/logo.png" alt="AposHealth">
+        <div class="ci">
+          <img class="logo" src="assets/work/aposhealth/logo.png" alt="AposHealth">
           <h3>AposHealth</h3>
-          <div class="case-tagrow">
-            <span class="chip">HealthTech</span>
-            <span class="chip solo">Head of Design · 2020–2026</span>
-          </div>
-          <p>Clinical complexity turned into intuitive product journeys. Rebuilt the global design
-          system solo — PLG flows, a playful-yet-clinical brand, and animation-ready marketing at scale.</p>
-          <div class="case-metrics">
-            <div><div class="n">+25%</div><div class="l">Engagement</div></div>
-            <div><div class="n">Solo</div><div class="l">Design system</div></div>
-          </div>
+          <div class="tagrow"><span class="badge badge--neutral">HealthTech</span>
+            <span class="badge badge--neutral">Head of Design · 2020–2026</span></div>
+          <p>Clinical complexity turned into intuitive product journeys. Rebuilt the global design system
+          solo — PLG flows, a playful-yet-clinical brand, and animation-ready marketing at scale.</p>
+          <div class="metrics"><div><div class="n">+25%</div><div class="l">Engagement</div></div>
+            <div><div class="n">Solo</div><div class="l">Design system</div></div></div>
         </div>
-        <div class="case-visual">
-          <div class="case-collage" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr">
-            <img src="assets/work/aposhealth/screen-2.png" alt="AposHealth web & mobile" style="object-fit:contain">
-            <img src="assets/work/aposhealth/screen-3.png" alt="AposHealth brand system" style="object-fit:contain">
-            <img src="assets/work/aposhealth/screen-1.png" alt="Apos gait diagram" style="object-fit:contain">
-            <img src="assets/work/aposhealth/screen-4.png" alt="AposHealth product screens" style="object-fit:contain">
-          </div>
+        <div class="cv">
+          <img src="assets/work/aposhealth/screen-2.png" alt="AposHealth web and mobile">
+          <img src="assets/work/aposhealth/screen-3.png" alt="AposHealth brand system">
+          <img src="assets/work/aposhealth/screen-1.png" alt="Apos gait clinical diagram">
+          <img src="assets/work/aposhealth/screen-4.png" alt="AposHealth product screens">
         </div>
       </article>
-
-      <!-- Vibrant -->
       <article class="case flip reveal">
-        <div class="case-info">
-          <img class="case-logo" src="assets/work/vibrant/logo-new.png" alt="Vibrant Gastro">
+        <div class="ci">
+          <img class="logo" src="assets/work/vibrant/logo-new.png" alt="Vibrant Gastro">
           <h3>Vibrant Gastro</h3>
-          <div class="case-tagrow">
-            <span class="chip">MedTech</span>
-            <span class="chip solo">Head of Design · 2021–2023</span>
-          </div>
+          <div class="tagrow"><span class="badge badge--neutral">MedTech</span>
+            <span class="badge badge--neutral">Head of Design · 2021–2023</span></div>
           <p>One designer, an entire patient ecosystem. Brand book, game-inspired clinical UX, and a
           zero-to-market launch — complex gastroenterology workflows made daily and human.</p>
-          <div class="case-metrics">
-            <div><div class="n">0→Launch</div><div class="l">Full ecosystem</div></div>
-            <div><div class="n">68%</div><div class="l">Retention</div></div>
-          </div>
+          <div class="metrics"><div><div class="n">0→Launch</div><div class="l">Full ecosystem</div></div>
+            <div><div class="n">68%</div><div class="l">Retention</div></div></div>
         </div>
-        <div class="case-visual">
-          <div class="case-collage" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr">
-            <img src="assets/work/vibrant/screen-1.png" alt="Vibrant brand book" style="object-fit:contain">
-            <img src="assets/work/vibrant/screen-3.png" alt="Vibrant product UI" style="object-fit:contain">
-            <img src="assets/work/vibrant/screen-2.png" alt="Vibrant identity" style="object-fit:contain">
-            <img src="assets/work/vibrant/screen-4.png" alt="Vibrant app screens" style="object-fit:contain">
-          </div>
+        <div class="cv">
+          <img src="assets/work/vibrant/screen-1.png" alt="Vibrant brand book">
+          <img src="assets/work/vibrant/screen-3.png" alt="Vibrant product UI">
+          <img src="assets/work/vibrant/screen-2.png" alt="Vibrant identity">
+          <img src="assets/work/vibrant/screen-4.png" alt="Vibrant app screens">
         </div>
       </article>
-
-      <!-- Trashure Hunters flagship -->
-      <article class="case reveal">
-        <div class="case-info">
-          <img class="case-logo" src="assets/products/trashure.png" alt="Trashure-Hunters" style="height:46px">
-          <h3>Trashure-Hunters</h3>
-          <div class="case-tagrow">
-            <span class="chip">AR Eco-Game · Original IP</span>
-            <span class="chip live">Live marketing site</span>
-            <span class="chip solo">Founder &amp; Design Director</span>
-          </div>
-          <p>A rebellion against environmental indifference. A real-world AR eco-game with two-stage AI
-          trash verification, geolocation turf mechanics, and a living cast of Elemonsters — a full IP
-          and React-Native app built in weeks with AI-augmented production.</p>
-          <a class="case-link" href="https://3shamrocksstudio.github.io/th-website/" target="_blank" rel="noopener">Visit the marketing site →</a>
-        </div>
-        <div class="case-visual shot">
-          <div class="th-collage">
-            <img class="splash" src="assets/work/trashure/splashscreen.png" alt="Trashure-Hunters key art">
-            <div class="th-chars">
-              <img src="assets/work/trashure/fire_lvl1.png" alt="Fire Elemonster">
-              <img src="assets/work/trashure/water_lvl1.png" alt="Water Elemonster">
-              <img src="assets/work/trashure/earth_lvl1.png" alt="Earth Elemonster">
-              <img src="assets/work/trashure/air_lvl1.png" alt="Air Elemonster">
-              <img src="assets/work/trashure/space_lvl1.png" alt="Space Elemonster">
-            </div>
-          </div>
-        </div>
-      </article>
-
     </div>
   </div>
 </section>
 
-<!-- ============ PRODUCTS ============ -->
-<section class="block alt-bg" id="products">
+<!-- PRODUCTS -->
+<section class="block alt" id="products">
   <div class="wrap">
     <div class="sec-head">
-      <div class="left">
-        <p class="kicker">The 3Shamrocks portfolio</p>
-        <h2>A studio that ships its own products.</h2>
-        <p>Every product below is designed, branded and built in-house — proof that the same craft we
-        bring to clients, we hold ourselves to. Live products link straight to the running app.</p>
-      </div>
+      <p class="kicker">The 3Shamrocks portfolio</p>
+      <h2>A studio that ships its own products.</h2>
+      <p>Every product is designed, branded and built in-house on one design system — proof that the same
+      craft we bring to clients, we hold ourselves to. Live products link straight to the running app.</p>
     </div>
 
-    <!-- LIVE -->
     <div class="subhead">Live products</div>
     <div class="grid">
-
-      <!-- Shomergency -->
       <a class="tile reveal" href="https://3shamrocksstudio.github.io/shomergency/" target="_blank" rel="noopener">
         <div class="stage scene" style="background-image:url('assets/art/p-shomergency.jpg')">
-          <span class="vlabel">Urban</span>
-          <span class="status live">Live</span>
-          <img src="assets/products/shomergency.png" alt="Shomergency">
-        </div>
-        <div class="body">
-          <div class="tname">Shomergency™</div>
-          <div class="ttag">Civic Safety · PWA</div>
-          <p class="tdesc">Citizens protecting citizens — a real-time safety map with instant SOS,
-          shake-to-alert, and community mutual aid.</p>
-          <div class="tfoot"><span class="tlink">Open app →</span></div>
-        </div>
+          <span class="vlabel">Urban</span><span class="badge badge--success status">Live</span>
+          <img src="assets/products/shomergency.png" alt="Shomergency"></div>
+        <div class="tbody"><div class="tname">Shomergency&trade;</div><div class="ttag">Civic Safety · PWA</div>
+          <p class="tdesc">Citizens protecting citizens — a real-time safety map with instant SOS, shake-to-alert and community mutual aid.</p>
+          <span class="tlink">Open app →</span></div>
       </a>
-
-      <!-- Shomer Forest -->
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/shomer-forest/" target="_blank" rel="noopener">
+      <a class="tile reveal" href="https://3shamrocksstudio.github.io/shomer-nature/" target="_blank" rel="noopener">
         <div class="stage scene" style="background-image:url('assets/art/p-forest.jpg')">
-          <span class="vlabel">Forest</span>
-          <span class="status live">Live</span>
-          <img src="assets/products/shomer-forest.png" alt="Shomer Forest">
-        </div>
-        <div class="body">
-          <div class="tname">Shomer Forest™</div>
-          <div class="ttag">Nature Guardian · PWA</div>
-          <p class="tdesc">Citizens for nature — forest, wildfire and wildlife hazard reporting with
-          SOS to Fire &amp; Rescue. Same engine, nature vertical.</p>
-          <div class="tfoot"><span class="tlink">Open app →</span></div>
-        </div>
+          <span class="vlabel">Nature</span><span class="badge badge--success status">Live</span>
+          <img src="assets/products/shomergency.png" alt="Shomer Nature"></div>
+        <div class="tbody"><div class="tname">Shomer Nature&trade;</div><div class="ttag">Nature &amp; Coast Guardian · PWA</div>
+          <p class="tdesc">Forests, reserves and coast on one light-themed guardian map — wildfire, dumping, injured wildlife, rip currents and lost hikers, with SOS.</p>
+          <span class="tlink">Open app →</span></div>
       </a>
-
-      <!-- Shomer Beach -->
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/shomer-beach/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-beach.jpg')">
-          <span class="vlabel">Coast</span>
-          <span class="status live">Live</span>
-          <img src="assets/products/shomer-beach.png" alt="Shomer Beach">
-        </div>
-        <div class="body">
-          <div class="tname">Shomer Beach™</div>
-          <div class="ttag">Coastal Guardian · PWA</div>
-          <p class="tdesc">Citizens for the coast — currents, jellyfish, pollution and marine distress,
-          on the same SHOMER guardian platform.</p>
-          <div class="tfoot"><span class="tlink">Open app →</span></div>
-        </div>
-      </a>
-
-      <!-- Trashure marketing site -->
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/th-website/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-trashure.jpg')">
-          <span class="status live">Live</span>
-          <img src="assets/products/trashure.png" alt="Trashure-Hunters">
-        </div>
-        <div class="body">
-          <div class="tname">Trashure-Hunters</div>
-          <div class="ttag">Game Marketing Site</div>
-          <p class="tdesc">The public face of the eco-game IP — brand, characters and story, built as a
-          launch-ready marketing site.</p>
-          <div class="tfoot"><span class="tlink">Visit site →</span></div>
-        </div>
-      </a>
-
-      <!-- Chore Wars -->
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/chore-wars/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-chorewars.jpg')">
-          <span class="status live">Live</span>
-          <img src="assets/products/chore-wars.svg" alt="Chore Wars" style="border-radius:22px;box-shadow:0 14px 30px rgba(0,0,0,.4)">
-        </div>
-        <div class="body">
-          <div class="tname">Chore Wars™</div>
-          <div class="ttag">Family · PWA</div>
-          <p class="tdesc">Family chores made simple — assign, verify and complete real tasks, with XP
-          and shared family goals tied to actual work, not fluff.</p>
-          <div class="tfoot"><span class="tlink">Open app →</span></div>
-        </div>
-      </a>
-
-      <!-- Ezra -->
       <a class="tile reveal" href="https://3shamrocksstudio.github.io/senior-helper/" target="_blank" rel="noopener">
         <div class="stage scene" style="background-image:url('assets/art/p-ezra.jpg')">
-          <span class="status live">Live</span>
-          <img src="assets/products/ezra.jpg" alt="Ezra" style="border-radius:20px;box-shadow:0 14px 30px rgba(0,0,0,.4)">
-        </div>
-        <div class="body">
-          <div class="tname">Ezra · עזרה</div>
-          <div class="ttag">Accessibility · PWA</div>
-          <p class="tdesc">A plain-Hebrew, step-by-step digital helper that walks seniors through
-          WhatsApp, video calls, bills and bookings — dignified, never childish.</p>
-          <div class="tfoot"><span class="tlink">Open app →</span></div>
-        </div>
+          <span class="badge badge--success status">Live</span>
+          <img src="assets/products/ezra.jpg" alt="Ezra" style="border-radius:var(--radius-md);box-shadow:var(--shadow-md)"></div>
+        <div class="tbody"><div class="tname">Ezra</div><div class="ttag">Accessibility · PWA</div>
+          <p class="tdesc">A plain-Hebrew, step-by-step digital helper that walks seniors through everyday online tasks — dignified, large-type, never childish.</p>
+          <span class="tlink">Open app →</span></div>
       </a>
-
-      <!-- Milo -->
       <a class="tile reveal" href="https://3shamrocksstudio.github.io/milo-app/" target="_blank" rel="noopener">
         <div class="stage scene" style="background-image:url('assets/art/p-milo.jpg')">
-          <span class="status live">Live</span>
-          <img src="assets/products/milo-pet.png" alt="Milo" style="max-width:52%;max-height:72%">
-        </div>
-        <div class="body">
-          <div class="tname">Milo</div>
-          <div class="ttag">Kids' Wellbeing · PWA</div>
-          <p class="tdesc">A Tamagotchi-style emotional-support companion for kids 6–14, where every
-          care action is a real coping skill and the pet grows as they do.</p>
-          <div class="tfoot"><span class="tlink">Open app →</span></div>
-        </div>
+          <span class="badge badge--success status">Live</span>
+          <img src="assets/products/milo-pet.png" alt="Milo" style="max-width:52%;max-height:72%"></div>
+        <div class="tbody"><div class="tname">Milo</div><div class="ttag">Kids' Wellbeing · PWA</div>
+          <p class="tdesc">A gentle emotional-support companion for kids 6–14 where every care action is a real coping skill, and the pet grows as they do.</p>
+          <span class="tlink">Open app →</span></div>
       </a>
-
-      <!-- J8NIX -->
+      <a class="tile reveal" href="https://3shamrocksstudio.github.io/chore-wars/" target="_blank" rel="noopener">
+        <div class="stage scene" style="background-image:url('assets/art/p-chorewars.jpg')">
+          <span class="badge badge--success status">Live</span>
+          <img src="assets/products/chore-wars.svg" alt="Chore Wars" style="border-radius:var(--radius-lg);box-shadow:var(--shadow-md)"></div>
+        <div class="tbody"><div class="tname">Chore Wars&trade;</div><div class="ttag">Family · PWA</div>
+          <p class="tdesc">Family chores made simple — assign, verify and complete real tasks, with XP and shared family goals tied to actual work, not fluff.</p>
+          <span class="tlink">Open app →</span></div>
+      </a>
+      <a class="tile reveal" href="https://3shamrocksstudio.github.io/fairent/" target="_blank" rel="noopener">
+        <div class="stage cover"><span class="badge badge--success status">Live</span>
+          <img src="assets/concept/hogen.jpg" alt="Fairent"></div>
+        <div class="tbody"><div class="tname">Fairent</div><div class="ttag">Civic · Fair Housing</div>
+          <p class="tdesc">An Israel-first rent-fairness tool built on real CBS rent data — see whether your rent is fair, anonymously, and push back on gouging.</p>
+          <span class="tlink">Open app →</span></div>
+      </a>
       <a class="tile reveal" href="https://3shamrocksstudio.github.io/j8nix/" target="_blank" rel="noopener">
         <div class="stage scene" style="background-image:url('assets/art/p-j8nix.jpg')">
-          <span class="status live">Live</span>
-          <img src="assets/products/j8nix.png" alt="J8NIX" style="max-width:74%">
-        </div>
-        <div class="body">
-          <div class="tname">J8NIX™</div>
-          <div class="ttag">Studio Operations OS · PWA</div>
-          <p class="tdesc">A mission-control dashboard for the whole studio — calendar, tasks, daily
-          progress ring and an AI Prompt Forge in one single-file OS.</p>
-          <div class="tfoot"><span class="tlink">Open app →</span></div>
-        </div>
+          <span class="badge badge--success status">Live</span>
+          <img src="assets/products/j8nix.png" alt="J8NIX" style="max-width:74%"></div>
+        <div class="tbody"><div class="tname">J8NIX&trade;</div><div class="ttag">Studio Operations OS · PWA</div>
+          <p class="tdesc">A mission-control dashboard for the whole studio — calendar, tasks, daily progress ring and an AI prompt forge in one single-file OS.</p>
+          <span class="tlink">Open app →</span></div>
       </a>
-
-      <!-- AI Brand Kit -->
+      <a class="tile reveal" href="https://3shamrocksstudio.github.io/3s-design-system/" target="_blank" rel="noopener">
+        <div class="stage scene" style="background-image:url('assets/art/p-brandkit.jpg')">
+          <span class="badge badge--success status">Live</span>
+          <img src="assets/products/design-system.png" alt="3S Design System" style="max-width:46%"></div>
+        <div class="tbody"><div class="tname">3S Design System</div><div class="ttag">Brand &amp; Product Playbook</div>
+          <p class="tdesc">The themeable token architecture every 3S product inherits — tokens, brands and components, with a live compliance gate. (This site passes it.)</p>
+          <span class="tlink">Explore the system →</span></div>
+      </a>
+      <a class="tile reveal" href="https://3shamrocksstudio.github.io/th-website/" target="_blank" rel="noopener">
+        <div class="stage scene" style="background-image:url('assets/art/p-trashure.jpg')">
+          <span class="badge badge--success status">Live</span>
+          <img src="assets/products/trashure.png" alt="Trashure-Hunters"></div>
+        <div class="tbody"><div class="tname">Trashure-Hunters</div><div class="ttag">Game Marketing Site</div>
+          <p class="tdesc">The public face of the eco-game IP — brand, characters and story, built as a launch-ready marketing site.</p>
+          <span class="tlink">Visit site →</span></div>
+      </a>
       <a class="tile reveal" href="https://markodave.gumroad.com/l/ruaqk" target="_blank" rel="noopener">
         <div class="stage scene" style="background-image:url('assets/art/p-brandkit.jpg')">
-          <span class="status kit">For sale</span>
-          <img src="assets/studio/3shamrocks.png" alt="AI Brand Kit" style="max-width:50%">
-        </div>
-        <div class="body">
-          <div class="tname">AI Brand Kit</div>
-          <div class="ttag">Digital Product · Gumroad</div>
-          <p class="tdesc">The studio's AI-augmented branding system, packaged as a product anyone can
-          buy — the method behind these brands, on sale now.</p>
-          <div class="tfoot"><span class="tlink">Get it on Gumroad →</span></div>
-        </div>
+          <span class="badge badge--accent status">For sale</span>
+          <img src="assets/studio/3shamrocks.png" alt="AI Brand Kit" style="max-width:50%"></div>
+        <div class="tbody"><div class="tname">AI Brand Kit</div><div class="ttag">Digital Product · Gumroad</div>
+          <p class="tdesc">The studio's AI-augmented branding system, packaged as a product anyone can buy — the method behind these brands.</p>
+          <span class="tlink">Get it on Gumroad →</span></div>
       </a>
-
     </div>
 
-    <!-- CONCEPT -->
     <div class="subhead">In concept</div>
     <div class="grid">
-
-      <!-- Hogen / Fairent -->
-      <a class="tile reveal" href="assets/mockups/fairent-hogen-overcharge-flow.png" target="_blank" rel="noopener">
-        <div class="stage cover">
-          <span class="status concept">Concept</span>
-          <img src="assets/concept/hogen.jpg" alt="Hogen / Fairent concept">
-        </div>
-        <div class="body">
-          <div class="tname">Fairent / Hogen</div>
-          <div class="ttag">Civic · Fair Housing</div>
-          <p class="tdesc">An anonymous renters' data co-op against rent-gouging — Hogen / הגן, "to
-          defend." Balanced scales cradling a home: fairness made literal. Brand &amp; concept defined,
-          app in design.</p>
-          <div class="tfoot"><span class="tlink">View concept mockup →</span></div>
-        </div>
-      </a>
-
-      <!-- TH Movie -->
       <a class="tile reveal" href="assets/mockups/trashure-hunters-movie-keyart.png" target="_blank" rel="noopener">
-        <div class="stage cover">
-          <span class="status concept">Concept</span>
-          <img src="assets/mockups/trashure-hunters-movie-keyart.png" alt="Trashure-Hunters: The Movie key art">
-        </div>
-        <div class="body">
-          <div class="tname">Trashure-Hunters: The Movie</div>
-          <div class="ttag">Feature Film · IP Expansion</div>
-          <p class="tdesc">The eco-game IP grown into a Pixar-style animated feature — full concept,
-          treatment and screenplay package in development. The Elemonsters, on the big screen.</p>
-          <div class="tfoot"><span class="tlink">View key art →</span></div>
-        </div>
+        <div class="stage scene" style="background-image:url('assets/art/p-trashure.jpg')">
+          <span class="badge badge--neutral status">Concept</span>
+          <img src="assets/products/trashure.png" alt="Trashure-Hunters app"></div>
+        <div class="tbody"><div class="tname">Trashure-Hunters</div><div class="ttag">AR Eco-Game · Mobile App</div>
+          <p class="tdesc">The real-world AR game itself — two-stage AI trash verification, geolocation turf and a living cast of Elemonsters. In active build.</p>
+          <span class="tlink">View concept →</span></div>
       </a>
-
+      <a class="tile reveal" href="assets/mockups/trashure-hunters-movie-keyart.png" target="_blank" rel="noopener">
+        <div class="stage cover"><span class="badge badge--neutral status">Concept</span>
+          <img src="assets/mockups/trashure-hunters-movie-keyart.png" alt="Trashure-Hunters: The Movie key art"></div>
+        <div class="tbody"><div class="tname">Trashure-Hunters: The Movie</div><div class="ttag">Feature Film · IP Expansion</div>
+          <p class="tdesc">The eco-game IP grown into a Pixar-style animated feature — full concept, treatment and screenplay package in development.</p>
+          <span class="tlink">View key art →</span></div>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- ============ CAPABILITY ============ -->
-<section class="block" id="capability">
+<!-- SERVICES -->
+<section class="block" id="services">
   <div class="wrap">
     <div class="sec-head">
-      <div class="left">
-        <p class="kicker">How the studio scales</p>
-        <h2>One system behind every brand.</h2>
-        <p>The reason a one-person studio can ship eleven products without the look drifting: a real
-        design system and an AI-augmented production pipeline.</p>
-      </div>
+      <p class="kicker">How we help</p>
+      <h2>Senior design, without the agency overhead.</h2>
+      <p>A deliberately small studio built for senior-level work — one person accountable, AI-augmented to
+      move at the speed a founder needs.</p>
     </div>
-    <div class="cap">
-      <div class="cap-card reveal">
-        <div class="cap-top">
-          <img src="assets/products/design-system.png" alt="3S Design System">
-          <h3>3S Design System &amp; Brand Book</h3>
-        </div>
-        <p>A themeable token architecture — <span style="font-family:var(--mono);font-size:13px">tokens ·
-        brands · components</span> — that lets one brand engine theme into Trashure, Shomer, Milo and
-        J8NIX without rebuilding. A method, not a forced look.</p>
-        <a class="tlink" href="https://3shamrocksstudio.github.io/3s-design-system/" target="_blank" rel="noopener">Explore the system →</a>
-      </div>
-      <div class="cap-card reveal">
-        <div class="cap-top">
-          <div style="width:46px;height:46px;border-radius:12px;background:rgba(82,204,122,.16);display:flex;align-items:center;justify-content:center;font-size:24px">⚡</div>
-          <h3>AI-Augmented Production</h3>
-        </div>
-        <p>The same craft, roughly 80% faster. AI handles the volume — variants, art, copy passes —
-        while design direction and quality control stay human. It's how concept-to-shipped happens in
-        weeks, not quarters.</p>
-        <a class="tlink" href="#contact">Bring it to your team →</a>
-      </div>
+    <div class="svc">
+      <div class="card"><div class="dot">01</div><div><h3>Fractional Design Lead</h3>
+        <p>Embedded design leadership for your product team — strategy, systems and hands-on delivery.</p></div></div>
+      <div class="card"><div class="dot">02</div><div><h3>Zero-to-Launch Product Design</h3>
+        <p>HealthTech, SaaS and mobile — from first principles to a shipped, branded, usable product.</p></div></div>
+      <div class="card"><div class="dot">03</div><div><h3>Design Systems &amp; Brand Architecture</h3>
+        <p>One token system that scales across products without the look drifting. This studio runs on it.</p></div></div>
+      <div class="card"><div class="dot">04</div><div><h3>AI-Augmented Production</h3>
+        <p>The same craft, roughly 80% faster — AI handles the volume while design direction stays human.</p></div></div>
     </div>
   </div>
 </section>
 
-<!-- ============ STUDIO / ABOUT ============ -->
-<section class="block alt-bg" id="studio">
-  <div class="wrap about-grid">
-    <div class="reveal">
-      <p class="kicker">The studio</p>
-      <h2>Two decades of craft. A studio's worth of output.</h2>
-      <p>3Shamrocks is led by <b>Dave Markovich</b> — a product design director with 20+ years across
-      HealthTech, MedTech, SaaS and consumer. The work spans embedded design leadership for client teams
-      and a self-shipped product portfolio that proves the method end-to-end.</p>
-      <p>It's a deliberately small studio built for senior-level work without the agency overhead — one
-      person accountable, AI-augmented to move at the speed a founder needs.</p>
-    </div>
-    <div class="reveal">
-      <ul class="offer-list">
-        <li><span class="dot">✓</span><div><b>Fractional Design Lead</b> — embedded in your team</div></li>
-        <li><span class="dot">✓</span><div><b>Zero-to-Launch Product Design</b> — HealthTech, SaaS, mobile</div></li>
-        <li><span class="dot">✓</span><div><b>Design Systems &amp; Brand Architecture</b> — scale without drift</div></li>
-        <li><span class="dot">✓</span><div><b>AI-Augmented Production</b> — 80% faster, same craft</div></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CTA / CONTACT ============ -->
-<section class="block" id="contact">
+<!-- CONTACT -->
+<section class="block alt" id="contact">
   <div class="wrap">
     <div class="cta reveal">
       <h2>Have something worth shipping?</h2>
-      <p>Whether it's a HealthTech product, a brand that needs a system, or a zero-to-one idea — let's
-      talk about what it takes to make it real.</p>
+      <p>Whether it's a HealthTech product, a brand that needs a system, or a zero-to-one idea — let's talk
+      about what it takes to make it real.</p>
       <div class="hero-cta">
-        <a class="btn accent" href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a>
-        <a class="btn ghost" href="https://www.linkedin.com/in/davemarkovich" target="_blank" rel="noopener">Connect on LinkedIn</a>
+        <a class="btn btn--lg" href="mailto:dave@3shamrocks.com" style="background:var(--n-0);color:var(--accent-text)">dave@3shamrocks.com</a>
+        <a class="btn btn--ghost btn--lg" href="https://www.linkedin.com/in/davemarkovich" target="_blank" rel="noopener" style="color:var(--text-inverse);border-color:color-mix(in srgb,var(--n-0) 40%,transparent)">Connect on LinkedIn</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ FOOTER ============ -->
+<!-- FOOTER -->
 <footer class="site">
   <div class="wrap">
     <div class="foot-grid">
-      <div>
-        <div class="foot-brand">
-          <img src="assets/studio/3shamrocks.png" alt="3Shamrocks Studio">
-          <span>3Shamrocks Studio</span>
-        </div>
-        <p style="margin-top:14px;max-width:300px;font-size:14px">Product &amp; brand design that ships.
-        Led by Dave Markovich.</p>
+      <div style="max-width:18rem">
+        <img src="assets/studio/3shamrocks.png" alt="3Shamrocks Studio" style="height:26px">
+        <p style="margin-top:var(--space-3);font-size:var(--text-sm);color:color-mix(in srgb,var(--n-0) 70%,transparent)">
+          Product &amp; brand design that ships. Led by Dave Markovich.</p>
       </div>
       <div class="foot-links">
-        <div class="foot-col">
-          <h4>Studio</h4>
-          <a href="#work">Client Work</a>
-          <a href="#products">Products</a>
-          <a href="#studio">About</a>
-          <a href="#contact">Contact</a>
-        </div>
-        <div class="foot-col">
-          <h4>Products</h4>
+        <div class="foot-col"><h4>Studio</h4>
+          <a href="#work">Client Work</a><a href="#products">Products</a>
+          <a href="#services">Services</a><a href="#contact">Contact</a></div>
+        <div class="foot-col"><h4>Products</h4>
           <a href="https://3shamrocksstudio.github.io/shomergency/" target="_blank" rel="noopener">Shomergency</a>
-          <a href="https://3shamrocksstudio.github.io/th-website/" target="_blank" rel="noopener">Trashure-Hunters</a>
-          <a href="https://3shamrocksstudio.github.io/j8nix/" target="_blank" rel="noopener">J8NIX</a>
-          <a href="https://3shamrocksstudio.github.io/3s-design-system/" target="_blank" rel="noopener">Design System</a>
-        </div>
-        <div class="foot-col">
-          <h4>Connect</h4>
+          <a href="https://3shamrocksstudio.github.io/fairent/" target="_blank" rel="noopener">Fairent</a>
+          <a href="https://3shamrocksstudio.github.io/3s-design-system/" target="_blank" rel="noopener">Design System</a></div>
+        <div class="foot-col"><h4>Connect</h4>
           <a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a>
           <a href="https://www.linkedin.com/in/davemarkovich" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="https://markodave.gumroad.com" target="_blank" rel="noopener">Gumroad</a>
-        </div>
+          <a href="https://markodave.gumroad.com" target="_blank" rel="noopener">Gumroad</a></div>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© 2026 3Shamrocks Studio. All rights reserved.</span>
-      <span>Designed &amp; built in-house · Tel Aviv</span>
+      <img src="assets/studio/3shamrocks.png" alt="3Shamrocks Studio">
+      <span class="cline">© 2026 3Shamrocks Studio. All rights reserved.</span>
     </div>
   </div>
 </footer>
 
 <script>
-  // Scroll reveal
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-  },{threshold:.12, rootMargin:"0px 0px -40px 0px"});
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:"0px 0px -40px 0px"});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>
 </body>
