@@ -1,8 +1,12 @@
-# 3Shamrocks Studio — 2026 Website (the future 3shamrocks.com)
+# 3Shamrocks Studio — Website (the future 3shamrocks.com)
 
-A brand-new premium studio site that doubles as a full product portfolio. Static, self-contained,
+A premium studio site that doubles as a full product portfolio. Static, self-contained,
 no build step. Inherits the locked 3S Design System tokens (navy / cream / shamrock, light editorial
 theme). Absorbs the prior studio site's client case studies and adds a tile for every 3S product.
+
+## 🟢 LIVE: https://3shamrocksstudio.github.io/
+
+Deployed via GitHub Pages from `main` (root). Maps to **3shamrocks.com** once DNS is pointed.
 
 ## Preview locally
 
@@ -14,8 +18,6 @@ python3 -m http.server 4321 --directory "3Shamrocks-Studio/Website-2026"
 ```
 
 (Also registered as the `3s-site` config in the repo's `.claude/launch.json`.)
-
-## Status: LOCAL REVIEW ONLY — not published. Going public is a separate approval.
 
 ## Portfolio tiles
 
