@@ -1,598 +1,816 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-brand="3s" data-mode="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080808">
+<meta name="theme-color" content="#0d111a">
 <title>3Shamrocks Studio — AI-Augmented Design</title>
 <meta name="description" content="Boutique design studio. Products, brands, digital experiences. 20+ years. AI-augmented. Dave Markovich.">
-<meta property="og:title" content="3Shamrocks Studio">
-<meta property="og:description" content="AI-augmented design. Products that ship. Brands that hold.">
+<meta property="og:title" content="3Shamrocks Studio — AI-Augmented Design">
+<meta property="og:description" content="We design products that ship. Brands that hold. Experiences that move.">
+<meta property="og:image" content="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/hero.jpg">
+<link rel="icon" href="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ── TOKENS ─────────────────────────────────────────────── */
-:root{
-  --bg:     #080808;
-  --bg1:    #0F0F0F;
-  --bg2:    #141414;
-  --line:   rgba(255,255,255,.07);
-  --tx0:    #EFEFEF;
-  --tx1:    rgba(239,239,239,.5);
-  --tx2:    rgba(239,239,239,.25);
-  --green:  #3ECF4A;
-  --fd: 'Space Grotesk', system-ui, sans-serif;
-  --fb: 'Inter', system-ui, sans-serif;
+/* ── 3SDS BRAND TOKENS ─────────────────────────────────── */
+:root {
+  /* Shamrock green ramp */
+  --g3: #8ae87f;  /* lightest — light mode text, dark mode highlights */
+  --g4: #5fd57f;
+  --g5: #3dbb66;  /* primary accent */
+  --g6: #18895b;  /* deep green — dark mode primary */
+  --g7: #136a49;
+
+  /* Authority navy */
+  --n0: #0d111a;  /* bg dark */
+  --n1: #111827;
+  --n2: #161e2e;
+  --n3: #1a2435;
+  --n4: #1e2d42;
+  --n5: #253452;
+  --n6: #2d3f64;
+
+  /* Text dark mode */
+  --tx0: #f0f4ff;
+  --tx1: rgba(240,244,255,.65);
+  --tx2: rgba(240,244,255,.35);
+  --tx3: rgba(240,244,255,.18);
+
+  /* Borders */
+  --bd: rgba(240,244,255,.09);
+  --bd2: rgba(240,244,255,.15);
+
+  /* Brand gradient */
+  --g-grad: linear-gradient(120deg,#8ae87f 0%,#3dbb66 55%,#18895b 100%);
+
+  /* Type */
+  --fd: 'Space Grotesk',system-ui,sans-serif;
+  --fb: 'Inter',system-ui,sans-serif;
+
+  /* Radius — 14px editorial */
+  --r-sm: 7px;
+  --r-md: 14px;
+  --r-lg: 21px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* Assets base */
+  --assets: https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main;
 }
+
+/* ── RESET ──────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{overflow-x:hidden;scroll-behavior:smooth;font-size:16px}
+html{overflow-x:hidden;scroll-behavior:smooth}
 body{
-  background:var(--bg);
+  background:var(--n0);
   color:var(--tx0);
   font-family:var(--fb);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
   overflow-x:hidden;
+  line-height:1.6;
 }
 a{color:inherit;text-decoration:none}
-img{display:block;max-width:100%}
+img{display:block;max-width:100%;height:auto}
 
-/* ── LAYOUT ──────────────────────────────────────────────── */
-.w{
-  max-width:1280px;
-  margin:0 auto;
-  padding:0 clamp(24px,4vw,80px);
-}
-hr.rule{
-  border:none;
-  border-top:1px solid var(--line);
-  margin:0;
-}
+/* ── LAYOUT ─────────────────────────────────────────────── */
+.w{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,64px)}
 
 /* ── NAV ─────────────────────────────────────────────────── */
-nav{
+.nav{
   position:fixed;inset-inline:0;top:0;z-index:100;
-  height:52px;
-  border-bottom:1px solid var(--line);
-  background:rgba(8,8,8,.92);
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  height:56px;
+  background:rgba(13,17,26,.88);
+  backdrop-filter:blur(24px) saturate(160%);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);
+  border-bottom:1px solid var(--bd);
 }
 .nav-in{
-  display:flex;align-items:center;
-  justify-content:space-between;
+  display:flex;align-items:center;justify-content:space-between;
   height:100%;
 }
-.nav-mark{
-  font-family:var(--fd);
-  font-weight:700;
-  font-size:13px;
-  letter-spacing:.06em;
-  color:var(--tx0);
-  display:flex;align-items:center;gap:8px;
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  flex-shrink:0;
 }
-.nav-mark .leaf{color:var(--green)}
+.nav-logo img{
+  height:28px;width:auto;
+  filter:brightness(0) invert(1);
+  opacity:.92;
+}
 .nav-links{
-  display:flex;align-items:center;gap:clamp(20px,3vw,40px);
+  display:flex;align-items:center;
+  gap:clamp(16px,3vw,36px);
 }
 .nav-links a{
-  font-family:var(--fd);
-  font-size:12px;font-weight:500;
-  letter-spacing:.04em;
-  color:var(--tx1);
+  font-family:var(--fd);font-size:13px;font-weight:500;
+  letter-spacing:.02em;color:var(--tx1);
   transition:color .18s;
 }
 .nav-links a:hover{color:var(--tx0)}
-.nav-links .cta{
-  color:var(--green);
-  border-bottom:1px solid rgba(62,207,74,.3);
-  padding-bottom:1px;
+.nav-cta{
+  display:flex;align-items:center;height:36px;padding:0 18px;
+  background:var(--g-grad);
+  color:#fff;font-family:var(--fd);font-size:12px;font-weight:700;
+  letter-spacing:.06em;border-radius:var(--r-pill);
+  box-shadow:0 4px 20px -4px rgba(61,187,102,.45);
+  transition:filter .18s,transform .15s;white-space:nowrap;
 }
-.nav-links .cta:hover{border-color:var(--green)}
+.nav-cta:hover{filter:brightness(1.1);transform:translateY(-1px)}
 
-/* ── HERO ────────────────────────────────────────────────── */
+/* ── HERO ─────────────────────────────────────────────────── */
 .hero{
-  padding-top:52px;
+  padding-top:56px;
   min-height:100svh;
+  position:relative;
   display:flex;flex-direction:column;
   justify-content:flex-end;
-  border-bottom:1px solid var(--line);
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/hero.jpg')
+    center/cover no-repeat;
+}
+.hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,rgba(13,17,26,.55) 0%,rgba(13,17,26,.2) 30%,rgba(13,17,26,.92) 72%,var(--n0) 100%),
+    linear-gradient(90deg,rgba(13,17,26,.75) 0%,transparent 60%);
 }
 .hero-inner{
-  padding:clamp(48px,6vw,80px) 0 0;
+  position:relative;z-index:1;
+  padding:clamp(48px,8vw,96px) 0 0;
 }
-.hero-eyebrow{
-  font-family:var(--fd);
-  font-size:11px;font-weight:500;
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--fd);font-size:11px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase;
-  color:var(--tx1);
-  margin-bottom:clamp(24px,3vw,40px);
-  display:flex;align-items:center;gap:10px;
+  color:var(--g4);margin-bottom:clamp(20px,3vw,32px);
 }
-.hero-eyebrow::before{
-  content:'';display:block;width:24px;height:1px;
-  background:var(--green);flex-shrink:0;
-}
+.hero-tag::before{content:'';width:20px;height:1.5px;background:var(--g5);flex-shrink:0}
 .hero-h1{
-  font-family:var(--fd);
-  font-weight:700;
-  font-size:clamp(64px,13.5vw,196px);
-  line-height:.88;
-  letter-spacing:-.04em;
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(52px,11vw,164px);
+  line-height:.9;letter-spacing:-.04em;
   color:var(--tx0);
-  margin-bottom:clamp(32px,4vw,56px);
+  margin-bottom:clamp(24px,3vw,40px);
 }
-.hero-h1 .accent{color:var(--green)}
-.hero-h1 .dim{color:var(--tx2)}
+.hero-h1 .hl{
+  background:var(--g-grad);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
 .hero-foot{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:1px;
-  background:var(--line);
-  border-top:1px solid var(--line);
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:var(--bd);
+  border-top:1px solid var(--bd);
+  position:relative;z-index:1;
 }
-.hero-foot-cell{
-  background:var(--bg);
-  padding:clamp(20px,2.5vw,32px) clamp(20px,3vw,40px);
+.hf-cell{
+  background:rgba(13,17,26,.8);
+  backdrop-filter:blur(8px);
+  padding:clamp(18px,2.5vw,28px) clamp(20px,3vw,40px);
 }
-.hero-foot-label{
+.hf-lbl{
   font-family:var(--fd);font-size:10px;font-weight:500;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--tx2);
-  margin-bottom:6px;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--tx2);margin-bottom:6px;
 }
-.hero-foot-val{
-  font-family:var(--fd);font-size:clamp(13px,1.8vw,16px);font-weight:400;
-  color:var(--tx1);line-height:1.5;
+.hf-val{
+  font-size:clamp(13px,1.8vw,15px);font-weight:300;
+  color:var(--tx1);line-height:1.6;
 }
 
 /* ── MARQUEE ─────────────────────────────────────────────── */
-.marquee-wrap{
-  overflow:hidden;
-  border-bottom:1px solid var(--line);
-  padding:14px 0;
-  background:var(--bg1);
+.mq{
+  overflow:hidden;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
+  padding:13px 0;background:var(--n1);
 }
-.marquee-track{
-  display:flex;gap:40px;
-  animation:scroll 28s linear infinite;
+.mq-track{
+  display:flex;gap:48px;
+  animation:mq-scroll 32s linear infinite;
   width:max-content;
 }
-.marquee-track:hover{animation-play-state:paused}
-@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.m-item{
-  display:flex;align-items:center;gap:8px;
+.mq-track:hover{animation-play-state:paused}
+@keyframes mq-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.mq-item{
+  display:flex;align-items:center;gap:10px;
   font-family:var(--fd);font-size:11px;font-weight:500;
-  letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);
-  white-space:nowrap;flex-shrink:0;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--tx2);white-space:nowrap;flex-shrink:0;
 }
-.m-dot{width:4px;height:4px;border-radius:50%;background:var(--green);flex-shrink:0}
+.mq-dot{width:5px;height:5px;border-radius:50%;background:var(--g5);flex-shrink:0}
+
+/* ── SECTION HEADER ─────────────────────────────────────── */
+.sec-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  padding-bottom:clamp(16px,2vw,24px);
+  border-bottom:1px solid var(--bd);
+  margin-bottom:clamp(32px,4vw,52px);
+}
+.sec-lbl{
+  font-family:var(--fd);font-size:10px;font-weight:500;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--tx2);
+}
+.sec-count{font-family:var(--fd);font-size:10px;color:var(--tx2)}
 
 /* ── WORKS ───────────────────────────────────────────────── */
-.works{padding:clamp(80px,10vw,128px) 0}
-.section-head{
-  display:flex;align-items:baseline;justify-content:space-between;
-  margin-bottom:clamp(40px,5vw,64px);
-  border-bottom:1px solid var(--line);
-  padding-bottom:clamp(16px,2vw,24px);
-}
-.section-label{
-  font-family:var(--fd);font-size:10px;font-weight:500;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--tx2);
-}
-.section-count{
-  font-family:var(--fd);font-size:10px;font-weight:500;
-  letter-spacing:.08em;color:var(--tx2);
-}
-
+.works{padding:clamp(72px,9vw,120px) 0}
 .works-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:1px;
-  background:var(--line);
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:1px;background:var(--bd);
 }
-.work-card{
-  background:var(--bg);
-  padding:clamp(28px,3.5vw,48px);
+.wcard{
+  position:relative;overflow:hidden;
+  min-height:clamp(240px,28vw,380px);
   display:flex;flex-direction:column;
-  gap:0;
-  position:relative;
-  overflow:hidden;
-  min-height:clamp(220px,28vw,360px);
-  transition:background .3s;
   text-decoration:none;color:inherit;
+  background:var(--n1);
 }
-.work-card::before{
-  content:'';
+/* Product image as background */
+.wcard-img{
   position:absolute;inset:0;
-  background:var(--card-clr, rgba(255,255,255,.02));
-  opacity:0;
-  transition:opacity .3s;
+  background-size:cover;background-position:center top;
+  opacity:.22;
+  transition:opacity .4s var(--ease,ease);
 }
-.work-card:hover::before{opacity:1}
-.work-card:hover .wc-arrow{opacity:1;transform:translateX(0)}
-
-.wc-top{
-  display:flex;align-items:flex-start;
-  justify-content:space-between;
+.wcard:hover .wcard-img{opacity:.38}
+.wcard-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 30%,rgba(13,17,26,.96) 100%);
+  transition:background .4s;
+}
+.wcard-inner{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;height:100%;
+  padding:clamp(20px,2.5vw,32px);
+}
+.wcard-top{
+  display:flex;align-items:flex-start;justify-content:space-between;
   margin-bottom:auto;
 }
-.wc-cat{
+.wcard-cat{
   font-family:var(--fd);font-size:10px;font-weight:500;
   letter-spacing:.14em;text-transform:uppercase;
   color:var(--tx2);padding:4px 10px;
-  border:1px solid var(--line);
+  border:1px solid var(--bd);border-radius:var(--r-sm);
+  background:rgba(13,17,26,.5);
 }
-.wc-status{
-  font-family:var(--fd);font-size:10px;font-weight:500;
+.wcard-status{
+  font-family:var(--fd);font-size:10px;font-weight:600;
   letter-spacing:.1em;text-transform:uppercase;
-  padding:4px 10px;
+  padding:4px 10px;border-radius:var(--r-sm);
 }
-.wc-status.live{color:var(--green);border:1px solid rgba(62,207,74,.25)}
-.wc-status.beta{color:#facc15;border:1px solid rgba(250,204,21,.2)}
-.wc-status.soon{color:var(--tx2);border:1px solid var(--line)}
-
-.wc-body{margin-top:clamp(32px,4vw,48px)}
-.wc-name{
-  font-family:var(--fd);
-  font-weight:700;
-  font-size:clamp(28px,4vw,52px);
+.s-live{color:var(--g4);border:1px solid rgba(95,213,127,.25);background:rgba(61,187,102,.08)}
+.s-beta{color:#fbbf24;border:1px solid rgba(251,191,36,.2);background:rgba(251,191,36,.06)}
+.wcard-body{margin-top:clamp(28px,4vw,48px)}
+.wcard-name{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(24px,3.5vw,44px);
   line-height:.95;letter-spacing:-.025em;
-  color:var(--tx0);
-  margin-bottom:12px;
+  color:var(--tx0);margin-bottom:10px;
 }
-.wc-name .wc-em{color:var(--card-accent, var(--green))}
-.wc-desc{
-  font-size:clamp(13px,1.6vw,15px);font-weight:300;
-  color:var(--tx1);line-height:1.65;max-width:40ch;
-  margin-bottom:20px;
+.wcard-name .wa{color:var(--wcard-accent,var(--g4))}
+.wcard-desc{
+  font-size:clamp(13px,1.5vw,14px);font-weight:300;
+  color:var(--tx1);line-height:1.65;max-width:38ch;
+  margin-bottom:18px;
 }
-.wc-arrow{
+.wcard-arrow{
+  display:inline-flex;align-items:center;gap:6px;
   font-family:var(--fd);font-size:11px;font-weight:500;
   letter-spacing:.1em;text-transform:uppercase;
-  color:var(--card-accent, var(--green));
-  opacity:0;transform:translateX(-8px);
+  color:var(--wcard-accent,var(--g4));
+  opacity:0;transform:translateX(-6px);
   transition:opacity .25s,transform .25s;
-  display:flex;align-items:center;gap:6px;
 }
-.wc-arrow::after{content:'→'}
+.wcard-arrow::after{content:'→'}
+.wcard:hover .wcard-arrow{opacity:1;transform:translateX(0)}
+.wcard.featured{grid-column:1/-1;min-height:clamp(300px,32vw,440px)}
 
-/* Featured card (full width) */
-.work-card.featured{grid-column:1/-1;min-height:clamp(280px,30vw,420px)}
+/* ── CLIENT WORK ─────────────────────────────────────────── */
+.clients-section{
+  border-top:1px solid var(--bd);
+  padding:clamp(72px,9vw,120px) 0;
+}
+.client-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:1px;background:var(--bd);
+}
+.client-card{
+  background:var(--n1);overflow:hidden;
+}
+.client-card-inner{padding:clamp(24px,3vw,40px)}
+.cc-eyebrow{
+  font-family:var(--fd);font-size:10px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--tx2);margin-bottom:12px;
+}
+.cc-name{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(20px,3vw,32px);letter-spacing:-.02em;
+  color:var(--tx0);margin-bottom:8px;
+}
+.cc-desc{
+  font-size:13px;font-weight:300;color:var(--tx1);
+  line-height:1.65;max-width:40ch;margin-bottom:24px;
+}
+.cc-screens{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+}
+.cc-screen{
+  border-radius:var(--r-sm);overflow:hidden;
+  aspect-ratio:9/16;background:var(--n2);
+}
+.cc-screen img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  opacity:.85;transition:opacity .3s;
+}
+.client-card:hover .cc-screen img{opacity:1}
 
-/* ── CAPABILITIES ────────────────────────────────────────── */
+.logos-row{
+  display:flex;gap:clamp(24px,4vw,48px);align-items:center;
+  flex-wrap:wrap;padding:clamp(24px,3vw,40px);
+  border-top:1px solid var(--bd);
+}
+.logos-row img{
+  height:22px;width:auto;
+  filter:brightness(0) invert(1);
+  opacity:.3;transition:opacity .2s;
+}
+.logos-row img:hover{opacity:.65}
+
+/* ── CAPABILITIES ─────────────────────────────────────────── */
 .caps{
-  border-top:1px solid var(--line);
-  padding:clamp(80px,10vw,128px) 0;
+  border-top:1px solid var(--bd);
+  padding:clamp(72px,9vw,120px) 0;
 }
 .caps-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:1px;
-  background:var(--line);
-  margin-top:clamp(40px,5vw,64px);
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:1px;background:var(--bd);
 }
 .cap{
-  background:var(--bg);
-  padding:clamp(28px,3.5vw,48px);
+  background:var(--n1);
+  padding:clamp(24px,3vw,40px);
 }
 .cap-n{
   font-family:var(--fd);font-size:10px;font-weight:500;
-  letter-spacing:.16em;text-transform:uppercase;
-  color:var(--tx2);margin-bottom:16px;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--tx2);margin-bottom:14px;
 }
 .cap-title{
   font-family:var(--fd);font-weight:700;
-  font-size:clamp(22px,3vw,36px);line-height:1.1;letter-spacing:-.02em;
-  color:var(--tx0);margin-bottom:16px;
+  font-size:clamp(20px,2.5vw,30px);letter-spacing:-.02em;
+  color:var(--tx0);line-height:1.1;margin-bottom:20px;
 }
-.cap-items{
-  display:flex;flex-direction:column;gap:8px;
-  list-style:none;
+.cap-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.cap-list li{
+  font-size:14px;font-weight:300;color:var(--tx1);
+  padding-inline-start:16px;position:relative;line-height:1.5;
 }
-.cap-items li{
-  font-size:clamp(13px,1.6vw,14px);font-weight:300;
-  color:var(--tx1);padding-left:16px;position:relative;
-}
-.cap-items li::before{
-  content:'';position:absolute;left:0;top:9px;
-  width:6px;height:1px;background:var(--green);
+.cap-list li::before{
+  content:'';position:absolute;inset-inline-start:0;top:10px;
+  width:7px;height:1.5px;
+  background:var(--g5);
 }
 
 /* ── ABOUT ───────────────────────────────────────────────── */
 .about{
-  border-top:1px solid var(--line);
-  padding:clamp(80px,10vw,128px) 0;
+  border-top:1px solid var(--bd);
+  padding:clamp(72px,9vw,120px) 0;
 }
 .about-grid{
   display:grid;
-  grid-template-columns:280px 1fr;
-  gap:clamp(40px,6vw,80px);
+  grid-template-columns:1fr 1fr;
+  gap:clamp(32px,5vw,72px);
   align-items:start;
 }
-.about-label{
-  font-family:var(--fd);font-size:10px;font-weight:500;
-  letter-spacing:.18em;text-transform:uppercase;
-  color:var(--tx2);padding-top:6px;
+.about-photo{
+  border-radius:var(--r-lg);overflow:hidden;
+  aspect-ratio:4/5;
+  background:var(--n2);
 }
-.about-body{}
+.about-photo img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:top center;
+  filter:grayscale(.15);
+  transition:filter .4s;
+}
+.about-photo:hover img{filter:grayscale(0)}
+.about-text{}
 .about-h{
   font-family:var(--fd);font-weight:700;
-  font-size:clamp(28px,4vw,52px);line-height:1;letter-spacing:-.03em;
-  color:var(--tx0);margin-bottom:clamp(20px,3vw,32px);
+  font-size:clamp(28px,4vw,52px);letter-spacing:-.03em;
+  line-height:.95;color:var(--tx0);margin-bottom:24px;
 }
-.about-h em{font-style:normal;color:var(--green)}
+.about-h .hl{
+  background:var(--g-grad);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
 .about-p{
-  font-size:clamp(15px,2vw,18px);font-weight:300;
-  color:var(--tx1);line-height:1.75;max-width:56ch;margin-bottom:24px;
+  font-size:clamp(14px,1.8vw,16px);font-weight:300;
+  color:var(--tx1);line-height:1.75;max-width:48ch;
+  margin-bottom:20px;
 }
-.about-stat-row{
-  display:flex;gap:clamp(24px,4vw,48px);
-  flex-wrap:wrap;margin-top:clamp(32px,4vw,48px);
-  padding-top:clamp(24px,3vw,32px);
-  border-top:1px solid var(--line);
+.about-stats{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  background:var(--bd);border:1px solid var(--bd);
+  border-radius:var(--r-md);overflow:hidden;
+  margin-top:32px;
 }
-.astat{display:flex;flex-direction:column;gap:4px}
+.astat{
+  background:var(--n2);padding:20px;
+}
 .astat-n{
   font-family:var(--fd);font-weight:700;
-  font-size:clamp(28px,4vw,42px);letter-spacing:-.03em;
+  font-size:clamp(26px,3.5vw,38px);letter-spacing:-.03em;
   color:var(--tx0);line-height:1;
 }
+.astat-n .ga{color:var(--g5)}
 .astat-l{
-  font-size:11px;font-weight:400;color:var(--tx2);
-  letter-spacing:.04em;
+  font-size:11px;font-weight:400;
+  color:var(--tx2);margin-top:4px;letter-spacing:.04em;
 }
 
-/* ── CONTACT ─────────────────────────────────────────────── */
-.contact{
-  border-top:1px solid var(--line);
-  padding:clamp(80px,10vw,128px) 0;
+/* ── CTA BAND ────────────────────────────────────────────── */
+.cta-band{
+  position:relative;overflow:hidden;
+  min-height:clamp(280px,32vw,420px);
+  display:flex;align-items:center;
+  border-top:1px solid var(--bd);
 }
-.contact-h{
+.cta-band-bg{
+  position:absolute;inset:0;
+  background:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/band-cta.jpg')
+    center/cover no-repeat;
+  opacity:.18;
+}
+.cta-band-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(13,17,26,.95) 40%,rgba(13,17,26,.6) 100%);
+}
+.cta-inner{
+  position:relative;z-index:1;
+}
+.cta-h{
   font-family:var(--fd);font-weight:700;
-  font-size:clamp(44px,9vw,120px);line-height:.9;
-  letter-spacing:-.04em;color:var(--tx0);
-  margin-bottom:clamp(32px,4vw,56px);
+  font-size:clamp(36px,7vw,88px);
+  line-height:.92;letter-spacing:-.04em;
+  color:var(--tx0);margin-bottom:20px;
 }
-.contact-h em{font-style:normal;color:var(--green)}
-.contact-row{
-  display:flex;flex-wrap:wrap;gap:clamp(16px,3vw,32px);
-  align-items:center;
+.cta-h .hl{
+  background:var(--g-grad);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
-.contact-email{
-  font-family:var(--fd);font-weight:500;
-  font-size:clamp(15px,2.5vw,22px);
-  color:var(--tx0);
-  border-bottom:1px solid rgba(239,239,239,.2);
-  padding-bottom:2px;
+.cta-sub{
+  font-size:clamp(14px,2vw,17px);font-weight:300;
+  color:var(--tx1);max-width:40ch;line-height:1.7;
+  margin-bottom:36px;
+}
+.cta-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:10px;
+  height:52px;padding:0 28px;
+  background:var(--g-grad);color:#fff;
+  font-family:var(--fd);font-size:14px;font-weight:700;
+  letter-spacing:.04em;border-radius:var(--r-pill);
+  box-shadow:0 12px 40px -8px rgba(61,187,102,.5);
+  transition:filter .18s,transform .15s;
+}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.btn-ghost{
+  display:inline-flex;align-items:center;
+  height:52px;padding:0 4px;
+  font-family:var(--fd);font-size:13px;font-weight:500;
+  color:var(--g4);
+  border-bottom:1px solid rgba(95,213,127,.3);
   transition:color .18s,border-color .18s;
 }
-.contact-email:hover{color:var(--green);border-color:rgba(62,207,74,.4)}
-.contact-li{
-  font-family:var(--fd);font-size:12px;font-weight:500;
-  letter-spacing:.06em;text-transform:uppercase;
-  color:var(--tx2);transition:color .18s;
-}
-.contact-li:hover{color:var(--tx0)}
+.btn-ghost:hover{color:var(--g3);border-color:var(--g3)}
 
 /* ── FOOTER ──────────────────────────────────────────────── */
 footer{
-  border-top:1px solid var(--line);
+  border-top:1px solid var(--bd);
   padding:clamp(24px,3vw,36px) 0;
+  background:var(--n0);
 }
 .footer-in{
   display:flex;flex-wrap:wrap;gap:16px;
   align-items:center;justify-content:space-between;
 }
-.footer-mark{
-  font-family:var(--fd);font-size:12px;font-weight:700;
-  letter-spacing:.06em;color:var(--tx2);
+.footer-logo img{
+  height:22px;width:auto;
+  filter:brightness(0) invert(1);
+  opacity:.35;
 }
-.footer-mark span{color:var(--green)}
-.footer-copy{font-size:11px;font-weight:300;color:var(--tx2)}
-.footer-links{display:flex;gap:24px;flex-wrap:wrap}
+.footer-links{display:flex;gap:clamp(16px,3vw,28px);flex-wrap:wrap}
 .footer-links a{
-  font-size:11px;font-weight:400;color:var(--tx2);
-  letter-spacing:.04em;transition:color .15s;
+  font-family:var(--fd);font-size:12px;font-weight:400;
+  color:var(--tx2);letter-spacing:.04em;
+  transition:color .15s;
 }
 .footer-links a:hover{color:var(--tx0)}
+.footer-copy{font-size:11px;font-weight:300;color:var(--tx3)}
 
-/* ── SCROLL REVEAL ───────────────────────────────────────── */
-.r{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+/* ── REVEAL ──────────────────────────────────────────────── */
+.r{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
 .r.on{opacity:1;transform:none}
+.r2{opacity:0;transform:translateY(18px);transition:opacity .65s .12s ease,transform .65s .12s ease}
+.r2.on{opacity:1;transform:none}
 
 /* ── MOBILE ──────────────────────────────────────────────── */
-@media(max-width:720px){
+@media(max-width:768px){
   .works-grid{grid-template-columns:1fr}
-  .work-card.featured{grid-column:auto}
-  .caps-grid{grid-template-columns:1fr}
+  .wcard.featured{grid-column:auto}
   .about-grid{grid-template-columns:1fr}
-  .about-label{display:none}
+  .about-photo{display:none}
+  .client-grid{grid-template-columns:1fr}
+  .caps-grid{grid-template-columns:1fr}
   .hero-foot{grid-template-columns:1fr}
-  .hero-h1{letter-spacing:-.03em}
-  .wc-arrow{opacity:1;transform:none}
+  .about-stats{grid-template-columns:1fr 1fr}
+  .cc-screens{grid-template-columns:repeat(2,1fr)}
+  .wcard-arrow{opacity:1;transform:none}
 }
 @media(max-width:480px){
-  .nav-links a:not(.cta){display:none}
+  .nav-links a:not(.nav-cta){display:none}
+  .cc-screens{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav>
+<nav class="nav">
   <div class="w nav-in">
-    <div class="nav-mark">
-      <span class="leaf">☘</span> 3SHAMROCKS STUDIO
-    </div>
+    <a href="/" class="nav-logo">
+      <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png"
+           alt="3Shamrocks Studio" loading="eager">
+    </a>
     <div class="nav-links">
       <a href="#works">Works</a>
       <a href="#capabilities">Capabilities</a>
       <a href="#about">Studio</a>
-      <a href="mailto:markodave@gmail.com" class="cta">Let's talk</a>
+      <a href="mailto:markodave@gmail.com" class="nav-cta">Let's talk</a>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="w hero-inner">
-    <div class="hero-eyebrow">AI-Augmented Design Studio · Tel Aviv</div>
+  <div class="hero-bg"></div>
+  <div class="w hero-inner r">
+    <div class="hero-tag">Boutique Design Studio · Tel Aviv · Est. 2007</div>
     <h1 class="hero-h1">
       We design<br>
       products<br>
-      <span class="accent">that ship.</span>
+      <span class="hl">that ship.</span>
     </h1>
   </div>
   <div class="hero-foot">
-    <div class="hero-foot-cell">
-      <div class="hero-foot-label">What we do</div>
-      <div class="hero-foot-val">UX/UI · Product Design · Design Systems<br>Branding · AI-Augmented Workflow</div>
+    <div class="hf-cell">
+      <div class="hf-lbl">What we do</div>
+      <div class="hf-val">UX/UI · Product Design · Design Systems · Branding · AI-Augmented Workflow</div>
     </div>
-    <div class="hero-foot-cell">
-      <div class="hero-foot-label">Who we work with</div>
-      <div class="hero-foot-val">Startups building category-defining products.<br>Teams who need to ship, not just prototype.</div>
+    <div class="hf-cell">
+      <div class="hf-lbl">Who we work with</div>
+      <div class="hf-val">Startups building category-defining products. Teams who need to ship — not just prototype.</div>
     </div>
   </div>
 </section>
 
 <!-- MARQUEE -->
-<div class="marquee-wrap" aria-hidden="true">
-  <div class="marquee-track">
-    <!-- repeated twice for seamless loop -->
-    <div class="m-item"><span class="m-dot"></span> SH✡MER · Safety Network · Israel</div>
-    <div class="m-item"><span class="m-dot"></span> Trashure-Hunters · Eco-Game · Global</div>
-    <div class="m-item"><span class="m-dot"></span> MILO · Child Wellness · App</div>
-    <div class="m-item"><span class="m-dot"></span> Ezra · Senior AI Assistant</div>
-    <div class="m-item"><span class="m-dot"></span> Chore Royale · Family Game · App</div>
-    <div class="m-item"><span class="m-dot"></span> J8N.IX · AI Command Center</div>
-    <div class="m-item"><span class="m-dot"></span> Fairent · Civic Tech · Israel</div>
-    <div class="m-item"><span class="m-dot"></span> 20+ Years Experience</div>
-    <div class="m-item"><span class="m-dot"></span> SH✡MER · Safety Network · Israel</div>
-    <div class="m-item"><span class="m-dot"></span> Trashure-Hunters · Eco-Game · Global</div>
-    <div class="m-item"><span class="m-dot"></span> MILO · Child Wellness · App</div>
-    <div class="m-item"><span class="m-dot"></span> Ezra · Senior AI Assistant</div>
-    <div class="m-item"><span class="m-dot"></span> Chore Royale · Family Game · App</div>
-    <div class="m-item"><span class="m-dot"></span> J8N.IX · AI Command Center</div>
-    <div class="m-item"><span class="m-dot"></span> Fairent · Civic Tech · Israel</div>
-    <div class="m-item"><span class="m-dot"></span> 20+ Years Experience</div>
+<div class="mq" aria-hidden="true">
+  <div class="mq-track">
+    <div class="mq-item"><span class="mq-dot"></span>SH✡MER · Safety Network</div>
+    <div class="mq-item"><span class="mq-dot"></span>Trashure-Hunters · Eco-Game</div>
+    <div class="mq-item"><span class="mq-dot"></span>MILO · Child Wellness</div>
+    <div class="mq-item"><span class="mq-dot"></span>Ezra · Senior AI</div>
+    <div class="mq-item"><span class="mq-dot"></span>Chore Royale · Family Game</div>
+    <div class="mq-item"><span class="mq-dot"></span>J8N.IX · AI Command Center</div>
+    <div class="mq-item"><span class="mq-dot"></span>Fairent · Civic Tech</div>
+    <div class="mq-item"><span class="mq-dot"></span>20+ Years · AI-Augmented</div>
+    <div class="mq-item"><span class="mq-dot"></span>SH✡MER · Safety Network</div>
+    <div class="mq-item"><span class="mq-dot"></span>Trashure-Hunters · Eco-Game</div>
+    <div class="mq-item"><span class="mq-dot"></span>MILO · Child Wellness</div>
+    <div class="mq-item"><span class="mq-dot"></span>Ezra · Senior AI</div>
+    <div class="mq-item"><span class="mq-dot"></span>Chore Royale · Family Game</div>
+    <div class="mq-item"><span class="mq-dot"></span>J8N.IX · AI Command Center</div>
+    <div class="mq-item"><span class="mq-dot"></span>Fairent · Civic Tech</div>
+    <div class="mq-item"><span class="mq-dot"></span>20+ Years · AI-Augmented</div>
   </div>
 </div>
 
 <!-- WORKS -->
-<section class="works" id="works">
+<section class="works r" id="works">
   <div class="w">
-    <div class="section-head">
-      <div class="section-label">Selected Works</div>
-      <div class="section-count">07</div>
+    <div class="sec-head">
+      <div class="sec-lbl">Selected Works</div>
+      <div class="sec-count">07</div>
     </div>
     <div class="works-grid">
 
       <!-- SH✡MER — featured -->
-      <a class="work-card featured r" href="https://www.shomer-app.co.il/"
-         target="_blank" rel="noopener"
-         style="--card-clr:rgba(30,49,95,.3);--card-accent:#faac22">
-        <div class="wc-top">
-          <div class="wc-cat">Safety · Social Network</div>
-          <div class="wc-status live">Live</div>
-        </div>
-        <div class="wc-body">
-          <div class="wc-name">SH<span class="wc-em">✡</span>MER</div>
-          <div class="wc-desc">Israel's first community safety network. One tap SOS, live incident map, guardian circles. Free to citizens — always.</div>
-          <div class="wc-arrow">View project</div>
+      <a class="wcard featured" href="https://www.shomer-app.co.il/" target="_blank" rel="noopener"
+         style="--wcard-accent:#faac22">
+        <div class="wcard-img"
+             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-shomergency.jpg')"></div>
+        <div class="wcard-ov"></div>
+        <div class="wcard-inner">
+          <div class="wcard-top">
+            <div class="wcard-cat">Safety · Social Network · Israel</div>
+            <div class="wcard-status s-live">Live</div>
+          </div>
+          <div class="wcard-body">
+            <div class="wcard-name">SH<span class="wa">✡</span>MER</div>
+            <div class="wcard-desc">Israel's first community safety network. One-tap SOS, live incident map, guardian circles. Free to citizens — always.</div>
+            <div class="wcard-arrow">View project</div>
+          </div>
         </div>
       </a>
 
       <!-- TH MVP -->
-      <a class="work-card r" href="https://3shamrocksstudio.github.io/th-mvp-web/marketing.html"
-         target="_blank" rel="noopener"
-         style="--card-clr:rgba(22,163,74,.12);--card-accent:#4ade80">
-        <div class="wc-top">
-          <div class="wc-cat">Game · Civic · Global</div>
-          <div class="wc-status beta">Beta</div>
-        </div>
-        <div class="wc-body">
-          <div class="wc-name">Trashure<span class="wc-em">Hunters</span></div>
-          <div class="wc-desc">Real-world eco-game. Clean trash. Spawn Elemonsters. Raid bosses with your clan. AI-verified cleanup.</div>
-          <div class="wc-arrow">View project</div>
+      <a class="wcard" href="https://3shamrocksstudio.github.io/th-mvp-web/marketing.html"
+         target="_blank" rel="noopener" style="--wcard-accent:#4ade80">
+        <div class="wcard-img"
+             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-trashure.jpg')"></div>
+        <div class="wcard-ov"></div>
+        <div class="wcard-inner">
+          <div class="wcard-top">
+            <div class="wcard-cat">Game · Civic · Global</div>
+            <div class="wcard-status s-beta">Beta</div>
+          </div>
+          <div class="wcard-body">
+            <div class="wcard-name">Trashure<span class="wa">Hunters</span></div>
+            <div class="wcard-desc">Real-world eco-game. Clean trash. Spawn Elemonsters. AI-verified cleanup. Real impact.</div>
+            <div class="wcard-arrow">View project</div>
+          </div>
         </div>
       </a>
 
       <!-- MILO -->
-      <a class="work-card r" href="https://3shamrocksstudio.github.io/milo-app/"
-         target="_blank" rel="noopener"
-         style="--card-clr:rgba(251,146,60,.1);--card-accent:#fb923c">
-        <div class="wc-top">
-          <div class="wc-cat">Child Wellness · App</div>
-          <div class="wc-status live">Live</div>
-        </div>
-        <div class="wc-body">
-          <div class="wc-name"><span class="wc-em">MILO</span></div>
-          <div class="wc-desc">My Inner Little One. A companion app that grows with a child's emotional journey through 5 stages.</div>
-          <div class="wc-arrow">View project</div>
+      <a class="wcard" href="https://3shamrocksstudio.github.io/milo-app/"
+         target="_blank" rel="noopener" style="--wcard-accent:#fb923c">
+        <div class="wcard-img"
+             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-milo.jpg')"></div>
+        <div class="wcard-ov"></div>
+        <div class="wcard-inner">
+          <div class="wcard-top">
+            <div class="wcard-cat">Child Wellness · App</div>
+            <div class="wcard-status s-live">Live</div>
+          </div>
+          <div class="wcard-body">
+            <div class="wcard-name"><span class="wa">MILO</span></div>
+            <div class="wcard-desc">My Inner Little One. Companion app growing with a child's emotional journey through 5 stages.</div>
+            <div class="wcard-arrow">View project</div>
+          </div>
         </div>
       </a>
 
       <!-- EZRA -->
-      <a class="work-card r" href="https://3shamrocksstudio.github.io/senior-helper/"
-         target="_blank" rel="noopener"
-         style="--card-clr:rgba(0,92,255,.1);--card-accent:#5c92ff">
-        <div class="wc-top">
-          <div class="wc-cat">Elder Care · AI · Hebrew</div>
-          <div class="wc-status live">Live</div>
-        </div>
-        <div class="wc-body">
-          <div class="wc-name"><span class="wc-em">Ezra</span></div>
-          <div class="wc-desc">Voice-first Hebrew AI assistant for seniors. Sends messages, books appointments, protects from scams.</div>
-          <div class="wc-arrow">View project</div>
+      <a class="wcard" href="https://3shamrocksstudio.github.io/senior-helper/"
+         target="_blank" rel="noopener" style="--wcard-accent:#60a5fa">
+        <div class="wcard-img"
+             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-ezra.jpg')"></div>
+        <div class="wcard-ov"></div>
+        <div class="wcard-inner">
+          <div class="wcard-top">
+            <div class="wcard-cat">Elder Care · AI · Hebrew</div>
+            <div class="wcard-status s-live">Live</div>
+          </div>
+          <div class="wcard-body">
+            <div class="wcard-name"><span class="wa">Ezra</span></div>
+            <div class="wcard-desc">Voice-first Hebrew AI assistant for seniors. Sends messages, books appointments, protects from scams.</div>
+            <div class="wcard-arrow">View project</div>
+          </div>
         </div>
       </a>
 
       <!-- CHORE ROYALE -->
-      <a class="work-card r" href="https://3shamrocksstudio.github.io/chore-wars/"
-         target="_blank" rel="noopener"
-         style="--card-clr:rgba(123,104,238,.12);--card-accent:#a78bfa">
-        <div class="wc-top">
-          <div class="wc-cat">Family · Game · Daily</div>
-          <div class="wc-status live">Live</div>
-        </div>
-        <div class="wc-body">
-          <div class="wc-name">Chore<span class="wc-em">Royale</span></div>
-          <div class="wc-desc">Spin the wheel. Get your chore. Prove it. Earn XP. Family chores turned into a daily quest with real stakes.</div>
-          <div class="wc-arrow">View project</div>
-        </div>
-      </a>
-
-      <!-- FAIRENT -->
-      <a class="work-card r" href="https://3shamrocksstudio.github.io/fairent/"
-         target="_blank" rel="noopener"
-         style="--card-clr:rgba(20,184,166,.1);--card-accent:#2dd4bf">
-        <div class="wc-top">
-          <div class="wc-cat">Civic · PropTech · Israel</div>
-          <div class="wc-status live">Live</div>
-        </div>
-        <div class="wc-body">
-          <div class="wc-name">Fair<span class="wc-em">ent</span></div>
-          <div class="wc-desc">Renters share their rent anonymously. Real data, real comparisons. Power back to the people paying it.</div>
-          <div class="wc-arrow">View project</div>
+      <a class="wcard" href="https://3shamrocksstudio.github.io/chore-wars/"
+         target="_blank" rel="noopener" style="--wcard-accent:#a78bfa">
+        <div class="wcard-img"
+             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-chorewars.jpg')"></div>
+        <div class="wcard-ov"></div>
+        <div class="wcard-inner">
+          <div class="wcard-top">
+            <div class="wcard-cat">Family · Game · Daily Retention</div>
+            <div class="wcard-status s-live">Live</div>
+          </div>
+          <div class="wcard-body">
+            <div class="wcard-name">Chore<span class="wa">Royale</span></div>
+            <div class="wcard-desc">Spin the wheel. Get your chore. Prove it. Daily XP, streaks, parent verification, fireworks.</div>
+            <div class="wcard-arrow">View project</div>
+          </div>
         </div>
       </a>
 
       <!-- J8N.IX -->
-      <a class="work-card r" href="https://3shamrocksstudio.github.io/j8nix/"
-         target="_blank" rel="noopener"
-         style="--card-clr:rgba(168,85,247,.1);--card-accent:#c084fc">
-        <div class="wc-top">
-          <div class="wc-cat">AI · Studio Tool · PoC</div>
-          <div class="wc-status live">Live</div>
-        </div>
-        <div class="wc-body">
-          <div class="wc-name">J8<span class="wc-em">N.IX</span></div>
-          <div class="wc-desc">Jenix. AI command center and studio operating system. Portfolio piece demonstrating 3SDS AI-augmented workflow.</div>
-          <div class="wc-arrow">View project</div>
+      <a class="wcard" href="https://3shamrocksstudio.github.io/j8nix/"
+         target="_blank" rel="noopener" style="--wcard-accent:#c084fc">
+        <div class="wcard-img"
+             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-j8nix.jpg')"></div>
+        <div class="wcard-ov"></div>
+        <div class="wcard-inner">
+          <div class="wcard-top">
+            <div class="wcard-cat">AI Command Center · PoC</div>
+            <div class="wcard-status s-live">Live</div>
+          </div>
+          <div class="wcard-body">
+            <div class="wcard-name">J8<span class="wa">N.IX</span></div>
+            <div class="wcard-desc">Jenix. AI operating layer for the studio. Portfolio piece demonstrating 3SDS AI-augmented design workflow.</div>
+            <div class="wcard-arrow">View project</div>
+          </div>
         </div>
       </a>
 
+      <!-- FAIRENT — no specific product image, use concept -->
+      <a class="wcard" href="https://3shamrocksstudio.github.io/fairent/"
+         target="_blank" rel="noopener" style="--wcard-accent:#2dd4bf">
+        <div class="wcard-img"
+             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/concept/hogen.jpg')"></div>
+        <div class="wcard-ov"></div>
+        <div class="wcard-inner">
+          <div class="wcard-top">
+            <div class="wcard-cat">Civic · PropTech · Israel</div>
+            <div class="wcard-status s-live">Live</div>
+          </div>
+          <div class="wcard-body">
+            <div class="wcard-name">Fair<span class="wa">ent</span></div>
+            <div class="wcard-desc">Renters share their rent anonymously. Real data, real comparisons. Power back to the people paying it.</div>
+            <div class="wcard-arrow">View project</div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- CLIENT WORK -->
+<section class="clients-section r" id="client-work">
+  <div class="w">
+    <div class="sec-head">
+      <div class="sec-lbl">Client Work</div>
+      <div class="sec-count">02</div>
+    </div>
+    <div class="client-grid">
+      <!-- AposHealth -->
+      <div class="client-card">
+        <div class="client-card-inner">
+          <div class="cc-eyebrow">HealthTech · Mobile App · UX/UI</div>
+          <div class="cc-name">AposHealth</div>
+          <div class="cc-desc">AI-powered chronic pain management platform. Full UX/UI design system, mobile app, patient portal.</div>
+          <div class="cc-screens">
+            <div class="cc-screen">
+              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/aposhealth/screen-1.png"
+                   alt="" loading="lazy">
+            </div>
+            <div class="cc-screen">
+              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/aposhealth/screen-2.png"
+                   alt="" loading="lazy">
+            </div>
+            <div class="cc-screen">
+              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/aposhealth/screen-3.png"
+                   alt="" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Vibrant -->
+      <div class="client-card">
+        <div class="client-card-inner">
+          <div class="cc-eyebrow">GastroHealth · Mobile App · UX/UI</div>
+          <div class="cc-name">Vibrant Gastro</div>
+          <div class="cc-desc">Digital health platform for gastroenterology. Patient-facing app, clinical dashboard, design system.</div>
+          <div class="cc-screens">
+            <div class="cc-screen">
+              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/vibrant/screen-1.png"
+                   alt="" loading="lazy">
+            </div>
+            <div class="cc-screen">
+              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/vibrant/screen-2.png"
+                   alt="" loading="lazy">
+            </div>
+            <div class="cc-screen">
+              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/vibrant/screen-3.png"
+                   alt="" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Client logos -->
+    <div class="logos-row">
+      <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/clients/eldan.png"
+           alt="Eldan" loading="lazy">
+      <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/clients/winplant.png"
+           alt="WinPlant" loading="lazy">
+      <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/clients/guberman.png"
+           alt="Guberman" loading="lazy">
     </div>
   </div>
 </section>
@@ -600,27 +818,27 @@ footer{
 <!-- CAPABILITIES -->
 <section class="caps r" id="capabilities">
   <div class="w">
-    <div class="section-head">
-      <div class="section-label">Capabilities</div>
+    <div class="sec-head">
+      <div class="sec-lbl">Capabilities</div>
     </div>
     <div class="caps-grid">
       <div class="cap">
         <div class="cap-n">01</div>
         <div class="cap-title">Product Design</div>
-        <ul class="cap-items">
+        <ul class="cap-list">
           <li>UX Research & Strategy</li>
           <li>UI Design & Prototyping</li>
-          <li>Design Systems</li>
-          <li>Mobile (iOS · Android · PWA)</li>
-          <li>Web Applications</li>
-          <li>HealthTech · Civic Tech · Consumer</li>
+          <li>Design Systems Architecture</li>
+          <li>Mobile — iOS · Android · PWA</li>
+          <li>Web Applications & SaaS</li>
+          <li>HealthTech · Civic · Consumer</li>
         </ul>
       </div>
       <div class="cap">
         <div class="cap-n">02</div>
         <div class="cap-title">Brand & Identity</div>
-        <ul class="cap-items">
-          <li>Brand Strategy</li>
+        <ul class="cap-list">
+          <li>Brand Strategy & Positioning</li>
           <li>Visual Identity Systems</li>
           <li>Logo & Wordmark Design</li>
           <li>Brand Language & Voice</li>
@@ -631,25 +849,25 @@ footer{
       <div class="cap">
         <div class="cap-n">03</div>
         <div class="cap-title">AI-Augmented Workflow</div>
-        <ul class="cap-items">
-          <li>6-week scope in 10 days</li>
+        <ul class="cap-list">
+          <li>6-week scope delivered in 10 days</li>
           <li>AI-assisted design systems</li>
           <li>Rapid prototyping with Claude</li>
           <li>AI content & copy generation</li>
-          <li>Automated QA & testing</li>
+          <li>Automated testing & QA</li>
           <li>Build-and-ship sprints</li>
         </ul>
       </div>
       <div class="cap">
         <div class="cap-n">04</div>
         <div class="cap-title">Engineering</div>
-        <ul class="cap-items">
-          <li>React Native · Expo</li>
-          <li>Web (HTML · CSS · JS · PWA)</li>
+        <ul class="cap-list">
+          <li>React Native · Expo · EAS</li>
+          <li>Web — HTML · CSS · JS · PWA</li>
           <li>Firebase · Supabase · Cloudflare</li>
           <li>Twilio · OpenAI · Anthropic APIs</li>
-          <li>GitHub CI/CD · EAS Build</li>
-          <li>From design to live deployment</li>
+          <li>GitHub CI/CD · App Store · Play</li>
+          <li>Design to deployed product</li>
         </ul>
       </div>
     </div>
@@ -659,28 +877,34 @@ footer{
 <!-- ABOUT -->
 <section class="about r" id="about">
   <div class="w">
+    <div class="sec-head">
+      <div class="sec-lbl">The Studio</div>
+    </div>
     <div class="about-grid">
-      <div class="about-label">Studio</div>
-      <div class="about-body">
+      <div class="about-photo">
+        <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/dave-studio.jpg"
+             alt="Dave Markovich — 3Shamrocks Studio" loading="lazy">
+      </div>
+      <div class="about-text">
         <h2 class="about-h">
           Dave Markovich.<br>
-          <em>20+ years.</em><br>
+          <span class="hl">20+ years.</span><br>
           Still building.
         </h2>
         <p class="about-p">
           3Shamrocks Studio is a boutique design studio founded in 2007. We design 
           and build products that solve real problems for real people — safety networks, 
-          wellness apps, civic tools, games that actually change behavior.
+          wellness apps, civic tools, games that change behavior.
         </p>
         <p class="about-p">
-          In the last two years, we've rebuilt the entire workflow around AI. 
-          What used to take six weeks takes ten days. What used to require a 
-          full agency takes one studio with the right tools. We don't do templated. 
-          We don't do average.
+          In the last two years we rebuilt the entire workflow around AI. 
+          What used to take six weeks takes ten days. What used to require a full 
+          agency now takes one studio with the right tools. We don't do templated. 
+          We don't do average. We don't stop until it ships.
         </p>
-        <div class="about-stat-row">
+        <div class="about-stats">
           <div class="astat">
-            <div class="astat-n">20<span style="color:var(--green)">+</span></div>
+            <div class="astat-n">20<span class="ga">+</span></div>
             <div class="astat-l">Years experience</div>
           </div>
           <div class="astat">
@@ -692,8 +916,8 @@ footer{
             <div class="astat-l">Founded</div>
           </div>
           <div class="astat">
-            <div class="astat-n">IL<span style="color:var(--green)">·</span>US</div>
-            <div class="astat-l">Based</div>
+            <div class="astat-n">IL<span class="ga">·</span>US</div>
+            <div class="astat-l">Tel Aviv · New York</div>
           </div>
         </div>
       </div>
@@ -701,22 +925,26 @@ footer{
   </div>
 </section>
 
-<!-- CONTACT -->
-<section class="contact r" id="contact">
-  <div class="w">
-    <h2 class="contact-h">
+<!-- CTA BAND -->
+<section class="cta-band r" id="contact">
+  <div class="cta-band-bg"></div>
+  <div class="cta-band-ov"></div>
+  <div class="w cta-inner">
+    <h2 class="cta-h">
       Let's work<br>
-      <em>together.</em>
+      <span class="hl">together.</span>
     </h2>
-    <div class="contact-row">
-      <a class="contact-email" href="mailto:markodave@gmail.com">
-        markodave@gmail.com
+    <p class="cta-sub">
+      Whether you're launching a product, rebuilding a brand, or need 
+      a design system that actually scales — we deliver.
+    </p>
+    <div class="cta-row">
+      <a class="btn-primary" href="mailto:markodave@gmail.com">
+        ✉ markodave@gmail.com
       </a>
-      <a class="contact-li" href="https://www.linkedin.com/in/davemarkovich" target="_blank" rel="noopener">
+      <a class="btn-ghost" href="https://www.linkedin.com/in/davemarkovich"
+         target="_blank" rel="noopener">
         LinkedIn ↗
-      </a>
-      <a class="contact-li" href="https://www.shomer-app.co.il/" target="_blank" rel="noopener">
-        SH✡MER ↗
       </a>
     </div>
   </div>
@@ -726,27 +954,33 @@ footer{
 <footer>
   <div class="w">
     <div class="footer-in">
-      <div class="footer-mark"><span>☘</span> 3SHAMROCKS STUDIO</div>
+      <div class="footer-logo">
+        <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png"
+             alt="3Shamrocks Studio">
+      </div>
       <div class="footer-links">
         <a href="#works">Works</a>
         <a href="#capabilities">Capabilities</a>
         <a href="#about">Studio</a>
+        <a href="https://www.shomer-app.co.il/">SH✡MER</a>
         <a href="mailto:markodave@gmail.com">Contact</a>
       </div>
-      <div class="footer-copy">© 2026 3Shamrocks Studio LLC</div>
+      <div class="footer-copy">© 2026 3Shamrocks Studio LLC · All rights reserved</div>
     </div>
   </div>
 </footer>
 
 <script>
-// Scroll reveals
 (function(){
   var io = new IntersectionObserver(function(e){
     e.forEach(function(x){
-      if(x.isIntersecting){ x.target.classList.add('on'); io.unobserve(x.target); }
+      if(x.isIntersecting){
+        x.target.classList.add('on');
+        io.unobserve(x.target);
+      }
     });
-  }, {threshold:.06, rootMargin:'0px 0px -32px 0px'});
-  document.querySelectorAll('.r').forEach(function(el){ io.observe(el); });
+  },{threshold:.06,rootMargin:'0px 0px -24px 0px'});
+  document.querySelectorAll('.r,.r2').forEach(function(el){io.observe(el)});
 })();
 </script>
 </body>
