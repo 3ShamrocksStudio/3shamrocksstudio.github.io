@@ -50,13 +50,13 @@ a{color:inherit;text-decoration:none}
   100%{transform:scale(1) rotate(0deg);opacity:1}
 }
 .leaf{
-  transform-origin:50px 65px;
   opacity:0;
   transition:opacity 0.3s;
 }
 .leaf.on{opacity:1}
 #shamrock-svg.bloomed .leaf{
   animation:leafUnfurl 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  transform-box:fill-box;
 }
 #shamrock-svg.bloomed .leaf:nth-child(1){animation-delay:0s}
 #shamrock-svg.bloomed .leaf:nth-child(2){animation-delay:0.1s}
@@ -339,31 +339,30 @@ body.site-open{cursor:auto;overflow:hidden}
 
 <!-- SHAMROCK -->
 <div id="shamrock-wrap">
-  <svg id="shamrock-svg" viewBox="0 0 100 128" xmlns="http://www.w3.org/2000/svg">
-    <!-- Three distinct shamrock leaves -->
-    <!-- Leaf 1: top center -->
-    <g class="leaf">
-      <ellipse cx="50" cy="30" rx="19" ry="22" fill="#2dbb66" opacity=".92"/>
-      <ellipse cx="50" cy="30" rx="10" ry="12" fill="#1daa5a" opacity=".5"/>
+  <svg id="shamrock-svg" viewBox="0 0 100 122" xmlns="http://www.w3.org/2000/svg">
+    <!-- Leaf 1: top center — animates scale from its own center (50,33) -->
+    <g class="leaf" style="transform-origin:50px 33px">
+      <circle cx="50" cy="33" r="22" fill="#2dbb66" opacity=".92"/>
+      <circle cx="50" cy="33" r="11" fill="#3dda78" opacity=".35"/>
     </g>
-    <!-- Leaf 2: bottom left -->
-    <g class="leaf">
-      <ellipse cx="27" cy="66" rx="19" ry="22" fill="#2dbb66" opacity=".92" transform="rotate(-30 27 66)"/>
-      <ellipse cx="27" cy="66" rx="10" ry="12" fill="#1daa5a" opacity=".5" transform="rotate(-30 27 66)"/>
+    <!-- Leaf 2: bottom-left — animates scale from its own center (30,62) -->
+    <g class="leaf" style="transform-origin:30px 62px">
+      <circle cx="30" cy="62" r="22" fill="#2dbb66" opacity=".92"/>
+      <circle cx="30" cy="62" r="11" fill="#3dda78" opacity=".35"/>
     </g>
-    <!-- Leaf 3: bottom right -->
-    <g class="leaf">
-      <ellipse cx="73" cy="66" rx="19" ry="22" fill="#2dbb66" opacity=".92" transform="rotate(30 73 66)"/>
-      <ellipse cx="73" cy="66" rx="10" ry="12" fill="#1daa5a" opacity=".5" transform="rotate(30 73 66)"/>
+    <!-- Leaf 3: bottom-right — animates scale from its own center (70,62) -->
+    <g class="leaf" style="transform-origin:70px 62px">
+      <circle cx="70" cy="62" r="22" fill="#2dbb66" opacity=".92"/>
+      <circle cx="70" cy="62" r="11" fill="#3dda78" opacity=".35"/>
     </g>
-    <!-- Center junction -->
-    <circle cx="50" cy="55" r="9" fill="#2dbb66" opacity=".95"/>
-    <!-- Vein lines -->
-    <line x1="50" y1="30" x2="50" y2="55" stroke="#18895b" stroke-width="1.5" opacity=".6"/>
-    <line x1="27" y1="66" x2="50" y2="55" stroke="#18895b" stroke-width="1.5" opacity=".6"/>
-    <line x1="73" y1="66" x2="50" y2="55" stroke="#18895b" stroke-width="1.5" opacity=".6"/>
+    <!-- Center connector fills the gap between the three leaves -->
+    <circle cx="50" cy="52" r="14" fill="#2dbb66" opacity=".88"/>
     <!-- Stem -->
-    <path d="M50 62 Q49 82 46 102 Q50 96 54 102 Q51 82 50 62" fill="#18895b" opacity=".9"/>
+    <path d="M50 58 Q49 80 46 100 Q50 94 54 100 Q51 80 50 58" fill="#18895b" opacity=".92"/>
+    <!-- Subtle vein -->
+    <line x1="50" y1="33" x2="50" y2="52" stroke="#18895b" stroke-width="1.5" opacity=".45"/>
+    <line x1="30" y1="62" x2="50" y2="52" stroke="#18895b" stroke-width="1.5" opacity=".45"/>
+    <line x1="70" y1="62" x2="50" y2="52" stroke="#18895b" stroke-width="1.5" opacity=".45"/>
   </svg>
 </div>
 
