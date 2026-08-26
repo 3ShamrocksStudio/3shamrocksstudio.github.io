@@ -125,8 +125,8 @@ img{display:block;max-width:100%;height:auto}
   padding-top:56px;
   min-height:100svh;
   display:flex;flex-direction:column;
-  justify-content:flex-end;
-  background:var(--n0);
+  justify-content:center;
+  background:#0d111a;
 }
 .hero-bg{display:none}
 .hero-inner{
@@ -136,14 +136,14 @@ img{display:block;max-width:100%;height:auto}
   display:inline-flex;align-items:center;gap:8px;
   font-family:var(--fd);font-size:11px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase;
-  color:var(--g4);margin-bottom:clamp(20px,3vw,32px);
+  color:#5fd57f;margin-bottom:clamp(20px,3vw,32px);
 }
 .hero-tag::before{content:'';width:20px;height:1.5px;background:var(--g5);flex-shrink:0}
 .hero-h1{
   font-family:var(--fd);font-weight:700;
   font-size:clamp(52px,11vw,164px);
   line-height:.9;letter-spacing:-.04em;
-  color:var(--tx0);
+  color:#EFEFEF;
   margin-bottom:clamp(24px,3vw,40px);
 }
 .hero-h1 .hl{
@@ -153,9 +153,9 @@ img{display:block;max-width:100%;height:auto}
 }
 .hero-foot{
   display:grid;grid-template-columns:1fr 1fr;
-  gap:1px;background:var(--bd);
-  border-top:1px solid var(--bd);
-  position:relative;z-index:1;
+  gap:1px;background:rgba(240,244,255,.07);
+  border-top:1px solid rgba(240,244,255,.07);
+  margin-top:auto;
 }
 .hf-cell{
   background:var(--n1);
@@ -549,7 +549,7 @@ footer{
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
-  <div class="w hero-inner r">
+  <div class="w hero-inner">
     <div class="hero-tag">Boutique Design Studio · Tel Aviv · Est. 2007</div>
     <h1 class="hero-h1">
       We design<br>
@@ -966,7 +966,7 @@ footer{
         io.unobserve(x.target);
       }
     });
-  },{threshold:.06,rootMargin:'0px 0px -24px 0px'});
+  },{threshold:.01,rootMargin:'0px 0px 0px 0px'});
   document.querySelectorAll('.r,.r2').forEach(function(el){io.observe(el)});
 })();
 </script>
