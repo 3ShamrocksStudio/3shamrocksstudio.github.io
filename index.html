@@ -1,974 +1,965 @@
 <!DOCTYPE html>
-<html lang="en" data-brand="3s" data-mode="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0d111a">
-<title>3Shamrocks Studio — AI-Augmented Design</title>
-<meta name="description" content="Boutique design studio. Products, brands, digital experiences. 20+ years. AI-augmented. Dave Markovich.">
-<meta property="og:title" content="3Shamrocks Studio — AI-Augmented Design">
-<meta property="og:description" content="We design products that ship. Brands that hold. Experiences that move.">
-<meta property="og:image" content="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/hero.jpg">
-<link rel="icon" href="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png">
+<meta name="theme-color" content="#020B06">
+<title>3Shamrocks Studio</title>
+<meta name="description" content="AI-Augmented Design Studio. Products, brands, digital experiences. 20+ years. Tel Aviv.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ── 3SDS BRAND TOKENS ─────────────────────────────────── */
-:root {
-  /* Shamrock green ramp */
-  --g3: #8ae87f;  /* lightest — light mode text, dark mode highlights */
-  --g4: #5fd57f;
-  --g5: #3dbb66;  /* primary accent */
-  --g6: #18895b;  /* deep green — dark mode primary */
-  --g7: #136a49;
-
-  /* Authority navy */
-  --n0: #0d111a;  /* bg dark */
-  --n1: #111827;
-  --n2: #161e2e;
-  --n3: #1a2435;
-  --n4: #1e2d42;
-  --n5: #253452;
-  --n6: #2d3f64;
-
-  /* Text dark mode */
-  --tx0: #f0f4ff;
-  --tx1: rgba(240,244,255,.65);
-  --tx2: rgba(240,244,255,.35);
-  --tx3: rgba(240,244,255,.18);
-
-  /* Borders */
-  --bd: rgba(240,244,255,.09);
-  --bd2: rgba(240,244,255,.15);
-
-  /* Brand gradient */
-  --g-grad: linear-gradient(120deg,#8ae87f 0%,#3dbb66 55%,#18895b 100%);
-
-  /* Type */
-  --fd: 'Space Grotesk',system-ui,sans-serif;
-  --fb: 'Inter',system-ui,sans-serif;
-
-  /* Radius — 14px editorial */
-  --r-sm: 7px;
-  --r-md: 14px;
-  --r-lg: 21px;
-  --r-xl: 28px;
-  --r-pill: 999px;
-
-  /* Assets base */
-  --assets: https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main;
-}
-
-/* ── RESET ──────────────────────────────────────────────── */
+/* ── RESET ─────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{overflow-x:hidden;scroll-behavior:smooth}
-body{
-  background:var(--n0);
-  color:var(--tx0);
-  font-family:var(--fb);
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  overflow-x:hidden;
-  line-height:1.6;
-}
+html,body{height:100%;overflow:hidden;background:#020B06}
+body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;cursor:none}
 a{color:inherit;text-decoration:none}
-img{display:block;max-width:100%;height:auto}
 
-/* ── LAYOUT ─────────────────────────────────────────────── */
-.w{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,64px)}
+/* ── FOREST STAGE ─────────────────────────────────────── */
+#forest-canvas{
+  position:fixed;inset:0;z-index:1;
+  display:block;width:100%;height:100%;
+}
 
-/* ── NAV ─────────────────────────────────────────────────── */
-.nav{
-  position:fixed;inset-inline:0;top:0;z-index:100;
-  height:56px;
-  background:rgba(13,17,26,.88);
-  backdrop-filter:blur(24px) saturate(160%);
-  -webkit-backdrop-filter:blur(24px) saturate(160%);
-  border-bottom:1px solid var(--bd);
+/* ── SHAMROCK OVERLAY ─────────────────────────────────── */
+#shamrock-wrap{
+  position:fixed;inset:0;z-index:2;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
 }
-.nav-in{
-  display:flex;align-items:center;justify-content:space-between;
-  height:100%;
+#shamrock-svg{
+  width:clamp(100px,18vw,180px);
+  height:clamp(120px,22vw,216px);
+  filter:drop-shadow(0 0 8px rgba(45,187,102,0));
+  transition:filter 0.4s ease;
+  transform:scale(0.8);
+  opacity:0;
 }
-.nav-logo{
-  display:flex;align-items:center;gap:10px;
-  flex-shrink:0;
+#shamrock-svg.nearby{
+  filter:drop-shadow(0 0 20px rgba(45,187,102,0.5));
+  opacity:1;
 }
-.nav-logo img{
-  height:28px;width:auto;
-  filter:brightness(0) invert(1);
-  opacity:.92;
+#shamrock-svg.bloomed{
+  filter:drop-shadow(0 0 40px rgba(138,232,127,0.9));
+  animation:shamrockBloom 1.2s cubic-bezier(0.34,1.56,0.64,1) forwards;
 }
-.nav-links{
-  display:flex;align-items:center;
-  gap:clamp(16px,3vw,36px);
+@keyframes shamrockBloom{
+  0%{transform:scale(0.8) rotate(-5deg);opacity:0.8}
+  50%{transform:scale(1.15) rotate(3deg)}
+  100%{transform:scale(1) rotate(0deg);opacity:1}
 }
-.nav-links a{
-  font-family:var(--fd);font-size:13px;font-weight:500;
-  letter-spacing:.02em;color:var(--tx1);
-  transition:color .18s;
+.leaf{
+  transform-origin:50px 65px;
+  opacity:0;
+  transition:opacity 0.3s;
 }
-.nav-links a:hover{color:var(--tx0)}
-.nav-cta{
-  display:flex;align-items:center;height:36px;padding:0 18px;
-  background:var(--g-grad);
-  color:#fff;font-family:var(--fd);font-size:12px;font-weight:700;
-  letter-spacing:.06em;border-radius:var(--r-pill);
-  box-shadow:0 4px 20px -4px rgba(61,187,102,.45);
-  transition:filter .18s,transform .15s;white-space:nowrap;
+.leaf.on{opacity:1}
+#shamrock-svg.bloomed .leaf{
+  animation:leafUnfurl 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards;
 }
-.nav-cta:hover{filter:brightness(1.1);transform:translateY(-1px)}
+#shamrock-svg.bloomed .leaf:nth-child(1){animation-delay:0s}
+#shamrock-svg.bloomed .leaf:nth-child(2){animation-delay:0.1s}
+#shamrock-svg.bloomed .leaf:nth-child(3){animation-delay:0.2s}
+@keyframes leafUnfurl{
+  0%{transform:scale(0) rotate(-30deg);opacity:0}
+  70%{transform:scale(1.1) rotate(3deg)}
+  100%{transform:scale(1) rotate(0deg);opacity:1}
+}
 
-/* ── HERO ─────────────────────────────────────────────────── */
-.hero{
-  padding-top:56px;
-  min-height:100svh;
-  display:flex;flex-direction:column;
-  justify-content:center;
+/* ── CURSOR ─────────────────────────────────────────────── */
+#cursor{
+  position:fixed;z-index:10;pointer-events:none;
+  width:12px;height:12px;border-radius:50%;
+  background:rgba(255,245,200,0.9);
+  box-shadow:0 0 8px 3px rgba(255,240,160,0.5),0 0 24px 8px rgba(255,240,160,0.15);
+  transform:translate(-50%,-50%);
+  transition:transform 0.08s ease,width 0.2s,height 0.2s;
+}
+#cursor.large{width:20px;height:20px}
+
+/* ── HINT TEXT ──────────────────────────────────────────── */
+#hint{
+  position:fixed;bottom:clamp(24px,4vw,48px);
+  left:50%;transform:translateX(-50%);
+  z-index:3;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:11px;font-weight:400;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(138,232,127,0);
+  transition:color 1.2s ease;
+  white-space:nowrap;
+  pointer-events:none;
+}
+#hint.show{color:rgba(138,232,127,0.45)}
+
+/* ── STUDIO NAMEPLATE ───────────────────────────────────── */
+#nameplate{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,calc(-50% - clamp(80px,14vw,140px)));
+  z-index:3;text-align:center;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.8s ease 0.3s;
+}
+#nameplate.show{opacity:1}
+#nameplate .logo-img{
+  width:clamp(48px,8vw,80px);height:auto;
+  filter:brightness(0) invert(1) opacity(0.9);
+  margin:0 auto clamp(12px,2vw,20px);
+  display:block;
+}
+#nameplate h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:clamp(20px,3.5vw,42px);
+  letter-spacing:-.02em;
+  color:#efefef;
+  line-height:1;
+}
+#nameplate h1 span{color:#3dbb66}
+#nameplate .sub{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(9px,1.2vw,12px);
+  font-weight:400;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(240,255,240,0.4);
+  margin-top:clamp(8px,1.2vw,14px);
+}
+
+/* ── ENTER BUTTON ───────────────────────────────────────── */
+#enter-btn{
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,calc(-50% + clamp(80px,14vw,140px)));
+  z-index:4;cursor:pointer;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.6s ease 0.8s;
+  border:none;background:none;
+}
+#enter-btn.show{opacity:1;pointer-events:all}
+#enter-btn .inner{
+  display:flex;align-items:center;gap:12px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(11px,1.4vw,14px);font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:#3dbb66;
+  padding:14px 32px;
+  border:1px solid rgba(61,187,102,0.4);
+  transition:border-color .25s,background .25s,color .25s;
+}
+#enter-btn:hover .inner{
+  border-color:rgba(61,187,102,0.9);
+  background:rgba(61,187,102,0.08);
+  color:#8ae87f;
+}
+#enter-btn .inner::after{content:'→';font-size:1.2em}
+
+/* ── SITE CONTENT ──────────────────────────────────────── */
+#site{
+  position:fixed;inset:0;z-index:5;
   background:#0d111a;
+  overflow-y:auto;overflow-x:hidden;
+  opacity:0;pointer-events:none;
+  transform:translateY(40px);
+  transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.2,0,0,1);
 }
-.hero-bg{display:none}
-.hero-inner{
-  padding:clamp(48px,8vw,96px) 0 0;
+#site.show{opacity:1;pointer-events:all;transform:translateY(0)}
+body.site-open{cursor:auto;overflow:hidden}
+
+/* ── SITE INNER STYLES ─────────────────────────────────── */
+.s-nav{
+  position:sticky;top:0;z-index:10;
+  height:56px;background:rgba(13,17,26,.9);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;
 }
-.hero-tag{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:var(--fd);font-size:11px;font-weight:500;
+.s-nav .w{display:flex;align-items:center;justify-content:space-between;width:100%}
+.s-logo{
+  display:flex;align-items:center;gap:10px;
+}
+.s-logo img{height:26px;width:auto;filter:brightness(0) invert(1);opacity:.9}
+.s-links{display:flex;align-items:center;gap:clamp(16px,3vw,36px)}
+.s-links a{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:13px;font-weight:500;letter-spacing:.02em;
+  color:rgba(239,239,239,.55);transition:color .18s;
+}
+.s-links a:hover{color:#efefef}
+.s-cta{
+  height:36px;padding:0 18px;
+  background:linear-gradient(120deg,#8ae87f,#3dbb66 55%,#18895b);
+  color:#fff;font-family:'Space Grotesk',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.06em;
+  border-radius:999px;display:flex;align-items:center;
+  box-shadow:0 4px 20px -4px rgba(61,187,102,.4);
+  transition:filter .18s;
+}
+.s-cta:hover{filter:brightness(1.1)}
+
+/* Site layout utils */
+.w{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+.s-line{border:none;border-top:1px solid rgba(255,255,255,.07);margin:0}
+.s-section{padding:clamp(40px,6vw,80px) 0;border-top:1px solid rgba(255,255,255,.07)}
+.s-label{
+  font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:500;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(239,239,239,.28);margin-bottom:clamp(20px,3vw,36px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:clamp(12px,1.8vw,20px);border-bottom:1px solid rgba(255,255,255,.07);
+}
+.s-h2{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:clamp(32px,5.5vw,72px);line-height:.95;
+  letter-spacing:-.03em;color:#efefef;
+  margin-bottom:clamp(12px,2vw,24px);
+}
+.s-h2 .g{
+  background:linear-gradient(120deg,#8ae87f,#3dbb66);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+/* Hero section inside site */
+.s-hero{
+  padding:clamp(56px,8vw,100px) 0 0;
+  min-height:60vh;display:flex;flex-direction:column;justify-content:flex-end;
+}
+.s-hero-content{padding-bottom:clamp(32px,4vw,56px)}
+.s-eyebrow{
+  font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase;
-  color:#5fd57f;margin-bottom:clamp(20px,3vw,32px);
+  color:#3dbb66;margin-bottom:clamp(16px,2.5vw,28px);
+  display:flex;align-items:center;gap:10px;
 }
-.hero-tag::before{content:'';width:20px;height:1.5px;background:var(--g5);flex-shrink:0}
-.hero-h1{
-  font-family:var(--fd);font-weight:700;
-  font-size:clamp(52px,11vw,164px);
-  line-height:.9;letter-spacing:-.04em;
-  color:#EFEFEF;
+.s-eyebrow::before{content:'';width:18px;height:1.5px;background:#3dbb66;flex-shrink:0}
+.s-hero-h1{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:clamp(48px,9vw,128px);
+  line-height:.9;letter-spacing:-.04em;color:#efefef;
   margin-bottom:clamp(24px,3vw,40px);
 }
-.hero-h1 .hl{
-  background:var(--g-grad);
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-.hero-foot{
+.s-hero-foot{
   display:grid;grid-template-columns:1fr 1fr;
-  gap:1px;background:rgba(240,244,255,.07);
-  border-top:1px solid rgba(240,244,255,.07);
-  margin-top:auto;
+  gap:1px;background:rgba(255,255,255,.07);
+  border-top:1px solid rgba(255,255,255,.07);
 }
-.hf-cell{
-  background:var(--n1);
-  padding:clamp(18px,2.5vw,28px) clamp(20px,3vw,40px);
-}
-.hf-lbl{
-  font-family:var(--fd);font-size:10px;font-weight:500;
-  letter-spacing:.18em;text-transform:uppercase;
-  color:var(--tx2);margin-bottom:6px;
-}
-.hf-val{
-  font-size:clamp(13px,1.8vw,15px);font-weight:300;
-  color:var(--tx1);line-height:1.6;
-}
+.s-hf{background:#0d111a;padding:clamp(16px,2.2vw,28px) clamp(20px,3vw,40px)}
+.s-hf-lbl{font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(239,239,239,.3);margin-bottom:6px}
+.s-hf-val{font-size:clamp(13px,1.6vw,15px);font-weight:300;color:rgba(239,239,239,.6);line-height:1.6}
 
-/* ── MARQUEE ─────────────────────────────────────────────── */
-.mq{
-  overflow:hidden;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
-  padding:13px 0;background:var(--n1);
-}
-.mq-track{
-  display:flex;gap:48px;
-  animation:mq-scroll 32s linear infinite;
-  width:max-content;
-}
-.mq-track:hover{animation-play-state:paused}
-@keyframes mq-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.mq-item{
-  display:flex;align-items:center;gap:10px;
-  font-family:var(--fd);font-size:11px;font-weight:500;
-  letter-spacing:.12em;text-transform:uppercase;
-  color:var(--tx2);white-space:nowrap;flex-shrink:0;
-}
-.mq-dot{width:5px;height:5px;border-radius:50%;background:var(--g5);flex-shrink:0}
+/* Marquee */
+.s-mq{overflow:hidden;padding:13px 0;background:#111827;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07)}
+.s-mq-track{display:flex;gap:48px;animation:mq 32s linear infinite;width:max-content}
+.s-mq-track:hover{animation-play-state:paused}
+@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.s-mq-item{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(239,239,239,.25);white-space:nowrap;flex-shrink:0}
+.s-mq-dot{width:4px;height:4px;border-radius:50%;background:#3dbb66;flex-shrink:0}
 
-/* ── SECTION HEADER ─────────────────────────────────────── */
-.sec-head{
-  display:flex;align-items:baseline;justify-content:space-between;
-  padding-bottom:clamp(16px,2vw,24px);
-  border-bottom:1px solid var(--bd);
-  margin-bottom:clamp(16px,2vw,24px);
-}
-.sec-lbl{
-  font-family:var(--fd);font-size:10px;font-weight:500;
-  letter-spacing:.2em;text-transform:uppercase;color:var(--tx2);
-}
-.sec-count{font-family:var(--fd);font-size:10px;color:var(--tx2)}
-
-/* ── WORKS ───────────────────────────────────────────────── */
-.works{padding:clamp(24px,3vw,48px) 0}
-.works-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);
-  gap:1px;background:var(--bd);
-}
-.wcard{
-  position:relative;overflow:hidden;
-  min-height:clamp(280px,30vw,420px);
-  display:flex;flex-direction:column;
+/* Works grid */
+.s-works-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.07)}
+.s-wcard{
+  background:#111827;position:relative;overflow:hidden;
+  min-height:clamp(260px,28vw,380px);display:flex;flex-direction:column;
   text-decoration:none;color:inherit;
-  background:var(--n1);
 }
-/* Product image as background */
-.wcard-img{
-  position:absolute;inset:0;
-  background-size:cover;background-position:center top;
-  opacity:.55;
-  transition:opacity .4s var(--ease,ease);
-}
-.wcard:hover .wcard-img{opacity:.72}
-.wcard-ov{
-  position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(13,17,26,.05) 0%,rgba(13,17,26,.45) 55%,rgba(13,17,26,.92) 100%);
-}
-.wcard-inner{
-  position:relative;z-index:1;
-  display:flex;flex-direction:column;height:100%;
-  padding:clamp(20px,2.5vw,32px);
-}
-.wcard-top{
-  display:flex;align-items:flex-start;justify-content:space-between;
-  margin-bottom:auto;
-}
-.wcard-cat{
-  font-family:var(--fd);font-size:10px;font-weight:500;
-  letter-spacing:.14em;text-transform:uppercase;
-  color:var(--tx2);padding:4px 10px;
-  border:1px solid var(--bd);border-radius:var(--r-sm);
-  background:rgba(13,17,26,.5);
-}
-.wcard-status{
-  font-family:var(--fd);font-size:10px;font-weight:600;
-  letter-spacing:.1em;text-transform:uppercase;
-  padding:4px 10px;border-radius:var(--r-sm);
-}
-.s-live{color:var(--g4);border:1px solid rgba(95,213,127,.25);background:rgba(61,187,102,.08)}
+.s-wcard-img{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.55;transition:opacity .4s}
+.s-wcard:hover .s-wcard-img{opacity:.75}
+.s-wcard-ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,17,26,.05) 0%,rgba(13,17,26,.5) 55%,rgba(13,17,26,.92) 100%)}
+.s-wcard-in{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;padding:clamp(20px,2.5vw,32px)}
+.s-wcard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:auto}
+.s-wcard-cat{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(239,239,239,.35);padding:4px 10px;border:1px solid rgba(255,255,255,.09);background:rgba(13,17,26,.5)}
+.s-wcard-status{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px}
+.s-live{color:#3dbb66;border:1px solid rgba(61,187,102,.25);background:rgba(61,187,102,.07)}
 .s-beta{color:#fbbf24;border:1px solid rgba(251,191,36,.2);background:rgba(251,191,36,.06)}
-.wcard-body{margin-top:clamp(28px,4vw,48px)}
-.wcard-name{
-  font-family:var(--fd);font-weight:700;
-  font-size:clamp(24px,3.5vw,44px);
-  line-height:.95;letter-spacing:-.025em;
-  color:var(--tx0);margin-bottom:10px;
-}
-.wcard-name .wa{color:var(--wcard-accent,var(--g4))}
-.wcard-desc{
-  font-size:clamp(13px,1.5vw,14px);font-weight:300;
-  color:var(--tx1);line-height:1.65;max-width:38ch;
-  margin-bottom:18px;
-}
-.wcard-arrow{
-  display:inline-flex;align-items:center;gap:6px;
-  font-family:var(--fd);font-size:11px;font-weight:500;
-  letter-spacing:.1em;text-transform:uppercase;
-  color:var(--wcard-accent,var(--g4));
-  opacity:.6;transform:translateX(0);
-  transition:opacity .25s,transform .25s;
-}
-.wcard-arrow::after{content:'→'}
-.wcard:hover .wcard-arrow{opacity:1}
-.wcard.featured{grid-column:1/-1;min-height:clamp(300px,32vw,440px)}
+.s-wcard-body{margin-top:clamp(24px,3vw,40px)}
+.s-wcard-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(22px,3vw,40px);line-height:.95;letter-spacing:-.025em;color:#efefef;margin-bottom:10px}
+.s-wcard-name .wa{color:var(--wa,#3dbb66)}
+.s-wcard-desc{font-size:clamp(12px,1.4vw,14px);font-weight:300;color:rgba(239,239,239,.6);line-height:1.65;max-width:38ch;margin-bottom:14px}
+.s-wcard-arrow{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--wa,#3dbb66);opacity:.6}
+.s-wcard.featured{grid-column:1/-1;min-height:clamp(300px,32vw,440px)}
 
-/* ── CLIENT WORK ─────────────────────────────────────────── */
-.clients-section{
-  border-top:1px solid var(--bd);
-  padding:clamp(40px,5vw,72px) 0;
-}
-.client-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);
-  gap:1px;background:var(--bd);
-}
-.client-card{
-  background:var(--n1);overflow:hidden;
-}
-.client-card-inner{padding:clamp(24px,3vw,40px)}
-.cc-eyebrow{
-  font-family:var(--fd);font-size:10px;font-weight:500;
-  letter-spacing:.18em;text-transform:uppercase;
-  color:var(--tx2);margin-bottom:12px;
-}
-.cc-name{
-  font-family:var(--fd);font-weight:700;
-  font-size:clamp(20px,3vw,32px);letter-spacing:-.02em;
-  color:var(--tx0);margin-bottom:8px;
-}
-.cc-desc{
-  font-size:13px;font-weight:300;color:var(--tx1);
-  line-height:1.65;max-width:40ch;margin-bottom:24px;
-}
-.cc-screens{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
-}
-.cc-screen{
-  border-radius:var(--r-sm);overflow:hidden;
-  aspect-ratio:9/16;background:var(--n2);
-}
-.cc-screen img{
-  width:100%;height:100%;object-fit:cover;object-position:top;
-  opacity:.85;transition:opacity .3s;
-}
-.client-card:hover .cc-screen img{opacity:1}
+/* Capabilities */
+.s-caps-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.07)}
+.s-cap{background:#111827;padding:clamp(24px,3vw,40px)}
+.s-cap-n{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,239,239,.28);margin-bottom:12px}
+.s-cap-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(18px,2.5vw,28px);letter-spacing:-.02em;color:#efefef;line-height:1.1;margin-bottom:18px}
+.s-cap-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+.s-cap-list li{font-size:14px;font-weight:300;color:rgba(239,239,239,.6);padding-inline-start:14px;position:relative;line-height:1.5}
+.s-cap-list li::before{content:'';position:absolute;inset-inline-start:0;top:10px;width:6px;height:1.5px;background:#3dbb66}
 
-.logos-row{
-  display:flex;gap:clamp(24px,4vw,48px);align-items:center;
-  flex-wrap:wrap;padding:clamp(24px,3vw,40px);
-  border-top:1px solid var(--bd);
-}
-.logos-row img{
-  height:22px;width:auto;
-  filter:brightness(0) invert(1);
-  opacity:.3;transition:opacity .2s;
-}
-.logos-row img:hover{opacity:.65}
+/* About */
+.s-about-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,72px);align-items:start}
+.s-about-photo{border-radius:4px;overflow:hidden;aspect-ratio:4/5;background:#1a2435}
+.s-about-photo img{width:100%;height:100%;object-fit:cover;object-position:top;filter:grayscale(.1)}
+.s-about-p{font-size:clamp(14px,1.7vw,16px);font-weight:300;color:rgba(239,239,239,.6);line-height:1.75;max-width:48ch;margin-bottom:18px}
+.s-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.07);margin-top:28px}
+.s-stat{background:#111827;padding:18px}
+.s-stat-n{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(24px,3.5vw,38px);letter-spacing:-.03em;color:#efefef;line-height:1}
+.s-stat-n .g{color:#3dbb66}
+.s-stat-l{font-size:11px;color:rgba(239,239,239,.35);margin-top:4px}
 
-/* ── CAPABILITIES ─────────────────────────────────────────── */
-.caps{
-  border-top:1px solid var(--bd);
-  padding:clamp(40px,5vw,72px) 0;
-}
-.caps-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);
-  gap:1px;background:var(--bd);
-}
-.cap{
-  background:var(--n1);
-  padding:clamp(24px,3vw,40px);
-}
-.cap-n{
-  font-family:var(--fd);font-size:10px;font-weight:500;
-  letter-spacing:.18em;text-transform:uppercase;
-  color:var(--tx2);margin-bottom:14px;
-}
-.cap-title{
-  font-family:var(--fd);font-weight:700;
-  font-size:clamp(20px,2.5vw,30px);letter-spacing:-.02em;
-  color:var(--tx0);line-height:1.1;margin-bottom:20px;
-}
-.cap-list{list-style:none;display:flex;flex-direction:column;gap:10px}
-.cap-list li{
-  font-size:14px;font-weight:300;color:var(--tx1);
-  padding-inline-start:16px;position:relative;line-height:1.5;
-}
-.cap-list li::before{
-  content:'';position:absolute;inset-inline-start:0;top:10px;
-  width:7px;height:1.5px;
-  background:var(--g5);
-}
+/* Contact */
+.s-contact-h{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(40px,8vw,100px);line-height:.92;letter-spacing:-.04em;color:#efefef;margin-bottom:clamp(24px,3.5vw,40px)}
+.s-contact-h .g{background:linear-gradient(120deg,#8ae87f,#3dbb66);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.s-contact-row{display:flex;flex-wrap:wrap;gap:clamp(16px,3vw,32px);align-items:center}
+.s-email{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:clamp(15px,2.2vw,22px);color:#efefef;border-bottom:1px solid rgba(239,239,239,.2);padding-bottom:2px;transition:color .18s,border-color .18s}
+.s-email:hover{color:#3dbb66;border-color:rgba(61,187,102,.4)}
+.s-li{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:rgba(239,239,239,.35);transition:color .18s}
+.s-li:hover{color:#efefef}
 
-/* ── ABOUT ───────────────────────────────────────────────── */
-.about{
-  border-top:1px solid var(--bd);
-  padding:clamp(40px,5vw,72px) 0;
-}
-.about-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:clamp(32px,5vw,72px);
-  align-items:start;
-}
-.about-photo{
-  border-radius:var(--r-lg);overflow:hidden;
-  aspect-ratio:4/5;
-  background:var(--n2);
-}
-.about-photo img{
-  width:100%;height:100%;
-  object-fit:cover;object-position:top center;
-  filter:grayscale(.15);
-  transition:filter .4s;
-}
-.about-photo:hover img{filter:grayscale(0)}
-.about-text{}
-.about-h{
-  font-family:var(--fd);font-weight:700;
-  font-size:clamp(28px,4vw,52px);letter-spacing:-.03em;
-  line-height:.95;color:var(--tx0);margin-bottom:24px;
-}
-.about-h .hl{
-  background:var(--g-grad);
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-.about-p{
-  font-size:clamp(14px,1.8vw,16px);font-weight:300;
-  color:var(--tx1);line-height:1.75;max-width:48ch;
-  margin-bottom:20px;
-}
-.about-stats{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
-  background:var(--bd);border:1px solid var(--bd);
-  border-radius:var(--r-md);overflow:hidden;
-  margin-top:32px;
-}
-.astat{
-  background:var(--n2);padding:20px;
-}
-.astat-n{
-  font-family:var(--fd);font-weight:700;
-  font-size:clamp(26px,3.5vw,38px);letter-spacing:-.03em;
-  color:var(--tx0);line-height:1;
-}
-.astat-n .ga{color:var(--g5)}
-.astat-l{
-  font-size:11px;font-weight:400;
-  color:var(--tx2);margin-top:4px;letter-spacing:.04em;
-}
+/* Footer */
+.s-footer{border-top:1px solid rgba(255,255,255,.07);padding:clamp(20px,3vw,36px) 0;background:#0d111a}
+.s-footer-in{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.s-footer-logo img{height:20px;filter:brightness(0) invert(1);opacity:.3}
+.s-footer-links{display:flex;gap:clamp(16px,3vw,28px);flex-wrap:wrap}
+.s-footer-links a{font-size:11px;font-weight:300;color:rgba(239,239,239,.28);transition:color .15s}
+.s-footer-links a:hover{color:#efefef}
+.s-footer-copy{font-size:11px;font-weight:300;color:rgba(239,239,239,.2)}
 
-/* ── CTA BAND ────────────────────────────────────────────── */
-.cta-band{
-  position:relative;overflow:hidden;
-  min-height:clamp(280px,32vw,420px);
-  display:flex;align-items:center;
-  border-top:1px solid var(--bd);
-}
-.cta-band-bg{
-  position:absolute;inset:0;
-  background:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/band-cta.jpg')
-    center/cover no-repeat;
-  opacity:.18;
-}
-.cta-band-ov{
-  position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(13,17,26,.95) 40%,rgba(13,17,26,.6) 100%);
-}
-.cta-inner{
-  position:relative;z-index:1;
-}
-.cta-h{
-  font-family:var(--fd);font-weight:700;
-  font-size:clamp(36px,7vw,88px);
-  line-height:.92;letter-spacing:-.04em;
-  color:var(--tx0);margin-bottom:20px;
-}
-.cta-h .hl{
-  background:var(--g-grad);
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-.cta-sub{
-  font-size:clamp(14px,2vw,17px);font-weight:300;
-  color:var(--tx1);max-width:40ch;line-height:1.7;
-  margin-bottom:36px;
-}
-.cta-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
-.btn-primary{
-  display:inline-flex;align-items:center;gap:10px;
-  height:52px;padding:0 28px;
-  background:var(--g-grad);color:#fff;
-  font-family:var(--fd);font-size:14px;font-weight:700;
-  letter-spacing:.04em;border-radius:var(--r-pill);
-  box-shadow:0 12px 40px -8px rgba(61,187,102,.5);
-  transition:filter .18s,transform .15s;
-}
-.btn-primary:hover{filter:brightness(1.08);transform:translateY(-2px)}
-.btn-ghost{
-  display:inline-flex;align-items:center;
-  height:52px;padding:0 4px;
-  font-family:var(--fd);font-size:13px;font-weight:500;
-  color:var(--g4);
-  border-bottom:1px solid rgba(95,213,127,.3);
-  transition:color .18s,border-color .18s;
-}
-.btn-ghost:hover{color:var(--g3);border-color:var(--g3)}
-
-/* ── FOOTER ──────────────────────────────────────────────── */
-footer{
-  border-top:1px solid var(--bd);
-  padding:clamp(24px,3vw,36px) 0;
-  background:var(--n0);
-}
-.footer-in{
-  display:flex;flex-wrap:wrap;gap:16px;
-  align-items:center;justify-content:space-between;
-}
-.footer-logo img{
-  height:22px;width:auto;
-  filter:brightness(0) invert(1);
-  opacity:.35;
-}
-.footer-links{display:flex;gap:clamp(16px,3vw,28px);flex-wrap:wrap}
-.footer-links a{
-  font-family:var(--fd);font-size:12px;font-weight:400;
-  color:var(--tx2);letter-spacing:.04em;
-  transition:color .15s;
-}
-.footer-links a:hover{color:var(--tx0)}
-.footer-copy{font-size:11px;font-weight:300;color:var(--tx3)}
-
-/* ── REVEAL ──────────────────────────────────────────────── */
-.r{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
-.r.on{opacity:1;transform:none}
-.r2{opacity:0;transform:translateY(18px);transition:opacity .65s .12s ease,transform .65s .12s ease}
-.r2.on{opacity:1;transform:none}
-
-/* ── MOBILE ──────────────────────────────────────────────── */
+/* Mobile */
 @media(max-width:768px){
-  .works-grid{grid-template-columns:1fr}
-  .wcard.featured{grid-column:auto}
-  .about-grid{grid-template-columns:1fr}
-  .about-photo{display:none}
-  .client-grid{grid-template-columns:1fr}
-  .caps-grid{grid-template-columns:1fr}
-  .hero-foot{grid-template-columns:1fr}
-  .about-stats{grid-template-columns:1fr 1fr}
-  .cc-screens{grid-template-columns:repeat(2,1fr)}
-  .wcard-arrow{opacity:1;transform:none}
+  .s-works-grid,.s-caps-grid,.s-about-grid,.s-hero-foot,.s-stats{grid-template-columns:1fr}
+  .s-wcard.featured{grid-column:auto}
+  .s-about-photo{display:none}
+  .s-links a:not(.s-cta){display:none}
 }
-@media(max-width:480px){
-  .nav-links a:not(.nav-cta){display:none}
-  .cc-screens{grid-template-columns:1fr 1fr}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;transition-duration:.001ms!important}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
-  <div class="w nav-in">
-    <a href="/" class="nav-logo">
-      <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png"
-           alt="3Shamrocks Studio" loading="eager">
-    </a>
-    <div class="nav-links">
-      <a href="#works">Works</a>
-      <a href="#capabilities">Capabilities</a>
-      <a href="#about">Studio</a>
-      <a href="mailto:markodave@gmail.com" class="nav-cta">Let's talk</a>
-    </div>
-  </div>
-</nav>
+<!-- CURSOR -->
+<div id="cursor"></div>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="w hero-inner">
-    <div class="hero-tag">Boutique Design Studio · Tel Aviv · Est. 2007</div>
-    <h1 class="hero-h1">
-      We design<br>
-      products<br>
-      <span class="hl">that ship.</span>
-    </h1>
-  </div>
-  <div class="hero-foot">
-    <div class="hf-cell">
-      <div class="hf-lbl">What we do</div>
-      <div class="hf-val">UX/UI · Product Design · Design Systems · Branding · AI-Augmented Workflow</div>
-    </div>
-    <div class="hf-cell">
-      <div class="hf-lbl">Who we work with</div>
-      <div class="hf-val">Startups building category-defining products. Teams who need to ship — not just prototype.</div>
-    </div>
-  </div>
-</section>
+<!-- FOREST CANVAS -->
+<canvas id="forest-canvas"></canvas>
 
-<!-- MARQUEE -->
-<div class="mq" aria-hidden="true">
-  <div class="mq-track">
-    <div class="mq-item"><span class="mq-dot"></span>SH✡MER · Safety Network</div>
-    <div class="mq-item"><span class="mq-dot"></span>Trashure-Hunters · Eco-Game</div>
-    <div class="mq-item"><span class="mq-dot"></span>MILO · Child Wellness</div>
-    <div class="mq-item"><span class="mq-dot"></span>Ezra · Senior AI</div>
-    <div class="mq-item"><span class="mq-dot"></span>Chore Royale · Family Game</div>
-    <div class="mq-item"><span class="mq-dot"></span>J8N.IX · AI Command Center</div>
-    <div class="mq-item"><span class="mq-dot"></span>Fairent · Civic Tech</div>
-    <div class="mq-item"><span class="mq-dot"></span>20+ Years · AI-Augmented</div>
-    <div class="mq-item"><span class="mq-dot"></span>SH✡MER · Safety Network</div>
-    <div class="mq-item"><span class="mq-dot"></span>Trashure-Hunters · Eco-Game</div>
-    <div class="mq-item"><span class="mq-dot"></span>MILO · Child Wellness</div>
-    <div class="mq-item"><span class="mq-dot"></span>Ezra · Senior AI</div>
-    <div class="mq-item"><span class="mq-dot"></span>Chore Royale · Family Game</div>
-    <div class="mq-item"><span class="mq-dot"></span>J8N.IX · AI Command Center</div>
-    <div class="mq-item"><span class="mq-dot"></span>Fairent · Civic Tech</div>
-    <div class="mq-item"><span class="mq-dot"></span>20+ Years · AI-Augmented</div>
-  </div>
+<!-- SHAMROCK -->
+<div id="shamrock-wrap">
+  <svg id="shamrock-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+    <!-- Leaf 1: top center -->
+    <g class="leaf" style="transform-origin:50px 65px">
+      <circle cx="50" cy="38" r="18" fill="#2dbb66" opacity=".9"/>
+      <circle cx="38" cy="50" r="10" fill="#2dbb66" opacity=".6"/>
+      <circle cx="62" cy="50" r="10" fill="#2dbb66" opacity=".6"/>
+    </g>
+    <!-- Leaf 2: bottom left -->
+    <g class="leaf" style="transform-origin:50px 65px;transform:rotate(120deg)">
+      <circle cx="50" cy="38" r="18" fill="#2dbb66" opacity=".9"/>
+      <circle cx="38" cy="50" r="10" fill="#2dbb66" opacity=".6"/>
+      <circle cx="62" cy="50" r="10" fill="#2dbb66" opacity=".6"/>
+    </g>
+    <!-- Leaf 3: bottom right -->
+    <g class="leaf" style="transform-origin:50px 65px;transform:rotate(240deg)">
+      <circle cx="50" cy="38" r="18" fill="#2dbb66" opacity=".9"/>
+      <circle cx="38" cy="50" r="10" fill="#2dbb66" opacity=".6"/>
+      <circle cx="62" cy="50" r="10" fill="#2dbb66" opacity=".6"/>
+    </g>
+    <!-- Stem -->
+    <path d="M50 65 Q48 85 46 100 Q50 95 54 100 Q52 85 50 65" fill="#1a8044" opacity=".9"/>
+  </svg>
 </div>
 
-<!-- WORKS -->
-<section class="works" id="works">
-  <div class="w">
-    <div class="sec-head">
-      <div class="sec-lbl">Selected Works</div>
-      <div class="sec-count">07</div>
+<!-- NAMEPLATE (appears after bloom) -->
+<div id="nameplate">
+  <img class="logo-img" src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png" alt="" loading="eager">
+  <h1>3<span>Shamrocks</span>.Studio</h1>
+  <div class="sub">AI-Augmented Design · Tel Aviv · Est. 2007</div>
+</div>
+
+<!-- ENTER BUTTON -->
+<button id="enter-btn" aria-label="Enter the studio">
+  <div class="inner">Enter the studio</div>
+</button>
+
+<!-- HINT -->
+<div id="hint">Move your cursor to explore</div>
+
+<!-- SITE CONTENT -->
+<div id="site" role="main">
+  <nav class="s-nav">
+    <div class="w s-nav">
+      <div class="w" style="max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,56px);display:flex;align-items:center;justify-content:space-between;width:100%;height:56px">
+        <div class="s-logo">
+          <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png" alt="3Shamrocks Studio">
+        </div>
+        <div class="s-links">
+          <a href="#works">Works</a>
+          <a href="#capabilities">Capabilities</a>
+          <a href="#about">Studio</a>
+          <a href="mailto:markodave@gmail.com" class="s-cta">Let's talk</a>
+        </div>
+      </div>
     </div>
-    <div class="works-grid">
+  </nav>
 
-      <!-- SH✡MER — featured -->
-      <a class="wcard featured" href="https://www.shomer-app.co.il/" target="_blank" rel="noopener"
-         style="--wcard-accent:#faac22">
-        <div class="wcard-img"
-             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-shomergency.jpg');opacity:.7;background-position:center center"></div>
-        <div class="wcard-ov"></div>
-        <div class="wcard-inner">
-          <div class="wcard-top">
-            <div class="wcard-cat">Safety · Social Network · Israel</div>
-            <div class="wcard-status s-live">Live</div>
-          </div>
-          <div class="wcard-body">
-            <div class="wcard-name">SH<span class="wa">✡</span>MER</div>
-            <div class="wcard-desc">Israel's first community safety network. One-tap SOS, live incident map, guardian circles. Free to citizens — always.</div>
-            <div class="wcard-arrow">View project</div>
-          </div>
-        </div>
-      </a>
+  <!-- Hero -->
+  <section class="s-hero">
+    <div class="w s-hero-content">
+      <div class="s-eyebrow">Boutique design studio · Tel Aviv · Est. 2007</div>
+      <h1 class="s-hero-h1">We design<br>products<br><span style="background:linear-gradient(120deg,#8ae87f,#3dbb66);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">that ship.</span></h1>
+    </div>
+    <div class="s-hero-foot">
+      <div class="s-hf">
+        <div class="s-hf-lbl">What we do</div>
+        <div class="s-hf-val">UX/UI · Product Design · Design Systems · Branding · AI-Augmented Workflow</div>
+      </div>
+      <div class="s-hf">
+        <div class="s-hf-lbl">Who we work with</div>
+        <div class="s-hf-val">Startups building category-defining products. Teams who need to ship, not just prototype.</div>
+      </div>
+    </div>
+  </section>
 
-      <!-- TH MVP -->
-      <a class="wcard" href="https://3shamrocksstudio.github.io/th-mvp-web/marketing.html"
-         target="_blank" rel="noopener" style="--wcard-accent:#4ade80">
-        <div class="wcard-img"
-             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-trashure.jpg')"></div>
-        <div class="wcard-ov"></div>
-        <div class="wcard-inner">
-          <div class="wcard-top">
-            <div class="wcard-cat">Game · Civic · Global</div>
-            <div class="wcard-status s-beta">Beta</div>
-          </div>
-          <div class="wcard-body">
-            <div class="wcard-name">Trashure<span class="wa">Hunters</span></div>
-            <div class="wcard-desc">Real-world eco-game. Clean trash. Spawn Elemonsters. AI-verified cleanup. Real impact.</div>
-            <div class="wcard-arrow">View project</div>
-          </div>
-        </div>
-      </a>
-
-      <!-- MILO -->
-      <a class="wcard" href="https://3shamrocksstudio.github.io/milo-app/"
-         target="_blank" rel="noopener" style="--wcard-accent:#fb923c">
-        <div class="wcard-img"
-             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/products/milo-pet.png');background-size:contain;background-repeat:no-repeat;background-color:#1a1008;opacity:.8"></div>
-        <div class="wcard-ov"></div>
-        <div class="wcard-inner">
-          <div class="wcard-top">
-            <div class="wcard-cat">Child Wellness · App</div>
-            <div class="wcard-status s-live">Live</div>
-          </div>
-          <div class="wcard-body">
-            <div class="wcard-name"><span class="wa">MILO</span></div>
-            <div class="wcard-desc">My Inner Little One. Companion app growing with a child's emotional journey through 5 stages.</div>
-            <div class="wcard-arrow">View project</div>
-          </div>
-        </div>
-      </a>
-
-      <!-- EZRA -->
-      <a class="wcard" href="https://3shamrocksstudio.github.io/senior-helper/"
-         target="_blank" rel="noopener" style="--wcard-accent:#60a5fa">
-        <div class="wcard-img"
-             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-ezra.jpg')"></div>
-        <div class="wcard-ov"></div>
-        <div class="wcard-inner">
-          <div class="wcard-top">
-            <div class="wcard-cat">Elder Care · AI · Hebrew</div>
-            <div class="wcard-status s-live">Live</div>
-          </div>
-          <div class="wcard-body">
-            <div class="wcard-name"><span class="wa">Ezra</span></div>
-            <div class="wcard-desc">Voice-first Hebrew AI assistant for seniors. Sends messages, books appointments, protects from scams.</div>
-            <div class="wcard-arrow">View project</div>
-          </div>
-        </div>
-      </a>
-
-      <!-- CHORE ROYALE -->
-      <a class="wcard" href="https://3shamrocksstudio.github.io/chore-wars/"
-         target="_blank" rel="noopener" style="--wcard-accent:#a78bfa">
-        <div class="wcard-img"
-             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-chorewars.jpg')"></div>
-        <div class="wcard-ov"></div>
-        <div class="wcard-inner">
-          <div class="wcard-top">
-            <div class="wcard-cat">Family · Game · Daily Retention</div>
-            <div class="wcard-status s-live">Live</div>
-          </div>
-          <div class="wcard-body">
-            <div class="wcard-name">Chore<span class="wa">Royale</span></div>
-            <div class="wcard-desc">Spin the wheel. Get your chore. Prove it. Daily XP, streaks, parent verification, fireworks.</div>
-            <div class="wcard-arrow">View project</div>
-          </div>
-        </div>
-      </a>
-
-      <!-- J8N.IX -->
-      <a class="wcard" href="https://3shamrocksstudio.github.io/j8nix/"
-         target="_blank" rel="noopener" style="--wcard-accent:#c084fc">
-        <div class="wcard-img"
-             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-j8nix.jpg')"></div>
-        <div class="wcard-ov"></div>
-        <div class="wcard-inner">
-          <div class="wcard-top">
-            <div class="wcard-cat">AI Command Center · PoC</div>
-            <div class="wcard-status s-live">Live</div>
-          </div>
-          <div class="wcard-body">
-            <div class="wcard-name">J8<span class="wa">N.IX</span></div>
-            <div class="wcard-desc">Jenix. AI operating layer for the studio. Portfolio piece demonstrating 3SDS AI-augmented design workflow.</div>
-            <div class="wcard-arrow">View project</div>
-          </div>
-        </div>
-      </a>
-
-      <!-- FAIRENT — no specific product image, use concept -->
-      <a class="wcard" href="https://3shamrocksstudio.github.io/fairent/"
-         target="_blank" rel="noopener" style="--wcard-accent:#2dd4bf">
-        <div class="wcard-img"
-             style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/concept/hogen.jpg')"></div>
-        <div class="wcard-ov"></div>
-        <div class="wcard-inner">
-          <div class="wcard-top">
-            <div class="wcard-cat">Civic · PropTech · Israel</div>
-            <div class="wcard-status s-live">Live</div>
-          </div>
-          <div class="wcard-body">
-            <div class="wcard-name">Fair<span class="wa">ent</span></div>
-            <div class="wcard-desc">Renters share their rent anonymously. Real data, real comparisons. Power back to the people paying it.</div>
-            <div class="wcard-arrow">View project</div>
-          </div>
-        </div>
-      </a>
-
+  <!-- Marquee -->
+  <div class="s-mq" aria-hidden="true">
+    <div class="s-mq-track">
+      <div class="s-mq-item"><span class="s-mq-dot"></span>SH✡MER · Safety Network</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>Trashure-Hunters · Eco-Game</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>MILO · Child Wellness</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>Ezra · Senior AI</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>Chore Royale · Family Game</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>J8N.IX · AI Command</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>Fairent · Civic Tech</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>20+ Years · AI-Augmented</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>SH✡MER · Safety Network</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>Trashure-Hunters · Eco-Game</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>MILO · Child Wellness</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>Ezra · Senior AI</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>Chore Royale · Family Game</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>J8N.IX · AI Command</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>Fairent · Civic Tech</div>
+      <div class="s-mq-item"><span class="s-mq-dot"></span>20+ Years · AI-Augmented</div>
     </div>
   </div>
-</section>
 
-<!-- CLIENT WORK -->
-<section class="clients-section r" id="client-work">
-  <div class="w">
-    <div class="sec-head">
-      <div class="sec-lbl">Client Work</div>
-      <div class="sec-count">02</div>
-    </div>
-    <div class="client-grid">
-      <!-- AposHealth -->
-      <div class="client-card">
-        <div class="client-card-inner">
-          <div class="cc-eyebrow">HealthTech · Mobile App · UX/UI</div>
-          <div class="cc-name">AposHealth</div>
-          <div class="cc-desc">AI-powered chronic pain management platform. Full UX/UI design system, mobile app, patient portal.</div>
-          <div class="cc-screens">
-            <div class="cc-screen">
-              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/aposhealth/screen-1.png"
-                   alt="" loading="lazy">
-            </div>
-            <div class="cc-screen">
-              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/aposhealth/screen-2.png"
-                   alt="" loading="lazy">
-            </div>
-            <div class="cc-screen">
-              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/aposhealth/screen-3.png"
-                   alt="" loading="lazy">
+  <!-- Works -->
+  <section class="s-section" id="works">
+    <div class="w">
+      <div class="s-label"><span>Selected Works</span><span>07</span></div>
+      <div class="s-works-grid">
+        <a class="s-wcard featured" href="https://www.shomer-app.co.il/" target="_blank" rel="noopener" style="--wa:#faac22">
+          <div class="s-wcard-img" style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-shomergency.jpg');opacity:.65;background-position:center"></div>
+          <div class="s-wcard-ov"></div>
+          <div class="s-wcard-in">
+            <div class="s-wcard-top"><div class="s-wcard-cat">Safety · Social Network · Israel</div><div class="s-wcard-status s-live">Live</div></div>
+            <div class="s-wcard-body">
+              <div class="s-wcard-name">SH<span class="wa">✡</span>MER</div>
+              <div class="s-wcard-desc">Israel's first community safety network. One-tap SOS, live incident map, guardian circles. Free to citizens — always.</div>
+              <div class="s-wcard-arrow">View project →</div>
             </div>
           </div>
-        </div>
-      </div>
-      <!-- Vibrant -->
-      <div class="client-card">
-        <div class="client-card-inner">
-          <div class="cc-eyebrow">GastroHealth · Mobile App · UX/UI</div>
-          <div class="cc-name">Vibrant Gastro</div>
-          <div class="cc-desc">Digital health platform for gastroenterology. Patient-facing app, clinical dashboard, design system.</div>
-          <div class="cc-screens">
-            <div class="cc-screen">
-              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/vibrant/screen-1.png"
-                   alt="" loading="lazy">
-            </div>
-            <div class="cc-screen">
-              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/vibrant/screen-2.png"
-                   alt="" loading="lazy">
-            </div>
-            <div class="cc-screen">
-              <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/vibrant/screen-3.png"
-                   alt="" loading="lazy">
+        </a>
+        <a class="s-wcard" href="https://3shamrocksstudio.github.io/th-mvp-web/marketing.html" target="_blank" rel="noopener" style="--wa:#4ade80">
+          <div class="s-wcard-img" style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-trashure.jpg')"></div>
+          <div class="s-wcard-ov"></div>
+          <div class="s-wcard-in">
+            <div class="s-wcard-top"><div class="s-wcard-cat">Game · Civic · Global</div><div class="s-wcard-status s-beta">Beta</div></div>
+            <div class="s-wcard-body">
+              <div class="s-wcard-name">Trashure<span class="wa">Hunters</span></div>
+              <div class="s-wcard-desc">Real-world eco-game. Clean trash. Spawn Elemonsters. AI-verified cleanup.</div>
+              <div class="s-wcard-arrow">View project →</div>
             </div>
           </div>
-        </div>
+        </a>
+        <a class="s-wcard" href="https://3shamrocksstudio.github.io/milo-app/" target="_blank" rel="noopener" style="--wa:#fb923c">
+          <div class="s-wcard-img" style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/products/milo-pet.png');background-size:contain;background-repeat:no-repeat;background-color:#1a1008;opacity:.8"></div>
+          <div class="s-wcard-ov"></div>
+          <div class="s-wcard-in">
+            <div class="s-wcard-top"><div class="s-wcard-cat">Child Wellness · App</div><div class="s-wcard-status s-live">Live</div></div>
+            <div class="s-wcard-body">
+              <div class="s-wcard-name"><span class="wa">MILO</span></div>
+              <div class="s-wcard-desc">My Inner Little One. Companion app growing with a child's emotional journey through 5 stages.</div>
+              <div class="s-wcard-arrow">View project →</div>
+            </div>
+          </div>
+        </a>
+        <a class="s-wcard" href="https://3shamrocksstudio.github.io/senior-helper/" target="_blank" rel="noopener" style="--wa:#60a5fa">
+          <div class="s-wcard-img" style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-ezra.jpg')"></div>
+          <div class="s-wcard-ov"></div>
+          <div class="s-wcard-in">
+            <div class="s-wcard-top"><div class="s-wcard-cat">Elder Care · AI · Hebrew</div><div class="s-wcard-status s-live">Live</div></div>
+            <div class="s-wcard-body">
+              <div class="s-wcard-name"><span class="wa">Ezra</span></div>
+              <div class="s-wcard-desc">Voice-first Hebrew AI assistant for seniors. Sends messages, books appointments, protects from scams.</div>
+              <div class="s-wcard-arrow">View project →</div>
+            </div>
+          </div>
+        </a>
+        <a class="s-wcard" href="https://3shamrocksstudio.github.io/chore-wars/" target="_blank" rel="noopener" style="--wa:#a78bfa">
+          <div class="s-wcard-img" style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-chorewars.jpg')"></div>
+          <div class="s-wcard-ov"></div>
+          <div class="s-wcard-in">
+            <div class="s-wcard-top"><div class="s-wcard-cat">Family · Game · Daily</div><div class="s-wcard-status s-live">Live</div></div>
+            <div class="s-wcard-body">
+              <div class="s-wcard-name">Chore<span class="wa">Royale</span></div>
+              <div class="s-wcard-desc">Spin the wheel. Get your chore. Prove it. Daily XP, streaks, parent verification.</div>
+              <div class="s-wcard-arrow">View project →</div>
+            </div>
+          </div>
+        </a>
+        <a class="s-wcard" href="https://3shamrocksstudio.github.io/j8nix/" target="_blank" rel="noopener" style="--wa:#c084fc">
+          <div class="s-wcard-img" style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/art/p-j8nix.jpg')"></div>
+          <div class="s-wcard-ov"></div>
+          <div class="s-wcard-in">
+            <div class="s-wcard-top"><div class="s-wcard-cat">AI Command Center · PoC</div><div class="s-wcard-status s-live">Live</div></div>
+            <div class="s-wcard-body">
+              <div class="s-wcard-name">J8<span class="wa">N.IX</span></div>
+              <div class="s-wcard-desc">Jenix. AI operating layer and studio command center. Portfolio piece for 3SDS workflow.</div>
+              <div class="s-wcard-arrow">View project →</div>
+            </div>
+          </div>
+        </a>
+        <a class="s-wcard" href="https://3shamrocksstudio.github.io/fairent/" target="_blank" rel="noopener" style="--wa:#2dd4bf">
+          <div class="s-wcard-img" style="background-image:url('https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/concept/hogen.jpg')"></div>
+          <div class="s-wcard-ov"></div>
+          <div class="s-wcard-in">
+            <div class="s-wcard-top"><div class="s-wcard-cat">Civic · PropTech · Israel</div><div class="s-wcard-status s-live">Live</div></div>
+            <div class="s-wcard-body">
+              <div class="s-wcard-name">Fair<span class="wa">ent</span></div>
+              <div class="s-wcard-desc">Renters share their rent anonymously. Real data, real comparisons. Power back to the people paying it.</div>
+              <div class="s-wcard-arrow">View project →</div>
+            </div>
+          </div>
+        </a>
       </div>
     </div>
-    <!-- Client logos -->
-    <div class="logos-row">
-      <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/clients/eldan.png"
-           alt="Eldan" loading="lazy">
-      <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/clients/winplant.png"
-           alt="WinPlant" loading="lazy">
-      <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/work/clients/guberman.png"
-           alt="Guberman" loading="lazy">
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- CAPABILITIES -->
-<section class="caps r" id="capabilities">
-  <div class="w">
-    <div class="sec-head">
-      <div class="sec-lbl">Capabilities</div>
-    </div>
-    <div class="caps-grid">
-      <div class="cap">
-        <div class="cap-n">01</div>
-        <div class="cap-title">Product Design</div>
-        <ul class="cap-list">
-          <li>UX Research & Strategy</li>
-          <li>UI Design & Prototyping</li>
-          <li>Design Systems Architecture</li>
-          <li>Mobile — iOS · Android · PWA</li>
-          <li>Web Applications & SaaS</li>
-          <li>HealthTech · Civic · Consumer</li>
-        </ul>
-      </div>
-      <div class="cap">
-        <div class="cap-n">02</div>
-        <div class="cap-title">Brand & Identity</div>
-        <ul class="cap-list">
-          <li>Brand Strategy & Positioning</li>
-          <li>Visual Identity Systems</li>
-          <li>Logo & Wordmark Design</li>
-          <li>Brand Language & Voice</li>
-          <li>Launch & Go-To-Market Assets</li>
-          <li>Product Branding</li>
-        </ul>
-      </div>
-      <div class="cap">
-        <div class="cap-n">03</div>
-        <div class="cap-title">AI-Augmented Workflow</div>
-        <ul class="cap-list">
-          <li>6-week scope delivered in 10 days</li>
-          <li>AI-assisted design systems</li>
-          <li>Rapid prototyping with Claude</li>
-          <li>AI content & copy generation</li>
-          <li>Automated testing & QA</li>
-          <li>Build-and-ship sprints</li>
-        </ul>
-      </div>
-      <div class="cap">
-        <div class="cap-n">04</div>
-        <div class="cap-title">Engineering</div>
-        <ul class="cap-list">
-          <li>React Native · Expo · EAS</li>
-          <li>Web — HTML · CSS · JS · PWA</li>
-          <li>Firebase · Supabase · Cloudflare</li>
-          <li>Twilio · OpenAI · Anthropic APIs</li>
-          <li>GitHub CI/CD · App Store · Play</li>
-          <li>Design to deployed product</li>
-        </ul>
+  <!-- Capabilities -->
+  <section class="s-section" id="capabilities">
+    <div class="w">
+      <div class="s-label"><span>Capabilities</span></div>
+      <div class="s-caps-grid">
+        <div class="s-cap"><div class="s-cap-n">01</div><div class="s-cap-title">Product Design</div><ul class="s-cap-list"><li>UX Research & Strategy</li><li>UI Design & Prototyping</li><li>Design Systems</li><li>Mobile — iOS · Android · PWA</li><li>Web Applications & SaaS</li><li>HealthTech · Civic · Consumer</li></ul></div>
+        <div class="s-cap"><div class="s-cap-n">02</div><div class="s-cap-title">Brand & Identity</div><ul class="s-cap-list"><li>Brand Strategy & Positioning</li><li>Visual Identity Systems</li><li>Logo & Wordmark Design</li><li>Brand Language & Voice</li><li>Launch & GTM Assets</li><li>Product Branding</li></ul></div>
+        <div class="s-cap"><div class="s-cap-n">03</div><div class="s-cap-title">AI-Augmented Workflow</div><ul class="s-cap-list"><li>6-week scope in 10 days</li><li>AI-assisted design systems</li><li>Rapid prototyping with Claude</li><li>AI content generation</li><li>Automated QA & testing</li><li>Build-and-ship sprints</li></ul></div>
+        <div class="s-cap"><div class="s-cap-n">04</div><div class="s-cap-title">Engineering</div><ul class="s-cap-list"><li>React Native · Expo · EAS</li><li>Web — HTML · CSS · JS · PWA</li><li>Firebase · Supabase · Cloudflare</li><li>Twilio · OpenAI · Anthropic APIs</li><li>GitHub CI/CD · App Store</li><li>Design to deployed product</li></ul></div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ABOUT -->
-<section class="about r" id="about">
-  <div class="w">
-    <div class="sec-head">
-      <div class="sec-lbl">The Studio</div>
-    </div>
-    <div class="about-grid">
-      <div class="about-photo">
-        <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/dave-studio.jpg"
-             alt="Dave Markovich — 3Shamrocks Studio" loading="lazy">
-      </div>
-      <div class="about-text">
-        <h2 class="about-h">
-          Dave Markovich.<br>
-          <span class="hl">20+ years.</span><br>
-          Still building.
-        </h2>
-        <p class="about-p">
-          3Shamrocks Studio is a boutique design studio founded in 2007. We design 
-          and build products that solve real problems for real people — safety networks, 
-          wellness apps, civic tools, games that change behavior.
-        </p>
-        <p class="about-p">
-          In the last two years we rebuilt the entire workflow around AI. 
-          What used to take six weeks takes ten days. What used to require a full 
-          agency now takes one studio with the right tools. We don't do templated. 
-          We don't do average. We don't stop until it ships.
-        </p>
-        <div class="about-stats">
-          <div class="astat">
-            <div class="astat-n">20<span class="ga">+</span></div>
-            <div class="astat-l">Years experience</div>
-          </div>
-          <div class="astat">
-            <div class="astat-n">7</div>
-            <div class="astat-l">Live products</div>
-          </div>
-          <div class="astat">
-            <div class="astat-n">2007</div>
-            <div class="astat-l">Founded</div>
-          </div>
-          <div class="astat">
-            <div class="astat-n">IL<span class="ga">·</span>US</div>
-            <div class="astat-l">Tel Aviv · New York</div>
+  <!-- About -->
+  <section class="s-section" id="about">
+    <div class="w">
+      <div class="s-label"><span>The Studio</span></div>
+      <div class="s-about-grid">
+        <div class="s-about-photo"><img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/dave-studio.jpg" alt="Dave Markovich" loading="lazy"></div>
+        <div>
+          <h2 class="s-h2">Dave Markovich.<br><span class="g">20+ years.</span><br><span style="font-weight:300">Still building.</span></h2>
+          <p class="s-about-p">3Shamrocks Studio is a boutique design studio founded in 2007. We design and build products that solve real problems — safety networks, wellness apps, civic tools, games that change behavior.</p>
+          <p class="s-about-p">In the last two years we rebuilt the entire workflow around AI. What used to take six weeks takes ten days. We don't do templated. We don't do average. We don't stop until it ships.</p>
+          <div class="s-stats">
+            <div class="s-stat"><div class="s-stat-n">20<span class="g">+</span></div><div class="s-stat-l">Years experience</div></div>
+            <div class="s-stat"><div class="s-stat-n">7</div><div class="s-stat-l">Live products</div></div>
+            <div class="s-stat"><div class="s-stat-n">2007</div><div class="s-stat-l">Founded</div></div>
+            <div class="s-stat"><div class="s-stat-n">IL<span class="g">·</span>US</div><div class="s-stat-l">Tel Aviv · New York</div></div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- CTA BAND -->
-<section class="cta-band r" id="contact">
-  <div class="cta-band-bg"></div>
-  <div class="cta-band-ov"></div>
-  <div class="w cta-inner">
-    <h2 class="cta-h">
-      Let's work<br>
-      <span class="hl">together.</span>
-    </h2>
-    <p class="cta-sub">
-      Whether you're launching a product, rebuilding a brand, or need 
-      a design system that actually scales — we deliver.
-    </p>
-    <div class="cta-row">
-      <a class="btn-primary" href="mailto:markodave@gmail.com">
-        ✉ markodave@gmail.com
-      </a>
-      <a class="btn-ghost" href="https://www.linkedin.com/in/davemarkovich"
-         target="_blank" rel="noopener">
-        LinkedIn ↗
-      </a>
+  <!-- Contact -->
+  <section class="s-section" id="contact">
+    <div class="w">
+      <h2 class="s-contact-h">Let's work<br><span class="g">together.</span></h2>
+      <div class="s-contact-row">
+        <a class="s-email" href="mailto:markodave@gmail.com">markodave@gmail.com</a>
+        <a class="s-li" href="https://www.linkedin.com/in/davemarkovich" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="s-li" href="https://www.shomer-app.co.il/" target="_blank" rel="noopener">SH✡MER ↗</a>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="w">
-    <div class="footer-in">
-      <div class="footer-logo">
-        <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png"
-             alt="3Shamrocks Studio">
+  <footer class="s-footer">
+    <div class="w">
+      <div class="s-footer-in">
+        <div class="s-footer-logo"><img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png" alt="3Shamrocks Studio"></div>
+        <div class="s-footer-links"><a href="#works">Works</a><a href="#capabilities">Capabilities</a><a href="#about">Studio</a><a href="mailto:markodave@gmail.com">Contact</a></div>
+        <div class="s-footer-copy">© 2026 3Shamrocks Studio LLC</div>
       </div>
-      <div class="footer-links">
-        <a href="#works">Works</a>
-        <a href="#capabilities">Capabilities</a>
-        <a href="#about">Studio</a>
-        <a href="https://www.shomer-app.co.il/">SH✡MER</a>
-        <a href="mailto:markodave@gmail.com">Contact</a>
-      </div>
-      <div class="footer-copy">© 2026 3Shamrocks Studio LLC · All rights reserved</div>
     </div>
-  </div>
-</footer>
+  </footer>
+</div>
 
 <script>
-(function(){
-  var io = new IntersectionObserver(function(e){
-    e.forEach(function(x){
-      if(x.isIntersecting){
-        x.target.classList.add('on');
-        io.unobserve(x.target);
-      }
+/* ════════════════════════════════════════════════════════
+   ENCHANTED FOREST ENGINE
+════════════════════════════════════════════════════════ */
+const canvas = document.getElementById('forest-canvas');
+const ctx = canvas.getContext('2d');
+const cursor = document.getElementById('cursor');
+const shamrockSvg = document.getElementById('shamrock-svg');
+const shamrockLeaves = shamrockSvg.querySelectorAll('.leaf');
+const nameplate = document.getElementById('nameplate');
+const enterBtn = document.getElementById('enter-btn');
+const hint = document.getElementById('hint');
+const site = document.getElementById('site');
+
+let W, H, cx, cy; // canvas dimensions and center
+let mouse = {x: -999, y: -999};
+let state = 'idle'; // idle | exploring | nearby | discovered | bloomed | entered
+let discoveryTimer = null;
+let discoveryProgress = 0;
+let animFrame;
+let hintTimer;
+
+/* ── Resize ─────────────────────────────────────────── */
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  cx = W / 2;
+  cy = H / 2;
+  initTrees();
+  initFireflies();
+}
+
+/* ── TREES ──────────────────────────────────────────── */
+const TREE_COUNT = 14;
+let trees = [];
+
+function initTrees() {
+  trees = [];
+  const groundY = H;
+
+  // Background trees (distant, smaller)
+  for (let i = 0; i < 6; i++) {
+    trees.push({
+      x: (W / 5) * i + Math.random() * W * 0.15,
+      height: H * (0.35 + Math.random() * 0.2),
+      width: W * (0.04 + Math.random() * 0.03),
+      layers: 4 + Math.floor(Math.random() * 3),
+      alpha: 0.45 + Math.random() * 0.2,
+      depth: 0,
+      lean: (Math.random() - 0.5) * 0.05
     });
-  },{threshold:.01,rootMargin:'0px 0px 0px 0px'});
-  document.querySelectorAll('.r,.r2').forEach(function(el){io.observe(el)});
-})();
+  }
+  // Mid trees
+  for (let i = 0; i < 5; i++) {
+    trees.push({
+      x: (W / 4) * i + Math.random() * W * 0.2,
+      height: H * (0.5 + Math.random() * 0.25),
+      width: W * (0.06 + Math.random() * 0.04),
+      layers: 5 + Math.floor(Math.random() * 3),
+      alpha: 0.7 + Math.random() * 0.2,
+      depth: 1,
+      lean: (Math.random() - 0.5) * 0.04
+    });
+  }
+  // Foreground trees (edges only)
+  trees.push({x: -W*0.02, height: H*0.88, width: W*0.12, layers: 6, alpha: 1, depth: 2, lean: 0.02});
+  trees.push({x: W+W*0.02, height: H*0.88, width: W*0.12, layers: 6, alpha: 1, depth: 2, lean: -0.02});
+  trees.push({x: W*0.08, height: H*0.75, width: W*0.09, layers: 6, alpha: 1, depth: 2, lean: -0.01});
+  trees.push({x: W*0.9, height: H*0.72, width: W*0.09, layers: 6, alpha: 1, depth: 2, lean: 0.01});
+}
+
+function drawPineTree(t) {
+  const {x, height, width, layers, alpha, lean} = t;
+  const groundY = H;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = '#02100605';
+
+  for (let l = 0; l < layers; l++) {
+    const progress = l / layers;
+    const layerY = groundY - height * (1 - progress);
+    const baseY = groundY - height * (1 - (l + 1.2) / layers);
+    const layerW = width * (1 - progress * 0.85);
+    const leanX = lean * height * progress;
+
+    ctx.beginPath();
+    ctx.moveTo(x + leanX, layerY);
+    // Slightly wavy edges
+    const waveL = Math.sin(l * 2.3 + x * 0.01) * layerW * 0.06;
+    const waveR = Math.sin(l * 1.8 + x * 0.013) * layerW * 0.06;
+    ctx.lineTo(x + leanX + layerW + waveR, baseY);
+    ctx.lineTo(x + leanX - layerW - waveL, baseY);
+    ctx.closePath();
+
+    const col = l === 0 ? 'rgba(2,12,5,1)' :
+                l < 2 ? 'rgba(3,14,6,1)' :
+                'rgba(4,16,8,1)';
+    ctx.fillStyle = col;
+    ctx.fill();
+  }
+
+  // Trunk
+  ctx.fillStyle = 'rgba(2,8,4,1)';
+  ctx.fillRect(x + lean * height * 0.3 - width * 0.04, groundY - height * 0.28, width * 0.08, height * 0.28);
+  ctx.restore();
+}
+
+/* ── FIREFLIES ──────────────────────────────────────── */
+const FIREFLY_COUNT = 38;
+let fireflies = [];
+
+function initFireflies() {
+  fireflies = Array.from({length: FIREFLY_COUNT}, (_, i) => ({
+    x: Math.random() * W,
+    y: H * 0.1 + Math.random() * H * 0.75,
+    r: 0.8 + Math.random() * 1.8,
+    speed: 0.2 + Math.random() * 0.5,
+    angle: Math.random() * Math.PI * 2,
+    turnSpeed: (Math.random() - 0.5) * 0.03,
+    phase: Math.random() * Math.PI * 2,
+    pulseSpeed: 0.5 + Math.random() * 1.2,
+    brightness: Math.random(),
+  }));
+}
+
+function updateFireflies(t) {
+  fireflies.forEach(f => {
+    f.angle += f.turnSpeed + Math.sin(t * 0.0003 + f.phase) * 0.02;
+    f.x += Math.cos(f.angle) * f.speed;
+    f.y += Math.sin(f.angle) * f.speed * 0.5;
+    if (f.x < -20) f.x = W + 20;
+    if (f.x > W + 20) f.x = -20;
+    if (f.y < H * 0.05) f.y = H * 0.05;
+    if (f.y > H * 0.9) f.y = H * 0.9;
+    f.brightness = 0.4 + 0.6 * Math.abs(Math.sin(t * f.pulseSpeed * 0.001 + f.phase));
+  });
+}
+
+function drawFireflies() {
+  fireflies.forEach(f => {
+    const glow = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 8);
+    glow.addColorStop(0, `rgba(180,255,160,${f.brightness * 0.9})`);
+    glow.addColorStop(0.3, `rgba(100,220,80,${f.brightness * 0.3})`);
+    glow.addColorStop(1, 'rgba(60,180,60,0)');
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.r * 8, 0, Math.PI * 2);
+    ctx.fillStyle = glow;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(230,255,210,${f.brightness})`;
+    ctx.fill();
+  });
+}
+
+/* ── LANTERN LIGHT ──────────────────────────────────── */
+function drawLantern() {
+  if (mouse.x < 0) return;
+  const radius = 160;
+  const glow = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, radius);
+  glow.addColorStop(0, 'rgba(255,240,160,0.07)');
+  glow.addColorStop(0.4, 'rgba(255,220,100,0.035)');
+  glow.addColorStop(1, 'rgba(255,180,60,0)');
+  ctx.beginPath();
+  ctx.arc(mouse.x, mouse.y, radius, 0, Math.PI * 2);
+  ctx.fillStyle = glow;
+  ctx.fill();
+}
+
+/* ── GROUND MIST ─────────────────────────────────────── */
+function drawMist(t) {
+  const mistY = H * 0.82;
+  const gradient = ctx.createLinearGradient(0, mistY, 0, H);
+  gradient.addColorStop(0, 'rgba(8,22,10,0)');
+  gradient.addColorStop(0.5, 'rgba(5,15,7,0.4)');
+  gradient.addColorStop(1, 'rgba(2,10,4,0.8)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, mistY, W, H - mistY);
+
+  // Subtle mist wisps
+  for (let i = 0; i < 4; i++) {
+    const wispX = ((t * 0.008 * (i % 2 === 0 ? 1 : -0.7) + i * W / 4)) % (W * 1.2) - W * 0.1;
+    const wispGrad = ctx.createRadialGradient(wispX, H * 0.88, 0, wispX, H * 0.88, W * 0.18);
+    wispGrad.addColorStop(0, 'rgba(10,28,14,0.15)');
+    wispGrad.addColorStop(1, 'rgba(10,28,14,0)');
+    ctx.beginPath();
+    ctx.ellipse(wispX, H * 0.9, W * 0.18, H * 0.05, 0, 0, Math.PI * 2);
+    ctx.fillStyle = wispGrad;
+    ctx.fill();
+  }
+}
+
+/* ── SHAMROCK PROXIMITY ──────────────────────────────── */
+function updateShamrockProximity() {
+  if (state === 'bloomed' || state === 'entered') return;
+  const dx = mouse.x - cx;
+  const dy = mouse.y - cy;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const threshold = Math.min(W, H) * 0.18;
+  const nearThreshold = Math.min(W, H) * 0.10;
+
+  // Show shamrock when approaching
+  if (dist < threshold * 1.5) {
+    shamrockSvg.style.opacity = Math.min(1, 1 - (dist - nearThreshold) / (threshold));
+    shamrockSvg.classList.add('nearby');
+    shamrockLeaves.forEach(l => l.classList.add('on'));
+    state = dist < nearThreshold ? 'nearby' : 'exploring';
+  } else {
+    shamrockSvg.style.opacity = '0.03';
+    shamrockSvg.classList.remove('nearby');
+    shamrockLeaves.forEach(l => l.classList.remove('on'));
+    state = mouse.x > 0 ? 'exploring' : 'idle';
+  }
+
+  if (state === 'nearby') {
+    if (!discoveryTimer) {
+      discoveryTimer = setTimeout(triggerBloom, 600);
+    }
+  } else {
+    if (discoveryTimer) { clearTimeout(discoveryTimer); discoveryTimer = null; }
+  }
+}
+
+/* ── GREEN PROXIMITY GLOW ────────────────────────────── */
+function drawShamrockGlow() {
+  if (state === 'bloomed' || state === 'entered') return;
+  const dx = mouse.x - cx;
+  const dy = mouse.y - cy;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const maxDist = Math.min(W, H) * 0.28;
+  if (dist > maxDist) return;
+
+  const intensity = Math.max(0, 1 - dist / maxDist);
+  const gRadius = maxDist * 0.7;
+  const gGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, gRadius);
+  gGlow.addColorStop(0, `rgba(45,187,102,${intensity * 0.12})`);
+  gGlow.addColorStop(0.5, `rgba(45,187,102,${intensity * 0.05})`);
+  gGlow.addColorStop(1, 'rgba(45,187,102,0)');
+  ctx.beginPath();
+  ctx.arc(cx, cy, gRadius, 0, Math.PI * 2);
+  ctx.fillStyle = gGlow;
+  ctx.fill();
+}
+
+/* ── BLOOM ───────────────────────────────────────────── */
+function triggerBloom() {
+  if (state === 'bloomed' || state === 'entered') return;
+  state = 'bloomed';
+  shamrockSvg.style.opacity = '1';
+  shamrockSvg.classList.add('bloomed');
+  nameplate.classList.add('show');
+  setTimeout(() => {
+    enterBtn.classList.add('show');
+  }, 400);
+  cursor.classList.add('large');
+}
+
+/* ── ENTER SITE ──────────────────────────────────────── */
+enterBtn.addEventListener('click', function() {
+  if (state === 'entered') return;
+  state = 'entered';
+  site.classList.add('show');
+  document.body.classList.add('site-open');
+  document.body.style.cursor = 'auto';
+  cursor.style.display = 'none';
+  // Fade out forest elements
+  setTimeout(() => {
+    canvas.style.transition = 'opacity 1.2s ease';
+    canvas.style.opacity = '0';
+    shamrockSvg.style.transition = 'opacity 0.6s';
+    shamrockSvg.style.opacity = '0';
+    nameplate.style.transition = 'opacity 0.6s';
+    nameplate.style.opacity = '0';
+    enterBtn.style.transition = 'opacity 0.3s';
+    enterBtn.style.opacity = '0';
+    hint.style.opacity = '0';
+  }, 100);
+});
+
+/* ── MOUSE ───────────────────────────────────────────── */
+window.addEventListener('mousemove', function(e) {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+  cursor.style.left = mouse.x + 'px';
+  cursor.style.top = mouse.y + 'px';
+
+  if (state === 'idle') state = 'exploring';
+  // Show hint after 2s of no movement
+  clearTimeout(hintTimer);
+  hint.classList.remove('show');
+  hintTimer = setTimeout(() => {
+    if (state !== 'bloomed' && state !== 'entered') {
+      hint.classList.add('show');
+    }
+  }, 2000);
+}, {passive: true});
+
+// Show hint on load
+setTimeout(() => {
+  if (state === 'idle') hint.classList.add('show');
+}, 3000);
+
+/* ── CLICK ON CANVAS = SKIP TO BLOOM ─────────────────── */
+canvas.addEventListener('click', function() {
+  if (state !== 'bloomed' && state !== 'entered') {
+    triggerBloom();
+  }
+});
+
+/* ── RENDER LOOP ─────────────────────────────────────── */
+function render(t) {
+  animFrame = requestAnimationFrame(render);
+
+  // Background
+  ctx.fillStyle = '#020B06';
+  ctx.fillRect(0, 0, W, H);
+
+  // Draw trees back to front
+  trees.slice().sort((a, b) => a.depth - b.depth).forEach(drawPineTree);
+
+  // Atmospheric depth gradient
+  const depthGrad = ctx.createRadialGradient(cx, cy * 0.6, 0, cx, cy * 0.6, Math.min(W, H) * 0.75);
+  depthGrad.addColorStop(0, 'rgba(5,18,8,0)');
+  depthGrad.addColorStop(1, 'rgba(2,7,3,0.55)');
+  ctx.fillStyle = depthGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Mist
+  drawMist(t);
+
+  // Shamrock glow
+  drawShamrockGlow();
+
+  // Fireflies
+  updateFireflies(t);
+  drawFireflies();
+
+  // Lantern
+  drawLantern();
+
+  // Proximity check
+  if (state !== 'bloomed' && state !== 'entered') {
+    updateShamrockProximity();
+  }
+}
+
+/* ── TOUCH SUPPORT ───────────────────────────────────── */
+window.addEventListener('touchmove', function(e) {
+  const touch = e.touches[0];
+  mouse.x = touch.clientX;
+  mouse.y = touch.clientY;
+  cursor.style.display = 'none';
+}, {passive: true});
+
+window.addEventListener('touchstart', function(e) {
+  const touch = e.touches[0];
+  mouse.x = touch.clientX;
+  mouse.y = touch.clientY;
+  cursor.style.display = 'none';
+  if (state !== 'bloomed' && state !== 'entered') {
+    const dx = mouse.x - cx;
+    const dy = mouse.y - cy;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < Math.min(W, H) * 0.18) {
+      triggerBloom();
+    }
+  }
+}, {passive: true});
+
+/* ── INIT ────────────────────────────────────────────── */
+window.addEventListener('resize', resize);
+resize();
+render(0);
 </script>
 </body>
 </html>
