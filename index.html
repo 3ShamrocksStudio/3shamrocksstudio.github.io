@@ -1,520 +1,753 @@
 <!DOCTYPE html>
-<html lang="en" data-brand="3s" data-mode="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3Shamrocks Studio — Product Design that Ships</title>
-<meta name="description" content="3Shamrocks Studio — a product & brand studio led by Dave Markovich. 20+ years of HealthTech & SaaS design, and a portfolio of self-shipped products built with AI-augmented production.">
-<meta property="og:title" content="3Shamrocks Studio — Product Design that Ships">
-<meta property="og:description" content="A product & brand studio. Client work for AposHealth & Vibrant Gastro, plus a full portfolio of self-shipped products.">
-<meta property="og:type" content="website">
-<link rel="icon" href="assets/studio/3shamrocks.png">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<title>3Shamrocks Studio — AI-Augmented Design</title>
+<meta name="description" content="Boutique design studio. Products, brands, digital experiences. 20+ years. AI-augmented. Dave Markovich.">
+<meta property="og:title" content="3Shamrocks Studio">
+<meta property="og:description" content="AI-augmented design. Products that ship. Brands that hold.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
-<!-- ── 3S Design System v3.0 — inherited, never edited (INTEGRATION.md §0) ── -->
-<link rel="stylesheet" href="tokens.css">      <!-- Layer 0 + 2 -->
-<link rel="stylesheet" href="brands.css">       <!-- Layer 1 · house brand "3s" -->
-<link rel="stylesheet" href="components.css">    <!-- Layer 3 -->
-
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  /* Page layout only — every colour comes from design-system tokens (var()). */
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--text);font-family:var(--font-body);
-    line-height:1.6;-webkit-font-smoothing:antialiased}
-  a{color:inherit;text-decoration:none}
-  img{display:block;max-width:100%}
-  .wrap{max-width:var(--container,1180px);margin:0 auto;padding:0 var(--space-5)}
-  h1,h2,h3{font-family:var(--font-display);font-weight:var(--display-weight);
-    letter-spacing:var(--display-tracking);line-height:1.06;color:var(--text)}
-  .kicker{font-family:var(--font-mono,"Space Mono",monospace);font-size:var(--text-xs);
-    letter-spacing:.28em;text-transform:uppercase;color:var(--accent-text);font-weight:700}
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root{
+  --bg:     #080808;
+  --bg1:    #0F0F0F;
+  --bg2:    #141414;
+  --line:   rgba(255,255,255,.07);
+  --tx0:    #EFEFEF;
+  --tx1:    rgba(239,239,239,.5);
+  --tx2:    rgba(239,239,239,.25);
+  --green:  #3ECF4A;
+  --fd: 'Space Grotesk', system-ui, sans-serif;
+  --fb: 'Inter', system-ui, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden;scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--bg);
+  color:var(--tx0);
+  font-family:var(--fb);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
 
-  /* focus + motion (compliance: visible focus ring, reduced motion) */
-  a:focus-visible,button:focus-visible,.btn:focus-visible,.tile:focus-visible{
-    outline:2px solid transparent;box-shadow:var(--focus-ring);border-radius:var(--radius-sm)}
-  @media (prefers-reduced-motion: reduce){
-    *{animation:none !important;transition:none !important;scroll-behavior:auto}
-    .reveal{opacity:1 !important;transform:none !important}
-  }
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.w{
+  max-width:1280px;
+  margin:0 auto;
+  padding:0 clamp(24px,4vw,80px);
+}
+hr.rule{
+  border:none;
+  border-top:1px solid var(--line);
+  margin:0;
+}
 
-  /* nav */
-  header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);
-    backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--border)}
-  .nav-in{display:flex;align-items:center;justify-content:space-between;height:68px}
-  .brand img{height:32px;width:auto}
-  .nav-links{display:flex;align-items:center;gap:var(--space-6)}
-  .nav-links a{font-size:var(--text-sm);color:var(--text-secondary);font-weight:500}
-  .nav-links a:hover{color:var(--accent-text)}
-  .btn{min-height:44px}
-  @media(max-width:760px){.nav-links a:not(.btn){display:none}}
+/* ── NAV ─────────────────────────────────────────────────── */
+nav{
+  position:fixed;inset-inline:0;top:0;z-index:100;
+  height:52px;
+  border-bottom:1px solid var(--line);
+  background:rgba(8,8,8,.92);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+}
+.nav-in{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  height:100%;
+}
+.nav-mark{
+  font-family:var(--fd);
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:.06em;
+  color:var(--tx0);
+  display:flex;align-items:center;gap:8px;
+}
+.nav-mark .leaf{color:var(--green)}
+.nav-links{
+  display:flex;align-items:center;gap:clamp(20px,3vw,40px);
+}
+.nav-links a{
+  font-family:var(--fd);
+  font-size:12px;font-weight:500;
+  letter-spacing:.04em;
+  color:var(--tx1);
+  transition:color .18s;
+}
+.nav-links a:hover{color:var(--tx0)}
+.nav-links .cta{
+  color:var(--green);
+  border-bottom:1px solid rgba(62,207,74,.3);
+  padding-bottom:1px;
+}
+.nav-links .cta:hover{border-color:var(--green)}
 
-  /* hero */
-  .hero{position:relative;overflow:hidden;padding:var(--space-9) 0 var(--space-8)}
-  .hero::before{content:"";position:absolute;inset:0;z-index:0;
-    background:linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb,var(--bg) 55%,transparent) 38%, transparent 70%),
-      url("assets/art/hero.jpg") center/cover no-repeat}
-  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.2fr .85fr;
-    gap:var(--space-7);align-items:center}
-  .hero h1{font-size:clamp(40px,6vw,68px)}
-  .hero h1 em{font-style:normal;color:var(--accent-text)}
-  .hero .lede{margin-top:var(--space-5);max-width:34rem;font-size:var(--text-lg);color:var(--text-secondary)}
-  .hero-cta{display:flex;gap:var(--space-3);margin-top:var(--space-6);flex-wrap:wrap}
-  .stats{display:flex;gap:var(--space-7);margin-top:var(--space-7);flex-wrap:wrap}
-  .stats .n{font-family:var(--font-display);font-size:var(--text-3xl);font-weight:600;color:var(--text)}
-  .stats .l{font-family:var(--font-mono,monospace);font-size:var(--text-xs);letter-spacing:.05em;
-    text-transform:uppercase;color:var(--text-muted)}
-  .portrait{border-radius:var(--radius-xl);overflow:hidden;border:1px solid var(--border);
-    box-shadow:var(--shadow-lg);aspect-ratio:4/5}
-  .portrait img{width:100%;height:100%;object-fit:cover;object-position:30% 35%}
-  @media(max-width:860px){.hero-grid{grid-template-columns:1fr}.portrait{display:none}}
+/* ── HERO ────────────────────────────────────────────────── */
+.hero{
+  padding-top:52px;
+  min-height:100svh;
+  display:flex;flex-direction:column;
+  justify-content:flex-end;
+  border-bottom:1px solid var(--line);
+}
+.hero-inner{
+  padding:clamp(48px,6vw,80px) 0 0;
+}
+.hero-eyebrow{
+  font-family:var(--fd);
+  font-size:11px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--tx1);
+  margin-bottom:clamp(24px,3vw,40px);
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::before{
+  content:'';display:block;width:24px;height:1px;
+  background:var(--green);flex-shrink:0;
+}
+.hero-h1{
+  font-family:var(--fd);
+  font-weight:700;
+  font-size:clamp(64px,13.5vw,196px);
+  line-height:.88;
+  letter-spacing:-.04em;
+  color:var(--tx0);
+  margin-bottom:clamp(32px,4vw,56px);
+}
+.hero-h1 .accent{color:var(--green)}
+.hero-h1 .dim{color:var(--tx2)}
+.hero-foot{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  background:var(--line);
+  border-top:1px solid var(--line);
+}
+.hero-foot-cell{
+  background:var(--bg);
+  padding:clamp(20px,2.5vw,32px) clamp(20px,3vw,40px);
+}
+.hero-foot-label{
+  font-family:var(--fd);font-size:10px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--tx2);
+  margin-bottom:6px;
+}
+.hero-foot-val{
+  font-family:var(--fd);font-size:clamp(13px,1.8vw,16px);font-weight:400;
+  color:var(--tx1);line-height:1.5;
+}
 
-  /* proof strip */
-  .proof{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface)}
-  .proof-in{display:flex;flex-wrap:wrap;gap:var(--space-6);align-items:center;justify-content:space-between;
-    padding:var(--space-5) 0}
-  .proof-lab{font-family:var(--font-mono,monospace);font-size:var(--text-xs);letter-spacing:.2em;
-    text-transform:uppercase;color:var(--text-muted)}
-  .proof-items{display:flex;flex-wrap:wrap;gap:var(--space-6)}
-  .proof-item .m{font-family:var(--font-display);font-weight:600;font-size:var(--text-xl);color:var(--accent-text)}
-  .proof-item .t{font-size:var(--text-sm);color:var(--text-secondary)}
-  .proof-item .t b{color:var(--text)}
+/* ── MARQUEE ─────────────────────────────────────────────── */
+.marquee-wrap{
+  overflow:hidden;
+  border-bottom:1px solid var(--line);
+  padding:14px 0;
+  background:var(--bg1);
+}
+.marquee-track{
+  display:flex;gap:40px;
+  animation:scroll 28s linear infinite;
+  width:max-content;
+}
+.marquee-track:hover{animation-play-state:paused}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.m-item{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--fd);font-size:11px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);
+  white-space:nowrap;flex-shrink:0;
+}
+.m-dot{width:4px;height:4px;border-radius:50%;background:var(--green);flex-shrink:0}
 
-  /* sections */
-  section.block{padding:var(--space-9) 0}
-  .alt{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-  .sec-head{max-width:42rem;margin-bottom:var(--space-7)}
-  .sec-head h2{font-size:clamp(28px,3.4vw,42px);margin-top:var(--space-2)}
-  .sec-head p{color:var(--text-secondary);margin-top:var(--space-3);font-size:var(--text-lg)}
-  .subhead{font-family:var(--font-mono,monospace);font-size:var(--text-xs);letter-spacing:.18em;
-    text-transform:uppercase;color:var(--text-muted);margin:var(--space-7) 0 var(--space-5);
-    display:flex;align-items:center;gap:var(--space-4)}
-  .subhead::after{content:"";flex:1;height:1px;background:var(--border)}
+/* ── WORKS ───────────────────────────────────────────────── */
+.works{padding:clamp(80px,10vw,128px) 0}
+.section-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin-bottom:clamp(40px,5vw,64px);
+  border-bottom:1px solid var(--line);
+  padding-bottom:clamp(16px,2vw,24px);
+}
+.section-label{
+  font-family:var(--fd);font-size:10px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--tx2);
+}
+.section-count{
+  font-family:var(--fd);font-size:10px;font-weight:500;
+  letter-spacing:.08em;color:var(--tx2);
+}
 
-  /* case studies */
-  .cases{display:flex;flex-direction:column;gap:var(--space-5)}
-  .case{display:grid;grid-template-columns:1fr 1.1fr;background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-md)}
-  .case.flip .ci{order:2}
-  .ci{padding:var(--space-7);display:flex;flex-direction:column;justify-content:center}
-  .ci img.logo{height:30px;width:auto;align-self:flex-start;margin-bottom:var(--space-4);object-fit:contain}
-  .ci h3{font-size:var(--text-3xl);margin-bottom:var(--space-2)}
-  .tagrow{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-bottom:var(--space-4)}
-  .ci p{color:var(--text-secondary);font-size:var(--text-base)}
-  .metrics{display:flex;gap:var(--space-6);margin-top:var(--space-5)}
-  .metrics .n{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:600;color:var(--text)}
-  .metrics .l{font-family:var(--font-mono,monospace);font-size:var(--text-xs);text-transform:uppercase;
-    letter-spacing:.05em;color:var(--text-muted)}
-  .cv{position:relative;background:var(--bg-subtle);min-height:320px;display:grid;
-    grid-template-columns:1fr 1fr;gap:var(--space-3);padding:var(--space-5)}
-  .cv img{border-radius:var(--radius-md);object-fit:contain;background:var(--surface);
-    box-shadow:var(--shadow-sm);width:100%;height:100%}
-  @media(max-width:820px){.case,.case.flip{grid-template-columns:1fr}.case.flip .ci{order:0}}
+.works-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1px;
+  background:var(--line);
+}
+.work-card{
+  background:var(--bg);
+  padding:clamp(28px,3.5vw,48px);
+  display:flex;flex-direction:column;
+  gap:0;
+  position:relative;
+  overflow:hidden;
+  min-height:clamp(220px,28vw,360px);
+  transition:background .3s;
+  text-decoration:none;color:inherit;
+}
+.work-card::before{
+  content:'';
+  position:absolute;inset:0;
+  background:var(--card-clr, rgba(255,255,255,.02));
+  opacity:0;
+  transition:opacity .3s;
+}
+.work-card:hover::before{opacity:1}
+.work-card:hover .wc-arrow{opacity:1;transform:translateX(0)}
 
-  /* product grid */
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-5)}
-  @media(max-width:880px){.grid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:560px){.grid{grid-template-columns:1fr}}
-  .tile{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);
-    transition:transform var(--dur-base,.18s) var(--ease,ease),box-shadow var(--dur-base,.18s) var(--ease,ease),
-      border-color var(--dur-base,.18s) var(--ease,ease)}
-  .tile:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--border-strong)}
-  .stage{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--bg-subtle);
-    display:flex;align-items:center;justify-content:center}
-  .stage.scene{background-size:cover;background-position:center}
-  .stage.scene::before{content:"";position:absolute;inset:0;z-index:1;
-    background:linear-gradient(0deg, color-mix(in srgb,var(--n-950) 80%,transparent) 0%,
-      color-mix(in srgb,var(--n-950) 18%,transparent) 46%, transparent 72%),
-      radial-gradient(62% 64% at 50% 46%, color-mix(in srgb,var(--n-950) 42%,transparent), transparent 72%)}
-  .stage img{position:relative;z-index:2;max-width:60%;max-height:58%;object-fit:contain;
-    filter:drop-shadow(0 12px 26px color-mix(in srgb,var(--n-950) 55%,transparent))}
-  .stage.cover img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:cover;filter:none;z-index:2;position:relative}
-  .tile .status{position:absolute;top:var(--space-3);right:var(--space-3);z-index:3}
-  .tile .vlabel{position:absolute;top:var(--space-3);left:var(--space-3);z-index:3;
-    font-family:var(--font-mono,monospace);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
-    font-weight:700;padding:var(--space-1) var(--space-3);border-radius:var(--radius-pill);
-    color:var(--text-inverse);background:color-mix(in srgb,var(--n-0) 16%,transparent);
-    border:1px solid color-mix(in srgb,var(--n-0) 28%,transparent)}
-  .tbody{padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-2);flex:1}
-  .tname{font-family:var(--font-display);font-size:var(--text-xl);font-weight:600;color:var(--text)}
-  .ttag{font-family:var(--font-mono,monospace);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;
-    color:var(--text-muted)}
-  .tdesc{font-size:var(--text-sm);color:var(--text-secondary);flex:1}
-  .tlink{margin-top:var(--space-2);font-weight:600;font-size:var(--text-sm);color:var(--accent-text);
-    display:inline-flex;align-items:center;gap:var(--space-2)}
+.wc-top{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom:auto;
+}
+.wc-cat{
+  font-family:var(--fd);font-size:10px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--tx2);padding:4px 10px;
+  border:1px solid var(--line);
+}
+.wc-status{
+  font-family:var(--fd);font-size:10px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 10px;
+}
+.wc-status.live{color:var(--green);border:1px solid rgba(62,207,74,.25)}
+.wc-status.beta{color:#facc15;border:1px solid rgba(250,204,21,.2)}
+.wc-status.soon{color:var(--tx2);border:1px solid var(--line)}
 
-  /* services */
-  .svc{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-5)}
-  @media(max-width:760px){.svc{grid-template-columns:1fr}}
-  .svc .card{display:flex;gap:var(--space-4);align-items:flex-start}
-  .svc .dot{flex:0 0 auto;width:42px;height:42px;border-radius:var(--radius-md);display:flex;
-    align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent-text);
-    font-family:var(--font-display);font-weight:600}
-  .svc h3{font-size:var(--text-lg)}
-  .svc p{color:var(--text-secondary);font-size:var(--text-sm);margin-top:var(--space-1)}
+.wc-body{margin-top:clamp(32px,4vw,48px)}
+.wc-name{
+  font-family:var(--fd);
+  font-weight:700;
+  font-size:clamp(28px,4vw,52px);
+  line-height:.95;letter-spacing:-.025em;
+  color:var(--tx0);
+  margin-bottom:12px;
+}
+.wc-name .wc-em{color:var(--card-accent, var(--green))}
+.wc-desc{
+  font-size:clamp(13px,1.6vw,15px);font-weight:300;
+  color:var(--tx1);line-height:1.65;max-width:40ch;
+  margin-bottom:20px;
+}
+.wc-arrow{
+  font-family:var(--fd);font-size:11px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--card-accent, var(--green));
+  opacity:0;transform:translateX(-8px);
+  transition:opacity .25s,transform .25s;
+  display:flex;align-items:center;gap:6px;
+}
+.wc-arrow::after{content:'→'}
 
-  /* CTA */
-  .cta{position:relative;overflow:hidden;border-radius:var(--radius-2xl);padding:var(--space-9) var(--space-7);
-    text-align:center;background:var(--brand-gradient);color:var(--brand-contrast)}
-  .cta::before{content:"";position:absolute;inset:0;background:color-mix(in srgb,var(--n-950) 30%,transparent)}
-  .cta>*{position:relative;z-index:1}
-  .cta h2{color:var(--text-inverse);font-size:clamp(28px,4vw,46px)}
-  .cta p{color:color-mix(in srgb,var(--n-0) 86%,transparent);max-width:34rem;margin:var(--space-4) auto 0;
-    font-size:var(--text-lg)}
-  .cta .hero-cta{justify-content:center;margin-top:var(--space-6)}
+/* Featured card (full width) */
+.work-card.featured{grid-column:1/-1;min-height:clamp(280px,30vw,420px)}
 
-  /* footer — quiet studio credit (COMPLIANCE §5) */
-  footer.site{background:var(--n-950);color:color-mix(in srgb,var(--n-0) 72%,transparent);
-    padding:var(--space-8) 0 var(--space-7)}
-  .foot-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(--space-6)}
-  .foot-links{display:flex;gap:var(--space-7);flex-wrap:wrap}
-  .foot-col h4{font-family:var(--font-mono,monospace);font-size:var(--text-xs);letter-spacing:.16em;
-    text-transform:uppercase;color:color-mix(in srgb,var(--n-0) 50%,transparent);margin-bottom:var(--space-3);font-weight:700}
-  .foot-col a{display:block;font-size:var(--text-sm);color:color-mix(in srgb,var(--n-0) 74%,transparent);margin-bottom:var(--space-2)}
-  .foot-col a:hover{color:var(--brand-300)}
-  .foot-bottom{margin-top:var(--space-7);padding-top:var(--space-5);
-    border-top:1px solid color-mix(in srgb,var(--n-0) 12%,transparent);
-    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:var(--space-2);text-align:center}
-  .foot-bottom img{height:14px;width:auto;opacity:.7}
-  .foot-bottom .cline{font-size:var(--text-xs);color:color-mix(in srgb,var(--n-0) 55%,transparent)}
+/* ── CAPABILITIES ────────────────────────────────────────── */
+.caps{
+  border-top:1px solid var(--line);
+  padding:clamp(80px,10vw,128px) 0;
+}
+.caps-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  background:var(--line);
+  margin-top:clamp(40px,5vw,64px);
+}
+.cap{
+  background:var(--bg);
+  padding:clamp(28px,3.5vw,48px);
+}
+.cap-n{
+  font-family:var(--fd);font-size:10px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--tx2);margin-bottom:16px;
+}
+.cap-title{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(22px,3vw,36px);line-height:1.1;letter-spacing:-.02em;
+  color:var(--tx0);margin-bottom:16px;
+}
+.cap-items{
+  display:flex;flex-direction:column;gap:8px;
+  list-style:none;
+}
+.cap-items li{
+  font-size:clamp(13px,1.6vw,14px);font-weight:300;
+  color:var(--tx1);padding-left:16px;position:relative;
+}
+.cap-items li::before{
+  content:'';position:absolute;left:0;top:9px;
+  width:6px;height:1px;background:var(--green);
+}
 
-  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease,ease),transform .6s var(--ease,ease)}
-  .reveal.in{opacity:1;transform:none}
+/* ── ABOUT ───────────────────────────────────────────────── */
+.about{
+  border-top:1px solid var(--line);
+  padding:clamp(80px,10vw,128px) 0;
+}
+.about-grid{
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:clamp(40px,6vw,80px);
+  align-items:start;
+}
+.about-label{
+  font-family:var(--fd);font-size:10px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--tx2);padding-top:6px;
+}
+.about-body{}
+.about-h{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(28px,4vw,52px);line-height:1;letter-spacing:-.03em;
+  color:var(--tx0);margin-bottom:clamp(20px,3vw,32px);
+}
+.about-h em{font-style:normal;color:var(--green)}
+.about-p{
+  font-size:clamp(15px,2vw,18px);font-weight:300;
+  color:var(--tx1);line-height:1.75;max-width:56ch;margin-bottom:24px;
+}
+.about-stat-row{
+  display:flex;gap:clamp(24px,4vw,48px);
+  flex-wrap:wrap;margin-top:clamp(32px,4vw,48px);
+  padding-top:clamp(24px,3vw,32px);
+  border-top:1px solid var(--line);
+}
+.astat{display:flex;flex-direction:column;gap:4px}
+.astat-n{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(28px,4vw,42px);letter-spacing:-.03em;
+  color:var(--tx0);line-height:1;
+}
+.astat-l{
+  font-size:11px;font-weight:400;color:var(--tx2);
+  letter-spacing:.04em;
+}
+
+/* ── CONTACT ─────────────────────────────────────────────── */
+.contact{
+  border-top:1px solid var(--line);
+  padding:clamp(80px,10vw,128px) 0;
+}
+.contact-h{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(44px,9vw,120px);line-height:.9;
+  letter-spacing:-.04em;color:var(--tx0);
+  margin-bottom:clamp(32px,4vw,56px);
+}
+.contact-h em{font-style:normal;color:var(--green)}
+.contact-row{
+  display:flex;flex-wrap:wrap;gap:clamp(16px,3vw,32px);
+  align-items:center;
+}
+.contact-email{
+  font-family:var(--fd);font-weight:500;
+  font-size:clamp(15px,2.5vw,22px);
+  color:var(--tx0);
+  border-bottom:1px solid rgba(239,239,239,.2);
+  padding-bottom:2px;
+  transition:color .18s,border-color .18s;
+}
+.contact-email:hover{color:var(--green);border-color:rgba(62,207,74,.4)}
+.contact-li{
+  font-family:var(--fd);font-size:12px;font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--tx2);transition:color .18s;
+}
+.contact-li:hover{color:var(--tx0)}
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+footer{
+  border-top:1px solid var(--line);
+  padding:clamp(24px,3vw,36px) 0;
+}
+.footer-in{
+  display:flex;flex-wrap:wrap;gap:16px;
+  align-items:center;justify-content:space-between;
+}
+.footer-mark{
+  font-family:var(--fd);font-size:12px;font-weight:700;
+  letter-spacing:.06em;color:var(--tx2);
+}
+.footer-mark span{color:var(--green)}
+.footer-copy{font-size:11px;font-weight:300;color:var(--tx2)}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap}
+.footer-links a{
+  font-size:11px;font-weight:400;color:var(--tx2);
+  letter-spacing:.04em;transition:color .15s;
+}
+.footer-links a:hover{color:var(--tx0)}
+
+/* ── SCROLL REVEAL ───────────────────────────────────────── */
+.r{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.r.on{opacity:1;transform:none}
+
+/* ── MOBILE ──────────────────────────────────────────────── */
+@media(max-width:720px){
+  .works-grid{grid-template-columns:1fr}
+  .work-card.featured{grid-column:auto}
+  .caps-grid{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .about-label{display:none}
+  .hero-foot{grid-template-columns:1fr}
+  .hero-h1{letter-spacing:-.03em}
+  .wc-arrow{opacity:1;transform:none}
+}
+@media(max-width:480px){
+  .nav-links a:not(.cta){display:none}
+}
 </style>
 </head>
 <body>
 
-<header class="nav">
-  <div class="wrap nav-in">
-    <a class="brand" href="#top" aria-label="3Shamrocks Studio home">
-      <img src="assets/studio/3shamrocks.png" alt="3Shamrocks Studio">
-    </a>
-    <nav class="nav-links" aria-label="Primary">
-      <a href="#work">Client Work</a>
-      <a href="#products">Products</a>
-      <a href="#services">Services</a>
-      <a class="btn btn--accent-fill btn--sm" href="#contact">Start a project</a>
-    </nav>
+<!-- NAV -->
+<nav>
+  <div class="w nav-in">
+    <div class="nav-mark">
+      <span class="leaf">☘</span> 3SHAMROCKS STUDIO
+    </div>
+    <div class="nav-links">
+      <a href="#works">Works</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#about">Studio</a>
+      <a href="mailto:markodave@gmail.com" class="cta">Let's talk</a>
+    </div>
   </div>
-</header>
-<a id="top"></a>
+</nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="wrap hero-grid">
-    <div class="reveal">
-      <p class="kicker">Product &amp; Brand Studio · Tel Aviv</p>
-      <h1>Design that doesn't just look shipped — <em>it ships.</em></h1>
-      <p class="lede">3Shamrocks is the studio of <b>Dave Markovich</b> — 20+ years turning clinical
-      complexity, SaaS and consumer ideas into products people actually use. Then we proved it on
-      ourselves: a whole portfolio of apps, designed and built end-to-end.</p>
-      <div class="hero-cta">
-        <a class="btn btn--accent-fill btn--lg" href="#products">See the portfolio</a>
-        <a class="btn btn--ghost btn--lg" href="#work">Client case studies</a>
-      </div>
-      <div class="stats">
-        <div><div class="n">20+</div><div class="l">Years designing</div></div>
-        <div><div class="n">12</div><div class="l">Products shipped</div></div>
-        <div><div class="n">+25%</div><div class="l">Engagement lift</div></div>
-      </div>
+  <div class="w hero-inner">
+    <div class="hero-eyebrow">AI-Augmented Design Studio · Tel Aviv</div>
+    <h1 class="hero-h1">
+      We design<br>
+      products<br>
+      <span class="accent">that ship.</span>
+    </h1>
+  </div>
+  <div class="hero-foot">
+    <div class="hero-foot-cell">
+      <div class="hero-foot-label">What we do</div>
+      <div class="hero-foot-val">UX/UI · Product Design · Design Systems<br>Branding · AI-Augmented Workflow</div>
     </div>
-    <div class="portrait reveal">
-      <img src="assets/studio/dave-studio.jpg" alt="Dave Markovich, founder of 3Shamrocks Studio">
+    <div class="hero-foot-cell">
+      <div class="hero-foot-label">Who we work with</div>
+      <div class="hero-foot-val">Startups building category-defining products.<br>Teams who need to ship, not just prototype.</div>
     </div>
   </div>
 </section>
 
-<!-- PROOF -->
-<div class="proof">
-  <div class="wrap proof-in">
-    <span class="proof-lab">Trusted with</span>
-    <div class="proof-items">
-      <div class="proof-item"><span class="m">+25%</span> <span class="t"><b>AposHealth</b> engagement</span></div>
-      <div class="proof-item"><span class="m">0→Launch</span> <span class="t"><b>Vibrant Gastro</b> solo build</span></div>
-      <div class="proof-item"><span class="m">Rebrand</span> <span class="t"><b>WinPlant</b> AgriTech SaaS</span></div>
-      <div class="proof-item"><span class="m">Identity</span> <span class="t"><b>Eldan</b> enterprise</span></div>
-    </div>
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track">
+    <!-- repeated twice for seamless loop -->
+    <div class="m-item"><span class="m-dot"></span> SH✡MER · Safety Network · Israel</div>
+    <div class="m-item"><span class="m-dot"></span> Trashure-Hunters · Eco-Game · Global</div>
+    <div class="m-item"><span class="m-dot"></span> MILO · Child Wellness · App</div>
+    <div class="m-item"><span class="m-dot"></span> Ezra · Senior AI Assistant</div>
+    <div class="m-item"><span class="m-dot"></span> Chore Royale · Family Game · App</div>
+    <div class="m-item"><span class="m-dot"></span> J8N.IX · AI Command Center</div>
+    <div class="m-item"><span class="m-dot"></span> Fairent · Civic Tech · Israel</div>
+    <div class="m-item"><span class="m-dot"></span> 20+ Years Experience</div>
+    <div class="m-item"><span class="m-dot"></span> SH✡MER · Safety Network · Israel</div>
+    <div class="m-item"><span class="m-dot"></span> Trashure-Hunters · Eco-Game · Global</div>
+    <div class="m-item"><span class="m-dot"></span> MILO · Child Wellness · App</div>
+    <div class="m-item"><span class="m-dot"></span> Ezra · Senior AI Assistant</div>
+    <div class="m-item"><span class="m-dot"></span> Chore Royale · Family Game · App</div>
+    <div class="m-item"><span class="m-dot"></span> J8N.IX · AI Command Center</div>
+    <div class="m-item"><span class="m-dot"></span> Fairent · Civic Tech · Israel</div>
+    <div class="m-item"><span class="m-dot"></span> 20+ Years Experience</div>
   </div>
 </div>
 
-<!-- CLIENT WORK -->
-<section class="block" id="work">
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="kicker">Selected client work</p>
-      <h2>Two decades of product design, in the room where it ships.</h2>
-      <p>Embedded design leadership for HealthTech and MedTech teams — clinical complexity turned into
-      intuitive product journeys, brand systems, and zero-to-market launches.</p>
+<!-- WORKS -->
+<section class="works" id="works">
+  <div class="w">
+    <div class="section-head">
+      <div class="section-label">Selected Works</div>
+      <div class="section-count">07</div>
     </div>
-    <div class="cases">
-      <article class="case reveal">
-        <div class="ci">
-          <img class="logo" src="assets/work/aposhealth/logo.png" alt="AposHealth">
-          <h3>AposHealth</h3>
-          <div class="tagrow"><span class="badge badge--neutral">HealthTech</span>
-            <span class="badge badge--neutral">Head of Design · 2020–2026</span></div>
-          <p>Clinical complexity turned into intuitive product journeys. Rebuilt the global design system
-          solo — PLG flows, a playful-yet-clinical brand, and animation-ready marketing at scale.</p>
-          <div class="metrics"><div><div class="n">+25%</div><div class="l">Engagement</div></div>
-            <div><div class="n">Solo</div><div class="l">Design system</div></div></div>
+    <div class="works-grid">
+
+      <!-- SH✡MER — featured -->
+      <a class="work-card featured r" href="https://www.shomer-app.co.il/"
+         target="_blank" rel="noopener"
+         style="--card-clr:rgba(30,49,95,.3);--card-accent:#faac22">
+        <div class="wc-top">
+          <div class="wc-cat">Safety · Social Network</div>
+          <div class="wc-status live">Live</div>
         </div>
-        <div class="cv">
-          <img src="assets/work/aposhealth/screen-2.png" alt="AposHealth web and mobile">
-          <img src="assets/work/aposhealth/screen-3.png" alt="AposHealth brand system">
-          <img src="assets/work/aposhealth/screen-1.png" alt="Apos gait clinical diagram">
-          <img src="assets/work/aposhealth/screen-4.png" alt="AposHealth product screens">
+        <div class="wc-body">
+          <div class="wc-name">SH<span class="wc-em">✡</span>MER</div>
+          <div class="wc-desc">Israel's first community safety network. One tap SOS, live incident map, guardian circles. Free to citizens — always.</div>
+          <div class="wc-arrow">View project</div>
         </div>
-      </article>
-      <article class="case flip reveal">
-        <div class="ci">
-          <img class="logo" src="assets/work/vibrant/logo-new.png" alt="Vibrant Gastro">
-          <h3>Vibrant Gastro</h3>
-          <div class="tagrow"><span class="badge badge--neutral">MedTech</span>
-            <span class="badge badge--neutral">Head of Design · 2021–2023</span></div>
-          <p>One designer, an entire patient ecosystem. Brand book, game-inspired clinical UX, and a
-          zero-to-market launch — complex gastroenterology workflows made daily and human.</p>
-          <div class="metrics"><div><div class="n">0→Launch</div><div class="l">Full ecosystem</div></div>
-            <div><div class="n">68%</div><div class="l">Retention</div></div></div>
+      </a>
+
+      <!-- TH MVP -->
+      <a class="work-card r" href="https://3shamrocksstudio.github.io/th-mvp-web/marketing.html"
+         target="_blank" rel="noopener"
+         style="--card-clr:rgba(22,163,74,.12);--card-accent:#4ade80">
+        <div class="wc-top">
+          <div class="wc-cat">Game · Civic · Global</div>
+          <div class="wc-status beta">Beta</div>
         </div>
-        <div class="cv">
-          <img src="assets/work/vibrant/screen-1.png" alt="Vibrant brand book">
-          <img src="assets/work/vibrant/screen-3.png" alt="Vibrant product UI">
-          <img src="assets/work/vibrant/screen-2.png" alt="Vibrant identity">
-          <img src="assets/work/vibrant/screen-4.png" alt="Vibrant app screens">
+        <div class="wc-body">
+          <div class="wc-name">Trashure<span class="wc-em">Hunters</span></div>
+          <div class="wc-desc">Real-world eco-game. Clean trash. Spawn Elemonsters. Raid bosses with your clan. AI-verified cleanup.</div>
+          <div class="wc-arrow">View project</div>
         </div>
-      </article>
+      </a>
+
+      <!-- MILO -->
+      <a class="work-card r" href="https://3shamrocksstudio.github.io/milo-app/"
+         target="_blank" rel="noopener"
+         style="--card-clr:rgba(251,146,60,.1);--card-accent:#fb923c">
+        <div class="wc-top">
+          <div class="wc-cat">Child Wellness · App</div>
+          <div class="wc-status live">Live</div>
+        </div>
+        <div class="wc-body">
+          <div class="wc-name"><span class="wc-em">MILO</span></div>
+          <div class="wc-desc">My Inner Little One. A companion app that grows with a child's emotional journey through 5 stages.</div>
+          <div class="wc-arrow">View project</div>
+        </div>
+      </a>
+
+      <!-- EZRA -->
+      <a class="work-card r" href="https://3shamrocksstudio.github.io/senior-helper/"
+         target="_blank" rel="noopener"
+         style="--card-clr:rgba(0,92,255,.1);--card-accent:#5c92ff">
+        <div class="wc-top">
+          <div class="wc-cat">Elder Care · AI · Hebrew</div>
+          <div class="wc-status live">Live</div>
+        </div>
+        <div class="wc-body">
+          <div class="wc-name"><span class="wc-em">Ezra</span></div>
+          <div class="wc-desc">Voice-first Hebrew AI assistant for seniors. Sends messages, books appointments, protects from scams.</div>
+          <div class="wc-arrow">View project</div>
+        </div>
+      </a>
+
+      <!-- CHORE ROYALE -->
+      <a class="work-card r" href="https://3shamrocksstudio.github.io/chore-wars/"
+         target="_blank" rel="noopener"
+         style="--card-clr:rgba(123,104,238,.12);--card-accent:#a78bfa">
+        <div class="wc-top">
+          <div class="wc-cat">Family · Game · Daily</div>
+          <div class="wc-status live">Live</div>
+        </div>
+        <div class="wc-body">
+          <div class="wc-name">Chore<span class="wc-em">Royale</span></div>
+          <div class="wc-desc">Spin the wheel. Get your chore. Prove it. Earn XP. Family chores turned into a daily quest with real stakes.</div>
+          <div class="wc-arrow">View project</div>
+        </div>
+      </a>
+
+      <!-- FAIRENT -->
+      <a class="work-card r" href="https://3shamrocksstudio.github.io/fairent/"
+         target="_blank" rel="noopener"
+         style="--card-clr:rgba(20,184,166,.1);--card-accent:#2dd4bf">
+        <div class="wc-top">
+          <div class="wc-cat">Civic · PropTech · Israel</div>
+          <div class="wc-status live">Live</div>
+        </div>
+        <div class="wc-body">
+          <div class="wc-name">Fair<span class="wc-em">ent</span></div>
+          <div class="wc-desc">Renters share their rent anonymously. Real data, real comparisons. Power back to the people paying it.</div>
+          <div class="wc-arrow">View project</div>
+        </div>
+      </a>
+
+      <!-- J8N.IX -->
+      <a class="work-card r" href="https://3shamrocksstudio.github.io/j8nix/"
+         target="_blank" rel="noopener"
+         style="--card-clr:rgba(168,85,247,.1);--card-accent:#c084fc">
+        <div class="wc-top">
+          <div class="wc-cat">AI · Studio Tool · PoC</div>
+          <div class="wc-status live">Live</div>
+        </div>
+        <div class="wc-body">
+          <div class="wc-name">J8<span class="wc-em">N.IX</span></div>
+          <div class="wc-desc">Jenix. AI command center and studio operating system. Portfolio piece demonstrating 3SDS AI-augmented workflow.</div>
+          <div class="wc-arrow">View project</div>
+        </div>
+      </a>
+
     </div>
   </div>
 </section>
 
-<!-- PRODUCTS -->
-<section class="block alt" id="products">
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="kicker">The 3Shamrocks portfolio</p>
-      <h2>A studio that ships its own products.</h2>
-      <p>Every product is designed, branded and built in-house on one design system — proof that the same
-      craft we bring to clients, we hold ourselves to. Live products link straight to the running app.</p>
+<!-- CAPABILITIES -->
+<section class="caps r" id="capabilities">
+  <div class="w">
+    <div class="section-head">
+      <div class="section-label">Capabilities</div>
     </div>
-
-    <div class="subhead">Live products</div>
-    <div class="grid">
-      <a class="tile reveal" href="https://www.shomer-app.co.il/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-shomergency.jpg')">
-          <span class="vlabel">Urban</span><span class="badge badge--success status">Live</span>
-          <img src="assets/products/shomergency.png" alt="Shomergency"></div>
-        <div class="tbody"><div class="tname">SH✡MER</div><div class="ttag">Civic Safety · PWA</div>
-          <p class="tdesc">הרשת הקהילתית הראשונה בישראל לסיוע אזרחי בחירום — SOS בלחיצה אחת, מפת אירועים חיה, מעגלי שומרים. חינם לאזרחים.</p>
-          <span class="tlink">Open app →</span></div>
-      </a>
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/shomer-nature/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-forest.jpg')">
-          <span class="vlabel">Nature</span><span class="badge badge--success status">Live</span>
-          <img src="assets/products/shomergency.png" alt="Shomer Nature"></div>
-        <div class="tbody"><div class="tname">Shomer Nature&trade;</div><div class="ttag">Nature &amp; Coast Guardian · PWA</div>
-          <p class="tdesc">Forests, reserves and coast on one light-themed guardian map — wildfire, dumping, injured wildlife, rip currents and lost hikers, with SOS.</p>
-          <span class="tlink">Open app →</span></div>
-      </a>
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/senior-helper/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-ezra.jpg')">
-          <span class="badge badge--success status">Live</span>
-          <img src="assets/products/ezra.jpg" alt="Ezra" style="border-radius:var(--radius-md);box-shadow:var(--shadow-md)"></div>
-        <div class="tbody"><div class="tname">Ezra</div><div class="ttag">Accessibility · PWA</div>
-          <p class="tdesc">A plain-Hebrew, step-by-step digital helper that walks seniors through everyday online tasks — dignified, large-type, never childish.</p>
-          <span class="tlink">Open app →</span></div>
-      </a>
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/milo-app/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-milo.jpg')">
-          <span class="badge badge--success status">Live</span>
-          <img src="assets/products/milo-pet.png" alt="Milo" style="max-width:52%;max-height:72%"></div>
-        <div class="tbody"><div class="tname">Milo</div><div class="ttag">Kids' Wellbeing · PWA</div>
-          <p class="tdesc">A gentle emotional-support companion for kids 6–14 where every care action is a real coping skill, and the pet grows as they do.</p>
-          <span class="tlink">Open app →</span></div>
-      </a>
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/chore-wars/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-chorewars.jpg')">
-          <span class="badge badge--success status">Live</span>
-          <img src="assets/products/chore-wars.svg" alt="Chore Royale" style="border-radius:var(--radius-lg);box-shadow:var(--shadow-md)"></div>
-        <div class="tbody"><div class="tname">Chore Royale</div><div class="ttag">Family · PWA</div>
-          <p class="tdesc">Spin the wheel, get your chore, prove you did it. Daily XP, streaks, fireworks — makes family chores actually worth doing.</p>
-          <span class="tlink">Open app →</span></div>
-      </a>
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/fairent/" target="_blank" rel="noopener">
-        <div class="stage cover"><span class="badge badge--success status">Live</span>
-          <img src="assets/concept/hogen.jpg" alt="Fairent"></div>
-        <div class="tbody"><div class="tname">Fairent</div><div class="ttag">Civic · Fair Housing</div>
-          <p class="tdesc">An Israel-first rent-fairness tool built on real CBS rent data — see whether your rent is fair, anonymously, and push back on gouging.</p>
-          <span class="tlink">Open app →</span></div>
-      </a>
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/j8nix/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-j8nix.jpg')">
-          <span class="badge badge--success status">Live</span>
-          <img src="assets/products/j8nix.png" alt="J8N.IX" style="max-width:74%"></div>
-        <div class="tbody"><div class="tname">J8N.IX</div><div class="ttag">Studio Operations OS · PWA</div>
-          <p class="tdesc">A mission-control dashboard for the whole studio — calendar, tasks, daily progress ring and an AI prompt forge in one single-file OS.</p>
-          <span class="tlink">Open app →</span></div>
-      </a>
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/3s-design-system/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-brandkit.jpg')">
-          <span class="badge badge--success status">Live</span>
-          <img src="assets/products/design-system.png" alt="3S Design System" style="max-width:46%"></div>
-        <div class="tbody"><div class="tname">3S Design System</div><div class="ttag">Brand &amp; Product Playbook</div>
-          <p class="tdesc">The themeable token architecture every 3S product inherits — tokens, brands and components, with a live compliance gate. (This site passes it.)</p>
-          <span class="tlink">Explore the system →</span></div>
-      </a>
-      <a class="tile reveal" href="https://3shamrocksstudio.github.io/th-website/" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-trashure.jpg')">
-          <span class="badge badge--success status">Live</span>
-          <img src="assets/products/trashure.png" alt="Trashure-Hunters"></div>
-        <div class="tbody"><div class="tname">Trashure-Hunters</div><div class="ttag">Game Marketing Site</div>
-          <p class="tdesc">The public face of the eco-game IP — brand, characters and story, built as a launch-ready marketing site.</p>
-          <span class="tlink">Visit site →</span></div>
-      </a>
-      <a class="tile reveal" href="https://markodave.gumroad.com/l/ruaqk" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-brandkit.jpg')">
-          <span class="badge badge--accent status">For sale</span>
-          <img src="assets/studio/3shamrocks.png" alt="AI Brand Kit" style="max-width:50%"></div>
-        <div class="tbody"><div class="tname">AI Brand Kit</div><div class="ttag">Digital Product · Gumroad</div>
-          <p class="tdesc">The studio's AI-augmented branding system, packaged as a product anyone can buy — the method behind these brands.</p>
-          <span class="tlink">Get it on Gumroad →</span></div>
-      </a>
-    </div>
-
-    <div class="subhead">In concept</div>
-    <div class="grid">
-      <a class="tile reveal" href="assets/mockups/trashure-hunters-movie-keyart.png" target="_blank" rel="noopener">
-        <div class="stage scene" style="background-image:url('assets/art/p-trashure.jpg')">
-          <span class="badge badge--neutral status">Concept</span>
-          <img src="assets/products/trashure.png" alt="Trashure-Hunters app"></div>
-        <div class="tbody"><div class="tname">Trashure-Hunters</div><div class="ttag">AR Eco-Game · Mobile App</div>
-          <p class="tdesc">The real-world AR game itself — two-stage AI trash verification, geolocation turf and a living cast of Elemonsters. In active build.</p>
-          <span class="tlink">View concept →</span></div>
-      </a>
-      <a class="tile reveal" href="assets/mockups/trashure-hunters-movie-keyart.png" target="_blank" rel="noopener">
-        <div class="stage cover"><span class="badge badge--neutral status">Concept</span>
-          <img src="assets/mockups/trashure-hunters-movie-keyart.png" alt="Trashure-Hunters: The Movie key art"></div>
-        <div class="tbody"><div class="tname">Trashure-Hunters: The Movie</div><div class="ttag">Feature Film · IP Expansion</div>
-          <p class="tdesc">The eco-game IP grown into a Pixar-style animated feature — full concept, treatment and screenplay package in development.</p>
-          <span class="tlink">View key art →</span></div>
-      </a>
+    <div class="caps-grid">
+      <div class="cap">
+        <div class="cap-n">01</div>
+        <div class="cap-title">Product Design</div>
+        <ul class="cap-items">
+          <li>UX Research & Strategy</li>
+          <li>UI Design & Prototyping</li>
+          <li>Design Systems</li>
+          <li>Mobile (iOS · Android · PWA)</li>
+          <li>Web Applications</li>
+          <li>HealthTech · Civic Tech · Consumer</li>
+        </ul>
+      </div>
+      <div class="cap">
+        <div class="cap-n">02</div>
+        <div class="cap-title">Brand & Identity</div>
+        <ul class="cap-items">
+          <li>Brand Strategy</li>
+          <li>Visual Identity Systems</li>
+          <li>Logo & Wordmark Design</li>
+          <li>Brand Language & Voice</li>
+          <li>Launch & Go-To-Market Assets</li>
+          <li>Product Branding</li>
+        </ul>
+      </div>
+      <div class="cap">
+        <div class="cap-n">03</div>
+        <div class="cap-title">AI-Augmented Workflow</div>
+        <ul class="cap-items">
+          <li>6-week scope in 10 days</li>
+          <li>AI-assisted design systems</li>
+          <li>Rapid prototyping with Claude</li>
+          <li>AI content & copy generation</li>
+          <li>Automated QA & testing</li>
+          <li>Build-and-ship sprints</li>
+        </ul>
+      </div>
+      <div class="cap">
+        <div class="cap-n">04</div>
+        <div class="cap-title">Engineering</div>
+        <ul class="cap-items">
+          <li>React Native · Expo</li>
+          <li>Web (HTML · CSS · JS · PWA)</li>
+          <li>Firebase · Supabase · Cloudflare</li>
+          <li>Twilio · OpenAI · Anthropic APIs</li>
+          <li>GitHub CI/CD · EAS Build</li>
+          <li>From design to live deployment</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- SERVICES -->
-<section class="block" id="services">
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="kicker">How we help</p>
-      <h2>Senior design, without the agency overhead.</h2>
-      <p>A deliberately small studio built for senior-level work — one person accountable, AI-augmented to
-      move at the speed a founder needs.</p>
-    </div>
-    <div class="svc">
-      <div class="card"><div class="dot">01</div><div><h3>Fractional Design Lead</h3>
-        <p>Embedded design leadership for your product team — strategy, systems and hands-on delivery.</p></div></div>
-      <div class="card"><div class="dot">02</div><div><h3>Zero-to-Launch Product Design</h3>
-        <p>HealthTech, SaaS and mobile — from first principles to a shipped, branded, usable product.</p></div></div>
-      <div class="card"><div class="dot">03</div><div><h3>Design Systems &amp; Brand Architecture</h3>
-        <p>One token system that scales across products without the look drifting. This studio runs on it.</p></div></div>
-      <div class="card"><div class="dot">04</div><div><h3>AI-Augmented Production</h3>
-        <p>The same craft, roughly 80% faster — AI handles the volume while design direction stays human.</p></div></div>
+<!-- ABOUT -->
+<section class="about r" id="about">
+  <div class="w">
+    <div class="about-grid">
+      <div class="about-label">Studio</div>
+      <div class="about-body">
+        <h2 class="about-h">
+          Dave Markovich.<br>
+          <em>20+ years.</em><br>
+          Still building.
+        </h2>
+        <p class="about-p">
+          3Shamrocks Studio is a boutique design studio founded in 2007. We design 
+          and build products that solve real problems for real people — safety networks, 
+          wellness apps, civic tools, games that actually change behavior.
+        </p>
+        <p class="about-p">
+          In the last two years, we've rebuilt the entire workflow around AI. 
+          What used to take six weeks takes ten days. What used to require a 
+          full agency takes one studio with the right tools. We don't do templated. 
+          We don't do average.
+        </p>
+        <div class="about-stat-row">
+          <div class="astat">
+            <div class="astat-n">20<span style="color:var(--green)">+</span></div>
+            <div class="astat-l">Years experience</div>
+          </div>
+          <div class="astat">
+            <div class="astat-n">7</div>
+            <div class="astat-l">Live products</div>
+          </div>
+          <div class="astat">
+            <div class="astat-n">2007</div>
+            <div class="astat-l">Founded</div>
+          </div>
+          <div class="astat">
+            <div class="astat-n">IL<span style="color:var(--green)">·</span>US</div>
+            <div class="astat-l">Based</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- CONTACT -->
-<section class="block alt" id="contact">
-  <div class="wrap">
-    <div class="cta reveal">
-      <h2>Have something worth shipping?</h2>
-      <p>Whether it's a HealthTech product, a brand that needs a system, or a zero-to-one idea — let's talk
-      about what it takes to make it real.</p>
-      <div class="hero-cta">
-        <a class="btn btn--lg" href="mailto:dave@3shamrocks.com" style="background:var(--n-0);color:var(--accent-text)">dave@3shamrocks.com</a>
-        <a class="btn btn--ghost btn--lg" href="https://www.linkedin.com/in/davemarkovich" target="_blank" rel="noopener" style="color:var(--text-inverse);border-color:color-mix(in srgb,var(--n-0) 40%,transparent)">Connect on LinkedIn</a>
-      </div>
+<section class="contact r" id="contact">
+  <div class="w">
+    <h2 class="contact-h">
+      Let's work<br>
+      <em>together.</em>
+    </h2>
+    <div class="contact-row">
+      <a class="contact-email" href="mailto:markodave@gmail.com">
+        markodave@gmail.com
+      </a>
+      <a class="contact-li" href="https://www.linkedin.com/in/davemarkovich" target="_blank" rel="noopener">
+        LinkedIn ↗
+      </a>
+      <a class="contact-li" href="https://www.shomer-app.co.il/" target="_blank" rel="noopener">
+        SH✡MER ↗
+      </a>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
-
-<!-- ═══ HIRE 3SDS ═══════════════════════════════════════════════════ -->
-<section id="hire" style="background:#0F172A;padding:clamp(64px,9vw,120px) 0;border-top:1px solid rgba(255,255,255,.07)">
-  <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,4vw,48px)">
-    <div style="display:grid;grid-template-columns:1fr;gap:40px">
-      <div>
-        <div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#22c55e;margin-bottom:16px">AVAILABLE FOR PROJECTS · מוכן לפרויקטים</div>
-        <h2 style="font-size:clamp(32px,5.5vw,62px);font-weight:900;line-height:.95;letter-spacing:-.03em;color:#fff;margin-bottom:20px">
-          AI-Augmented<br><span style="color:#22c55e">Design.</span><br>
-          <span style="font-weight:200">Built to ship.</span>
-        </h2>
-        <p style="font-size:clamp(15px,2.2vw,18px);font-weight:300;color:rgba(255,255,255,.6);line-height:1.7;max-width:46ch;margin-bottom:32px">
-          20+ years of product design experience, now supercharged with AI. 
-          From zero to live product in 2 weeks. UX systems, mobile apps, HealthTech, SaaS, civic tech.
-          If you need it to look great and actually work — that's us.
-        </p>
-        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:40px">
-          <span style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#86efac;padding:8px 16px;font-size:13px;font-weight:600">AI Product Design</span>
-          <span style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#86efac;padding:8px 16px;font-size:13px;font-weight:600">Design Systems</span>
-          <span style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#86efac;padding:8px 16px;font-size:13px;font-weight:600">HealthTech UX</span>
-          <span style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#86efac;padding:8px 16px;font-size:13px;font-weight:600">Mobile Apps</span>
-          <span style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#86efac;padding:8px 16px;font-size:13px;font-weight:600">2-Week Sprints</span>
-          <span style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#86efac;padding:8px 16px;font-size:13px;font-weight:600">SaaS UX</span>
-        </div>
-        <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
-          <a href="mailto:markodave@gmail.com?subject=Project Inquiry — 3Shamrocks Studio" 
-             style="display:inline-flex;align-items:center;gap:10px;height:56px;padding:0 32px;
-                    background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;
-                    font-weight:800;font-size:15px;letter-spacing:.04em;text-decoration:none;
-                    box-shadow:0 12px 40px -8px rgba(34,197,94,.5);transition:filter .2s">
-            ✉ Let's talk — markodave@gmail.com
-          </a>
-          <a href="https://www.linkedin.com/in/davemarkovich" target="_blank" rel="noopener"
-             style="color:rgba(255,255,255,.5);font-size:14px;font-weight:300;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2);padding-bottom:2px">
-            LinkedIn →
-          </a>
-        </div>
+<footer>
+  <div class="w">
+    <div class="footer-in">
+      <div class="footer-mark"><span>☘</span> 3SHAMROCKS STUDIO</div>
+      <div class="footer-links">
+        <a href="#works">Works</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#about">Studio</a>
+        <a href="mailto:markodave@gmail.com">Contact</a>
       </div>
-    </div>
-  </div>
-</section>
-<footer class="site">
-  <div class="wrap">
-    <div class="foot-grid">
-      <div style="max-width:18rem">
-        <img src="assets/studio/3shamrocks.png" alt="3Shamrocks Studio" style="height:26px">
-        <p style="margin-top:var(--space-3);font-size:var(--text-sm);color:color-mix(in srgb,var(--n-0) 70%,transparent)">
-          Product &amp; brand design that ships. Led by Dave Markovich.</p>
-      </div>
-      <div class="foot-links">
-        <div class="foot-col"><h4>Studio</h4>
-          <a href="#work">Client Work</a><a href="#products">Products</a>
-          <a href="#services">Services</a><a href="#contact">Contact</a></div>
-        <div class="foot-col"><h4>Products</h4>
-          <a href="https://www.shomer-app.co.il/" target="_blank" rel="noopener">Shomergency</a>
-          <a href="https://3shamrocksstudio.github.io/fairent/" target="_blank" rel="noopener">Fairent</a>
-          <a href="https://3shamrocksstudio.github.io/3s-design-system/" target="_blank" rel="noopener">Design System</a></div>
-        <div class="foot-col"><h4>Connect</h4>
-          <a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a>
-          <a href="https://www.linkedin.com/in/davemarkovich" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="https://markodave.gumroad.com" target="_blank" rel="noopener">Gumroad</a></div>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <img src="assets/studio/3shamrocks.png" alt="3Shamrocks Studio">
-      <span class="cline">© 2026 3Shamrocks Studio. All rights reserved.</span>
+      <div class="footer-copy">© 2026 3Shamrocks Studio LLC</div>
     </div>
   </div>
 </footer>
 
 <script>
-  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:"0px 0px -40px 0px"});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+// Scroll reveals
+(function(){
+  var io = new IntersectionObserver(function(e){
+    e.forEach(function(x){
+      if(x.isIntersecting){ x.target.classList.add('on'); io.unobserve(x.target); }
+    });
+  }, {threshold:.06, rootMargin:'0px 0px -32px 0px'});
+  document.querySelectorAll('.r').forEach(function(el){ io.observe(el); });
+})();
 </script>
 </body>
 </html>
