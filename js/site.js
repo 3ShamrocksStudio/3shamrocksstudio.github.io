@@ -18,20 +18,11 @@
       }
       return;
     }
-    const studio = document.body.classList.contains("studio-open") || document.body.classList.contains("page");
-    nav.classList.toggle("is-solid", studio && y > 12);
+    const open = document.body.classList.contains("studio-open") || document.body.classList.contains("page");
+    nav.classList.toggle("is-solid", open && y > 8);
   }
   window.addEventListener("scroll", solidNav, { passive: true });
-  window.addEventListener("3s:entered", () => {
-    nav?.classList.remove("nav--cosmic");
-    solidNav();
-  });
-  if (document.body.classList.contains("studio-open") && !document.querySelector(".case-hero")) {
-    nav?.classList.remove("nav--cosmic");
-  }
-  if (document.body.classList.contains("page") && !document.querySelector(".case-hero")) {
-    nav?.classList.remove("nav--cosmic");
-  }
+  window.addEventListener("3s:entered", solidNav);
   solidNav();
 
   function setDrawer(open) {
@@ -39,53 +30,20 @@
     drawer.classList.toggle("is-open", open);
     drawer.setAttribute("aria-hidden", open ? "false" : "true");
     document.body.style.overflow = open ? "hidden" : "";
-    toggle?.setAttribute("aria-expanded", open ? "true" : "false");
   }
   toggle?.addEventListener("click", () => setDrawer(true));
   close?.addEventListener("click", () => setDrawer(false));
   drawer?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setDrawer(false)));
 
-  /* live method switcher */
   const live = document.querySelector("[data-live]");
   if (live) {
-    const buttons = live.querySelectorAll("[data-brand-set]");
-    buttons.forEach((btn) => {
+    live.querySelectorAll("[data-brand-set]").forEach((btn) => {
       btn.addEventListener("click", () => {
         live.setAttribute("data-brand", btn.getAttribute("data-brand-set"));
-        buttons.forEach((b) => b.classList.toggle("is-on", b === btn));
+        live.querySelectorAll("[data-brand-set]").forEach((b) => b.classList.toggle("is-on", b === btn));
       });
     });
   }
 
-  /* magnetic buttons */
-  const triad = document.getElementById("triad");
-  if (triad && matchMedia("(pointer: fine)").matches) {
-    triad.addEventListener("mousemove", (e) => {
-      const r = triad.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      triad.style.setProperty("--tx", x.toFixed(3));
-      triad.style.setProperty("--ty", y.toFixed(3));
-    });
-    triad.addEventListener("mouseleave", () => {
-      triad.style.setProperty("--tx", "0");
-      triad.style.setProperty("--ty", "0");
-    });
-  }
-
-  if (matchMedia("(pointer: fine)").matches) {
-    document.querySelectorAll(".btn").forEach((btn) => {
-      btn.addEventListener("mousemove", (e) => {
-        const r = btn.getBoundingClientRect();
-        const x = e.clientX - (r.left + r.width / 2);
-        const y = e.clientY - (r.top + r.height / 2);
-        btn.style.transform = `translate(${x * 0.18}px, ${y * 0.22}px)`;
-      });
-      btn.addEventListener("mouseleave", () => { btn.style.transform = ""; });
-    });
-  }
-
-  if (!matchMedia("(pointer: fine)").matches) {
-    document.documentElement.classList.add("no-hover");
-  }
+  if (!matchMedia("(pointer: fine)").matches) document.documentElement.classList.add("no-hover");
 })();
