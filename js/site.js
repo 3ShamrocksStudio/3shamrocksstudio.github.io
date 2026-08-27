@@ -58,6 +58,21 @@
   }
 
   /* magnetic buttons */
+  const triad = document.getElementById("triad");
+  if (triad && matchMedia("(pointer: fine)").matches) {
+    triad.addEventListener("mousemove", (e) => {
+      const r = triad.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      triad.style.setProperty("--tx", x.toFixed(3));
+      triad.style.setProperty("--ty", y.toFixed(3));
+    });
+    triad.addEventListener("mouseleave", () => {
+      triad.style.setProperty("--tx", "0");
+      triad.style.setProperty("--ty", "0");
+    });
+  }
+
   if (matchMedia("(pointer: fine)").matches) {
     document.querySelectorAll(".btn").forEach((btn) => {
       btn.addEventListener("mousemove", (e) => {

@@ -12,7 +12,7 @@
   const skipRequested =
     reduce ||
     location.hash === "#studio" ||
-    sessionStorage.getItem("3s-enter") === "1";
+    sessionStorage.getItem("3s-enter-v2") === "1";
 
   const canvas = document.getElementById("sky");
   const ctx = canvas.getContext("2d", { alpha: false });
@@ -182,11 +182,6 @@
     if (state === "bloom" || state === "out") return;
     state = "bloom";
     heart.classList.add("is-near", "is-bloom");
-    const real = document.getElementById("real-mark");
-    setTimeout(() => {
-      heart.classList.add("is-done");
-      real?.classList.add("show");
-    }, 380);
     plate.classList.add("show");
     setTimeout(() => enter.classList.add("show"), 280);
     hint.classList.remove("show");
@@ -195,7 +190,7 @@
   function openStudio() {
     if (state === "out") return;
     state = "out";
-    sessionStorage.setItem("3s-enter", "1");
+    sessionStorage.setItem("3s-enter-v2", "1");
     wipe.classList.add("go");
     cosmos.classList.add("exiting");
     setTimeout(() => {
