@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-brand="3s">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#e8e7ea">
+  <title>Contact — 3Shamrocks Studio</title>
+  <meta name="description" content="Start a project with 3Shamrocks Studio. Tel Aviv. markodave@gmail.com">
+  <link rel="icon" href="assets/studio/3S_logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/brands.css">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body class="page">
+<a class="skip" href="#studio">Skip to content</a>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="nav__brand" href="index.html">
+      <img class="nav__mark" src="assets/studio/3S_logo.png" alt="">
+      <img class="nav__word nav__word--light" src="assets/studio/3shamrocks_black.png" alt="3Shamrocks Studio">
+      <img class="nav__word nav__word--dark" src="assets/studio/3shamrocks.png" alt="">
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="work.html">Work</a>
+      <a href="method.html">Method</a>
+      <a href="about.html">Studio</a>
+      <a class="btn" href="contact.html">Let's talk</a>
+    </nav>
+    <button class="nav__toggle" id="nav-toggle" aria-label="Open menu" type="button"><span></span><span></span></button>
+  </div>
+</header>
+<div class="drawer" id="drawer" aria-hidden="true">
+  <button class="drawer__close" id="drawer-close" type="button" aria-label="Close">×</button>
+  <a href="work.html">Work</a>
+  <a href="method.html">Method</a>
+  <a href="about.html">Studio</a>
+  <a href="contact.html">Let's <span>talk</span></a>
+</div>
+
+<main id="studio">
+  <header class="page-hero">
+    <div class="wrap">
+      <p class="kicker">New business</p>
+      <h1>Let's grow<br>something.</h1>
+      <p>Tell me what you're building. I'll tell you if we're the right studio — and how fast it can ship.</p>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="wrap method-grid">
+      <form class="form" id="contact-form" action="mailto:markodave@gmail.com" method="post" enctype="text/plain">
+        <div>
+          <label for="name">Name</label>
+          <input id="name" name="name" required autocomplete="name" placeholder="Your name">
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
+        </div>
+        <div>
+          <label for="kind">What do you need?</label>
+          <select id="kind" name="kind">
+            <option>Product design</option>
+            <option>Brand + design system</option>
+            <option>Shipped web / app</option>
+            <option>Something else</option>
+          </select>
+        </div>
+        <div>
+          <label for="msg">The brief</label>
+          <textarea id="msg" name="message" required placeholder="What are we making, for whom, and when does it need to be real?"></textarea>
+        </div>
+        <button class="btn" type="submit">Send to Dave</button>
+      </form>
+      <aside class="leaf-card">
+        <p class="kicker">Direct</p>
+        <h3 style="font-family:var(--font-display);font-size:28px;letter-spacing:-.03em;margin:0 0 12px">Prefer a line?</h3>
+        <p><a href="mailto:markodave@gmail.com" style="color:var(--indigo);font-weight:600">markodave@gmail.com</a></p>
+        <p><a href="https://www.linkedin.com/in/davemarkovich" target="_blank" rel="noopener" style="color:var(--navy)">LinkedIn →</a></p>
+        <p style="margin-top:24px;color:color-mix(in srgb, var(--navy) 60%, #fff)">Tel Aviv time. Usually replies same day. No pitch decks required — a paragraph is enough.</p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="site-foot">
+    <div class="wrap">
+      <img src="assets/studio/3shamrocks_black.png" alt="3Shamrocks Studio">
+      <nav>
+        <a href="work.html">Work</a>
+        <a href="method.html">Method</a>
+        <a href="about.html">Studio</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <small>© 2026 3Shamrocks Studio. All rights reserved.</small>
+    </div>
+  </footer>
+</main>
+<script src="js/site.js"></script>
+<script>
+  document.getElementById("contact-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const n = encodeURIComponent(this.name.value.trim());
+    const em = encodeURIComponent(this.email.value.trim());
+    const k = encodeURIComponent(this.kind.value);
+    const m = encodeURIComponent(this.message.value.trim());
+    location.href = `mailto:markodave@gmail.com?subject=${k}%20—%20${n}&body=${m}%0A%0A—%20${n}%20(${em})`;
+  });
+</script>
+</body>
+</html>

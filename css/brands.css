@@ -1,0 +1,197 @@
+/* ============================================================================
+   BRAND WORLDS  —  example Layer-1 definitions
+   ----------------------------------------------------------------------------
+   Each block is ONE product's whole brand. Setting these knobs re-generates the
+   neutrals, radii, motion, type and colour of every component — so products
+   look like genuinely different worlds, all built on the same architecture.
+
+   This file is illustrative. A real product ships only its own block (plus the
+   shared tokens.css + components.css). To spin up a new brand, copy any block,
+   rename the data-brand, and tune the knobs. Nothing else changes.
+
+   Apply with  data-brand="trashure | shomer | milo | j8nix"  on the root.
+   (No data-brand = the 3S house brand defined in tokens.css.)
+   ============================================================================ */
+
+/* — 3S HOUSE (explicit alias of the :root defaults) ----------------------- */
+[data-brand="3s"] { /* inherits tokens.css :root — listed for completeness */ }
+
+/* ============================================================================
+   TRASHURE-HUNTERS™  —  playful undersea treasure hunt
+   World: warm sandy light / deep-ocean dark · rounded & bouncy · gold + teal
+   ============================================================================ */
+[data-brand="trashure"] {
+  --font-display: "Baloo 2", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, sans-serif;
+  --display-weight: 700;
+  --display-tracking: 0;
+
+  /* hero hue: treasure gold */
+  --brand-50:#fff5e0; --brand-100:#ffe7b3; --brand-200:#ffd479; --brand-300:#ffc14d;
+  --brand-400:#f7a92b; --brand-500:#ef8f12; --brand-600:#d4730a; --brand-700:#a8540a;
+  --brand-800:#7a3d0c; --brand-900:#52290a; --brand-950:#341a07;
+  /* signature: tropical teal */
+  --signature-400:#2dd4bf; --signature-500:#14b8a6; --signature-600:#0d9488;
+  --brand-gradient: linear-gradient(120deg,#ffc14d 0%,#ef8f12 45%,#0d9488 100%);
+  --brand-contrast:#301a06;   /* darkened to clear AA on the gold accent (4.9:1) */
+
+  --tint:#0e6b6b; --tint-amt:11%;       /* sandy-teal neutrals */
+  --radius-unit:17px;                    /* round, friendly */
+  --ease-spring: cubic-bezier(.34,1.7,.5,1);
+  --dur-scale:1.1;                       /* a touch bouncier */
+  --shadow-color: 23 56 56;
+}
+[data-brand="trashure"][data-mode="dark"],
+[data-brand="trashure"] [data-mode="dark"] { --tint:#0a4f57; --tint-amt:18%; }
+
+/* ============================================================================
+   SHOMERGENCY™  —  civic safety & guardian
+   World: cool authoritative navy · sharp & crisp · signal gold on navy · Hebrew-ready
+   ============================================================================ */
+[data-brand="shomer"] {
+  --font-display: "Sora", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-hebrew: "Heebo", "Inter", sans-serif;
+  --display-weight: 700;
+  --display-tracking: -.01em;
+
+  /* hero hue: authority navy-blue */
+  --brand-50:#e9eefb; --brand-100:#cfdaf5; --brand-200:#a3bce9; --brand-300:#6e92d8;
+  --brand-400:#3f6ac4; --brand-500:#2350a8; --brand-600:#1b3f87; --brand-700:#16336b;
+  --brand-800:#122850; --brand-900:#0e1d3a; --brand-950:#091227;
+  /* signature: signal gold */
+  --signature-400:#f5cb45; --signature-500:#e0a82e; --signature-600:#b9871f;
+  --brand-gradient: linear-gradient(120deg,#2350a8 0%,#16336b 60%,#e0a82e 130%);
+  --brand-contrast:#ffffff;
+
+  --tint:#1b2b4a; --tint-amt:10%;        /* cool steel neutrals */
+  --radius-unit:6px;                     /* sharp, official */
+  --dur-scale:.8;                        /* crisp, fast */
+  --shadow-color: 9 18 39;
+  /* civic semantic emphasis: danger reads as true alert red */
+  --danger:#dc2626; --danger-fg:#b91c1c;
+}
+
+/* ============================================================================
+   MILO  —  soft, warm companion for kids
+   World: warm cream / cocoa dark · pillowy round · peach + sage · gentle motion
+   ============================================================================ */
+[data-brand="milo"] {
+  --font-display: "Quicksand", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, sans-serif;
+  --display-weight: 600;
+  --display-tracking: 0;
+
+  /* hero hue: warm peach-coral */
+  --brand-50:#fff1ec; --brand-100:#ffded3; --brand-200:#ffc1ad; --brand-300:#ff9e80;
+  --brand-400:#fa7f5c; --brand-500:#ef6440; --brand-600:#cf4324; --brand-700:#ad3a23;
+  --brand-800:#83301f; --brand-900:#5c241a; --brand-950:#3a160f;
+  /* signature: soft sage */
+  --signature-400:#9ecf9e; --signature-500:#7bb37b; --signature-600:#5c925c;
+  --brand-gradient: linear-gradient(120deg,#ff9e80 0%,#ef6440 50%,#7bb37b 120%);
+  --brand-contrast:#ffffff;
+
+  --tint:#b06a4a; --tint-amt:8%;         /* warm cream neutrals */
+  --radius-unit:22px;                    /* pillowy, soft */
+  --ease-spring: cubic-bezier(.34,1.5,.5,1.05);
+  --dur-scale:1.25;                      /* gentle, slow */
+  --shadow-color: 92 36 26;
+}
+[data-brand="milo"][data-mode="dark"] { --tint:#7a4632; --tint-amt:14%; }
+
+/* ============================================================================
+   J8NIX™  —  premium, bold, high-stakes
+   World: near-black dark-first · razor sharp · electric gold + crimson edge
+   ============================================================================ */
+[data-brand="j8nix"] {
+  --font-display: "Oswald", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --display-weight: 600;
+  --display-tracking: .01em;
+
+  /* hero hue: electric premium gold */
+  --brand-50:#fdf6e3; --brand-100:#fbebbb; --brand-200:#f7d877; --brand-300:#f2c33f;
+  --brand-400:#e9ad1e; --brand-500:#d4920f; --brand-600:#ad720c; --brand-700:#85560d;
+  --brand-800:#5e3d0c; --brand-900:#3f2908; --brand-950:#271905;
+  /* signature: crimson edge */
+  --signature-400:#f0556b; --signature-500:#e11d48; --signature-600:#be123c;
+  --brand-gradient: linear-gradient(120deg,#f2c33f 0%,#d4920f 50%,#1a1410 110%);
+  --brand-contrast:#1a1206;
+
+  --tint:#2a2018; --tint-amt:14%;        /* warm charcoal neutrals */
+  --radius-unit:4px;                     /* razor sharp */
+  --dur-scale:.75;                       /* snappy */
+  --shadow-color: 0 0 0;
+  --shadow-strength:1.4;                 /* dramatic depth */
+}
+[data-brand="j8nix"][data-mode="dark"] { --tint:#3a2c1c; --tint-amt:16%; }
+
+/* ============================================================================
+   FAIRENT™ · הוגן  —  Israel-first rent-fairness, Hebrew/RTL
+   World: trustworthy deep indigo · fair-green signature · gold "scales" accent
+   Soft rounded · calm motion · cool violet neutrals · Heebo + Assistant
+   ----------------------------------------------------------------------------
+   Worked example mapping the product's REAL .ai palette onto the semantic roles.
+   Source of truth: Fairent/index.html token block (verified, not invented).
+   ============================================================================ */
+[data-brand="fairent"] {
+  --font-display: "Heebo", system-ui, sans-serif;
+  --font-body: "Assistant", "Heebo", system-ui, sans-serif;
+  --font-hebrew: "Heebo", "Assistant", sans-serif;
+  --display-weight: 700;
+  --display-tracking: -.01em;
+
+  /* hero hue: justice indigo (the real Fairent brand ramp) */
+  --brand-50:#efedfa; --brand-100:#ddd9f4; --brand-200:#b8b2e8; --brand-300:#8a82d8;
+  --brand-400:#5a4fc0; --brand-500:#3f33a0; --brand-600:#312783; --brand-700:#2a2070;
+  --brand-800:#241a63; --brand-900:#1c1450; --brand-950:#140d3b;
+  /* signature: fair-green ("the home") */
+  --signature-400:#a8d233; --signature-500:#95c11f; --signature-600:#789a18;
+  --brand-gradient: linear-gradient(135deg,#312783 0%,#241a63 55%,#3f33a0 100%);
+  --brand-contrast:#ffffff;
+
+  --tint:#312783; --tint-amt:8%;         /* cool violet-tinted neutrals */
+  --radius-unit:11px;                    /* soft rounded (sm 11 · md 16 · lg 25) */
+  --dur-scale:1.05;                      /* calm, trustworthy */
+  --shadow-color: 9 26 33;               /* teal-tinted elevation */
+
+  /* civic fairness scale mapped onto the semantic state roles */
+  --success:#5e8c14; --success-fg:#4a6f10;   /* "fair" */
+  --warning:#b07706; --warning-fg:#8a5e05;   /* "warn" */
+  --danger:#cc2f3a;  --danger-fg:#a51f29;    /* "alert" */
+  --info:#3f33a0;    --info-fg:#2a2070;       /* brand-keyed info */
+}
+/* In dark mode Fairent lives in a deep-indigo world and promotes green to accent */
+[data-brand="fairent"][data-mode="dark"],
+[data-brand="fairent"] [data-mode="dark"] { --tint:#241a63; --tint-amt:20%; }
+
+/* ============================================================================
+   CHORE ROYALE™  —  the family chore game show
+   World: vibrant royale-violet + game-show gold · round & bouncy · spotlight pop
+   Audience: kids 4–18 + parents. Feeling: a TV game show in your hand — fun,
+   fair, never babyish. Type: Fredoka (rounded, bubbly display) + Nunito (body).
+   AA measured: white on accent 7.99 (light) / 4.84 (dark); accent-text 9.26.
+   ============================================================================ */
+[data-brand="choreroyale"] {
+  --font-display: "Fredoka", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, sans-serif;
+  --display-weight: 600;
+  --display-tracking: 0;
+
+  /* hero hue: royale violet (the spotlight) */
+  --brand-50:#f6f1ff; --brand-100:#ece0ff; --brand-200:#d8c0ff; --brand-300:#bd95fb;
+  --brand-400:#8a4fe6; --brand-500:#7a30dc; --brand-600:#6a21c4; --brand-700:#561b9e;
+  --brand-800:#431679; --brand-900:#311155; --brand-950:#200b39;
+  /* signature: game-show gold (stars, crown, lights) */
+  --signature-400:#fbbf24; --signature-500:#f59e0b; --signature-600:#d97f08;
+  --brand-gradient: linear-gradient(120deg,#8a4fe6 0%,#7a30dc 45%,#c026d3 115%);
+  --brand-contrast:#ffffff;
+
+  --tint:#3b2d63; --tint-amt:8%;          /* violet-tinted neutrals */
+  --radius-unit:16px;                      /* round, playful (sm 16 · md 24 · lg 37) */
+  --ease-spring: cubic-bezier(.34,1.6,.5,1);
+  --dur-scale:1.1;                         /* a touch bouncy, game-show energy */
+  --shadow-color: 36 20 64;                /* violet-tinted elevation */
+}
+[data-brand="choreroyale"][data-mode="dark"],
+[data-brand="choreroyale"] [data-mode="dark"] { --tint:#2c1e4f; --tint-amt:16%; }

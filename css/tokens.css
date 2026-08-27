@@ -1,0 +1,197 @@
+/* ============================================================================
+   3SHAMROCKS STUDIO — TOKEN ARCHITECTURE  (the framework, not a fixed look)
+   v3.0 · LOCKED CANONICAL · © 2026 3Shamrocks Studio. All rights reserved.
+   Change policy: this contract is versioned. Adding a token or a [data-brand]
+   block is a minor bump; renaming/removing a Layer-2 semantic token is a MAJOR
+   bump and requires updating every product. See CHANGELOG.md + COMPLIANCE.md.
+   ----------------------------------------------------------------------------
+   This file is the studio's ENGINEERING STANDARD. It does NOT impose a palette.
+   It defines the *structure* every 3S product shares, and the *knobs* each
+   product's brand sets to generate its own distinct world.
+
+   LAYER 0  PRIMITIVES   — universal scales (spacing, type sizes, breakpoints,
+                           elevation formula, motion curves). Same for every
+                           product → shared studio craftsmanship.
+   LAYER 1  BRAND        — the per-product knobs: brand color ramp, neutral tint,
+                           fonts, radius personality, motion feel. Set ONE block
+                           per product → the whole UI re-generates.
+   LAYER 2  SEMANTIC     — meaning aliases (bg, surface, text, accent…) computed
+                           from Layer 1 + light/dark. Identical code everywhere;
+                           different output per brand.
+
+   A new product = one Layer-1 block. Components (Layer 3) never change.
+   The :root defaults below ARE the 3Shamrocks Studio house brand.
+   ============================================================================ */
+
+:root {
+  /* ===================== LAYER 0 — PRIMITIVES (universal) ================= */
+
+  /* Type SIZE scale — 1.250 major third, 16px base. Sizes are shared; the
+     FONT FAMILIES that fill them are a brand knob (Layer 1). */
+  --text-xs: .75rem;  --text-sm: .875rem; --text-base: 1rem;  --text-lg: 1.125rem;
+  --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.953rem; --text-4xl: 2.441rem;
+  --text-5xl: 3.052rem; --text-6xl: 3.815rem; --text-7xl: 4.768rem;
+
+  --weight-regular: 400; --weight-medium: 500; --weight-semibold: 600; --weight-bold: 700;
+  --leading-tight: 1.14; --leading-snug: 1.3; --leading-normal: 1.55; --leading-relaxed: 1.7;
+  --tracking-tight: -.02em; --tracking-normal: 0; --tracking-wide: .04em; --tracking-caps: .12em;
+
+  /* Spacing — 4px base ramp (shared rhythm) */
+  --space-0: 0; --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem;
+  --space-5: 1.5rem; --space-6: 2rem; --space-7: 2.5rem; --space-8: 3rem; --space-9: 4rem; --space-10: 6rem;
+
+  --container: 1180px;
+
+  /* ===================== LAYER 1 — BRAND KNOBS (per product) ==============
+     The :root values here are the 3S HOUSE brand. Every other product
+     overrides this same set of knobs in brands.css. */
+
+  /* — fonts — */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body:    "Inter", system-ui, -apple-system, sans-serif;
+  --font-hebrew:  "Heebo", "Inter", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --display-weight: 700;
+  --display-tracking: var(--tracking-tight);
+
+  /* — brand color ramp (the hero hue) — */
+  --brand-50: #eeecfb; --brand-100: #dcd8f6; --brand-200: #bcb4ee; --brand-300: #9a8ee4;
+  --brand-400: #7a6bd8; --brand-500: #5f4fcc; --brand-600: #4f41b8; --brand-700: #43388b;
+  --brand-800: #2e2a63; --brand-900: #1d1c42; --brand-950: #121233;
+  /* — signature / secondary accent (optional second colour) — */
+  --signature-400: #52cc7a; --signature-500: #2aa765; --signature-600: #18895b;
+  --brand-gradient: linear-gradient(120deg, var(--brand-500) 0%, var(--signature-500) 100%);
+  --brand-contrast: #ffffff;     /* text colour that sits on --brand-500/600 */
+
+  /* — neutral world: ONE tint knob drives the whole grey ramp — */
+  --tint: #2d3f54;               /* hue mixed into the neutrals */
+  --tint-amt: 9%;                /* 0% = pure grey, higher = more brand-tinted */
+
+  /* — radius personality: ONE unit drives all radii — */
+  --radius-unit: 11px;           /* sharp≈4 · medium≈10 · round≈16 · pillowy≈22 */
+
+  /* — motion personality — */
+  --ease: cubic-bezier(.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(.34, 1.4, .5, 1);
+  --dur-scale: 1;                /* <1 snappier, >1 softer */
+
+  /* — elevation strength — */
+  --shadow-color: 16 23 41;      /* rgb channels of the shadow tint */
+  --shadow-strength: 1;
+}
+
+/* ===================== DERIVED (do not edit per brand) ==================
+   Re-declared on :root AND on every [data-brand] scope. Custom properties
+   resolve their var() references at the element where they're DECLARED, so
+   deriving only at :root would freeze these for sub-brands. Re-declaring here
+   lets each branded scope regenerate its neutrals / radii / motion from its
+   OWN Layer-1 knobs. */
+:root, [data-brand] {
+  /* neutral ramp generated from --tint + --tint-amt */
+  --n-0:   #ffffff;
+  --n-25:  color-mix(in srgb, var(--tint) calc(var(--tint-amt) * .35), #f8fafc);
+  --n-50:  color-mix(in srgb, var(--tint) calc(var(--tint-amt) * .5),  #f1f4f8);
+  --n-100: color-mix(in srgb, var(--tint) calc(var(--tint-amt) * .7),  #e6eaf0);
+  --n-200: color-mix(in srgb, var(--tint) var(--tint-amt),             #d3d9e2);
+  --n-300: color-mix(in srgb, var(--tint) var(--tint-amt),             #b4bdca);
+  --n-400: color-mix(in srgb, var(--tint) var(--tint-amt),             #8893a4);
+  --n-500: color-mix(in srgb, var(--tint) var(--tint-amt),             #626d7e);
+  --n-600: color-mix(in srgb, var(--tint) var(--tint-amt),             #485160);
+  --n-700: color-mix(in srgb, var(--tint) calc(var(--tint-amt) * 1.4), #333b48);
+  --n-800: color-mix(in srgb, var(--tint) calc(var(--tint-amt) * 1.7), #212732);
+  --n-900: color-mix(in srgb, var(--tint) calc(var(--tint-amt) * 2),   #161b24);
+  --n-950: color-mix(in srgb, var(--tint) calc(var(--tint-amt) * 2.4), #0d111a);
+
+  /* radii from the unit */
+  --radius-xs:  calc(var(--radius-unit) * .45);
+  --radius-sm:  var(--radius-unit);
+  --radius-md:  calc(var(--radius-unit) * 1.5);
+  --radius-lg:  calc(var(--radius-unit) * 2.3);
+  --radius-xl:  calc(var(--radius-unit) * 3.4);
+  --radius-2xl: calc(var(--radius-unit) * 4.6);
+  --radius-pill: 999px;
+
+  /* durations from the scale */
+  --dur-fast: calc(120ms * var(--dur-scale));
+  --dur-base: calc(200ms * var(--dur-scale));
+  --dur-slow: calc(320ms * var(--dur-scale));
+
+  /* elevation from the colour + strength */
+  --shadow-xs: 0 1px 2px rgb(var(--shadow-color) / calc(.06 * var(--shadow-strength)));
+  --shadow-sm: 0 1px 3px rgb(var(--shadow-color) / calc(.10 * var(--shadow-strength))), 0 1px 2px rgb(var(--shadow-color) / calc(.06 * var(--shadow-strength)));
+  --shadow-md: 0 4px 12px rgb(var(--shadow-color) / calc(.12 * var(--shadow-strength))), 0 2px 4px rgb(var(--shadow-color) / calc(.06 * var(--shadow-strength)));
+  --shadow-lg: 0 12px 28px rgb(var(--shadow-color) / calc(.16 * var(--shadow-strength))), 0 4px 8px rgb(var(--shadow-color) / calc(.06 * var(--shadow-strength)));
+  --shadow-xl: 0 24px 50px rgb(var(--shadow-color) / calc(.22 * var(--shadow-strength))), 0 8px 16px rgb(var(--shadow-color) / calc(.08 * var(--shadow-strength)));
+
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* ============================================================================
+   LAYER 2 — SEMANTIC TOKENS
+   Same code for every product. Reads Layer 1, re-maps for light & dark.
+   Product code should reference THESE, never the primitives.
+   ============================================================================ */
+:root, [data-mode="light"], [data-brand] {
+  color-scheme: light;
+  --bg: var(--n-25); --bg-subtle: var(--n-50);
+  --surface: var(--n-0); --surface-raised: var(--n-0); --surface-sunken: var(--n-50);
+  --overlay: rgb(var(--shadow-color) / .45);
+
+  --text: var(--n-900); --text-secondary: var(--n-600); --text-muted: var(--n-500);
+  --text-on-accent: var(--brand-contrast); --text-inverse: var(--n-0);
+
+  --border: var(--n-200); --border-strong: var(--n-300); --border-subtle: var(--n-100);
+  --field-bg: var(--n-0); --field-border: var(--n-300);
+
+  --accent: var(--brand-600); --accent-hover: var(--brand-700);
+  --accent-soft: var(--brand-50); --accent-text: var(--brand-700);
+  --accent-gradient: var(--brand-gradient);
+
+  /* semantic states — a shared AA-safe baseline; brands may override hues */
+  --success: #16a34a; --success-bg: #dcfce7; --success-fg: #15803d;
+  --warning: #f59e0b; --warning-bg: #fef3c7; --warning-fg: #b45309;
+  --danger:  #e5484d; --danger-bg:  #fee2e2; --danger-fg:  #c4373c;
+  --info:    #3b82f6; --info-bg:    #dbeafe; --info-fg:    #2563eb;
+
+  /* role aliases (the studio's role vocabulary) — safe≡success, caution≡warning.
+     Lazy substitution means these track any [data-mode]/[data-brand] override of
+     the underlying state automatically. Reference whichever name reads clearest. */
+  --safe: var(--success); --safe-bg: var(--success-bg); --safe-fg: var(--success-fg);
+  --caution: var(--warning); --caution-bg: var(--warning-bg); --caution-fg: var(--warning-fg);
+}
+
+[data-mode="dark"] {
+  color-scheme: dark;
+  --bg: var(--n-950); --bg-subtle: var(--n-900);
+  --surface: var(--n-850, var(--n-900)); --surface-raised: var(--n-800); --surface-sunken: var(--n-900);
+  --overlay: rgb(4 7 14 / .66);
+
+  --text: var(--n-50); --text-secondary: var(--n-300);
+  /* muted lifted to clear WCAG AA (≥4.5:1) on raised dark surfaces — n-400 alone
+     measured 4.17:1 on --n-800; this 50/50 mix measures ≥5.3:1 everywhere. */
+  --text-muted: color-mix(in srgb, var(--n-400) 50%, var(--n-300));
+  --text-on-accent: var(--brand-contrast); --text-inverse: var(--n-950);
+
+  --border: color-mix(in srgb, var(--n-300) 16%, transparent);
+  --border-strong: color-mix(in srgb, var(--n-300) 28%, transparent);
+  --border-subtle: color-mix(in srgb, var(--n-300) 9%, transparent);
+  --field-bg: var(--n-900); --field-border: color-mix(in srgb, var(--n-300) 22%, transparent);
+
+  --accent: var(--brand-400); --accent-hover: var(--brand-300);
+  --accent-soft: color-mix(in srgb, var(--brand-500) 20%, transparent); --accent-text: var(--brand-300);
+  --accent-gradient: var(--brand-gradient);
+
+  --success: #34d399; --success-bg: color-mix(in srgb, #16a34a 22%, var(--n-900)); --success-fg: #34d399;
+  --warning: #fbbf24; --warning-bg: color-mix(in srgb, #f59e0b 22%, var(--n-900)); --warning-fg: #fbbf24;
+  --danger:  #f87171; --danger-bg:  color-mix(in srgb, #e5484d 24%, var(--n-900)); --danger-fg:  #f87171;
+  --info:    #60a5fa; --info-bg:    color-mix(in srgb, #3b82f6 24%, var(--n-900)); --info-fg:    #60a5fa;
+
+  --shadow-color: 0 0 0;
+  --shadow-md: 0 4px 12px rgb(0 0 0 / .4), 0 2px 4px rgb(0 0 0 / .3);
+  --shadow-lg: 0 12px 28px rgb(0 0 0 / .5), 0 4px 8px rgb(0 0 0 / .3);
+  --shadow-xl: 0 24px 50px rgb(0 0 0 / .6), 0 8px 16px rgb(0 0 0 / .4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-scale: 0.001; }
+}
