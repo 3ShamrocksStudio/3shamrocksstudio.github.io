@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080808">
+<title>Capabilities — 3Shamrocks Studio</title>
+<meta name="description" content="UX/UI, Product Design, Design Systems, AI-Augmented Workflow, Engineering. 20+ years experience.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#efefef;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.w{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+nav{position:fixed;inset-inline:0;top:0;z-index:100;height:56px;background:rgba(8,8,8,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center}
+.nav-in{display:flex;align-items:center;justify-content:space-between;width:100%;height:100%}
+.nav-logo img{height:26px;filter:brightness(0) invert(1);opacity:.9}
+.nav-links{display:flex;align-items:center;gap:clamp(16px,3vw,36px)}
+.nav-links a{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;color:rgba(239,239,239,.55);transition:color .18s}
+.nav-links a:hover,.nav-links a.active{color:#efefef}
+.nav-cta{height:36px;padding:0 18px;background:linear-gradient(120deg,#8ae87f,#3dbb66 55%,#18895b);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;border-radius:999px;display:flex;align-items:center}
+main{padding-top:56px}
+.hero{padding:clamp(72px,9vw,120px) 0 clamp(48px,6vw,80px);border-bottom:1px solid rgba(255,255,255,.07)}
+.eyebrow{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#3dbb66;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';width:18px;height:1.5px;background:#3dbb66}
+h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(48px,9vw,128px);line-height:.9;letter-spacing:-.04em;color:#efefef}
+h1 .g{background:linear-gradient(120deg,#8ae87f,#3dbb66);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.caps-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.07);margin-top:clamp(48px,6vw,80px)}
+.cap{background:#111827;padding:clamp(28px,3.5vw,48px)}
+.cap-n{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,239,239,.28);margin-bottom:14px}
+.cap-t{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(20px,2.5vw,30px);color:#efefef;margin-bottom:18px;letter-spacing:-.02em}
+ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+ul li{font-size:14px;font-weight:300;color:rgba(239,239,239,.6);padding-inline-start:14px;position:relative;line-height:1.5}
+ul li::before{content:'';position:absolute;inset-inline-start:0;top:10px;width:6px;height:1.5px;background:#3dbb66}
+.process{padding:clamp(48px,6vw,80px) 0;border-top:1px solid rgba(255,255,255,.07)}
+.process h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,4vw,48px);color:#efefef;margin-bottom:clamp(32px,4vw,56px);letter-spacing:-.03em}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.07)}
+.step{background:#111827;padding:clamp(20px,2.5vw,32px)}
+.step-n{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:rgba(61,187,102,.2);letter-spacing:-.04em;margin-bottom:12px}
+.step-t{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:#efefef;margin-bottom:8px}
+.step-d{font-size:13px;font-weight:300;color:rgba(239,239,239,.5);line-height:1.65}
+footer{padding:clamp(24px,3vw,36px) 0;border-top:1px solid rgba(255,255,255,.07)}
+.footer-in{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.footer-logo img{height:20px;filter:brightness(0) invert(1);opacity:.3}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-size:11px;color:rgba(239,239,239,.28);transition:color .15s}
+.footer-links a:hover{color:#efefef}
+.footer-copy{font-size:11px;color:rgba(239,239,239,.2)}
+@media(max-width:768px){.caps-grid,.steps{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav><div class="w nav-in">
+  <a href="/" class="nav-logo"><img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png" alt="3Shamrocks Studio"></a>
+  <div class="nav-links">
+    <a href="/works/">Works</a><a href="/about/">About</a>
+    <a href="/capabilities/" class="active">Capabilities</a>
+    <a href="mailto:markodave@gmail.com" class="nav-cta">Let's talk</a>
+  </div>
+</div></nav>
+<main>
+  <section class="hero"><div class="w">
+    <div class="eyebrow">What we do</div>
+    <h1>Full-stack<br>design <span class="g">studio.</span></h1>
+    <div class="caps-grid">
+      <div class="cap"><div class="cap-n">01</div><div class="cap-t">Product Design</div><ul><li>UX Research & Strategy</li><li>UI Design & Prototyping</li><li>Design Systems Architecture</li><li>Mobile — iOS · Android · PWA</li><li>Web Applications & SaaS</li><li>HealthTech · Civic · Consumer</li></ul></div>
+      <div class="cap"><div class="cap-n">02</div><div class="cap-t">Brand & Identity</div><ul><li>Brand Strategy & Positioning</li><li>Visual Identity Systems</li><li>Logo & Wordmark Design</li><li>Brand Language & Voice</li><li>Launch & GTM Assets</li><li>Product Branding</li></ul></div>
+      <div class="cap"><div class="cap-n">03</div><div class="cap-t">AI-Augmented Workflow</div><ul><li>6-week scope in 10 days</li><li>AI-assisted design systems</li><li>Rapid prototyping with Claude</li><li>AI content generation</li><li>Automated QA & testing</li><li>Build-and-ship sprints</li></ul></div>
+      <div class="cap"><div class="cap-n">04</div><div class="cap-t">Engineering</div><ul><li>React Native · Expo · EAS</li><li>Web — HTML · CSS · JS · PWA</li><li>Firebase · Supabase · Cloudflare</li><li>Twilio · OpenAI · Anthropic APIs</li><li>GitHub CI/CD · App Store</li><li>Design to deployed product</li></ul></div>
+    </div>
+  </div></section>
+  <section class="process"><div class="w">
+    <h2>How we work</h2>
+    <div class="steps">
+      <div class="step"><div class="step-n">01</div><div class="step-t">Understand</div><div class="step-d">Deep dive into the problem, the user, and the market. No assumptions.</div></div>
+      <div class="step"><div class="step-n">02</div><div class="step-t">Design</div><div class="step-d">AI-augmented design sprints. Wireframes, system, visual design in parallel.</div></div>
+      <div class="step"><div class="step-n">03</div><div class="step-t">Build</div><div class="step-d">We build what we design. From Figma to deployed product, no handoff gaps.</div></div>
+      <div class="step"><div class="step-n">04</div><div class="step-t">Ship</div><div class="step-d">Live. Tested. Verified. We stay until it works in the real world.</div></div>
+    </div>
+  </div></section>
+</main>
+<footer><div class="w"><div class="footer-in">
+  <div class="footer-logo"><img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png" alt="3Shamrocks Studio"></div>
+  <div class="footer-links"><a href="/">Home</a><a href="/works/">Works</a><a href="/about/">About</a><a href="mailto:markodave@gmail.com">Contact</a></div>
+  <div class="footer-copy">© 2026 3Shamrocks Studio LLC</div>
+</div></div></footer>
+</body>
+</html>
