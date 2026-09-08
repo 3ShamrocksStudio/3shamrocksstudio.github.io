@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<title>10-Day AI Design Sprint — 3Shamrocks Studio</title>
+<meta name="description" content="Fix your biggest UX problem in 10 days. Fixed price. AI-augmented. No ambiguity. By 3Shamrocks Studio.">
+<meta property="og:title" content="10-Day AI Design Sprint">
+<meta property="og:description" content="Fix your biggest UX problem in 10 days. Fixed price. AI-augmented.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#080808;color:#efefef;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.w{max-width:1100px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+
+/* NAV */
+nav{height:56px;background:rgba(8,8,8,.95);border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;position:sticky;top:0;z-index:10;backdrop-filter:blur(20px)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;width:100%;height:100%}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;
+  letter-spacing:.06em;color:rgba(239,239,239,.7);display:flex;align-items:center;gap:8px}
+.nav-logo img{height:22px;filter:brightness(0) invert(1);opacity:.8}
+.nav-cta{height:36px;padding:0 20px;background:linear-gradient(120deg,#8ae87f,#3dbb66,#18895b);
+  color:#fff;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:.04em;border-radius:999px;display:flex;align-items:center;
+  box-shadow:0 4px 20px -4px rgba(61,187,102,.5)}
+
+/* HERO */
+.hero{padding:clamp(72px,10vw,140px) 0 clamp(56px,7vw,100px);border-bottom:1px solid rgba(255,255,255,.07)}
+.badge{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(61,187,102,.1);border:1px solid rgba(61,187,102,.25);
+  border-radius:999px;padding:6px 16px;
+  font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:#8ae87f;margin-bottom:28px}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#3dbb66;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+h1{font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:clamp(52px,10vw,140px);line-height:.88;letter-spacing:-.04em;
+  color:#efefef;margin-bottom:clamp(20px,3vw,36px)}
+h1 .g{background:linear-gradient(120deg,#8ae87f,#3dbb66);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(16px,2.2vw,22px);font-weight:300;
+  color:rgba(239,239,239,.65);line-height:1.7;max-width:52ch;margin-bottom:40px}
+.hero-sub strong{color:#efefef;font-weight:600}
+.cta-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.btn-primary{height:56px;padding:0 32px;
+  background:linear-gradient(135deg,#3dbb66,#8ae87f);
+  color:#050e05;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:800;
+  letter-spacing:.04em;border-radius:999px;display:flex;align-items:center;gap:10px;
+  box-shadow:0 12px 40px -8px rgba(61,187,102,.6);transition:filter .2s,transform .15s}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.btn-ghost{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:400;
+  color:rgba(239,239,239,.5);border-bottom:1px solid rgba(239,239,239,.2);
+  padding-bottom:2px;transition:color .2s}
+.btn-ghost:hover{color:#efefef}
+.price-tag{margin-top:32px;display:flex;align-items:baseline;gap:8px}
+.price-main{font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,5vw,52px);
+  font-weight:700;color:#efefef;letter-spacing:-.03em}
+.price-range{font-size:clamp(16px,2vw,20px);font-weight:300;color:rgba(239,239,239,.5)}
+.price-note{font-size:13px;color:rgba(239,239,239,.35);margin-top:4px}
+
+/* WHAT YOU GET */
+.section{padding:clamp(56px,7vw,96px) 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.sec-label{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:500;
+  letter-spacing:.2em;text-transform:uppercase;color:rgba(239,239,239,.3);
+  margin-bottom:clamp(32px,4vw,56px);display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.days{display:grid;grid-template-columns:1fr;gap:1px;background:rgba(255,255,255,.07)}
+.day{background:#111827;padding:clamp(20px,2.5vw,32px);display:grid;grid-template-columns:80px 1fr;gap:24px;align-items:start}
+.day-n{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4vw,42px);
+  font-weight:700;color:transparent;-webkit-text-stroke:1.5px rgba(61,187,102,.35);letter-spacing:-.03em}
+.day-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(17px,2vw,22px);
+  color:#efefef;margin-bottom:6px}
+.day-desc{font-size:clamp(13px,1.5vw,15px);font-weight:300;color:rgba(239,239,239,.6);line-height:1.65}
+.day-tag{display:inline-flex;margin-top:10px;font-family:'Space Grotesk',sans-serif;
+  font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 10px;background:rgba(61,187,102,.08);border:1px solid rgba(61,187,102,.2);color:#3dbb66}
+
+/* WHO */
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.07)}
+.who-card{background:#111827;padding:clamp(20px,2.5vw,32px)}
+.who-n{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:rgba(239,239,239,.28);margin-bottom:10px}
+.who-t{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(17px,2vw,22px);
+  color:#efefef;margin-bottom:8px}
+.who-d{font-size:13px;font-weight:300;color:rgba(239,239,239,.55);line-height:1.65}
+
+/* WHY */
+.why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.07)}
+.why{background:#111827;padding:clamp(24px,3vw,40px)}
+.why-em{font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:clamp(28px,4vw,48px);letter-spacing:-.03em;color:#efefef;margin-bottom:8px}
+.why-em .g{color:#3dbb66}
+.why-label{font-size:13px;font-weight:300;color:rgba(239,239,239,.5)}
+
+/* CTA BAND */
+.cta-band{padding:clamp(72px,9vw,120px) 0;text-align:center}
+.cta-h{font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:clamp(40px,7vw,96px);line-height:.9;letter-spacing:-.04em;
+  color:#efefef;margin-bottom:clamp(16px,2.5vw,28px)}
+.cta-h .g{background:linear-gradient(120deg,#8ae87f,#3dbb66);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cta-sub{font-size:clamp(15px,2vw,18px);font-weight:300;color:rgba(239,239,239,.6);
+  max-width:44ch;margin:0 auto clamp(32px,4vw,48px);line-height:1.7}
+.avail{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;color:rgba(61,187,102,.7);margin-top:24px}
+
+/* FOOTER */
+footer{border-top:1px solid rgba(255,255,255,.07);padding:clamp(24px,3vw,36px) 0}
+.footer-in{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.f-logo img{height:20px;filter:brightness(0) invert(1);opacity:.3}
+.f-copy{font-size:11px;color:rgba(239,239,239,.2)}
+.f-links{display:flex;gap:24px}
+.f-links a{font-size:11px;color:rgba(239,239,239,.28);transition:color .15s}
+.f-links a:hover{color:#efefef}
+
+@media(max-width:768px){
+  .who-grid,.why-grid{grid-template-columns:1fr}
+  .day{grid-template-columns:56px 1fr;gap:16px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="w nav-in">
+    <a href="https://3shamrocksstudio.github.io/" class="nav-logo">
+      <img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png" alt="">
+      3SHAMROCKS STUDIO
+    </a>
+    <a href="mailto:markodave@gmail.com?subject=Design Sprint Inquiry" class="nav-cta">Book a sprint →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="w">
+    <div class="badge">3 spots available — September 2026</div>
+    <h1>Your biggest<br>UX problem.<br><span class="g">Fixed in 10 days.</span></h1>
+    <p class="hero-sub">AI-augmented design sprint. <strong>Fixed price, fixed scope,</strong> tangible deliverable. No ambiguity, no agency bloat, no waiting 3 months to start. You bring the problem. We bring 20 years of design judgment, now running at AI speed.</p>
+    <div class="cta-row">
+      <a href="mailto:markodave@gmail.com?subject=Design Sprint — Let's Talk" class="btn-primary">✉ Let's talk — markodave@gmail.com</a>
+      <a href="https://www.linkedin.com/in/davemarkovich" target="_blank" class="btn-ghost">LinkedIn ↗</a>
+    </div>
+    <div class="price-tag">
+      <div>
+        <div class="price-main">₪12,000 – ₪18,000</div>
+        <div class="price-note">Fixed price. Scoped before we start. No surprises.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="w">
+    <div class="sec-label"><span>What happens in 10 days</span><span>Day by day</span></div>
+    <div class="days">
+      <div class="day">
+        <div class="day-n">1–2</div>
+        <div>
+          <div class="day-title">Deep Audit</div>
+          <div class="day-desc">We map your current user flows, identify the highest-friction points, and align on exactly what we're solving. You get a prioritized issue list before day 3 starts.</div>
+          <div class="day-tag">Deliverable: UX audit + scope confirmation</div>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-n">3–7</div>
+        <div>
+          <div class="day-title">Design Sprint</div>
+          <div class="day-desc">AI-augmented design for the agreed scope. New wireframes, user flows, high-fidelity screens. We move at a speed that used to require a full team.</div>
+          <div class="day-tag">Deliverable: New designs for agreed scope</div>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-n">8–9</div>
+        <div>
+          <div class="day-title">Refinement</div>
+          <div class="day-desc">One round of structured feedback incorporated. Design system foundations documented. Edge cases handled.</div>
+          <div class="day-tag">Deliverable: Refined screens + component notes</div>
+        </div>
+      </div>
+      <div class="day">
+        <div class="day-n">10</div>
+        <div>
+          <div class="day-title">Handoff</div>
+          <div class="day-desc">Complete Figma file, annotated specs, design tokens if applicable. Everything your engineers need to build without asking questions.</div>
+          <div class="day-tag">Deliverable: Production-ready Figma + specs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="w">
+    <div class="sec-label"><span>Who this is for</span></div>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-n">01</div>
+        <div class="who-t">HealthTech & MedTech</div>
+        <div class="who-d">Clinical workflows, patient apps, compliance UX, practitioner dashboards. 20+ years of HealthTech-specific design experience.</div>
+      </div>
+      <div class="who-card">
+        <div class="who-n">02</div>
+        <div class="who-t">AI & SaaS Startups</div>
+        <div class="who-d">Products where the underlying tech is strong but the UX makes users hesitate. Onboarding, activation, retention — we know where the friction hides.</div>
+      </div>
+      <div class="who-card">
+        <div class="who-n">03</div>
+        <div class="who-t">Series A–C Companies</div>
+        <div class="who-d">Growing fast but design hasn't kept pace. You need design system foundations and a clear visual language before the next funding round.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="w">
+    <div class="sec-label"><span>Why this works</span></div>
+    <div class="why-grid">
+      <div class="why">
+        <div class="why-em">6 weeks<br>→ <span class="g">10 days</span></div>
+        <div class="why-label">AI-augmented workflow. Same quality. A fraction of the time.</div>
+      </div>
+      <div class="why">
+        <div class="why-em">Zero<br><span class="g">surprises</span></div>
+        <div class="why-label">Fixed price, fixed scope. Agreed before we start. No agency billing shock.</div>
+      </div>
+      <div class="why">
+        <div class="why-em">20<span class="g">+</span><br>years</div>
+        <div class="why-label">Principal-level design on every project. No junior handoffs.</div>
+      </div>
+      <div class="why">
+        <div class="why-em">Tel Aviv<span class="g">→</span>Global</div>
+        <div class="why-label">Israeli-market expertise. International product design experience.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="w">
+    <h2 class="cta-h">3 spots.<br><span class="g">September.</span></h2>
+    <p class="cta-sub">If you have a UX problem that's been on the list but keeps getting deprioritized — this is the fastest way to close it. One email, one call, then we start.</p>
+    <a href="mailto:markodave@gmail.com?subject=Design Sprint Inquiry — September" class="btn-primary" style="margin:0 auto;display:inline-flex">
+      ✉ markodave@gmail.com
+    </a>
+    <div class="avail">● 3 spots available this month</div>
+  </div>
+</section>
+
+<footer>
+  <div class="w"><div class="footer-in">
+    <div class="f-logo"><img src="https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/main/assets/studio/3shamrocks.png" alt="3Shamrocks Studio"></div>
+    <div class="f-links">
+      <a href="https://3shamrocksstudio.github.io/">Studio</a>
+      <a href="https://3shamrocksstudio.github.io/works/">Works</a>
+      <a href="https://www.linkedin.com/in/davemarkovich" target="_blank">LinkedIn</a>
+    </div>
+    <div class="f-copy">© 2026 3Shamrocks Studio LLC · Tel Aviv</div>
+  </div></div>
+</footer>
+</body>
+</html>
