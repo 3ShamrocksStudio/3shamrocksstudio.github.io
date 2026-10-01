@@ -1,17 +1,17 @@
-/* 3Shamrocks Studio — house site. White paper, navy ink, shamrock heart.
+/* 3Shamrocks Studio — house site. White paper, warm ink, gold heart.
    Aligned to 3shamrocks.com. © 2026 3Shamrocks Studio. */
 
 :root {
-  --navy: #2d3f54;
-  --shamrock: #52cc7a;
-  --shamrock-light: #7cfc90;
-  --shamrock-deep: #18895b;
-  --cream: #f7f6f8;
+  --navy: #1e315f;
+  --gold: #E0A828;
+  --gold-light: #F5C840;
+  --gold-deep: #C09020;
+  --cream: #fbf7ef;
   --white: #ffffff;
-  --indigo: #5f4fcc;
-  --ink: #2d3f54;
-  --muted: #5c6b7c;
-  --line: rgba(45, 63, 84, .12);
+  --indigo: #1e315f;
+  --ink: #23170a;
+  --muted: #6f6253;
+  --line: rgba(35, 23, 10, .12);
   --ease: cubic-bezier(.2, 0, 0, 1);
   --nav-h: 72px;
 }
@@ -22,13 +22,13 @@ html, body { margin: 0; min-height: 100%; }
 body {
   font-family: Inter, system-ui, sans-serif;
   font-size: 16px; line-height: 1.55;
-  color: var(--navy); background: var(--white);
+  color: var(--ink); background: var(--white);
   -webkit-font-smoothing: antialiased;
 }
 img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; }
-:focus-visible { outline: 3px solid color-mix(in srgb, var(--shamrock) 70%, transparent); outline-offset: 2px; }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--gold) 70%, transparent); outline-offset: 2px; }
 
 .skip {
   position: absolute; left: 12px; top: -48px; z-index: 100;
@@ -60,15 +60,15 @@ body.studio-open .nav, body.page .nav { opacity: 1; pointer-events: auto; }
 .nav--cosmic .nav__word--dark { display: block; }
 .nav__links { display: none; align-items: center; gap: 28px; }
 .nav__links a {
-  font-family: "Space Grotesk", sans-serif; font-size: 15px; font-weight: 500; color: var(--navy);
+  font-family: "Space Grotesk", sans-serif; font-size: 15px; font-weight: 500; color: var(--ink);
 }
-.nav__links a:hover, .nav__links a.is-active { color: var(--shamrock-deep); }
+.nav__links a:hover, .nav__links a.is-active { color: var(--gold-deep); }
 .nav--cosmic .nav__links a { color: #fff; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
   height: 44px; padding: 0 20px; border: 0; border-radius: 999px;
   font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 14px;
-  background: var(--shamrock); color: #0d2a18;
+  background: var(--gold); color: #23170a;
   transition: transform .2s var(--ease), filter .2s;
 }
 .btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
@@ -91,12 +91,12 @@ body.studio-open .nav, body.page .nav { opacity: 1; pointer-events: auto; }
 .drawer.is-open { transform: none; }
 .drawer a {
   font-family: "Space Grotesk", sans-serif; font-weight: 700;
-  font-size: clamp(36px, 10vw, 56px); letter-spacing: -.03em; line-height: 1.12; color: var(--navy);
+  font-size: clamp(36px, 10vw, 56px); letter-spacing: -.03em; line-height: 1.12; color: var(--ink);
 }
 .drawer__close { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; border: 0; background: 0; font-size: 28px; }
 
 /* INTRO */
-#cosmos { position: fixed; inset: 0; z-index: 30; background: #0a0e16; overflow: hidden; }
+#cosmos { position: fixed; inset: 0; z-index: 30; background: #fbf7ef; overflow: hidden; }
 #cosmos .plant { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 #veil { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 body.studio-open #cosmos { display: none; }
@@ -117,7 +117,7 @@ body.studio-open .cursor, html.no-hover .cursor, body.page .cursor { display: no
 .intro-plate img { height: clamp(36px, 7vw, 58px); margin: 0 auto 10px; }
 .intro-plate p {
   margin: 0; font-family: "Space Grotesk", sans-serif; font-size: 12px;
-  letter-spacing: .22em; text-transform: uppercase; color: rgba(232,231,234,.8);
+  letter-spacing: .22em; text-transform: uppercase; color: rgba(35,23,10,.7);
 }
 .enter {
   position: absolute; left: 50%; bottom: 12%; transform: translateX(-50%);
@@ -129,14 +129,14 @@ body.studio-open .cursor, html.no-hover .cursor, body.page .cursor { display: no
   display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 28px;
   border-radius: 999px; font-family: "Space Grotesk", sans-serif; font-weight: 600;
   letter-spacing: .1em; text-transform: uppercase; font-size: 13px;
-  color: #0d2a18; background: var(--shamrock);
+  color: #23170a; background: var(--gold);
 }
 .hint {
   position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%);
   font-family: "Space Grotesk", sans-serif; font-size: 11px; letter-spacing: .2em;
   text-transform: uppercase; color: transparent; transition: color 1s; z-index: 3;
 }
-.hint.show { color: rgba(124,252,144,.55); }
+.hint.show { color: rgba(224,168,40,.45); }
 .skip-intro {
   position: absolute; top: 22px; right: 22px; z-index: 4; background: 0; border: 0;
   font-family: "Space Grotesk", sans-serif; font-size: 12px; letter-spacing: .12em;
@@ -165,7 +165,7 @@ body:not(.studio-open) #studio { visibility: hidden; }
   font-size: clamp(36px, 7vw, 68px); letter-spacing: -.035em; line-height: .98;
   margin: 0 0 18px;
 }
-.hero h1 em { font-style: normal; color: var(--shamrock-deep); }
+.hero h1 em { font-style: normal; color: var(--gold-deep); }
 .hero__lead { max-width: 42ch; margin: 0 auto; color: var(--muted); font-size: 18px; }
 
 .expertise { padding: 24px 0 72px; }
@@ -192,8 +192,8 @@ body:not(.studio-open) #studio { visibility: hidden; }
   border: 1px solid var(--line);
   transition: transform .35s var(--ease), box-shadow .35s var(--ease);
 }
-.card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -24px rgba(45,63,84,.35); }
-.card__media { position: relative; aspect-ratio: 16/10; overflow: hidden; background: #e8eef2; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -24px rgba(35,23,10,.25); }
+.card__media { position: relative; aspect-ratio: 16/10; overflow: hidden; background: #efeadd; }
 .card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
 .card:hover .card__media img { transform: scale(1.04); }
 .card h3 {
@@ -205,7 +205,7 @@ body:not(.studio-open) #studio { visibility: hidden; }
   position: absolute; top: 12px; right: 12px;
   font-family: "Space Grotesk", sans-serif; font-size: 10px; font-weight: 600;
   letter-spacing: .12em; text-transform: uppercase;
-  background: #fff; color: var(--navy); padding: 5px 10px; border-radius: 999px;
+  background: #fff; color: var(--ink); padding: 5px 10px; border-radius: 999px;
 }
 
 .dave { padding: 80px 0; }
@@ -213,7 +213,7 @@ body:not(.studio-open) #studio { visibility: hidden; }
 @media (min-width: 860px) { .dave__grid { grid-template-columns: 1.15fr .85fr; gap: 64px; } }
 .kicker {
   font-family: "Space Grotesk", sans-serif; font-size: 12px; letter-spacing: .18em;
-  text-transform: uppercase; color: var(--shamrock-deep); margin: 0 0 12px;
+  text-transform: uppercase; color: var(--gold-deep); margin: 0 0 12px;
 }
 .dave h2 {
   font-family: "Space Grotesk", sans-serif; font-size: clamp(40px, 6vw, 64px);
@@ -231,7 +231,7 @@ body:not(.studio-open) #studio { visibility: hidden; }
   font-family: "Space Grotesk", sans-serif; font-size: clamp(32px, 6vw, 56px);
   letter-spacing: -.03em; margin: 0 0 24px;
 }
-.cta .mail { display: inline-block; margin-left: 16px; color: var(--shamrock-light); font-family: "Space Grotesk", sans-serif; }
+.cta .mail { display: inline-block; margin-left: 16px; color: var(--gold-light); font-family: "Space Grotesk", sans-serif; }
 
 .page-hero { padding: calc(var(--nav-h) + 48px) 0 32px; }
 .page-hero h1 {
@@ -256,7 +256,7 @@ body:not(.studio-open) #studio { visibility: hidden; }
 .form label { font-size: 13px; font-weight: 600; }
 .form input, .form textarea, .form select {
   width: 100%; border-radius: 12px; border: 1.5px solid var(--line);
-  background: #fff; color: var(--navy); padding: 12px 14px; font: inherit;
+  background: #fff; color: var(--ink); padding: 12px 14px; font: inherit;
 }
 .form textarea { min-height: 140px; resize: vertical; }
 .method-grid { display: grid; gap: 32px; }
