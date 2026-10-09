@@ -36,6 +36,11 @@ button,a.btn{font:inherit;color:inherit;cursor:pointer;text-decoration:none}
 :focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .pickclip{clip-path:url(#pickClip)}
+/* the pick's offset shadow, always on (brand rule, same as the logo) */
+.pkw{display:inline-grid;flex:none;font-style:normal;filter:drop-shadow(var(--so,3px) var(--so,3px) 0 var(--sh,var(--hot)))}
+.sh-keep,.sh-review,.sh-thumb,.sh-play{--sh:var(--hot)} .sh-trash{--sh:var(--volt)} .sh-busy,.sh-off{--sh:var(--ink)}
+.cp .pkw{--so:2px;vertical-align:-5px;margin-right:6px}
+.card>.pkw:last-child{--so:3px}
 
 /* icons: 24 grid, 2.6 stroke, duotone offset fill (.d) */
 svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;flex:none;--ic2:var(--hot)}
@@ -1937,7 +1942,9 @@ function report(c) {
 // ---------- home screen
 const VICON = { keep: "i-check", review: "i-ear", trash: "i-bin", busy: "i-pick" };
 const VLABEL = { keep: "Keep", review: "Review", trash: "Trash", busy: "Working" };
-const stamp = v => `<i class="stamp ${v} pickclip" title="${VLABEL[v]}">${icon(VICON[v])}</i><span class="sr">${VLABEL[v]}</span>`;
+// Every pick shape carries its offset shadow, like the logo (wrapper: a clip-path would cut the shadow off)
+const pkw = (inner, cls = "") => `<i class="pkw ${cls}">${inner}</i>`;
+const stamp = v => `${pkw(`<i class="stamp ${v} pickclip" title="${VLABEL[v]}">${icon(VICON[v])}</i>`, "sh-" + v)}<span class="sr">${VLABEL[v]}</span>`;
 function phrase(c) {
   if (c.status === "queued") return `<b>Waiting</b>${fmtSize(c.size)}`;
   if (c.status === "listening") return `<b>${c.phase === "watching" ? "Watching" : "Listening"}</b>${Math.round((c.progress || 0) * 100)}%`;
@@ -1950,7 +1957,7 @@ function phrase(c) {
 }
 function cardHTML(c) {
   const D = c.raw?.duration || 1;
-  const thumb = c.thumb ? `<span class="thumb pickclip" style="background-image:url(${c.thumb})"></span>` : `<span class="thumb ph pickclip">${icon("i-film")}</span>`;
+  const thumb = pkw(c.thumb ? `<span class="thumb pickclip" style="background-image:url(${c.thumb})"></span>` : `<span class="thumb ph pickclip">${icon("i-film")}</span>`, "sh-thumb");
   const strip = c.status === "listening" ? `<div class="strip"><i class="prog" style="left:0;width:${(c.progress || 0) * 100}%"></i></div>`
     : c.status === "done" ? `<div class="strip">${onParts(c).map(p => `<i style="left:${p.start / D * 100}%;width:${(p.end - p.start) / D * 100}%"></i>`).join("")}${(pk => pk ? pk.ranges.map(([a, b]) => `<b class="pkmark" style="left:${a / D * 100}%;width:${(b - a) / D * 100}%"></b>`).join("") : "")(pickOf(c))}</div>` : "";
   return `${thumb}<span class="cm"><span class="cn">${esc(c.name)}</span><span class="cp">${phrase(c)}</span>${strip}</span>${stamp(verdict(c))}`;
@@ -2074,7 +2081,7 @@ function toast(msg, act) {
 const SLIDES = [
   { bg: "var(--hot)", art: `<svg aria-hidden="true"><use href="#logo"/></svg>`, h: "Meet LickPick", p: "Drop in your jams. LickPick scans every take for flubs, restarts and dead air, and picks your best 45 seconds." },
   { bg: "var(--cyan)", art: `<svg class="i" style="color:var(--ink);--ic2:rgba(255,255,255,.6)"><use href="#i-ear"/></svg>`, h: "It listens, you decide",
-    grid: [[`<i class="stamp keep pickclip">${icon("i-check")}</i>`, "45s+ of good stuff"], [`<i class="stamp review pickclip">${icon("i-ear")}</i>`, "Needs your ear"], [`<i class="stamp trash pickclip">${icon("i-bin")}</i>`, "No music at all"]] },
+    grid: [[stamp("keep"), "45s+ of good stuff"], [stamp("review"), "Needs your ear"], [stamp("trash"), "No music at all"]] },
   { bg: "var(--volt)", art: `<svg class="i" style="color:var(--ink);--ic2:var(--hot)"><use href="#i-drum"/></svg>`, h: "Then make it pop",
     grid: [[icon("i-cut"), "Clean cuts"], [icon("i-phone"), "Vertical shorts"], [icon("i-drum"), "AI backing band"]] },
   { bg: "var(--blaze)", art: `<svg class="i" style="color:var(--ink);--ic2:rgba(255,255,255,.6)"><use href="#i-lock"/></svg>`, h: "Safe by design", p: "Clips never leave your phone. LickPick never deletes: you get a list, you delete." },
@@ -2222,7 +2229,7 @@ function partsPanel(c) {
   return c.parts.map((p, i) => `
     <div class="part ${p.on ? "" : "off"} ${c.sel === i ? "sel" : ""}" data-sel="${i}">
       <div class="p-row">
-        <button class="play pickclip" type="button" data-play="${i}" aria-label="Play part ${i + 1}">${icon("i-play")}</button>
+        ${pkw(`<button class="play pickclip" type="button" data-play="${i}" aria-label="Play part ${i + 1}">${icon("i-play")}</button>`, p.on ? "sh-play" : "sh-off")}
         <div class="p-t"><strong>Part ${i + 1}</strong><span>${fmt(p.start)} to ${fmt(p.end)}, ${fmt(p.end - p.start)} long</span></div>
         <button class="switch" type="button" data-toggle="${i}" aria-pressed="${p.on}" aria-label="${p.on ? "Kept. Tap to skip" : "Skipped. Tap to keep"}">${icon(p.on ? "i-check" : "i-x")}</button>
       </div>

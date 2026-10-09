@@ -20,6 +20,7 @@ a{color:inherit}
 svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;flex:none;--ic2:var(--hot)}
 svg.i .d{fill:var(--ic2);stroke:none;transform:translate(1.6px,1.6px)}
 .pickclip{clip-path:url(#pickClip)}
+.pkw{display:inline-grid;filter:drop-shadow(var(--so,4px) var(--so,4px) 0 var(--sh,var(--hot)))}
 .amp{height:5px;background:var(--amp)}
 /* nav */
 .nav{position:sticky;top:0;z-index:10;background:rgba(11,9,18,.92);backdrop-filter:blur(8px)}
@@ -80,7 +81,8 @@ h2{font:400 clamp(30px,4.5vw,46px)/1.08 var(--display);margin:0 0 10px}
 /* install */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s}
 .step{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:20px 20px 20px 70px;position:relative;font-weight:600}
-.step::before{counter-increment:s;content:counter(s);position:absolute;left:18px;top:16px;width:38px;height:40px;display:grid;place-items:center;padding-bottom:6px;background:var(--volt);color:var(--ink);font:400 18px var(--display);clip-path:url(#pickClip)}
+.step .n{position:absolute;left:18px;top:16px;--so:3px}
+.step .n span{width:38px;height:40px;display:grid;place-items:center;padding-bottom:6px;background:var(--volt);color:var(--ink);font:400 18px var(--display);clip-path:url(#pickClip)}
 .step b{display:block;font-size:18px}
 .step span{color:var(--dim);font-weight:500;font-size:15.5px}
 .safe{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;background:var(--hot);color:var(--ink);border:3px solid var(--ink);border-radius:24px;padding:30px;box-shadow:8px 8px 0 var(--volt)}
@@ -147,9 +149,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <h2>It listens. You decide.</h2>
   <p class="sub">Stops and restarts, wrong and off-pitch notes, noise, silence, a covered lens. LickPick hears it, sorts every clip into three piles, and never trashes a clip that has a good part.</p>
   <div class="stamps">
-    <div class="stampcard" style="background:var(--volt);--c:var(--volt)"><div class="st pickclip"><svg class="i"><use href="#i-check"/></svg></div><h3>Keep</h3><p>45 seconds or more of good stuff. Mistakes already cut.</p></div>
-    <div class="stampcard" style="background:var(--cyan);--c:var(--cyan)"><div class="st pickclip"><svg class="i"><use href="#i-ear"/></svg></div><h3>Review</h3><p>Some gold, not much. Hear the best bit, keep or trash.</p></div>
-    <div class="stampcard" style="background:var(--red);--c:var(--red)"><div class="st pickclip"><svg class="i"><use href="#i-bin"/></svg></div><h3>Trash</h3><p>No music at all. Safe to delete. You do the deleting.</p></div>
+    <div class="stampcard" style="background:var(--volt);--c:var(--volt)"><div class="pkw" style="--sh:var(--hot)"><div class="st pickclip"><svg class="i"><use href="#i-check"/></svg></div></div><h3>Keep</h3><p>45 seconds or more of good stuff. Mistakes already cut.</p></div>
+    <div class="stampcard" style="background:var(--cyan);--c:var(--cyan)"><div class="pkw" style="--sh:var(--hot)"><div class="st pickclip"><svg class="i"><use href="#i-ear"/></svg></div></div><h3>Review</h3><p>Some gold, not much. Hear the best bit, keep or trash.</p></div>
+    <div class="stampcard" style="background:var(--red);--c:var(--red)"><div class="pkw" style="--sh:var(--volt)"><div class="st pickclip"><svg class="i"><use href="#i-bin"/></svg></div></div><h3>Trash</h3><p>No music at all. Safe to delete. You do the deleting.</p></div>
   </div>
 </div></section>
 
@@ -183,9 +185,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <h2>On your phone in 20 seconds.</h2>
   <p class="sub">No app store. LickPick installs straight from Chrome.</p>
   <div class="steps">
-    <div class="step"><b>Open LickPick</b><span>In Chrome on your Android phone, tap Open LickPick above.</span></div>
-    <div class="step"><b>Install</b><span>Tap the pink install button in the app, or Chrome's menu, then Add to Home screen.</span></div>
-    <div class="step"><b>Share clips in</b><span>In your gallery, select videos, tap Share, pick LickPick.</span></div>
+    <div class="step"><i class="pkw n"><span>1</span></i><b>Open LickPick</b><span>In Chrome on your Android phone, tap Open LickPick above.</span></div>
+    <div class="step"><i class="pkw n"><span>2</span></i><b>Install</b><span>Tap the pink install button in the app, or Chrome's menu, then Add to Home screen.</span></div>
+    <div class="step"><i class="pkw n"><span>3</span></i><b>Share clips in</b><span>In your gallery, select videos, tap Share, pick LickPick.</span></div>
   </div>
 </div></section>
 
