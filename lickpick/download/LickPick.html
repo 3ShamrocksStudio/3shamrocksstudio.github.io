@@ -343,6 +343,61 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 .cp .sub{font-size:12.5px;color:var(--mute)}
 .strip .pkmark{position:absolute;top:-1px;bottom:-1px;border:2px solid var(--volt);border-radius:3px;background:rgba(255,230,0,.25)}
 .strip{height:8px;overflow:visible}
+/* ---------- player: plays only the selection, on its own timeline ---------- */
+.player{display:flex;flex-direction:column;background:#000}
+.player:fullscreen{justify-content:center;height:100%}
+.player:fullscreen video{max-height:calc(100vh - 56px)}
+.pv{position:relative;display:grid;place-items:center;background:#000}
+.pv video{display:block;width:100%;max-height:44vh;background:#000}
+.bigplay{position:absolute;inset:0;margin:auto;width:76px;height:80px;border:0;background:none;padding:0;display:grid;place-items:center}
+.bigplay .pkw{--so:4px}
+.bigplay .pickclip{display:grid;place-items:center;width:72px;height:76px;background:var(--volt);color:var(--ink);padding-bottom:10px}
+.bigplay svg.i{width:30px;height:30px;fill:currentColor;stroke:none;margin-left:4px}
+.segchip{position:absolute;left:10px;top:10px;display:flex;align-items:center;gap:8px;border:2px solid var(--ink);background:var(--volt);color:var(--ink);border-radius:10px;padding:5px 9px;font:800 12.5px var(--body);box-shadow:3px 3px 0 var(--hot)}
+.segchip b{font:400 13px var(--display)}
+.segchip span{font-weight:700;opacity:.8}
+.pbar{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--ink);border-top:2px solid #1a1626}
+.pbar button{border:0;background:none;color:var(--text);padding:4px;display:grid;place-items:center}
+.pbar svg.i{width:20px;height:20px;--ic2:transparent}
+.pb-play svg.i{fill:currentColor;stroke:none;color:var(--volt)}
+.pb-loop[aria-pressed=true]{color:var(--volt)}
+.ptrack{flex:1;height:10px;border-radius:5px;background:#2a2340;position:relative;overflow:hidden;touch-action:none;cursor:pointer}
+.ptrack i{position:absolute;left:0;top:0;bottom:0;background:var(--fire);border-radius:5px}
+.ptime{font-weight:800;font-size:12.5px;color:var(--dim);min-width:84px;text-align:right}
+/* ---------- onboarding ---------- */
+.onboard .wrap{min-height:100%;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.ob-top{display:flex;align-items:center;gap:12px}
+.ob-prog{flex:1;display:flex;gap:6px}
+.ob-prog i{flex:1;height:6px;border-radius:3px;background:var(--line)} .ob-prog i.on{background:var(--amp)}
+.ob-skip{border:0;background:none;color:var(--dim);font-weight:800}
+.ob-body{flex:1;display:flex;flex-direction:column;gap:16px;padding-top:8px}
+.ob-body h1{font:400 32px/1.08 var(--display);margin:0;text-wrap:balance}
+.ob-body p.lead{margin:0;color:var(--dim);font-size:16px}
+.ob-hero{display:grid;place-items:center;padding:22px 0 6px}
+.ob-hero svg{width:150px;height:150px;transform:rotate(-8deg)}
+.ob-foot{position:sticky;bottom:0;padding-top:12px;background:linear-gradient(to top,var(--stage) 70%,transparent)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chips button{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;padding:11px 14px;font-weight:800;font-size:15px}
+.chips button svg.i{width:20px;height:20px;color:var(--volt);--ic2:transparent}
+.chips button[aria-pressed=true]{background:var(--volt);color:var(--ink);border-color:var(--ink);box-shadow:3px 3px 0 var(--hot)}
+.chips button[aria-pressed=true] svg.i{color:var(--ink)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:800;font-size:14px}
+.field input{border-radius:14px;border:2px solid var(--line);background:var(--panel);color:var(--text);font:700 17px var(--body);padding:13px 14px}
+.field input:focus{border-color:var(--cyan);outline:none}
+.choices{display:flex;flex-direction:column;gap:10px}
+.choice{display:flex;align-items:center;gap:14px;text-align:left;padding:14px;border-radius:16px;border:2px solid var(--line);background:var(--panel);color:var(--text)}
+.choice strong{display:block;font:400 18px var(--display)}
+.choice span{color:var(--dim);font-size:14px}
+.choice[aria-pressed=true]{border-color:var(--ink);background:var(--cyan);color:var(--ink);box-shadow:4px 4px 0 var(--hot)}
+.choice[aria-pressed=true] span{color:rgba(7,6,11,.8)}
+.how{display:flex;flex-direction:column;gap:12px}
+.how div{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;padding:12px;border-radius:16px;background:var(--panel);border:2px solid var(--line)}
+.how .n{width:40px;height:42px;display:grid;place-items:center;padding-bottom:6px;background:var(--volt);color:var(--ink);font:400 18px var(--display)}
+.how b{display:block;font-size:16px} .how span{color:var(--dim);font-size:14px}
+.safe-note{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--hot);color:var(--ink);font-weight:800;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--volt)}
+.safe-note svg.i{width:26px;height:26px;color:var(--ink);--ic2:rgba(255,255,255,.5)}
+.hello{font:400 15px var(--display);color:var(--volt);margin:0 0 6px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -357,6 +412,9 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
       <path d="M40 30.5v27c0 3 3.2 4.8 5.8 3.2l21.5-13.5c2.4-1.5 2.4-5 0-6.4L45.8 27.3C43.2 25.7 40 27.5 40 30.5Z" fill="#07060B"/>
     </symbol>
     <!-- icons: 24 grid. ".d" is the offset neon fill -->
+    <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4.2" height="15" rx="1.2" fill="currentColor" stroke="none"/><rect x="13.8" y="4.5" width="4.2" height="15" rx="1.2" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-loop" viewBox="0 0 24 24"><path d="M17 3l3 3-3 3"/><path d="M4 12V9a3 3 0 0 1 3-3h13"/><path d="M7 21l-3-3 3-3"/><path d="M20 12v3a3 3 0 0 1-3 3H4"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6.5h16M4 12h16M4 17.5h10" stroke-width="3"/></symbol>
     <symbol id="i-star" viewBox="0 0 24 24"><path class="d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></symbol>
     <symbol id="i-pick" viewBox="0 0 24 24"><path class="d" d="M12 22c-1.2 0-2-1-3.2-2.6C6 15.8 2 11 2 7.5 2 3.6 6.3 2 12 2s10 1.6 10 5.5c0 3.5-4 8.3-6.8 11.9C14 21 13.2 22 12 22Z"/><path d="M12 22c-1.2 0-2-1-3.2-2.6C6 15.8 2 11 2 7.5 2 3.6 6.3 2 12 2s10 1.6 10 5.5c0 3.5-4 8.3-6.8 11.9C14 21 13.2 22 12 22Z"/></symbol>
@@ -435,6 +493,14 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
   </div>
 </div>
 
+<div class="layer onboard" id="onboard" hidden role="dialog" aria-modal="true" aria-label="Set up LickPick">
+  <div class="wrap">
+    <div class="ob-top"><button class="icon-btn" type="button" data-act="ob-back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button><div class="ob-prog" id="obProg"></div><button class="ob-skip" type="button" data-act="ob-skip">Skip</button></div>
+    <div id="obBody" class="ob-body"></div>
+    <div class="ob-foot"><button class="btn wide" type="button" data-act="ob-next" id="obNext">Next</button></div>
+  </div>
+</div>
+
 <div class="scrim center" id="intro" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="introTitle">
     <div id="slides"></div>
@@ -508,6 +574,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
   <div class="sheet" role="dialog" aria-modal="true" aria-label="Menu">
     <div class="row2"><h2>Menu</h2><button class="icon-btn" type="button" data-act="rules-done" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
     <div class="duo">
+      <button class="tile t-keep small" type="button" data-act="ob-open"><svg class="i"><use href="#i-sliders"/></svg><strong>Profile & setup</strong></button>
       <button class="tile t-cyan small" type="button" id="helpBtn"><svg class="i"><use href="#i-help"/></svg><strong>How it works</strong></button>
       <button class="tile t-hot small" type="button" data-act="pro-open"><svg class="i"><use href="#i-bolt"/></svg><strong id="menuPro">Pro</strong></button>
       <button class="tile t-keep small" type="button" id="installBtn" data-act="install" hidden><svg class="i"><use href="#i-install"/></svg><strong>Install app</strong></button>
@@ -532,10 +599,10 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
   const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
   const R = {
     SIL: "silence", STOP: "stopped / restarted", FAIL: "failed attempt, replayed after",
-    PITCH: "off pitch", KEY: "wrong notes", TIME: "timing drift", NOISE: "noise, no music", CLIP: "distorted audio",
+    PITCH: "off pitch", TALK: "talking", KEY: "wrong notes", TIME: "timing drift", NOISE: "noise, no music", CLIP: "distorted audio",
     DARK: "lens covered / too dark", BLUR: "out of focus",
   };
-  const HARD = new Set([R.SIL, R.STOP, R.FAIL, R.DARK]);
+  const HARD = new Set([R.SIL, R.STOP, R.FAIL, R.DARK, R.TALK]);
   const WEIGHTS = { [R.SIL]: 1, [R.STOP]: 1, [R.FAIL]: 1, [R.PITCH]: 0.55, [R.KEY]: 0.55, [R.NOISE]: 0.7, [R.TIME]: 0.35, [R.CLIP]: 0.35, [R.DARK]: 1, [R.BLUR]: 0.4 };  // blur alone only cuts on Strict; a covered lens always cuts
 
   // ---------- small math
@@ -590,12 +657,14 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     const re = new Float64Array(N), im = new Float64Array(N);
     const binPc = new Int8Array(N / 2).fill(-1);
     for (let k = 1; k < N / 2; k++) { const f = k * sr / N; if (f >= 60 && f <= 2200) binPc[k] = ((Math.round(12 * Math.log2(f / 440) + 69) % 12) + 12) % 12; }
-    const kBass = Math.floor(260 * N / sr);
+    const kBass = Math.floor(260 * N / sr), kLow = Math.floor(500 * N / sr);
+    const pcOf = f => ((Math.round(12 * Math.log2(f / 440) + 69) % 12) + 12) % 12;
     const kLo = Math.ceil(100 * N / sr), kHi = Math.floor(5000 * N / sr);
 
     // cell accumulators
     const eSum = new Float64Array(nCells), eCnt = new Float64Array(nCells);
     const chroma = Array.from({ length: nCells }, () => new Float64Array(12));
+    const chromaH = Array.from({ length: nCells }, () => new Float64Array(12));   // pitch-accurate, for chords
     const bassC = Array.from({ length: nCells }, () => new Float64Array(12));   // 55-260 Hz: where the chord root usually is
     const flatSum = new Float64Array(nCells), onsetSum = new Float64Array(nCells), onsetMax = new Float64Array(nCells);
     const centsByCell = Array.from({ length: nCells }, () => []);
@@ -609,7 +678,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     for (let i = 0; i < yd.length; i++) yd[i] = 0.5 * (y[2 * i] + y[2 * i + 1]);
     const srd = sr / 2, PW = 512, maxLag = Math.floor(srd / 70), minLag = Math.max(2, Math.floor(srd / 1100));
     const dbuf = new Float64Array(maxLag + 2);
-    const signedCents = [];
+    const signedCents = [], glideByCell = Array.from({ length: nCells }, () => []); let lastMidi = null, lastF = -9;
 
     for (let f = 0; f < nFrames; f++) {
       const off = f * HOP, t = (off + N / 2) / sr, c = Math.min(nCells - 1, Math.floor(t / CELL));
@@ -621,9 +690,16 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
       let lg = 0, ar = 0, nb = 0, flux = 0;
       for (let k = 1; k < N / 2; k++) {
         const m = Math.sqrt(re[k] * re[k] + im[k] * im[k]); mag[k] = m;
-        if (binPc[k] >= 0) { chroma[c][binPc[k]] += m * m; if (k <= kBass) bassC[c][binPc[k]] += m * m * (kBass / k) ** 2; }
+        if (binPc[k] >= 0) { chroma[c][binPc[k]] += m * m; if (k > kLow) chromaH[c][binPc[k]] += m * m; }
         if (k >= kLo && k <= kHi) { lg += Math.log(m + 1e-10); ar += m; nb++; }
         if (prevMag) { const dlt = Math.log1p(m) - Math.log1p(prevMag[k]); if (dlt > 0) flux += dlt; }
+      }
+      // below 500 Hz a bin is wider than a semitone: find each spectral peak's true frequency instead
+      for (let k = 2; k <= kLow; k++) {
+        const y1 = mag[k]; if (!(y1 > mag[k - 1] && y1 >= mag[k + 1]) || binPc[k] < 0) continue;
+        const y0 = mag[k - 1], y2 = mag[k + 1], den = y0 - 2 * y1 + y2, d = den < 0 ? 0.5 * (y0 - y2) / den : 0;
+        const f = (k + d) * sr / N, pc = pcOf(f), e = (y1 * y1 + y0 * y0 + y2 * y2);
+        chromaH[c][pc] += e; if (f <= 260) bassC[c][pc] += e * (260 / f) ** 2;
       }
       flatSum[c] += nb ? Math.exp(lg / nb) / (ar / nb + 1e-10) : 0;
       onsetEnv[f] = flux; onsetSum[c] += flux; if (flux > onsetMax[c]) onsetMax[c] = flux; prevMag = mag;
@@ -637,6 +713,8 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
             const midi = 12 * Math.log2(hz / 440) + 69;
             const sc = (midi - Math.round(midi)) * 100;
             signedCents.push(sc); centsByCell[c].push(sc); confFramesByCell[c]++;
+            if (lastMidi != null && f - lastF === 2) glideByCell[c].push(Math.abs(midi - lastMidi));
+            lastMidi = midi; lastF = f;
           }
         }
       }
@@ -713,20 +791,27 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 
     const pen = {};
     const z = () => new Array(nCells).fill(0);
+    // talking: voiced, pitch gliding continuously (speech intonation) and no sharp attacks, for 1.5 s or more.
+    // Sung and played notes hold their pitch, so they never match.
+    const glide = glideByCell.map((_, c) => { const v = [].concat(glideByCell[c - 1] || [], glideByCell[c], glideByCell[c + 1] || []); return v.length >= 4 ? median(v) : NaN; });
+    const voicedFrac = Array.from(confFramesByCell, (v, c) => framesByCell[c] ? v / framesByCell[c] : 0);
+    const talkRaw = glide.map((g, c) => active[c] && g > 0.6 && voicedFrac[c] > 0.35 && peaky[c] < 3.5);
+    pen[R.TALK] = z(); for (const [a, b] of runs(talkRaw)) if ((b - a) * CELL >= 1.5) for (let i = Math.max(0, a - 1); i < Math.min(nCells, b + 1); i++) pen[R.TALK][i] = 1;
+    const talk = pen[R.TALK];
     pen[R.SIL] = z();
     for (const [a, b] of runs(silent)) { const edge = a === 0 || b === nCells; if ((b - a) * CELL > 1.5 || (edge && (b - a) * CELL > 0.5)) for (let i = a; i < b; i++) pen[R.SIL][i] = 1; }
     pen[R.STOP] = z(); for (const [a, b] of stops) for (let i = a; i < b; i++) pen[R.STOP][i] = 1;
     pen[R.FAIL] = z(); for (const [a, b] of failed) for (let i = a; i < b; i++) pen[R.FAIL][i] = 1;
     const styleNotes = [];
-    pen[R.PITCH] = pitchDev.map((d, i) => active[i] && Number.isFinite(d) ? clamp((d - 22) / 18, 0, 1) : 0);
+    pen[R.PITCH] = pitchDev.map((d, i) => active[i] && !talk[i] && Number.isFinite(d) ? clamp((d - 22) / 18, 0, 1) : 0);
     { // microtonal styles, bends, slides: if off-pitch is everywhere, it's the style or tuning
-      const voiced = pitchDev.filter((d, i) => active[i] && Number.isFinite(d)).length || 1;
+      const voiced = pitchDev.filter((d, i) => active[i] && !talk[i] && Number.isFinite(d)).length || 1;
       if (pen[R.PITCH].filter(v => v > 0.3).length / voiced > 0.2) { pen[R.PITCH] = z(); styleNotes.push("pitch check off: non-standard tuning or bends"); }
     }
     pen[R.KEY] = z();
     if (tonal) {
       // out-of-key energy on clearly pitched material (clarity gate keeps noise out)
-      const raw = outkey.map((v, i) => active[i] && clarity[i] > 0.3 ? clamp((v - 0.3) / 0.2, 0, 1) : 0);
+      const raw = outkey.map((v, i) => active[i] && !talk[i] && clarity[i] > 0.3 ? clamp((v - 0.3) / 0.2, 0, 1) : 0);
       for (const [a, b] of runs(raw.map(v => v > 0))) if ((b - a) * CELL > 30) for (let i = a; i < b; i++) raw[i] = 0; // a long stretch = key change, not a mistake
       // If "wrong" notes are a big share of the playing, that's the style (chromatic, modal, jazz), not mistakes.
       const tonalCells = raw.filter((_, i) => active[i] && clarity[i] > 0.3).length || 1;
@@ -741,16 +826,20 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     const onP95 = pct(onset, 95) + 1e-9;
     const highlight = db.map((v, i) => 0.45 * clamp((v - silFloor) / (loudRef - silFloor + 1e-9), 0, 1) + 0.35 * clamp(onset[i] / onP95, 0, 1) + 0.2 * clamp(clarity[i] / 0.3, 0, 1));
     onProgress(1);
-    const _dbg = globalThis.__dbg ? { db, outkey, clar: clarity, onset, flat, onRef, peaky } : undefined;
-    const musicalSeconds = active.reduce((s, a, i) => s + (a && !pen[R.NOISE][i] ? CELL : 0), 0);
+    const _dbg = globalThis.__dbg ? { db, outkey, clar: clarity, onset, flat, onRef, peaky, glide, voicedFrac } : undefined;
+    const musicalSeconds = active.reduce((s, a, i) => s + (a && !pen[R.NOISE][i] && !talk[i] ? CELL : 0), 0);
     // onset strength per frame, scaled to 0..255, so the band can lock to the beat inside any window later
     const onP99 = pct(Array.from(onsetEnv), 99) || 1;
     const onsetQ = Array.from(onsetEnv, v => Math.min(255, Math.round(v / onP99 * 200)));
     // per-cell pitch-class profile (0..9) and tonal clarity (0..100), for chord following and the Pick
-    const chromaQ = cnorm.map(v => { const m = Math.max(...v) || 1; return v.map(x => Math.round(x / m * 9)); });
+    // fine attack envelope (11.6 ms steps): log-energy rise, so beats can snap to the real note attack
+    const FH = 256, nFine = Math.floor(y.length / FH), le = new Float32Array(nFine);
+    for (let i = 0; i < nFine; i++) { let e2 = 0; for (let k = i * FH; k < (i + 1) * FH; k++) e2 += y[k] * y[k]; le[i] = 10 * Math.log10(e2 / FH + 1e-10); }
+    const onsetF = Array.from(le, (v, i) => i < 2 ? 0 : Math.min(255, Math.round(Math.max(0, v - Math.max(le[i - 1], le[i - 2])) * 8)));
+    const chromaQ = chromaH.map(v => { const m = Math.max(...v) || 1; return Array.from(v, x => Math.round(x / m * 9)); });
     const clarQ = clarity.map(v => Math.round(v * 100));
     const bassQ = bassC.map(v => { const m = Math.max(...v); return m > 0 ? Array.from(v, x => Math.round(x / m * 9)) : new Array(12).fill(0); });
-        return { _dbg, musicalSeconds, styleNotes, onsetQ, chromaQ, clarQ, bassQ, v: 4, frameRate: sr / HOP, frameOffset: N / 2 / sr, beatPeriodFrames, loud: db.map(v => Math.round(v * 10) / 10),
+        return { _dbg, musicalSeconds, styleNotes, onsetQ, onsetF, fineRate: sr / FH, chromaQ, clarQ, bassQ, v: 4, frameRate: sr / HOP, frameOffset: N / 2 / sr, beatPeriodFrames, loud: db.map(v => Math.round(v * 10) / 10),
       duration: dur, nCells, penalty: pen, highlight,
       info: { key: tonal ? `${NOTES[gk]} ${gmode === "maj" ? "major" : "minor"}` : "no clear key", keyRoot: tonal ? gk : null, keyMode: gmode, tempo: tempo ? Math.round(tempo) : null, tempoExact: tempo, tuning: Math.round(tuning) },
     };
@@ -826,7 +915,9 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     }
     const kept = segments.reduce((s, x) => s + x.end - x.start, 0);
     // Trash only when there is nothing musical to lose. Any good part, or any real playing, means a human looks.
-    const verdict = kept >= minKeep ? "keep" : (segments.length || (raw.musicalSeconds ?? 99) >= 8) ? "review" : "trash";
+    // any real music, even in a 3 s clip, is never trash: 8 s of music, or half of a short clip
+    const musicFloor = Math.min(8, Math.max(1.5, (raw.duration || 0) * 0.5));
+    const verdict = kept >= minKeep ? "keep" : (segments.length || (raw.musicalSeconds ?? 99) >= musicFloor) ? "review" : "trash";
     return { segments, removed, kept, verdict };
   }
 
@@ -1095,7 +1186,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
    - picks: the best complete musical phrases, bar-aligned, scored on energy, activity, tone and timing
    Pure JS: runs in the browser and in Node for tests. */
 (function (root) {
-  const CELL = 0.5;
+  const CELL = 0.5; let CHORD_STAY = 0.12, FINE_OFF = 0;
   const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
   const MAJ = [0, 2, 4, 5, 7, 9, 11], MIN = [0, 2, 3, 5, 7, 8, 10];
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
@@ -1138,7 +1229,8 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     if (b - a < fr * 6) return null;
     const O0 = on.slice(a, b).map(Number);
     // local normalisation: onset strength above a moving median (removes sustained-strum wash)
-    const W = Math.round(fr * 1.5), O = O0.map((v, i) => { const seg = O0.slice(Math.max(0, i - W), i + W + 1); return Math.max(0, v - median(seg)); });
+    const W = Math.round(fr * 1.5), ps = new Float64Array(O0.length + 1); for (let i = 0; i < O0.length; i++) ps[i + 1] = ps[i] + O0[i];
+    const O = O0.map((v, i) => { const a0 = Math.max(0, i - W), b0 = Math.min(O0.length, i + W + 1); return Math.max(0, v - 1.1 * (ps[b0] - ps[a0]) / (b0 - a0)); });
     const sd = Math.sqrt(mean(O.map(v => v * v))) || 1; for (let i = 0; i < O.length; i++) O[i] /= sd;
     const P = periodIn(O, fr, raw.beatPeriodFrames);
     if (!P) return null;
@@ -1176,7 +1268,20 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
       return Math.abs(pred - f) > p * 0.25 || !ref[i].strong ? pred : 0.5 * f + 0.5 * pred;
     });
     // -6 ms: a strum's energy peaks a little after its first string; players hear the beat at the start
-    const beats = sm.map(f => (a + f) / fr + off - 0.006).filter(x => x >= s - 0.02 && x <= e + 0.02);
+    let beats0 = sm.map(f => (a + f) / fr + off - 0.006);
+    // snap each beat to the real attack on the fine envelope when one is clearly there
+    if (raw.onsetF) {
+      const F = raw.onsetF, f2 = raw.fineRate;
+      beats0 = beats0.map(t => {
+        const i0 = Math.max(1, Math.floor((t - 0.045) * f2)), i1 = Math.min(F.length - 2, Math.ceil((t + 0.04) * f2)); let bi = -1, bv = 0, ref = 0;
+        for (let i = i0; i <= i1; i++) if (F[i] > bv) { bv = F[i]; bi = i; }
+        for (let i = Math.max(0, Math.floor((t - 0.3) * f2)); i < Math.min(F.length, Math.ceil((t + 0.3) * f2)); i++) ref = Math.max(ref, F[i]);
+        if (bv < 8 || bv < 0.45 * ref) return t;
+        const y0 = F[bi - 1], y2 = F[bi + 1], den = y0 - 2 * bv + y2, d = den < 0 ? clamp(0.5 * (y0 - y2) / den, -0.5, 0.5) : 0;
+        return (bi + d) / f2 + FINE_OFF;
+      });
+    }
+    const beats = beats0.filter(x => x >= s - 0.02 && x <= e + 0.02);
     const ib = []; for (let i = 1; i < beats.length; i++) ib.push(beats[i] - beats[i - 1]);
     const conf = mean(fr0.map(f => O[f])) / (mean(O) + 1e-9);
     // regularity: how many beats actually have an attack near them, and how even the spacing is
@@ -1214,6 +1319,19 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     for (let c = Math.max(0, Math.floor(t0 / CELL)); c <= Math.min(B.length - 1, Math.floor((t1 - 1e-6) / CELL)); c++) for (let k = 0; k < 12; k++) v[k] += B[c][k];
     const m = Math.max(...v); return m > 0 ? v.map(x => x / m) : null;
   }
+  // the key around a moment (±10 s), so a song that changes key keeps its chords honest
+  const KMAJ = [6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88], KMIN = [6.33, 2.68, 3.52, 5.38, 2.6, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17];
+  function keyAround(raw, t0, t1) {
+    const v = chromaAt(raw, Math.max(0, (t0 + t1) / 2 - 10), (t0 + t1) / 2 + 10); if (!v) return null;
+    let best = { sc: -2 };
+    for (let k = 0; k < 12; k++) for (const [mode, P] of [["maj", KMAJ], ["min", KMIN]]) { const r = P.map((_, i) => P[(i - k + 12) % 12]); const sc = cos(v, r); if (sc > best.sc) best = { sc, k, mode }; }
+    return best.sc > 0.75 ? best : null;
+  }
+  function diatonicFor(k, mode) {
+    const sc = mode === "maj" ? MAJ : MIN, set = new Set();
+    for (let d = 0; d < 7; d++) { const r = (k + sc[d]) % 12, third = (sc[(d + 2) % 7] - sc[d] + 12) % 12; set.add(r * 2 + (third === 3 ? 1 : 0)); }
+    return set;
+  }
   function diatonic(raw) {
     const k = raw.info?.keyRoot; if (k == null) return null;
     const sc = raw.info.keyMode === "maj" ? MAJ : MIN, set = new Set();
@@ -1222,10 +1340,10 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
   }
 
   // ---------------------------------------------------------------- chords over segments
-  function chordsFor(raw, segs, stay = 0.07) {
-    const dia = diatonic(raw), S = TEMPL.length;
+  function chordsFor(raw, segs, stay = 0.07, stayAt = null) {
+    const glob = diatonic(raw), S = TEMPL.length;
     const obs = segs.map(([t0, t1]) => {
-      const v = chromaAt(raw, t0, t1), bs = bassAt(raw, t0, t1);
+      const v = chromaAt(raw, t0, t1), bs = bassAt(raw, t0, t1), lk = keyAround(raw, t0, t1), dia = lk ? diatonicFor(lk.k, lk.mode) : glob;
       return TEMPL.map(T => v ? cos(v, T.t) + (bs ? 0.32 * bs[T.root] - 0.1 * Math.max(bs[(T.root + 7) % 12] - bs[T.root], 0) : 0) + (dia && dia.has(T.root * 2 + (T.minor ? 1 : 0)) ? 0.06 : 0) : 0);
     });
     // Viterbi: staying on a chord is cheap, changing costs a little
@@ -1233,16 +1351,17 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     for (let i = 1; i < obs.length; i++) {
       let bestAll = -1e9, bestIdx = 0; for (let j = 0; j < S; j++) if (prev[j] > bestAll) { bestAll = prev[j]; bestIdx = j; }
       const cur = new Array(S), b = new Array(S);
-      for (let j = 0; j < S; j++) { const sv = prev[j] + stay; if (sv >= bestAll) { cur[j] = sv + obs[i][j]; b[j] = j; } else { cur[j] = bestAll + obs[i][j]; b[j] = bestIdx; } }
+      const st = stayAt ? stayAt[i] : stay;
+      for (let j = 0; j < S; j++) { const sv = prev[j] + st; if (sv >= bestAll) { cur[j] = sv + obs[i][j]; b[j] = j; } else { cur[j] = bestAll + obs[i][j]; b[j] = bestIdx; } }
       bp.push(b); prev = cur;
     }
     let j = 0; for (let k = 1; k < S; k++) if (prev[k] > prev[j]) j = k;
     const path = [j]; for (let i = bp.length - 1; i >= 0; i--) { j = bp[i][j]; path.push(j); }
     path.reverse();
     return segs.map(([t0, t1], i) => {
-      const T = TEMPL[path[i]]; let other = -1e9;
-      obs[i].forEach((v, j) => { if (TEMPL[j].root !== T.root && v > other) other = v; });
-      return { t0, t1, root: T.root, minor: T.minor, conf: +obs[i][path[i]].toFixed(2), margin: +(obs[i][path[i]] - other).toFixed(3), name: NOTES[T.root] + (T.minor ? "m" : "") };
+      const T = TEMPL[path[i]]; let other = -1e9, twin = 0;
+      obs[i].forEach((v, j) => { if (TEMPL[j].root !== T.root && v > other) other = v; if (TEMPL[j].root === T.root && TEMPL[j].minor !== T.minor) twin = v; });
+      return { t0, t1, root: T.root, minor: T.minor, conf: +obs[i][path[i]].toFixed(2), margin: +(obs[i][path[i]] - other).toFixed(3), third: +(obs[i][path[i]] - twin).toFixed(3), name: NOTES[T.root] + (T.minor ? "m" : "") };
     });
   }
 
@@ -1259,39 +1378,34 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
       // fold blips shorter than 2 s into the neighbour
       const chords = merged.filter((c, i) => c.t1 - c.t0 >= 2 || merged.length === 1);
       for (let i = 0; i < chords.length; i++) { chords[i].t0 = i ? chords[i - 1].t1 : s; } if (chords.length) chords[chords.length - 1].t1 = e;
-      return { pulse: false, beats: [], bars: [], chords, swing: 0.5, bpm: null };
+      return { pulse: false, meter: null, beats: [], bars: [], chords, swing: 0.5, bpm: null };
     }
     const { beats } = tb;
-    // downbeat phase: chord changes and accents land on beat 1
     const { on, fr, off } = env(raw);
     const acc = t => { const f = Math.round((t - off) * fr); return Math.max(on[f] || 0, on[f + 1] || 0, on[f - 1] || 0); };
     const accMean = mean(beats.map(acc)) || 1;
-    let best = 0, bestSc = -1e9;
-    for (let ph = 0; ph < 4; ph++) {
-      let sc = 0, n = 0;
-      for (let k = ph; k < beats.length; k += 4) {
-        const ib = (beats[1] - beats[0]);
-        const before = chromaAt(raw, beats[k] - 2 * ib, beats[k]), after = chromaAt(raw, beats[k], beats[k] + 2 * ib);
-        if (before && after && k >= 2) sc += (1 - cos(before, after)) * 2;
-        sc += 0.35 * acc(beats[k]) / accMean; n++;
-      }
-      if (n) sc /= n;
-      if (sc > bestSc) { bestSc = sc; best = ph; }
-    }
+    // harmonic change at each beat (the beat before vs the beat after) and the accent on it
+    const ch = beats.map((t, k) => { if (k === 0 || k + 1 >= beats.length) return 0; const a1 = chromaAt(raw, beats[k - 1], t), a2 = chromaAt(raw, t, beats[k + 1]); return a1 && a2 ? 1 - cos(a1, a2) : 0; });
+    const ac = beats.map(t => acc(t) / accMean);
+    // meter and bar phase: the beats where chords change and accents land, every 3 or every 4 beats
+    const fit = m => { let best = { sc: -1e9, ph: 0 }; for (let ph = 0; ph < m; ph++) { const onB = [], offB = [], aOn = [], aOff = []; for (let k = 1; k + 1 < beats.length; k++) { if ((k - ph) % m === 0) { onB.push(ch[k]); aOn.push(ac[k]); } else { offB.push(ch[k]); aOff.push(ac[k]); } } const sc = mean(onB) - mean(offB) + 0.15 * (mean(aOn) - mean(aOff)); if (sc > best.sc) best = { sc, ph }; } return best; };
+    const f4 = fit(4), f3 = fit(3);
+    const meter = f3.sc > 0.04 && f3.sc > f4.sc * 1.25 ? 3 : 4, best = meter === 3 ? f3.ph : f4.ph;
     const bars = [];
-    for (let k = best; k < beats.length; k += 4) {
-      const t0 = beats[k], t1 = k + 4 < beats.length ? beats[k + 4] : t0 + 4 * (beats[beats.length - 1] - beats[beats.length - 2]);
+    for (let k = best; k < beats.length; k += meter) {
+      const t0 = beats[k], t1 = k + meter < beats.length ? beats[k + meter] : t0 + meter * (beats[beats.length - 1] - beats[beats.length - 2]);
       bars.push({ t0, t1, k });
     }
-    // chords per bar, split to half bars when the halves clearly disagree
-    const segs = [];
-    if (bars.length && bars[0].t0 > s + 0.3) segs.push([s, bars[0].t0]);
+    // chords: one decision per 2 beats in 4/4 (per bar in 3/4); Viterbi keeps a held chord as one chord
+    const segs = [], bpos = [];
+    if (bars.length && bars[0].t0 > s + 0.3) { segs.push([s, bars[0].t0]); bpos.push(0); }
     for (const b of bars) {
-      const mid = b.k + 2 < beats.length ? beats[b.k + 2] : (b.t0 + b.t1) / 2;
-      const h1 = chromaAt(raw, b.t0, mid), h2 = chromaAt(raw, mid, Math.min(e, b.t1));
-      if (h1 && h2 && cos(h1, h2) < 0.7) { segs.push([b.t0, mid]); segs.push([mid, Math.min(e, b.t1)]); } else segs.push([b.t0, Math.min(e, b.t1)]);
+      for (let j = 0; j < meter; j++) { const a = b.k + j < beats.length ? beats[b.k + j] : b.t0 + j * (b.t1 - b.t0) / meter, z = b.k + j + 1 < beats.length ? beats[b.k + j + 1] : b.t0 + (j + 1) * (b.t1 - b.t0) / meter; if (a < e) { segs.push([a, Math.min(e, z)]); bpos.push(j); } }
     }
-    const chords = chordsFor(raw, segs.filter(([a, b]) => b - a > 0.2));
+    // changing chord is cheap on beat 1, moderate mid-bar, expensive on weak beats
+    const keep = segs.map(([a, b]) => b - a > 0.15), sg = segs.filter((_, i) => keep[i]), ps = bpos.filter((_, i) => keep[i]);
+    const stayAt = ps.map(j => j === 0 ? 0.03 : (meter === 4 && j === 2) ? 0.2 : 0.35);
+    const chords = chordsFor(raw, sg, CHORD_STAY, stayAt).reduce((m, c) => { const l = m[m.length - 1]; if (l && l.name === c.name) { l.t1 = c.t1; l.conf = Math.max(l.conf, c.conf); l.margin = Math.max(l.margin, c.margin); l.third = Math.max(l.third ?? 0, c.third ?? 0); } else m.push({ ...c }); return m; }, []);
     // swing: where the off-beat attack sits inside each beat
     const pos = [];
     for (let k = 0; k + 1 < beats.length; k++) {
@@ -1305,14 +1419,14 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     const be = bars.map(b => { const v = []; for (let c = Math.floor(b.t0 / CELL); c < Math.ceil(b.t1 / CELL); c++) if (loud[c] != null) v.push(loud[c]); return v.length ? mean(v) : -60; });
     const lo = Math.min(...be), hi = Math.max(...be);
     bars.forEach((b, i) => { b.energy = hi - lo < 3 ? 0.7 : (be[i] - lo) / (hi - lo); });
-    return { pulse: true, beats, bars, chords, swing, bpm: Math.round(tb.bpm) };
+    return { pulse: true, meter, beats, bars, chords, swing, bpm: Math.round(tb.bpm) };
   }
 
   // Steady-groove zones inside [ps, pe]: 10 s windows every 2 s that hold a real pulse, merged while the
   // tempo stays within 6%.
   function pulseZones(raw, ps, pe) {
     const W = 10, zones = []; let cur = null;
-    for (let t = ps; t + W <= pe + 0.01; t += 2) {
+    for (let t = ps; t + W <= pe + 0.01; t += 3) {
       const tb = trackBeats(raw, t, t + W);
       if (tb && cur && Math.abs(tb.bpm / cur.bpm - 1) < 0.06 && t <= cur.e) { cur.e = t + W; cur.bpm = tb.bpm; }
       else { if (cur) zones.push(cur); cur = tb ? { s: t, e: t + W, bpm: tb.bpm } : null; }
@@ -1323,7 +1437,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 
   // ---------------------------------------------------------------- the Pick: best complete phrases
   // parts: clean [start, end] ranges. len: "auto" or seconds. Returns up to 3 candidates, best first.
-  function picks(raw, parts, len = "auto") {
+  function pickSetup(raw, parts, len) {
     const loud = raw.loud || [], n = loud.length, on = raw.onsetQ || [], fr = raw.frameRate || 21.5;
     const act = new Array(n).fill(0);
     for (let c = 0; c < n; c++) { let s = 0, k = 0; for (let f = Math.floor(c * CELL * fr); f < Math.floor((c + 1) * CELL * fr) && f < on.length; f++) { s += on[f]; k++; } act[c] = k ? s / k : 0; }
@@ -1336,8 +1450,12 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     const cell = loud.map((v, i) => 0.42 * rL(v) + 0.33 * rA(act[i]) + 0.15 * rC(clar[i]) + 0.10 * (1 - soft[i]));
     const auto = len === "auto", lo = auto ? 20 : len * 0.8, hi = auto ? 45 : len * 1.15, target = auto ? 30 : len;
     const cands = [];
-    for (const [ps, pe] of parts) {
-      if (pe - ps < Math.min(8, lo)) continue;
+    return { loud, act, clar, soft, cell, rL, rA, rC, lo, hi, target, cands, raw };
+  }
+  function pickPart(X, ps, pe) {
+    const { loud, act, clar, soft, cell, rL, rA, rC, lo, hi, target, cands, raw } = X;
+    if (pe - ps < Math.min(8, lo)) return;
+
       // boundaries: bar lines inside steady-groove zones, quiet gaps between phrases elsewhere
       const zones = (pe - ps < 12 ? [{ s: ps, e: pe }] : pulseZones(raw, ps, pe)).map(z => ({ ...z, A: analyze(raw, z.s, z.e) })).filter(z => z.A.pulse && z.A.bars.length >= 2);
       const inZone = t => zones.some(z => t > z.s + 0.5 && t < z.e - 0.5);
@@ -1364,7 +1482,9 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
         const score = mean(w) + 0.06 * variety - 0.5 * drop + square + fit + arc;
         cands.push({ s, e, len: L, score, bars, pulse: !!z, bpm: z?.A.bpm || null, feat: { energy: mean(lw.map(rL)), activity: mean(act.slice(a, b).map(rA)), tone: mean(clar.slice(a, b).map(rC)), tight: 1 - mean(soft.slice(a, b)), variety } });
       }
-    }
+      }
+  function pickFinish(X) {
+    const { cands } = X;
     cands.sort((x, y) => y.score - x.score);
     const out = [];
     for (const c of cands) {
@@ -1374,6 +1494,9 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     for (const c of out) c.why = reasons(c);
     return out;
   }
+  function picks(raw, parts, len = "auto") { const X = pickSetup(raw, parts, len); for (const [ps, pe] of parts) pickPart(X, ps, pe); return pickFinish(X); }
+  // same result, but yields to the screen between stretches so a long take never freezes a tap
+  async function picksAsync(raw, parts, len = "auto") { const X = pickSetup(raw, parts, len); for (const [ps, pe] of parts) { pickPart(X, ps, pe); await new Promise(r => setTimeout(r, 0)); } return pickFinish(X); }
   function reasons(c) {
     const r = [], f = c.feat;
     if (f.energy > 0.7) r.push("Biggest energy");
@@ -1395,12 +1518,14 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     const keyOK = k != null;
     return A.chords.map(c => {
       const sure = A.pulse ? c.margin > 0.015 : c.margin > 0.35;
+      // major or minor unclear (power chords, distortion): play root and fifth, never a guessed third
+      if ((sure || !keyOK) && (c.third ?? 1) < 0.16) return { t0: c.t0, t1: c.t1, root: c.root, pcs: [c.root, (c.root + 7) % 12], name: NOTES[c.root] + "5", drone: false, power: true };
       if (sure || !keyOK) return { t0: c.t0, t1: c.t1, root: c.root, pcs: [c.root, (c.root + (c.minor ? 3 : 4)) % 12, (c.root + 7) % 12], name: c.name, drone: false };
       return { t0: c.t0, t1: c.t1, root: k, pcs: [k, (k + 7) % 12], name: NOTES[k] + "5", drone: true };
     }).reduce((m, h) => { const l = m[m.length - 1]; if (l && l.name === h.name) l.t1 = h.t1; else m.push(h); return m; }, []);
   }
 
-  root.LickMusic = { harmonyPlan, trackBeats, analyze, picks, chordsFor, NOTES };
+  root.LickMusic = { picksAsync, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, trackBeats, analyze, picks, chordsFor, NOTES };
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* LickBand: drums, bass and keys that play WITH the take.
@@ -1483,7 +1608,10 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     const parts = Object.assign({ drums: true, bass: true, keys: true }, opts.parts || {});
     const A = opts.analysis || root.LickMusic.analyze(raw, s, e);
     const H = root.LickMusic.harmonyPlan(raw, A);
-    const style = STYLES[opts.style] || STYLES[heuristicStyle(raw, A)];
+    const style0 = STYLES[opts.style] || STYLES[heuristicStyle(raw, A)];
+    // 3/4: the same instruments, in waltz shape (12 steps a bar: boom, chick, chick)
+    const style = A.meter === 3 ? { ...style0, kick: style0.kick.length ? [0] : [], snare: style0.snare?.length || style0.rim ? [4, 8] : [], rim: [], ghost: [], hat: style0.hat.length ? (style0.hat.length > 8 ? [0, 2, 4, 6, 8, 10] : [0, 4, 8]) : [], bass: style0.bass.length > 1 ? [0, 8] : [0], comp: style0.comp ? [4, 8] : undefined, walk: false } : style0;
+    const SPB = (A.meter || 4) * 4, FILL = SPB - 4;
     const K = await kit(SR);
     const L = new Float32Array(N), R = new Float32Array(N), pending = [];
     // place a mono sound at clip time t: gain, pan (-1..1), optional cut time with a short release
@@ -1513,11 +1641,11 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
         if (parts.drums) {
           if (bi === 0 || bi % 8 === 0) put(K.crash, bar.t0, 0.42 * vel * lvl.drums, -0.3);
           for (const j of style.kick) if (!(sparse && j)) { const t = at(j); if (ok(t)) put(K.kick, t, (j ? 0.82 : 1) * vel * lvl.drums); }
-          for (const j of style.snare || []) if (!sparse && !(fill && j >= 12)) { const t = at(j); if (ok(t)) put(K.snare, t, 0.7 * vel * lvl.drums, 0.05); }
+          for (const j of style.snare || []) if (!sparse && !(fill && j >= FILL)) { const t = at(j); if (ok(t)) put(K.snare, t, 0.7 * vel * lvl.drums, 0.05); }
           for (const j of style.rim || []) { const t = at(j); if (ok(t)) put(K.rim, t, 0.5 * vel * lvl.drums, 0.1); }
           for (const j of style.ghost || []) if (!sparse) { const t = at(j); if (ok(t)) put(K.snare, t, 0.16 * vel * lvl.drums, 0.05); }
-          for (const j of style.hat) if (!(sparse && j % 4) && !(fill && j >= 12)) { const t = at(j); if (ok(t)) put(style.open && j % 4 === 2 ? K.open : K.hat, t, (j % 4 === 0 ? 0.3 : 0.2) * vel * lvl.drums, 0.3); }
-          if (fill) for (let j = 12; j < 16; j++) { const t = at(j); if (ok(t)) put(K.snare, t, (0.3 + 0.12 * (j - 12)) * lvl.drums, 0.05); }
+          for (const j of style.hat) if (!(sparse && j % 4) && !(fill && j >= FILL)) { const t = at(j); if (ok(t)) put(style.open && j % 4 === 2 ? K.open : K.hat, t, (j % 4 === 0 ? 0.3 : 0.2) * vel * lvl.drums, 0.3); }
+          if (fill) for (let j = FILL; j < SPB; j++) { const t = at(j); if (ok(t)) put(K.snare, t, (0.3 + 0.12 * (j - FILL)) * lvl.drums, 0.05); }
         }
         if (parts.bass) {
           const steps = style.bass;
@@ -1675,6 +1803,7 @@ const recs = {
   open() { return this.db || (this.db = new Promise((res, rej) => { const r = indexedDB.open("lickpick-clips", 1); r.onupgradeneeded = () => r.result.createObjectStore("c"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); })); },
   async op(mode, fn) { const db = await this.open(); return new Promise((res, rej) => { const tx = db.transaction("c", mode), q = fn(tx.objectStore("c")); tx.oncomplete = () => res(q?.result); tx.onerror = () => rej(tx.error); }); },
   get(k) { return this.op("readonly", st => st.get(k)).catch(() => store.get(k)); },
+  async many(keys) { try { const db = await this.open(); return await new Promise((res, rej) => { const tx = db.transaction("c", "readonly"), st = tx.objectStore("c"), out = new Array(keys.length); keys.forEach((k, i) => { const q = st.get(k); q.onsuccess = () => { out[i] = q.result; }; }); tx.oncomplete = () => res(out); tx.onerror = () => rej(tx.error); }); } catch { return keys.map(k => store.get(k)); } },
   set(k, v) { return this.op("readwrite", st => st.put(v, k)).catch(() => store.set(k, v)); },
   del(k) { try { localStorage.removeItem(k); } catch { } return this.op("readwrite", st => st.delete(k)).catch(() => { }); },
 };
@@ -1691,8 +1820,9 @@ function forget(c) {
   state.clips = state.clips.filter(x => x !== c);
 }
 async function restoreLibrary() {
-  for (const key of store.get("lp:lib") || []) {
-    const prev = (await recs.get(key)) || store.get(key);
+  const keys = store.get("lp:lib") || [], all = await recs.many(keys);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i], prev = all[i] || store.get(key);
     if (state.clips.some(c => c.key === key)) continue;
     if ((prev?.v !== 3 && prev?.v !== 4) || !prev.raw?.penalty) continue;
     const c = { id: ++uid, key, pickSel: prev.pickSel || 0, file: null, name: prev.name || key.slice(8).split("|")[0], size: prev.size || 0, status: "done", raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb };
@@ -1706,7 +1836,7 @@ async function restoreLibrary() {
 const partsFrom = result => result.segments.map(s => ({ start: s.start, end: s.end, on: true }));
 const onParts = c => (c.parts || []).filter(p => p.on);
 const keptSeconds = c => onParts(c).reduce((s, p) => s + p.end - p.start, 0);
-const hasMusic = c => c.example ? c.parts.length > 0 : ((c.raw?.musicalSeconds ?? 99) >= 8 || c.parts.length > 0);
+const hasMusic = c => (c.raw?.musicalSeconds ?? 99) >= Math.min(8, Math.max(1.5, (c.raw?.duration || 0) * 0.5)) || c.parts.length > 0;
 function verdict(c) {
   if (c.status === "error") return "review";
   if (c.status !== "done") return "busy";
@@ -1818,6 +1948,7 @@ function addFiles(files, recorded) {
   }
   state.filter = "all"; setView("clips"); render();
   const added = state.clips.filter(c => c.checking);
+  store.set("lp:pending", [...(store.get("lp:pending") || []), ...added.map(c => ({ key: c.key, name: c.name }))]);
   Promise.all(added.map(async c => {
     const prev = await recs.get(c.key) || store.get(c.key);
     if (prev?.v === 4 && prev.raw?.penalty && prev.raw.chromaQ) {
@@ -1876,6 +2007,7 @@ async function decodeAudioStream(file, onP) {
   }
   return { data: out.subarray(0, maxI + 1), sampleRate: SR };
 }
+const within = (p, ms, what) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(what + " timed out")), ms))]);
 async function decodeAudio(file) {
   const AC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
   const ctx = new AC(1, 22050, 22050);
@@ -1891,29 +2023,32 @@ async function pump() {
     let y = null, sr = 22050;
     if (!streamBroken) try { const st = await decodeAudioStream(c.file, p => { c.progress = p * 0.25; renderCard(c); }); if (st) { y = st.data; sr = st.sampleRate; c.decoder = "stream"; } } catch (e) { y = null; if (String(e).includes("stalled")) streamBroken = true; }
     if (!y) {
-      const audio = await decodeAudio(c.file); c.decoder = "full";
+      // a file the phone can't decode must never block the clips behind it
+      const audio = await within(decodeAudio(c.file), 45000 + c.size / 2e6 * 1000, "decode"); c.decoder = "full";
       y = audio.getChannelData(0); sr = audio.sampleRate;
       if (audio.numberOfChannels > 1) { const r = audio.getChannelData(1); const m = new Float32Array(y.length); for (let i = 0; i < y.length; i++) m[i] = (y[i] + r[i]) / 2; y = m; }
     }
     const base = c.decoder === "stream" ? 0.25 : 0;
-    c.raw = await ClipEngine.analyzePCM(y, sr, p => { c.progress = base + p * (0.7 - base); renderCard(c); });
+    c.raw = await ClipEngine.analyzePCM(y, sr, p => { c.progress = base + p * (0.7 - base); renderCard(c); }, 150);
     delete c.raw._dbg; y = null;
     c.phase = "watching"; c.raw.cameraChecked = false;
     let peak = 0, best = -1; c.raw.highlight.forEach((h, i) => { if (h > best) { best = h; peak = i * CELL; } });
     try { // camera check is a bonus; the sound analysis stands without it
-      const v = await ClipExporter.analyzeVideo(await mb(), c.file, c.raw.duration, p => { c.progress = 0.7 + p * 0.3; renderCard(c); }, peak);
+      const v = await within(ClipExporter.analyzeVideo(await mb(), c.file, c.raw.duration, p => { c.progress = 0.7 + p * 0.3; renderCard(c); }, peak), 30000 + c.raw.duration * 400, "camera");
       if (v) {
         const vp = ClipEngine.videoPenalties(v.frames, c.raw.nCells, v.step);
         if (vp) { Object.assign(c.raw.penalty, vp); c.raw.cameraChecked = true; }
         if (v.thumb) c.thumb = v.thumb;
       }
     } catch { }
-    redecide(c, true); c.status = "done"; persist(c);
+    redecide(c, true); c.status = "done"; persist(c); unpend(c);
   } catch (err) {
-    c.status = "error"; c.error = /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
+    unpend(c); c.status = "error"; c.error = /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
   }
   busy = false; renderCard(c); renderTop(); renderBoxes(); if (state.openId === c.id) renderStudio(); pump();
 }
+
+function unpend(c) { store.set("lp:pending", (store.get("lp:pending") || []).filter(p => p.key !== c.key)); }
 
 // ---------- the Pick: the best stretch of each clip, as long as the rule (45 s by default)
 // The Pick: the best complete musical phrases of the take (bar-aligned when there's a beat), up to 3
@@ -1922,14 +2057,21 @@ function picksOf(c) {
   if (c.status !== "done" || !c.raw?.loud) return [];
   const parts = onParts(c).map(p => [p.start, p.end]), key = JSON.stringify([parts, state.pickLen, c.raw.v]);
   if (c._picks?.key !== key) {
+    // computed just after the screen updates, so a long take never freezes a tap
+    if (c._pickJob !== key) { c._pickJob = key; setTimeout(async () => { if (c._pickJob !== key) return; await computePicks(c, parts, key); if (c._pickJob !== key) return; c._pickJob = null; renderCard(c); if (cur() === c) { renderStudio(); if (player && player.v.paused && !bandPlaying) showPick(c); } }, 30); }
+    return [];
+  }
+  return c._picks.list;
+}
+async function computePicks(c, parts, key) {
+  {
     let list = [];
-    try { list = parts.length ? LickMusic.picks(c.raw, parts, state.pickLen) : []; } catch { list = []; }
+    try { list = parts.length ? await LickMusic.picksAsync(c.raw, parts, state.pickLen) : []; } catch { list = []; }
     if (!list.length && parts.length) { const L = state.pickLen === "auto" ? 30 : state.pickLen, w = ClipExporter.bestWindow(c.raw.highlight, CELL, parts, L); if (w) list = [{ s: w.s, e: w.e, len: w.e - w.s, bars: 0, why: [] }]; }
     list.forEach(p => { p.ranges = [[p.s, p.e]]; });
     c._picks = { key, list };
     if ((c.pickSel || 0) >= list.length) c.pickSel = 0;
   }
-  return c._picks.list;
 }
 function pickOf(c) { const l = picksOf(c); return l[c.pickSel || 0] || l[0] || null; }
 // What the scan found, in plain words
@@ -1952,7 +2094,7 @@ function phrase(c) {
   const v = verdict(c), k = keptSeconds(c), n = onParts(c).length;
   const pk = pickOf(c), cuts = (c.result?.removed || []).length;
   if (v === "trash") return c.override ? "Marked by you" : "No music found";
-  const pickTxt = pk ? `<b class="pk-l">★ ${fmt(pk.len)} pick</b>at ${fmt(pk.s)}${pk.bars ? ` · ${pk.bars} bars` : ""}` : "<b>No clean stretch</b>";
+  const pickTxt = pk ? `<b class="pk-l">★ ${fmt(pk.len)} pick</b>at ${fmt(pk.s)}${pk.bars ? ` · ${pk.bars} bars` : ""}` : c._pickJob ? "<b>Finding your pick…</b>" : "<b>No clean stretch</b>";
   return `${pickTxt}<br><span class="sub">${fmt(k)} clean of ${fmt(c.raw.duration)}${cuts ? ` · ${cuts} cut${cuts > 1 ? "s" : ""}` : " · no flubs"}${c.saved ? " · saved" : ""}${c.file ? "" : " · tap to re-add"}</span>`;
 }
 function cardHTML(c) {
@@ -1973,7 +2115,7 @@ function renderTop() {
   state.clips.forEach(c => counts[verdict(c)]++);
   if (!real.length) {
     $("#top").innerHTML = `<div class="hero"><svg class="mark" aria-hidden="true"><use href="#logo"/></svg>
-      <div><h1>Keep the licks. Kill the flubs.</h1><p>Drop in your jams. LickPick scans every take, cuts the flubs and finds your best phrase.</p></div>
+      <div>${profile.name ? `<p class="hello">Hey ${esc(profile.name)}</p>` : ""}<h1>Keep the licks. Kill the flubs.</h1><p>Drop in your jams. LickPick scans every take, cuts the flubs and finds your best phrase.</p></div>
       <div class="ctas"><button class="btn" type="button" data-act="record">${icon("i-rec")}Record</button><button class="btn" type="button" data-act="gallery">${icon("i-film")}Gallery</button></div></div>`;
     $("#sortCta").innerHTML = "";
     return;
@@ -1987,8 +2129,27 @@ function renderTop() {
 function bulkHTML() {
   const todo = state.clips.filter(c => c.file && c.status === "done" && verdict(c) === "keep" && !c.saved && onParts(c).length);
   if (bulk.running) return `<div class="busy-line"><span class="pulse"></span>${esc(bulk.msg)}</div>`;
-  if (!todo.length || !downloads) return bulk.msg ? `<div class="busy-line">${esc(bulk.msg)}</div>` : "";
-  return `<button class="btn wide" type="button" data-act="save-all">${icon("i-stack")}Save ${todo.length} keeper${todo.length > 1 ? "s" : ""}${proTag()}</button>`;
+  const withPick = state.clips.filter(c => c.file && c.status === "done" && verdict(c) !== "trash" && !c.pickSaved && pickOf(c));
+  if ((!todo.length && !withPick.length) || !downloads) return bulk.msg ? `<div class="busy-line">${esc(bulk.msg)}</div>` : "";
+  return `${bulk.msg ? `<div class="busy-line">${esc(bulk.msg)}</div>` : ""}<div class="row-btns">${withPick.length ? `<button class="btn" type="button" data-act="save-picks">${icon("i-star")}${withPick.length} pick${withPick.length > 1 ? "s" : ""}${proTag()}</button>` : ""}${todo.length ? `<button class="btn" type="button" data-act="save-all">${icon("i-stack")}${todo.length} clean cut${todo.length > 1 ? "s" : ""}${proTag()}</button>` : ""}</div>`;
+}
+// every clip's pick, one file each: the posting queue in one tap
+async function saveAllPicks() {
+  const todo = state.clips.filter(c => c.file && c.status === "done" && verdict(c) !== "trash" && !c.pickSaved && pickOf(c));
+  if (!todo.length || !downloads || bulk.running || !proOK("Save all picks")) return;
+  bulk.running = true; let saved = 0;
+  try {
+    const M = await mb();
+    for (let i = 0; i < todo.length; i++) {
+      const c = todo[i], pk = pickOf(c);
+      bulk.msg = `Pick ${i + 1} of ${todo.length}: ${c.name}`; renderBoxes();
+      try { const n = await saveCut(M, c, `${c.name.replace(/\.[^.]+$/, "")}_pick${Math.round(pk.len)}s`, pk.ranges, t => { bulk.msg = `${i + 1} of ${todo.length}. ${t}`; renderBoxes(); }); if (n) { c.pickSaved = true; saved++; } }
+      catch (err) { if (err?.code === "unavailable" || err?.code === "not_granted") throw err; }
+    }
+    if (saved) spendTrial();
+    bulk.msg = `Saved ${saved} pick${saved === 1 ? "" : "s"}.`;
+  } catch { bulk.msg = "Saving isn't available in this view."; }
+  bulk.running = false; renderBoxes();
 }
 const bulk = { running: false, msg: "" };
 async function saveAll() {
@@ -2096,6 +2257,127 @@ function renderIntro() {
 function openIntro() { slide = 0; renderIntro(); $("#intro").hidden = false; }
 function closeIntro() { $("#intro").hidden = true; store.set("ck:intro", 1); }
 
+// ---------- the player: plays only what LickPick chose, on its own timeline (one or more ranges),
+// or the full take when asked. Its own controls, because the phone's controls only know the whole file.
+class Seg {
+  constructor(host, { onTick } = {}) {
+    this.host = host; this.onTick = onTick || (() => { }); this.ranges = null; this.i = 0; this.loop = false; this.ext = null; this.raf = 0;
+    host.innerHTML = `<div class="player"><div class="pv"><video playsinline preload="metadata"></video>
+      <button class="bigplay" type="button" aria-label="Play"><span class="pkw"><span class="pickclip">${icon("i-play")}</span></span></button>
+      <button class="segchip" type="button"></button></div>
+      <div class="pbar"><button class="pb-play" type="button" aria-label="Play">${icon("i-play")}</button><div class="ptrack" role="slider" aria-label="Position"><i></i></div><span class="ptime">0:00 / 0:00</span>
+      <button class="pb-loop" type="button" aria-pressed="false" aria-label="Loop">${icon("i-loop")}</button><button class="pb-full" type="button" aria-label="Full screen">${icon("i-expand")}</button></div></div>`;
+    const q = sel => host.querySelector(sel);
+    this.v = q("video"); this.big = q(".bigplay"); this.chip = q(".segchip"); this.pbtn = q(".pb-play"); this.track = q(".ptrack"); this.fill = q(".ptrack i"); this.time = q(".ptime");
+    const tog = () => { if (this.onToggle) return this.onToggle(); this.v.paused ? this.play() : this.pause(); };
+    this.big.onclick = tog; this.pbtn.onclick = tog; this.v.onclick = tog;
+    q(".pb-loop").onclick = e => { this.loop = !this.loop; e.currentTarget.setAttribute("aria-pressed", String(this.loop)); };
+    q(".pb-full").onclick = () => { const el = q(".player"); try { document.fullscreenElement ? document.exitFullscreen() : (el.requestFullscreen || el.webkitRequestFullscreen).call(el); } catch { } };
+    this.chip.onclick = () => this.onChip?.();
+    let drag = false;
+    const seek = ev => { if (this.ext) return; const r = this.track.getBoundingClientRect(); this.seekVirt(Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)) * this.total()); };
+    this.track.addEventListener("pointerdown", e => { drag = true; try { this.track.setPointerCapture(e.pointerId); } catch { } seek(e); });
+    this.track.addEventListener("pointermove", e => { if (drag) seek(e); });
+    this.track.addEventListener("pointerup", () => { drag = false; });
+    this.v.addEventListener("play", () => this.ui()); this.v.addEventListener("pause", () => this.ui());
+    this.v.addEventListener("loadedmetadata", () => { this.goStart(); this.ui(); });
+    this.v.addEventListener("seeked", () => { this.ui(); this.onTick(); });
+  }
+  load(url) { this.v.src = url; }
+  rs() { return this.ranges || [[0, this.v.duration || 0]]; }
+  total() { return this.rs().reduce((t, [a, b]) => t + b - a, 0); }
+  set(ranges, label, chipText) { this.pause(); this.ranges = ranges && ranges.length ? ranges : null; this.label = label; this.chipText = chipText; this.i = 0; this.ended = false; this.goStart(); this.ui(); }
+  goStart() { if (this.v.readyState >= 1) { try { this.v.currentTime = this.rs()[0][0]; } catch { } } }
+  virt() {
+    if (this.ext) return this.ext();
+    const t = this.v.currentTime, R = this.rs(); let acc = 0;
+    for (let k = 0; k < R.length; k++) { const [a, b] = R[k]; if (k === this.i || (t >= a && t <= b)) return acc + Math.min(b - a, Math.max(0, t - a)); acc += b - a; }
+    return 0;
+  }
+  seekVirt(x) { const R = this.rs(); let acc = 0; for (let k = 0; k < R.length; k++) { const [a, b] = R[k]; if (x <= acc + (b - a) || k === R.length - 1) { this.i = k; this.ended = false; try { this.v.currentTime = a + Math.min(b - a, x - acc); } catch { } break; } acc += b - a; } this.ui(); this.onTick(); }
+  play() {
+    const R = this.rs(); if (!R.length) return;
+    if (this.ended || this.v.currentTime < R[this.i][0] - 0.05 || this.v.currentTime >= R[this.i][1] - 0.05) { if (this.ended || this.v.currentTime >= R[R.length - 1][1] - 0.05) this.i = 0; this.ended = false; try { this.v.currentTime = R[this.i][0]; } catch { } }
+    this.v.play().catch(() => { }); this.loopTick();
+  }
+  pause() { this.v.pause(); cancelAnimationFrame(this.raf); this.raf = 0; this.ui(); }
+  loopTick() {
+    cancelAnimationFrame(this.raf);
+    const step = () => {
+      if (!this.ext && !this.v.paused) {
+        const R = this.rs(), [a, b] = R[this.i] || [0, 0], t = this.v.currentTime;
+        if (t >= b - 0.025) {
+          if (this.i + 1 < R.length) { this.i++; this.v.currentTime = R[this.i][0]; }
+          else if (this.loop) { this.i = 0; this.v.currentTime = R[0][0]; }
+          else { this.v.pause(); this.ended = true; }
+        } else if (t < a - 0.25) { this.v.currentTime = a; }
+      }
+      this.ui(); this.onTick();
+      this.raf = (!this.v.paused || this.ext) ? requestAnimationFrame(step) : 0;
+    };
+    this.raf = requestAnimationFrame(step);
+  }
+  ui() {
+    const playing = this.ext ? true : !this.v.paused, tot = this.total(), x = Math.min(tot, this.virt());
+    this.fill.style.width = (tot ? x / tot * 100 : 0) + "%";
+    this.time.textContent = `${fmt(x)} / ${fmt(tot)}`;
+    const ic = playing ? "i-pause" : "i-play"; this.pbtn.innerHTML = icon(ic); this.big.hidden = playing;
+    this.chip.innerHTML = `${this.label ? `<b>${esc(this.label)}</b>` : ""}${this.chipText ? `<span>${esc(this.chipText)}</span>` : ""}`; this.chip.hidden = !this.label && !this.chipText;
+  }
+  destroy() { cancelAnimationFrame(this.raf); try { this.v.pause(); this.v.removeAttribute("src"); this.v.load(); } catch { } this.host.innerHTML = ""; }
+}
+
+// ---------- first run: profile and setup (kept on this phone; no account needed)
+const PLAYS = [["guitar", "Guitar", "i-pick"], ["bass", "Bass", "i-bass"], ["keys", "Keys", "i-keys"], ["drums", "Drums", "i-drum"], ["vocals", "Vocals", "i-ear"], ["other", "Other", "i-star"]];
+const POSTS = [["reels", "Instagram Reels"], ["tiktok", "TikTok"], ["shorts", "YouTube Shorts"], ["none", "Not posting yet"]];
+const profile = Object.assign({ name: "", plays: [], posts: [], done: false }, store.get("lp:profile") || {});
+let ob = 0;
+const OB = ["welcome", "you", "post", "picky", "go"];
+function openOnboard(start = 0) { ob = start; renderOnboard(); $("#onboard").hidden = false; document.body.style.overflow = "hidden"; }
+function closeOnboard() { $("#onboard").hidden = true; document.body.style.overflow = ""; profile.done = true; store.set("lp:profile", profile); store.set("ck:intro", 1); renderTop(); }
+function renderOnboard() {
+  const step = OB[ob], B = $("#obBody");
+  $("#obProg").innerHTML = OB.map((_, i) => `<i class="${i <= ob ? "on" : ""}"></i>`).join("");
+  document.querySelector('[data-act="ob-back"]').style.visibility = ob ? "visible" : "hidden";
+  const next = $("#obNext");
+  if (step === "welcome") {
+    B.innerHTML = `<div class="ob-hero"><svg aria-hidden="true"><use href="#logo"/></svg></div><h1>Keep the licks. Kill the flubs.</h1>
+      <p class="lead">Drop in your jam videos. LickPick listens to every take, cuts the restarts and wrong notes, and hands you the best phrase, ready to post.</p>
+      <div class="safe-note"><svg class="i"><use href="#i-lock"/></svg><span>Everything stays on your phone. No account, no uploads, and LickPick never deletes a file.</span></div>`;
+    next.textContent = "Set me up";
+  } else if (step === "you") {
+    B.innerHTML = `<h1>Who's playing?</h1>
+      <div class="field"><label for="obName">Your name or stage name</label><input id="obName" maxlength="40" autocomplete="nickname" placeholder="Optional" value="${esc(profile.name)}"></div>
+      <div class="field"><label>What do you play?</label><div class="chips">${PLAYS.map(([k, l, ic]) => `<button type="button" data-play-i="${k}" aria-pressed="${profile.plays.includes(k)}">${icon(ic)}${l}</button>`).join("")}</div></div>
+      <p class="hint">Used for your captions and hashtags.</p>`;
+    next.textContent = "Next";
+  } else if (step === "post") {
+    B.innerHTML = `<h1>Where do your clips go?</h1><div class="chips">${POSTS.map(([k, l]) => `<button type="button" data-post-i="${k}" aria-pressed="${profile.posts.includes(k)}">${l}</button>`).join("")}</div>
+      <p class="hint">${pickHint()}</p>`;
+    next.textContent = "Next";
+  } else if (step === "picky") {
+    B.innerHTML = `<h1>How picky should LickPick be?</h1><div class="choices">${[[0.25, "Chill", "Keeps more. Small slips stay in."], [0.5, "Normal", "Cuts clear mistakes, restarts and dead air."], [0.8, "Strict", "Only the cleanest playing survives."]].map(([v, l, d]) => `<button type="button" class="choice" data-picky-i="${v}" aria-pressed="${state.strictness === v}"><span><strong>${l}</strong><span>${d}</span></span></button>`).join("")}</div>
+      <p class="hint">Trash is only ever suggested for clips with no music at all. You can change this later in the menu.</p>`;
+    next.textContent = "Next";
+  } else {
+    B.innerHTML = `<h1>${profile.name ? `You're set, ${esc(profile.name)}.` : "You're set."}</h1>
+      <div class="how">${[["Add your jams", "Record one now or pick a batch from your gallery."], ["LickPick listens", "Every take gets a Pick: its best phrase, on the bar."], ["Play, save, post", "Hear just the pick, save it, make a short, add a band."]].map(([b, d], i) => `<div><span class="pkw"><span class="n pickclip">${i + 1}</span></span><span><b>${b}</b><span>${d}</span></span></div>`).join("")}</div>
+      <div class="duo"><button class="tile t-hot" type="button" data-act="ob-record">${icon("i-rec")}<span><strong>Record</strong><em>Checked the moment you stop</em></span></button><button class="tile t-cyan" type="button" data-act="ob-gallery">${icon("i-film")}<span><strong>Gallery</strong><em>Pick as many as you like</em></span></button></div>`;
+    next.textContent = "I'll add clips later";
+  }
+}
+function pickHint() {
+  const p = profile.posts;
+  if (p.includes("tiktok") || p.includes("reels")) return "Your picks will aim for 30 seconds, the sweet spot for Reels and TikTok.";
+  if (p.includes("shorts")) return "Your picks will aim for 45 seconds for Shorts.";
+  return "Your picks will be the best complete phrase, 20 to 45 seconds.";
+}
+function applyProfileDefaults() {
+  const p = profile.posts;
+  state.pickLen = p.includes("tiktok") || p.includes("reels") ? 30 : p.includes("shorts") ? 45 : "auto";
+  syncRules();
+}
+
 // ---------- quick sort (one clip at a time)
 let qs = { ids: [], i: 0, done: 0 }, qsVideo = null;
 function openQuickSort() {
@@ -2111,13 +2393,12 @@ function renderQuick() {
   const D = c.raw?.duration || 1;
   $("#qsStrip").innerHTML = onParts(c).map(p => `<i style="left:${p.start / D * 100}%;width:${(p.end - p.start) / D * 100}%"></i>`).join("");
   const st = $("#qsStage");
-  if (qsVideo) { qsVideo.pause(); }
-  st.innerHTML = `<video playsinline controls preload="metadata"></video>`;
-  qsVideo = st.querySelector("video");
-  qsVideo.src = c.url || (c.url = URL.createObjectURL(c.file));
-  const start = c.parts[0]?.start ?? 0;
-  qsVideo.addEventListener("loadedmetadata", () => { qsVideo.currentTime = start; qsVideo.play().catch(() => { }); }, { once: true });
-  qsVideo.addEventListener("error", () => { st.innerHTML = `<div class="ph">This video can't be previewed here. Open Edit parts to hear it.</div>`; }, { once: true });
+  qsVideo?.destroy(); qsVideo = new Seg(st);
+  const pk = pickOf(c), rs = pk ? pk.ranges : onParts(c).map(p => [p.start, p.end]);
+  qsVideo.load(c.url || (c.url = URL.createObjectURL(c.file)));
+  qsVideo.set(rs, pk ? "Best bit" : "Clean parts", rs.length ? fmt(rs.reduce((t, [a, b]) => t + b - a, 0)) : "");
+  qsVideo.v.addEventListener("loadedmetadata", () => qsVideo.play(), { once: true });
+  qsVideo.v.addEventListener("error", () => { st.innerHTML = `<div class="ph">This video can't be previewed here. Open Edit to hear it.</div>`; }, { once: true });
 }
 function quickDecide(kind) {
   const c = state.clips.find(x => x.id === qs.ids[qs.i]); if (!c) return;
@@ -2132,33 +2413,35 @@ function quickDecide(kind) {
     if (!$("#sorter").hidden) { qs.i = at; renderQuick(); } } });
 }
 function closeQuickSort(finished) {
-  if (qsVideo) { qsVideo.pause(); qsVideo.removeAttribute("src"); qsVideo.load(); qsVideo = null; }
+  qsVideo?.destroy(); qsVideo = null;
   $("#sorter").hidden = true; document.body.style.overflow = ""; render();
   if (finished && qs.done && !toastAct) toast(`Sorted ${qs.done} clip${qs.done > 1 ? "s" : ""}.`);
 }
 // ---------- studio
-let video = null, stopAt = null, queue = [], audioCtx = null, audioBuf = { id: null, buf: null };
+let video = null, player = null, stopAt = null, queue = [], audioCtx = null, audioBuf = { id: null, buf: null };
 const cur = () => state.clips.find(c => c.id === state.openId);
 function openStudio(c) {
   if (c.status === "queued" || c.status === "listening") return;
   state.openId = c.id; state.tab = "pick"; c.sel = c.parts?.length ? 0 : -1;
   const stage = $("#sStage");
+  player?.destroy(); player = null;
   if (c.file) {
-    stage.innerHTML = `<video playsinline controls preload="metadata"></video>`;
-    video = stage.querySelector("video");
-    video.src = c.url || (c.url = URL.createObjectURL(c.file));
-    video.addEventListener("timeupdate", onTime);
-    video.addEventListener("seeked", drawWave);
-    video.addEventListener("error", () => { c.audioOnly = true; stage.innerHTML = `<div class="ph">This video can't be previewed here.<br>Tap a part to hear it.</div>`; video = null; });
+    player = new Seg(stage, { onTick: drawWave }); video = player.v;
+    player.onChip = () => { const c2 = cur(); if (!c2) return; if (player.ranges) { stopBand(); player.set(null, "Full take", fmt(c2.raw?.duration || 0)); } else showPick(c2); };
+    player.load(c.url || (c.url = URL.createObjectURL(c.file)));
+    video.addEventListener("error", () => { c.audioOnly = true; player?.destroy(); player = null; stage.innerHTML = `<div class="ph">This video can't be previewed here.<br>Tap a part to hear it.</div>`; video = null; });
+    showPick(c);
   } else {
     video = null; stage.innerHTML = `<div class="ph relink"><p>Scanned before. Add this video again to play and save it.</p><button class="btn" type="button" data-act="gallery">${icon("i-film")}Re-add ${esc(c.name)}</button></div>`;
   }
   $("#studio").hidden = false; document.body.style.overflow = "hidden"; $("#studio").scrollTop = 0;
   renderStudio();
 }
+// load the current pick into the player (not playing yet), so the first thing on screen is the pick
+function showPick(c) { const pk = pickOf(c); if (!player) return; if (pk) player.set(pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`, `${fmt(pk.len)} · tap for full take`); else player.set(null, "Full take", fmt(c.raw?.duration || 0)); }
 function closeStudio() {
   stopBand(); stopAudio(); stopAt = null; queue = [];
-  if (video) { video.pause(); video.removeAttribute("src"); video.load(); } video = null;
+  player?.destroy(); player = null; video = null;
   state.openId = null; $("#studio").hidden = true; document.body.style.overflow = ""; render();
 }
 function renderStudio() {
@@ -2194,7 +2477,7 @@ function pickPanel(c) {
   const canSave = !!c.file && !!downloads && !c.exporting, L = state.pickLen;
   return `<div class="row2 lenrow"><span><b>Pick length</b></span><span class="seg">${[["auto", "Auto"], [15, "15s"], [30, "30s"], [45, "45s"], [60, "60s"]].map(([val, lab]) => `<button type="button" data-plen="${val}" aria-pressed="${L === val}">${lab}</button>`).join("")}</span></div>
     <p class="hint">${L === "auto" ? "Auto finds the best complete phrase, 20 to 45 seconds, starting and ending on the bar." : `The best ${L} seconds, rounded to whole bars.`} 15 to 30 seconds plays best on Reels and TikTok.</p>
-    ${pk ? `<div class="pickhero">
+    ${!pk && c._pickJob ? `<div class="pickhero none"><p class="working"><span class="pulse"></span>Finding your best phrase…</p></div>` : pk ? `<div class="pickhero">
       <div class="pk-top"><span class="pk-tag">Pick ${"ABC"[c.pickSel || 0]}</span>${pk.why?.length ? `<span class="pk-why">${pk.why.map(esc).join(" · ")}</span>` : ""}</div>
       <div class="pk-big"><strong>${fmt(pk.len)}</strong><span>${fmt(pk.s)} → ${fmt(pk.e)}${pk.bars ? ` · ${pk.bars} bars` : ""}</span></div>
       <div class="row-btns"><button class="btn ink" type="button" data-act="pick-play">${icon("i-play")}Play</button><button class="btn ink" type="button" data-act="pick-save" ${canSave ? "" : "disabled"}>${icon("i-save")}Save</button></div>
@@ -2208,7 +2491,7 @@ function pickPanel(c) {
       ${rep.length ? `<div class="cutlist">${rep.map(r => `<div><b>${r.n}×</b><span>${esc(r.why)}</span><em>${fmt(r.t)} cut</em></div>`).join("")}</div>` : `<p class="hint">Clean take. Nothing to cut.</p>`}
       <div class="facts">${facts.map(([a, b]) => `<span class="fact">${a} <b>${esc(b)}</b></span>`).join("")}</div>
       ${(c.raw?.styleNotes || []).map(n => `<p class="hint">${esc(n.charAt(0).toUpperCase() + n.slice(1))}.</p>`).join("")}
-      ${(c.result?.removed || []).length ? `<details><summary>Every cut</summary><div class="cuts">${c.result.removed.map(r => `<button type="button" class="cut" data-seek="${r.start}"><span class="t">${fmt(r.start)} to ${fmt(r.end)}</span><span>${esc(r.reasons.join(", "))}</span></button>`).join("")}</div></details>` : ""}
+      ${(c.result?.removed || []).length ? `<details><summary>Every cut</summary><div class="cuts">${c.result.removed.map(r => `<button type="button" class="cut" data-seek="${r.start}" data-seek-end="${r.end}"><span class="t">${fmt(r.start)} to ${fmt(r.end)}</span><span>${esc(r.reasons.join(", "))}</span></button>`).join("")}</div></details>` : ""}
       <div class="row2 ovr">${v !== "trash" ? `<button class="btn sm ghost" type="button" data-ovr="trash">${icon("i-bin")}Trash it</button>` : ""}${v !== "keep" ? `<button class="btn sm ghost" type="button" data-ovr="keep">${icon("i-check")}Keep it</button>` : ""}${c.override ? `<button class="btn sm ghost" type="button" data-ovr="">${icon("i-undo")}Undo</button>` : ""}${c.edited ? `<button class="btn sm ghost" type="button" data-act="reset">Reset edits</button>` : ""}<button class="btn sm ghost" type="button" data-act="forget">${icon("i-x")}Remove from list</button></div>
     </div>`;
 }
@@ -2268,7 +2551,7 @@ function bandPanel(c) {
   const picked = b.style === "auto" ? (b.ai?.style || auto) : b.style;
   const H = A ? LickMusic.harmonyPlan(c.raw, A) : [], names = []; for (const h of H) if (names[names.length - 1] !== h.name) names.push(h.name);
   return `${pickRef(c, w)}
-    <div class="band-facts"><span class="fact">Tempo <b>${A?.pulse ? A.bpm + " BPM" : "free time"}</b></span><span class="fact">Feel <b>${A?.pulse ? (A.swing > 0.58 ? "swung" : "straight") : "rubato"}</b></span><span class="fact">Key <b>${esc(c.raw.info?.key || "?")}</b></span></div>
+    <div class="band-facts"><span class="fact">Tempo <b>${A?.pulse ? A.bpm + " BPM" : "free time"}</b></span><span class="fact">Feel <b>${A?.pulse ? (A.swing > 0.58 ? "swung" : "straight") : "rubato"}${A?.meter === 3 ? ", 3/4" : ""}</b></span><span class="fact">Key <b>${esc(c.raw.info?.key || "?")}</b></span></div>
     ${names.length ? `<div class="chordline"><span>Chords it heard</span><div>${chordLoop(names)}</div></div>` : ""}
     <p class="hint">${A?.pulse ? "Every hit follows your own beat, even where you speed up or slow down. Bass and keys play your chords." : "No steady beat here, so the band plays soft bass and keys under your chords, no drums."}</p>
     <div class="chipset" role="group" aria-label="Style"><button type="button" class="ai" data-bstyle="auto" aria-pressed="${b.style === "auto"}">${icon("i-bolt")}${sampler ? "AI pick" : "Auto"}</button>${Object.entries(styles).map(([k, v]) => `<button type="button" data-bstyle="${k}" aria-pressed="${b.style === k}">${v.name}</button>`).join("")}</div>
@@ -2351,6 +2634,7 @@ function bandPrefetch(c) {
 function stopBand() {
   for (const n of bandNodes) { try { n.stop(); } catch { } } bandNodes = []; clearInterval(bandSync); bandSync = 0;
   if (video) { video.muted = false; }
+  if (player && player.ext) { player.ext = null; player.onToggle = null; player.pause(); }
   if (bandPlaying) { bandPlaying = false; stopAt = null; video?.pause(); }
 }
 function bandPreview(c) {
@@ -2371,6 +2655,7 @@ function bandPreview(c) {
     const t0 = ctx.currentTime + 0.15; a.start(t0); bnd.start(t0); bandNodes = [a, bnd];
     a.onended = () => { if (bandPreview.token === token && bandPlaying) { stopBand(); renderStudio(); } };
     // the picture follows the sound: one clock, the audio's
+    if (player) { player.set([[w.s, w.e]], "Pick + band", fmt(w.e - w.s)); player.ext = () => Math.max(0, Math.min(w.e - w.s, ctx.currentTime - t0)); player.onToggle = () => { stopBand(); renderStudio(); }; player.loopTick(); }
     if (video && !c.audioOnly) {
       queue = []; stopAt = null; video.muted = true;
       try { video.currentTime = w.s; } catch { } video.play().catch(() => { });
@@ -2426,7 +2711,8 @@ function localCaptions(c) {
     Pro: [`Session cut: ${what}${facts ? ` (${facts})` : ""}.`, `Working on ${what}. Clean take, no edits to the playing.`, `Practice log: ${what}${facts ? `, ${facts}` : ""}.`],
     Funny: [`Only took me 40 tries to get ${what} this clean 😅`, `The flubs are in the trash folder. This is ${what}.`, `My neighbors have heard ${what} more than I have.`],
   }[v] || [];
-  const base = ["#jam", "#musician", "#livemusic", "#practice", "#newmusic", "#musicvideo", "#improv", "#reels"];
+  const inst = (profile.plays || []).filter(k => k !== "other").map(k => "#" + (k === "keys" ? "piano" : k === "vocals" ? "singer" : k));
+  const base = [...inst, "#jam", "#musician", "#livemusic", "#practice", "#newmusic", "#musicvideo", "#improv", "#reels"];
   const extra = [key && "#" + key.replace(/\s+/g, "").toLowerCase(), bpm && (bpm >= 120 ? "#uptempo" : "#groove"), v === "Chill" && "#chillmusic", v === "Pro" && "#musicianlife", v === "Hype" && "#rock"].filter(Boolean);
   const off = (c.capSeed || 0) % T.length;
   return [0, 1, 2].map(i => ({ caption: T[(i + off) % T.length], hashtags: [...extra, ...base].slice(i, i + 7) }));
@@ -2466,8 +2752,7 @@ function seekFromWave(ev) {
   const r = $("#sWave").getBoundingClientRect(), x = Math.min(r.width, Math.max(0, ev.clientX - r.left));
   const t = x / r.width * (c.raw?.duration || 0);
   const i = (c.parts || []).findIndex(p => t >= p.start && t < p.end);
-  stopAt = null; queue = [];
-  if (video) video.currentTime = t; else c.playT = t;
+  if (player) { const inside = player.ranges && player.ranges.some(([a, b]) => t >= a && t <= b); if (!inside && player.ranges) player.set(null, "Full take", fmt(c.raw?.duration || 0)); const R = player.rs(); let acc = 0; for (const [a, b] of R) { if (t >= a && t <= b) { player.seekVirt(acc + t - a); break; } acc += b - a; } } else c.playT = t;
   if (i >= 0 && i !== c.sel) { c.sel = i; if (state.tab === "parts") renderStudio(); else drawWave(); } else drawWave();
 }
 let dragging = false;
@@ -2478,13 +2763,6 @@ $("#sWave").addEventListener("pointercancel", () => { dragging = false; });
 window.addEventListener("resize", () => { if (state.openId) drawWave(); });
 
 // ---------- playback
-function onTime() {
-  if (!video) return;
-  if (stopAt != null && video.currentTime >= stopAt) {
-    if (queue.length) { const [s, e] = queue.shift(); video.currentTime = s; stopAt = e; } else { video.pause(); stopAt = null; }
-  }
-  drawWave();
-}
 let audioPlan = null, raf = 0;
 function audioTick() {
   const c = cur();
@@ -2496,13 +2774,12 @@ function audioTick() {
   drawWave();
   raf = audioPlan ? requestAnimationFrame(audioTick) : 0;
 }
-async function playRanges(c, ranges) {
+async function playRanges(c, ranges, label) {
   stopAudio(); if (!ranges.length) return;
-  const [[s, e], ...rest] = ranges;
-  if (video && !c.audioOnly) {
-    queue = rest; stopAt = null;
-    const go = () => { video.currentTime = s; stopAt = e; video.play().catch(() => { }); };
-    if (video.readyState >= 1) go(); else video.addEventListener("loadedmetadata", go, { once: true });
+  if (player && !c.audioOnly) {
+    stopBand();
+    player.set(ranges, label || "Selection", fmt(ranges.reduce((t, [a, b]) => t + b - a, 0)));
+    if (video.readyState >= 1) player.play(); else video.addEventListener("loadedmetadata", () => player.play(), { once: true });
     return;
   }
   if (!c.file) return;
@@ -2621,7 +2898,7 @@ async function writeCaptions(c) {
   if (!sampler) { c.captions = localCaptions(c); c.capStatus = ""; renderStudio(); return; }
   const say = t => { c.capStatus = t; const el = $("#capStatus"); if (el) el.textContent = t; };
   const w = shortWindow(c);
-  const facts = { vibe: c.vibe || "Hype", musiciansNote: c.note || "(none)", key: c.raw?.info?.key, tempoBPM: c.raw?.info?.tempo, cleanLengthSeconds: Math.round(keptSeconds(c)), shortLengthSeconds: w ? Math.round(w.e - w.s) : null };
+  const facts = { vibe: c.vibe || "Hype", instruments: profile.plays, musiciansNote: c.note || "(none)", key: c.raw?.info?.key, tempoBPM: c.raw?.info?.tempo, cleanLengthSeconds: Math.round(keptSeconds(c)), shortLengthSeconds: w ? Math.round(w.e - w.s) : null };
   c.writing = true; renderStudio(); say("Writing…");
   try {
     const out = await sampler.json(`You write social media captions for a musician posting a short video of themselves playing.
@@ -2658,7 +2935,15 @@ document.addEventListener("click", e => {
   if (d.act === "install") { $("#rules").hidden = true; installPrompt?.prompt(); installPrompt?.userChoice.finally(() => { installPrompt = null; $("#installBtn").hidden = true; $("#installBar").hidden = true; }); return; }
   if (d.act === "help-close") { $("#pickHelp").hidden = true; return; }
   if (d.act === "sheet-close") { $("#addSheet").hidden = true; return; }
-  if (t.id === "helpBtn") { openIntro(); return; }
+  if (t.id === "helpBtn") { $("#rules").hidden = true; openIntro(); return; }
+  if (d.act === "ob-open") { $("#rules").hidden = true; openOnboard(1); return; }
+  if (d.act === "ob-skip") { closeOnboard(); return; }
+  if (d.act === "ob-back") { if (ob > 0) { ob--; renderOnboard(); } return; }
+  if (d.act === "ob-next") { if (OB[ob] === "you") profile.name = ($("#obName")?.value || "").trim().slice(0, 40); if (OB[ob] === "post") applyProfileDefaults(); if (ob < OB.length - 1) { ob++; renderOnboard(); } else closeOnboard(); return; }
+  if (d.playI) { const k = d.playI, i = profile.plays.indexOf(k); if (i >= 0) profile.plays.splice(i, 1); else profile.plays.push(k); t.setAttribute("aria-pressed", String(i < 0)); return; }
+  if (d.postI) { const k = d.postI; if (k === "none") profile.posts = profile.posts.includes("none") ? [] : ["none"]; else { profile.posts = profile.posts.filter(x => x !== "none"); const i = profile.posts.indexOf(k); if (i >= 0) profile.posts.splice(i, 1); else profile.posts.push(k); } renderOnboard(); return; }
+  if (d.pickyI) { state.strictness = +d.pickyI; syncRules(); state.clips.forEach(c => { redecide(c); persist(c); }); renderOnboard(); return; }
+  if (d.act === "ob-record" || d.act === "ob-gallery") { if (OB[ob] === "you") profile.name = ($("#obName")?.value || "").trim().slice(0, 40); closeOnboard(); openPicker(d.act === "ob-record" ? $("#rec") : $("#pick")); return; }
   if (d.act === "intro-skip") { closeIntro(); return; }
   if (d.act === "intro-next") { if (slide < SLIDES.length - 1) { slide++; renderIntro(); } else closeIntro(); return; }
   if (d.act === "quicksort") { openQuickSort(); return; }
@@ -2669,29 +2954,30 @@ document.addEventListener("click", e => {
   if (d.act === "qs-open") { const c = state.clips.find(x => x.id === qs.ids[qs.i]); closeQuickSort(false); if (c) openStudio(c); return; }
   if (d.act === "tip-ok") { store.set("ck:tip", 1); $("#tip")?.remove(); return; }
   if (d.act === "save-all") { saveAll(); return; }
+  if (d.act === "save-picks") { saveAllPicks(); return; }
   if (t.id === "rulesBtn") { syncRules(); $("#rules").hidden = false; return; }
   if (d.act === "rules-done") { $("#rules").hidden = true; return; }
   if (d.act === "min-" || d.act === "min+") { state.minKeep = Math.min(300, Math.max(15, state.minKeep + (d.act === "min+" ? 5 : -5))); syncRules(); render(); if (state.openId) renderStudio(); return; }
   if (d.picky) { state.strictness = +d.picky; syncRules(); state.clips.forEach(c => { redecide(c); persist(c); }); render(); return; }
   const c = cur(); if (!c) return;
   if (d.act === "close") return closeStudio();
-  if (d.tab) { if (d.tab !== "band") stopBand(); state.tab = d.tab; renderStudio(); return; }
-  if (d.play != null) { const p = c.parts[+d.play]; c.sel = +d.play; playRanges(c, [[p.start, p.end]]); renderStudio(); return; }
+  if (d.tab) { if (d.tab !== "band") stopBand(); state.tab = d.tab; renderStudio(); if (["pick", "short", "band"].includes(d.tab)) { player?.pause(); showPick(c); } return; }
+  if (d.play != null) { const p = c.parts[+d.play]; c.sel = +d.play; renderStudio(); playRanges(c, [[p.start, p.end]], `Part ${+d.play + 1}`); return; }
   if (d.toggle != null) { const p = c.parts[+d.toggle]; p.on = !p.on; edited(c); return; }
   if (d.nudge) { const [i, w, dv] = d.nudge.split(":"); const p = c.parts[+i]; if (w === "s") p.start += +dv; else p.end += +dv; clampPart(c, +i); edited(c); return; }
   if (d.here) { const [i, w] = d.here.split(":"); const p = c.parts[+i]; if (w === "s") p.start = nowT(c); else p.end = nowT(c); clampPart(c, +i); edited(c); return; }
-  if (d.act === "pick-play") { const pk = pickOf(c); if (pk) playRanges(c, pk.ranges); return; }
+  if (d.act === "pick-play") { const pk = pickOf(c); if (pk) playRanges(c, pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`); return; }
   if (d.act === "pick-save") return savePick(c);
   if (d.act === "pick-short") { state.tab = "short"; renderStudio(); return; }
   if (d.act === "pick-band") { state.tab = "band"; renderStudio(); return; }
-  if (d.cand != null) { stopBand(); c.pickSel = +d.cand; c._bandA = null; persist(c); renderStudio(); const pk = pickOf(c); if (pk && c.file) playRanges(c, pk.ranges); return; }
-  if (d.plen) { stopBand(); state.pickLen = d.plen === "auto" ? "auto" : +d.plen; c.pickSel = 0; syncRules(); render(); renderStudio(); return; }
+  if (d.cand != null) { stopBand(); c.pickSel = +d.cand; c._bandA = null; persist(c); renderStudio(); showPick(c); const pk = pickOf(c); if (pk && c.file) playRanges(c, pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`); return; }
+  if (d.plen) { stopBand(); state.pickLen = d.plen === "auto" ? "auto" : +d.plen; c.pickSel = 0; syncRules(); render(); renderStudio(); showPick(c); return; }
   if (d.act === "forget") { const x = c; closeStudio(); forget(x); render(); renderBoxes(); toast("Removed from the list. The video is untouched."); return; }
-  if (d.act === "playall") { playRanges(c, onParts(c).map(p => [p.start, p.end])); return; }
+  if (d.act === "playall") { playRanges(c, onParts(c).map(p => [p.start, p.end]), "Clean cut"); return; }
   if (d.act === "rescue") { if (c.raw) rescue(c); return; }
   if (d.act === "save-one") return saveClean(c, "one");
   if (d.act === "save-each") return saveClean(c, "each");
-  if (d.act === "shortplay") { const w = shortWindow(c); if (w) playRanges(c, [[w.s, w.e]]); return; }
+  if (d.act === "shortplay") { const w = shortWindow(c); if (w) playRanges(c, [[w.s, w.e]], "Short"); return; }
   if (d.act === "short") return makeShort(c);
   if (d.bstyle) { stopBand(); c.band.style = d.bstyle; if (d.bstyle === "auto" && sampler && !c.band.ai) bandAi(c); else renderStudio(); return; }
   if (d.inst) { stopBand(); c.band.parts[d.inst] = !c.band.parts[d.inst]; renderStudio(); return; }
@@ -2701,7 +2987,7 @@ document.addEventListener("click", e => {
   if (d.vibe) { c.note = $("#postNote")?.value ?? c.note; c.vibe = d.vibe; renderStudio(); return; }
   if (d.act === "captions") return writeCaptions(c);
   if (d.capcopy != null) { const cp = c.captions[+d.capcopy]; copyText(t, `${cp.caption}\n\n${tagLine(cp)}`); return; }
-  if (d.seek != null) { const s = +d.seek; if (video && !c.audioOnly) { stopAt = null; queue = []; video.currentTime = s; video.play().catch(() => { }); } else playRanges(c, [[s, Math.min(c.raw.duration, s + 10)]]); return; }
+  if (d.seek != null) { const s = +d.seek, e = d.seekEnd != null ? +d.seekEnd : Math.min(c.raw.duration, s + 10); playRanges(c, [[s, e]], `Cut ${fmt(s)}`); return; }
   if ("ovr" in d) { c.override = d.ovr || null; persist(c); renderStudio(); return; }
   if (d.act === "reset") { c.edited = false; redecide(c, true); c.sel = c.parts.length ? 0 : -1; persist(c); renderStudio(); return; }
 });
@@ -2709,7 +2995,7 @@ $("#rules").addEventListener("click", e => { if (e.target.id === "rules") $("#ru
 document.addEventListener("input", e => { if (e.target.id === "bandGain") { const c = cur(); if (c?.band) { c.band.gain = +e.target.value; if (bandGainNode) bandGainNode.gain.value = c.band.gain; } } });
 $("#proSheet").addEventListener("click", e => { if (e.target.id === "proSheet") $("#proSheet").hidden = true; });
 $("#addSheet").addEventListener("click", e => { if (e.target.id === "addSheet") $("#addSheet").hidden = true; });
-document.addEventListener("keydown", e => { if (e.key === "Escape") { if (!$("#intro").hidden) closeIntro(); else if (!$("#addSheet").hidden) $("#addSheet").hidden = true; else if (!$("#rules").hidden) $("#rules").hidden = true; else if (!$("#sorter").hidden) closeQuickSort(false); else if (state.openId) closeStudio(); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { if (!$("#onboard").hidden) closeOnboard(); else if (!$("#intro").hidden) closeIntro(); else if (!$("#addSheet").hidden) $("#addSheet").hidden = true; else if (!$("#rules").hidden) $("#rules").hidden = true; else if (!$("#sorter").hidden) closeQuickSort(false); else if (state.openId) closeStudio(); } });
 function syncRules() {
   $("#minVal").textContent = state.minKeep + "s";
   document.querySelectorAll("#picky button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.picky === state.strictness)));
@@ -2750,12 +3036,17 @@ if (BUILD === "pwa") {
 }
 if (!IN_CLAUDE) navigator.storage?.persist?.().catch(() => { });
 
+{ // clips that were still scanning when the page closed: say so right away, instead of losing them silently
+  const lib = new Set(store.get("lp:lib") || []), lost = (store.get("lp:pending") || []).filter(p => !lib.has(p.key));
+  store.set("lp:pending", []);
+  if (lost.length) setTimeout(() => toast(`${lost.length} clip${lost.length > 1 ? "s" : ""} didn't finish scanning. Add ${lost.length > 1 ? "them" : "it"} again.`, { icon: "i-plus", label: "Add", run: () => openPicker($("#pick")) }), 300);
+}
 restoreLibrary().catch(() => { });
 syncRules();
 renderBrand();
 setView("clips");
 render();
-if (!store.get("ck:intro")) openIntro();
+if (!profile.done && !store.get("ck:intro")) openOnboard(0);
 window.__ck = state; window.__lp = { BUILD, IN_CLAUDE, lic };
 })();
 
