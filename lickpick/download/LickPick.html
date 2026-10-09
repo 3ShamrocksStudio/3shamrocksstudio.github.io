@@ -711,7 +711,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-09m"; window.LP_BUILD = "file";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-09n"; window.LP_BUILD = "file";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -723,11 +723,11 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
   const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
   const R = {
     SIL: "silence", STOP: "stopped / restarted", FAIL: "failed attempt, replayed after",
-    PITCH: "off pitch", TALK: "talking", KEY: "wrong notes", TIME: "timing drift", NOISE: "noise, no music", CLIP: "distorted audio",
+    PITCH: "off pitch", TALK: "talking", KEY: "wrong notes", TIME: "timing drift", NOISE: "noise, no music", CLIP: "distorted audio", TICK: "click track or tapping, no playing",
     DARK: "lens covered / too dark", BLUR: "out of focus",
   };
-  const HARD = new Set([R.SIL, R.STOP, R.FAIL, R.DARK, R.TALK]);
-  const WEIGHTS = { [R.SIL]: 1, [R.STOP]: 1, [R.FAIL]: 1, [R.PITCH]: 0.55, [R.KEY]: 0.55, [R.NOISE]: 0.7, [R.TIME]: 0.35, [R.CLIP]: 0.35, [R.DARK]: 1, [R.BLUR]: 0.4 };  // blur alone only cuts on Strict; a covered lens always cuts
+  const HARD = new Set([R.SIL, R.STOP, R.FAIL, R.DARK, R.TALK, R.TICK]);
+  const WEIGHTS = { [R.SIL]: 1, [R.STOP]: 1, [R.FAIL]: 1, [R.PITCH]: 0.55, [R.KEY]: 0.55, [R.NOISE]: 0.7, [R.TICK]: 1, [R.TIME]: 0.35, [R.CLIP]: 0.35, [R.DARK]: 1, [R.BLUR]: 0.4 };  // blur alone only cuts on Strict; a covered lens always cuts
 
   // ---------- small math
   const median = a => { const b = a.filter(Number.isFinite).sort((x, y) => x - y); if (!b.length) return NaN; const m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; };
@@ -794,7 +794,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     const centsByCell = Array.from({ length: nCells }, () => []);
     const confFramesByCell = new Float64Array(nCells), framesByCell = new Float64Array(nCells);
     const clipCnt = new Float64Array(nCells), sampCnt = new Float64Array(nCells);
-    const onsetEnv = new Float64Array(nFrames);
+    const onsetEnv = new Float64Array(nFrames), frameE = new Float32Array(nFrames);
     let prevMag = null;
 
     // pitch at half rate (decimated by 2)
@@ -808,7 +808,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
       const off = f * HOP, t = (off + N / 2) / sr, c = Math.min(nCells - 1, Math.floor(t / CELL));
       let ss = 0;
       for (let i = 0; i < N; i++) { const v = y[off + i]; ss += v * v; re[i] = v * win[i]; im[i] = 0; }
-      eSum[c] += ss / N; eCnt[c]++;
+      eSum[c] += ss / N; eCnt[c]++; frameE[f] = ss / N;
       fft(re, im);
       const mag = new Float32Array(N / 2);
       let lg = 0, ar = 0, nb = 0, flux = 0;
@@ -855,6 +855,15 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     const flat = Array.from(flatSum, (s, c) => eCnt[c] ? s / eCnt[c] : 0);
     const onset = Array.from(onsetSum, (s, c) => eCnt[c] ? s / eCnt[c] : 0);
     const peaky = onset.map((m, i) => onsetMax[i] / (m + 1e-9));  // attacks vs steady hiss
+    // sustain: share of the time sound is within 20 dB of its peak, over 2 s around each cell. Played notes ring;
+    // a click track or tapping is a short tick followed by nothing.
+    const fpc = CELL * sr / HOP, sustain = new Float64Array(nCells);
+    for (let c = 0; c < nCells; c++) {
+      const f0 = Math.max(0, Math.floor((c - 1.5) * fpc)), f1 = Math.min(nFrames, Math.ceil((c + 2.5) * fpc));
+      let mx = 0; for (let f = f0; f < f1; f++) if (frameE[f] > mx) mx = frameE[f];
+      let k = 0; for (let f = f0; f < f1; f++) if (frameE[f] > mx * 0.01) k++;
+      sustain[c] = f1 > f0 ? k / (f1 - f0) : 1;
+    }
     const onRef = pct(onset.filter((_, i) => db[i] > loudRef - 25), 75) || 1e-9;
     // Silence = near digital silence, OR quiet + no pitch + no attacks (room tone).
     // Quiet playing that has pitch or attacks is music, however soft.
@@ -950,8 +959,11 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     const onP95 = pct(onset, 95) + 1e-9;
     const highlight = db.map((v, i) => 0.45 * clamp((v - silFloor) / (loudRef - silFloor + 1e-9), 0, 1) + 0.35 * clamp(onset[i] / onP95, 0, 1) + 0.2 * clamp(clarity[i] / 0.3, 0, 1));
     onProgress(1);
-    const _dbg = globalThis.__dbg ? { db, outkey, clar: clarity, onset, flat, onRef, peaky, glide, voicedFrac } : undefined;
-    const musicalSeconds = active.reduce((s, a, i) => s + (a && !pen[R.NOISE][i] && !talk[i] ? CELL : 0), 0);
+    const _dbg = globalThis.__dbg ? { sustain: Array.from(sustain), db, outkey, clar: clarity, onset, flat, onRef, peaky, glide, voicedFrac } : undefined;
+    // ticks with nothing ringing between them for 4 s or more: a metronome, tapping, a clock. Drums and any
+    // played note ring well above this (measured: clicks 0.14-0.23, drum kit 0.30+, played notes 0.77+).
+    pen[R.TICK] = z(); for (const [a, b] of runs(Array.from(sustain, (v, i) => active[i] && v < 0.26))) if ((b - a) * CELL >= 4) for (let i = a; i < b; i++) pen[R.TICK][i] = 1;
+    const musicalSeconds = active.reduce((s, a, i) => s + (a && !pen[R.NOISE][i] && !pen[R.TICK][i] && !talk[i] ? CELL : 0), 0);
     // onset strength per frame, scaled to 0..255, so the band can lock to the beat inside any window later
     const onP99 = pct(Array.from(onsetEnv), 99) || 1;
     const onsetQ = Array.from(onsetEnv, v => Math.min(255, Math.round(v / onP99 * 200)));
@@ -1029,6 +1041,24 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
       if (b + PAD <= n && !hard[b + PAD - 1]) s.end = Math.min(raw.duration, (b + PAD) * CELL);
     }
     for (let i = 1; i < segments.length; i++) if (segments[i].start <= segments[i - 1].end) { segments[i - 1].end = segments[i].end; segments.splice(i--, 1); }
+    // Warm-up and wind-down: a quieter, shaky stretch at either end of a part (tuning, noodling into the take,
+    // trailing off). Trimmed only when it is clearly quieter than the part AND has pitch/timing slips, so a clean
+    // soft intro is never cut.
+    const loud = raw.loud || [], softP = i => Math.max(...["off pitch", "wrong notes", "timing drift"].map(k => raw.penalty[k]?.[i] || 0));
+    for (const s of segments) {
+      const a = Math.round(s.start / CELL), b = Math.round(s.end / CELL);
+      if ((b - a) * CELL < 12) continue;
+      const L = loud.slice(a, b).filter(v => v > -60).sort((x, y) => x - y), med = L[L.length >> 1];
+      if (med == null) continue;
+      const edge = (from, dir) => { let i = from, cells = 0, shaky = 0;
+        for (;;) { const w = []; for (let j = 0; j < 4; j++) { const c = i + dir * j; if (c >= a && c < b) w.push(c); } if (w.length < 4) break;
+          if (w.reduce((t, c) => t + Math.max(-60, loud[c]), 0) / 4 < med - 6) { cells += 4; shaky += w.filter(c => softP(c) > 0.2).length; i += dir * 4; } else break; }
+        return cells >= 4 && shaky / cells >= 0.25 ? cells : 0; };
+      let h = a + edge(a, 1), t = b - edge(b - 1, -1);
+      while (h > a && loud[h - 1] >= med - 6) h--;          // give back any real playing caught in the last window
+      while (t < b && loud[t] >= med - 6) t++;
+      if ((t - h) * CELL >= minSegment && (h > a || t < b)) { s.start = h * CELL; s.end = Math.min(raw.duration, t * CELL); }
+    }
     const keep = new Array(n).fill(false);
     for (const s of segments) for (let i = Math.round(s.start / CELL); i < Math.round(s.end / CELL); i++) keep[i] = true;
     const removed = [];
