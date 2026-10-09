@@ -476,6 +476,12 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 .selecting .card.selected .selmark svg{width:16px;height:16px;color:var(--ink);stroke-width:3.4}
 .selecting .card .selmark svg{display:none} .selecting .card.selected .selmark svg{display:block}
 .vst{display:grid;place-items:center} .selecting .card .vst{display:none}
+.vote{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--raise);border-radius:12px;padding:10px 12px;font-weight:800;font-size:14px}
+.vbtns{display:flex;gap:6px}
+.vbtns button{display:flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:7px 12px;font:800 14px var(--body)}
+.vbtns button svg.i{width:18px;height:18px;--ic2:transparent}
+.vbtns button[data-vote=yes][aria-pressed=true]{background:var(--volt);color:var(--ink);border-color:var(--ink)}
+.vbtns button[data-vote=no][aria-pressed=true]{background:var(--red);color:var(--ink);border-color:var(--ink)}
 .linkbtn{background:none;border:0;padding:0;color:var(--hot);font:inherit;font-weight:800;text-decoration:underline;cursor:pointer}
 .src svg.i{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
 .searchbox{display:flex;align-items:center;gap:8px;margin:0 4px 12px 0;padding:0 12px;border-radius:14px;border:2px solid var(--line);background:var(--panel)}
@@ -681,6 +687,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     <div class="duo">
       <button class="tile t-keep small" type="button" data-act="ob-open"><svg class="i"><use href="#i-sliders"/></svg><strong>Profile & setup</strong></button>
       <button class="tile t-cyan small" type="button" id="helpBtn"><svg class="i"><use href="#i-help"/></svg><strong>How it works</strong></button>
+      <button class="tile t-keep small" type="button" data-act="report-open"><svg class="i"><use href="#i-copy"/></svg><strong>Test report</strong></button>
       <button class="tile t-hot small" type="button" data-act="pro-open"><svg class="i"><use href="#i-bolt"/></svg><strong id="menuPro">Pro</strong></button>
       <button class="tile t-keep small" type="button" id="installBtn" data-act="install" hidden><svg class="i"><use href="#i-install"/></svg><strong>Install app</strong></button>
     </div>
@@ -692,7 +699,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-09l"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -1960,6 +1967,11 @@ const LIC_PUB = {"kty": "EC", "x": "wZVUGy_SYFx4TY7lyHMPF5C_837vFPbB9eBEbApunYc"
 const lic = { tier: window.LP_OWNER ? "owner" : "free", trial: 3, exp: "", plan: "" };
 { const t = store.get("lp:trial"); if (typeof t === "number") lic.trial = t; }
 const isPro = () => lic.tier !== "free";
+// ---------- test report: what happened on this phone, kept only here, copied by hand
+const diag = { scans: [], log: [] };
+function diagLog(t) { diag.log.push(new Date().toTimeString().slice(0, 8) + " " + t); if (diag.log.length > 30) diag.log.shift(); }
+addEventListener("error", e => diagLog("error: " + String(e.message || "").slice(0, 120)));
+addEventListener("unhandledrejection", e => diagLog("promise: " + String(e.reason?.message || e.reason || "").slice(0, 120)));
 const b64u = s => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((s.length + 3) % 4)), ch => ch.charCodeAt(0));
 async function verifyKey(k) {
   try {
@@ -1989,7 +2001,7 @@ function requestURL(k) {
   return `mailto:${SELL}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
 }
 function openPro(what) {
-  const sh = $("#proSheet");
+  const sh = $("#proSheet"); sh.querySelector("h2").innerHTML = `LickPick <span style="color:var(--volt)">Pro</span>`;
   $("#proBody").innerHTML = isPro() ? `<p class="hint"><b>${lic.tier === "owner" ? "Owner" : "Pro"} unlocked.</b> Everything is on.${lic.exp ? ` Active until ${esc(lic.exp)}.` : lic.tier === "pro" ? " Lifetime." : ""}</p>${lic.exp ? `<div class="keyrow"><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste a renewal key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div><div class="status" id="proStatus"></div>` : ""}`
     : `${what ? `<p class="hint"><b>${esc(what)}</b> is Pro.${lic.trial ? ` You have ${lic.trial} free Pro use${lic.trial > 1 ? "s" : ""} left.` : " Your free Pro uses are used up."}</p>` : `<p class="hint">Scanning, picks, clean cuts and vertical shorts stay free. Pro is for posting a lot.</p>`}
     <div class="feats">${PRO_FEATS.map(([ic, l]) => `<div>${icon(ic)}<span>${l}</span></div>`).join("")}</div>
@@ -2008,6 +2020,23 @@ async function unlock() {
   if (!r?.tier) { st.textContent = crypto.subtle ? "That key isn't valid." : "Open LickPick from its web address to unlock."; return; }
   const t = r.tier; store.set("lp:key", k.trim()); lic.tier = t; lic.exp = r.exp; lic.plan = r.plan; renderBrand(); openPro(); toast(t === "owner" ? "Owner unlocked. Everything is on." : "Pro unlocked. Rock on.");
   if (state.openId) renderStudio(); renderBoxes();
+}
+function testReport() {
+  const fb = store.get("lp:fb") || {}, ua = navigator.userAgent, real = state.clips.filter(c => !c.example);
+  const lines = [`LickPick test report · ${window.LP_VER || ""} (${window.LP_BUILD || ""}) · ${new Date().toLocaleString()}`,
+    `Device: ${ua.slice(0, 160)}`, `Screen: ${screen.width}x${screen.height} · cores ${navigator.hardwareConcurrency || "?"} · memory ${navigator.deviceMemory || "?"} GB`,
+    `Clips: ${real.length} (keep ${real.filter(c => c.status === "done" && verdict(c) === "keep").length}, review ${real.filter(c => c.status === "done" && verdict(c) === "review").length}, trash ${real.filter(c => c.status === "done" && verdict(c) === "trash").length}, errors ${real.filter(c => c.status === "error").length})`, ""];
+  for (const c of real) {
+    const pk = c.status === "done" ? pickOf(c) : null, f = fb[c.key], sc = diag.scans.find(x => x.name === c.name);
+    lines.push(`- ${c.name}: ${c.status === "error" ? "ERROR " + c.error : verdict(c)}, ${fmt(c.raw?.duration || 0)} long${sc ? `, scanned in ${sc.scan}s` : ""}${pk ? `, Pick ${"ABC"[c.pickSel || 0]} ${fmt(pk.s)}-${fmt(pk.e)}` : ""}${c.raw?.info?.tempo ? `, ${c.raw.info.tempo} BPM` : ""}${f?.v ? `, YOUR VOTE: ${f.v}` : ""}${f?.at != null ? `, your best part at ${fmt(f.at)}` : ""}`);
+  }
+  lines.push("", "Log:", ...(diag.log.length ? diag.log : ["(nothing went wrong)"]));
+  return lines.join("\n");
+}
+function openReport() {
+  const txt = testReport();
+  $("#proBody").innerHTML = `<p class="hint">Copy this and paste it to Claude. It stays on your phone until you do.</p><textarea id="reportTxt" readonly style="min-height:240px;font:12px/1.4 ui-monospace,monospace">${esc(txt)}</textarea><button class="btn wide" type="button" data-act="report-copy">${icon("i-copy")}Copy report</button>`;
+  $("#proSheet").querySelector("h2").innerHTML = "Test report"; $("#proSheet").hidden = false;
 }
 function renderBrand() {
   const b = $("#proBadge"); b.classList.toggle("on", isPro()); b.setAttribute("aria-label", isPro() ? (lic.tier === "owner" ? "Owner: everything unlocked" : "Pro unlocked") : "LickPick Pro");
@@ -2109,7 +2138,7 @@ async function pump() {
   if (busy) return;
   const c = state.clips.find(x => x.status === "queued" && !x.checking);
   if (!c) { keepAwake(false); renderTop(); return; }
-  busy = true; keepAwake(true); c.status = "listening"; c.phase = "listening"; renderCard(c); renderTop();
+  busy = true; keepAwake(true); c.status = "listening"; c.phase = "listening"; c._t0 = performance.now(); renderCard(c); renderTop();
   try {
     let y = null, sr = 22050;
     if (!streamBroken) try { const st = await decodeAudioStream(c.file, p => { c.progress = p * 0.25; renderCard(c); }); if (st) { y = st.data; sr = st.sampleRate; c.decoder = "stream"; } } catch (e) { y = null; if (String(e).includes("stalled")) streamBroken = true; }
@@ -2132,9 +2161,9 @@ async function pump() {
         if (v.thumb) c.thumb = v.thumb;
       }
     } catch { }
-    redecide(c, true); c.status = "done"; persist(c); unpend(c);
+    redecide(c, true); c.status = "done"; c.scanMs = performance.now() - c._t0; diag.scans.push({ name: c.name, sec: Math.round(c.raw.duration), scan: +(c.scanMs / 1000).toFixed(1) }); persist(c); unpend(c);
   } catch (err) {
-    unpend(c); c.status = "error"; c.error = /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
+    diagLog("scan failed: " + c.name + " (" + String(err?.code || err?.message || err || "unreadable").slice(0, 80) + ")"); unpend(c); c.status = "error"; c.error = /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
   }
   busy = false; renderCard(c); renderTop(); renderBoxes(); if (state.openId === c.id) renderStudio(); pump();
 }
@@ -2712,8 +2741,9 @@ async function doExport(c) {
       for (const job of jobs) n += await saveCut(M, c, job.name, job.ranges, say);
       if (n && o.sep) spendTrial();
     }
+    diagLog(`export ${S.kind} ${o.fmt}${o.sep ? " parts" : ""}: ${n ? "saved " + n : "not saved"}`);
     if (n) { if (S.kind === "pick") c.pickSaved = true; else c.saved = true; persist(c); renderCard(c); say(`${savedWhere()}${n > 1 ? ` ${n} files.` : ""}${S.kind === "clean" ? " You can delete the original from your gallery." : ""}`); }
-  } catch (err) { say(err?.code === "unavailable" || err?.code === "not_granted" ? "Saving isn't available in this view." : err?.code === "no_encoder" ? "This browser can't make vertical videos. Original still works." : err?.code === "too_large_final" ? "Too big to save on this phone, even in pieces. Try a Pick." : "Couldn't cut this file. The original is untouched."); }
+  } catch (err) { diagLog(`export ${S.kind} ${o.fmt} FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "unavailable" || err?.code === "not_granted" ? "Saving isn't available in this view." : err?.code === "no_encoder" ? "This browser can't make vertical videos. Original still works." : err?.code === "too_large_final" ? "Too big to save on this phone, even in pieces. Try a Pick." : "Couldn't cut this file. The original is untouched."); }
   c.exporting = false; renderExport(c); renderStudio(); renderBoxes();
 }
 // ---------- Why this part: the strength of every moment, where the Pick sits, and why the rest lost
@@ -2762,7 +2792,10 @@ function whyHTML(c) {
   rows.sort((a, b) => a.s - b.s);
   const rowHTML = r => `<button type="button" class="wrow ${r.cls}" data-seek="${r.s}" data-seek-end="${r.e}" data-seek-label="${esc(r.tag)} ${fmt(r.s)}"><span class="wt"><b>${esc(r.tag)}</b>${fmt(r.s)} · ${r.e - r.s < 10 ? (r.e - r.s).toFixed(1) + "s" : fmt(r.e - r.s)}</span><span class="ww">${esc(r.why)}</span>${icon("i-play")}</button>`;
   const shown = rows.slice(0, 6), more = rows.slice(6);
+  const fb = (store.get("lp:fb") || {})[c.key];
   return `<div class="why">
+    <div class="vote"><span>Is Pick ${"ABC"[sel]} really your best part?</span><span class="vbtns"><button type="button" data-vote="yes" aria-pressed="${fb?.v === "yes"}">${icon("i-check")}Yes</button><button type="button" data-vote="no" aria-pressed="${fb?.v === "no"}">${icon("i-x")}No</button></span></div>
+    ${fb?.v === "no" ? `<p class="hint">Thanks. Play the take, pause on your best part and tap <b>Mark best here</b>. <button class="linkbtn" type="button" data-act="mark-best">Mark best here</button>${fb.at != null ? ` Marked at ${fmt(fb.at)}.` : ""}</p>` : ""}
     <h3>${icon("i-help")}Why this part?</h3>
     <p class="wlead"><b>Pick ${"ABC"[sel]} is the strongest complete phrase${state.pickLen === "auto" ? "" : ` near ${state.pickLen} seconds`}</b> in this take${pk.bars ? `: ${pk.bars} full bars, start to finish on the beat` : ""}. ${esc(sure)}</p>
     ${map}${meters}
@@ -2936,9 +2969,9 @@ async function bandSave(c, vertical, say0) {
     const gainDb = vertical ? ClipExporter.levelGain(c.raw.loud, CELL, r.w.s, r.w.e) : 0;
     const out = await ClipExporter.exportShort(M, c.file, [r.w.s, r.w.e], p => say(`Mixing… ${Math.round(p * 100)}%`), { gainDb, mix: { buffer: r.buffer, gain: c.band.gain }, vertical });
     const name = `${c.name.replace(/\.[^.]+$/, "")}_${r.style}${vertical ? "_short" : ""}.mp4`;
-    try { await offerFile(name, out.blob, say); spendTrial(); say(`${savedWhere()} Band mixed in.`); }
+    try { await offerFile(name, out.blob, say); spendTrial(); diagLog(`export band ${vertical ? "vertical" : "original"}: saved`); say(`${savedWhere()} Band mixed in.`); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
-  } catch (err) { say(err?.code === "no_encoder" || err?.code === "no_audio_encoder" ? "This browser can't make videos. Open LickPick in Chrome." : "Couldn't make the video. The original is untouched."); }
+  } catch (err) { diagLog(`export band FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "no_encoder" || err?.code === "no_audio_encoder" ? "This browser can't make videos. Open LickPick in Chrome." : "Couldn't make the video. The original is untouched."); }
   c.exporting = false; renderStudio(); renderExport(c);
 }
 const VIBES = ["Hype", "Chill", "Pro", "Funny"];
@@ -3154,6 +3187,8 @@ document.addEventListener("click", e => {
   if (d.act === "copy-link") { copyText(t, APP_LINK); return; }
   if (d.act === "pro-open" || t.id === "proBadge") { openPro(); return; }
   if (d.act === "pro-close") { $("#proSheet").hidden = true; return; }
+  if (d.act === "report-open") { $("#rules").hidden = true; openReport(); return; }
+  if (d.act === "report-copy") { copyText(t, $("#reportTxt").value); return; }
   if (d.plan) { planSel = d.plan; document.querySelectorAll("[data-plan]").forEach(b => b.setAttribute("aria-checked", String(b.dataset.plan === planSel))); const g = $("#proGo"); if (g) g.href = PRO_URL ? planURL(planSel) : requestURL(planSel); return; }
   if (d.act === "pro-unlock") { unlock(); return; }
   if (d.act === "toast-act") { const a = toastAct; $("#toast").hidden = true; toastAct = null; clearTimeout(toastT); a?.run(); return; }
@@ -3197,6 +3232,8 @@ document.addEventListener("click", e => {
   if (d.act === "export-go") return doExport(c);
   if (d.ex) { const o = exOpts(c); if (d.ex.startsWith("fmt:")) o.fmt = d.ex.slice(4); else o[d.ex] = !o[d.ex]; if (d.ex === "sep" && o.sep) o.band = false; if (d.ex === "band" && o.band) o.sep = false; renderExport(c); return; }
   if (d.src) { stopBand(); if (!c.exporting) c.exStatus = ""; if (d.src === "clean") c.src = "clean"; else { c.src = "pick"; const i = +d.src.split(":")[1]; if (i !== (c.pickSel || 0)) { c.pickSel = i; c._bandA = null; persist(c); } } renderStudio(); renderExport(c); showPick(c); const S = srcOf(c); if (S && c.file && $("#exportSheet").hidden) playRanges(c, S.ranges, S.label); return; }
+  if (d.vote) { const all = store.get("lp:fb") || {}, pk = pickOf(c); all[c.key] = { ...(all[c.key] || {}), v: d.vote, pick: pk ? [+pk.s.toFixed(1), +pk.e.toFixed(1)] : null, sel: c.pickSel || 0 }; store.set("lp:fb", all); diagLog(`vote ${d.vote}: ${c.name}`); renderStudio(); toast(d.vote === "yes" ? "Noted. Thanks!" : "Noted. Show me where your best part is."); return; }
+  if (d.act === "mark-best") { const all = store.get("lp:fb") || {}; all[c.key] = { ...(all[c.key] || {}), at: +nowT(c).toFixed(1) }; store.set("lp:fb", all); renderStudio(); toast(`Marked ${fmt(nowT(c))}. It goes in your test report.`); return; }
   if (d.padj) { const p = pickBase(c); if (!p) return; stopBand(); c.pickAdj = c.pickAdj || {}; const k = adjKey(c);
     if (d.padj === "reset") delete c.pickAdj[k];
     else { const [w, n] = d.padj.split(":"), a = c.pickAdj[k] || { s: 0, e: 0 }, D = c.raw.duration, L = barLen(p); a[w] += +n * L;
