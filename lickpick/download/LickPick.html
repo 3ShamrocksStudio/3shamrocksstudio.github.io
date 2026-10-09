@@ -398,6 +398,48 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 .safe-note{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--hot);color:var(--ink);font-weight:800;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--volt)}
 .safe-note svg.i{width:26px;height:26px;color:var(--ink);--ic2:rgba(255,255,255,.5)}
 .hello{font:400 15px var(--display);color:var(--volt);margin:0 0 6px}
+/* ---------- clip screen: source picker, export ---------- */
+.tabs{grid-template-columns:repeat(4,1fr)}
+.srcbar{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
+.srcbar::-webkit-scrollbar{display:none}
+.src{flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 12px;border-radius:14px;border:2px solid var(--line);background:var(--panel);color:var(--dim);min-width:86px;text-align:left}
+.src b{font:400 15px/1.1 var(--display);color:var(--text)} .src span{font-size:12px;font-weight:700}
+.src[aria-checked=true]{background:var(--volt);border-color:var(--ink);color:var(--ink);box-shadow:3px 3px 0 var(--hot)} .src[aria-checked=true] b{color:var(--ink)}
+.src.clean[aria-checked=true]{background:var(--cyan)}
+.exportbtn{justify-content:flex-start;gap:12px;padding:10px 16px}
+.exportbtn svg.i{width:26px;height:26px}
+.ex-l{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+.ex-l b{font:400 17px var(--display)} .ex-l em{font-style:normal;font-weight:700;font-size:13px;opacity:.75}
+.exbody{display:flex;flex-direction:column;gap:14px;max-height:72vh;overflow:auto}
+.exgroup{display:flex;flex-direction:column;gap:8px}
+.exgroup>span{font-size:12.5px;color:var(--mute);font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;padding:12px;border-radius:14px;border:2px solid var(--line);background:var(--raise);color:var(--text)}
+.opt svg.i{width:26px;height:26px;color:var(--volt);--ic2:transparent}
+.opt strong{display:block;font-weight:800} .opt em{font-style:normal;color:var(--dim);font-size:13px}
+.opt[aria-checked=true]{border-color:var(--ink);background:var(--volt);color:var(--ink);box-shadow:3px 3px 0 var(--hot)} .opt[aria-checked=true] em{color:rgba(7,6,11,.75)} .opt[aria-checked=true] svg.i{color:var(--ink)}
+.opt:disabled{opacity:.4}
+.opt .grow{flex:1;min-width:0}
+.tgl{width:46px;height:28px;border-radius:14px;background:var(--line);position:relative;flex:none;border:2px solid var(--ink)}
+.tgl::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--text);transition:left .15s}
+.opt[aria-checked=true] .tgl{background:var(--hot)} .opt[aria-checked=true] .tgl::after{left:20px;background:var(--ink)}
+.mark-note{font-size:13px;color:var(--dim);display:flex;gap:8px;align-items:center}
+.mark-note svg.i{width:18px;height:18px;color:var(--hot)}
+.finetune{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.finetune .grp{border-radius:12px;background:var(--raise);padding:8px;display:flex;flex-direction:column;gap:6px}
+.finetune .lbl{font-size:12.5px;color:var(--dim);display:flex;justify-content:space-between}
+.finetune .lbl b{color:var(--volt)}
+.finetune .btns{display:flex;gap:6px}
+.finetune .btns button{flex:1;border:2px solid var(--line);background:var(--panel);border-radius:9px;padding:7px 0;font-weight:800;font-size:13px;color:var(--text)}
+.linkbtn{background:none;border:0;padding:0;color:var(--hot);font:inherit;font-weight:800;text-decoration:underline;cursor:pointer}
+.src svg.i{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.searchbox{display:flex;align-items:center;gap:8px;margin:0 4px 12px 0;padding:0 12px;border-radius:14px;border:2px solid var(--line);background:var(--panel)}
+.searchbox svg.i{width:18px;height:18px;color:var(--mute);--ic2:transparent}
+.searchbox input{flex:1;border:0;background:none;color:var(--text);font:600 15px var(--body);padding:11px 0;outline:none}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.plan{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 10px;border-radius:14px;border:2px solid var(--line);background:var(--raise);text-align:left;color:var(--text);position:relative}
+.plan b{font:400 18px var(--display)} .plan span{font-size:12px;color:var(--dim);font-weight:700}
+.plan i{position:absolute;top:-10px;right:8px;font:400 10px/1 var(--display);font-style:normal;background:var(--hot);color:var(--ink);border:2px solid var(--ink);border-radius:6px;padding:4px 5px 3px;transform:rotate(-5deg)}
+.plan[aria-checked=true]{border-color:var(--ink);background:var(--volt);color:var(--ink);box-shadow:3px 3px 0 var(--hot)} .plan[aria-checked=true] span{color:rgba(7,6,11,.75)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -463,6 +505,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
   <section id="top"></section>
   <div id="sortCta"></div>
   <div class="sortbar" id="sortbar" hidden><span>Your clips</span><span class="seg sm"><button type="button" data-sort="added">New</button><button type="button" data-sort="biggest">Big</button><button type="button" data-sort="best">Best</button></span></div>
+  <label class="searchbox" id="searchBox" hidden><svg class="i"><use href="#i-scope"/></svg><input id="search" type="search" placeholder="Search your clips" autocomplete="off"></label>
   <div id="list" class="list"></div>
 </main>
 <main id="viewClean" hidden>
@@ -543,6 +586,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     <div class="stage" id="sStage"></div>
     <div class="wave" id="sWave"><canvas id="sCanvas"></canvas></div>
     <div class="tc"><span id="sNow">0:00</span><span id="sKept"></span><span id="sDur">0:00</span></div>
+    <div class="srcbar" id="sSrc" role="radiogroup" aria-label="What to use"></div>
     <div class="transport" id="sTransport">
       <button class="btn sm ghost cy" type="button" data-act="playall"><svg class="i"><use href="#i-play"/></svg>Clean cut</button>
       <button class="btn sm ghost pk" type="button" data-act="rescue"><svg class="i"><use href="#i-rescue"/></svg>Keep from here</button>
@@ -551,16 +595,21 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" type="button" data-tab="pick"><svg class="i"><use href="#i-star"/></svg>Pick</button>
       <button class="tab" role="tab" type="button" data-tab="parts"><svg class="i"><use href="#i-cut"/></svg>Edit</button>
-      <button class="tab" role="tab" type="button" data-tab="short"><svg class="i"><use href="#i-phone"/></svg>Short</button>
       <button class="tab" role="tab" type="button" data-tab="band"><svg class="i"><use href="#i-drum"/></svg>Band</button>
-      <button class="tab" role="tab" type="button" data-tab="post"><svg class="i"><use href="#i-text"/></svg>Post</button>
+      <button class="tab" role="tab" type="button" data-tab="post"><svg class="i"><use href="#i-text"/></svg>Caption</button>
     </div>
     <div class="panel" id="sPanel"></div>
   </div>
   <div class="bar" id="sBar"><div class="in">
-    <button class="btn" type="button" data-act="save-one"><svg class="i"><use href="#i-save"/></svg><span>Save clean video</span></button>
-    <button class="btn ghost" type="button" data-act="save-each" hidden><svg class="i"><use href="#i-stack"/></svg>Separate</button>
+    <button class="btn exportbtn" type="button" data-act="export-open"><svg class="i"><use href="#i-save"/></svg><span class="ex-l"><b>Export</b><em id="sExportWhat"></em></span></button>
   </div></div>
+</div>
+
+<div class="scrim" id="exportSheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Export">
+    <div class="row2"><h2>Export</h2><button class="icon-btn" type="button" data-act="export-close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <div id="exBody" class="exbody"></div>
+  </div>
 </div>
 
 <div class="scrim" id="proSheet" hidden>
@@ -1070,7 +1119,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     };
   }
 
-  async function exportShort(MB, file, [s, e], onProgress = () => { }, { gainDb = 0, audioCodecs = ["aac"], mix = null, vertical = true } = {}) {
+  async function exportShort(MB, file, [s, e], onProgress = () => { }, { gainDb = 0, audioCodecs = ["aac"], mix = null, vertical = true, watermark = false } = {}) {
     const input = new MB.Input({ source: new MB.BlobSource(file), formats: MB.ALL_FORMATS });
     const vt = await input.getPrimaryVideoTrack();
     if (!vt) throw Object.assign(new Error("no video"), { code: "no_video" });
@@ -1095,7 +1144,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     const conv = await MB.Conversion.init({
       input, output, tracks: "primary", showWarnings: false,
       trim: { start: s, end: e },
-      video: { crop, width: outW, height: outH, fit: "cover", codec, quality: MB.QUALITY_HIGH, allowTransformationMetadata: false },
+      video: Object.assign({ crop, width: outW, height: outH, fit: "cover", codec, quality: MB.QUALITY_HIGH, allowTransformationMetadata: false }, watermark ? { process: stamper(outW, outH) } : {}),
       audio: audio,
     });
     if (!conv.isValid) throw Object.assign(new Error("can't convert"), { code: "invalid", detail: conv.discardedTracks });
@@ -1104,6 +1153,23 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     return { blob: new Blob([output.target.buffer], { type: "video/mp4" }), width: outW, height: outH, codec, leveled, mixed: !!mix };
   }
 
+  // Free-tier mark: a small pick + "LickPick" in the lower right corner, drawn over every frame.
+  function stamper(W, H) {
+    const cv = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(W, H) : Object.assign(document.createElement("canvas"), { width: W, height: H });
+    const g = cv.getContext("2d"), u = Math.max(14, Math.round(Math.min(W, H) * 0.045));
+    const pick = (x, y, s, fill) => { g.beginPath(); g.moveTo(x, y + s * 0.18); g.bezierCurveTo(x, y - s * 0.05, x + s, y - s * 0.05, x + s, y + s * 0.18); g.bezierCurveTo(x + s, y + s * 0.55, x + s * 0.62, y + s * 0.9, x + s * 0.5, y + s); g.bezierCurveTo(x + s * 0.38, y + s * 0.9, x, y + s * 0.55, x, y + s * 0.18); g.closePath(); g.fillStyle = fill; g.fill(); };
+    return sample => {
+      sample.draw(g, 0, 0, W, H);
+      g.save(); g.globalAlpha = 0.82;
+      g.font = `800 ${u}px Archivo, system-ui, sans-serif`; const tw = g.measureText("LickPick").width;
+      const x = W - tw - u * 2.6, y = H - u * 2.4;
+      pick(x + u * 0.12, y + u * 0.12, u * 1.1, "#FF2E88"); pick(x, y, u * 1.1, "#FFE600");
+      g.fillStyle = "rgba(0,0,0,.45)"; g.fillText("LickPick", x + u * 1.5 + 2, y + u * 0.95 + 2);
+      g.fillStyle = "#fff"; g.fillText("LickPick", x + u * 1.5, y + u * 0.95);
+      g.restore();
+      return cv;
+    };
+  }
   // Strongest stretch of `len` seconds inside the kept parts (never crosses a cut).
   function bestWindow(highlight, cell, parts, len) {
     let best = null;
@@ -1901,13 +1967,18 @@ async function verifyKey(k) {
 function proOK(what) { if (isPro() || lic.trial > 0) return true; openPro(what); return false; }
 function spendTrial() { if (isPro()) return; lic.trial = Math.max(0, lic.trial - 1); store.set("lp:trial", lic.trial); setTimeout(() => toast(lic.trial ? `Pro trial: ${lic.trial} save${lic.trial > 1 ? "s" : ""} left` : "That was your last free Pro save", { icon: "i-bolt", label: "Pro", run: () => openPro() }), 2800); }
 const proTag = () => isPro() ? "" : `<i class="protag">PRO</i>`;
-const PRO_FEATS = [["i-phone", "Vertical shorts"], ["i-drum", "AI backing band"], ["i-text", "Captions + hashtags"], ["i-stack", "Separate parts, save all"]];
+const PRO_FEATS = [["i-phone", "Shorts without the mark"], ["i-drum", "AI backing band"], ["i-text", "AI captions + hashtags"], ["i-stack", "Batch save + separate parts"]];
+const PLANS = [["monthly", "$4.99", "a month", ""], ["yearly", "$29.99", "a year · $2.50/mo", "Best"], ["lifetime", "$59", "once, forever", ""]];
+let planSel = "yearly";
+const planURL = k => PRO_URL ? PRO_URL + (PRO_URL.includes("?") ? "&" : "?") + "plan=" + k : "";
 function openPro(what) {
   const sh = $("#proSheet");
   $("#proBody").innerHTML = isPro() ? `<p class="hint"><b>${lic.tier === "owner" ? "Owner" : "Pro"} unlocked.</b> Everything is on.</p>`
-    : `${what ? `<p class="hint"><b>${esc(what)}</b> is a Pro feature.${lic.trial ? "" : " Your free Pro saves are used up."}</p>` : ""}
+    : `${what ? `<p class="hint"><b>${esc(what)}</b> is Pro.${lic.trial ? ` You have ${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left.` : " Your free Pro saves are used up."}</p>` : `<p class="hint">Scanning, picks, clean cuts and vertical shorts stay free. Pro is for posting a lot.</p>`}
     <div class="feats">${PRO_FEATS.map(([ic, l]) => `<div>${icon(ic)}<span>${l}</span></div>`).join("")}</div>
-    ${PRO_URL ? `<a class="btn wide" href="${esc(PRO_URL)}" target="_blank" rel="noopener">${icon("i-bolt")}Get Pro</a>` : `<p class="hint">Pro checkout opens soon. Have a key? Paste it below.</p>`}
+    <div class="plans" role="radiogroup" aria-label="Plan">${PLANS.map(([k, p, per, tag]) => `<button type="button" class="plan" role="radio" aria-checked="${planSel === k}" data-plan="${k}">${tag ? `<i>${tag}</i>` : ""}<b>${p}</b><span>${per}</span></button>`).join("")}</div>
+    ${PRO_URL ? `<a class="btn wide" id="proGo" href="${esc(planURL(planSel))}" target="_blank" rel="noopener">${icon("i-bolt")}Get Pro</a>` : `<p class="hint">Checkout opens soon. Have a key? Paste it below.</p>`}
+    <p class="hint">Cancel any time. Your clips never leave your phone.</p>
     <div class="keyrow"><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your Pro key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div>
     <div class="status" id="proStatus"></div>`;
   sh.hidden = false;
@@ -2073,7 +2144,24 @@ async function computePicks(c, parts, key) {
     if ((c.pickSel || 0) >= list.length) c.pickSel = 0;
   }
 }
-function pickOf(c) { const l = picksOf(c); return l[c.pickSel || 0] || l[0] || null; }
+function pickBase(c) { const l = picksOf(c); return l[c.pickSel || 0] || l[0] || null; }
+const barLen = p => p.bars ? (p.e - p.s) / p.bars : 2;
+const adjKey = c => `${c._picks?.key}|${c.pickSel || 0}`;
+// the Pick, with the musician's own start/end nudges (whole bars) applied
+function pickOf(c) {
+  const p = pickBase(c); if (!p) return null;
+  const a = c.pickAdj?.[adjKey(c)]; if (!a || (!a.s && !a.e)) return p;
+  const D = c.raw?.duration || p.e, s = Math.max(0, p.s + a.s), e = Math.min(D, p.e + a.e);
+  if (e - s < 3) return p;
+  return { ...p, s, e, len: e - s, ranges: [[s, e]], bars: p.bars ? Math.max(1, Math.round((e - s) / barLen(p))) : 0, adj: true };
+}
+// What gets exported: the selected Pick, or the whole clean cut
+function srcOf(c) {
+  const pk = pickOf(c), on = onParts(c);
+  if ((c.src || "pick") === "pick" && pk) return { kind: "pick", ranges: pk.ranges, label: `Pick ${"ABC"[c.pickSel || 0]}`, len: pk.len };
+  if (on.length) return { kind: "clean", ranges: on.map(p => [p.start, p.end]), label: "Clean cut", len: on.reduce((t, p) => t + p.end - p.start, 0), n: on.length };
+  return pk ? { kind: "pick", ranges: pk.ranges, label: `Pick ${"ABC"[c.pickSel || 0]}`, len: pk.len } : null;
+}
 // What the scan found, in plain words
 function report(c) {
   const removed = c.result?.removed || [], by = {};
@@ -2175,7 +2263,9 @@ async function saveAll() {
 function render() {
   renderTop();
   const list = $("#list");
-  let shown = state.clips.filter(c => state.filter === "all" || verdict(c) === state.filter);
+  const q = (state.q || "").trim().toLowerCase();
+  let shown = state.clips.filter(c => (state.filter === "all" || verdict(c) === state.filter) && (!q || c.name.toLowerCase().includes(q)));
+  const sb = $("#searchBox"); if (sb) sb.hidden = state.clips.filter(c => !c.example).length <= 6 && !q;
   if (state.sort === "added") shown = shown.slice().sort((a, b) => b.id - a.id);
   if (state.sort === "biggest") shown = shown.slice().sort((a, b) => b.size - a.size);
   if (state.sort === "best") shown = shown.slice().sort((a, b) => keptSeconds(b) - keptSeconds(a));
@@ -2438,7 +2528,7 @@ function openStudio(c) {
   renderStudio();
 }
 // load the current pick into the player (not playing yet), so the first thing on screen is the pick
-function showPick(c) { const pk = pickOf(c); if (!player) return; if (pk) player.set(pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`, `${fmt(pk.len)} · tap for full take`); else player.set(null, "Full take", fmt(c.raw?.duration || 0)); }
+function showPick(c) { if (!player) return; const S = srcOf(c); if (S) player.set(S.ranges, S.label, `${fmt(S.len)} · tap for full take`); else player.set(null, "Full take", fmt(c.raw?.duration || 0)); }
 function closeStudio() {
   stopBand(); stopAudio(); stopAt = null; queue = [];
   player?.destroy(); player = null; video = null;
@@ -2459,32 +2549,42 @@ function renderStudio() {
   if (c.status === "error") P.innerHTML = `<p class="hint">LickPick ${esc(c.error)}. Watch it and decide yourself.</p>`;
   else if (state.tab === "pick") P.innerHTML = pickPanel(c);
   else if (state.tab === "parts") P.innerHTML = partsPanel(c);
-  else if (state.tab === "short") P.innerHTML = shortPanel(c);
   else if (state.tab === "post") P.innerHTML = postPanel(c);
   else if (state.tab === "band") { P.innerHTML = bandPanel(c); bandPrefetch(c); }
   else P.innerHTML = pickPanel(c);
-  const on = onParts(c), canSave = !c.example && !!c.file && on.length > 0 && !!downloads;
-  const one = document.querySelector('[data-act="save-one"]'), each = document.querySelector('[data-act="save-each"]');
-  $("#sBar").hidden = !canSave || state.tab !== "parts";
-  one.disabled = !canSave || !!c.exporting; each.disabled = !canSave || !!c.exporting;
-  one.querySelector("span").textContent = on.length > 1 ? "Save as one" : "Save clean video";
-  each.hidden = on.length < 2; each.innerHTML = `${icon("i-stack")}Separate${proTag()}`;
+  renderSrc(c);
+}
+function renderSrc(c) {
+  const list = picksOf(c), on = onParts(c), S = srcOf(c), el = $("#sSrc");
+  if (!el) return;
+  const kind = S?.kind;
+  el.hidden = c.status !== "done";
+  el.innerHTML = (list.length ? list.map((p, i) => { const q = i === (c.pickSel || 0) ? pickOf(c) : p; return `<button type="button" class="src" role="radio" aria-checked="${kind === "pick" && (c.pickSel || 0) === i}" data-src="pick:${i}"><b>${icon("i-star")}Pick ${"ABC"[i]}</b><span>${fmt(q.len)}${i === 0 ? " · best" : ""}</span></button>`; }).join("")
+    : c._pickJob ? `<span class="src" aria-disabled="true"><b>Pick</b><span>finding…</span></span>` : "")
+    + (on.length ? `<button type="button" class="src clean" role="radio" aria-checked="${kind === "clean"}" data-src="clean"><b>${icon("i-cut")}Clean cut</b><span>${fmt(S && kind === "clean" ? S.len : keptSeconds(c))} · ${on.length} part${on.length > 1 ? "s" : ""}</span></button>` : "");
+  const bar = $("#sBar"), what = $("#sExportWhat"), btn = bar?.querySelector('[data-act="export-open"]');
+  if (bar) bar.hidden = !S || !!c.example || c.status !== "done";
+  if (what) what.textContent = S ? `${S.label} · ${fmt(S.len)}` : "";
+  if (btn) btn.disabled = !!c.exporting;
 }
 function pickPanel(c) {
   const list = picksOf(c), pk = pickOf(c), v = verdict(c), rep = report(c), k = keptSeconds(c), D = c.raw?.duration || 0;
   const verdictLine = { keep: `Worth keeping. ${fmt(k)} of clean playing.`, review: k ? `Some gold, not much: ${fmt(k)} clean.` : "Playing, but nothing clean enough.", trash: "No music found. Safe to delete." }[v] || "";
   const facts = [c.raw?.info?.key && ["Key", c.raw.info.key], c.raw?.info?.tempo && ["Tempo", c.raw.info.tempo + " BPM"], ["Length", fmt(D)], ["Camera", c.raw?.cameraChecked ? "checked" : "not checked"]].filter(Boolean);
   const canSave = !!c.file && !!downloads && !c.exporting, L = state.pickLen;
-  return `<div class="row2 lenrow"><span><b>Pick length</b></span><span class="seg">${[["auto", "Auto"], [15, "15s"], [30, "30s"], [45, "45s"], [60, "60s"]].map(([val, lab]) => `<button type="button" data-plen="${val}" aria-pressed="${L === val}">${lab}</button>`).join("")}</span></div>
-    <p class="hint">${L === "auto" ? "Auto finds the best complete phrase, 20 to 45 seconds, starting and ending on the bar." : `The best ${L} seconds, rounded to whole bars.`} 15 to 30 seconds plays best on Reels and TikTok.</p>
-    ${!pk && c._pickJob ? `<div class="pickhero none"><p class="working"><span class="pulse"></span>Finding your best phrase…</p></div>` : pk ? `<div class="pickhero">
+  return `    ${!pk && c._pickJob ? `<div class="pickhero none"><p class="working"><span class="pulse"></span>Finding your best phrase…</p></div>` : pk ? `<div class="pickhero">
       <div class="pk-top"><span class="pk-tag">Pick ${"ABC"[c.pickSel || 0]}</span>${pk.why?.length ? `<span class="pk-why">${pk.why.map(esc).join(" · ")}</span>` : ""}</div>
       <div class="pk-big"><strong>${fmt(pk.len)}</strong><span>${fmt(pk.s)} → ${fmt(pk.e)}${pk.bars ? ` · ${pk.bars} bars` : ""}</span></div>
-      <div class="row-btns"><button class="btn ink" type="button" data-act="pick-play">${icon("i-play")}Play</button><button class="btn ink" type="button" data-act="pick-save" ${canSave ? "" : "disabled"}>${icon("i-save")}Save</button></div>
-      <div class="row-btns"><button class="btn ghost" type="button" data-act="pick-short">${icon("i-phone")}Short${proTag()}</button><button class="btn ghost" type="button" data-act="pick-band">${icon("i-drum")}Add band${proTag()}</button></div>
+      <div class="row-btns"><button class="btn ink" type="button" data-act="pick-play">${icon("i-play")}Play</button><button class="btn ink" type="button" data-act="export-open" ${canSave ? "" : "disabled"}>${icon("i-save")}Export</button></div>
+      <div class="row-btns"><button class="btn ghost" type="button" data-act="pick-band">${icon("i-drum")}Add band${proTag()}</button><button class="btn ghost" type="button" data-tab="post">${icon("i-text")}Caption</button></div>
     </div>
-    ${list.length > 1 ? `<div class="cands">${list.map((p, i) => `<button type="button" class="cand" data-cand="${i}" aria-pressed="${(c.pickSel || 0) === i}"><b>${"ABC"[i]}</b><span class="c-t">${fmt(p.s)} → ${fmt(p.e)}</span><span class="c-l">${fmt(p.len)}${p.bars ? ` · ${p.bars} bars` : ""}</span><span class="c-w">${esc((p.why || [])[0] || "Clean")}</span></button>`).join("")}</div><p class="hint">Not feeling it? Tap B or C to hear the next best.</p>` : ""}` : `<div class="pickhero none"><p>${hasMusic(c) ? "No clean stretch long enough for a pick. Play it and use Keep from here under Edit." : "No music found in this clip."}</p></div>`}
-    <div class="status" id="pickStatus" aria-live="polite">${esc(c.pickStatus || "")}</div>
+    <div class="finetune">
+      <div class="grp"><div class="lbl">Starts <b>${fmtP(pk.s)}</b></div><div class="btns"><button type="button" data-padj="s:-1" aria-label="Start one bar earlier">−1 bar</button><button type="button" data-padj="s:1" aria-label="Start one bar later">+1 bar</button></div></div>
+      <div class="grp"><div class="lbl">Ends <b>${fmtP(pk.e)}</b></div><div class="btns"><button type="button" data-padj="e:-1" aria-label="End one bar earlier">−1 bar</button><button type="button" data-padj="e:1" aria-label="End one bar later">+1 bar</button></div></div>
+    </div>
+    <p class="hint">${pk.adj ? `Nudged by you. <button class="linkbtn" type="button" data-padj="reset">Undo nudges</button>` : list.length > 1 ? "Not feeling it? Tap Pick B or C above." : "Nudge the start or end a bar at a time."}</p>` : `<div class="pickhero none"><p>${hasMusic(c) ? "No clean stretch long enough for a pick. Play it and use Keep from here under Edit." : "No music found in this clip."}</p></div>`}
+<div class="row2 lenrow"><span><b>Pick length</b></span><span class="seg">${[["auto", "Auto"], [15, "15s"], [30, "30s"], [45, "45s"], [60, "60s"]].map(([val, lab]) => `<button type="button" data-plen="${val}" aria-pressed="${L === val}">${lab}</button>`).join("")}</span></div>
+    <p class="hint">${L === "auto" ? "Auto finds the best complete phrase, 20 to 45 seconds, starting and ending on the bar." : `The best ${L} seconds, rounded to whole bars.`} 15 to 30 seconds plays best on Reels and TikTok.</p>
     <div class="report">
       <h3>${icon("i-scope")}Scan report</h3>
       <p class="verdict ${v}">${stamp(v)}<span>${verdictLine}</span></p>
@@ -2495,16 +2595,65 @@ function pickPanel(c) {
       <div class="row2 ovr">${v !== "trash" ? `<button class="btn sm ghost" type="button" data-ovr="trash">${icon("i-bin")}Trash it</button>` : ""}${v !== "keep" ? `<button class="btn sm ghost" type="button" data-ovr="keep">${icon("i-check")}Keep it</button>` : ""}${c.override ? `<button class="btn sm ghost" type="button" data-ovr="">${icon("i-undo")}Undo</button>` : ""}${c.edited ? `<button class="btn sm ghost" type="button" data-act="reset">Reset edits</button>` : ""}<button class="btn sm ghost" type="button" data-act="forget">${icon("i-x")}Remove from list</button></div>
     </div>`;
 }
-async function savePick(c) {
-  const pk = pickOf(c); if (!pk || !c.file || !downloads) return;
-  const say = t => { c.pickStatus = t; const el = $("#pickStatus"); if (el) el.textContent = t; };
-  c.exporting = true; renderStudio();
+// ---------- Export: one sheet for every way out (pick or clean cut, original or vertical, band, parts)
+const SOCIAL = ["reels", "tiktok", "shorts"];
+function exOpts(c) {
+  const S = srcOf(c);
+  if (!c.ex) c.ex = { fmt: (profile.posts || []).some(p => SOCIAL.includes(p)) ? "vertical" : "original", band: false, sep: false };
+  const o = c.ex;
+  o.canV = !!S && S.ranges.length === 1 && S.len <= 180 && !c.audioOnly;
+  o.canBand = !!S && S.kind === "pick" && !!c.raw?.chromaQ;
+  o.canSep = !!S && S.kind === "clean" && S.n > 1;
+  if (!o.canV && o.fmt === "vertical") o.fmt = "original";
+  if (!o.canBand) o.band = false;
+  if (!o.canSep) o.sep = false;
+  if (o.sep) { o.fmt = "original"; o.band = false; }
+  return o;
+}
+function exportSheetHTML(c) {
+  const S = srcOf(c); if (!S) return `<p class="hint">Nothing kept to export yet.</p>`;
+  const o = exOpts(c), pro = isPro(), busy = !!c.exporting;
+  const opt = (k, on, ic, t, d, dis, extra = "") => `<button type="button" class="opt" role="${k.startsWith("fmt") ? "radio" : "switch"}" aria-checked="${on}" data-ex="${k}" ${dis || busy ? "disabled" : ""}>${icon(ic)}<span class="grow"><strong>${t}${extra}</strong><em>${d}</em></span>${k.startsWith("fmt") ? "" : `<span class="tgl"></span>`}</button>`;
+  const files = o.sep ? S.n : 1;
+  return `<div class="exgroup"><span>What</span><div class="srcbar">${$("#sSrc")?.innerHTML || ""}</div></div>
+    <div class="exgroup"><span>Format</span>
+      ${opt("fmt:original", o.fmt === "original", "i-save", "Original", S.kind === "clean" ? "Fast. Full quality, same framing." : "Fast. Full quality, same framing.", false)}
+      ${opt("fmt:vertical", o.fmt === "vertical", "i-phone", "Vertical 9:16", o.canV ? "Reels, TikTok, Shorts. Loudness levelled." : S.kind === "clean" ? "Vertical works on a Pick or a single part." : "Up to 3 minutes.", !o.canV)}
+      ${o.fmt === "vertical" && !pro && !o.band ? `<p class="mark-note">${icon("i-bolt")}Free shorts carry a small LickPick mark. <button class="linkbtn" type="button" data-act="pro-open">Remove with Pro</button></p>` : ""}
+    </div>
+    ${o.canBand || o.canSep ? `<div class="exgroup"><span>Extras</span>
+      ${o.canBand ? opt("band", o.band, "i-drum", "Backing band", "Drums, bass and keys on your beat.", false, proTag()) : ""}
+      ${o.canSep ? opt("sep", o.sep, "i-stack", "One file per part", `${S.n} files instead of one.`, false, proTag()) : ""}
+    </div>` : ""}
+    <button class="btn wide" type="button" data-act="export-go" ${busy || !c.file || !downloads ? "disabled" : ""}>${icon("i-save")}Save ${files > 1 ? files + " files" : S.kind === "clean" ? "clean cut" : S.label}${o.band ? " + band" : ""} · ${fmt(S.len)}</button>
+    ${!c.file ? `<p class="hint">Add this video again to export it. LickPick doesn't keep copies.</p>` : !downloads ? `<p class="hint">Saving isn't available in this view.</p>` : ""}
+    <div class="status" id="exStatus" aria-live="polite">${esc(c.exStatus || "")}</div>`;
+}
+function openExport(c) { stopBand(); player?.pause(); c.exStatus = c.exporting ? c.exStatus : ""; $("#exBody").innerHTML = exportSheetHTML(c); $("#exportSheet").hidden = false; }
+function renderExport(c) { if (!$("#exportSheet").hidden && cur() === c) $("#exBody").innerHTML = exportSheetHTML(c); }
+async function doExport(c) {
+  const S = srcOf(c), o = exOpts(c); if (!S || !c.file || !downloads || c.exporting) return;
+  if (o.band && !proOK("AI backing band")) return;
+  if (o.sep && !proOK("Separate parts")) return;
+  const base = c.name.replace(/\.[^.]+$/, ""), tag = S.kind === "pick" ? `_pick${Math.round(S.len)}s` : "_clean";
+  const say = t => { c.exStatus = t; const el = $("#exStatus"); if (el) el.textContent = t; };
+  if (o.band) return bandSave(c, o.fmt === "vertical", say);
+  c.exporting = true; renderExport(c); renderSrc(c);
   try {
-    say("Cutting your pick…");
-    const n = await saveCut(await mb(), c, `${c.name.replace(/\.[^.]+$/, "")}_pick${Math.round(pk.len)}s`, pk.ranges, say);
-    if (n) say(savedWhere());
-  } catch (err) { say(err?.code === "unavailable" || err?.code === "not_granted" ? "Saving isn't available in this view." : "Couldn't cut this file. The original is untouched."); }
-  c.exporting = false; renderStudio();
+    say("Preparing…");
+    const M = await mb(); let n = 0;
+    if (o.fmt === "vertical") {
+      const [[s0, e0]] = S.ranges, gainDb = ClipExporter.levelGain(c.raw.loud, CELL, s0, e0), mark = !isPro();
+      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Making vertical… ${Math.round(p * 100)}%`), { gainDb, watermark: mark });
+      try { await offerFile(`${base}${tag}_vertical.mp4`, r.blob, say); n = 1; } catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
+    } else {
+      const jobs = o.sep ? S.ranges.map((r, i) => ({ name: `${base}_part${i + 1}`, ranges: [r] })) : [{ name: base + tag, ranges: S.ranges }];
+      for (const job of jobs) n += await saveCut(M, c, job.name, job.ranges, say);
+      if (n && o.sep) spendTrial();
+    }
+    if (n) { if (S.kind === "pick") c.pickSaved = true; else c.saved = true; persist(c); renderCard(c); say(`${savedWhere()}${n > 1 ? ` ${n} files.` : ""}${S.kind === "clean" ? " You can delete the original from your gallery." : ""}`); }
+  } catch (err) { say(err?.code === "unavailable" || err?.code === "not_granted" ? "Saving isn't available in this view." : err?.code === "no_encoder" ? "This browser can't make vertical videos. Original still works." : err?.code === "too_large_final" ? "Too big to save on this phone, even in pieces. Try a Pick." : "Couldn't cut this file. The original is untouched."); }
+  c.exporting = false; renderExport(c); renderStudio(); renderBoxes();
 }
 function partsPanel(c) {
   if (!c.parts.length) return `<p class="hint">${hasMusic(c) ? "There's playing here, but no stretch held up for 4 seconds. Play it, then tap Keep from here on anything you like." : "No music found in this clip. Tap Keep from here if you disagree."}</p>`;
@@ -2524,16 +2673,6 @@ function partsPanel(c) {
 }
 function shortWindow(c) { const p = pickOf(c); return p ? { s: p.s, e: p.e } : null; }
 const pickRef = (c, w) => `<div class="pickref"><span>${icon("i-star")}Pick ${"ABC"[c.pickSel || 0]} · ${fmt(w.s)} → ${fmt(w.e)} · ${fmt(w.e - w.s)}</span><button class="btn sm ghost" type="button" data-tab="pick">Change</button></div>`;
-function shortPanel(c) {
-  const w = shortWindow(c);
-  if (!w) return `<p class="hint">Keep at least one part to make a short.</p>`;
-  return `${pickRef(c, w)}
-    <div class="part short-prev"><span class="vframe"><span style="${c.thumb ? `background-image:url(${c.thumb})` : ""}"></span></span>
-      <div class="p-t"><strong>Vertical 9:16</strong><span>Center crop, up to 1080×1920, loudness levelled for social.</span>
-      <div style="margin-top:10px"><button class="btn sm ghost cy" type="button" data-act="shortplay">${icon("i-play")}Preview</button></div></div></div>
-    <button class="btn" type="button" data-act="short" ${c.exporting || !downloads ? "disabled" : ""}>${icon("i-phone")}Make short${proTag()}</button>
-    <div class="status" id="shortStatus" aria-live="polite">${esc(c.shortStatus || "")}</div>`;
-}
 // ---------- band: drums, bass and keys locked to the clip's beat and key
 function bandWindow(c) { return shortWindow(c); }
 function bandA(c) {
@@ -2559,8 +2698,7 @@ function bandPanel(c) {
     <div class="inst">${[["drums", "i-drum", "Drums"], ["bass", "i-bass", "Bass"], ["keys", "i-keys", "Keys"]].map(([k, ic, l]) => `<button type="button" data-inst="${k}" aria-pressed="${!!b.parts[k]}" ${k === "drums" && A && !A.pulse ? "disabled" : ""}>${icon(ic)}${l}</button>`).join("")}</div>
     <div class="mixrow"><span>Band</span><input type="range" id="bandGain" min="0" max="1.5" step="0.05" value="${b.gain}" aria-label="Band volume"></div>
     <div class="row-btns"><button class="btn ghost cy" type="button" data-act="band-play">${icon(bandPlaying ? "i-stop" : "i-play")}${bandPlaying ? "Stop" : "Preview"}</button>
-      <button class="btn" type="button" data-act="band-save" ${c.exporting || !downloads ? "disabled" : ""}>${icon("i-save")}Save${proTag()}</button></div>
-    <div class="row2"><span class="hint">Save as</span><span class="seg">${[[true, "9:16"], [false, "Original"]].map(([v, l]) => `<button type="button" data-bfmt="${v ? 1 : 0}" aria-pressed="${b.vertical === v}">${l}</button>`).join("")}</span></div>
+      <button class="btn" type="button" data-act="band-save" ${c.exporting || !downloads ? "disabled" : ""}>${icon("i-save")}Export${proTag()}</button></div>
     <div class="status" id="bandStatus" aria-live="polite">${esc(c.bandStatus || "")}</div>`;
 }
 // "F C G Am ×3" instead of the same loop spelled out
@@ -2671,12 +2809,12 @@ async function bandAi(c) {
   catch (err) { c.bandStatus = err?.code === "not_granted" ? "The AI pick needs permission to ask Claude." : "Couldn't get the AI pick. Using the auto pick."; }
   b.aiBusy = false; bandCache.key = ""; renderStudio();
 }
-async function bandSave(c, vertical) {
+async function bandSave(c, vertical, say0) {
   if (!c.file) { toast("Re-add this video first."); return; }
   if (!downloads || !proOK("AI backing band")) return;
   stopBand();
-  const say = t => { c.bandStatus = t; const el = $("#bandStatus"); if (el) el.textContent = t; };
-  c.exporting = true; renderStudio();
+  const say = say0 || (t => { c.bandStatus = t; const el = $("#bandStatus"); if (el) el.textContent = t; });
+  c.exporting = true; renderStudio(); renderExport(c);
   try {
     say("Building the band…");
     const r = await bandRender(c), M = await mb();
@@ -2686,7 +2824,7 @@ async function bandSave(c, vertical) {
     try { await offerFile(name, out.blob, say); spendTrial(); say(`${savedWhere()} Band mixed in.`); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
   } catch (err) { say(err?.code === "no_encoder" || err?.code === "no_audio_encoder" ? "This browser can't make videos. Open LickPick in Chrome." : "Couldn't make the video. The original is untouched."); }
-  c.exporting = false; renderStudio();
+  c.exporting = false; renderStudio(); renderExport(c);
 }
 const VIBES = ["Hype", "Chill", "Pro", "Funny"];
 const PC = ["var(--volt)", "var(--cyan)", "var(--hot)", "var(--blaze)"];
@@ -2739,7 +2877,7 @@ function drawWave() {
     g.fillStyle = kept(tm) ? grad : inPart(tm) ? "#5D5280" : "#3B1E2C";
     g.beginPath(); if (g.roundRect) g.roundRect(x, mid - h, w, h * 2, 1.5); else g.rect(x, mid - h, w, h * 2); g.fill();
   }
-  const pk = ["pick", "short", "band"].includes(state.tab) ? pickOf(c) : null;
+  const pk = ["pick", "band"].includes(state.tab) && (c.src || "pick") === "pick" ? pickOf(c) : null;
   if (pk) pk.ranges.forEach(([a, b], i) => { const x0 = a / D * W, x1 = b / D * W; g.strokeStyle = "#FFE600"; g.lineWidth = 3; g.strokeRect(x0 + 1.5, 1.5, Math.max(3, x1 - x0 - 3), H - 3); if (i === 0) { g.fillStyle = "#FFE600"; g.fillRect(x0, 0, 46, 14); g.fillStyle = "#07060B"; g.font = "700 10px Archivo, sans-serif"; g.fillText("★ PICK", x0 + 4, 11); } });
   const sp = state.tab === "parts" ? parts[c.sel] : null;
   if (sp) { g.fillStyle = "#2BE7FF"; for (const t of [sp.start, sp.end]) { const x = Math.min(W - 1, Math.max(1, t / D * W)); g.fillRect(x - 1, 2, 2, H - 4); g.beginPath(); g.arc(x, 7, 4, 0, 7); g.fill(); } }
@@ -2854,43 +2992,6 @@ async function saveCut(M, c, fileBase, ranges, say) {
   }
   return n;
 }
-async function saveClean(c, mode) {
-  if (!downloads) return;
-  if (mode !== "one" && !proOK("Save separate parts")) return;
-  const parts = c.parts.map((p, i) => ({ r: [p.start, p.end], n: i + 1, on: p.on })).filter(p => p.on);
-  const base = c.name.replace(/\.[^.]+$/, "");
-  state.tab = "parts";
-  const say = t => { c.saveStatus = t; const el = $("#saveStatus"); if (el) el.textContent = t; };
-  c.exporting = true; renderStudio();
-  try {
-    say("Preparing…");
-    const M = await mb();
-    const jobs = mode === "one" ? [{ name: `${base}_clean`, ranges: parts.map(p => p.r) }] : parts.map(p => ({ name: `${base}_part${p.n}`, ranges: [p.r] }));
-    let n = 0;
-    for (const job of jobs) n += await saveCut(M, c, job.name, job.ranges, say);
-    if (n && mode !== "one") spendTrial();
-    if (n) { c.saved = true; persist(c); say(`${savedWhere()} ${n > 1 ? n + " files. " : ""}You can delete the original from your gallery.`); }
-  } catch (err) { say(err?.code === "unavailable" || err?.code === "not_granted" ? "Saving isn't available in this view." : err?.code === "too_large_final" ? "Too big to save on this phone, even in pieces. Try Save parts, or trim it shorter." : "Couldn't cut this file. The original is untouched."); }
-  c.exporting = false; renderStudio(); renderBoxes();
-}
-async function makeShort(c) {
-  if (!c.file) { toast("Re-add this video first."); return; }
-  if (!downloads || !proOK("Vertical shorts")) return;
-  const w = shortWindow(c); if (!w) return;
-  const say = t => { c.shortStatus = t; const el = $("#shortStatus"); if (el) el.textContent = t; };
-  c.exporting = true; renderStudio();
-  try {
-    say("Preparing…");
-    const M = await mb();
-    const gainDb = ClipExporter.levelGain(c.raw.loud, CELL, w.s, w.e);
-    const r = await ClipExporter.exportShort(M, c.file, [w.s, w.e], p => say(`Making short… ${Math.round(p * 100)}%`), { gainDb });
-    const name = `${c.name.replace(/\.[^.]+$/, "")}_short${Math.round(w.e - w.s)}s.mp4`;
-    try { await offerFile(name, r.blob, say); spendTrial(); say(r.leveled ? `${savedWhere()} Loudness levelled for social.` : savedWhere()); }
-    catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
-  } catch (err) { say(err?.code === "no_encoder" ? "This phone's browser can't make videos. Saving clean cuts still works." : err?.code === "no_video" ? "This clip has no video to crop." : "Couldn't make the short. The original is untouched."); }
-  c.exporting = false; renderStudio();
-}
-
 // ---------- AI captions (asks Claude)
 async function writeCaptions(c) {
   c.note = ($("#postNote")?.value || "").slice(0, 400);
@@ -2930,6 +3031,7 @@ document.addEventListener("click", e => {
   if (d.act === "copy-link") { copyText(t, APP_LINK); return; }
   if (d.act === "pro-open" || t.id === "proBadge") { openPro(); return; }
   if (d.act === "pro-close") { $("#proSheet").hidden = true; return; }
+  if (d.plan) { planSel = d.plan; document.querySelectorAll("[data-plan]").forEach(b => b.setAttribute("aria-checked", String(b.dataset.plan === planSel))); const g = $("#proGo"); if (g) g.href = planURL(planSel); return; }
   if (d.act === "pro-unlock") { unlock(); return; }
   if (d.act === "toast-act") { const a = toastAct; $("#toast").hidden = true; toastAct = null; clearTimeout(toastT); a?.run(); return; }
   if (d.act === "install") { $("#rules").hidden = true; installPrompt?.prompt(); installPrompt?.userChoice.finally(() => { installPrompt = null; $("#installBtn").hidden = true; $("#installBar").hidden = true; }); return; }
@@ -2961,28 +3063,32 @@ document.addEventListener("click", e => {
   if (d.picky) { state.strictness = +d.picky; syncRules(); state.clips.forEach(c => { redecide(c); persist(c); }); render(); return; }
   const c = cur(); if (!c) return;
   if (d.act === "close") return closeStudio();
-  if (d.tab) { if (d.tab !== "band") stopBand(); state.tab = d.tab; renderStudio(); if (["pick", "short", "band"].includes(d.tab)) { player?.pause(); showPick(c); } return; }
+  if (d.tab) { if (d.tab !== "band") stopBand(); state.tab = d.tab; renderStudio(); if (["pick", "band"].includes(d.tab)) { if (d.tab === "band") c.src = "pick"; player?.pause(); showPick(c); } return; }
   if (d.play != null) { const p = c.parts[+d.play]; c.sel = +d.play; renderStudio(); playRanges(c, [[p.start, p.end]], `Part ${+d.play + 1}`); return; }
   if (d.toggle != null) { const p = c.parts[+d.toggle]; p.on = !p.on; edited(c); return; }
   if (d.nudge) { const [i, w, dv] = d.nudge.split(":"); const p = c.parts[+i]; if (w === "s") p.start += +dv; else p.end += +dv; clampPart(c, +i); edited(c); return; }
   if (d.here) { const [i, w] = d.here.split(":"); const p = c.parts[+i]; if (w === "s") p.start = nowT(c); else p.end = nowT(c); clampPart(c, +i); edited(c); return; }
   if (d.act === "pick-play") { const pk = pickOf(c); if (pk) playRanges(c, pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`); return; }
-  if (d.act === "pick-save") return savePick(c);
-  if (d.act === "pick-short") { state.tab = "short"; renderStudio(); return; }
+  if (d.act === "pick-save" || d.act === "export-open") { openExport(c); return; }
+  if (d.act === "export-close") { $("#exportSheet").hidden = true; return; }
+  if (d.act === "export-go") return doExport(c);
+  if (d.ex) { const o = exOpts(c); if (d.ex.startsWith("fmt:")) o.fmt = d.ex.slice(4); else o[d.ex] = !o[d.ex]; if (d.ex === "sep" && o.sep) o.band = false; if (d.ex === "band" && o.band) o.sep = false; renderExport(c); return; }
+  if (d.src) { stopBand(); if (!c.exporting) c.exStatus = ""; if (d.src === "clean") c.src = "clean"; else { c.src = "pick"; const i = +d.src.split(":")[1]; if (i !== (c.pickSel || 0)) { c.pickSel = i; c._bandA = null; persist(c); } } renderStudio(); renderExport(c); showPick(c); const S = srcOf(c); if (S && c.file && $("#exportSheet").hidden) playRanges(c, S.ranges, S.label); return; }
+  if (d.padj) { const p = pickBase(c); if (!p) return; stopBand(); c.pickAdj = c.pickAdj || {}; const k = adjKey(c);
+    if (d.padj === "reset") delete c.pickAdj[k];
+    else { const [w, n] = d.padj.split(":"), a = c.pickAdj[k] || { s: 0, e: 0 }, D = c.raw.duration, L = barLen(p); a[w] += +n * L;
+      if (p.s + a.s < 0) a.s = -p.s; if (p.e + a.e > D) a.e = D - p.e; if ((p.e + a.e) - (p.s + a.s) < Math.max(3, L)) a[w] -= +n * L; c.pickAdj[k] = a; }
+    c.src = "pick"; c._bandA = null; renderStudio(); showPick(c); const pk = pickOf(c); if (pk && c.file) { const edge = d.padj.startsWith("e") ? Math.max(pk.s, pk.e - 4) : pk.s; playRanges(c, [[edge, pk.e]], d.padj.startsWith("e") ? "End of pick" : `Pick ${"ABC"[c.pickSel || 0]}`); } return; }
   if (d.act === "pick-band") { state.tab = "band"; renderStudio(); return; }
   if (d.cand != null) { stopBand(); c.pickSel = +d.cand; c._bandA = null; persist(c); renderStudio(); showPick(c); const pk = pickOf(c); if (pk && c.file) playRanges(c, pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`); return; }
   if (d.plen) { stopBand(); state.pickLen = d.plen === "auto" ? "auto" : +d.plen; c.pickSel = 0; syncRules(); render(); renderStudio(); showPick(c); return; }
   if (d.act === "forget") { const x = c; closeStudio(); forget(x); render(); renderBoxes(); toast("Removed from the list. The video is untouched."); return; }
-  if (d.act === "playall") { playRanges(c, onParts(c).map(p => [p.start, p.end]), "Clean cut"); return; }
+  if (d.act === "playall") { c.src = "clean"; renderSrc(c); playRanges(c, onParts(c).map(p => [p.start, p.end]), "Clean cut"); return; }
   if (d.act === "rescue") { if (c.raw) rescue(c); return; }
-  if (d.act === "save-one") return saveClean(c, "one");
-  if (d.act === "save-each") return saveClean(c, "each");
-  if (d.act === "shortplay") { const w = shortWindow(c); if (w) playRanges(c, [[w.s, w.e]], "Short"); return; }
-  if (d.act === "short") return makeShort(c);
   if (d.bstyle) { stopBand(); c.band.style = d.bstyle; if (d.bstyle === "auto" && sampler && !c.band.ai) bandAi(c); else renderStudio(); return; }
   if (d.inst) { stopBand(); c.band.parts[d.inst] = !c.band.parts[d.inst]; renderStudio(); return; }
   if (d.act === "band-play") { bandPreview(c); return; }
-  if (d.act === "band-save") { bandSave(c, c.band.vertical !== false); return; }
+  if (d.act === "band-save") { c.src = "pick"; exOpts(c).band = true; c.ex.sep = false; openExport(c); return; }
   if (d.bfmt != null) { c.band.vertical = d.bfmt === "1"; renderStudio(); return; }
   if (d.vibe) { c.note = $("#postNote")?.value ?? c.note; c.vibe = d.vibe; renderStudio(); return; }
   if (d.act === "captions") return writeCaptions(c);
@@ -2992,10 +3098,11 @@ document.addEventListener("click", e => {
   if (d.act === "reset") { c.edited = false; redecide(c, true); c.sel = c.parts.length ? 0 : -1; persist(c); renderStudio(); return; }
 });
 $("#rules").addEventListener("click", e => { if (e.target.id === "rules") $("#rules").hidden = true; });
-document.addEventListener("input", e => { if (e.target.id === "bandGain") { const c = cur(); if (c?.band) { c.band.gain = +e.target.value; if (bandGainNode) bandGainNode.gain.value = c.band.gain; } } });
+document.addEventListener("input", e => { if (e.target.id === "search") { state.q = e.target.value; render(); return; } if (e.target.id === "bandGain") { const c = cur(); if (c?.band) { c.band.gain = +e.target.value; if (bandGainNode) bandGainNode.gain.value = c.band.gain; } } });
 $("#proSheet").addEventListener("click", e => { if (e.target.id === "proSheet") $("#proSheet").hidden = true; });
+$("#exportSheet").addEventListener("click", e => { if (e.target.id === "exportSheet") $("#exportSheet").hidden = true; });
 $("#addSheet").addEventListener("click", e => { if (e.target.id === "addSheet") $("#addSheet").hidden = true; });
-document.addEventListener("keydown", e => { if (e.key === "Escape") { if (!$("#onboard").hidden) closeOnboard(); else if (!$("#intro").hidden) closeIntro(); else if (!$("#addSheet").hidden) $("#addSheet").hidden = true; else if (!$("#rules").hidden) $("#rules").hidden = true; else if (!$("#sorter").hidden) closeQuickSort(false); else if (state.openId) closeStudio(); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { if (!$("#onboard").hidden) closeOnboard(); else if (!$("#intro").hidden) closeIntro(); else if (!$("#exportSheet").hidden) $("#exportSheet").hidden = true; else if (!$("#proSheet").hidden) $("#proSheet").hidden = true; else if (!$("#addSheet").hidden) $("#addSheet").hidden = true; else if (!$("#rules").hidden) $("#rules").hidden = true; else if (!$("#sorter").hidden) closeQuickSort(false); else if (state.openId) closeStudio(); } });
 function syncRules() {
   $("#minVal").textContent = state.minKeep + "s";
   document.querySelectorAll("#picky button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.picky === state.strictness)));
