@@ -730,6 +730,15 @@ input[type=range]{min-height:44px}
 .mxrow input[type=range]{width:100%;accent-color:var(--volt)}
 .sndcard .row-btns{margin-top:4px}
 .opt .chev{color:var(--mute);font-weight:800;font-size:18px}
+.tips{display:flex;flex-direction:column;gap:12px}
+.tips div{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center}
+.tips b{display:block;font-size:15px} .tips em{font-style:normal;color:var(--dim);font-size:13px}
+.tiph{margin:6px 0 0;font:400 17px var(--display)}
+.limits{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.limits span{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:14px;background:var(--raise);border:2px solid var(--line);font-size:12.5px;color:var(--dim);font-weight:700}
+.limits b{font:400 18px var(--display);color:var(--volt)}
+.cutwhat{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.cutwhat span{font-size:12.5px;font-weight:800;padding:5px 9px;border-radius:9px;background:var(--raise);border:2px solid var(--line);color:var(--dim)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -942,6 +951,7 @@ input[type=range]{min-height:44px}
     <div class="mlist">
       <button class="mrow" type="button" id="helpBtn"><i class="stk s-cyan" aria-hidden="true"><svg class="i"><use href="#i-help"/></svg></i><span><b>How it works</b><em>A 30-second tour</em></span><span class="chev">›</span></button>
       <button class="mrow" type="button" data-act="ob-open"><i class="stk s-volt r2" aria-hidden="true"><svg class="i"><use href="#i-sliders"/></svg></i><span><b>Profile & setup</b><em>Instruments, pick length, name</em></span><span class="chev">›</span></button>
+      <button class="mrow" type="button" data-act="tips-open"><i class="stk s-hot r2" aria-hidden="true"><svg class="i"><use href="#i-rec"/></svg></i><span><b>Recording tips</b><em>Get the best Pick, plus the limits</em></span><span class="chev">›</span></button>
       <button class="mrow" type="button" data-act="report-open"><i class="stk s-blaze" aria-hidden="true"><svg class="i"><use href="#i-copy"/></svg></i><span><b>Test report</b><em>Copy what happened, to share with us</em></span><span class="chev">›</span></button>
       <button class="mrow pro" type="button" data-act="pro-open"><i class="stk s-hot r2" aria-hidden="true"><svg class="i"><use href="#i-bolt"/></svg></i><span><b id="menuPro">Pro</b><em id="menuProSub">No mark, band export, captions</em></span><span class="chev">›</span></button>
       <button class="mrow" type="button" id="installBtn" data-act="install" hidden><i class="stk s-cyan" aria-hidden="true"><svg class="i"><use href="#i-install"/></svg></i><span><b>Install app</b><em>Home screen, works offline</em></span><span class="chev">›</span></button>
@@ -955,7 +965,7 @@ input[type=range]{min-height:44px}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10h"; window.LP_BUILD = "file";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10i"; window.LP_BUILD = "file";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -2455,6 +2465,20 @@ function testReport() {
   lines.push("", "Log:", ...(diag.log.length ? diag.log : ["(nothing went wrong)"]));
   return lines.join("\n");
 }
+// Recording tips + limits: what LickPick needs for the best Pick, and what it cuts
+const TIPS = [["i-phone", "Steady, 1 to 2 m away", "Lean the phone or use a stand. Hand-held video looks shaky."], ["i-mic", "Keep the mic clear", "No finger, case flap or pocket over it."],
+  ["i-rec", "Roll early, stop late", "Start recording 5 s before you play, let it ring 3 s after."], ["i-ear", "Quiet room", "No music playing in the background. Talking gets cut."],
+  ["i-star", "Play the whole idea", "A Pick needs about 20 s of clean playing in a row."], ["i-film", "You in the middle", "Vertical shorts crop the center of the picture."],
+  ["i-drum", "Click in your headphones", "A loud metronome with no playing counts as junk."]];
+function tipsHTML() {
+  return `<div class="tips">${TIPS.map(([ic, b, d], i) => `<div>${stk(ic, ["volt", "cyan", "hot", "blaze"][i % 4], i % 2 ? "r2" : "")}<span><b>${b}</b><em>${d}</em></span></div>`).join("")}</div>
+    <h3 class="tiph">Limits</h3>
+    <div class="limits"><span><b>${LIMITS.perAdd}</b>videos per add</span><span><b>5 s–30 min</b>per video</span><span><b>20 s</b>clean for a Pick</span><span><b>∞</b>clips in your list</span></div>
+    <p class="hint">Best under ${LIMITS.bestMaxSec / 60} minutes per video: shorter takes scan faster and keep your phone cool. Same limits on Free and Pro.</p>
+    <h3 class="tiph">What gets cut</h3>
+    <p class="cutwhat">${["Silence", "Talking", "Noise", "Click with no playing", "Stops & restarts", "Wrong notes", "Off pitch", "Timing drift", "Covered lens"].map(t => `<span>${t}</span>`).join("")}</p>`;
+}
+function openTips() { $("#rules").hidden = true; $("#proBody").innerHTML = tipsHTML(); $("#proSheet").querySelector("h2").innerHTML = "Recording tips"; $("#proSheet").hidden = false; }
 function openReport() {
   const txt = testReport();
   $("#proBody").innerHTML = `<p class="hint">Copy this and paste it to Claude. It stays on your phone until you do.</p><textarea id="reportTxt" readonly style="min-height:240px;font:12px/1.4 ui-monospace,monospace">${esc(txt)}</textarea><button class="btn wide" type="button" data-act="report-copy">${icon("i-copy")}Copy report</button>`;
@@ -2482,8 +2506,11 @@ function offerShare(name, blob) {
 }
 
 // ---------- adding clips + analysis queue
+// Limits (same for Free and Pro: everything runs on the phone, so there's no cost per clip)
+const LIMITS = { perAdd: 30, minSec: 5, pickSec: 20, maxSec: 30 * 60, bestMaxSec: 20 * 60 };
 function addFiles(files, recorded) {
   if (!files.length) return;
+  let over = 0; if (files.length > LIMITS.perAdd) { over = files.length - LIMITS.perAdd; files = files.slice(0, LIMITS.perAdd); }
   const keys = new Set(files.map(fileKey));
   state.clips = state.clips.filter(c => !keys.has(c.key));
   let known = 0;
@@ -2503,7 +2530,7 @@ function addFiles(files, recorded) {
   })).then(() => {
     render(); pump();
     const n = added.length - known;
-    toast(recorded ? "Got the take. Scanning now." : n ? `Scanning ${n} clip${n > 1 ? "s" : ""}. Picks coming up.` : "Already scanned. Ready to play.");
+    toast(over ? `Scanning the first ${LIMITS.perAdd}. Add the other ${over} when these are done.` : recorded ? "Got the take. Scanning now." : n ? `Scanning ${n} clip${n > 1 ? "s" : ""}. Picks coming up.` : "Already scanned. Ready to play.");
     if (state.openId) renderStudio();
   });
 }
@@ -2525,6 +2552,8 @@ async function decodeAudioStream(file, onP) {
   const at = await stall(input.getPrimaryAudioTrack(), 8000);
   if (!at || !(await stall(at.canDecode(), 8000))) return null;
   const dur = await stall(at.computeDuration(), 8000), SR = 22050;
+  if (dur > LIMITS.maxSec) throw Object.assign(new Error("too long"), { code: "too_long" });
+  if (dur < LIMITS.minSec) throw Object.assign(new Error("too short"), { code: "too_short" });
   const out = new Float32Array(Math.ceil(dur * SR) + SR);
   let maxI = 0, lp = 0, k = 0;
   const a = 1 - Math.exp(-2 * Math.PI * 9000 / Math.max(SR, at.sampleRate));
@@ -2565,7 +2594,7 @@ async function pump() {
   busy = true; keepAwake(true); c.status = "listening"; c.phase = "listening"; c._t0 = performance.now(); renderCard(c); renderTop();
   try {
     let y = null, sr = 22050;
-    if (!streamBroken) try { const st = await decodeAudioStream(c.file, p => { c.progress = p * 0.25; renderCard(c); }); if (st) { y = st.data; sr = st.sampleRate; c.decoder = "stream"; } } catch (e) { y = null; if (String(e).includes("stalled")) streamBroken = true; }
+    if (!streamBroken) try { const st = await decodeAudioStream(c.file, p => { c.progress = p * 0.25; renderCard(c); }); if (st) { y = st.data; sr = st.sampleRate; c.decoder = "stream"; } } catch (e) { y = null; if (e?.code === "too_long" || e?.code === "too_short") throw e; if (String(e).includes("stalled")) streamBroken = true; }
     if (!y) {
       // a file the phone can't decode must never block the clips behind it
       const audio = await within(decodeAudio(c.file), 45000 + c.size / 2e6 * 1000, "decode"); c.decoder = "full";
@@ -2573,6 +2602,7 @@ async function pump() {
       if (audio.numberOfChannels > 1) { const r = audio.getChannelData(1); const m = new Float32Array(y.length); for (let i = 0; i < y.length; i++) m[i] = (y[i] + r[i]) / 2; y = m; }
     }
     const base = c.decoder === "stream" ? 0.25 : 0;
+    { const d0 = y.length / sr; if (d0 > LIMITS.maxSec) throw Object.assign(new Error("too long"), { code: "too_long" }); if (d0 < LIMITS.minSec) throw Object.assign(new Error("too short"), { code: "too_short" }); }
     c.raw = await ClipEngine.analyzePCM(y, sr, p => { c.progress = base + p * (0.7 - base); renderCard(c); }, 150);
     delete c.raw._dbg; y = null;
     c.phase = "watching"; c.raw.cameraChecked = false;
@@ -2587,7 +2617,7 @@ async function pump() {
     } catch { }
     redecide(c, true); c.status = "done"; c.scanMs = performance.now() - c._t0; diag.scans.push({ name: c.name, sec: Math.round(c.raw.duration), scan: +(c.scanMs / 1000).toFixed(1) }); persist(c); unpend(c);
   } catch (err) {
-    diagLog("scan failed: " + c.name + " (" + String(err?.code || err?.message || err || "unreadable").slice(0, 80) + ")"); unpend(c); c.status = "error"; c.error = /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
+    diagLog("scan failed: " + c.name + " (" + String(err?.code || err?.message || err || "unreadable").slice(0, 80) + ")"); unpend(c); c.status = "error"; c.errorMsg = err?.code === "too_long" ? "Over 30 minutes. Trim it in your gallery, then add it again." : err?.code === "too_short" ? "Under 5 seconds. Too short to judge." : ""; c.error = err?.code === "too_long" ? "can't scan videos over 30 minutes" : err?.code === "too_short" ? "can't judge a clip under 5 seconds" : /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
   }
   busy = false; renderCard(c); renderTop(); renderBoxes(); if (state.openId === c.id) renderStudio(); pump();
 }
@@ -2657,7 +2687,7 @@ const stamp = v => `${pkw(`<i class="stamp ${v} pickclip" title="${VLABEL[v]}">$
 function phrase(c) {
   if (c.status === "queued") return `<b>Waiting</b>${fmtSize(c.size)}`;
   if (c.status === "listening") return `<b>${c.phase === "watching" ? "Watching" : "Listening"}</b>${Math.round((c.progress || 0) * 100)}%`;
-  if (c.status === "error") return `<b>Not checked</b>${esc(c.error)}. Open it to play it yourself.`;
+  if (c.status === "error") return c.errorMsg ? `<b>Not checked</b> ${esc(c.errorMsg)}` : `<b>Not checked</b>${esc(c.error)}. Open it to play it yourself.`;
   const v = verdict(c), k = keptSeconds(c), n = onParts(c).length;
   const pk = pickOf(c), cuts = (c.result?.removed || []).length;
   if (v === "trash") return c.override ? "Marked by you" : "No music found";
@@ -3120,7 +3150,7 @@ function pickPanel(c) {
       <div class="grp"><div class="lbl">Starts <b>${fmtP(pk.s)}</b></div><div class="btns"><button type="button" data-padj="s:-1" aria-label="Start one bar earlier">−1 bar</button><button type="button" data-padj="s:1" aria-label="Start one bar later">+1 bar</button></div></div>
       <div class="grp"><div class="lbl">Ends <b>${fmtP(pk.e)}</b></div><div class="btns"><button type="button" data-padj="e:-1" aria-label="End one bar earlier">−1 bar</button><button type="button" data-padj="e:1" aria-label="End one bar later">+1 bar</button></div></div>
     </div>
-    <p class="hint">${pk.adj ? `Nudged by you. <button class="linkbtn" type="button" data-padj="reset">Undo nudges</button>` : list.length > 1 ? "Not feeling it? Tap Pick B or C above." : "Nudge the start or end a bar at a time."}</p>${whyHTML(c)}` : `<div class="pickhero none"><p>${hasMusic(c) ? "No clean stretch long enough for a pick. Open Segments to hear every part and keep what you like." : "No music found in this clip."}</p></div>`}
+    <p class="hint">${pk.adj ? `Nudged by you. <button class="linkbtn" type="button" data-padj="reset">Undo nudges</button>` : list.length > 1 ? "Not feeling it? Tap Pick B or C above." : "Nudge the start or end a bar at a time."}</p>${whyHTML(c)}` : `<div class="pickhero none"><p>${hasMusic(c) ? `A Pick needs ${state.pickLen === "auto" ? "about 20" : Math.round(state.pickLen * 0.8)} seconds of clean playing in one go. ${state.pickLen === "auto" || state.pickLen > 15 ? "For short clips, set Pick length to 15s below. " : ""}Or open Segments and keep what you like.` : "No music found in this clip."}</p></div>`}
 <div class="row2 lenrow"><span><b>Pick length</b></span><span class="seg">${[["auto", "Auto"], [15, "15s"], [30, "30s"], [45, "45s"], [60, "60s"]].map(([val, lab]) => `<button type="button" data-plen="${val}" aria-pressed="${L === val}">${lab}</button>`).join("")}</span></div>
     <p class="hint">${L === "auto" ? "Auto finds the best complete phrase, 20 to 45 seconds, starting and ending on the bar." : `The best ${L} seconds, rounded to whole bars.`} 15 to 30 seconds plays best on Reels and TikTok.</p>
     <details class="report"><summary><h3>${icon("i-scope")}Scan details</h3><span class="wsum">${esc(verdictLine)}</span></summary>
@@ -3764,6 +3794,7 @@ document.addEventListener("click", e => {
   if (d.act === "copy-link") { copyText(t, APP_LINK); return; }
   if (d.act === "pro-open" || t.id === "proBadge") { $("#rules").hidden = true; openPro(); return; }
   if (d.act === "pro-close") { $("#proSheet").hidden = true; return; }
+  if (d.act === "tips-open") { openTips(); return; }
   if (d.act === "report-open") { $("#rules").hidden = true; openReport(); return; }
   if (d.act === "report-copy") { copyText(t, $("#reportTxt").value); return; }
   if (d.plan) { planSel = d.plan; document.querySelectorAll("[data-plan]").forEach(b => b.setAttribute("aria-checked", String(b.dataset.plan === planSel))); const g = $("#proGo"); if (g) g.href = PRO_URL ? planURL(planSel) : requestURL(planSel); return; }
