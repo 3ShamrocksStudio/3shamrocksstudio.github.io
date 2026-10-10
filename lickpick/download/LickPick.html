@@ -739,6 +739,22 @@ input[type=range]{min-height:44px}
 .limits b{font:400 18px var(--display);color:var(--volt)}
 .cutwhat{display:flex;flex-wrap:wrap;gap:6px;margin:0}
 .cutwhat span{font-size:12.5px;font-weight:800;padding:5px 9px;border-radius:9px;background:var(--raise);border:2px solid var(--line);color:var(--dim)}
+.startlinks{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:6px;color:var(--mute);min-height:44px}
+.startlinks .linkbtn{color:var(--cyan);min-height:44px}
+.tiplink{display:block;margin:10px auto 0;color:var(--cyan)}
+/* header: logo big and unboxed, quiet icon buttons */
+.top .icon-btn{border-color:transparent;background:transparent;color:var(--text)} .top .icon-btn svg.i{width:26px;height:26px;--ic2:var(--hot)}
+.top .icon-btn:active{background:var(--raise)}
+.brand svg{width:42px;height:42px} .word{font-size:26px}
+.sugs{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:18px;background:var(--panel);border:2px solid var(--line);box-shadow:4px 4px 0 var(--blaze)}
+.sug{display:grid;grid-template-columns:40px 1fr 44px;grid-template-areas:"ic tx x" "ic btn x";gap:6px 12px;align-items:center}
+.sug .stk{grid-area:ic;width:36px;height:36px} .sug>span{grid-area:tx;font-size:14px;line-height:1.35}
+.sug .btn{grid-area:btn;justify-self:start;min-height:40px}
+.sugx{grid-area:x;align-self:start;border:0;background:none;color:var(--mute);width:44px;height:44px;display:grid;place-items:center;padding:0}
+.sugx svg.i{width:16px;height:16px;--ic2:transparent}
+.sharebtn{display:flex;align-items:center;gap:12px;justify-content:flex-start;text-align:left;background:var(--cyan);color:var(--ink);min-height:60px}
+.sharebtn span{display:flex;flex-direction:column;line-height:1.2} .sharebtn em{font-style:normal;font-size:12px;font-weight:700;opacity:.8}
+.sharebtn svg.i{width:26px;height:26px;color:var(--ink);--ic2:rgba(255,255,255,.5)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -797,6 +813,7 @@ input[type=range]{min-height:44px}
 <header class="top">
   <div class="brand"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b><sup class="tm">™</sup></span></div>
   <div class="hbtns">
+    <button class="icon-btn" type="button" data-act="tour" aria-label="How it works"><svg class="i"><use href="#i-help"/></svg></button>
     <button class="pro-pill" id="proBadge" type="button" data-act="pro-open" aria-label="LickPick Pro"><svg class="i"><use href="#i-bolt"/></svg>PRO</button>
     <button class="icon-btn" id="rulesBtn" type="button" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
   </div>
@@ -961,11 +978,11 @@ input[type=range]{min-height:44px}
     <div class="row2"><span><b>How picky</b></span>
       <span class="seg" id="picky"><button type="button" data-picky="0.25">Chill</button><button type="button" data-picky="0.5">Normal</button><button type="button" data-picky="0.8">Strict</button></span></div>
     <p class="hint">Trash is only suggested when a clip has no music at all. Your own edits are never changed.</p>
-    <p class="sfoot">LickPick 1.2 · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. LickPick never deletes.<br>© 2026 3Shamrocks Studio. All rights reserved.</p>
+    <p class="sfoot">LickPick 1.3 · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. LickPick never deletes.<br>© 2026 3Shamrocks Studio. All rights reserved.</p>
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10i"; window.LP_BUILD = "file";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10j"; window.LP_BUILD = "file";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -1132,7 +1149,18 @@ input[type=range]{min-height:44px}
     const [gcorr, gk, gmode] = bestKey(gprof);
     let tonal = gcorr > 0.55;
     const gscale = roll(gmode === "maj" ? MAJ_S : MIN_S, gk);
-    const outkey = cnorm.map(v => v.reduce((s, x, k) => s + (gscale[k] ? 0 : x), 0));
+    // out-of-key energy against the LOCAL key (±10 s), so a deliberate key change isn't "wrong notes";
+    // a few wrong chords inside a passage don't move the local key, so they still count
+    const nC = chroma.length, cum = Array.from({ length: 12 }, () => new Float64Array(nC + 1));
+    for (let i = 0; i < nC; i++) { const use = active[i] && clarity[i] > clar20; for (let k = 0; k < 12; k++) cum[k][i + 1] = cum[k][i] + (use ? chroma[i][k] : 0); }
+    const KW = Math.round(10 / CELL), lscale = new Array(nC);
+    for (let i = 0; i < nC; i += 4) {
+      const a = Math.max(0, i - KW), b = Math.min(nC, i + KW), prof = new Array(12).fill(0);
+      for (let k = 0; k < 12; k++) prof[k] = cum[k][b] - cum[k][a];
+      const [lc, lk, lm] = bestKey(prof), sc = lc > 0.6 ? roll(lm === "maj" ? MAJ_S : MIN_S, lk) : gscale;
+      for (let j = i; j < Math.min(nC, i + 4); j++) lscale[j] = sc;
+    }
+    const outkey = cnorm.map((v, i) => v.reduce((s, x, k) => s + ((lscale[i] || gscale)[k] ? 0 : x), 0));
 
     // tuning: circular mean of signed cents
     let sx = 0, sy = 0; for (const s of signedCents) { const a = s / 100 * 2 * Math.PI; sx += Math.cos(a); sy += Math.sin(a); }
@@ -1940,10 +1968,27 @@ input[type=range]{min-height:44px}
     const inParts = new Array(n).fill(false); for (const [a, b] of parts) for (let c = Math.floor(a / CELL); c < Math.ceil(b / CELL) && c < n; c++) inParts[c] = true;
     const ref = i => inParts[i];
     const rL = pctRank(loud.filter((_, i) => ref(i))), rA = pctRank(act.filter((_, i) => ref(i))), rC = pctRank(clar.filter((_, i) => ref(i)));
-    const cell = loud.map((v, i) => 0.42 * rL(v) + 0.33 * rA(act[i]) + 0.15 * rC(clar[i]) + 0.10 * (1 - soft[i]));
+    // Clean beats loud: a musician's best take is the confident, in-time, in-key one, not the noisiest.
+    // Energy decides between clean phrases; sloppiness scales a phrase down, it never wins on volume alone.
+    // offKey: share of pitch energy outside the LOCAL key (±10 s), so a deliberate key change stays clean
+    const C = raw.chromaQ, offKey = new Array(n).fill(0);
+    if (C) {
+      let k0 = null, kAt = -1e9;
+      for (let i = 0; i < n && i < C.length; i++) {
+        const t = i * CELL;
+        if (t - kAt >= 5) { const K = keyAround(raw, t, t + 0.01); k0 = K ? new Set((K.mode === "maj" ? MAJ : MIN).map(d => (K.k + d) % 12)) : k0; kAt = t; }
+        if (!k0) continue; let o = 0, tt = 0; for (let k = 0; k < 12; k++) { tt += C[i][k]; if (!k0.has(k)) o += C[i][k]; } offKey[i] = tt > 0 ? o / tt : 0;
+      }
+    }
+    // smooth the sloppiness signals over ~3 s: one late strum is human, a run of them is a sloppy take
+    const sm = (a, r) => a.map((_, i) => { let s = 0, k = 0; for (let j = Math.max(0, i - r); j <= Math.min(n - 1, i + r); j++) { s += a[j]; k++; } return s / k; });
+    const softS = sm(soft, 3), offS = sm(offKey, 3);
+    const offMed = median(offS.filter((v, i) => ref(i) && loud[i] > -45)) || 0;
+    const Q = i => Math.max(0, 1 - softS[i] / 0.22) * Math.max(0, 1 - Math.max(0, offS[i] - offMed) / 0.18);
+    const cell = loud.map((v, i) => (0.45 * rL(v) + 0.35 * rA(act[i]) + 0.20 * rC(clar[i])) * (0.3 + 0.7 * Q(i)));
     const auto = len === "auto", lo = auto ? 20 : len * 0.8, hi = auto ? 45 : len * 1.15, target = auto ? 30 : len;
     const cands = [];
-    return { loud, act, clar, soft, cell, rL, rA, rC, lo, hi, target, cands, raw };
+    return { loud, act, clar, soft, offKey, cell, rL, rA, rC, lo, hi, target, cands, raw };
   }
   function pickPart(X, ps, pe) {
     const { loud, act, clar, soft, cell, rL, rA, rC, lo, hi, target, cands, raw } = X;
@@ -2502,6 +2547,8 @@ function canShareFile(file) { try { return !!navigator.canShare?.({ files: [file
 function offerShare(name, blob) {
   const file = new File([blob], name, { type: blob.type || "video/mp4" });
   if (!canShareFile(file)) return;
+  const c = cur(); if (c) c.lastShare = file;
+  if (c && !$("#exportSheet").hidden) { renderExport(c); setTimeout(() => $("#exBody [data-act=share-last]")?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 60); return; }   // the sheet shows a Share button
   toast(savedWhere(), { icon: "i-share", label: "Share", run: () => navigator.share({ files: [file], title: name }).catch(() => { }) });
 }
 
@@ -2718,7 +2765,7 @@ function renderTop() {
       <h1>${profile.name ? `Hey ${esc(profile.name)}, add` : "Add"} your first jam</h1>
       <p>From your gallery or camera. About a minute per take.</p>
       <div class="ctas"><button class="btn main" type="button" data-act="gallery">${icon("i-film")}Add jams</button><button class="btn ghost" type="button" data-act="record">${icon("i-rec")}Record</button></div>
-      <div class="flow">${[["i-film", "Add takes", "cyan"], ["i-cut", "Get graded", "blaze"], ["i-star", "Post the best", "volt"]].map(([ic, l, c], i) => `${i ? `<i class="arr" aria-hidden="true">→</i>` : ""}<span>${stk(ic, c, i % 2 ? "r2" : "")}<b>${l}</b></span>`).join("")}</div></div>`;
+      <div class="startlinks"><button class="linkbtn" type="button" data-act="tour">How it works</button><span>·</span><button class="linkbtn" type="button" data-act="tips-open">Recording tips</button></div></div>`;
     $("#sortCta").innerHTML = "";
     return;
   }
@@ -2885,25 +2932,27 @@ function toast(msg, act) {
 
 // ---------- intro / tutorial
 const SLIDES = [
-  { bg: "var(--hot)", art: `<svg aria-hidden="true"><use href="#logo"/></svg>`, h: "Meet LickPick", p: "Add your jam videos. LickPick scans every take, cuts the flubs and finds your best phrase. Everything stays on your phone, and it never deletes a file." },
-  { bg: "var(--volt)", art: `<svg class="i" style="color:var(--ink);--ic2:var(--hot)"><use href="#i-ear"/></svg>`, h: "Every clip gets a verdict",
-    grid: [[stamp("keep"), "Keep: plenty of clean playing"], [stamp("review"), "Review: give it a listen"], [stamp("trash"), "Trash: no music at all"]] },
-  { bg: "var(--cyan)", art: `<svg class="i" style="color:var(--ink);--ic2:rgba(255,255,255,.6)"><use href="#i-cut"/></svg>`, h: "Every part gets a grade",
-    p: "Open a clip, then Segments. Play any part on its own, keep it or drop it.", tiers: true },
+  { bg: "var(--hot)", art: `<svg aria-hidden="true"><use href="#logo"/></svg>`, h: "Welcome to LickPick", p: "Add your jam videos. LickPick finds your best phrase in every take, right here on your phone. No account, no uploads, never deletes a file." },
+  { bg: "var(--cyan)", art: `<svg class="i" style="color:var(--ink);--ic2:rgba(255,255,255,.6)"><use href="#i-cut"/></svg>`, h: "Every part graded", p: "Each clip gets Keep, Review or Trash, and every part inside it a grade. Play any part on its own.", tiers: true },
   { bg: "var(--volt)", art: `<svg class="i" style="color:var(--ink);--ic2:var(--hot)"><use href="#i-star"/></svg>`, h: "Your Pick, explained",
-    p: "Pick A is the strongest complete phrase, on the bar. Not feeling it? Try Pick B or C, or nudge it a bar. \u201CWhy this part?\u201D shows how it beat the rest." },
+    p: "Pick A is the cleanest strong phrase, on the bar: in time, in key, full of energy. Try B or C, nudge it a bar, and tap \u201CWhy this part?\u201D to see how it won." },
+  { bg: "var(--blaze)", art: `<svg class="i" style="color:var(--ink);--ic2:rgba(255,255,255,.6)"><use href="#i-sliders"/></svg>`, h: "Make it sound great",
+    grid: [[icon("i-bolt"), "Studio polish, one tap"], [icon("i-sliders"), "Mixer: you + band"], [icon("i-drum"), "A band on your beat"]] },
+  { bg: "var(--cyan)", art: `<svg class="i" style="color:var(--ink);--ic2:var(--hot)"><use href="#i-rec"/></svg>`, h: "Record for the best Pick",
+    grid: [[icon("i-phone"), "Steady, 1 to 2 m away"], [icon("i-ear"), "Quiet room"], [icon("i-star"), "20 s clean in a row"]], tips: true },
   { bg: "var(--hot)", art: `<svg class="i" style="color:var(--ink);--ic2:rgba(255,255,255,.6)"><use href="#i-save"/></svg>`, h: "Export and post",
-    grid: [[icon("i-cut"), "Clean cut: free"], [icon("i-phone"), "Vertical short: free"], [icon("i-bolt"), "Pro, once: band export, save all"]] },
+    grid: [[icon("i-cut"), "Clean cut: free"], [icon("i-phone"), "Vertical short: free"], [icon("i-bolt"), "Pro, once: band, save all"]] },
 ];
 let slide = 0;
 function renderIntro() {
   const sl = SLIDES[slide];
-  $("#slides").innerHTML = `<div class="slide"><div class="art" style="background:${sl.bg}">${sl.art}</div><h2 id="introTitle">${sl.h}</h2>${sl.p ? `<p>${sl.p}</p>` : ""}${sl.tiers ? `<div class="tierdemo">${Object.keys(TIERS).map(t => tierTag(t)).join("")}</div>` : ""}${sl.grid ? `<div class="icons3">${sl.grid.map(([ic, l]) => `<div>${ic}<span>${l}</span></div>`).join("")}</div>` : ""}</div>`;
+  $("#slides").innerHTML = `<div class="slide"><div class="art" style="background:${sl.bg}">${sl.art}</div><h2 id="introTitle">${sl.h}</h2>${sl.p ? `<p>${sl.p}</p>` : ""}${sl.tiers ? `<div class="tierdemo">${Object.keys(TIERS).map(t => tierTag(t)).join("")}</div>` : ""}${sl.tips ? `<button class="linkbtn tiplink" type="button" data-act="tips-open">All recording tips and limits</button>` : ""}${sl.grid ? `<div class="icons3">${sl.grid.map(([ic, l]) => `<div>${ic}<span>${l}</span></div>`).join("")}</div>` : ""}</div>`;
   $("#dots").innerHTML = SLIDES.map((_, i) => `<i class="${i === slide ? "on" : ""}"></i>`).join("");
   $("#introNext").textContent = slide === SLIDES.length - 1 ? "Let's jam" : "Next";
 }
 function openIntro() { slide = 0; renderIntro(); $("#intro").hidden = false; }
-function closeIntro() { $("#intro").hidden = true; store.set("ck:intro", 1); }
+function closeIntro() { $("#intro").hidden = true; store.set("ck:intro", 1); store.set("lp:tour", TOUR_V); }
+const TOUR_V = "1.3";
 
 // ---------- the player: plays only what LickPick chose, on its own timeline (one or more ranges),
 // or the full take when asked. Its own controls, because the phone's controls only know the whole file.
@@ -3135,6 +3184,27 @@ function renderSrc(c) {
   if (what) what.textContent = S ? `${S.label} · ${fmt(S.len)}` : "";
   if (btn) btn.disabled = !!c.exporting;
 }
+// ---------- Suggestions: each one built from something the scan measured, and says what it measured
+function suggestions(c) {
+  const pk = pickOf(c); if (!pk || c.example) return [];
+  const out = [], dis = c.sugOff || {}, A = c.raw?.chromaQ ? bandA(c) : null, list = c._picks?.list || [], sel = c.pickSel || 0;
+  // 1) quiet recording -> polish
+  const lift = ClipExporter.levelGain(c.raw.loud, CELL, pk.s, pk.e);
+  if (!sndOf(c).fx && lift >= 6) out.push({ id: "polish", ic: "i-bolt", c: "volt", t: `Your take is quiet: it needs about +${Math.round(lift)} dB for social.`, a: "Studio polish: Warm" });
+  // 2) a close runner-up
+  const other = list.findIndex((p, i) => i !== sel && Math.abs(p.score - list[sel].score) < 0.02);
+  if (other >= 0) out.push({ id: "alt" + other, ic: "i-star", c: "cyan", t: `Pick ${"ABC"[other]} scored almost the same as Pick ${"ABC"[sel]}.`, a: `Hear Pick ${"ABC"[other]}` });
+  // 3) too long for Reels/TikTok
+  if (state.pickLen === "auto" && pk.len > 34) out.push({ id: "len30", ic: "i-phone", c: "hot", t: `Your Pick runs ${fmt(pk.len)}. Reels and TikTok hold attention best under 30 s.`, a: "Make it 30 s" });
+  // 4) a band that fits the groove it measured
+  if (A?.pulse && c.raw.chromaQ) { const st = LickBand.heuristicStyle(c.raw, A), nm = LickBand.STYLES[st]?.name;
+    if (nm) out.push({ id: "band:" + st, ic: "i-drum", c: "blaze", t: `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}${A.meter === 3 ? ", 3/4" : ""}${c.raw.info?.key ? `, ${c.raw.info.key}` : ""}: that's a ${nm.toLowerCase()} groove.`, a: `Hear a ${nm.toLowerCase()} band` }); }
+  return out.filter(x => !dis[x.id.split(":")[0]]).slice(0, 3);
+}
+function suggestHTML(c) {
+  const S = suggestions(c); if (!S.length) return "";
+  return `<div class="sugs"><div class="sndhead"><h3>${icon("i-bolt")}LickPick suggests</h3></div>${S.map((x, i) => `<div class="sug">${stk(x.ic, x.c, i % 2 ? "r2" : "")}<span>${esc(x.t)}</span><button class="btn sm" type="button" data-sug="${esc(x.id)}">${esc(x.a)}</button><button class="sugx" type="button" data-sugx="${esc(x.id.split(":")[0])}" aria-label="Dismiss">${icon("i-x")}</button></div>`).join("")}</div>`;
+}
 function pickPanel(c) {
   const list = picksOf(c), pk = pickOf(c), v = verdict(c), rep = report(c), k = keptSeconds(c), D = c.raw?.duration || 0;
   const verdictLine = { keep: `Worth keeping. ${fmt(k)} of clean playing.`, review: k ? `Some gold, not much: ${fmt(k)} clean.` : "Playing, but nothing clean enough.", trash: "No music found. Safe to delete." }[v] || "";
@@ -3150,7 +3220,7 @@ function pickPanel(c) {
       <div class="grp"><div class="lbl">Starts <b>${fmtP(pk.s)}</b></div><div class="btns"><button type="button" data-padj="s:-1" aria-label="Start one bar earlier">−1 bar</button><button type="button" data-padj="s:1" aria-label="Start one bar later">+1 bar</button></div></div>
       <div class="grp"><div class="lbl">Ends <b>${fmtP(pk.e)}</b></div><div class="btns"><button type="button" data-padj="e:-1" aria-label="End one bar earlier">−1 bar</button><button type="button" data-padj="e:1" aria-label="End one bar later">+1 bar</button></div></div>
     </div>
-    <p class="hint">${pk.adj ? `Nudged by you. <button class="linkbtn" type="button" data-padj="reset">Undo nudges</button>` : list.length > 1 ? "Not feeling it? Tap Pick B or C above." : "Nudge the start or end a bar at a time."}</p>${whyHTML(c)}` : `<div class="pickhero none"><p>${hasMusic(c) ? `A Pick needs ${state.pickLen === "auto" ? "about 20" : Math.round(state.pickLen * 0.8)} seconds of clean playing in one go. ${state.pickLen === "auto" || state.pickLen > 15 ? "For short clips, set Pick length to 15s below. " : ""}Or open Segments and keep what you like.` : "No music found in this clip."}</p></div>`}
+    <p class="hint">${pk.adj ? `Nudged by you. <button class="linkbtn" type="button" data-padj="reset">Undo nudges</button>` : list.length > 1 ? "Not feeling it? Tap Pick B or C above." : "Nudge the start or end a bar at a time."}</p>${suggestHTML(c)}${whyHTML(c)}` : `<div class="pickhero none"><p>${hasMusic(c) ? `A Pick needs ${state.pickLen === "auto" ? "about 20" : Math.round(state.pickLen * 0.8)} seconds of clean playing in one go. ${state.pickLen === "auto" || state.pickLen > 15 ? "For short clips, set Pick length to 15s below. " : ""}Or open Segments and keep what you like.` : "No music found in this clip."}</p></div>`}
 <div class="row2 lenrow"><span><b>Pick length</b></span><span class="seg">${[["auto", "Auto"], [15, "15s"], [30, "30s"], [45, "45s"], [60, "60s"]].map(([val, lab]) => `<button type="button" data-plen="${val}" aria-pressed="${L === val}">${lab}</button>`).join("")}</span></div>
     <p class="hint">${L === "auto" ? "Auto finds the best complete phrase, 20 to 45 seconds, starting and ending on the bar." : `The best ${L} seconds, rounded to whole bars.`} 15 to 30 seconds plays best on Reels and TikTok.</p>
     <details class="report"><summary><h3>${icon("i-scope")}Scan details</h3><span class="wsum">${esc(verdictLine)}</span></summary>
@@ -3195,8 +3265,10 @@ function exportSheetHTML(c) {
     <div class="exgroup"><span>Sound</span><button type="button" class="opt" data-act="sound-open" ${busy ? "disabled" : ""}>${icon("i-sliders")}<span class="grow"><strong>${sndOf(c).fx ? `Studio polish · ${fxLabel(c)}` : "As recorded"}</strong><em>${S.ranges.length > 1 && !o.sep && sndOf(c).fx ? "Polish works on a Pick or a single part." : "Tap to change polish and mixer levels."}</em></span><span class="chev">›</span></button></div>
     <button class="btn wide" type="button" data-act="export-go" ${busy || !c.file || !downloads ? "disabled" : ""}>${icon("i-save")}Save ${files > 1 ? files + " files" : S.kind === "clean" ? "clean cut" : S.label}${o.band ? " + band" : ""} · ${fmt(S.len)}</button>
     ${!c.file ? `<p class="hint">Add this video again to export it. LickPick doesn't keep copies.</p>` : !downloads ? `<p class="hint">Saving isn't available in this view.</p>` : ""}
-    <div class="status" id="exStatus" aria-live="polite">${esc(c.exStatus || "")}</div>`;
+    <div class="status" id="exStatus" aria-live="polite">${esc(c.exStatus || "")}</div>
+    ${c.lastShare && !busy ? `<button class="btn wide sharebtn" type="button" data-act="share-last">${icon("i-share")}<span><b>Share ${esc(c.lastShare.name.length > 26 ? c.lastShare.name.slice(0, 24) + "…" : c.lastShare.name)}</b><em>Instagram, TikTok, YouTube, WhatsApp, Drive…${c.captions?.length ? " Caption included." : ""}</em></span></button>` : ""}`;
 }
+function shareText(c) { const cp = c.captions?.[0]; return cp ? `${cp.caption}\n\n${tagLine(cp)}${store.get("lp:credit") === 0 ? "" : "\n" + CREDIT}` : (store.get("lp:credit") === 0 ? "" : CREDIT); }
 function openExport(c) { stopBand(); player?.pause(); c.exStatus = c.exporting ? c.exStatus : ""; $("#exBody").innerHTML = exportSheetHTML(c); $("#exportSheet").hidden = false; }
 function renderExport(c) { if (!$("#exportSheet").hidden && cur() === c) $("#exBody").innerHTML = exportSheetHTML(c); }
 async function doExport(c) {
@@ -3794,7 +3866,9 @@ document.addEventListener("click", e => {
   if (d.act === "copy-link") { copyText(t, APP_LINK); return; }
   if (d.act === "pro-open" || t.id === "proBadge") { $("#rules").hidden = true; openPro(); return; }
   if (d.act === "pro-close") { $("#proSheet").hidden = true; return; }
-  if (d.act === "tips-open") { openTips(); return; }
+  if (d.act === "share-last") { const c = cur(); if (c?.lastShare) { const txt = shareText(c); try { if (txt) navigator.clipboard?.writeText(txt).catch(() => { }); } catch { } navigator.share({ files: [c.lastShare], title: c.lastShare.name, text: txt || undefined }).catch(() => { }); } return; }
+  if (d.act === "tips-open") { $("#intro").hidden = true; openTips(); return; }
+  if (d.act === "tour") { openIntro(); return; }
   if (d.act === "report-open") { $("#rules").hidden = true; openReport(); return; }
   if (d.act === "report-copy") { copyText(t, $("#reportTxt").value); return; }
   if (d.plan) { planSel = d.plan; document.querySelectorAll("[data-plan]").forEach(b => b.setAttribute("aria-checked", String(b.dataset.plan === planSel))); const g = $("#proGo"); if (g) g.href = PRO_URL ? planURL(planSel) : requestURL(planSel); return; }
@@ -3805,7 +3879,7 @@ document.addEventListener("click", e => {
   if (d.act === "sheet-close") { $("#addSheet").hidden = true; return; }
   if (t.id === "helpBtn") { $("#rules").hidden = true; openIntro(); return; }
   if (d.act === "ob-open") { $("#rules").hidden = true; openOnboard(1); return; }
-  if (d.act === "ob-skip") { closeOnboard(); return; }
+  if (d.act === "ob-skip") { const first = OB[ob] === "welcome"; closeOnboard(); if (first && store.get("lp:tour") !== TOUR_V && !navigator.webdriver) openIntro(); return; }
   if (d.act === "ob-back") { if (ob > 0) { ob--; renderOnboard(); } return; }
   if (d.act === "ob-next") { if (OB[ob] === "you") profile.name = ($("#obName")?.value || "").trim().slice(0, 40); if (ob < OB.length - 1) { ob++; renderOnboard(); } else closeOnboard(); return; }
   if (d.oblen) { state.pickLen = d.oblen === "auto" ? "auto" : +d.oblen; syncRules(); document.querySelectorAll("[data-oblen]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.oblen === d.oblen))); $("#obLenHint").textContent = lenHint(state.pickLen); return; }
@@ -3865,6 +3939,14 @@ document.addEventListener("click", e => {
   if (d.act === "rescue") { if (c.raw) rescue(c); return; }
   if (d.bstyle) { stopBand(); c.band.style = d.bstyle; if (d.bstyle === "auto" && sampler && !c.band.ai) bandAi(c); else renderStudio(); return; }
   if (d.inst) { stopBand(); c.band.parts[d.inst] = !c.band.parts[d.inst]; renderStudio(); return; }
+  if (d.sugx) { (c.sugOff = c.sugOff || {})[d.sugx] = true; renderStudio(); return; }
+  if (d.sug) {
+    const id = d.sug; (c.sugOff = c.sugOff || {})[id.split(":")[0]] = true;
+    if (id === "polish") { sndOf(c).fx = "warm"; state.tab = "band"; c.src = "pick"; renderStudio(); showPick(c); toast("Studio polish: Warm. Tap Preview to hear it."); return; }
+    if (id.startsWith("alt")) { c.pickSel = +id.slice(3); c.src = "pick"; renderStudio(); renderSrc?.(c); showPick(c); const p2 = pickOf(c); if (p2) playRanges(c, p2.ranges, `Pick ${"ABC"[c.pickSel]}`); return; }
+    if (id === "len30") { stopBand(); state.pickLen = 30; c.pickSel = 0; syncRules(); render(); renderStudio(); showPick(c); toast("Picks are now 30 s. Change it any time under Pick length."); return; }
+    if (id.startsWith("band:")) { c.band = c.band || { style: "auto", parts: { drums: true, bass: true, keys: true }, gain: 0.8, vertical: true }; c.band.style = id.slice(5); state.tab = "band"; c.src = "pick"; renderStudio(); showPick(c); bandPreview(c); return; }
+  }
   if (d.fx != null) { const was = bandPlaying; stopBand(); sndOf(c).fx = d.fx || null; renderStudio(); renderSrc(c); if (was) bandPreview(c); return; }
   if (d.mute) {
     const k = d.mute;
@@ -3953,6 +4035,8 @@ render();
 // arriving from the website's pricing (app/#pro): show Pro straight away, skipping the intro
 if (location.hash === "#pro") { if (!profile.done) { profile.done = true; store.set("lp:profile", profile); store.set("ck:intro", 1); } openPro(); history.replaceState(null, "", location.pathname); }
 else if (!profile.done && !store.get("ck:intro")) openOnboard(0);
+else if (store.get("lp:tour") !== TOUR_V && !navigator.webdriver) setTimeout(() => {   // automated test runs skip the one-time tour
+   if ($("#onboard").hidden && $("#studio").hidden) openIntro(); }, 700);
 window.__ck = state; window.__lp = { BUILD, IN_CLAUDE, lic, verifyKey };
 })();
 
