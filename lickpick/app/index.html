@@ -492,6 +492,54 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 .fchip[aria-checked=true] .dot{background:var(--ink)}
 .fchip:disabled{opacity:.4}
 .sortbtn{display:flex;align-items:center;gap:6px} .sortbtn + .selbtn{margin-left:0} .sortbtn svg.i{width:16px;height:16px;color:var(--cyan);--ic2:transparent}
+.ob-ctas{display:flex;flex-direction:column;gap:12px}
+.ob-ctas .tile{flex-direction:row;align-items:center;gap:14px}
+.ob-ctas .tile.big{padding:20px 18px} .ob-ctas .tile.big svg.i{width:46px;height:46px}
+.t-volt{background:var(--volt)}
+.hero .ctas{grid-template-columns:1.6fr 1fr}
+/* ---- refined list: compact rows, more clips on screen, file actions one tap away ---- */
+.list{gap:8px}
+.card{grid-template-columns:44px 1fr auto auto;gap:10px;padding:8px 6px 8px 8px;border-radius:16px;cursor:pointer}
+.card:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.thumb{width:44px;height:48px}
+.thumb.ph svg{width:18px;height:18px;margin-top:-8px}
+.cm{gap:2px}
+.cn{font-size:14.5px}
+.cp{font-size:12.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cp .pk-l{color:var(--volt);margin-right:4px} .cp .sub{color:var(--dim)}
+.card .stamp{width:26px;height:28px;padding-bottom:3px} .card .stamp svg.i{width:14px;height:14px}
+.card>.pkw:last-child{--so:2px}
+.more{width:44px;height:44px;border:0;background:none;color:var(--dim);display:grid;place-items:center;border-radius:12px;padding:0;flex:none}
+.more svg.i{width:22px;height:22px}
+.more:active{background:var(--raise)}
+.selecting .card .more{display:none}
+.strip.tiers{height:7px;margin-top:5px;background:var(--raise);overflow:visible}
+.tb,.tierbar{position:absolute;inset:0;border-radius:3px;overflow:hidden}
+.tb i,.tierbar i{position:absolute;top:0;bottom:0}
+.t-best{--tc:var(--volt)} .t-good{--tc:var(--cyan)} .t-inspect{--tc:var(--blaze)} .t-useless{--tc:var(--red)}
+.tb i,.tierbar i{background:var(--tc)}
+.tb i.t-useless,.tierbar i.t-useless{opacity:.45} .tb i.off,.tierbar i.off{opacity:.3}
+.strip.tiers .pkmark{background:none;border:2px solid #fff;top:-2px;bottom:-2px;border-radius:4px}
+/* ---- segments: every stretch rated, playable and editable ---- */
+.tier{display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:12px;color:var(--tc);white-space:nowrap}
+.tier i{width:9px;height:9px;border-radius:50%;background:var(--tc);flex:none}
+.segsum{display:flex;flex-direction:column;gap:8px;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:12px}
+.tierbar.big{position:relative;height:14px;border-radius:7px;background:var(--raise)}
+.seglegend{display:flex;flex-wrap:wrap;gap:6px 14px}
+.seglegend span{display:inline-flex;align-items:center;gap:6px} .seglegend b{font-size:12.5px;color:var(--text)}
+.segrows{display:flex;flex-direction:column;gap:6px}
+.segrow{display:grid;grid-template-columns:44px 1fr 46px;gap:10px;align-items:center;padding:8px;border-radius:14px;background:var(--panel);border:2px solid var(--line);border-left:6px solid var(--tc)}
+.segrow.sel{border-color:var(--tc);box-shadow:3px 3px 0 var(--tc)}
+.segrow.out .segmid{opacity:.72}
+.segplay{width:44px;height:44px;border-radius:12px;border:0;background:var(--tc);color:var(--ink);display:grid;place-items:center;padding:0}
+.segplay svg.i{width:18px;height:18px}
+.segrow.t-useless .segplay{background:var(--raise);color:var(--dim)}
+.segmid{display:flex;flex-direction:column;gap:1px;min-width:0}
+.segt{font-size:13px;color:var(--dim)} .segt b{color:var(--text)}
+.segmid em{font-style:normal;font-size:12.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.segrow .trim{grid-column:1/-1}
+.rowtitle{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.word .tm{font:700 10px var(--body);vertical-align:super;margin-left:1px;color:var(--dim)}
 .linkbtn{background:none;border:0;padding:0;color:var(--hot);font:inherit;font-weight:800;text-decoration:underline;cursor:pointer}
 .src svg.i{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
 .searchbox{display:flex;align-items:center;gap:8px;margin:0 4px 12px 0;padding:0 12px;border-radius:14px;border:2px solid var(--line);background:var(--panel)}
@@ -533,6 +581,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     <symbol id="i-scope" viewBox="0 0 24 24"><circle class="d" cx="10.5" cy="10.5" r="6.5"/><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21" stroke-width="3.2"/><path d="M7 11h1.5l1-2.5 2 5 1-2.5H14" stroke-width="1.8"/></symbol>
     <symbol id="i-save" viewBox="0 0 24 24"><rect class="d" x="3" y="14" width="18" height="7" rx="2"/><path d="M3 14v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/><path d="M12 3v11M7.5 9.5L12 14l4.5-4.5" stroke-width="2.8"/></symbol>
     <symbol id="i-share" viewBox="0 0 24 24"><rect class="d" x="4" y="10" width="16" height="12" rx="2.5"/><path d="M8 10H6.5A2.5 2.5 0 0 0 4 12.5v7A2.5 2.5 0 0 0 6.5 22h11a2.5 2.5 0 0 0 2.5-2.5v-7a2.5 2.5 0 0 0-2.5-2.5H16"/><path d="M12 15V2.5M7.5 7L12 2.5 16.5 7" stroke-width="2.8"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="2.2" fill="currentColor" stroke="none"/></symbol>
     <symbol id="i-sort" viewBox="0 0 24 24"><path d="M7 4v16M3.5 16.5L7 20l3.5-3.5M17 20V4M13.5 7.5L17 4l3.5 3.5" stroke-width="2.6"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24"><rect class="d" x="3" y="3" width="12" height="12" rx="2.5"/><rect x="3" y="3" width="12" height="12" rx="2.5"/><rect x="9" y="9" width="12" height="12" rx="2.5"/></symbol>
     <symbol id="i-rescue" viewBox="0 0 24 24"><path class="d" d="M12 22c-1.2 0-2-1-3.2-2.6C6 15.8 2 11 2 7.5 2 3.6 6.3 2 12 2s10 1.6 10 5.5c0 3.5-4 8.3-6.8 11.9C14 21 13.2 22 12 22Z"/><path d="M12 22c-1.2 0-2-1-3.2-2.6C6 15.8 2 11 2 7.5 2 3.6 6.3 2 12 2s10 1.6 10 5.5c0 3.5-4 8.3-6.8 11.9C14 21 13.2 22 12 22Z"/><path d="M12 5.5v8M8 9.5h8" stroke-width="2.8"/></symbol>
@@ -556,7 +605,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 </svg>
 
 <header class="top">
-  <div class="brand"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></div>
+  <div class="brand"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b><sup class="tm">™</sup></span></div>
   <div class="hbtns">
     <button class="icon-btn" id="proBadge" type="button" data-act="pro-open" aria-label="LickPick Pro"><svg class="i"><use href="#i-bolt"/></svg></button>
     <button class="icon-btn" id="rulesBtn" type="button" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
@@ -578,7 +627,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
   <section id="cleanTop"></section>
   <div id="boxes" class="boxes"></div>
 </main>
-<div class="foot"><svg class="i"><use href="#i-lock"/></svg><span>Clips stay on your phone. LickPick never deletes. © 2026 3Shamrocks Studio</span></div>
+<div class="foot"><svg class="i"><use href="#i-lock"/></svg><span>Clips stay on your phone. LickPick never deletes.<br>© 2026 3Shamrocks Studio. All rights reserved.</span></div>
 
 <div class="selbar" id="selBar" hidden role="toolbar" aria-label="Selected clips">
   <span class="selcount" id="selCount">0 selected</span>
@@ -598,6 +647,12 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 <input type="file" id="pick" accept="video/*" multiple hidden>
 <input type="file" id="rec" accept="video/*" capture="environment" hidden>
 
+<div class="scrim" id="rowSheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rowTitle">
+    <div class="row2"><h2 id="rowTitle" class="rowtitle"></h2><button class="icon-btn" type="button" data-act="row-close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <div id="rowBody" class="exbody"></div>
+  </div>
+</div>
 <div class="scrim" id="addSheet" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-label="Add a jam">
     <h2>Add a jam</h2>
@@ -667,12 +722,12 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
     <div class="tip" id="tip" hidden><p>Tap or drag the waveform to jump. Bright = kept, dark = cut. Missed a good bit? Pause there, tap <b>Keep from here</b>.</p><button type="button" data-act="tip-ok">Got it</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" type="button" data-tab="pick"><svg class="i"><use href="#i-star"/></svg>Pick</button>
-      <button class="tab" role="tab" type="button" data-tab="parts"><svg class="i"><use href="#i-cut"/></svg>Edit</button>
+      <button class="tab" role="tab" type="button" data-tab="parts"><svg class="i"><use href="#i-cut"/></svg>Segments</button>
       <button class="tab" role="tab" type="button" data-tab="band"><svg class="i"><use href="#i-drum"/></svg>Band</button>
       <button class="tab" role="tab" type="button" data-tab="post"><svg class="i"><use href="#i-text"/></svg>Caption</button>
     </div>
     <div class="panel" id="sPanel"></div>
-    <p class="sfoot">© 2026 3Shamrocks Studio</p>
+    <p class="sfoot">© 2026 3Shamrocks Studio. All rights reserved.</p>
   </div>
   <div class="bar" id="sBar"><div class="in">
     <button class="btn exportbtn" type="button" data-act="export-open"><svg class="i"><use href="#i-save"/></svg><span class="ex-l"><b>Export</b><em id="sExportWhat"></em></span></button>
@@ -711,7 +766,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-09n"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10a"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -2277,15 +2332,15 @@ function phrase(c) {
   const v = verdict(c), k = keptSeconds(c), n = onParts(c).length;
   const pk = pickOf(c), cuts = (c.result?.removed || []).length;
   if (v === "trash") return c.override ? "Marked by you" : "No music found";
-  const pickTxt = pk ? `<b class="pk-l">★ ${fmt(pk.len)} pick</b>at ${fmt(pk.s)}${pk.bars ? ` · ${pk.bars} bars` : ""}` : c._pickJob ? "<b>Finding your pick…</b>" : "<b>No clean stretch</b>";
-  return `${pickTxt}<br><span class="sub">${fmt(k)} clean of ${fmt(c.raw.duration)}${cuts ? ` · ${cuts} cut${cuts > 1 ? "s" : ""}` : " · no flubs"}${c.saved ? " · saved" : ""}${c.file ? "" : " · tap to re-add"}</span>`;
+  const pickTxt = pk ? `<b class="pk-l">★ ${fmt(pk.len)}</b>` : c._pickJob ? "<b>Finding pick…</b>" : "<b>No pick</b>";
+  return `${pickTxt} <span class="sub">${fmt(k)} clean / ${fmt(c.raw.duration)}${cuts ? ` · ${cuts} cut${cuts > 1 ? "s" : ""}` : ""}${c.saved || c.pickSaved ? " · saved" : ""}${c.file ? "" : " · re-add to save"}</span>`;
 }
 function cardHTML(c) {
-  const D = c.raw?.duration || 1;
   const thumb = pkw(c.thumb ? `<span class="thumb pickclip" style="background-image:url(${c.thumb})"></span>` : `<span class="thumb ph pickclip">${icon("i-film")}</span>`, "sh-thumb");
+  const pk = c.status === "done" ? pickOf(c) : null, D = c.raw?.duration || 1;
   const strip = c.status === "listening" ? `<div class="strip"><i class="prog" style="left:0;width:${(c.progress || 0) * 100}%"></i></div>`
-    : c.status === "done" ? `<div class="strip">${onParts(c).map(p => `<i style="left:${p.start / D * 100}%;width:${(p.end - p.start) / D * 100}%"></i>`).join("")}${(pk => pk ? pk.ranges.map(([a, b]) => `<b class="pkmark" style="left:${a / D * 100}%;width:${(b - a) / D * 100}%"></b>`).join("") : "")(pickOf(c))}</div>` : "";
-  return `${thumb}<span class="cm"><span class="cn">${esc(c.name)}</span><span class="cp">${phrase(c)}</span>${strip}</span><span class="vst">${stamp(verdict(c))}</span><span class="selmark" aria-hidden="true">${icon("i-check")}</span>`;
+    : c.status === "done" ? `<div class="strip tiers">${tierBar(c, segsOf(c), "tb")}${pk ? `<b class="pkmark" style="left:${pk.s / D * 100}%;width:${(pk.e - pk.s) / D * 100}%"></b>` : ""}</div>` : "";
+  return `${thumb}<span class="cm"><span class="cn">${esc(c.name)}</span><span class="cp">${phrase(c)}</span>${strip}</span><span class="vst">${stamp(verdict(c))}</span><span class="selmark" aria-hidden="true">${icon("i-check")}</span>${c.example ? "" : `<button class="more" type="button" data-more="${c.id}" aria-label="Actions for ${esc(c.name)}">${icon("i-more")}</button>`}`;
 }
 const cardEls = new Map();
 function renderCard(c) {
@@ -2301,7 +2356,7 @@ function renderTop() {
     $("#quickbar").hidden = true; if ($("#filters")) $("#filters").hidden = true;
     $("#top").innerHTML = `<div class="hero"><svg class="mark" aria-hidden="true"><use href="#logo"/></svg>
       <div>${profile.name ? `<p class="hello">Hey ${esc(profile.name)}</p>` : ""}<h1>Keep the licks. Kill the flubs.</h1><p>Drop in your jams. LickPick scans every take, cuts the flubs and finds your best phrase.</p></div>
-      <div class="ctas"><button class="btn" type="button" data-act="record">${icon("i-rec")}Record</button><button class="btn" type="button" data-act="gallery">${icon("i-film")}Gallery</button></div></div>`;
+      <div class="ctas"><button class="btn main" type="button" data-act="gallery">${icon("i-film")}Add jams</button><button class="btn" type="button" data-act="record">${icon("i-rec")}Record</button></div></div>`;
     $("#sortCta").innerHTML = "";
     return;
   }
@@ -2406,7 +2461,7 @@ function render() {
   let prev = null;
   for (const c of shown) {
     let el = cardEls.get(c.id);
-    if (!el) { el = document.createElement("button"); el.type = "button"; el.dataset.open = c.id; cardEls.set(c.id, el); }
+    if (!el) { el = document.createElement("div"); el.setAttribute("role", "button"); el.tabIndex = 0; el.dataset.open = c.id; cardEls.set(c.id, el); }
     const want = prev ? prev.nextElementSibling : list.firstElementChild;
     if (want !== el) list.insertBefore(el, want);
     prev = el; renderCard(c);
@@ -2556,7 +2611,7 @@ const PLAYS = [["guitar", "Guitar", "i-pick"], ["bass", "Bass", "i-bass"], ["key
 const POSTS = [["reels", "Instagram Reels"], ["tiktok", "TikTok"], ["shorts", "YouTube Shorts"], ["none", "Not posting yet"]];
 const profile = Object.assign({ name: "", plays: [], posts: [], done: false }, store.get("lp:profile") || {});
 let ob = 0;
-const OB = ["welcome", "you", "post", "picky", "go"];
+const OB = ["welcome", "you", "go"];   // value first: 3 short steps; pickiness lives in the menu
 function openOnboard(start = 0) { ob = start; renderOnboard(); $("#onboard").hidden = false; document.body.style.overflow = "hidden"; }
 function closeOnboard() { $("#onboard").hidden = true; document.body.style.overflow = ""; profile.done = true; store.set("lp:profile", profile); store.set("ck:intro", 1); renderTop(); }
 function renderOnboard() {
@@ -2573,11 +2628,8 @@ function renderOnboard() {
     B.innerHTML = `<h1>Who's playing?</h1>
       <div class="field"><label for="obName">Your name or stage name</label><input id="obName" maxlength="40" autocomplete="nickname" placeholder="Optional" value="${esc(profile.name)}"></div>
       <div class="field"><label>What do you play?</label><div class="chips">${PLAYS.map(([k, l, ic]) => `<button type="button" data-play-i="${k}" aria-pressed="${profile.plays.includes(k)}">${icon(ic)}${l}</button>`).join("")}</div></div>
-      <p class="hint">Used for your captions and hashtags.</p>`;
-    next.textContent = "Next";
-  } else if (step === "post") {
-    B.innerHTML = `<h1>Where do your clips go?</h1><div class="chips">${POSTS.map(([k, l]) => `<button type="button" data-post-i="${k}" aria-pressed="${profile.posts.includes(k)}">${l}</button>`).join("")}</div>
-      <p class="hint">${pickHint()}</p>`;
+      <div class="field"><label>Where do your clips go?</label><div class="chips">${POSTS.map(([k, l]) => `<button type="button" data-post-i="${k}" aria-pressed="${profile.posts.includes(k)}">${l}</button>`).join("")}</div></div>
+      <p class="hint">All optional. ${pickHint()}</p>`;
     next.textContent = "Next";
   } else if (step === "picky") {
     B.innerHTML = `<h1>How picky should LickPick be?</h1><div class="choices">${[[0.25, "Chill", "Keeps more. Small slips stay in."], [0.5, "Normal", "Cuts clear mistakes, restarts and dead air."], [0.8, "Strict", "Only the cleanest playing survives."]].map(([v, l, d]) => `<button type="button" class="choice" data-picky-i="${v}" aria-pressed="${state.strictness === v}"><span><strong>${l}</strong><span>${d}</span></span></button>`).join("")}</div>
@@ -2586,8 +2638,8 @@ function renderOnboard() {
   } else {
     B.innerHTML = `<h1>${profile.name ? `You're set, ${esc(profile.name)}.` : "You're set."}</h1>
       <div class="how">${[["Add your jams", "Record one now or pick a batch from your gallery."], ["LickPick listens", "Every take gets a Pick: its best phrase, on the bar."], ["Play, save, post", "Hear just the pick, save it, make a short, add a band."]].map(([b, d], i) => `<div><span class="pkw"><span class="n pickclip">${i + 1}</span></span><span><b>${b}</b><span>${d}</span></span></div>`).join("")}</div>
-      <div class="duo"><button class="tile t-hot" type="button" data-act="ob-record">${icon("i-rec")}<span><strong>Record</strong><em>Checked the moment you stop</em></span></button><button class="tile t-cyan" type="button" data-act="ob-gallery">${icon("i-film")}<span><strong>Gallery</strong><em>Pick as many as you like</em></span></button></div>`;
-    next.textContent = "I'll add clips later";
+      <div class="ob-ctas"><button class="tile t-volt big" type="button" data-act="ob-gallery">${icon("i-film")}<span><strong>Add from gallery</strong><em>Pick as many jams as you like</em></span></button><button class="tile t-hot" type="button" data-act="ob-record">${icon("i-rec")}<span><strong>Record one now</strong><em>Checked the moment you stop</em></span></button></div>`;
+    next.textContent = "Later";
   }
 }
 function pickHint() {
@@ -2682,7 +2734,7 @@ function renderStudio() {
   const P = $("#sPanel");
   if (c.status === "error") P.innerHTML = `<p class="hint">LickPick ${esc(c.error)}. Watch it and decide yourself.</p>`;
   else if (state.tab === "pick") P.innerHTML = pickPanel(c);
-  else if (state.tab === "parts") P.innerHTML = partsPanel(c);
+  else if (state.tab === "parts") P.innerHTML = segmentsPanel(c);
   else if (state.tab === "post") P.innerHTML = postPanel(c);
   else if (state.tab === "band") { P.innerHTML = bandPanel(c); bandPrefetch(c); }
   else P.innerHTML = pickPanel(c);
@@ -2846,6 +2898,53 @@ function whyHTML(c) {
     ${rows.length ? `<div class="wrows"><span class="wcap">The rest of the take. Tap to hear it.</span>${shown.map(rowHTML).join("")}${more.length ? `<details><summary>${more.length} more</summary>${more.map(rowHTML).join("")}</details>` : ""}</div>` : ""}
     <p class="hint">Strength mixes loudness, how much you play, tone and timing, ranked within this take. Picks start and end on the bar when there's a beat.</p>
   </div>`;
+}
+// ---------- Segments: every stretch of the take, rated Best / Good / Worth a look / Useless
+const TIERS = { best: ["Best", "i-star"], good: ["Good", "i-check"], inspect: ["Worth a look", "i-ear"], useless: ["Useless", "i-x"] };
+const USELESS = new Set(["silence", "noise, no music", "talking", "click track or tapping, no playing", "lens covered / too dark", "stopped / restarted"]);
+const capFirst = t => t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+function segsOf(c) {
+  if (c.status !== "done") return [];
+  const pk = pickOf(c), out = [];
+  c.parts.forEach((p, i) => {
+    let pieces = [[p.start, p.end, "good"]];
+    if (pk) { const a = Math.max(p.start, pk.s), b = Math.min(p.end, pk.e); if (b - a > 0.5) pieces = [[p.start, a, "good"], [a, b, "best"], [b, p.end, "good"]].filter(x => x[1] - x[0] > 0.4); }
+    for (const [a, b, t] of pieces) out.push({ s: a, e: b, tier: t, on: p.on, kind: "part", i, why: !p.on ? "Skipped by you" : t === "best" ? `Your Pick ${"ABC"[c.pickSel || 0]}: the strongest complete phrase` : "Clean playing" });
+  });
+  for (const r of c.result?.removed || []) {
+    if (r.end - r.start < 0.5) continue;
+    out.push({ s: r.start, e: r.end, tier: USELESS.has(r.reasons[0]) ? "useless" : "inspect", on: false, kind: "cut", why: capFirst(r.reasons.join(", ")) });
+  }
+  return out.sort((a, b) => a.s - b.s);
+}
+const tierTag = t => `<span class="tier t-${t}"><i></i>${TIERS[t][0]}</span>`;
+function tierBar(c, segs, cls = "tierbar") {
+  const D = c.raw?.duration || 1;
+  return `<div class="${cls}" aria-hidden="true">${segs.map(g => `<i class="t-${g.tier}${g.on || g.kind === "cut" ? "" : " off"}" style="left:${g.s / D * 100}%;width:${Math.max(.6, (g.e - g.s) / D * 100)}%"></i>`).join("")}</div>`;
+}
+function segmentsPanel(c) {
+  const segs = segsOf(c);
+  if (!segs.length) return `<p class="hint">${hasMusic(c) ? "Nothing held up as clean playing. Play it, then tap Keep from here on anything you like." : "No music found in this clip."}</p>`;
+  const tot = { best: 0, good: 0, inspect: 0, useless: 0 }; segs.forEach(g => tot[g.tier] += g.e - g.s);
+  const lastOf = {}; segs.forEach((g, k) => { if (g.kind === "part") lastOf[g.i] = k; });
+  const rows = segs.map((g, k) => {
+    const sel = g.kind === "part" ? c.sel === g.i : c.selCut === g.s;
+    const trim = sel && g.kind === "part" && lastOf[g.i] === k && !c.example ? (p => `<div class="trim">
+        <div class="grp"><div class="lbl">Starts <b>${fmtP(p.start)}</b></div><div class="btns"><button type="button" data-nudge="${g.i}:s:-0.5" aria-label="Start half a second earlier">−½s</button><button type="button" data-nudge="${g.i}:s:0.5" aria-label="Start half a second later">+½s</button><button type="button" data-here="${g.i}:s">Here</button></div></div>
+        <div class="grp"><div class="lbl">Ends <b>${fmtP(p.end)}</b></div><div class="btns"><button type="button" data-nudge="${g.i}:e:-0.5" aria-label="End half a second earlier">−½s</button><button type="button" data-nudge="${g.i}:e:0.5" aria-label="End half a second later">+½s</button><button type="button" data-here="${g.i}:e">Here</button></div></div>
+      </div>`)(c.parts[g.i]) : "";
+    const kept = g.kind === "part" && g.on;
+    return `<div class="segrow t-${g.tier}${kept ? "" : " out"}${sel ? " sel" : ""}" data-seg="${k}">
+      <button class="segplay" type="button" data-seek="${g.s}" data-seek-end="${g.e}" data-seek-label="${TIERS[g.tier][0]} ${fmt(g.s)}" aria-label="Play ${TIERS[g.tier][0]} part at ${fmt(g.s)}">${icon("i-play")}</button>
+      <span class="segmid">${tierTag(g.tier)}<span class="segt"><b>${fmt(g.s)}–${fmt(g.e)}</b> · ${g.e - g.s < 10 ? (g.e - g.s).toFixed(1) + "s" : fmt(g.e - g.s)}</span><em>${esc(g.why)}</em></span>
+      <button class="switch" type="button" data-segkeep="${k}" aria-pressed="${kept}" aria-label="${kept ? "Kept. Tap to leave it out" : "Left out. Tap to keep it"}">${icon(kept ? "i-check" : "i-plus")}</button>
+      ${trim}</div>`;
+  }).join("");
+  return `<div class="segsum">${tierBar(c, segs, "tierbar big")}
+      <div class="seglegend">${Object.keys(TIERS).filter(t => tot[t] > 0).map(t => `<span>${tierTag(t)}<b>${fmt(tot[t])}</b></span>`).join("")}</div></div>
+    ${c.edited ? `<p class="hint">Edited by you. <button class="linkbtn" type="button" data-act="reset">Reset to LickPick's cut</button></p>` : `<p class="hint">Tap ▶ to hear any part. Tap + to keep something LickPick left out.</p>`}
+    <div class="segrows">${rows}</div>
+    <div class="status" id="saveStatus" aria-live="polite">${esc(c.saveStatus || "")}</div>`;
 }
 function partsPanel(c) {
   if (!c.parts.length) return `<p class="hint">${hasMusic(c) ? "There's playing here, but no stretch held up for 4 seconds. Play it, then tap Keep from here on anything you like." : "No music found in this clip. Tap Keep from here if you disagree."}</p>`;
@@ -3132,7 +3231,35 @@ function clampPart(c, i) {
   const lo = i > 0 ? c.parts[i - 1].end : 0, hi = i < c.parts.length - 1 ? c.parts[i + 1].start : D;
   p.start = Math.max(lo, Math.min(p.start, p.end - 1)); p.end = Math.min(hi, Math.max(p.end, p.start + 1));
 }
-function edited(c) { c.edited = true; persist(c); renderStudio(); }
+function edited(c) { c.edited = true; persist(c); renderStudio(); renderCard(c); }
+// tapping a clip row (a div, so it can hold its own ⋯ button)
+function openCardAt(card) {
+  const c = state.clips.find(x => x.id === +card.dataset.open); if (!c) return;
+  if (longPressed) { longPressed = false; return; }
+  if (state.sel) { if (state.sel.has(c.id)) state.sel.delete(c.id); else state.sel.add(c.id); renderCard(c); renderSelBar(); return; }
+  openStudio(c);
+}
+// ⋯ on a row: the file actions for that one clip, without opening it
+let rowId = null;
+function openRowMenu(id) {
+  const c = state.clips.find(x => x.id === id); if (!c) return; rowId = id;
+  const ok = !!c.file && c.status === "done" && !!downloads, pk = ok && pickOf(c), on = ok && onParts(c).length;
+  $("#rowTitle").textContent = c.name;
+  $("#rowBody").innerHTML = `
+    <button class="opt" type="button" data-act="row-open">${icon("i-play")}<span class="grow"><strong>Open</strong><em>Play, review segments, edit</em></span></button>
+    <button class="opt" type="button" data-act="row-pick" ${pk ? "" : "disabled"}>${icon("i-star")}<span class="grow"><strong>Save the Pick</strong><em>${pk ? `${fmt(pk.len)} from ${fmt(pk.s)}` : "No pick yet"}</em></span></button>
+    <button class="opt" type="button" data-act="row-clean" ${on ? "" : "disabled"}>${icon("i-cut")}<span class="grow"><strong>Save the clean cut</strong><em>${on ? `${fmt(keptSeconds(c))}, mistakes removed` : "Nothing kept"}</em></span></button>
+    <button class="opt" type="button" data-act="row-remove">${icon("i-x")}<span class="grow"><strong>Remove from list</strong><em>The video stays on your phone</em></span></button>
+    ${c.file ? "" : `<p class="hint">Add this video again to save from it. LickPick doesn't keep copies.</p>`}`;
+  $("#rowSheet").hidden = false;
+}
+function rowAct(act) {
+  const c = state.clips.find(x => x.id === rowId); $("#rowSheet").hidden = true; if (!c) return;
+  if (act === "row-open") openStudio(c);
+  else if (act === "row-pick") saveAllPicks([c]);
+  else if (act === "row-clean") saveAll([c]);
+  else if (act === "row-remove") { forget(c); render(); renderBoxes(); toast("Removed from the list. The video is untouched."); }
+}
 function rescue(c) {
   const t = nowT(c), D = c.raw.duration;
   const inside = c.parts.findIndex(p => t >= p.start && t < p.end);
@@ -3210,12 +3337,15 @@ Return only JSON: [{"caption": string, "hashtags": [string]}]`, { modelTier: "qu
 // ---------- events
 document.addEventListener("click", e => {
   const t = e.target.closest("button");
-  if (!t) { const s = e.target.closest("[data-sel]"); const c = cur(); if (s && c) { c.sel = +s.dataset.sel; renderStudio(); } return; }
+  if (!t) {
+    const card = e.target.closest("[data-open]"); if (card) { openCardAt(card); return; }
+    const g = e.target.closest("[data-seg]"), c = cur();
+    if (g && c) { const x = segsOf(c)[+g.dataset.seg]; if (x) { if (x.kind === "part") { c.sel = x.i; c.selCut = null; } else { c.selCut = x.s; c.sel = -1; } renderStudio(); } return; }
+    const s = e.target.closest("[data-sel]"); if (s && c) { c.sel = +s.dataset.sel; renderStudio(); } return; }
   const d = t.dataset;
-  if (d.open) { const c = state.clips.find(x => x.id === +d.open); if (!c) return;
-    if (longPressed) { longPressed = false; return; }
-    if (state.sel) { if (state.sel.has(c.id)) state.sel.delete(c.id); else state.sel.add(c.id); renderCard(c); renderSelBar(); return; }
-    openStudio(c); return; }
+  if (d.more) { openRowMenu(+d.more); return; }
+  if (d.act === "row-close") { $("#rowSheet").hidden = true; return; }
+  if (d.act && d.act.startsWith("row-")) { rowAct(d.act); return; }
   if (d.act === "select") { setSelect(!state.sel); return; }
   if (d.act === "sel-done") { setSelect(false); return; }
   if (d.act === "sel-picks") { const L = selClips(); setSelect(false); saveAllPicks(L); return; }
@@ -3244,7 +3374,7 @@ document.addEventListener("click", e => {
   if (d.act === "ob-open") { $("#rules").hidden = true; openOnboard(1); return; }
   if (d.act === "ob-skip") { closeOnboard(); return; }
   if (d.act === "ob-back") { if (ob > 0) { ob--; renderOnboard(); } return; }
-  if (d.act === "ob-next") { if (OB[ob] === "you") profile.name = ($("#obName")?.value || "").trim().slice(0, 40); if (OB[ob] === "post") applyProfileDefaults(); if (ob < OB.length - 1) { ob++; renderOnboard(); } else closeOnboard(); return; }
+  if (d.act === "ob-next") { if (OB[ob] === "you") profile.name = ($("#obName")?.value || "").trim().slice(0, 40); if (OB[ob] === "you") applyProfileDefaults(); if (ob < OB.length - 1) { ob++; renderOnboard(); } else closeOnboard(); return; }
   if (d.playI) { const k = d.playI, i = profile.plays.indexOf(k); if (i >= 0) profile.plays.splice(i, 1); else profile.plays.push(k); t.setAttribute("aria-pressed", String(i < 0)); return; }
   if (d.postI) { const k = d.postI; if (k === "none") profile.posts = profile.posts.includes("none") ? [] : ["none"]; else { profile.posts = profile.posts.filter(x => x !== "none"); const i = profile.posts.indexOf(k); if (i >= 0) profile.posts.splice(i, 1); else profile.posts.push(k); } renderOnboard(); return; }
   if (d.pickyI) { state.strictness = +d.pickyI; syncRules(); state.clips.forEach(c => { redecide(c); persist(c); }); renderOnboard(); return; }
@@ -3268,6 +3398,10 @@ document.addEventListener("click", e => {
   if (d.act === "close") return closeStudio();
   if (d.tab) { if (d.tab !== "band") stopBand(); state.tab = d.tab; renderStudio(); if (["pick", "band"].includes(d.tab)) { if (d.tab === "band") c.src = "pick"; player?.pause(); showPick(c); } return; }
   if (d.play != null) { const p = c.parts[+d.play]; c.sel = +d.play; renderStudio(); playRanges(c, [[p.start, p.end]], `Part ${+d.play + 1}`); return; }
+  if (d.segkeep != null) { const g = segsOf(c)[+d.segkeep]; if (!g) return;
+    if (g.kind === "part") { c.parts[g.i].on = !c.parts[g.i].on; c.sel = g.i; }
+    else { c.parts.push({ start: g.s, end: g.e, on: true }); c.parts.sort((a, b) => a.start - b.start); c.sel = c.parts.findIndex(p => p.start === g.s); c.selCut = null; }
+    edited(c); return; }
   if (d.toggle != null) { const p = c.parts[+d.toggle]; p.on = !p.on; edited(c); return; }
   if (d.nudge) { const [i, w, dv] = d.nudge.split(":"); const p = c.parts[+i]; if (w === "s") p.start += +dv; else p.end += +dv; clampPart(c, +i); edited(c); return; }
   if (d.here) { const [i, w] = d.here.split(":"); const p = c.parts[+i]; if (w === "s") p.start = nowT(c); else p.end = nowT(c); clampPart(c, +i); edited(c); return; }
@@ -3303,6 +3437,7 @@ document.addEventListener("click", e => {
   if (d.act === "reset") { c.edited = false; redecide(c, true); c.sel = c.parts.length ? 0 : -1; persist(c); renderStudio(); return; }
 });
 $("#rules").addEventListener("click", e => { if (e.target.id === "rules") $("#rules").hidden = true; });
+$("#list").addEventListener("keydown", e => { const card = e.target.closest?.("[data-open]"); if (card && e.target === card && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openCardAt(card); } });
 // long-press a clip to start selecting
 let longPressed = false, lpT = null;
 $("#list").addEventListener("pointerdown", e => { longPressed = false; const el = e.target.closest("[data-open]"); if (!el || state.sel) return; clearTimeout(lpT); lpT = setTimeout(() => { longPressed = true; navigator.vibrate?.(15); setSelect(true, +el.dataset.open); }, 480); });
@@ -3311,8 +3446,9 @@ $("#list").addEventListener("contextmenu", e => { if (e.target.closest("[data-op
 document.addEventListener("input", e => { if (e.target.id === "search") { state.q = e.target.value; render(); return; } if (e.target.id === "bandGain") { const c = cur(); if (c?.band) { c.band.gain = +e.target.value; if (bandGainNode) bandGainNode.gain.value = c.band.gain; } } });
 $("#proSheet").addEventListener("click", e => { if (e.target.id === "proSheet") $("#proSheet").hidden = true; });
 $("#exportSheet").addEventListener("click", e => { if (e.target.id === "exportSheet") $("#exportSheet").hidden = true; });
+$("#rowSheet").addEventListener("click", e => { if (e.target.id === "rowSheet") $("#rowSheet").hidden = true; });
 $("#addSheet").addEventListener("click", e => { if (e.target.id === "addSheet") $("#addSheet").hidden = true; });
-document.addEventListener("keydown", e => { if (e.key === "Escape") { if (state.sel) setSelect(false); else if (!$("#onboard").hidden) closeOnboard(); else if (!$("#intro").hidden) closeIntro(); else if (!$("#exportSheet").hidden) $("#exportSheet").hidden = true; else if (!$("#proSheet").hidden) $("#proSheet").hidden = true; else if (!$("#addSheet").hidden) $("#addSheet").hidden = true; else if (!$("#rules").hidden) $("#rules").hidden = true; else if (!$("#sorter").hidden) closeQuickSort(false); else if (state.openId) closeStudio(); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { if (state.sel) setSelect(false); else if (!$("#onboard").hidden) closeOnboard(); else if (!$("#intro").hidden) closeIntro(); else if (!$("#rowSheet").hidden) $("#rowSheet").hidden = true; else if (!$("#exportSheet").hidden) $("#exportSheet").hidden = true; else if (!$("#proSheet").hidden) $("#proSheet").hidden = true; else if (!$("#addSheet").hidden) $("#addSheet").hidden = true; else if (!$("#rules").hidden) $("#rules").hidden = true; else if (!$("#sorter").hidden) closeQuickSort(false); else if (state.openId) closeStudio(); } });
 function syncRules() {
   $("#minVal").textContent = state.minKeep + "s";
   document.querySelectorAll("#picky button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.picky === state.strictness)));
