@@ -805,6 +805,36 @@ input[type=range]{min-height:44px}
 .listen.float .lnote{display:none}
 .listen.float .floatx{position:static}
 @keyframes lpIn{from{opacity:0;transform:translateY(12px)}}
+/* 1.5: Pro EQ */
+.eqcard{border-color:var(--hot)}
+.eqcard .sndhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.abbtn{min-width:76px;min-height:44px;border-radius:12px;border:2px solid var(--line);background:var(--raise);color:var(--text);font-weight:900;letter-spacing:.04em}
+.abbtn[aria-pressed=true]{background:var(--text);color:var(--ink);border-color:var(--text)}
+.eqstart{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.eqstart::-webkit-scrollbar{display:none}
+.eqstart button{flex:none;min-height:40px;padding:0 12px;border-radius:20px;border:2px solid var(--line);background:var(--panel);color:var(--dim);font-weight:800;font-size:13px}
+.eqstart button.mine{border-color:var(--cyan);color:var(--text)}
+.eqview{position:relative;display:grid;grid-template-columns:1fr 26px;gap:8px;margin:4px 0 10px}
+#eqCv{width:100%;height:210px;border-radius:14px;background:radial-gradient(circle at 50% 120%,#241B3D,#0B0912 70%);border:2px solid var(--line);touch-action:none;display:block}
+.eqmeter{position:relative;border-radius:8px;background:#0B0912;border:2px solid var(--line);overflow:hidden}
+.eqmeter i{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(to top,var(--cyan),var(--volt));transition:height .06s linear}
+.eqmeter i.hot{background:linear-gradient(to top,var(--cyan),var(--volt) 70%,var(--hot))}
+.eqmeter i.clip{background:var(--red)}
+.eqmeter b{position:absolute;top:3px;left:0;right:0;text-align:center;font-size:9px;font-weight:900;color:var(--text);font-variant-numeric:tabular-nums}
+.eqmeter b.clip{color:#fff;background:var(--red)}
+.eqbands{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:8px}
+.eqbands button{min-height:48px;border-radius:12px;border:2px solid var(--line);background:var(--panel);color:var(--dim);padding:4px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.eqbands button b{font-size:11.5px;color:var(--text)}
+.eqbands button span{font-size:10.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.eqbands button[aria-selected=true]{border-color:var(--hot);background:var(--raise)}
+.eqbands button[aria-selected=true] b{color:var(--hot)}
+.eqctl{display:flex;flex-direction:column;gap:2px}
+.eqsl{display:grid;grid-template-columns:66px 1fr 70px;align-items:center;gap:10px;min-height:44px}
+.eqsl span{font-size:13px;font-weight:800;color:var(--dim)}
+.eqsl b{font-size:13px;text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
+.eqsl input{width:100%;accent-color:var(--volt);height:32px}
+.eqh{margin:12px 0 2px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mute)}
+.eqshelf{margin:6px 0}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1028,12 +1058,12 @@ input[type=range]{min-height:44px}
     <div class="row2"><span><b>How picky</b></span>
       <span class="seg" id="picky"><button type="button" data-picky="0.25">Chill</button><button type="button" data-picky="0.5">Normal</button><button type="button" data-picky="0.8">Strict</button></span></div>
     <p class="hint">Trash is only suggested when a clip has no music at all. Your own edits are never changed.</p>
-    <p class="sfoot">Version 1.4 · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. Never deletes.</p>
+    <p class="sfoot">Version 1.5 · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. Never deletes.</p>
     <div class="studio-line"><img src="data:image/png;base64,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" alt="3Shamrocks Studio" width="226" height="33"><span>© 2026 3Shamrocks Studio. All rights reserved.</span></div>
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10n"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10o"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -1683,7 +1713,8 @@ input[type=range]{min-height:44px}
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* Studio polish: one sound chain, two engines. Export runs it sample by sample (below);
-   preview builds the same chain from Web Audio nodes, so what you hear is what you save. */
+   preview builds the same chain from Web Audio nodes, so what you hear is what you save.
+   A setting is a preset name or a full Pro EQ object: low cut, 5 EQ bands, compressor, room, output. */
 (function (root) {
   const PRESETS = {
     clean:  { name: "Clean",     hp: 80, eq: [["peaking", 300, -2, 1], ["peaking", 3500, 3, 0.8], ["highshelf", 10000, 2, 0.7]], thr: -20, ratio: 3,   wet: 0.05 },
@@ -1691,9 +1722,25 @@ input[type=range]{min-height:44px}
     bright: { name: "Bright",    hp: 90, eq: [["peaking", 300, -2.5, 1], ["peaking", 4000, 4, 0.8], ["highshelf", 10000, 3.5, 0.7]], thr: -20, ratio: 3,   wet: 0.05 },
     room:   { name: "Live room", hp: 80, eq: [["peaking", 300, -2, 1], ["peaking", 3500, 2, 0.8], ["highshelf", 10000, 2, 0.7]], thr: -20, ratio: 3,   wet: 0.2 },
   };
-  const makeup = p => -p.thr * (1 - 1 / p.ratio) * 0.5;      // dB back after the compressor
+  // the Pro EQ's five bands: low shelf, three bells, high shelf
+  const BANDS = [["lowshelf", 100, 0, 0.71], ["peaking", 250, 0, 1], ["peaking", 1000, 0, 1], ["peaking", 3500, 0, 1], ["highshelf", 10000, 0, 0.71]];
+  const FLAT = { name: "Flat", hp: 0, eq: BANDS.map(b => b.slice()), thr: 0, ratio: 1, wet: 0, out: 0 };
+  // a preset (or anything) as the full 5-band setting, so the Pro EQ can start from it
+  function full(fx) {
+    const p = typeof fx === "string" ? PRESETS[fx] : fx; if (!p) return JSON.parse(JSON.stringify(FLAT));
+    if (p.eq?.length === 5 && p.pro) return JSON.parse(JSON.stringify(p));
+    const eq = BANDS.map(b => b.slice()), lg = Math.log;
+    for (const [t, f, g, q] of p.eq || []) {
+      let k = t === "lowshelf" ? 0 : t === "highshelf" ? 4 : 1 + [1, 2, 3].reduce((a, j) => Math.abs(lg(BANDS[j][1] / f)) < Math.abs(lg(BANDS[a + 1][1] / f)) ? j - 1 : a, 0);
+      eq[k] = [eq[k][0], f, g, t === "peaking" ? q : 0.71];
+    }
+    return { name: p.name || "Custom", pro: true, hp: p.hp || 0, eq, thr: p.thr ?? 0, ratio: p.ratio ?? 1, wet: p.wet ?? 0, out: p.out || 0 };
+  }
+  const resolve = fx => !fx ? null : typeof fx === "string" ? (PRESETS[fx] ? { ...PRESETS[fx], out: 0 } : null) : fx;
+  const makeup = p => p.ratio > 1 ? -p.thr * (1 - 1 / p.ratio) * 0.5 : 0;      // dB back after the compressor
   // RBJ cookbook biquads (the same maths Web Audio uses)
   function coefs(type, f, gainDb, q, sr) {
+    f = Math.min(f, sr * 0.45);
     const A = Math.pow(10, gainDb / 40), w = 2 * Math.PI * f / sr, cs = Math.cos(w), sn = Math.sin(w), al = sn / (2 * q), sA = 2 * Math.sqrt(A) * al;
     let b0, b1, b2, a0, a1, a2;
     if (type === "highpass") { b0 = (1 + cs) / 2; b1 = -(1 + cs); b2 = (1 + cs) / 2; a0 = 1 + al; a1 = -2 * cs; a2 = 1 - al; }
@@ -1701,6 +1748,22 @@ input[type=range]{min-height:44px}
     else if (type === "lowshelf") { b0 = A * ((A + 1) - (A - 1) * cs + sA); b1 = 2 * A * ((A - 1) - (A + 1) * cs); b2 = A * ((A + 1) - (A - 1) * cs - sA); a0 = (A + 1) + (A - 1) * cs + sA; a1 = -2 * ((A - 1) + (A + 1) * cs); a2 = (A + 1) + (A - 1) * cs - sA; }
     else { b0 = A * ((A + 1) + (A - 1) * cs + sA); b1 = -2 * A * ((A - 1) + (A + 1) * cs); b2 = A * ((A + 1) + (A - 1) * cs - sA); a0 = (A + 1) - (A - 1) * cs + sA; a1 = 2 * ((A - 1) - (A + 1) * cs); a2 = (A + 1) - (A - 1) * cs - sA; }
     return [b0 / a0, b1 / a0, b2 / a0, a1 / a0, a2 / a0];
+  }
+  const shelfQ = (t, q) => t === "peaking" ? q : 0.7071;
+  // the EQ curve in dB at the given frequencies (for drawing; the same filters export uses)
+  function response(fx, freqs, sr = 48000) {
+    const p = resolve(fx), out = new Float32Array(freqs.length); if (!p) return out;
+    const fl = [...(p.hp ? [["highpass", p.hp, 0, 0.707]] : []), ...p.eq.map(([t, f, g, q]) => [t, f, g, shelfQ(t, q)])].map(([t, f, g, q]) => coefs(t, f, g, q, sr));
+    freqs.forEach((f, i) => {
+      const w = 2 * Math.PI * f / sr; let db = 0;
+      for (const [b0, b1, b2, a1, a2] of fl) {
+        const c1 = Math.cos(w), s1 = Math.sin(w), c2 = Math.cos(2 * w), s2 = Math.sin(2 * w);
+        const nr = b0 + b1 * c1 + b2 * c2, ni = -(b1 * s1 + b2 * s2), dr = 1 + a1 * c1 + a2 * c2, di = -(a1 * s1 + a2 * s2);
+        db += 10 * Math.log10((nr * nr + ni * ni) / (dr * dr + di * di) + 1e-20);
+      }
+      out[i] = db + (p.out || 0);
+    });
+    return out;
   }
   function biquad(k) { let x1 = 0, x2 = 0, y1 = 0, y2 = 0; return x => { const y = k[0] * x + k[1] * x1 + k[2] * x2 - k[3] * y1 - k[4] * y2; x2 = x1; x1 = x; y2 = y1; y1 = y; return y; }; }
   // a small Freeverb-style room
@@ -1713,39 +1776,49 @@ input[type=range]{min-height:44px}
       return out;
     };
   }
-  // one channel of the chain: filters, compressor, room
-  function channel(preset, sr, ch) {
-    const p = PRESETS[preset]; if (!p) return x => x;
-    const fs = [biquad(coefs("highpass", p.hp, 0, 0.707, sr)), ...p.eq.map(([t, f, g, q]) => biquad(coefs(t, f, g, q, sr)))];
-    const att = Math.exp(-1 / (0.01 * sr)), rel = Math.exp(-1 / (0.12 * sr)), mk = Math.pow(10, makeup(p) / 20), rv = room(sr, ch ? 23 : 0);
+  // one channel of the chain: filters, compressor, room, output
+  function channel(fx, sr, ch) {
+    const p = resolve(fx); if (!p) return x => x;
+    const fs = [...(p.hp ? [biquad(coefs("highpass", p.hp, 0, 0.707, sr))] : []), ...p.eq.filter(([, , g]) => Math.abs(g) > 0.01).map(([t, f, g, q]) => biquad(coefs(t, f, g, shelfQ(t, q), sr)))];
+    const att = Math.exp(-1 / (0.01 * sr)), rel = Math.exp(-1 / (0.12 * sr)), mk = Math.pow(10, (makeup(p) + (p.out || 0)) / 20), rv = p.wet > 0 ? room(sr, ch ? 23 : 0) : null, comp = p.ratio > 1;
     let env = 0;
     return x => {
       for (const f of fs) x = f(x);
-      const a = Math.abs(x); env = a > env ? att * env + (1 - att) * a : rel * env + (1 - rel) * a;
-      const lvl = 20 * Math.log10(env + 1e-9), over = lvl - p.thr, gr = over > 0 ? -over * (1 - 1 / p.ratio) : 0;
-      x *= Math.pow(10, gr / 20) * mk;
-      return x * (1 - p.wet * 0.5) + rv(x) * p.wet * 4;
+      if (comp) { const a = Math.abs(x); env = a > env ? att * env + (1 - att) * a : rel * env + (1 - rel) * a;
+        const lvl = 20 * Math.log10(env + 1e-9), over = lvl - p.thr, gr = over > 0 ? -over * (1 - 1 / p.ratio) : 0; x *= Math.pow(10, gr / 20); }
+      x *= mk;
+      return rv ? x * (1 - p.wet * 0.5) + rv(x) * p.wet * 4 : x;
     };
   }
-  // Web Audio twin for preview. Returns {input, output}.
-  function graph(ctx, preset) {
-    const p = PRESETS[preset], input = ctx.createGain(), output = ctx.createGain();
-    if (!p) { input.connect(output); return { input, output }; }
-    let node = input;
-    const add = n => { node.connect(n); node = n; };
-    const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = p.hp; hp.Q.value = 0.707; add(hp);
-    for (const [t, f, g, q] of p.eq) { const b = ctx.createBiquadFilter(); b.type = t; b.frequency.value = f; b.gain.value = g; b.Q.value = q; add(b); }
-    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = p.thr; comp.ratio.value = p.ratio; comp.knee.value = 4; comp.attack.value = 0.01; comp.release.value = 0.12; add(comp);
-    const mk = ctx.createGain(); mk.gain.value = Math.pow(10, makeup(p) / 20); add(mk);
-    const dry = ctx.createGain(), wet = ctx.createGain(), conv = ctx.createConvolver();
-    dry.gain.value = 1 - p.wet * 0.5; wet.gain.value = p.wet * 1.6;
+  // Web Audio twin for preview. Fixed topology so settings change live: {input, output, set(fx)}.
+  function graph(ctx, fx) {
+    const input = ctx.createGain(), output = ctx.createGain();
+    const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.Q.value = 0.707;
+    const bands = BANDS.map(([t]) => { const b = ctx.createBiquadFilter(); b.type = t; return b; });
+    const comp = ctx.createDynamicsCompressor(); comp.knee.value = 4; comp.attack.value = 0.01; comp.release.value = 0.12;
+    const mk = ctx.createGain(), dry = ctx.createGain(), wet = ctx.createGain(), conv = ctx.createConvolver();
     const sr = ctx.sampleRate, n = Math.round(sr * 1.3), ir = ctx.createBuffer(2, n, sr);
     for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3.2); }
     conv.buffer = ir;
-    node.connect(dry); node.connect(conv); conv.connect(wet); dry.connect(output); wet.connect(output);
-    return { input, output };
+    let node = input; for (const x of [hp, ...bands, comp, mk]) { node.connect(x); node = x; }
+    // the same soft limiter export uses, so the meter shows what you'll save
+    const lim = ctx.createWaveShaper(), K = 2049, cur = new Float32Array(K), T = 0.89;
+    for (let i = 0; i < K; i++) { const x = (i / (K - 1)) * 2 - 1, ax = Math.abs(x); cur[i] = ax > T ? Math.sign(x) * (T + (1 - T) * Math.tanh((ax - T) / (1 - T))) : x; }
+    lim.curve = cur; lim.oversample = "2x";
+    node.connect(dry); node.connect(conv); conv.connect(wet); dry.connect(lim); wet.connect(lim); lim.connect(output);
+    const P = (a, v) => { try { a.setTargetAtTime(v, ctx.currentTime, 0.015); } catch { a.value = v; } };
+    function set(fx2) {
+      const p = full(resolve(fx2) || FLAT), on = !!resolve(fx2);
+      P(hp.frequency, p.hp && on ? p.hp : 5);
+      p.eq.forEach(([t, f, g, q], i) => { P(bands[i].frequency, Math.min(f, sr * 0.45)); P(bands[i].gain, on ? g : 0); P(bands[i].Q, shelfQ(t, q)); });
+      P(comp.threshold, on ? Math.min(0, p.thr) : 0); P(comp.ratio, on ? Math.max(1, p.ratio) : 1);
+      P(mk.gain, on ? Math.pow(10, (makeup(p) + (p.out || 0)) / 20) : 1);
+      P(dry.gain, on ? 1 - p.wet * 0.5 : 1); P(wet.gain, on ? p.wet * 1.6 : 0);
+    }
+    set(fx);
+    return { input, output, set };
   }
-  root.LickFX = { PRESETS, channel, graph };
+  root.LickFX = { PRESETS, BANDS, FLAT, full, resolve, response, channel, graph };
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
@@ -2354,7 +2427,7 @@ function persist(c) {
   if (c.status !== "done" || !c.key) return;
   const r2 = a => Array.isArray(a) ? a.map(v => Math.round(v * 100) / 100) : a;
   const raw = { ...c.raw, penalty: Object.fromEntries(Object.entries(c.raw.penalty || {}).map(([k, v]) => [k, r2(v)])), highlight: r2(c.raw.highlight) };
-  recs.set(c.key, { v: 4, pickSel: c.pickSel || 0, name: c.name, size: c.size, raw, parts: c.parts, edited: !!c.edited, override: c.override, saved: !!c.saved, thumb: c.thumb || null });
+  recs.set(c.key, { v: 4, pickSel: c.pickSel || 0, name: c.name, size: c.size, raw, parts: c.parts, edited: !!c.edited, override: c.override, saved: !!c.saved, thumb: c.thumb || null, snd: c.snd || null });
   const lib = store.get("lp:lib") || []; if (!lib.includes(c.key)) { lib.push(c.key); store.set("lp:lib", lib); }
 }
 function forget(c) {
@@ -2368,7 +2441,7 @@ async function restoreLibrary() {
     const key = keys[i], prev = all[i] || store.get(key);
     if (state.clips.some(c => c.key === key)) continue;
     if ((prev?.v !== 3 && prev?.v !== 4) || !prev.raw?.penalty) continue;
-    const c = { id: ++uid, key, pickSel: prev.pickSel || 0, file: null, name: prev.name || key.slice(8).split("|")[0], size: prev.size || 0, status: "done", raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb, proxy: snd[i] instanceof Blob ? snd[i] : null };
+    const c = { id: ++uid, key, pickSel: prev.pickSel || 0, file: null, name: prev.name || key.slice(8).split("|")[0], size: prev.size || 0, status: "done", raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb, snd: prev.snd || undefined, proxy: snd[i] instanceof Blob ? snd[i] : null };
     c.result = ClipEngine.decide(c.raw, { strictness: state.strictness, minKeep: state.minKeep });
     state.clips.push(c);
   }
@@ -2490,11 +2563,11 @@ const proTag = () => isPro() ? "" : `<i class="protag">PRO</i>`;
 const TIER_TABLE = [
   ["Find", [["Scan every take, unlimited", 1], ["Grades: best, good, worth a look, useless", 1], ["Pick A, B, C + Why this part", 1], ["Suggestions from your own playing", 1]]],
   ["Play & practise", [["Play my picks, back to back", 1], ["Loop and slow down to ¾ or ½", 1], ["Hear the band, every style", 1], ["Hear every studio sound", 1]]],
-  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Vertical shorts, no watermark", 1], ["Studio sound: Clean", 1], ["Captions, hashtags, share", 1], ["Studio sound: Warm, Bright, Live room", 0], ["Save with the band + your mix", 0], ["Save everything in one tap", 0], ["Each part as its own file", 0], ["Coming: Beat FX, 90s looks, licks reel", -1]]],
+  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Vertical shorts, no watermark", 1], ["Studio sound: Clean", 1], ["Captions, hashtags, share", 1], ["Studio sound: Warm, Bright, Live room", 0], ["Pro EQ: 5-band EQ, compressor, room, A/B", 0], ["Save with the band + your mix", 0], ["Save everything in one tap", 0], ["Each part as its own file", 0], ["Coming: Beat FX, 90s looks, licks reel", -1]]],
 ];
 const tierTableHTML = () => `<table class="cmp"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead>${TIER_TABLE.map(([g, rows]) => `<tbody><tr class="grp"><th colspan="3">${g}</th></tr>${rows.map(([l, free]) => `<tr${free > 0 ? "" : ' class="pro"'}><td>${l}</td><td>${free > 0 ? icon("i-check") : `<span class="try">${lic.trial && free === 0 ? "try" : "–"}</span>`}</td><td>${icon("i-check")}</td></tr>`).join("")}</tbody>`).join("")}</table>`;
 // What Pro adds, in a player's words
-const PRO_FEATS = [["i-drum", "A band on every save", "Drums, bass and keys locked to your groove, mixed your way."], ["i-bolt", "The full studio sound", "Warm, Bright and Live room on top of Clean."], ["i-stack", "Everything in one tap", "Save every pick or every clean cut at once, or each part as its own file."], ["i-star", "Every add-on we ship", "Beat FX, 90s looks and the best-licks reel are next. Yours at no extra cost."]];
+const PRO_FEATS = [["i-drum", "A band on every save", "Drums, bass and keys locked to your groove, mixed your way."], ["i-bolt", "The full studio sound", "Warm, Bright, Live room and Pro EQ: your own 5-band EQ, compressor and room."], ["i-stack", "Everything in one tap", "Save every pick or every clean cut at once, or each part as its own file."], ["i-star", "Every add-on we ship", "Beat FX, 90s looks and the best-licks reel are next. Yours at no extra cost."]];
 // One honest launch price: the regular price really applies after LAUNCH_ENDS. No subscription.
 const LAUNCH_ENDS = "31 Jan 2027";
 const PLANS = [["pro", "$4.99", "$7.99", "Pro", "Just you"], ["duo", "$7.99", "$12.99", "Duo", "You + a gift key for a bandmate"]];
@@ -2607,7 +2680,7 @@ function addFiles(files, recorded) {
   Promise.all(added.map(async c => {
     const prev = await recs.get(c.key) || store.get(c.key);
     if (prev?.v === 4 && prev.raw?.penalty && prev.raw.chromaQ) {
-      Object.assign(c, { raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb, pickSel: prev.pickSel || 0, status: "done" });
+      Object.assign(c, { snd: prev.snd || undefined, raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb, pickSel: prev.pickSel || 0, status: "done" });
       c.result = ClipEngine.decide(c.raw, { strictness: state.strictness, minKeep: state.minKeep }); known++;
       if (!c.proxy) { const b = await recs.get(c.key + "|a"); if (b instanceof Blob) c.proxy = b; else saveProxy(c, () => decodeAudioStream(c.file, () => { }), true); }
     }
@@ -3186,7 +3259,7 @@ function openStudio(c, keep) {
       : `<div class="ph relink"><p>Add this video again to play it. After that, its Picks and parts play anytime, even after a restart.</p><button class="btn" type="button" data-act="gallery">${icon("i-film")}Re-add ${esc(c.name)}</button></div>`;
   }
   $("#studio").hidden = false; document.body.style.overflow = "hidden"; if (!reopen) $("#studio").scrollTop = 0;
-  watchStage();
+  watchStage(); monSync(c);
   renderStudio(); listenUI();
   if (!c.file && c.proxy) setTimeout(() => { if (cur() === c) soundBuf(c).catch(() => { }); }, 250);
 }
@@ -3215,7 +3288,7 @@ function renderStudio() {
   else if (state.tab === "pick") P.innerHTML = pickPanel(c);
   else if (state.tab === "parts") P.innerHTML = segmentsPanel(c);
   else if (state.tab === "post") P.innerHTML = postPanel(c);
-  else if (state.tab === "band") { P.innerHTML = bandPanel(c); bandPrefetch(c); }
+  else if (state.tab === "band") { P.innerHTML = bandPanel(c); bandPrefetch(c); eqStartLoop(); }
   else P.innerHTML = pickPanel(c);
   renderSrc(c);
 }
@@ -3334,13 +3407,13 @@ async function doExport(c) {
     const M = await mb(); let n = 0;
     if (o.fmt === "vertical") {
       const [[s0, e0]] = S.ranges, gainDb = ClipExporter.levelGain(c.raw.loud, CELL, s0, e0), mark = false;   // no watermark: Instagram buries Reels with other apps' logos
-      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Making vertical… ${Math.round(p * 100)}%`), { gainDb, watermark: mark, fx: sndOf(c).fx, take: takeGain(c) });
+      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Making vertical… ${Math.round(p * 100)}%`), { gainDb, watermark: mark, fx: fxOf(c), take: takeGain(c) });
       try { await offerFile(`${base}${tag}_vertical.mp4`, r.blob, say); n = 1; } catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
     } else if (S.ranges.length === 1 && !o.sep && (sndOf(c).fx || Math.abs(takeGain(c) - 1) > 0.01)) {
       // polish needs a re-encode of the sound; the picture keeps its framing
       const [[s0, e0]] = S.ranges;
-      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Polishing… ${Math.round(p * 100)}%`), { vertical: false, fx: sndOf(c).fx, take: takeGain(c) });
-      try { await offerFile(`${base}${tag}${sndOf(c).fx ? "_" + sndOf(c).fx : ""}.mp4`, r.blob, say); n = 1; } catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
+      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Polishing… ${Math.round(p * 100)}%`), { vertical: false, fx: fxOf(c), take: takeGain(c) });
+      try { await offerFile(`${base}${tag}${sndOf(c).fx ? "_" + (sndOf(c).fx === "custom" ? "mysound" : sndOf(c).fx) : ""}.mp4`, r.blob, say); n = 1; } catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
     } else {
       const jobs = o.sep ? S.ranges.map((r, i) => ({ name: `${base}_part${i + 1}`, ranges: [r] })) : [{ name: base + tag, ranges: S.ranges }];
       for (const job of jobs) n += await saveCut(M, c, job.name, job.ranges, say);
@@ -3503,7 +3576,53 @@ function stemGain(c, k) {
   return b.parts[k] ? (b.lv?.[k] ?? 1) * b.gain : 0;
 }
 const premFx = c => { const f = sndOf(c).fx; return !!f && f !== "clean"; };
-const fxLabel = c => { const f = sndOf(c).fx; return f && LickFX.PRESETS[f] ? LickFX.PRESETS[f].name : ""; };
+const fxLabel = c => { const f = sndOf(c).fx; return f === "custom" ? "My sound" : f && LickFX.PRESETS[f] ? LickFX.PRESETS[f].name : ""; };
+// ---------- Pro EQ: "My sound", one setting for all your takes (same gear, same room), kept on this phone
+let myEq = store.get("lp:myeq") || null;
+const eqNow = () => myEq || (myEq = { ...LickFX.full("clean"), name: "My sound" });
+const fxOf = c => { const f = sndOf(c).fx; return f === "custom" ? eqNow() : f; };
+const BAND_NAMES = ["Low", "Low-mid", "Mid", "High-mid", "High"], BAND_RANGE = [[30, 500], [60, 1200], [200, 5000], [1000, 12000], [2000, 18000]];
+// starting points per instrument (then tune by ear)
+const EQ_STARTS = {
+  guitar:   ["Electric guitar", 80, [[100, -1], [250, -2, 1], [1000, 1.5, 0.9], [3500, 2, 1], [10000, -1]], -20, 3, 0.08],
+  acoustic: ["Acoustic", 90, [[100, -2], [220, -3, 1.2], [1000, 0, 1], [5000, 2.5, 0.8], [12000, 2]], -22, 2.5, 0.1],
+  bass:     ["Bass", 35, [[80, 3], [300, -2, 1], [800, 0, 1], [2000, 2, 1], [8000, -2]], -24, 4, 0],
+  keys:     ["Keys", 50, [[120, 0], [300, -1.5, 1], [1000, 0, 1], [4000, 1.5, 1], [10000, 1.5]], -20, 2.5, 0.12],
+  vocals:   ["Vocals", 100, [[100, 0], [300, -3, 1.2], [1000, 0, 1], [3000, 3, 1], [11000, 2.5]], -24, 4, 0.1],
+  drums:    ["Drums", 40, [[70, 2], [400, -3, 1.4], [1000, 0, 1], [4000, 2, 1], [11000, 2]], -18, 4, 0.06],
+};
+function eqStart(k) {
+  if (k === "flat") return { ...LickFX.full(null), name: "My sound" };
+  if (LickFX.PRESETS[k]) return { ...LickFX.full(k), name: "My sound" };
+  const [, hp, eq, thr, ratio, wet] = EQ_STARTS[k];
+  return { name: "My sound", pro: true, hp, eq: LickFX.BANDS.map(([t], i) => [t, eq[i][0], eq[i][1], eq[i][2] || (t === "peaking" ? 1 : 0.71)]), thr, ratio, wet, out: 0 };
+}
+function saveEq() { store.set("lp:myeq", myEq); }
+// ---------- the monitor: everything you hear in the studio runs through the sound chain, so edits are live
+const mon = { ctx: null, ab: "fx", srcs: new WeakMap(), peak: -90, hold: 0 };
+let bandChain = null;
+function monitor() {
+  const ctx = ensureCtx(); if (!ctx) return null;
+  if (mon.ctx !== ctx) {
+    mon.ctx = ctx; mon.in = ctx.createGain(); mon.chain = LickFX.graph(ctx, null); mon.dry = ctx.createGain(); mon.wet = ctx.createGain();
+    mon.an = ctx.createAnalyser(); mon.an.fftSize = 4096; mon.an.smoothingTimeConstant = 0.78;
+    mon.in.connect(mon.chain.input); mon.chain.output.connect(mon.wet); mon.in.connect(mon.dry); mon.wet.connect(mon.an); mon.dry.connect(mon.an); mon.an.connect(ctx.destination);
+    monSync(cur());
+  }
+  return mon;
+}
+function monSync(c) {
+  const fx = c ? fxOf(c) : null, bypass = mon.ab === "dry" || !fx;
+  if (mon.ctx) { mon.chain.set(fx); mon.wet.gain.value = bypass ? 0 : 1; mon.dry.gain.value = bypass ? 1 : 0; }
+  if (bandChain) bandChain.set(mon.ab === "dry" ? null : fx);
+}
+// the video's sound joins the monitor once you use studio sound (inside a tap, so the phone allows it)
+function hookVideo() {
+  if (!video) return; const m = monitor(); if (!m) return;
+  if (m.ctx.state === "suspended") m.ctx.resume().catch(() => { });
+  if (m.srcs.has(video)) return;
+  try { const sN = m.ctx.createMediaElementSource(video); sN.connect(m.in); m.srcs.set(video, sN); monSync(cur()); } catch { }
+}
 // mix the band's tracks at the mixer levels into one buffer for saving
 function bandMix(c, r) {
   if (!r.stems) return { buffer: r.buffer, gain: c.band.gain };
@@ -3527,8 +3646,10 @@ function bandPanel(c) {
   const aiOff = k => b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k];
   return `${pickRef(c, w)}
     <div class="sndcard"><div class="sndhead"><h3>${icon("i-bolt")}Studio sound</h3></div>
-      <span class="seg wide fxseg">${[["", "Off"], ...Object.entries(LickFX.PRESETS).map(([k, v]) => [k, v.name])].map(([k, l]) => `<button type="button" data-fx="${k}" aria-pressed="${(n.fx || "") === k}">${l}${k && k !== "clean" && !isPro() ? `<i class="fxpro">PRO</i>` : ""}</button>`).join("")}</span>
-      <p class="hint">${n.fx ? "EQ, compression and a touch of room on your take. " : "One tap makes a phone recording sound like a studio take. "}${isPro() ? "" : "Clean saves free. Hear Warm, Bright and Live room free, save them with Pro."}</p></div>
+      <span class="seg wide fxseg">${[["", "Off"], ...Object.entries(LickFX.PRESETS).map(([k, v]) => [k, v.name]), ["custom", "My sound"]].map(([k, l]) => `<button type="button" data-fx="${k}" aria-pressed="${(n.fx || "") === k}">${l}${k && k !== "clean" && !isPro() ? `<i class="fxpro">PRO</i>` : ""}</button>`).join("")}</span>
+      <p class="hint">${n.fx === "custom" ? "Your own EQ, compressor and room, below. " : n.fx ? "EQ, compression and a touch of room on your take. " : "One tap makes a phone recording sound like a studio take. "}${isPro() ? "" : "Clean saves free. Hear everything free, save Warm, Bright, Live room and My sound with Pro."}</p>
+      ${n.fx === "custom" ? "" : `<button class="btn ghost wide" type="button" data-act="eq-open">${icon("i-sliders")}Pro EQ: tune it yourself${proTag()}</button>`}</div>
+    ${n.fx === "custom" ? eqPanel(c) : ""}
     <div class="sndcard"><div class="sndhead"><h3>${icon("i-sliders")}Mixer</h3></div>
       ${strip("take", "i-mic", "You", n.takeOn, n.take, false)}
       ${INSTS.map(([k, ic, l]) => strip(k, ic, l, !!b.parts[k] && !aiOff(k), b.lv[k], k === "drums" && A && !A.pulse)).join("")}
@@ -3543,6 +3664,106 @@ function bandPanel(c) {
     ${b.style === "auto" ? `<div class="ai-why">${b.aiBusy ? "Thinking…" : b.ai ? `<b>${esc(styles[b.ai.style].name)}.</b> ${esc(b.ai.why || "")}` : `<b>${esc(styles[picked].name)}</b> suits ${A?.pulse ? `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}` : "free time"}.${sampler ? " Tap AI pick again for Claude's call." : ""}`}</div>` : ""}
     </div>`;
 }
+// the Pro EQ editor: curve with draggable bands over a live spectrum, band controls, dynamics, output meter
+let eqBand = 2;
+const fmtHz = f => f >= 1000 ? (f / 1000).toFixed(f >= 10000 ? 0 : 1).replace(/\.0$/, "") + "k" : Math.round(f) + "";
+const fmtDb = g => (g > 0 ? "+" : g < 0 ? "−" : "") + Math.abs(g).toFixed(1);
+const logPos = (f, lo, hi) => Math.log(f / lo) / Math.log(hi / lo), logVal = (x, lo, hi) => lo * Math.pow(hi / lo, x);
+function eqPanel(c) {
+  const e = eqNow(), b = e.eq[eqBand], [lo, hi] = BAND_RANGE[eqBand], mine = (profile.plays || [])[0];
+  const startKeys = [["flat", "Flat"], ...Object.entries(LickFX.PRESETS).map(([k, v]) => [k, v.name]), ...Object.entries(EQ_STARTS).map(([k, v]) => [k, v[0]])];
+  const sl = (id, lab, min, max, step, val, out) => `<label class="eqsl"><span>${lab}</span><input type="range" min="${min}" max="${max}" step="${step}" value="${val}" data-eq="${id}" aria-label="${lab}"><b id="eqv-${id.replace(/:/g, "-")}">${out}</b></label>`;
+  return `<div class="sndcard eqcard"><div class="sndhead"><h3>${icon("i-sliders")}Pro EQ${proTag()}</h3>
+      <button type="button" class="abbtn" data-act="eq-ab" aria-pressed="${mon.ab === "dry"}" aria-label="Compare with the original sound">${mon.ab === "dry" ? "Original" : "A/B"}</button></div>
+    <div class="eqstart" role="group" aria-label="Start from">${startKeys.map(([k, l]) => `<button type="button" data-eqstart="${k}"${k === mine || (mine === "guitar" && k === "guitar") ? ' class="mine"' : ""}>${l}</button>`).join("")}</div>
+    <div class="eqview"><canvas id="eqCv" aria-label="EQ curve. Drag a dot to shape the sound."></canvas>
+      <div class="eqmeter" aria-hidden="true"><i id="eqMeter"></i><b id="eqPeak">−∞</b></div></div>
+    <div class="eqbands" role="tablist">${e.eq.map(([, f, g], i) => `<button type="button" role="tab" data-eqband="${i}" aria-selected="${i === eqBand}"><b>${BAND_NAMES[i]}</b><span id="eqb-${i}">${fmtHz(f)} · ${fmtDb(g)}</span></button>`).join("")}</div>
+    <div class="eqctl">
+      ${sl(`b:${eqBand}:f`, "Freq", 0, 1, 0.001, logPos(b[1], lo, hi).toFixed(3), fmtHz(b[1]) + " Hz")}
+      ${sl(`b:${eqBand}:g`, "Gain", -12, 12, 0.5, b[2], fmtDb(b[2]) + " dB")}
+      ${b[0] === "peaking" ? sl(`b:${eqBand}:q`, "Width", 0, 1, 0.01, (1 - logPos(b[3], 0.3, 8)).toFixed(2), "Q " + b[3].toFixed(1)) : `<p class="hint eqshelf">${eqBand ? "High" : "Low"} shelf: lifts or cuts everything ${eqBand ? "above" : "below"} ${fmtHz(b[1])} Hz.</p>`}
+    </div>
+    <h4 class="eqh">Dynamics and space</h4>
+    <div class="eqctl">
+      ${sl("hp", "Low cut", 0, 200, 5, e.hp, e.hp ? e.hp + " Hz" : "Off")}
+      ${sl("thr", "Comp", -40, 0, 1, e.thr, e.ratio > 1 ? e.thr + " dB" : "Off")}
+      ${sl("ratio", "Ratio", 1, 10, 0.5, e.ratio, e.ratio > 1 ? e.ratio + ":1" : "Off")}
+      ${sl("wet", "Room", 0, 0.4, 0.01, e.wet, Math.round(e.wet * 250) + "%")}
+      ${sl("out", "Output", -12, 12, 0.5, e.out || 0, fmtDb(e.out || 0) + " dB")}
+    </div>
+    <div class="row-btns"><button class="btn ink" type="button" data-act="pick-play">${icon("i-play")}Play the Pick</button><button class="btn ghost" type="button" data-act="eq-flat">${icon("i-undo")}Flat</button></div>
+    <p class="hint">Plays live while you tune. Drag the dots, or pick a band and use the sliders. My sound is saved on this phone for all your takes${isPro() ? "." : "; save clips with it using Pro or a free Pro save."}</p></div>`;
+}
+// draw: spectrum (what's playing), the curve, the band dots
+let eqRaf = 0, eqDrag = -1, eqDirty = true;
+function eqDraw() {
+  const cv = $("#eqCv"); if (!cv || $("#studio").hidden || state.tab !== "band") { eqRaf = 0; return; }
+  if (!eqDirty && !isPlaying() && mon.peak <= -89) { eqRaf = requestAnimationFrame(eqDraw); return; }
+  eqDirty = false; if (!isPlaying()) mon.peak = Math.max(-90, mon.peak - 3);
+  const W = cv.clientWidth, H = cv.clientHeight, dpr = Math.min(3, devicePixelRatio || 1);
+  if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  const X = f => logPos(f, 20, 20000) * W, Y = db => H / 2 - db / 15 * (H / 2 - 10), e = eqNow(), css = getComputedStyle(document.documentElement);
+  const C = k => css.getPropertyValue(k).trim();
+  g.strokeStyle = "rgba(255,255,255,.07)"; g.lineWidth = 1; g.font = "600 10px system-ui"; g.fillStyle = "rgba(255,255,255,.35)";
+  for (const f of [50, 100, 200, 500, 1000, 2000, 5000, 10000]) { g.beginPath(); g.moveTo(X(f), 0); g.lineTo(X(f), H); g.stroke(); g.fillText(fmtHz(f), X(f) + 3, H - 4); }
+  for (const d of [-12, -6, 6, 12]) { g.beginPath(); g.moveTo(0, Y(d)); g.lineTo(W, Y(d)); g.stroke(); }
+  g.strokeStyle = "rgba(255,255,255,.22)"; g.beginPath(); g.moveTo(0, Y(0)); g.lineTo(W, Y(0)); g.stroke();
+  // live spectrum
+  const playing = isPlaying();
+  if (mon.an && playing) {
+    const an = mon.an, buf = new Float32Array(an.frequencyBinCount), sr = an.context.sampleRate; an.getFloatFrequencyData(buf);
+    g.beginPath(); g.moveTo(0, H);
+    for (let x = 0; x <= W; x += 2) { const f = logVal(x / W, 20, 20000), i = Math.min(buf.length - 1, Math.round(f / (sr / 2) * buf.length)); const v = Math.max(0, Math.min(1, (buf[i] + 95) / 75)); g.lineTo(x, H - v * H * 0.9); }
+    g.lineTo(W, H); g.closePath(); g.fillStyle = "rgba(43,231,255,.16)"; g.fill();
+    const td = new Float32Array(an.fftSize); an.getFloatTimeDomainData(td); let pk = 0; for (const v of td) pk = Math.max(pk, Math.abs(v));
+    const db = 20 * Math.log10(pk + 1e-9); if (db > mon.peak) { mon.peak = db; mon.hold = performance.now(); } else if (performance.now() - mon.hold > 900) mon.peak = Math.max(-90, mon.peak - 1.2);
+    const m = $("#eqMeter"); if (m) { m.style.height = Math.max(0, Math.min(100, (db + 60) / 60 * 100)) + "%"; m.classList.toggle("hot", db > -6); m.classList.toggle("clip", db > -0.1); }
+    const pkEl = $("#eqPeak"); if (pkEl) { pkEl.textContent = mon.peak > -60 ? (mon.peak > -0.1 ? "MAX" : Math.round(mon.peak)) : "−∞"; pkEl.classList.toggle("clip", mon.peak > -0.1); }
+  }
+  // curve
+  const N = Math.max(60, Math.round(W / 3)), fr = Array.from({ length: N + 1 }, (_, i) => logVal(i / N, 20, 20000)), rs = LickFX.response(e, fr);
+  g.beginPath(); fr.forEach((f, i) => { const y = Math.max(2, Math.min(H - 2, Y(rs[i]))); i ? g.lineTo(X(f), y) : g.moveTo(X(f), y); });
+  g.strokeStyle = mon.ab === "dry" ? "rgba(255,255,255,.35)" : C("--volt") || "#FFE600"; g.lineWidth = 3; g.stroke();
+  // dots
+  e.eq.forEach(([, f, gain], i) => { const x = X(f), y = Y(gain), sel = i === eqBand; g.beginPath(); g.arc(x, y, sel ? 11 : 8, 0, 7); g.fillStyle = sel ? (C("--hot") || "#FF2E88") : (C("--cyan") || "#2BE7FF"); g.fill(); g.lineWidth = 2.5; g.strokeStyle = "#0B0912"; g.stroke(); g.fillStyle = "#0B0912"; g.font = "800 10px system-ui"; g.textAlign = "center"; g.fillText(String(i + 1), x, y + 3.5); g.textAlign = "start"; });
+  if (e.hp) { const x = X(e.hp); g.strokeStyle = "rgba(255,61,90,.7)"; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); g.setLineDash([]); }
+  eqRaf = requestAnimationFrame(eqDraw);
+}
+function eqStartLoop() { eqDirty = true; if (!eqRaf && $("#eqCv")) eqRaf = requestAnimationFrame(eqDraw); }
+function eqChanged(c, full) { eqDirty = true; saveEq(); monSync(c); if (full) { renderStudio(); } else eqLabels(); }
+function eqLabels() {
+  const e = eqNow(); e.eq.forEach(([, f, g], i) => { const el = $(`#eqb-${i}`); if (el) el.textContent = `${fmtHz(f)} · ${fmtDb(g)}`; });
+  const b = e.eq[eqBand], set = (id, t) => { const el = $(`#eqv-${id}`); if (el) el.textContent = t; };
+  set(`b-${eqBand}-f`, fmtHz(b[1]) + " Hz"); set(`b-${eqBand}-g`, fmtDb(b[2]) + " dB"); set(`b-${eqBand}-q`, "Q " + b[3].toFixed(1));
+  set("hp", e.hp ? e.hp + " Hz" : "Off"); set("thr", e.ratio > 1 ? e.thr + " dB" : "Off"); set("ratio", e.ratio > 1 ? e.ratio + ":1" : "Off"); set("wet", Math.round(e.wet * 250) + "%"); set("out", fmtDb(e.out || 0) + " dB");
+  const syncIn = (id, v) => { const el = document.querySelector(`[data-eq="${id}"]`); if (el && document.activeElement !== el) el.value = v; };
+  const [lo, hi] = BAND_RANGE[eqBand]; syncIn(`b:${eqBand}:f`, logPos(b[1], lo, hi)); syncIn(`b:${eqBand}:g`, b[2]);
+}
+function eqInput(id, v) {
+  const e = eqNow(), [k, i, w] = id.split(":");
+  if (k === "b") { const b = e.eq[+i], [lo, hi] = BAND_RANGE[+i]; if (w === "f") b[1] = Math.round(logVal(v, lo, hi)); else if (w === "g") b[2] = v; else b[3] = +logVal(1 - v, 0.3, 8).toFixed(2); }
+  else e[k] = v;
+}
+// drag the dots on the curve
+document.addEventListener("pointerdown", ev => {
+  const cv = ev.target.closest?.("#eqCv"); if (!cv) return;
+  const r = cv.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top, W = r.width, H = r.height, e = eqNow();
+  let best = -1, bd = 1e9; e.eq.forEach(([, f, g], i) => { const dx = logPos(f, 20, 20000) * W - x, dy = H / 2 - g / 15 * (H / 2 - 10) - y, d = dx * dx + dy * dy; if (d < bd) { bd = d; best = i; } });
+  if (bd > 44 * 44) return;
+  eqDrag = best; if (eqBand !== best) { eqBand = best; renderStudio(); }
+  try { $("#eqCv").setPointerCapture(ev.pointerId); } catch { } ev.preventDefault();
+  const c = cur(); if (c && video) hookVideo();
+});
+document.addEventListener("pointermove", ev => {
+  if (eqDrag < 0) return; const cv = $("#eqCv"), c = cur(); if (!cv || !c) return;
+  const r = cv.getBoundingClientRect(), H = r.height, b = eqNow().eq[eqDrag], [lo, hi] = BAND_RANGE[eqDrag];
+  b[1] = Math.round(Math.min(hi, Math.max(lo, logVal((ev.clientX - r.left) / r.width, 20, 20000))));
+  b[2] = Math.round(Math.max(-12, Math.min(12, (H / 2 - (ev.clientY - r.top)) / (H / 2 - 10) * 15)) * 2) / 2;
+  eqChanged(c);
+});
+["pointerup", "pointercancel"].forEach(t => document.addEventListener(t, () => { eqDrag = -1; }));
 // "F C G Am ×3" instead of the same loop spelled out
 function chordLoop(names) {
   const lab = n => `<i>${esc(n.replace(/5$/, " pedal"))}</i>`;
@@ -3612,7 +3833,7 @@ function bandPrefetch(c) {
   setTimeout(() => { if (cur() === c && state.tab === "band") { bandRender(c).catch(() => { }); const w = bandWindow(c); windowAudio(c, w.s, w.e).catch(() => { }); } }, 80);
 }
 function stopBand() {
-  for (const n of bandNodes) { try { n.stop(); } catch { } } bandNodes = []; clearInterval(bandSync); bandSync = 0;
+  for (const n of bandNodes) { try { n.stop(); } catch { } } bandNodes = []; clearInterval(bandSync); bandSync = 0; bandChain = null;
   if (video) { video.muted = false; }
   if (player && player.ext) { player.ext = null; player.onToggle = null; player.pause(); }
   if (bandPlaying) { bandPlaying = false; stopAt = null; video?.pause(); }
@@ -3628,12 +3849,12 @@ function bandPreview(c) {
     if (!bandPlaying || bandPreview.token !== token) return;
     if (ctx.state === "suspended") await ctx.resume().catch(() => { });
     say("");
-    const og = ctx.createGain(); og.gain.value = takeGain(c); og.connect(ctx.destination);
-    const chain = LickFX.graph(ctx, sndOf(c).fx); chain.output.connect(og);
+    const og = ctx.createGain(); og.gain.value = takeGain(c); og.connect(monitor()?.an || ctx.destination);
+    const chain = LickFX.graph(ctx, mon.ab === "dry" ? null : fxOf(c)); chain.output.connect(og); bandChain = chain; const outN = monitor()?.an || ctx.destination;
     const a = ctx.createBufferSource(); a.buffer = orig; a.connect(chain.input);
     mixNodes = { take: og }; const srcs = [a];
-    if (r.stems) for (const [k] of INSTS) { const g = ctx.createGain(); g.gain.value = stemGain(c, k); g.connect(ctx.destination); const sN = ctx.createBufferSource(); sN.buffer = r.stems[k]; sN.connect(g); srcs.push(sN); mixNodes[k] = g; }
-    else { bandGainNode = ctx.createGain(); bandGainNode.gain.value = c.band.gain; bandGainNode.connect(ctx.destination); const bnd = ctx.createBufferSource(); bnd.buffer = r.buffer; bnd.connect(bandGainNode); srcs.push(bnd); }
+    if (r.stems) for (const [k] of INSTS) { const g = ctx.createGain(); g.gain.value = stemGain(c, k); g.connect(outN); const sN = ctx.createBufferSource(); sN.buffer = r.stems[k]; sN.connect(g); srcs.push(sN); mixNodes[k] = g; }
+    else { bandGainNode = ctx.createGain(); bandGainNode.gain.value = c.band.gain; bandGainNode.connect(outN); const bnd = ctx.createBufferSource(); bnd.buffer = r.buffer; bnd.connect(bandGainNode); srcs.push(bnd); }
     const t0 = ctx.currentTime + 0.15; for (const x of srcs) x.start(t0); bandNodes = srcs;
     a.onended = () => { if (bandPreview.token === token && bandPlaying) { stopBand(); renderStudio(); } };
     // the picture follows the sound: one clock, the audio's
@@ -3664,7 +3885,7 @@ async function bandSave(c, vertical, say0) {
     const r = await bandRender(c), M = await mb();
     const gainDb = vertical ? ClipExporter.levelGain(c.raw.loud, CELL, r.w.s, r.w.e) : 0;
     const mix = bandMix(c, r);
-    const out = await ClipExporter.exportShort(M, c.file, [r.w.s, r.w.e], p => say(`Mixing… ${Math.round(p * 100)}%`), { gainDb, mix, vertical, fx: sndOf(c).fx, take: takeGain(c) });
+    const out = await ClipExporter.exportShort(M, c.file, [r.w.s, r.w.e], p => say(`Mixing… ${Math.round(p * 100)}%`), { gainDb, mix, vertical, fx: fxOf(c), take: takeGain(c) });
     const name = `${c.name.replace(/\.[^.]+$/, "")}_${r.style}${vertical ? "_short" : ""}.mp4`;
     try { await offerFile(name, out.blob, say); spendTrial(); diagLog(`export band ${vertical ? "vertical" : "original"}: saved`); say(`${savedWhere()} ${mix ? "Band mixed in." : "Saved."}${sndOf(c).fx ? ` Studio sound: ${fxLabel(c)}.` : ""}`); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
@@ -3776,9 +3997,9 @@ async function playRanges(c, ranges, label) {
     const sbuf = await soundBuf(c);
     if (playRanges.tok !== tok) return;
     if (audioCtx.state === "suspended") await audioCtx.resume();
-    audioLabel = label || "Selection"; audioRanges = ranges;
+    audioLabel = label || "Selection"; audioRanges = ranges; monSync(c);
     let at = audioCtx.currentTime + 0.05; audioPlan = []; audioNodes = [];
-    for (const [a, b] of ranges) { const n = audioCtx.createBufferSource(); n.buffer = sbuf; n.connect(audioCtx.destination); n.start(at, a, b - a); audioPlan.push({ at, a, b }); audioNodes.push(n); at += b - a; }
+    for (const [a, b] of ranges) { const n = audioCtx.createBufferSource(); n.buffer = sbuf; n.connect(monitor()?.in || audioCtx.destination); n.start(at, a, b - a); audioPlan.push({ at, a, b }); audioNodes.push(n); at += b - a; }
     if (!raf) raf = requestAnimationFrame(audioTick);
     listenUI();
   } catch (e) { diagLog("sound play failed: " + String(e?.message || e).slice(0, 60)); toast("Couldn't play the sound on this phone."); listenUI(); }
@@ -3941,6 +4162,7 @@ Return only JSON: [{"caption": string, "hashtags": [string]}]`, { modelTier: "qu
 // ---------- events
 document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList?.contains("segrow")) { e.preventDefault(); e.target.click(); } });
 document.addEventListener("click", e => {
+  { const c0 = cur(); if (c0 && !$("#studio").hidden) { if (mon.ctx?.state === "suspended") mon.ctx.resume().catch(() => { }); if (video && sndOf(c0).fx) hookVideo(); } }
   const t = e.target.closest("button");
   if (!t) {
     const card = e.target.closest("[data-open]"); if (card) { openCardAt(card); return; }
@@ -4050,7 +4272,12 @@ document.addEventListener("click", e => {
     if (id === "len30") { stopBand(); state.pickLen = 30; c.pickSel = 0; syncRules(); render(); renderStudio(); showPick(c); toast("Picks are now 30 s. Change it any time under Pick length."); return; }
     if (id.startsWith("band:")) { c.band = c.band || { style: "auto", parts: { drums: true, bass: true, keys: true }, gain: 0.8, vertical: true }; c.band.style = id.slice(5); state.tab = "band"; c.src = "pick"; renderStudio(); showPick(c); bandPreview(c); return; }
   }
-  if (d.fx != null) { const was = bandPlaying; stopBand(); sndOf(c).fx = d.fx || null; renderStudio(); renderSrc(c); if (was) bandPreview(c); return; }
+  if (d.fx != null) { const was = bandPlaying; stopBand(); sndOf(c).fx = d.fx || null; if (d.fx === "custom") eqNow(); persist(c); if (video && d.fx) hookVideo(); monSync(c); renderStudio(); renderSrc(c); if (was) bandPreview(c); return; }
+  if (d.act === "eq-open") { const f = sndOf(c).fx; if (!myEq) myEq = { ...LickFX.full(f || "clean"), name: "My sound" }; saveEq(); sndOf(c).fx = "custom"; persist(c); if (video) hookVideo(); monSync(c); renderStudio(); renderSrc(c); setTimeout(() => document.querySelector(".eqcard")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); return; }
+  if (d.eqstart) { myEq = eqStart(d.eqstart); eqChanged(c, true); toast(`My sound now starts from ${t.textContent.trim()}. Tune it by ear.`); return; }
+  if (d.act === "eq-flat") { myEq = eqStart("flat"); eqChanged(c, true); return; }
+  if (d.eqband != null) { eqBand = +d.eqband; renderStudio(); return; }
+  if (d.act === "eq-ab") { mon.ab = mon.ab === "dry" ? "fx" : "dry"; if (video) hookVideo(); monSync(c); renderStudio(); return; }
   if (d.mute) {
     const k = d.mute;
     if (k === "take") sndOf(c).takeOn = !sndOf(c).takeOn;
@@ -4077,6 +4304,7 @@ $("#list").addEventListener("pointerdown", e => { longPressed = false; const el 
 ["pointerup", "pointercancel", "pointerleave"].forEach(ev => $("#list").addEventListener(ev, () => clearTimeout(lpT)));
 $("#list").addEventListener("contextmenu", e => { if (e.target.closest("[data-open]")) e.preventDefault(); });
 document.addEventListener("input", e => {
+  const eqId = e.target.dataset?.eq; if (eqId) { const c = cur(); if (!c) return; eqInput(eqId, +e.target.value); if (video) hookVideo(); eqChanged(c); return; }
   const mx = e.target.dataset?.mx; if (mx) { const c = cur(); if (!c) return; const v = +e.target.value;
     if (mx === "take") sndOf(c).take = v; else { c.band.lv = c.band.lv || { drums: 1, bass: 1, keys: 1 }; c.band.lv[mx] = v; }
     const node = mixNodes[mx]; if (node && bandPlaying) node.gain.setTargetAtTime(mx === "take" ? takeGain(c) : stemGain(c, mx), node.context.currentTime, 0.03);
