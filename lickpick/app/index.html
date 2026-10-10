@@ -714,6 +714,22 @@ input[type=range]{min-height:44px}
 .whyd[open]{display:flex;flex-direction:column;gap:12px}
 .pickhero .row-btns .btn.wide{grid-column:1/-1}
 .clean-hero .btn .protag{color:var(--volt);border-color:var(--volt)}
+/* Sound tab: polish + mixer */
+.sndcard{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:18px;background:var(--panel);border:2px solid var(--line)}
+.sndhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sndhead h3{margin:0;display:flex;align-items:center;gap:8px;font:400 18px var(--display)} .sndhead h3 svg.i{color:var(--volt);--ic2:transparent}
+.sndhead .free{font:800 10px/1 var(--body);letter-spacing:.06em;color:var(--cyan);border:1.5px solid var(--cyan);border-radius:5px;padding:3px 5px}
+.fxseg{display:grid!important;grid-template-columns:repeat(5,1fr)} .fxseg button{padding:6px 2px;font-size:12.5px;line-height:1.15;white-space:normal}
+.mxrow{display:grid;grid-template-columns:40px 64px 56px 1fr;gap:10px;align-items:center;min-height:52px}
+.mxrow .stk{width:36px;height:36px;border-radius:11px} .mxrow .stk svg.i{width:20px!important;height:20px!important}
+.mxn{font-weight:800;font-size:14.5px}
+.mute{min-height:44px;border-radius:12px;border:2px solid var(--ink);background:var(--volt);color:var(--ink);font:800 13px var(--body);box-shadow:2px 2px 0 var(--hot)}
+.mute[aria-pressed=true]{background:var(--raise);color:var(--dim);border-color:var(--line);box-shadow:none}
+.mxrow.muted .stk{filter:grayscale(1) brightness(.6);box-shadow:none} .mxrow.muted .mxn{color:var(--mute)}
+.mxrow.dis{opacity:.45}
+.mxrow input[type=range]{width:100%;accent-color:var(--volt)}
+.sndcard .row-btns{margin-top:4px}
+.opt .chev{color:var(--mute);font-weight:800;font-size:18px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -896,7 +912,7 @@ input[type=range]{min-height:44px}
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" type="button" data-tab="pick"><svg class="i"><use href="#i-star"/></svg>Pick</button>
       <button class="tab" role="tab" type="button" data-tab="parts"><svg class="i"><use href="#i-cut"/></svg>Segments</button>
-      <button class="tab" role="tab" type="button" data-tab="band"><svg class="i"><use href="#i-drum"/></svg>Band</button>
+      <button class="tab" role="tab" type="button" data-tab="band"><svg class="i"><use href="#i-sliders"/></svg>Sound</button>
       <button class="tab" role="tab" type="button" data-tab="post"><svg class="i"><use href="#i-text"/></svg>Caption</button>
     </div>
     <div class="panel" id="sPanel"></div>
@@ -935,11 +951,11 @@ input[type=range]{min-height:44px}
     <div class="row2"><span><b>How picky</b></span>
       <span class="seg" id="picky"><button type="button" data-picky="0.25">Chill</button><button type="button" data-picky="0.5">Normal</button><button type="button" data-picky="0.8">Strict</button></span></div>
     <p class="hint">Trash is only suggested when a clip has no music at all. Your own edits are never changed.</p>
-    <p class="sfoot">LickPick 1.1 · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. LickPick never deletes.<br>© 2026 3Shamrocks Studio. All rights reserved.</p>
+    <p class="sfoot">LickPick 1.2 · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. LickPick never deletes.<br>© 2026 3Shamrocks Studio. All rights reserved.</p>
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10g"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10h"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -1428,9 +1444,9 @@ input[type=range]{min-height:44px}
    Audio is copied untouched when the format allows. */
 (function (root) {
   // Gain (dB) with a soft limiter so boosted peaks never clip.
-  function gainProcess(MB, gainDb, mix, s) {
-    const g = Math.pow(10, gainDb / 20), T = 0.89;
-    let tBase = null;
+  function gainProcess(MB, gainDb, mix, s, fx = null, take = 1) {
+    const g = Math.pow(10, gainDb / 20) * take, T = 0.89;
+    let tBase = null; const chain = [];
     const bandCh = mix ? [mix.buffer.getChannelData(0), mix.buffer.getChannelData(mix.buffer.numberOfChannels > 1 ? 1 : 0)] : null;
     return sample => {
       if (tBase === null) tBase = sample.timestamp >= s - 0.5 ? s : 0;   // timestamps may be clip-time or output-time
@@ -1442,6 +1458,7 @@ input[type=range]{min-height:44px}
         const bc = bandCh ? bandCh[Math.min(c, 1)] : null, bsr = mix ? mix.buffer.sampleRate : 0;
         for (let i = 0; i < n; i++) {
           let y = plane[i] * g;
+          if (fx && root.LickFX) { if (!chain[c]) chain[c] = root.LickFX.channel(fx, sample.sampleRate, c); y = chain[c](y); }
           if (bc) { const x = (sample.timestamp - tBase + i / sample.sampleRate) * bsr, j = Math.floor(x), f = x - j; if (j >= 0 && j + 1 < bc.length) y += (bc[j] * (1 - f) + bc[j + 1] * f) * mix.gain; }
           const a = Math.abs(y);
           if (a > T) y = Math.sign(y) * (T + (1 - T) * Math.tanh((a - T) / (1 - T)));
@@ -1452,7 +1469,7 @@ input[type=range]{min-height:44px}
     };
   }
 
-  async function exportShort(MB, file, [s, e], onProgress = () => { }, { gainDb = 0, audioCodecs = ["aac"], mix = null, vertical = true, watermark = false } = {}) {
+  async function exportShort(MB, file, [s, e], onProgress = () => { }, { gainDb = 0, audioCodecs = ["aac"], mix = null, vertical = true, watermark = false, fx = null, take = 1 } = {}) {
     const input = new MB.Input({ source: new MB.BlobSource(file), formats: MB.ALL_FORMATS });
     const vt = await input.getPrimaryVideoTrack();
     if (!vt) throw Object.assign(new Error("no video"), { code: "no_video" });
@@ -1467,11 +1484,12 @@ input[type=range]{min-height:44px}
     if (!codec) throw Object.assign(new Error("no encoder"), { code: "no_encoder" });
     // Level the loudness for social (about -14 LUFS) when this device can encode the audio; otherwise copy it as is.
     let audio = {}, leveled = false;
-    if (Math.abs(gainDb) >= 1 || mix) {
+    const shape = !!fx || Math.abs(take - 1) > 0.01;
+    if (Math.abs(gainDb) >= 1 || mix || shape) {
       const at = await input.getPrimaryAudioTrack();
-      const acodec = at ? await MB.getFirstEncodableAudioCodec(mix ? [...new Set([...audioCodecs, "opus"])] : audioCodecs, { numberOfChannels: Math.max(2, at.numberOfChannels), sampleRate: at.sampleRate }) : null;
-      if (acodec) { audio = { codec: acodec, quality: MB.QUALITY_HIGH, numberOfChannels: mix ? 2 : undefined, process: gainProcess(MB, gainDb, mix, s) }; leveled = Math.abs(gainDb) >= 1; }
-      else if (mix) throw Object.assign(new Error("no audio encoder"), { code: "no_audio_encoder" });
+      const acodec = at ? await MB.getFirstEncodableAudioCodec(mix || shape ? [...new Set([...audioCodecs, "opus"])] : audioCodecs, { numberOfChannels: Math.max(2, at.numberOfChannels), sampleRate: at.sampleRate }) : null;
+      if (acodec) { audio = { codec: acodec, quality: MB.QUALITY_HIGH, numberOfChannels: mix ? 2 : undefined, process: gainProcess(MB, gainDb, mix, s, fx, take) }; leveled = Math.abs(gainDb) >= 1; }
+      else if (mix || shape) throw Object.assign(new Error("no audio encoder"), { code: "no_audio_encoder" });
     }
     const output = new MB.Output({ format: new MB.Mp4OutputFormat({ fastStart: "in-memory" }), target: new MB.BufferTarget() });
     const conv = await MB.Conversion.init({
@@ -1573,6 +1591,72 @@ input[type=range]{min-height:44px}
     return { frames, step, thumb };
   }
   root.ClipExporter = Object.assign(root.ClipExporter || {}, { exportShort, bestWindow, levelGain, analyzeVideo });
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* Studio polish: one sound chain, two engines. Export runs it sample by sample (below);
+   preview builds the same chain from Web Audio nodes, so what you hear is what you save. */
+(function (root) {
+  const PRESETS = {
+    clean:  { name: "Clean",     hp: 80, eq: [["peaking", 300, -2, 1], ["peaking", 3500, 3, 0.8], ["highshelf", 10000, 2, 0.7]], thr: -20, ratio: 3,   wet: 0.05 },
+    warm:   { name: "Warm",      hp: 70, eq: [["lowshelf", 160, 2.5, 0.7], ["peaking", 3000, 1, 0.8], ["highshelf", 9000, -1.5, 0.7]], thr: -22, ratio: 2.5, wet: 0.07 },
+    bright: { name: "Bright",    hp: 90, eq: [["peaking", 300, -2.5, 1], ["peaking", 4000, 4, 0.8], ["highshelf", 10000, 3.5, 0.7]], thr: -20, ratio: 3,   wet: 0.05 },
+    room:   { name: "Live room", hp: 80, eq: [["peaking", 300, -2, 1], ["peaking", 3500, 2, 0.8], ["highshelf", 10000, 2, 0.7]], thr: -20, ratio: 3,   wet: 0.2 },
+  };
+  const makeup = p => -p.thr * (1 - 1 / p.ratio) * 0.5;      // dB back after the compressor
+  // RBJ cookbook biquads (the same maths Web Audio uses)
+  function coefs(type, f, gainDb, q, sr) {
+    const A = Math.pow(10, gainDb / 40), w = 2 * Math.PI * f / sr, cs = Math.cos(w), sn = Math.sin(w), al = sn / (2 * q), sA = 2 * Math.sqrt(A) * al;
+    let b0, b1, b2, a0, a1, a2;
+    if (type === "highpass") { b0 = (1 + cs) / 2; b1 = -(1 + cs); b2 = (1 + cs) / 2; a0 = 1 + al; a1 = -2 * cs; a2 = 1 - al; }
+    else if (type === "peaking") { b0 = 1 + al * A; b1 = -2 * cs; b2 = 1 - al * A; a0 = 1 + al / A; a1 = -2 * cs; a2 = 1 - al / A; }
+    else if (type === "lowshelf") { b0 = A * ((A + 1) - (A - 1) * cs + sA); b1 = 2 * A * ((A - 1) - (A + 1) * cs); b2 = A * ((A + 1) - (A - 1) * cs - sA); a0 = (A + 1) + (A - 1) * cs + sA; a1 = -2 * ((A - 1) + (A + 1) * cs); a2 = (A + 1) + (A - 1) * cs - sA; }
+    else { b0 = A * ((A + 1) + (A - 1) * cs + sA); b1 = -2 * A * ((A - 1) + (A + 1) * cs); b2 = A * ((A + 1) + (A - 1) * cs - sA); a0 = (A + 1) - (A - 1) * cs + sA; a1 = 2 * ((A - 1) - (A + 1) * cs); a2 = (A + 1) - (A - 1) * cs - sA; }
+    return [b0 / a0, b1 / a0, b2 / a0, a1 / a0, a2 / a0];
+  }
+  function biquad(k) { let x1 = 0, x2 = 0, y1 = 0, y2 = 0; return x => { const y = k[0] * x + k[1] * x1 + k[2] * x2 - k[3] * y1 - k[4] * y2; x2 = x1; x1 = x; y2 = y1; y1 = y; return y; }; }
+  // a small Freeverb-style room
+  function room(sr, spread) {
+    const sc = sr / 44100, combs = [1116, 1188, 1277, 1356].map(d => ({ b: new Float32Array(Math.round((d + spread) * sc)), i: 0, f: 0 })), aps = [556, 441].map(d => ({ b: new Float32Array(Math.round((d + spread) * sc)), i: 0 }));
+    return x => {
+      let out = 0;
+      for (const c of combs) { const y = c.b[c.i]; c.f = y * 0.6 + c.f * 0.4; c.b[c.i] = x * 0.015 + c.f * 0.82; c.i = (c.i + 1) % c.b.length; out += y; }
+      for (const a of aps) { const bo = a.b[a.i]; const y = -out + bo; a.b[a.i] = out + bo * 0.5; a.i = (a.i + 1) % a.b.length; out = y; }
+      return out;
+    };
+  }
+  // one channel of the chain: filters, compressor, room
+  function channel(preset, sr, ch) {
+    const p = PRESETS[preset]; if (!p) return x => x;
+    const fs = [biquad(coefs("highpass", p.hp, 0, 0.707, sr)), ...p.eq.map(([t, f, g, q]) => biquad(coefs(t, f, g, q, sr)))];
+    const att = Math.exp(-1 / (0.01 * sr)), rel = Math.exp(-1 / (0.12 * sr)), mk = Math.pow(10, makeup(p) / 20), rv = room(sr, ch ? 23 : 0);
+    let env = 0;
+    return x => {
+      for (const f of fs) x = f(x);
+      const a = Math.abs(x); env = a > env ? att * env + (1 - att) * a : rel * env + (1 - rel) * a;
+      const lvl = 20 * Math.log10(env + 1e-9), over = lvl - p.thr, gr = over > 0 ? -over * (1 - 1 / p.ratio) : 0;
+      x *= Math.pow(10, gr / 20) * mk;
+      return x * (1 - p.wet * 0.5) + rv(x) * p.wet * 4;
+    };
+  }
+  // Web Audio twin for preview. Returns {input, output}.
+  function graph(ctx, preset) {
+    const p = PRESETS[preset], input = ctx.createGain(), output = ctx.createGain();
+    if (!p) { input.connect(output); return { input, output }; }
+    let node = input;
+    const add = n => { node.connect(n); node = n; };
+    const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = p.hp; hp.Q.value = 0.707; add(hp);
+    for (const [t, f, g, q] of p.eq) { const b = ctx.createBiquadFilter(); b.type = t; b.frequency.value = f; b.gain.value = g; b.Q.value = q; add(b); }
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = p.thr; comp.ratio.value = p.ratio; comp.knee.value = 4; comp.attack.value = 0.01; comp.release.value = 0.12; add(comp);
+    const mk = ctx.createGain(); mk.gain.value = Math.pow(10, makeup(p) / 20); add(mk);
+    const dry = ctx.createGain(), wet = ctx.createGain(), conv = ctx.createConvolver();
+    dry.gain.value = 1 - p.wet * 0.5; wet.gain.value = p.wet * 1.6;
+    const sr = ctx.sampleRate, n = Math.round(sr * 1.3), ir = ctx.createBuffer(2, n, sr);
+    for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3.2); }
+    conv.buffer = ir;
+    node.connect(dry); node.connect(conv); conv.connect(wet); dry.connect(output); wet.connect(output);
+    return { input, output };
+  }
+  root.LickFX = { PRESETS, channel, graph };
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
@@ -2013,9 +2097,11 @@ input[type=range]{min-height:44px}
     const style = A.meter === 3 ? { ...style0, kick: style0.kick.length ? [0] : [], snare: style0.snare?.length || style0.rim ? [4, 8] : [], rim: [], ghost: [], hat: style0.hat.length ? (style0.hat.length > 8 ? [0, 2, 4, 6, 8, 10] : [0, 4, 8]) : [], bass: style0.bass.length > 1 ? [0, 8] : [0], comp: style0.comp ? [4, 8] : undefined, walk: false } : style0;
     const SPB = (A.meter || 4) * 4, FILL = SPB - 4;
     const K = await kit(SR);
-    const L = new Float32Array(N), R = new Float32Array(N), pending = [];
-    // place a mono sound at clip time t: gain, pan (-1..1), optional cut time with a short release
-    function put(buf, t, gain, pan = 0, cut = Infinity, rel = 0.05) {
+    // one stereo track per instrument, so the mixer can set each level live
+    const ST = { drums: [new Float32Array(N), new Float32Array(N)], bass: [new Float32Array(N), new Float32Array(N)], keys: [new Float32Array(N), new Float32Array(N)] }, pending = [];
+    // place a mono sound for instrument `inst` at clip time t: gain, pan (-1..1), optional cut time with a short release
+    function put(inst, buf, t, gain, pan = 0, cut = Infinity, rel = 0.05) {
+      const [L, R] = ST[inst];
       let off = Math.round((t - s) * SR); if (off >= N || gain <= 0) return;
       const gl = gain * Math.cos((pan + 1) * Math.PI / 4), gr = gain * Math.sin((pan + 1) * Math.PI / 4);
       const end = Math.min(buf.length, N - off, Math.ceil((Math.min(cut, e + 0.6) - t + rel) * SR));
@@ -2039,13 +2125,13 @@ input[type=range]{min-height:44px}
         const en = bar.energy ?? 0.7, vel = 0.62 + 0.38 * en, sparse = en < 0.22, fill = bi % 8 === 7 && bi < bars.length - 1;
         const at = j => stepT(bar.k, j), ok = t => t >= s - 0.005 && t < endT;
         if (parts.drums) {
-          if (bi === 0 || bi % 8 === 0) put(K.crash, bar.t0, 0.42 * vel * lvl.drums, -0.3);
-          for (const j of style.kick) if (!(sparse && j)) { const t = at(j); if (ok(t)) put(K.kick, t, (j ? 0.82 : 1) * vel * lvl.drums); }
-          for (const j of style.snare || []) if (!sparse && !(fill && j >= FILL)) { const t = at(j); if (ok(t)) put(K.snare, t, 0.7 * vel * lvl.drums, 0.05); }
-          for (const j of style.rim || []) { const t = at(j); if (ok(t)) put(K.rim, t, 0.5 * vel * lvl.drums, 0.1); }
-          for (const j of style.ghost || []) if (!sparse) { const t = at(j); if (ok(t)) put(K.snare, t, 0.16 * vel * lvl.drums, 0.05); }
-          for (const j of style.hat) if (!(sparse && j % 4) && !(fill && j >= FILL)) { const t = at(j); if (ok(t)) put(style.open && j % 4 === 2 ? K.open : K.hat, t, (j % 4 === 0 ? 0.3 : 0.2) * vel * lvl.drums, 0.3); }
-          if (fill) for (let j = FILL; j < SPB; j++) { const t = at(j); if (ok(t)) put(K.snare, t, (0.3 + 0.12 * (j - FILL)) * lvl.drums, 0.05); }
+          if (bi === 0 || bi % 8 === 0) put('drums', K.crash, bar.t0, 0.42 * vel * lvl.drums, -0.3);
+          for (const j of style.kick) if (!(sparse && j)) { const t = at(j); if (ok(t)) put('drums', K.kick, t, (j ? 0.82 : 1) * vel * lvl.drums); }
+          for (const j of style.snare || []) if (!sparse && !(fill && j >= FILL)) { const t = at(j); if (ok(t)) put('drums', K.snare, t, 0.7 * vel * lvl.drums, 0.05); }
+          for (const j of style.rim || []) { const t = at(j); if (ok(t)) put('drums', K.rim, t, 0.5 * vel * lvl.drums, 0.1); }
+          for (const j of style.ghost || []) if (!sparse) { const t = at(j); if (ok(t)) put('drums', K.snare, t, 0.16 * vel * lvl.drums, 0.05); }
+          for (const j of style.hat) if (!(sparse && j % 4) && !(fill && j >= FILL)) { const t = at(j); if (ok(t)) put('drums', style.open && j % 4 === 2 ? K.open : K.hat, t, (j % 4 === 0 ? 0.3 : 0.2) * vel * lvl.drums, 0.3); }
+          if (fill) for (let j = FILL; j < SPB; j++) { const t = at(j); if (ok(t)) put('drums', K.snare, t, (0.3 + 0.12 * (j - FILL)) * lvl.drums, 0.05); }
         }
         if (parts.bass) {
           const steps = style.bass;
@@ -2056,22 +2142,22 @@ input[type=range]{min-height:44px}
             const pc = style.walk ? [h.root, third, fifth, (h.root + 9) % 12][n % 4] : (steps.length > 4 && n % 4 === 3 ? fifth : h.root);
             const m = 36 + ((pc - 0 + 12) % 12) + (pc < 4 ? 12 : 0);           // E1..D#2 range, low and clean
             const chordEnd = h.t1, cut = Math.min(nextT, chordEnd, endT) - 0.02;
-            pending.push(bassNote(SR, m).then(buf => put(buf, t, (n === 0 ? 1 : 0.85) * vel * lvl.bass, 0, Math.max(t + 0.08, cut), 0.04)));
+            pending.push(bassNote(SR, m).then(buf => put('bass', buf, t, (n === 0 ? 1 : 0.85) * vel * lvl.bass, 0, Math.max(t + 0.08, cut), 0.04)));
           });
         }
         if (parts.keys && style.comp) for (const j of style.comp) {
           const t = at(j); if (!ok(t)) continue; const h = harmonyAt(t);
-          for (const m of voicing(h.pcs)) pending.push(padNote(SR, m, true).then(buf => put(buf, t, 0.8 * vel * lvl.keys, 0.25)));
+          for (const m of voicing(h.pcs)) pending.push(padNote(SR, m, true).then(buf => put('keys', buf, t, 0.8 * vel * lvl.keys, 0.25)));
         }
       });
       // a clean ending: one last hit on the final bar line inside the window
       const last = A.bars.find(b => b.t0 >= endT - 0.1) || null;
       const fin = last && last.t0 < e ? last.t0 : null;
-      if (fin && parts.drums) { put(K.kick, fin, lvl.drums); put(K.crash, fin, 0.45 * lvl.drums, -0.3); }
-      if (fin && parts.bass) { const h = harmonyAt(fin), m = 36 + h.root + (h.root < 4 ? 12 : 0); pending.push(bassNote(SR, m).then(buf => put(buf, fin, lvl.bass, 0, Math.min(e, fin + 1.2), 0.3))); }
+      if (fin && parts.drums) { put('drums', K.kick, fin, lvl.drums); put('drums', K.crash, fin, 0.45 * lvl.drums, -0.3); }
+      if (fin && parts.bass) { const h = harmonyAt(fin), m = 36 + h.root + (h.root < 4 ? 12 : 0); pending.push(bassNote(SR, m).then(buf => put('bass', buf, fin, lvl.bass, 0, Math.min(e, fin + 1.2), 0.3))); }
     } else if (parts.bass) {
       // free time: soft bass under each chord, no drums
-      for (const h of H) { const m = 36 + h.root + (h.root < 4 ? 12 : 0); pending.push(bassNote(SR, m).then(buf => { for (let t = Math.max(s, h.t0); t < h.t1 - 0.2; t += 2.8) put(buf, t, 0.55 * lvl.bass, 0, Math.min(h.t1, t + 2.8), 0.4); })); }
+      for (const h of H) { const m = 36 + h.root + (h.root < 4 ? 12 : 0); pending.push(bassNote(SR, m).then(buf => { for (let t = Math.max(s, h.t0); t < h.t1 - 0.2; t += 2.8) put('bass', buf, t, 0.55 * lvl.bass, 0, Math.min(h.t1, t + 2.8), 0.4); })); }
     }
     // held keys (pads), voice-led from chord to chord
     if (parts.keys && !(A.pulse && style.comp)) {
@@ -2079,16 +2165,18 @@ input[type=range]{min-height:44px}
       for (const h of H) {
         const v = voicing(h.pcs, prev); prev = v;
         const t0 = Math.max(s, h.t0), t1 = Math.min(e, h.t1);
-        for (const m of v) pending.push(padNote(SR, m).then(buf => { for (let t = t0; t < t1 - 0.05; t += 7.5) put(buf, t, (h.drone ? 0.85 : 1) * lvl.keys, 0.2, Math.min(t1, t + 7.8), 0.35); }));
+        for (const m of v) pending.push(padNote(SR, m).then(buf => { for (let t = t0; t < t1 - 0.05; t += 7.5) put('keys', buf, t, (h.drone ? 0.85 : 1) * lvl.keys, 0.2, Math.min(t1, t + 7.8), 0.35); }));
       }
     }
     await Promise.all(pending);
-    // level: peak to -1 dBFS
+    // level: the full band's peak to -1 dBFS, the same scale on every track
+    const L = new Float32Array(N), R = new Float32Array(N);
+    for (const [l, r] of Object.values(ST)) for (let i = 0; i < N; i++) { L[i] += l[i]; R[i] += r[i]; }
     let pk = 0; for (let i = 0; i < N; i++) pk = Math.max(pk, Math.abs(L[i]), Math.abs(R[i]));
-    const g = pk > 0.89 ? 0.89 / pk : 1; if (g !== 1) for (let i = 0; i < N; i++) { L[i] *= g; R[i] *= g; }
-    const buffer = new OfflineAudioContext(2, 1, SR).createBuffer(2, N, SR);
-    buffer.getChannelData(0).set(L); buffer.getChannelData(1).set(R);
-    return { buffer, A, bpm: A.bpm, chords: H, style: Object.keys(STYLES).find(k => STYLES[k] === style), key: raw.info?.key };
+    const g = pk > 0.89 ? 0.89 / pk : 1;
+    const mk = (l, r) => { const b = new OfflineAudioContext(2, 1, SR).createBuffer(2, N, SR); const bl = b.getChannelData(0), br = b.getChannelData(1); for (let i = 0; i < N; i++) { bl[i] = l[i] * g; br[i] = r[i] * g; } return b; };
+    const buffer = mk(L, R), stems = { drums: mk(...ST.drums), bass: mk(...ST.bass), keys: mk(...ST.keys) };
+    return { buffer, stems, A, bpm: A.bpm, chords: H, style: Object.keys(STYLES).find(k => STYLES[k] === style), key: raw.info?.key };
   }
   // triad (or root+fifth) in the middle register, moving as little as possible from the last chord
   function voicing(pcs, prev) {
@@ -2265,8 +2353,8 @@ const proTag = () => isPro() ? "" : `<i class="protag">PRO</i>`;
 // Free = find, hear, practise and post one clip at a time. Pro (paid once) = save more, faster, with the band.
 const TIER_TABLE = [
   ["Find", [["Scan every take, unlimited", 1], ["Grades: best, good, worth a look, useless", 1], ["Pick A, B, C + Why this part", 1]]],
-  ["Play & practise", [["Play my picks, back to back", 1], ["Loop and slow down to ¾ or ½", 1], ["Hear the backing band, every style", 1]]],
-  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Vertical 9:16 shorts, no watermark", 1], ["Captions + hashtags", 1], ["Save with the backing band", 0], ["Save all picks or cuts in one tap", 0], ["Each part as its own file", 0], ["Every future Pro add-on", -1]]],
+  ["Play & practise", [["Play my picks, back to back", 1], ["Loop and slow down to ¾ or ½", 1], ["Hear the backing band, every style", 1], ["Mixer: you, drums, bass, keys", 1]]],
+  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Studio polish: EQ, compression, room", 1], ["Vertical 9:16 shorts, no watermark", 1], ["Captions + hashtags", 1], ["Save with the backing band", 0], ["Save all picks or cuts in one tap", 0], ["Each part as its own file", 0], ["Every future Pro add-on", -1]]],
 ];
 const tierTableHTML = () => `<table class="cmp"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead>${TIER_TABLE.map(([g, rows]) => `<tbody><tr class="grp"><th colspan="3">${g}</th></tr>${rows.map(([l, free]) => `<tr${free > 0 ? "" : ' class="pro"'}><td>${l}</td><td>${free > 0 ? icon("i-check") : `<span class="try">${lic.trial && free === 0 ? "try" : "–"}</span>`}</td><td>${icon("i-check")}</td></tr>`).join("")}</tbody>`).join("")}</table>`;
 const PRO_FEATS = [["i-drum", "Export your licks with the band"], ["i-stack", "Save every pick at once"], ["i-cut", "Each part as its own file"], ["i-star", "Every future add-on"]];
@@ -2975,7 +3063,7 @@ function pickPanel(c) {
       <div class="pk-top"><span class="pk-tag">Pick ${"ABC"[c.pickSel || 0]}</span>${pk.why?.length ? `<span class="pk-why">${pk.why.map(esc).join(" · ")}</span>` : ""}</div>
       <div class="pk-big"><strong>${fmt(pk.len)}</strong><span>${fmt(pk.s)} → ${fmt(pk.e)}${pk.bars ? ` · ${pk.bars} bars` : ""}</span></div>
       <div class="row-btns"><button class="btn ink wide" type="button" data-act="pick-play">${icon("i-play")}Play the Pick</button></div>
-      <div class="row-btns"><button class="btn ghost" type="button" data-act="pick-band">${icon("i-drum")}Add a band</button><button class="btn ghost" type="button" data-act="reel-one">${icon("i-loop")}Loop & slow</button></div>
+      <div class="row-btns"><button class="btn ghost" type="button" data-act="pick-band">${icon("i-sliders")}Sound & band</button><button class="btn ghost" type="button" data-act="reel-one">${icon("i-loop")}Loop & slow</button></div>
     </div>
     <div class="finetune">
       <div class="grp"><div class="lbl">Starts <b>${fmtP(pk.s)}</b></div><div class="btns"><button type="button" data-padj="s:-1" aria-label="Start one bar earlier">−1 bar</button><button type="button" data-padj="s:1" aria-label="Start one bar later">+1 bar</button></div></div>
@@ -3023,6 +3111,7 @@ function exportSheetHTML(c) {
       ${o.canBand ? opt("band", o.band, "i-drum", "Backing band", "Drums, bass and keys on your beat.", false, proTag()) : ""}
       ${o.canSep ? opt("sep", o.sep, "i-stack", "One file per part", `${S.n} files instead of one.`, false, proTag()) : ""}
     </div>` : ""}
+    <div class="exgroup"><span>Sound</span><button type="button" class="opt" data-act="sound-open" ${busy ? "disabled" : ""}>${icon("i-sliders")}<span class="grow"><strong>${sndOf(c).fx ? `Studio polish · ${fxLabel(c)}` : "As recorded"}</strong><em>${S.ranges.length > 1 && !o.sep && sndOf(c).fx ? "Polish works on a Pick or a single part." : "Tap to change polish and mixer levels."}</em></span><span class="chev">›</span></button></div>
     <button class="btn wide" type="button" data-act="export-go" ${busy || !c.file || !downloads ? "disabled" : ""}>${icon("i-save")}Save ${files > 1 ? files + " files" : S.kind === "clean" ? "clean cut" : S.label}${o.band ? " + band" : ""} · ${fmt(S.len)}</button>
     ${!c.file ? `<p class="hint">Add this video again to export it. LickPick doesn't keep copies.</p>` : !downloads ? `<p class="hint">Saving isn't available in this view.</p>` : ""}
     <div class="status" id="exStatus" aria-live="polite">${esc(c.exStatus || "")}</div>`;
@@ -3042,8 +3131,13 @@ async function doExport(c) {
     const M = await mb(); let n = 0;
     if (o.fmt === "vertical") {
       const [[s0, e0]] = S.ranges, gainDb = ClipExporter.levelGain(c.raw.loud, CELL, s0, e0), mark = false;   // no watermark: Instagram buries Reels with other apps' logos
-      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Making vertical… ${Math.round(p * 100)}%`), { gainDb, watermark: mark });
+      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Making vertical… ${Math.round(p * 100)}%`), { gainDb, watermark: mark, fx: sndOf(c).fx, take: takeGain(c) });
       try { await offerFile(`${base}${tag}_vertical.mp4`, r.blob, say); n = 1; } catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
+    } else if (S.ranges.length === 1 && !o.sep && (sndOf(c).fx || Math.abs(takeGain(c) - 1) > 0.01)) {
+      // polish needs a re-encode of the sound; the picture keeps its framing
+      const [[s0, e0]] = S.ranges;
+      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Polishing… ${Math.round(p * 100)}%`), { vertical: false, fx: sndOf(c).fx, take: takeGain(c) });
+      try { await offerFile(`${base}${tag}${sndOf(c).fx ? "_" + sndOf(c).fx : ""}.mp4`, r.blob, say); n = 1; } catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
     } else {
       const jobs = o.sep ? S.ranges.map((r, i) => ({ name: `${base}_part${i + 1}`, ranges: [r] })) : [{ name: base + tag, ranges: S.ranges }];
       for (const job of jobs) n += await saveCut(M, c, job.name, job.ranges, say);
@@ -3051,7 +3145,7 @@ async function doExport(c) {
     }
     diagLog(`export ${S.kind} ${o.fmt}${o.sep ? " parts" : ""}: ${n ? "saved " + n : "not saved"}`);
     if (n) { if (S.kind === "pick") c.pickSaved = true; else c.saved = true; persist(c); renderCard(c); say(`${savedWhere()}${n > 1 ? ` ${n} files.` : ""}${S.kind === "clean" ? " You can delete the original from your gallery." : ""}`); }
-  } catch (err) { diagLog(`export ${S.kind} ${o.fmt} FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "unavailable" || err?.code === "not_granted" ? "Saving isn't available in this view." : err?.code === "no_encoder" ? "This browser can't make vertical videos. Original still works." : err?.code === "too_large_final" ? "Too big to save on this phone, even in pieces. Try a Pick." : "Couldn't cut this file. The original is untouched."); }
+  } catch (err) { console.warn("export failed", err); diagLog(`export ${S.kind} ${o.fmt} FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "unavailable" || err?.code === "not_granted" ? "Saving isn't available in this view." : err?.code === "no_encoder" ? "This browser can't make vertical videos. Original still works." : err?.code === "too_large_final" ? "Too big to save on this phone, even in pieces. Try a Pick." : "Couldn't cut this file. The original is untouched."); }
   c.exporting = false; renderExport(c); renderStudio(); renderBoxes();
 }
 // ---------- Why this part: the strength of every moment, where the Pick sits, and why the rest lost
@@ -3194,25 +3288,55 @@ function bandA(c) {
   if (c._bandA?.key !== key) { let A = null; try { A = LickMusic.analyze(c.raw, w.s, w.e); } catch { } c._bandA = { key, A }; }
   return c._bandA.A;
 }
+// ---------- Sound: studio polish + mixer (your take, drums, bass, keys). Hear it all free; the band export is Pro.
+const INSTS = [["drums", "i-drum", "Drums"], ["bass", "i-bass", "Bass"], ["keys", "i-keys", "Keys"]];
+const sndOf = c => c.snd || (c.snd = { fx: null, take: 1, takeOn: true });
+const takeGain = c => { const n = sndOf(c); return n.takeOn ? n.take : 0; };
+function stemGain(c, k) {
+  const b = c.band; if (!b) return 0; const A = bandA(c);
+  if (k === "drums" && A && !A.pulse) return 0;
+  if (b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k]) return 0;
+  return b.parts[k] ? (b.lv?.[k] ?? 1) * b.gain : 0;
+}
+const fxLabel = c => { const f = sndOf(c).fx; return f && LickFX.PRESETS[f] ? LickFX.PRESETS[f].name : ""; };
+// mix the band's tracks at the mixer levels into one buffer for saving
+function bandMix(c, r) {
+  if (!r.stems) return { buffer: r.buffer, gain: c.band.gain };
+  const ks = INSTS.map(([k]) => k).filter(k => stemGain(c, k) > 0); if (!ks.length) return null;
+  const b0 = r.stems[ks[0]], n = b0.length, out = new OfflineAudioContext(2, 1, b0.sampleRate).createBuffer(2, n, b0.sampleRate);
+  for (let ch = 0; ch < 2; ch++) { const d = out.getChannelData(ch); for (const k of ks) { const src = r.stems[k].getChannelData(ch), g = stemGain(c, k); for (let i = 0; i < n; i++) d[i] += src[i] * g; } }
+  return { buffer: out, gain: 1 };
+}
 function bandPanel(c) {
   const w = bandWindow(c);
   if (!w) return `<p class="hint">Keep at least one part to add a band.</p>`;
   if (!c.raw.chromaQ) return `${pickRef(c, w)}<p class="hint">This clip was scanned by an older LickPick. Remove it from the list and add it again so the band can hear your chords.</p>`;
   const b = c.band || (c.band = { style: "auto", parts: { drums: true, bass: true, keys: true }, gain: 0.8, vertical: true });
+  b.lv = b.lv || { drums: 1, bass: 1, keys: 1 }; const n = sndOf(c);
   const A = bandA(c), styles = LickBand.STYLES, auto = LickBand.heuristicStyle(c.raw, A);
   const picked = b.style === "auto" ? (b.ai?.style || auto) : b.style;
   const H = A ? LickMusic.harmonyPlan(c.raw, A) : [], names = []; for (const h of H) if (names[names.length - 1] !== h.name) names.push(h.name);
+  const strip = (k, ic, l, on, val, dis) => `<div class="mxrow${on ? "" : " muted"}${dis ? " dis" : ""}">${stk(ic, k === "take" ? "volt" : k === "drums" ? "hot" : k === "bass" ? "cyan" : "blaze", k === "bass" ? "r2" : "")}<span class="mxn">${l}</span>
+      <button type="button" class="mute" data-mute="${k}" aria-pressed="${!on}" ${dis ? "disabled" : ""} aria-label="${on ? "Mute" : "Unmute"} ${l}">${on ? "On" : "Off"}</button>
+      <input type="range" min="0" max="1.5" step="0.05" value="${val}" data-mx="${k}" aria-label="${l} level" ${dis || !on ? "disabled" : ""}></div>`;
+  const aiOff = k => b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k];
   return `${pickRef(c, w)}
+    <div class="sndcard"><div class="sndhead"><h3>${icon("i-bolt")}Studio polish</h3><span class="free">FREE</span></div>
+      <span class="seg wide fxseg">${[["", "Off"], ...Object.entries(LickFX.PRESETS).map(([k, v]) => [k, v.name])].map(([k, l]) => `<button type="button" data-fx="${k}" aria-pressed="${(n.fx || "") === k}">${l}</button>`).join("")}</span>
+      <p class="hint">${n.fx ? "EQ, compression and a touch of room on your take. Saved with every Pick and short." : "One tap makes a phone recording sound like a studio take."}</p></div>
+    <div class="sndcard"><div class="sndhead"><h3>${icon("i-sliders")}Mixer</h3></div>
+      ${strip("take", "i-mic", "You", n.takeOn, n.take, false)}
+      ${INSTS.map(([k, ic, l]) => strip(k, ic, l, !!b.parts[k] && !aiOff(k), b.lv[k], k === "drums" && A && !A.pulse)).join("")}
+      <div class="row-btns"><button class="btn ghost cy" type="button" data-act="band-play">${icon(bandPlaying ? "i-stop" : "i-play")}${bandPlaying ? "Stop" : "Preview"}</button>
+        <button class="btn ghost" type="button" data-act="band-save" ${c.exporting || !downloads ? "disabled" : ""}>${icon("i-save")}With band${proTag()}</button></div>
+      <div class="status" id="bandStatus" aria-live="polite">${esc(c.bandStatus || "")}</div></div>
+    <div class="sndcard"><div class="sndhead"><h3>${icon("i-drum")}Band style</h3></div>
     <div class="band-facts"><span class="fact">Tempo <b>${A?.pulse ? A.bpm + " BPM" : "free time"}</b></span><span class="fact">Feel <b>${A?.pulse ? (A.swing > 0.58 ? "swung" : "straight") : "rubato"}${A?.meter === 3 ? ", 3/4" : ""}</b></span><span class="fact">Key <b>${esc(c.raw.info?.key || "?")}</b></span></div>
     ${names.length ? `<div class="chordline"><span>Chords it heard</span><div>${chordLoop(names)}</div></div>` : ""}
     <p class="hint">${A?.pulse ? "Every hit follows your own beat, even where you speed up or slow down. Bass and keys play your chords." : "No steady beat here, so the band plays soft bass and keys under your chords, no drums."}</p>
     <div class="chipset" role="group" aria-label="Style"><button type="button" class="ai" data-bstyle="auto" aria-pressed="${b.style === "auto"}">${icon("i-bolt")}${sampler ? "AI pick" : "Auto"}</button>${Object.entries(styles).map(([k, v]) => `<button type="button" data-bstyle="${k}" aria-pressed="${b.style === k}">${v.name}</button>`).join("")}</div>
     ${b.style === "auto" ? `<div class="ai-why">${b.aiBusy ? "Thinking…" : b.ai ? `<b>${esc(styles[b.ai.style].name)}.</b> ${esc(b.ai.why || "")}` : `<b>${esc(styles[picked].name)}</b> suits ${A?.pulse ? `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}` : "free time"}.${sampler ? " Tap AI pick again for Claude's call." : ""}`}</div>` : ""}
-    <div class="inst">${[["drums", "i-drum", "Drums"], ["bass", "i-bass", "Bass"], ["keys", "i-keys", "Keys"]].map(([k, ic, l]) => `<button type="button" data-inst="${k}" aria-pressed="${!!b.parts[k]}" ${k === "drums" && A && !A.pulse ? "disabled" : ""}>${icon(ic)}${l}</button>`).join("")}</div>
-    <div class="mixrow"><span>Band</span><input type="range" id="bandGain" min="0" max="1.5" step="0.05" value="${b.gain}" aria-label="Band volume"></div>
-    <div class="row-btns"><button class="btn ghost cy" type="button" data-act="band-play">${icon(bandPlaying ? "i-stop" : "i-play")}${bandPlaying ? "Stop" : "Preview"}</button>
-      <button class="btn ghost" type="button" data-act="band-save" ${c.exporting || !downloads ? "disabled" : ""}>${icon("i-save")}With band${proTag()}</button></div>
-    <div class="status" id="bandStatus" aria-live="polite">${esc(c.bandStatus || "")}</div>`;
+    </div>`;
 }
 // "F C G Am ×3" instead of the same loop spelled out
 function chordLoop(names) {
@@ -3223,12 +3347,12 @@ function chordLoop(names) {
   }
   return names.slice(0, 6).map(lab).join("") + (names.length > 6 ? `<i class="x">+${names.length - 6} more</i>` : "");
 }
+let mixNodes = {};
 let bandPlaying = false, bandNodes = [], bandGainNode = null, bandSync = 0, bandCache = { key: "", res: null, p: null };
 function bandKey(c) {
   const w = bandWindow(c), b = c.band, A = bandA(c);
   const style = b.style === "auto" ? (b.ai?.style || LickBand.heuristicStyle(c.raw, A)) : b.style;
-  const parts = b.style === "auto" && b.ai ? { drums: b.parts.drums && b.ai.drums !== false, bass: b.parts.bass && b.ai.bass !== false, keys: b.parts.keys && b.ai.keys !== false } : { ...b.parts };
-  if (A && !A.pulse) parts.drums = false;
+  const parts = { drums: !(A && !A.pulse), bass: true, keys: true };   // render every track; the mixer mutes and levels them
   return { w, style, parts, A, key: JSON.stringify([c.key || c.id, w.s, w.e, style, parts]) };
 }
 // One render per setting, shared by prefetch, preview and save.
@@ -3299,11 +3423,13 @@ function bandPreview(c) {
     if (!bandPlaying || bandPreview.token !== token) return;
     if (ctx.state === "suspended") await ctx.resume().catch(() => { });
     say("");
-    bandGainNode = ctx.createGain(); bandGainNode.gain.value = c.band.gain; bandGainNode.connect(ctx.destination);
-    const og = ctx.createGain(); og.gain.value = 1; og.connect(ctx.destination);
-    const a = ctx.createBufferSource(); a.buffer = orig; a.connect(og);
-    const bnd = ctx.createBufferSource(); bnd.buffer = r.buffer; bnd.connect(bandGainNode);
-    const t0 = ctx.currentTime + 0.15; a.start(t0); bnd.start(t0); bandNodes = [a, bnd];
+    const og = ctx.createGain(); og.gain.value = takeGain(c); og.connect(ctx.destination);
+    const chain = LickFX.graph(ctx, sndOf(c).fx); chain.output.connect(og);
+    const a = ctx.createBufferSource(); a.buffer = orig; a.connect(chain.input);
+    mixNodes = { take: og }; const srcs = [a];
+    if (r.stems) for (const [k] of INSTS) { const g = ctx.createGain(); g.gain.value = stemGain(c, k); g.connect(ctx.destination); const sN = ctx.createBufferSource(); sN.buffer = r.stems[k]; sN.connect(g); srcs.push(sN); mixNodes[k] = g; }
+    else { bandGainNode = ctx.createGain(); bandGainNode.gain.value = c.band.gain; bandGainNode.connect(ctx.destination); const bnd = ctx.createBufferSource(); bnd.buffer = r.buffer; bnd.connect(bandGainNode); srcs.push(bnd); }
+    const t0 = ctx.currentTime + 0.15; for (const x of srcs) x.start(t0); bandNodes = srcs;
     a.onended = () => { if (bandPreview.token === token && bandPlaying) { stopBand(); renderStudio(); } };
     // the picture follows the sound: one clock, the audio's
     if (player) { player.set([[w.s, w.e]], "Pick + band", fmt(w.e - w.s)); player.ext = () => Math.max(0, Math.min(w.e - w.s, ctx.currentTime - t0)); player.onToggle = () => { stopBand(); renderStudio(); }; player.loopTick(); }
@@ -3312,7 +3438,7 @@ function bandPreview(c) {
       try { video.currentTime = w.s; } catch { } video.play().catch(() => { });
       bandSync = setInterval(() => { if (!bandPlaying) return; const target = w.s + Math.max(0, ctx.currentTime - t0); if (Math.abs(video.currentTime - target) > 0.12) { try { video.currentTime = target; } catch { } } }, 300);
     }
-  }).catch(() => { if (bandPreview.token === token) { stopBand(); say("Couldn't play the band on this phone."); renderStudio(); } });
+  }).catch(err => { console.warn("band preview failed", err); diagLog("band preview failed: " + String(err?.message || err).slice(0, 80)); if (bandPreview.token === token) { stopBand(); say("Couldn't play the band on this phone."); renderStudio(); } });
 }
 async function bandAi(c) {
   const b = c.band;
@@ -3332,9 +3458,10 @@ async function bandSave(c, vertical, say0) {
     say("Building the band…");
     const r = await bandRender(c), M = await mb();
     const gainDb = vertical ? ClipExporter.levelGain(c.raw.loud, CELL, r.w.s, r.w.e) : 0;
-    const out = await ClipExporter.exportShort(M, c.file, [r.w.s, r.w.e], p => say(`Mixing… ${Math.round(p * 100)}%`), { gainDb, mix: { buffer: r.buffer, gain: c.band.gain }, vertical });
+    const mix = bandMix(c, r);
+    const out = await ClipExporter.exportShort(M, c.file, [r.w.s, r.w.e], p => say(`Mixing… ${Math.round(p * 100)}%`), { gainDb, mix, vertical, fx: sndOf(c).fx, take: takeGain(c) });
     const name = `${c.name.replace(/\.[^.]+$/, "")}_${r.style}${vertical ? "_short" : ""}.mp4`;
-    try { await offerFile(name, out.blob, say); spendTrial(); diagLog(`export band ${vertical ? "vertical" : "original"}: saved`); say(`${savedWhere()} Band mixed in.`); }
+    try { await offerFile(name, out.blob, say); spendTrial(); diagLog(`export band ${vertical ? "vertical" : "original"}: saved`); say(`${savedWhere()} ${mix ? "Band mixed in." : "Saved."}${sndOf(c).fx ? ` Studio polish: ${fxLabel(c)}.` : ""}`); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
   } catch (err) { diagLog(`export band FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "no_encoder" || err?.code === "no_audio_encoder" ? "This browser can't make videos. Open LickPick in Chrome." : "Couldn't make the video. The original is untouched."); }
   c.exporting = false; renderStudio(); renderExport(c);
@@ -3625,6 +3752,7 @@ document.addEventListener("click", e => {
   if (d.picky) { state.strictness = +d.picky; syncRules(); state.clips.forEach(c => { redecide(c); persist(c); }); render(); return; }
   const c = cur(); if (!c) return;
   if (d.act === "close") return closeStudio();
+  if (d.act === "sound-open") { $("#exportSheet").hidden = true; state.tab = "band"; c.src = "pick"; renderStudio(); showPick(c); try { $("#sPanel").scrollIntoView({ behavior: "smooth", block: "start" }); } catch { } return; }
   if (d.tab) { if (d.tab !== "band") stopBand(); state.tab = d.tab; renderStudio(); if (["pick", "band"].includes(d.tab)) { if (d.tab === "band") c.src = "pick"; player?.pause(); showPick(c); } return; }
   if (d.play != null) { const p = c.parts[+d.play]; c.sel = +d.play; renderStudio(); playRanges(c, [[p.start, p.end]], `Part ${+d.play + 1}`); return; }
   if (d.segkeep != null) { const g = segsOf(c)[+d.segkeep]; if (!g) return;
@@ -3655,6 +3783,14 @@ document.addEventListener("click", e => {
   if (d.act === "rescue") { if (c.raw) rescue(c); return; }
   if (d.bstyle) { stopBand(); c.band.style = d.bstyle; if (d.bstyle === "auto" && sampler && !c.band.ai) bandAi(c); else renderStudio(); return; }
   if (d.inst) { stopBand(); c.band.parts[d.inst] = !c.band.parts[d.inst]; renderStudio(); return; }
+  if (d.fx != null) { const was = bandPlaying; stopBand(); sndOf(c).fx = d.fx || null; renderStudio(); renderSrc(c); if (was) bandPreview(c); return; }
+  if (d.mute) {
+    const k = d.mute;
+    if (k === "take") sndOf(c).takeOn = !sndOf(c).takeOn;
+    else { const b = c.band; const on = !!b.parts[k] && !(b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k]); b.touched = b.touched || {}; b.touched[k] = true; b.parts[k] = !on; }
+    const node = mixNodes[k]; if (node && bandPlaying) node.gain.value = k === "take" ? takeGain(c) : stemGain(c, k);
+    renderStudio(); return;
+  }
   if (d.act === "band-play") { bandPreview(c); return; }
   if (d.act === "band-save") { c.src = "pick"; exOpts(c).band = true; c.ex.sep = false; openExport(c); return; }
   if (d.bfmt != null) { c.band.vertical = d.bfmt === "1"; renderStudio(); return; }
@@ -3672,7 +3808,11 @@ let longPressed = false, lpT = null;
 $("#list").addEventListener("pointerdown", e => { longPressed = false; const el = e.target.closest("[data-open]"); if (!el || state.sel) return; clearTimeout(lpT); lpT = setTimeout(() => { longPressed = true; navigator.vibrate?.(15); setSelect(true, +el.dataset.open); }, 480); });
 ["pointerup", "pointercancel", "pointerleave"].forEach(ev => $("#list").addEventListener(ev, () => clearTimeout(lpT)));
 $("#list").addEventListener("contextmenu", e => { if (e.target.closest("[data-open]")) e.preventDefault(); });
-document.addEventListener("input", e => { if (e.target.id === "search") { state.q = e.target.value; render(); return; } if (e.target.id === "bandGain") { const c = cur(); if (c?.band) { c.band.gain = +e.target.value; if (bandGainNode) bandGainNode.gain.value = c.band.gain; } } });
+document.addEventListener("input", e => {
+  const mx = e.target.dataset?.mx; if (mx) { const c = cur(); if (!c) return; const v = +e.target.value;
+    if (mx === "take") sndOf(c).take = v; else { c.band.lv = c.band.lv || { drums: 1, bass: 1, keys: 1 }; c.band.lv[mx] = v; }
+    const node = mixNodes[mx]; if (node && bandPlaying) node.gain.setTargetAtTime(mx === "take" ? takeGain(c) : stemGain(c, mx), node.context.currentTime, 0.03);
+    return; } if (e.target.id === "search") { state.q = e.target.value; render(); return; } if (e.target.id === "bandGain") { const c = cur(); if (c?.band) { c.band.gain = +e.target.value; if (bandGainNode) bandGainNode.gain.value = c.band.gain; } } });
 $("#proSheet").addEventListener("click", e => { if (e.target.id === "proSheet") $("#proSheet").hidden = true; });
 $("#exportSheet").addEventListener("click", e => { if (e.target.id === "exportSheet") $("#exportSheet").hidden = true; });
 $("#rowSheet").addEventListener("click", e => { if (e.target.id === "rowSheet") $("#rowSheet").hidden = true; });
