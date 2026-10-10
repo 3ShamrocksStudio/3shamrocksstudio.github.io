@@ -674,6 +674,46 @@ input[type=range]{min-height:44px}
 .cmp .try{font-size:12px;font-weight:800;color:var(--hot)}
 .sheet{max-height:calc(100dvh - 16px);overflow-y:auto;overscroll-behavior:contain}
 .sheet>.row2:first-child{position:sticky;top:-22px;z-index:3;background:var(--panel);margin:-22px -20px 0;padding:18px 20px 10px}
+/* one-screen onboarding */
+.ob-first .ob-top{display:none}
+.onboard:not(.ob-first) .ob-prog,.onboard:not(.ob-first) [data-act=ob-back]{visibility:hidden}
+.ob-first .ob-body{justify-content:center;gap:18px}
+.ob-first .ob-hero svg{width:92px;height:92px}
+.ob-first h1{text-align:left}
+.obgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.obgrid div{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:16px 14px 14px;border-radius:18px;background:var(--panel);border:2px solid var(--line)}
+.obgrid .stk{width:52px;height:52px;border-radius:15px} .obgrid .stk svg.i{width:28px!important;height:28px!important}
+.obgrid b{font-size:15.5px;line-height:1.2}
+.obsafe{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.obsafe span{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--dim)}
+.obsafe svg.i{width:16px;height:16px;color:var(--volt);--ic2:transparent}
+.obctas{display:flex;flex-direction:column;gap:10px}
+.obctas .main{min-height:56px;font-size:17px}
+.obrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.optl{font-weight:600;color:var(--mute);font-size:12px;margin-left:6px}
+/* empty state flow */
+.flow{display:flex;align-items:flex-start;justify-content:space-between;gap:4px;margin-top:14px}
+.flow span{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.flow .stk{width:56px;height:56px;border-radius:16px} .flow .stk svg.i{width:30px!important;height:30px!important}
+.flow b{font-size:14px;line-height:1.2}
+.flow .arr{font-style:normal;font:400 22px var(--display);color:var(--mute);padding-top:14px}
+/* quick actions: one compact row of stickers */
+.quickbar{gap:8px;margin:0 0 12px}
+.qb{flex-direction:row;justify-content:flex-start;text-align:left;min-height:56px;padding:6px 8px;gap:8px}
+.qb span{align-items:flex-start}
+.qb .stk{width:32px;height:32px;border-radius:10px} .qb .stk svg.i{width:18px!important;height:18px!important}
+.qb b{font-size:13px} .qb em{font-size:11.5px}
+/* folding explanations */
+.whyd>summary,.report>summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-height:44px;justify-content:center}
+.whyd>summary::-webkit-details-marker,.report>summary::-webkit-details-marker{display:none}
+.whyd>summary h3,.report>summary h3{margin:0;display:flex;align-items:center;gap:8px}
+.whyd>summary h3::after,.report>summary h3::after{content:"+";margin-left:auto;font:400 20px var(--display);color:var(--volt)}
+.whyd[open]>summary h3::after,.report[open]>summary h3::after{content:"–"}
+.wsum{font-size:13px;color:var(--dim)}
+.whyd[open]>summary .wsum,.report[open]>summary .wsum{display:none}
+.whyd[open]{display:flex;flex-direction:column;gap:12px}
+.pickhero .row-btns .btn.wide{grid-column:1/-1}
+.clean-hero .btn .protag{color:var(--volt);border-color:var(--volt)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -791,9 +831,11 @@ input[type=range]{min-height:44px}
 
 <div class="layer onboard" id="onboard" hidden role="dialog" aria-modal="true" aria-label="Set up LickPick">
   <div class="wrap">
-    <div class="ob-top"><button class="icon-btn" type="button" data-act="ob-back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button><div class="ob-prog" id="obProg"></div><button class="ob-skip" type="button" data-act="ob-skip">Skip</button></div>
+    <div class="ob-top"><button class="icon-btn" type="button" data-act="ob-back" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button><div class="ob-prog" id="obProg"></div><button class="ob-skip" type="button" data-act="ob-skip">Close</button></div>
     <div id="obBody" class="ob-body"></div>
-    <div class="ob-foot"><button class="btn wide" type="button" data-act="ob-next" id="obNext">Next</button></div>
+    <div class="ob-foot"><button class="btn wide" type="button" data-act="ob-next" id="obNext">Done</button>
+      <div class="obctas" id="obCtas" hidden><button class="btn wide main" type="button" data-act="ob-gallery"><svg class="i"><use href="#i-film"/></svg>Add jams</button>
+        <div class="obrow"><button class="btn ghost" type="button" data-act="ob-record"><svg class="i"><use href="#i-rec"/></svg>Record</button><button class="btn ghost" type="button" data-act="ob-skip">Look around</button></div></div></div>
   </div>
 </div>
 
@@ -897,7 +939,7 @@ input[type=range]{min-height:44px}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10e"; window.LP_BUILD = "file";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10f"; window.LP_BUILD = "file";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -2279,8 +2321,8 @@ const TIER_TABLE = [
 ];
 const tierTableHTML = () => `<table class="cmp"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead>${TIER_TABLE.map(([g, rows]) => `<tbody><tr class="grp"><th colspan="3">${g}</th></tr>${rows.map(([l, free]) => `<tr${free > 0 ? "" : ' class="pro"'}><td>${l}</td><td>${free > 0 ? icon("i-check") : `<span class="try">${lic.trial && free === 0 ? "try" : "–"}</span>`}</td><td>${icon("i-check")}</td></tr>`).join("")}</tbody>`).join("")}</table>`;
 const PRO_FEATS = [["i-drum", "Export your licks with the band"], ["i-stack", "Save every pick at once"], ["i-cut", "Each part as its own file"], ["i-star", "Every future add-on"]];
-const PLANS = [["founding", "$9.99", "once · founding price", "Founding"], ["supporter", "$24.99", "once · your name in the credits", ""]];
-const PRICE_LATER = "$14.99";
+const PLANS = [["founding", "$4.99", "once · early-player price", "Early"], ["supporter", "$9.99", "once · same Pro + your name in the credits", ""]];
+const PRICE_LATER = "$7.99";
 let planSel = "founding";
 const planURL = k => PRO_URL ? PRO_URL + (PRO_URL.includes("?") ? "&" : "?") + "plan=" + k : "";
 function reqCode() { let r = store.get("lp:req"); if (!r) { r = "LP-" + Math.random().toString(36).slice(2, 8).toUpperCase(); store.set("lp:req", r); } return r; }
@@ -2301,7 +2343,7 @@ function openPro(what) {
     ${PRO_URL ? `<a class="btn wide" id="proGo" href="${esc(planURL(planSel))}" target="_blank" rel="noopener">${icon("i-bolt")}Unlock Pro · ${PLANS.find(p => p[0] === planSel)[1]} once</a>`
       : SELL ? `<a class="btn wide" id="proGo" href="${esc(requestURL(planSel))}">${icon("i-bolt")}Unlock Pro · ${PLANS.find(p => p[0] === planSel)[1]} once</a><p class="hint">Sends a short email to LickPick. You pay by Bit, PayBox or PayPal, and your Pro key arrives by email, usually the same day.</p>`
       : `<p class="hint">Checkout opens soon. Have a key? Paste it below.</p>`}
-    <p class="hint">Founding price for early players. Later ${PRICE_LATER}. No subscription. Your clips never leave your phone.</p>
+    <p class="hint">Early-player price, later ${PRICE_LATER}. One payment, no subscription. Your clips never leave your phone.</p>
     <div class="keyrow"><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your Pro key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div>
     <div class="status" id="proStatus"></div>`;
   sh.hidden = false;
@@ -2333,7 +2375,7 @@ function openReport() {
 function renderBrand() {
   const b = $("#proBadge"); b.hidden = true;   // Pro lives in the menu and at the moment you use a Pro feature, not in the header
   document.querySelector(".mrow.pro")?.toggleAttribute("hidden", BETA && lic.tier === "free");
-  const ps = $("#menuProSub"); if (ps) ps.textContent = isPro() ? "Everything is on" : lic.trial ? `${lic.trial} free Pro saves left · $9.99 once` : "$9.99 once¢ a month"; b.classList.toggle("on", isPro()); b.setAttribute("aria-label", isPro() ? (lic.tier === "owner" ? "Owner: everything unlocked" : "Pro unlocked") : "LickPick Pro");
+  const ps = $("#menuProSub"); if (ps) ps.textContent = isPro() ? "Everything is on" : lic.trial ? `${lic.trial} free Pro saves left · $4.99 once` : "$4.99 once¢ a month"; b.classList.toggle("on", isPro()); b.setAttribute("aria-label", isPro() ? (lic.tier === "owner" ? "Owner: everything unlocked" : "Pro unlocked") : "LickPick Pro");
   const m = $("#menuPro"); if (m) m.textContent = isPro() ? (lic.tier === "owner" ? "Owner" : "Pro on") : "Go Pro";
 }
 
@@ -2556,9 +2598,9 @@ function renderTop() {
     $("#quickbar").hidden = true; if ($("#filters")) $("#filters").hidden = true;
     $("#top").innerHTML = `<div class="start">
       <h1>${profile.name ? `Hey ${esc(profile.name)}, add` : "Add"} your first jam</h1>
-      <p>Pick a few takes from your gallery. LickPick listens, grades every part and finds your best phrase. About a minute per take.</p>
+      <p>From your gallery or camera. About a minute per take.</p>
       <div class="ctas"><button class="btn main" type="button" data-act="gallery">${icon("i-film")}Add jams</button><button class="btn ghost" type="button" data-act="record">${icon("i-rec")}Record</button></div>
-      <div class="start-how">${[["i-ear", "It listens"], ["i-cut", "Grades every part"], ["i-star", "Picks your best"]].map(([ic, l], i) => `<span>${stk(ic, ["blaze", "cyan", "volt"][i], i % 2 ? "r2" : "")}<b>${i + 1}</b>${l}</span>`).join("")}</div></div>`;
+      <div class="flow">${[["i-film", "Add takes", "cyan"], ["i-cut", "Get graded", "blaze"], ["i-star", "Post the best", "volt"]].map(([ic, l, c], i) => `${i ? `<i class="arr" aria-hidden="true">→</i>` : ""}<span>${stk(ic, c, i % 2 ? "r2" : "")}<b>${l}</b></span>`).join("")}</div></div>`;
     $("#sortCta").innerHTML = "";
     return;
   }
@@ -2585,10 +2627,10 @@ function renderQuickbar() {
   // Add/Record live on the + button and Cleanup in the bottom bar: this row is only what to do with the clips you have
   const b = (act, ic, label, sub, opts = {}) => `<button class="qb${opts.hot ? " hot" : ""}" type="button" data-act="${act}" ${opts.off ? "disabled" : ""}>${stk(ic, opts.c || "volt", opts.t)}<span><b>${label}</b><em>${sub}</em></span>${opts.pro && !isPro() ? `<i class="qpro" aria-label="Pro">${icon("i-bolt")}</i>` : ""}</button>`;
   qb.hidden = !state.clips.some(c => !c.example);
-  const scanning = state.clips.some(c => verdict(c) === "busy"), none = scanning ? "After the scan" : "None left";
-  qb.innerHTML = b("quicksort", "i-ear", "Review", rev ? `${rev} to check` : scanning ? "After the scan" : "All sorted", { off: !rev, hot: rev > 0, c: "blaze" })
-    + b("save-picks", "i-star", "Save picks", picks ? `${picks} ready` : none, { off: !picks || !downloads || bulk.running, pro: picks > 1, c: "volt", t: "r2" })
-    + b("save-all", "i-cut", "Save cuts", cleans ? `${cleans} ready` : none, { off: !cleans || !downloads || bulk.running, pro: cleans > 1, c: "cyan" });
+  const scanning = state.clips.some(c => verdict(c) === "busy"), none = scanning ? "after scan" : "none left";
+  qb.innerHTML = b("quicksort", "i-ear", "Review", rev ? `${rev} to check` : scanning ? "after scan" : "all done", { off: !rev, hot: rev > 0, c: "blaze" })
+    + b("save-picks", "i-star", "Save picks", picks ? `${picks} ready` : none.toLowerCase(), { off: !picks || !downloads || bulk.running, pro: picks > 1, c: "volt", t: "r2" })
+    + b("save-all", "i-cut", "Save cuts", cleans ? `${cleans} ready` : none.toLowerCase(), { off: !cleans || !downloads || bulk.running, pro: cleans > 1, c: "cyan" });
   const bl = $("#bulkLine"); if (bl) { bl.hidden = !bulk.msg; bl.innerHTML = bulk.running ? `<span class="pulse"></span>${esc(bulk.msg)}` : esc(bulk.msg); }
 }
 // Select mode: tap cards to pick several, then act on them together
@@ -2725,7 +2767,7 @@ function toast(msg, act) {
 
 // ---------- intro / tutorial
 const SLIDES = [
-  { bg: "var(--hot)", art: `<svg aria-hidden="true"><use href="#logo"/></svg>`, h: "Meet LickPick", p: "Add your jam videos. LickPick listens to every take, cuts the flubs and finds your best phrase. Everything stays on your phone, and it never deletes a file." },
+  { bg: "var(--hot)", art: `<svg aria-hidden="true"><use href="#logo"/></svg>`, h: "Meet LickPick", p: "Add your jam videos. LickPick scans every take, cuts the flubs and finds your best phrase. Everything stays on your phone, and it never deletes a file." },
   { bg: "var(--volt)", art: `<svg class="i" style="color:var(--ink);--ic2:var(--hot)"><use href="#i-ear"/></svg>`, h: "Every clip gets a verdict",
     grid: [[stamp("keep"), "Keep: plenty of clean playing"], [stamp("review"), "Review: give it a listen"], [stamp("trash"), "Trash: no music at all"]] },
   { bg: "var(--cyan)", art: `<svg class="i" style="color:var(--ink);--ic2:rgba(255,255,255,.6)"><use href="#i-cut"/></svg>`, h: "Every part gets a grade",
@@ -2826,28 +2868,25 @@ const PLAYS = [["guitar", "Guitar", "i-pick"], ["bass", "Bass", "i-bass"], ["key
 const POSTS = [["reels", "Instagram Reels"], ["tiktok", "TikTok"], ["shorts", "YouTube Shorts"], ["none", "Not posting yet"]];
 const profile = Object.assign({ name: "", plays: [], posts: [], done: false }, store.get("lp:profile") || {});
 let ob = 0;
-const OB = ["welcome", "you"];   // two short steps, then straight to your jams; pickiness lives in the menu
+const OB = ["welcome", "you"];   // first run shows only "welcome"; "you" is the optional setup, opened from the menu
 function openOnboard(start = 0) { ob = start; renderOnboard(); $("#onboard").hidden = false; document.body.style.overflow = "hidden"; }
 function closeOnboard() { $("#onboard").hidden = true; document.body.style.overflow = ""; profile.done = true; store.set("lp:profile", profile); store.set("ck:intro", 1); renderTop(); }
 function renderOnboard() {
-  const step = OB[ob], B = $("#obBody");
-  $("#obProg").innerHTML = OB.map((_, i) => `<i class="${i <= ob ? "on" : ""}"></i>`).join("");
-  document.querySelector('[data-act="ob-back"]').style.visibility = ob ? "visible" : "hidden";
-  const next = $("#obNext"); next.classList.toggle("quiet", step === "go");
-  next.classList.toggle("quiet", step === "you");
+  const step = OB[ob], B = $("#obBody"), next = $("#obNext"), ctas = $("#obCtas");
+  $("#onboard").classList.toggle("ob-first", step === "welcome");
   if (step === "welcome") {
+    // one screen: show, don't tell. Four stickers, one privacy strip, then straight to your jams
     B.innerHTML = `<div class="ob-hero"><svg aria-hidden="true"><use href="#logo"/></svg></div><h1>Find the best lick in every take.</h1>
-      <div class="obfeats">${[["i-star", "Your best phrase, picked", "Start to finish on the bar, plus two runners-up."], ["i-cut", "Every part graded", "Best, good, worth a look, useless. Hear each one alone."], ["i-loop", "Loop it, slow it down", "Learn your own licks at ¾ or half speed."], ["i-drum", "Jam with a band", "Drums, bass and keys that follow your beat and chords."]].map(([ic, b, d], i) => `<div>${stk(ic, ["volt", "cyan", "hot", "volt"][i], i % 2 ? "r2" : "")}<span><b>${b}</b><em>${d}</em></span></div>`).join("")}</div>
-      <p class="hint ob-safe">${icon("i-lock")}Runs on your phone. No account, no uploads, never deletes a file.</p>`;
-    next.textContent = "Next";
+      <div class="obgrid">${[["i-star", "Auto-picks your best", "volt"], ["i-cut", "Grades every part", "cyan"], ["i-loop", "Loop & slow down", "hot"], ["i-drum", "Adds a band", "blaze"]].map(([ic, l, c], i) => `<div>${stk(ic, c, i % 2 ? "r2" : "")}<b>${l}</b></div>`).join("")}</div>
+      <div class="obsafe">${[["i-phone", "On your phone"], ["i-lock", "No account"], ["i-check", "Never deletes"]].map(([ic, l]) => `<span>${icon(ic)}${l}</span>`).join("")}</div>`;
+    next.hidden = true; ctas.hidden = false;
   } else {
     const L = state.pickLen;
-    B.innerHTML = `<h1>${profile.name ? `Hey ${esc(profile.name)}.` : "Your setup"}</h1>
-      <div class="field"><label>What do you play?</label><div class="chips">${PLAYS.map(([k, l, ic]) => `<button type="button" data-play-i="${k}" aria-pressed="${profile.plays.includes(k)}">${icon(ic)}${l}</button>`).join("")}</div></div>
-      <div class="field"><label>How long should your picks be?</label><span class="seg wide">${[["auto", "Auto"], [15, "15s"], [30, "30s"], [45, "45s"], [60, "60s"]].map(([v, l]) => `<button type="button" data-oblen="${v}" aria-pressed="${L === v}">${l}</button>`).join("")}</span><p class="hint" id="obLenHint">${lenHint(L)}</p></div>
-      <div class="field"><label for="obName">Name for your captions</label><input id="obName" maxlength="40" autocomplete="nickname" placeholder="Stage name (optional)" value="${esc(profile.name)}"></div>
-      <div class="ob-ctas"><button class="tile t-volt big" type="button" data-act="ob-gallery">${icon("i-film")}<span><strong>Add jams</strong><em>Pick as many videos as you like</em></span></button><button class="tile t-line" type="button" data-act="ob-record">${icon("i-rec")}<span><strong>Record one now</strong><em>Checked the moment you stop</em></span></button></div>`;
-    next.textContent = "Look around first";
+    B.innerHTML = `<h1>${profile.name ? `Hey ${esc(profile.name)}` : "Your setup"}</h1>
+      <div class="field"><label>Pick length</label><span class="seg wide">${[["auto", "Auto"], [15, "15s"], [30, "30s"], [45, "45s"], [60, "60s"]].map(([v, l]) => `<button type="button" data-oblen="${v}" aria-pressed="${L === v}">${l}</button>`).join("")}</span><p class="hint" id="obLenHint">${lenHint(L)}</p></div>
+      <div class="field"><label>You play <span class="optl">for hashtags · optional</span></label><div class="chips">${PLAYS.map(([k, l, ic]) => `<button type="button" data-play-i="${k}" aria-pressed="${profile.plays.includes(k)}">${icon(ic)}${l}</button>`).join("")}</div></div>
+      <div class="field"><label for="obName">Name <span class="optl">on your video credit · optional</span></label><input id="obName" maxlength="40" autocomplete="nickname" placeholder="Stage name" value="${esc(profile.name)}"></div>`;
+    next.hidden = false; next.textContent = "Done"; ctas.hidden = true;
   }
 }
 const lenHint = L => L === "auto" ? "Auto finds the best complete phrase, 20 to 45 seconds." : L <= 30 ? `The best ${L} seconds, on the bar. Good for Reels and TikTok.` : `The best ${L} seconds, on the bar.`;
@@ -2987,7 +3026,7 @@ function pickPanel(c) {
       <div class="pk-top"><span class="pk-tag">Pick ${"ABC"[c.pickSel || 0]}</span>${pk.why?.length ? `<span class="pk-why">${pk.why.map(esc).join(" · ")}</span>` : ""}</div>
       <div class="pk-big"><strong>${fmt(pk.len)}</strong><span>${fmt(pk.s)} → ${fmt(pk.e)}${pk.bars ? ` · ${pk.bars} bars` : ""}</span></div>
       <div class="row-btns"><button class="btn ink wide" type="button" data-act="pick-play">${icon("i-play")}Play the Pick</button></div>
-      <div class="row-btns"><button class="btn ghost" type="button" data-act="pick-band">${icon("i-drum")}Hear it with a band</button><button class="btn ghost" type="button" data-act="reel-one">${icon("i-loop")}Loop & slow</button></div>
+      <div class="row-btns"><button class="btn ghost" type="button" data-act="pick-band">${icon("i-drum")}Add a band</button><button class="btn ghost" type="button" data-act="reel-one">${icon("i-loop")}Loop & slow</button></div>
     </div>
     <div class="finetune">
       <div class="grp"><div class="lbl">Starts <b>${fmtP(pk.s)}</b></div><div class="btns"><button type="button" data-padj="s:-1" aria-label="Start one bar earlier">−1 bar</button><button type="button" data-padj="s:1" aria-label="Start one bar later">+1 bar</button></div></div>
@@ -2996,15 +3035,14 @@ function pickPanel(c) {
     <p class="hint">${pk.adj ? `Nudged by you. <button class="linkbtn" type="button" data-padj="reset">Undo nudges</button>` : list.length > 1 ? "Not feeling it? Tap Pick B or C above." : "Nudge the start or end a bar at a time."}</p>${whyHTML(c)}` : `<div class="pickhero none"><p>${hasMusic(c) ? "No clean stretch long enough for a pick. Open Segments to hear every part and keep what you like." : "No music found in this clip."}</p></div>`}
 <div class="row2 lenrow"><span><b>Pick length</b></span><span class="seg">${[["auto", "Auto"], [15, "15s"], [30, "30s"], [45, "45s"], [60, "60s"]].map(([val, lab]) => `<button type="button" data-plen="${val}" aria-pressed="${L === val}">${lab}</button>`).join("")}</span></div>
     <p class="hint">${L === "auto" ? "Auto finds the best complete phrase, 20 to 45 seconds, starting and ending on the bar." : `The best ${L} seconds, rounded to whole bars.`} 15 to 30 seconds plays best on Reels and TikTok.</p>
-    <div class="report">
-      <h3>${icon("i-scope")}Scan report</h3>
+    <details class="report"><summary><h3>${icon("i-scope")}Scan details</h3><span class="wsum">${esc(verdictLine)}</span></summary>
       <p class="verdict ${v}">${stamp(v)}<span>${verdictLine}</span></p>
       ${rep.length ? `<div class="cutlist">${rep.map(r => `<div><b>${r.n}×</b><span>${esc(r.why)}</span><em>${fmt(r.t)} cut</em></div>`).join("")}</div>` : `<p class="hint">Clean take. Nothing to cut.</p>`}
       <div class="facts">${facts.map(([a, b]) => `<span class="fact">${a} <b>${esc(b)}</b></span>`).join("")}</div>
       ${(c.raw?.styleNotes || []).map(n => `<p class="hint">${esc(n.charAt(0).toUpperCase() + n.slice(1))}.</p>`).join("")}
       ${(c.result?.removed || []).length ? `<details><summary>Every cut</summary><div class="cuts">${c.result.removed.map(r => `<button type="button" class="cut" data-seek="${r.start}" data-seek-end="${r.end}"><span class="t">${fmt(r.start)} to ${fmt(r.end)}</span><span>${esc(r.reasons.join(", "))}</span></button>`).join("")}</div></details>` : ""}
       <div class="row2 ovr">${v !== "trash" ? `<button class="btn sm ghost" type="button" data-ovr="trash">${icon("i-bin")}Trash it</button>` : ""}${v !== "keep" ? `<button class="btn sm ghost" type="button" data-ovr="keep">${icon("i-check")}Keep it</button>` : ""}${c.override ? `<button class="btn sm ghost" type="button" data-ovr="">${icon("i-undo")}Undo</button>` : ""}${c.edited ? `<button class="btn sm ghost" type="button" data-act="reset">Reset edits</button>` : ""}<button class="btn sm ghost" type="button" data-act="forget">${icon("i-x")}Remove from list</button></div>
-    </div>`;
+    </details>`;
 }
 // ---------- Export: one sheet for every way out (pick or clean cut, original or vertical, band, parts)
 const SOCIAL = ["reels", "tiktok", "shorts"];
@@ -3119,11 +3157,12 @@ function whyHTML(c) {
   return `<div class="why">
     <div class="vote"><span>Is Pick ${"ABC"[sel]} really your best part?</span><span class="vbtns"><button type="button" data-vote="yes" aria-pressed="${fb?.v === "yes"}">${icon("i-check")}Yes</button><button type="button" data-vote="no" aria-pressed="${fb?.v === "no"}">${icon("i-x")}No</button></span></div>
     ${fb?.v === "no" ? `<p class="hint">Thanks. Play the take, pause on your best part and tap <b>Mark best here</b>. <button class="linkbtn" type="button" data-act="mark-best">Mark best here</button>${fb.at != null ? ` Marked at ${fmt(fb.at)}.` : ""}</p>` : ""}
-    <h3>${icon("i-help")}Why this part?</h3>
+    <details class="whyd"${store.get("lp:whyOpen") ? " open" : ""}><summary><h3>${icon("i-help")}Why this part?</h3><span class="wsum">${esc(sure)}</span></summary>
     <p class="wlead"><b>Pick ${"ABC"[sel]} is the strongest complete phrase${state.pickLen === "auto" ? "" : ` near ${state.pickLen} seconds`}</b> in this take${pk.bars ? `: ${pk.bars} full bars, start to finish on the beat` : ""}. ${esc(sure)}</p>
     ${map}${meters}
     ${rows.length ? `<div class="wrows"><span class="wcap">The rest of the take. Tap to hear it, or <button class="linkbtn" type="button" data-tab="parts">open Segments</button> to keep or trim any part.</span>${shown.map(rowHTML).join("")}${more.length ? `<details><summary>${more.length} more</summary>${more.map(rowHTML).join("")}</details>` : ""}</div>` : ""}
     <p class="hint">Strength mixes loudness, how much you play, tone and timing, ranked within this take. Picks start and end on the bar when there's a beat.</p>
+    </details>
   </div>`;
 }
 // ---------- Segments: every stretch of the take, rated Best / Good / Worth a look / Useless
