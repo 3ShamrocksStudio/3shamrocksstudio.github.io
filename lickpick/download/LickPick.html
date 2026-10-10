@@ -984,7 +984,7 @@ input[type=range]{min-height:44px}
       <button class="btn sm ghost cy" type="button" data-act="playall"><svg class="i"><use href="#i-play"/></svg>Clean cut</button>
       <button class="btn sm ghost pk" type="button" data-act="rescue"><svg class="i"><use href="#i-rescue"/></svg>Keep from here</button>
     </div>
-    <div class="tip" id="tip" hidden><p>Each row is one part of the take. ▶ plays it alone, + keeps it, ✓ drops it. Or pause anywhere and tap <b>Keep from here</b>.</p><button type="button" data-act="tip-ok">Got it</button></div>
+    <div class="tip" id="tip" hidden><p>Each row is one part of the take. Tap a row to hear it, + keeps it, ✓ drops it. Or pause anywhere and tap <b>Keep from here</b>.</p><button type="button" data-act="tip-ok">Got it</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" type="button" data-tab="pick"><svg class="i"><use href="#i-star"/></svg>Pick</button>
       <button class="tab" role="tab" type="button" data-tab="parts"><svg class="i"><use href="#i-cut"/></svg>Segments</button>
@@ -3239,6 +3239,7 @@ function openStudio(c, keep) {
   $("#studio").hidden = false; document.body.style.overflow = "hidden"; if (!reopen) $("#studio").scrollTop = 0;
   watchStage();
   renderStudio(); listenUI();
+  if (!c.file && c.proxy) setTimeout(() => { if (cur() === c) soundBuf(c).catch(() => { }); }, 250);
 }
 // load the current pick into the player (not playing yet), so the first thing on screen is the pick
 function showPick(c) { if (!player) return; const S = srcOf(c); if (S) player.set(S.ranges, S.label, `${fmt(S.len)} · tap for full take`); else player.set(null, "Full take", fmt(c.raw?.duration || 0)); }
@@ -3787,13 +3788,13 @@ function seekFromWave(ev) {
   const r = $("#sWave").getBoundingClientRect(), x = Math.min(r.width, Math.max(0, ev.clientX - r.left));
   const t = x / r.width * (c.raw?.duration || 0);
   const i = (c.parts || []).findIndex(p => t >= p.start && t < p.end);
-  if (player) { const inside = player.ranges && player.ranges.some(([a, b]) => t >= a && t <= b); if (!inside && player.ranges) player.set(null, "Full take", fmt(c.raw?.duration || 0)); const R = player.rs(); let acc = 0; for (const [a, b] of R) { if (t >= a && t <= b) { player.seekVirt(acc + t - a); break; } acc += b - a; } } else c.playT = t;
+  if (player) { const inside = player.ranges && player.ranges.some(([a, b]) => t >= a && t <= b); if (!inside && player.ranges) player.set(null, "Full take", fmt(c.raw?.duration || 0)); const R = player.rs(); let acc = 0; for (const [a, b] of R) { if (t >= a && t <= b) { player.seekVirt(acc + t - a); break; } acc += b - a; } } else { c.playT = t; c._waveT = t; listenUI(); }
   if (i >= 0 && i !== c.sel) { c.sel = i; if (state.tab === "parts") renderStudio(); else drawWave(); } else drawWave();
 }
 let dragging = false;
 $("#sWave").addEventListener("pointerdown", e => { dragging = true; try { $("#sWave").setPointerCapture(e.pointerId); } catch { } seekFromWave(e); });
 $("#sWave").addEventListener("pointermove", e => { if (dragging) seekFromWave(e); });
-$("#sWave").addEventListener("pointerup", () => { dragging = false; });
+$("#sWave").addEventListener("pointerup", () => { dragging = false; const c = cur(); if (!c || player || c._waveT == null || !(c.proxy || c.file)) return; const t = c._waveT, D = c.raw?.duration || t; c._waveT = null; const R = audioPlan && audioRanges ? fromT(audioRanges, t) : []; playRanges(c, R.length ? R : [[t, D]], R.length ? audioLabel : `From ${fmt(t)}`); });
 $("#sWave").addEventListener("pointercancel", () => { dragging = false; });
 window.addEventListener("resize", () => { if (state.openId) drawWave(); });
 
@@ -3822,17 +3823,28 @@ async function playRanges(c, ranges, label) {
     audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === "suspended") audioCtx.resume().catch(() => { });   // inside the tap
     const tok = playRanges.tok = {};
-    if (audioBuf.id !== c.id) { listenUI(label, true); audioBuf = { id: c.id, buf: await new Promise((res, rej) => { blob.arrayBuffer().then(ab => { const pr = audioCtx.decodeAudioData(ab, res, rej); if (pr?.then) pr.then(res, rej); }, rej); }) }; }
+    if (audioBuf.id !== c.id) listenUI(label, true);
+    const sbuf = await soundBuf(c);
     if (playRanges.tok !== tok) return;
     if (audioCtx.state === "suspended") await audioCtx.resume();
     audioLabel = label || "Selection"; audioRanges = ranges;
     let at = audioCtx.currentTime + 0.05; audioPlan = []; audioNodes = [];
-    for (const [a, b] of ranges) { const n = audioCtx.createBufferSource(); n.buffer = audioBuf.buf; n.connect(audioCtx.destination); n.start(at, a, b - a); audioPlan.push({ at, a, b }); audioNodes.push(n); at += b - a; }
+    for (const [a, b] of ranges) { const n = audioCtx.createBufferSource(); n.buffer = sbuf; n.connect(audioCtx.destination); n.start(at, a, b - a); audioPlan.push({ at, a, b }); audioNodes.push(n); at += b - a; }
     if (!raf) raf = requestAnimationFrame(audioTick);
     listenUI();
   } catch (e) { diagLog("sound play failed: " + String(e?.message || e).slice(0, 60)); toast("Couldn't play the sound on this phone."); listenUI(); }
 }
-let audioNodes = [], audioLabel = "", audioRanges = null;
+let audioNodes = [], audioLabel = "", audioRanges = null, bufJob = null;
+// the take's sound, decoded once per clip (started early when a sound-only clip opens, so the first tap is instant)
+function soundBuf(c) {
+  if (audioBuf.id === c.id && audioBuf.buf) return Promise.resolve(audioBuf.buf);
+  if (bufJob?.id === c.id) return bufJob.p;
+  const blob = c.proxy || c.file; if (!blob) return Promise.reject(new Error("no sound"));
+  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+  const p = new Promise((res, rej) => { blob.arrayBuffer().then(ab => { const pr = audioCtx.decodeAudioData(ab, res, rej); if (pr?.then) pr.then(res, rej); }, rej); })
+    .then(buf => { if (bufJob?.p === p) { audioBuf = { id: c.id, buf }; bufJob = null; } return buf; }, e => { if (bufJob?.p === p) bufJob = null; throw e; });
+  bufJob = { id: c.id, p }; return p;
+}
 function stopAudio() { for (const n of audioNodes) { try { n.stop(); } catch { } } audioNodes = []; audioPlan = null; listenUI(); markRows(); }
 function pausePlay() { const c = cur(); if (audioPlan && c) { c._resume = { label: audioLabel, ranges: audioRanges, t: c.playT || 0 }; stopAudio(); } else if (player && video && !video.paused) player.pause(); markRows(); }
 // what's left of a set of ranges from time t on
