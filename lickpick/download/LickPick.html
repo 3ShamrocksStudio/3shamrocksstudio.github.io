@@ -545,7 +545,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 .searchbox{display:flex;align-items:center;gap:8px;margin:0 4px 12px 0;padding:0 12px;border-radius:14px;border:2px solid var(--line);background:var(--panel)}
 .searchbox svg.i{width:18px;height:18px;color:var(--mute);--ic2:transparent}
 .searchbox input{flex:1;border:0;background:none;color:var(--text);font:600 15px var(--body);padding:11px 0;outline:none}
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.plans{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .plan{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 10px;border-radius:14px;border:2px solid var(--line);background:var(--raise);text-align:left;color:var(--text);position:relative}
 .plan b{font:400 18px var(--display)} .plan span{font-size:12px;color:var(--dim);font-weight:700}
 .plan i{position:absolute;top:-10px;right:8px;font:400 10px/1 var(--display);font-style:normal;background:var(--hot);color:var(--ink);border:2px solid var(--ink);border-radius:6px;padding:4px 5px 3px;transform:rotate(-5deg)}
@@ -662,6 +662,18 @@ input[type=range]{min-height:44px}
 .pbar .ptrack{order:-1;flex:1 1 100%;margin:4px 4px 6px;height:8px}
 .pbar .ptime{margin-right:auto;min-width:0;text-align:left;padding-left:4px}
 .pbar .ptrack{overflow:visible} .pbar .ptrack::before{content:"";position:absolute;left:0;right:0;top:-16px;bottom:-14px}
+.cmp{width:100%;border-collapse:collapse;font-size:14px}
+.cmp th,.cmp td{padding:9px 6px;text-align:left;border-bottom:1px solid var(--line)}
+.cmp thead th{font:400 14px var(--display);color:var(--dim);border-bottom:2px solid var(--line)}
+.cmp thead th:last-child{color:var(--volt)}
+.cmp td:nth-child(n+2),.cmp th:nth-child(n+2){width:52px;text-align:center}
+.cmp .grp th{padding-top:14px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:800}
+.cmp svg.i{width:18px;height:18px;color:var(--cyan);--ic2:transparent;vertical-align:middle}
+.cmp td:last-child svg.i{color:var(--volt)}
+.cmp tr.pro td:first-child{font-weight:800;color:var(--text)}
+.cmp .try{font-size:12px;font-weight:800;color:var(--hot)}
+.sheet{max-height:calc(100dvh - 16px);overflow-y:auto;overscroll-behavior:contain}
+.sheet>.row2:first-child{position:sticky;top:-22px;z-index:3;background:var(--panel);margin:-22px -20px 0;padding:18px 20px 10px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -885,7 +897,7 @@ input[type=range]{min-height:44px}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10d"; window.LP_BUILD = "file";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10e"; window.LP_BUILD = "file";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -2259,6 +2271,13 @@ function proOK(what) { if (isPro() || lic.trial > 0) return true; openPro(what);
 function spendTrial() { if (isPro()) return; lic.trial = Math.max(0, lic.trial - 1); store.set("lp:trial", lic.trial); setTimeout(() => toast(lic.trial ? `${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left` : "That was your last free Pro save", { icon: "i-bolt", label: "Pro", run: () => openPro() }), 2800); }
 const proTag = () => isPro() ? "" : `<i class="protag">PRO</i>`;
 // Free core + one Pro unlock, paid once. No subscription (no server to renew it), no watermark (Instagram buries other apps' logos).
+// Free = find, hear, practise and post one clip at a time. Pro (paid once) = save more, faster, with the band.
+const TIER_TABLE = [
+  ["Find", [["Scan every take, unlimited", 1], ["Grades: best, good, worth a look, useless", 1], ["Pick A, B, C + Why this part", 1]]],
+  ["Play & practise", [["Play my picks, back to back", 1], ["Loop and slow down to ¾ or ½", 1], ["Hear the backing band, every style", 1]]],
+  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Vertical 9:16 shorts, no watermark", 1], ["Captions + hashtags", 1], ["Save with the backing band", 0], ["Save all picks or cuts in one tap", 0], ["Each part as its own file", 0], ["Every future Pro add-on", -1]]],
+];
+const tierTableHTML = () => `<table class="cmp"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead>${TIER_TABLE.map(([g, rows]) => `<tbody><tr class="grp"><th colspan="3">${g}</th></tr>${rows.map(([l, free]) => `<tr${free > 0 ? "" : ' class="pro"'}><td>${l}</td><td>${free > 0 ? icon("i-check") : `<span class="try">${lic.trial && free === 0 ? "try" : "–"}</span>`}</td><td>${icon("i-check")}</td></tr>`).join("")}</tbody>`).join("")}</table>`;
 const PRO_FEATS = [["i-drum", "Export your licks with the band"], ["i-stack", "Save every pick at once"], ["i-cut", "Each part as its own file"], ["i-star", "Every future add-on"]];
 const PLANS = [["founding", "$9.99", "once · founding price", "Founding"], ["supporter", "$24.99", "once · your name in the credits", ""]];
 const PRICE_LATER = "$14.99";
@@ -2276,7 +2295,8 @@ function openPro(what) {
   $("#proBody").innerHTML = BETA && lic.tier === "free" ? `<p class="hint"><b>Free during the beta.</b> Every feature is on: backing band, captions, shorts without the mark, saving everything at once. Thanks for testing.</p><p class="hint">After the beta, Pro will be ${PLANS.map(p => `${p[1]} ${p[2].split(" ·")[0]}`).join(", ")}. The core stays free.</p>`
     : isPro() ? `<p class="hint"><b>${lic.tier === "owner" ? "Owner" : "Pro"} unlocked.</b> Everything is on.${lic.exp ? ` Active until ${esc(lic.exp)}.` : lic.tier === "pro" ? " Lifetime." : ""}</p>${lic.exp ? `<div class="keyrow"><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste a renewal key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div><div class="status" id="proStatus"></div>` : ""}`
     : `${what ? `<p class="hint"><b>${esc(what)}</b> is Pro.${lic.trial ? ` You have ${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left.` : " Your free Pro saves are used up."}</p>` : `<p class="pro-lead">Your licks, with a band behind them.</p><p class="hint">Everything you hear in LickPick is free: scans, grades, picks, practice speeds, shorts, captions and the band preview. Pro saves the extras. Pay once, keep it forever.</p>`}
-    <div class="feats">${PRO_FEATS.map(([ic, l], i) => `<div>${stk(ic, ["volt", "cyan", "hot", "volt"][i], i % 2 ? "r2" : "")}<span>${l}</span></div>`).join("")}</div>
+    ${tierTableHTML()}
+    ${lic.trial ? `<p class="hint">“try” = ${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left on this phone.</p>` : ""}
     <div class="plans" role="radiogroup" aria-label="Plan">${PLANS.map(([k, p, per, tag]) => `<button type="button" class="plan" role="radio" aria-checked="${planSel === k}" data-plan="${k}">${tag ? `<i>${tag}</i>` : ""}<b>${p}</b><span>${per}</span></button>`).join("")}</div>
     ${PRO_URL ? `<a class="btn wide" id="proGo" href="${esc(planURL(planSel))}" target="_blank" rel="noopener">${icon("i-bolt")}Unlock Pro · ${PLANS.find(p => p[0] === planSel)[1]} once</a>`
       : SELL ? `<a class="btn wide" id="proGo" href="${esc(requestURL(planSel))}">${icon("i-bolt")}Unlock Pro · ${PLANS.find(p => p[0] === planSel)[1]} once</a><p class="hint">Sends a short email to LickPick. You pay by Bit, PayBox or PayPal, and your Pro key arrives by email, usually the same day.</p>`
@@ -2967,7 +2987,7 @@ function pickPanel(c) {
       <div class="pk-top"><span class="pk-tag">Pick ${"ABC"[c.pickSel || 0]}</span>${pk.why?.length ? `<span class="pk-why">${pk.why.map(esc).join(" · ")}</span>` : ""}</div>
       <div class="pk-big"><strong>${fmt(pk.len)}</strong><span>${fmt(pk.s)} → ${fmt(pk.e)}${pk.bars ? ` · ${pk.bars} bars` : ""}</span></div>
       <div class="row-btns"><button class="btn ink wide" type="button" data-act="pick-play">${icon("i-play")}Play the Pick</button></div>
-      <div class="row-btns"><button class="btn ghost" type="button" data-act="pick-band">${icon("i-drum")}Add band${proTag()}</button><button class="btn ghost" type="button" data-act="reel-one">${icon("i-loop")}Loop & slow</button></div>
+      <div class="row-btns"><button class="btn ghost" type="button" data-act="pick-band">${icon("i-drum")}Hear it with a band</button><button class="btn ghost" type="button" data-act="reel-one">${icon("i-loop")}Loop & slow</button></div>
     </div>
     <div class="finetune">
       <div class="grp"><div class="lbl">Starts <b>${fmtP(pk.s)}</b></div><div class="btns"><button type="button" data-padj="s:-1" aria-label="Start one bar earlier">−1 bar</button><button type="button" data-padj="s:1" aria-label="Start one bar later">+1 bar</button></div></div>
@@ -3576,7 +3596,7 @@ document.addEventListener("click", e => {
   if (d.act === "record") { $("#addSheet").hidden = true; openPicker($("#rec")); return; }
   if (d.act === "gallery") { $("#addSheet").hidden = true; openPicker($("#pick")); return; }
   if (d.act === "copy-link") { copyText(t, APP_LINK); return; }
-  if (d.act === "pro-open" || t.id === "proBadge") { openPro(); return; }
+  if (d.act === "pro-open" || t.id === "proBadge") { $("#rules").hidden = true; openPro(); return; }
   if (d.act === "pro-close") { $("#proSheet").hidden = true; return; }
   if (d.act === "report-open") { $("#rules").hidden = true; openReport(); return; }
   if (d.act === "report-copy") { copyText(t, $("#reportTxt").value); return; }
