@@ -772,6 +772,39 @@ input[type=range]{min-height:44px}
 .fxseg button{position:relative} .fxpro{position:absolute;top:-7px;right:2px;font:800 8.5px/1 var(--body);font-style:normal;letter-spacing:.04em;color:var(--hot);background:var(--stage);border:1.5px solid var(--hot);border-radius:4px;padding:2px 3px}
 .cmpd summary{cursor:pointer;color:var(--cyan);font-weight:800;min-height:44px;display:flex;align-items:center}
 .trust{display:flex;gap:8px;align-items:flex-start} .trust svg.i{width:16px;height:16px;flex:none;margin-top:2px;color:var(--volt);--ic2:transparent}
+/* 1.4: tap a row to hear it, now-playing row, sound-only stage, floating mini player */
+.segrow{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s,transform .08s}
+.segrow:active{transform:scale(.99)}
+.segrow:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.segrow.playing{background:var(--raise);border-color:var(--tc);box-shadow:inset 0 0 0 1px var(--tc)}
+.segrow.playing .segt b{color:var(--tc)}
+.segrow.playing .segplay{animation:lpPulse 1.1s ease-in-out infinite}
+@keyframes lpPulse{50%{transform:scale(.92)}}
+@media (prefers-reduced-motion:reduce){.segrow.playing .segplay{animation:none}}
+.listen{position:relative;display:grid;grid-template-columns:64px 1fr;gap:12px 14px;align-items:center;padding:16px;min-height:150px;background:linear-gradient(rgba(11,9,18,.72),rgba(11,9,18,.88)),var(--th,radial-gradient(circle at 30% 30%,#2A2145,var(--panel))) center/cover}
+.listen .lplay{width:64px;height:64px;border-radius:50%;border:3px solid var(--ink);background:var(--volt);color:var(--ink);display:grid;place-items:center;box-shadow:4px 4px 0 var(--hot);padding:0}
+.listen .lplay svg{width:28px;height:28px}
+.lmeta{display:flex;flex-direction:column;gap:4px;min-width:0}
+.lmeta b{font-size:18px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lmeta span{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums}
+.ltrack{height:6px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:4px}
+.ltrack i{display:block;height:100%;width:0;background:var(--volt)}
+.lnote{grid-column:1/-1;margin:0;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim)}
+.lnote svg{width:18px;height:18px;flex:none;color:var(--cyan)}
+.lnote span{flex:1}
+.lnote .linkbtn{min-height:44px;padding:0 6px;font-weight:800;color:var(--cyan)}
+.floatx{display:none}
+.float{position:fixed!important;right:12px;z-index:60;width:min(46vw,220px);border:3px solid var(--ink);border-radius:14px;overflow:hidden;box-shadow:4px 4px 0 var(--cyan);animation:lpIn .18s ease-out}
+.float video{max-height:32vh!important}
+.float .segchip,.float .credit,.float .bug{display:none!important}
+.float .bigplay{transform:scale(.5)}
+.float .floatx{display:grid;place-items:center;position:absolute;top:4px;right:4px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(11,9,18,.8);color:#fff;padding:0;z-index:3}
+.float .floatx svg{width:16px;height:16px}
+.listen.float{width:min(92vw,360px);min-height:0;padding:10px 12px;grid-template-columns:48px 1fr 36px}
+.listen.float .lplay{width:48px;height:48px}
+.listen.float .lnote{display:none}
+.listen.float .floatx{position:static}
+@keyframes lpIn{from{opacity:0;transform:translateY(12px)}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -995,12 +1028,12 @@ input[type=range]{min-height:44px}
     <div class="row2"><span><b>How picky</b></span>
       <span class="seg" id="picky"><button type="button" data-picky="0.25">Chill</button><button type="button" data-picky="0.5">Normal</button><button type="button" data-picky="0.8">Strict</button></span></div>
     <p class="hint">Trash is only suggested when a clip has no music at all. Your own edits are never changed.</p>
-    <p class="sfoot">Version 1.3 · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. Never deletes.</p>
+    <p class="sfoot">Version 1.4 · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. Never deletes.</p>
     <div class="studio-line"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcQAAABCCAYAAADJwaZuAABazUlEQVR42u29d5hdV3U2/q699zn33Dq9yxKWbbnJNu4YA5JcwBgDCfYodAIk1ADJRyAkv3wZTb6EfIEEEloaxDR/hJkQiqk2IAnTDDJVNi4YW2Xmlqm3n7b3+v1xzx1djWakkSzZkpn1POcZ+frec/beZ6397tUJR01MmzZtljt37gybn9x0002JkoidXavRU4MQp2vwgNFIMWAEBKQUBaFMPibNgynFP+t8ldwzvnVcN38/PDwsx8fHDQDGiaCREYFRABg1zY+u/Z3f6fIC+2LX57P9wKwzRvRr1goAJMlQCjOhlJiI2XRvKsk/v2N8fPag+wHA6IH7rdIqrdIqrdKpTXQ03x0eHhbj4w0gu+mmmxIFz3lePRTP8V292QuxBhCxRFzCUgRLMYgArYFQE+qegeeFsBQqlkX3OzZ/PeZYX777q/91Nw4go8T4AaA8DiQwMrIAXJte+HtPqdTCF9RdcX0Qmsv9AD1SSpGISyjJsGTjR0E05lpdQ+tQ2xZN20re7djmm06cvvi9L4/vjZBRAKN8woB8lVZplVZplU4yQBwZEU1QuWLT764JLeu1dde8wgvkGYm4wFAP48KzJM4YEnxavzDtKUJnRkBKoOYyimXm/KyhfXkjH9hjcO8jBtPzhCAIkIyL78Yd+sCPrvzs5zAKc7xAJtI6NQBc9uybnx4EeGuthhdAWPH2DOEpA8DGMyTWD5Hp75KmPU2USTaWo1hhzFeYczNaPDLB4he/1tiTA+ZLDHBQTTrii8oyH7jnzs/dvfhZx5OY+Yjvh4j4RD/raJ6x+D7Ha3yr9OSj3xZeOZIcH+28T/V1O5bxMzM9HvM8MiBGWtumTZtUxe59i1vHO3yjBvq7DLZcocw1l8fMuWco2ZYixCyi0DCMAXRkACUCpACUbDyq7jFPz2n+8X2h+fYPffW9nxlU6gbJOP/QUmbknjs/d8diED7qOY2MEEZHzcWbhs+ExGilxi9VSuHc9cCzn27rZ11qY7BHiGScoCRRoBtjNtHThGhcliSEmrlSZ0xMGfOdH/u48we+vO8RgHXAyTh90pI0+qM7xx+Jxvu4a4vMLKP3qI9RsAQAJiJzmO+JBt+Swao2vEqrtFL5EgAEEYVH+J4CYA4ng7/la8hExDzGkraSPpHPo5VoWRdfd/NlbMQHa658WncHY+uNsfCmzXEx2CuFYcD1GFoDhhtm0saNqXF3BhgMjrZRKQhKAU6MEIaMXz4QmM98pYYdd2sRhAaJOH3YUtZf/Ojrt5WO3oQ6Ipp+wkuuHX6dH9C7/VB0XXQO4aXPj4dXX2LLdFKQFzCCANCmMa7GmGlh7BwNlhcAnWBZQMwilKqGv3uPrz/1+Zq699eAbZmCo/gv7vn2+Mda1pSP4/tZuXZ2FAyz+MSVzWaTxiTjQLnlW2koVXf7+voqR3FSax3z8VyLVXryW6ueNLwyNjYmt27dqpuberFYbKtWhTwgX2loPW8+9rGPzY9GB//W3zzJ1+2xjPmEznc5QFzwF1583S2v9j36YGhE8oZnWfoPXpoU64YU1V3AD3hBo1qZuhnNhAETgU3cIQgCdv3C1x+8tUS/ephE3NE/E4SX/ezb4/cdhTlSADCXXnpTgjsSH6zVxWvSSYPXvDihf+fZCZlwCNU6Q5vGc4lW7kDlCByZG9puMkGoVBlfuKMW3vrZmqrUCIm4+beZIPHHe3Z+wm2O5Vg1PiLS+Wz+92PxxB+4bt2PtMADZBgQRALkCqUehdE/q8/Xv7j27LUTKzEtjIyMiEgIaXZ2/iUw/ELf9y8nQQPGMIgIzAwhCMwoKKV+YJg/39vb9dmlQLE55txk7nXxRPKV1VotEADHk0m7Vqt9cGCg97PMLFZPwKvU5IP8nvwZWuHfhBA22IRO3LFcz/t5f3/vHz2eJrITOcfJRybPVXHrFSBsMYbPIYJjTHPPJBjDvpTyXgZt97zw1rVr+369nJw0P9+/v3CxZYn3G6OJGTqRSNiuW/9Of3/vX5wKMpbN5t8fs2KX+77ngyABcKjpdWvW9D7YOv7mvwuFwsVCWKOCRNKr1/59YM3AZ1v2r+NOapkdk8ZHR/VTrxv+K9cTowmH8ZY/TOnnXZuQfsCYLjOEAEg2kPCoR9aCRCWXwQAuusiR7/s/Nv7tU6Xw9jv4qZbib156zYteNj4+vn3Tpk2qNap1OTC8aNML242yx6o1cf15GxC+482d8tyzLFmuMOq1xgZPko5tpaKfaTDcKiCFwEtuSasLNsb4Hz5U1Pf/Rr2+M1Fb03b99b/3izvvrD4GUGwO8My2ttTVbAyklEt/kQiWZSEMNYRUf13IFd5NRO873GYS/T+TzZZ7pfBvi9nOdQ0FueHTFYIW7g0AlqXWOk58LTP/XiE//VI7pn6fiOYWPaPxZRbXZ9pSV5vI9pzJJOHW6l9eiTVilX47aMeOHQ25UDizt7fn2kqlAmZGJpOBWygkniyAv3//5BudeOK9iUQi6Xk+fN+DMWZBvgBAKenYduwqJxa7qlqrvn5ib+5tRHTbMsAmABhL8kW9vV2b5udKAIC2thTq9Xr1pFYHqalQsMhlC7+XSqUGanUBJRW00ajW3MziParxh1UuW/hEZ0/bBa7rwvflM/P5/D19fcsfHB4riSXspBKjo+bia2/e5rlytK+H9P8d7TTPvSEtZ2uEakgwlkQoJAISj/nSUsJIibk6QI7E/3prp3rDa5I6DDEQGPWlS6+9efPOnTvD4eFheRgAMVdccUMG0v5KuSqv33y1Cv/+r3vU2tNjVCgDPgkYJRHSYx9zSBJGSfgkMFUG1p/p0N//Tbe6+koRVqryeUK3/8+F1788GSmW9BgEy6tW3cDzPLdWqwWLr2q1GlarVX9+ft4tl0uhMaaro7PrH7MTufcSEUe2dyzBaJTNZpPg+v+0tWWuKxbndbFUDH3fDxpCqhYuIoLv+2GpVAzL5VLY0dHxgnrNG9u9e7e9bds2YmaKgDFkZoLgvnKpqj3P833f9+o1TzOzvwoDq9SkzZs3MwBoEuu01oHrup7neX6lUtUAqqfy3JqbdHZ/YWt7W8dHtNbJ+fn5oFarBmEYGiHEgmxJKRGGoanVqsHs3GzIzF2JVPzTk/smn0tEZmxsTC5pXGM6zXPD0GuQX624GkDtZF6Xv/qrxl60d+90P4Hi86WirtfrYbVW1fV6PVRK6SUO+7xv3z6LiM6Yn5/T5XI5SCQSltY0eCLHKg7GwobP7uJrb3mL51kjA/0I/3q0W5x1XlwUigwtBULZAANfHN9LKwmXCTNV4EW3tMk/fXu7DgJO+aH47MXX/c654+PjeiH/b5Fp97zzhm0/lRqr18XTr91ihW9/R49CTKLoAkZJBEIc3zGTQBCNed4FZELhXe/qUc96hgrrrnw2ae+2aD3FsYIiM8cScceyLMuJO3HroCset+LxuEql0nZbW7sjpVRBEJq5ubkwnkj86eRk4VlEZBabWnfs2CGJyBCpV3R2dlw9MzMTEpGUUqpUKmWxMV7gBwXf97O+H+S11m46nVZSSgVATk9PBx0dHdd1dfW8LDJZLLyPiYmJTmZsYGZpjLEiM6rEgmd2lVapZeMhvkgIYTGzauEVcarOJ7Ko8NTUVNpA/10YBhyGoWZmlUymLMuyRBiG8w3Z8rNhEMzati0SiYTFzNL3fS2EACn5/gnmxPDwsGmNxty2bVvkbeKLiUgZY1rWDSf1up1//jgBgC3Cc+KJeDsbIwFIAJKZZRAEh0SdMrNYu3ZtHYx/VsqSyVTKqlarX/S86o9OpGlYtGqGUQDNtb4v3pdOs37Hu7pl/9oYzVYAYzWA5XhohctqX0JCS4npMmHTtRn5mj9s10EoenWo/uuKG16WaSTXHwCYpp/T7jf/UHfVc666yg7f+vYe5TGhphuAdSLHG1DjGdWwAZJ/8o5edcmlMnRd9cKLrxv++/HxcR2B4tFQwxFPfNt0YerFnu/fXK3Xbmm93FrtFs+v31wtV15ZnC9+0BhTsywljDFsWRYE6E2tQtTUDnfs2NGwzxtzSxiGhogicyzXy8XyOyH48rnizJn9D/SuBekzQOqySrXyv5nZl1ICBAqCwID5D5gbmnnTbGpZQ54k+oNarfbDVCpFzXms0iotIsPMgqE/OT0z/b5kMimJ6JTnFWOMJCI2vrkqmUyur9frDIDi8Ti5rvtNbfgG3xLnT0zuW9f/QO9aA32OHwQ3eb6/K5FIEDOLWq1m4k78bJUtPCuSq4W9Y3R01DCzkIrePzs399FMJiOPFL16slAT3K249WDddV/OzEWlFJmmQ3UZnQAA+gd7/6JWr2wO6u5z+wd6X3T66ae7OIFBNZEPcURgfJSf+ozhHh3yrQCrN/5xl3nKOXGaLxlIS+DxXHlWwGzV4KZb2uVENgi/9iX3QiHd9wCjb2gJspHj4+P6qdfe/ELPlW9Zt47C17+tRwYkEBiGkMcY1XIsJAFXA5ZNeNP/6pXb/iwXZifpT596zc3bx8fHvwYMS2Bl0bJNgBkcHPwVgF+t4CefymbzP43FYv9ZrVaE67oA+JnT09OZ7u7uUquvb3R01OzZs6eDCGd6nicAmHg8jkq58s6BNX0fWnTfEMC9AO7NZ/NeMpV5T6lUgud5gkhs2Lt3z8C6dTTZvH9vL2pEvV/OTuZfEovFnlar1VajS1dpSf7evn273LJly925XC4Ti8X+15OBV3bs2NFQEUlcEI/HuV6vh47j2J7n/crz6y9Yu3ZtfdFPpgB8Ze/evT8w2vlJLBZbF4ZhYNu25dbdZwH4+hLWJdHb23tXLje1zok5f1CpVPhUeefMTN3d3fsB3JabLLxPCLGifTDaX3Yu9f9OtMnUsINR11Wn3XRzRl/yzIyYLTO0isyNj+PV0BYFii4w/OputX6D1J4rX3/ZtVuvGx8f15s2jSgA5rxnD3eGAX0wFiN+9Vu6RbxTUTUAQvn4jzmUAlUfSHdb9Oq3dAkpibSmf77ihhsywHlH7U9kZrF9+3bFzHLx1fx89+7d9tgYSy7rL1er1ZKUSmqtAaDN97GmyT+Rtth8fhygtNYaQghVrVQ8Jv1tZpa7du2ymn5GZqbmcwzMJ8rl0ryUUoVhyADaLCsxCADj4+NNHhKRCcdupq2s0iodjr+NMZknC680faNESGvdCFxLJBLQmn+4du3a+vbt252mbDXli5nttWvXzhptPptMJsFsjJSKIDAAAPfcc88he0bkW0ydiuvGzI34BVr5XkhEPDa2sPedcPeLaASrjJqLn3vzZV6VX/+Us4R57ku6ZLEOhJH/7Ym4QinhaoKVVhh+bReEJPih+ftNmzY5vb33MQCOGfyp78vTrn1B2px1SUrMV9Ewkz5BY9aWxHwNOOeytNjyvJT2PHmWr5NvA0YNRkaO6mUSkdmyZUtIRHrx1fz8/PPPD7ZuJS3bZJ2I9luWBWOMkUrGmL3OVkBsYcpFxQMoDMNQEJG+9NJLm8n9TES8efNmTUR6RogaG0xalgVmNkopyyKkInNI65g1VvMOV2mF/C2EeNKZ1ZlZt3rNBTXAL51OL8hWU74i8zEJEg81NCZCGAaAoR4AuP322w9ZnyhP0Zyi75z7+/uP2ti4devC3nfC9xYxPj7OAGDq9OckpHjui7vYylioa0J4gn2GK4lALVaBDZem5ZVbEtrz5SUlp3d4fHzcXHXji9a5dfOm3kHBW363U5SbATT0xI45FBIVD7h2uFP09Av2a3jb5TcO9zeq7oycEOd3b29vyMxhlD/IUkqllEqujEtBlmXxCr4nWoS+CayrtEqrtFhSljH/LWtOXD1EnjQkAJjLnrd1Y71uXrj+PJvPe3pGlOsnB7gEogEwPgjP+t0uOHHioG7+CADXXfkqY1TbM57XbjIDDtWDJx7Ag8h0WgsIHUMOPf3GjNFadYUBvbKhTd1Hj4cgRoC1mgS/Squ0Sqt0FKQAIHT5FVLa8sob2kKZkqpa0gclkD6hJIHABfrOissNFzv4+V3+ZZffuPVZ1aK+qb3L4gu3tFHFa6SE6JNkyCwJFQ+4aHMb7fhiCbWi9/JLX/e694//+78HWC1ntkqrtEqrdHJqiMPDw7bv6Re2dQusvzwjKi6gxUmgHbZcPhHYljj/mRkWQojA5/f7rjn/rMsSlBlyRD3ACU8JOTqzqUAtANrXxukpGx32PZyPffNXNLTEYbHKdqu0Squ0SiehhvhoXV0auOEZQ+c7iPc55NYNSJ5cg2QCqj5h7cUZSnfm4NX4EmUJnHF5OoqC5ZNHo43IMEMpSWddlQnv/W5dhZ7eDOB7v8W8Rq1RYieibVVrqPYhDz9MKbvlvrvSNjVH87yVzONYx7HE/WhZkXoM638i730s63OyjfVEy1A+P03LzXO5so1Hu34ngKePyTL2WMZxLO9eBNXwajtmqbaLM9oTggLQSaUdNsqlCXiaEOuJYWBDEvVyyMl2id5zUqj5hFDKk2/MQsILCdZZKVJJgg54CwCMj4//Vvn2qCGkgohCIuLm1axQciyh1M2UlLGxMbnonmL79u2q9bPmtez4lvluc2NZ9JlaXFIrmtsh92hJmVnR/FY6jiNtBovWwCxzcTS2o7JWjIys4N5i4d7H9YR6NO8UaKQnRGlAh12H6D2dKlabRqTlodG5zTVZNhLzaNfvaL/fCkLR+1eL7mOiz+SJfO+PVQZUGOiNdtqBWOugHhBEoyLJSbermpCRiCt0r48jvHOW2gdjSPTF4GoA4uSrDsYCIAO4aYtSpzuY/6m74byRYfu+0XEfv0V+RAYbIjKPPPJIu+M4gVJK9PT0lFurbKy0FFPzxBd91wDAI4884riua2UyGU1ENUSVUKanp5NhGJr5+XlxzjnneES0ZE3VXbt2Wclk0mlvbzcAUC6X5VlnnVUmIv7Vr36Vbm9vN0IIIqIKGsUKWk+tRETmq1/9auz0yy+32xv1Kqm3t7d+tPNrzqO9vd3MCEFdxnB/f3+diExzHPPz80JK6W/YsMFbZn2aVV/MxMREQik1IGXchh9N3bahdd2fAvLRfFp/gyMBzNatpEdHYR588MFYOp0etKykA98HbAA+UAtRWru2e6J5v+PVlaC53vfff3+quQ7d3d3o6ekpL7chNsfw8MMPt6XtdK+IO+qgdajVA2OZ7MDAQPVo1uEJkyNmmpmZSe3atStkHcYPBHkziEhNTEwkbNuWxhguFovBYh7ZtYutZPL+BT6fmZmh++67r75cuylmtu+++25n3bp1es+ePfLKK690l5OhJfh84Z7ZbDaplBLd3d0uEQUAwlw2v+J5T0xwQqmCMMbwnj17ZCp1pbtx4/LjOEgGdk0k1GlqIB6P236l8RM7ZaNer/vGmBwRHfLuFRjnGGMwb0A1DTiCTsqd2gjAA6FtXRwkgPY1DowtEPp8UlbLZABaA1UCyTYJNtyZ+rl4CoAHowbGfIohm4kiV81KTtSRZgMi9gq56bfFE86bqpVqEIZG5XJTM8z6YSHUF/bte/R2IgpWABpNUxBPTk6fpwSGpZKX+b53WtxJOGAKZmeKk67n3pnPFk6znfgNYcDe0NBpsUJ2+j8A/MOi9jKSiPTgwJr3p9Pp66uVSgAAvb0DdmGy8JrsZP6WeDzxXNerB0aznMpP543B/QL8X0S0IzrUmP3791+bSmb+0XVdmyHABpTPT5VzuamHbSlvr/v1LxBRbbkNtwkaTizxnx3t3Ze6Xt3vNlCAMJVKZUt2ovDiVDr5R+VyxR0aOi1WLVfHAfzl4t550Xrrffv2nRWPJd7G4M1haDZYylhsy2gBDUKDoE9av56amv2urvsfJKJfHqnVUhNg9j24b028M/0WwFwf+MG5gozTvDdswII/Nz018wsh1f/85jcPffSyyy6rPdY2Ts3fT+7PfbC/b+g5ruvWB/vXJKv12vsAfGTxuja7uRQmC5uY6PVMuFwbs16REQetg0WhEvZDhcLsDtet/Eu0Dk9M+yQGm0aLGLM4T3ihXVY+32sMfWntaU9Jaq07i6UimDlWrVbBhjdJoX4cBkYIIUU63fkKAD8aGxuTw8PDhoh4aKjwf5Px026quzXfGFY9Pf3YtKnnJQB+tlTbpdxk4Y83nn/BH5TK5doFF1yUyOVmbgXwd9u3b1dbtmwJlwPDsbExuXnztc/RYfi7SsqztDE9YWhkIT9TyWUL92pj7miaMSlS05a718z+mdN8yn8JrBwwggsvuNgplaf+BcD7lxpHk08nH508TyWcPyLgmWEYnK1Dtih69zpksEEgpf3Q1NTs97xK7SNEtLAGikPuT/RZ0Ipopm4wkFEIzMmnJLJg+BCIddkQEoi1W9CWRODrhVZFJxUJIPAN5j0DzQxiimmXO09FLU8KQSBOJZNJobUWSimExqcjmDpEuVwGG7wRks83hhFznMb9pIRS6ula61esPe30u/ft2/d6Ivr5YTYkiuRGFHLT77Vs+SbHiTvMDCll1NCZYNvWRstSzw7DEESAbVtIJpKoVqpDLX6MpsZhGiZXcbXjOBt834cQolmg9cOxWOxCgBGzYw1TilLnSKk2eZ77+umpuf/q6m5/TX5f/kxpW+NKWR2WpdEsRyWEhFLqcjC/WDPundiTfwMRfXfx/Jqb98MPP9wG4JmxmL1G6xC2baNarXjVavVaEuJviCjdnEutWlsLHFwQoaXl0KtSydQHYjEn43kutHbheZ5e9F4speS5juOc60r58omJ7J8R0QeP1Icvt3/qBU4y9h+O4/S6rgstwoPuTURQSnXYsdgm27I3PWXd6a/av3/qpUT0wLECTVSc3kwUCpdYkG8mAqVSSXieVwH0V4BD6vVKIUjv35/7e8uJvTMWi8HzPHiex0usg1KWOteJO+falnrF/v3ZtxHRfx5jk97HaAAjO+ZYgogStm0DVJWLfG8A1OmWoits24bv+2jwOJExBlKKlGVZ5xERtNaoVL3piEcWTIwEeoFt22eGOoAQElJK1Opucml7HMDMQ8lU4qxyuYJEwkGpVF4DAOl0mpbjkT17sucnE86/2rb1DJVMQesQYRhGMiFgWfalQeC/sl6vIwgCjgDxkAGMjzeKgXu2Xh+34k8lEHw/QDxho1RuVPFZPI7IfaIn9uZelkgnPuw4TpvrutA6hOu6h8iApdR5juOcJ0m8Yv/eybcT0UeYWSgGOlRSggXRdEWjqz2GgE8+rYujd6XaLYABlbEQQsEnBomTb7BSArOuRs015HQrI22lwkB3A8DwfffR+KkEiN3dPmcLd9RqtSt1qFPM3MHGHKniBGmtYcXs833f52q1ys2DS3Qw1AAok8lcSYRv5XK5a4joF0uZ2Zr90bKT+f/o7e19zfT0NDzP9yOBWtg8XLfOUfO1JkPoer0uCYeaWIiIS6VSR61a7yyVSsb3/YXuHbZtX+h5rlnCTxMCUJ2dXS8u5KfOYCW6YrFYR6lUDIkOdGpoJFuzZsMilUqdbyn1jfz+/PVE9P1FGg0B4Fgs3QeY9lKpZIwxrLUmZnjE4m+FFMlyuewDMPV6XTKzu5SJKJfLXe/EEh8PwxC12mwoBLGUylJKyWY/Ta0NwjCA53lBvV4ny1LxtkzbB3K56f1E9PkltC1JRLpQKFwiIMeZ2Z6fnw+ig4jlOJZsHki01vB9H9VKNaiiio6Ojkt0WBybnp5+5rZt2yrHqCkyEfHkRO4tyfYMzRfn3fa2dsdzvX8aOm1wT+t4m9pBLlf4i86OznfOzs4a13UNABZCWLFYrGUdNDzPg+u6oeu6UEql0qnUx3K53HR/f/+XHkfzabQe+tdzc6WfsGHb87wBHNwGKwIoszYeT5lyuawBKGrRArTWbIzRtm2T7wd7ajU51Qosjz5aGABzV7lSNlprw+yLxntb/pBCBN+t+waA63uhAyxtpoysRbxvX+GsmC2/nkwm1szPz4dEpCOfYST0aDSlZYhWWVmKhoeHCQCMjzPshK1LpZIhggl8bTFzsLQ5f6vOT+SfbTnOp8IwpNnZ2ZCIWEllKeuADBhjEIYhPM8LXNclKaXT3tH+4VxuapKIvqBIiIzRDCkIU6UAQyGgpAA/pm5+J8YnZzTB7nLgpBRkUiFEo46oOMnQmxmwiJAr1mE0I95jn3SRuyt1aAPABiIPwB8CwPSD05kwE3Zr6Fz0ncNuHEHgg4hICkEcaRLGGKRSKRkEAYrFYpBpa+sqlYq3MvNVAILR0dEFH2tzc5qcLNyYyWReMz09HTKzSCZTdhgGaGp2zZMmM4Oi/+bGLrxUCy4CwLVaOCiEWBsEAVqFNAh8CCJBdMB9QAQkEilZr9cwPT2lk8nk5b7vo1KpGCWl4hZNiY1BIpGUWmuUy+UwnU4njMSt09PTlwMot4ADAUBM0qCTTKcqlYohItloJCsymUwmo7UBEdlah0im4iiXy6mDZrINzNtZZXX+b6SUqNfroZRSJRIJVCqVYhjq6WiDZQApInQkk8nOWq2GIAi1bWupw/BvJyb4GwDqi4CLmVlks4W/b8vE7WKxGAohrFQqhUqlWjHanWJQmQABQgbAYCKRsGq1Gubm5oKurq4LZ6ZmXj86Ovrebdu2qaYPduU2FphCoXCWIDlcLpeNbdl2uVKZbrPTH2ZmWmiJFGko03unh0Jj3lkul0zEDyqTyaBcLrue62YZKDdO+txGoHXJZFJVKhUOw1DHYjHJRvwNM38DgP9YTb0rlC8NAP1r+r8J4FIeYTH5usk1sVhMA41i/Js3b474ktfH7Jgoo2yEEAdpVoIEGTYiFosJ1/P2nnNOTwUAenp6CADiFl+obLsjCIKmVaKBp0cKq2nIhFhGhg46tGQn8+9ta8usmZ2d9aWUdiKRULVaDYdogAQcqcjVjh07IssUn2FZlmzwLglqyCQtcVg2Y2Nj0hC/27IUVSpuKIRQqVQK5XK5FOhwhohK0YxTADoSiURXvV6HbpBgY/6emb+uWJs5SOogArueoX1THp6yJoUgNItPDE/w7gyEGrB7Hdz4safC6bBQDRlGShh64gGw9chn2YTpko+peQ8qKVEq+OCQQTGcsjQyMiK2bdvGRFQCUFrBT3QqlVKVcuVDSojbNGmFACYgkGQ21VK5R1jqPY7jbCiXSkE6lb4kP5G/oX/NwSf08fGGLi0Jr4s0S04kEsJ1a5/XBh8gkh4jJIRASKGUMhYwmz9NJJI3V6sVg6Wj2piZaXp6+pF6PdhsWfJf4078HNd1g1QqZVXKpf8lhfxBc8wgECvFpXLpLCnEP9q23eW6bkAkBAnxOgPxK61dqVg15ifZuNVaOwvxN4lE4pJKpRK0t7dvKJcqNxPRrZFWqyOfEU1OTu5GDb8L4KNKqa4wDMHMer44d5sATRmGAkFroy0Y8/2mqbC5TtnXZi+zY85l1WrVEJFQSplqpfpeIfEfYdiTHRqiWiNAYSIhSPRWK9XfJUHvlVKKWq2mU6nkufVg+iqinm81x9YEmUKhsEEK8fRqtcJERI4TQ61a+3fDwftt255oBrbs2TPfYVnBes/z3pNIJK6p1WpwXZdJ4JZdu3b9E4DwaEGGiHhyMv/OjvZUcm5uzs9k2uzZuZl/TQ1155hZjo6O6mgDFQBMqHhLpq2trVicDwHIWCyGWrX+UZD5AAl6pL+vrwI0Am2SyfbzfM97dyKR2Fyv16lSqbDjOBdMTU5d0TvUe1cUTawfn/2jJVhsFHtb/98111wTAkCMrc9MzxbuBlk1NuZFbW1t75wvzvvJZMqu1qrfJSHfUSyVY8aIXHONN2/erAHAYWeX67nPZKKPOI5zQaQ5i+Mw7oY5fU9uPQjPKRaLhogsAH6lXP0LYvNDKAABGJYCM1gIbZuQv2BZVnsQBEvywjXXXBMys5jPzX90anr6gkw68/xqteICsJYwr4qtW7fqfftylwshL406gEgpJZdL5b+RFn1qZoZy557b4NOJiYkEEfVUK9XfU5Z6N7MRtVoNQsqzstnsFkVKzLkFv0P7BlIRsoU6pC3R25cAoiJ7jdP2op3/CUBIIiDQjMzZGRhmeJqfmAjTg044hEYbXIqWhDBX9fHovgrYAEIS+3NahEGonXh8BgDGzzvvZAuoOeIijo6OmtHR0cWRnoddJaUUiMQD3f3dP1zqCxMT2XOSyeTf+75vhBBsgOsBfKkJgs1AkXyeU2wK5/kNK6n0fd8LQv8vhoaG7l/qvtnJ/D6lFLDMGbjZjibazHdms/lypGWyUgoC4p5lxvz9XLZwbSKReEWpVDKZdMoqlue8/v7eHyw5jmy+z7ZTt7qey8YYZpgbAdzaOo7IRDw9NTX1LRi0mqU0EBvpG+h4dLn3sW3bNhkdpa9IxOOi6Pt+KpWya9XqD/sHe9+1aMNFFIX7KID3Zyfy16XSqRur1aqWUgm4/DQA3zrEVBfyBalMOlEqlYJ4PG65rnt/37/2vJFGF4IwiIh43br2OQD35Pbm/jgQ4sdCCMt1XWLg3PWD6weJaE/TvHYkXovAyOzfP3W2pcTLSqWSsW1blculKeWLDze1gub3m50mmMy5ADMR6VQqpWrV6td7+3v+cIl1KAL4wfT09As9z9tt2/ZpQRAEsVhM1V3/mQDuampXx8NByMx0zz33HMkSw4sOnk3tFwDQOdi5B8AeAJiczJ9jWRaIyDRkjAr9S/Br8x5ta9pmAHw3n5uaF0Ictxzg5kGEbXFp3HGcer0WplIZValUdg4M9v7jcr/LTRb8w8V9RHOmjoGOR7LZqYcty1pWlpvmVSlxVVtbG+bn5/14PB6r1+p3Dwz1/VXru9+2bRsNDQ3VonV8TzZbuCaVTD2nWq36qWTSrpT5aUJI5HXZgGuaIRp9Ofbvr+Chh+aRLdRQrASoBwZaENiSYEvCKAktCCERQgAhofHvE3wF1KhX6gYGvn58ntm4EM2ToAXBKNmyFgKeZpRqIfLTdfzm0SIeemgerqshFEG7BqakISTVQeFUYzc7qfydrLX2I81AHPlQ0sjtWeEJEkbr+NjYmNy9m+1m+6rdu3fb0fPcJvMzMwlB65rBAK2bchjOdQLUHQQBpJQiDMOalNJvaVklmVl+9asPxiLn+opaUDEz7drFVqsfMvpd8qAxN9rPNP4NrkXmWDJsYAwu5LEDc2qdH5HYx2xAoCiizvQvNw7XddsWnzKJOM1jjTk28+qWivAlosHmfIUQMMb8NMoHs1rzGFs+E0KInzRNzUQgNrx2qbEZxkDjsEcmFouBgV/RKJlojtSycQtmFnVd3xf4Qc62baG11o7jpGum1tnq01qpdkik35lKpeJa6zCZSgmt9W19p/flIjMeH+qL444m6EkpobW5h5mJG+/xkHXo7u4uGa1vj8fjANhIIUkQr4tA9niYREEgn4i4q6trRbmZo6OjZrnEemaOjY2NSQERb3URANzkD2sp/mjmBiLKDTxe1BLYMpBIJABQKKUAwNPN8Szw7XZWPMZyYmIisdL2TyMjIwLg2OFkuWleFUL0RSBrHMcBE/9gZGREtPJp1GSZos+EAN/tNAL9DDPDgNcpKHpYV81VlV9WueO6ToRBCBKE0ryH0rwHEGDZErYtYcckEkkLsbha+EzIyM/CgDG8oDydUAXyBGuFrXMgogNBOwwEgUHgh3DrIdx6AK+u4fsavqfBhsEApCAIIpAiBAWfqw/USDhiznOa5pCV52ZFne6X9EDec889tH37dm5YFLHSBPDWIuAslZShj9OI6MGmz258fBzHK9KOhDBbt27VjY13IQACRKQnJnJiUYTBks+Usqxg4nb0uwWgjBz3CwC9fft2uvHGrTo3WeCVbrojI6zf8IaDNyBmXnbMk5NZuegePm2lZeaXPygXTAiplxtHoVDQOjzk3Zvo3nzZZZeZI/miWvg3G238B22uLZ+ZfHYqFwFdI3x3uUOOQN/CAcAwjOE8AExNTS3euJmIOJ/Ph8wibD6voZHYdDT8DsBMPjJ5rm3bLymVSsayLFUulYog+59x+Bze1ohTEJFNRMzbl14HZqbcZGFvg6eoGfSVPg6mRKDRVw3MZmDXrl1W1Ol9IXL2aLW0ZiDa1q1bdS43tSjoDBzx65KH1ehZOpct8InZL41s1fgIEM3xbN269SBLAjPrfG5qRfcdHR01b3jDmw875qmpqA8lo72RudI4FAqI8ujoqHn+85/Pi9/9rl27uJFaMh0e/M7IViDxS5KE+e/No+3pbQubv1S0AA5hYBD4GtUyMDfTaPxs2RKxmETMUUikLDhxBTumoFQDINkwFvotnIRZEUuJEkcgKGXD/GkM4HshPFejVvVRr4XwvQPgd2DTbwCnaFkz1gxpSxS/N8+mbgBH3Hvf+NEn5Ucv80jBCGF2MreigAXbtsNIIA0zg4GYE0uNz0zNfJID/jci+lXzxD8+Pk4nOASdV2K6ZbYbPeROBtsyiRWNealjIfOJ8XYbs+i+AisocoBgha/IORjUeaUFFB6LZsWTE7l3JpPJeMN3mLHnZmc/Prim+9FmeP0x8tchz8lNFOTR/GYFbwNCCMPMolgsQil109DgaXfnclPvIzJfaC2IcCzAuEqPbS9Z9K5oMecqGP0AlOD6ozU59+1ZdD2/B2EpbOgcLWJNkTm1qQ02QbJS8jFTAIQixGINcEylbcSTFmy7UfWGDcMYnJwJ9NwYl4hAMAwMKhUflXKAWsWH64YIfbMs+LVqlAt/NUMmJdyHa5jdOcsybsNw8B0A2LRpk9y5c+cRwauZfpDP5y9Syn6P7weMxRsqCYANGmGV5kzf95eNDY7MBQLAdC6b/0l7e/tzpqamfB2GkhQ6kqnU26rV6humCjOf1Sb4FyJq+iQo+t2q8D65iFYoH/z4yWLDdD05OX2ebYkXL2iHlfK8k4i9r5l+c5w9Bsd3fgLfM1oLIaUwWodhGIpEInmxEPSpWq1+fz4/9SHPq3+GiGZb5sxPSEGAVTqElNHqJyTCknRUW+H2Kbb6YpS5IgNd0g2PEh2sQS0Fkk0wqNcC1KsBZgo1WHbDvJrpcJBK27DtRiqHMSfHnsoMCEGQkqC1QaXUMBFXyj48N2xot3QA/GgZ8Dvkvpoh4xLhXICJWyeZfZbGDo0OzXcAYGdv74oW4Pzzz4/yj2RvW6bt2Z7nLVuAgBmoVqswRh82WWbbtm0YHR012b3ZP50vzve2t7Vf7Ac+arWanp+f1yQolk6lX1mv119ZyE/f7pngn04bGPh2iylw9VS7SicQoYmIiLMTuTenUp3O7Oysn8lk7Nm5+Vt7e7v3PhFJ80eh1erILPit7ET+r52482exVCpWrVZRq1V9ACIej5+jlPqQFPLts9Oz/xGUg1uJKLcKjCcRIN5712f3bdx0y0+EpbYY1zPZT0xKDhhtV7fBuAYmaAQFLLfN8kHmlIaWxWhoWsVZF/OzLmKORKY9hvbOOBJJKzLzPDF76gEgBDxPozTXGGO9FixosUIQhDqgDS8+DBxyRmWA0SgQoNIK/qSHiY9OwMu6rBI26SB8iAfkjwEA4+NHJdBCGL9YLPqH0/4iso5UsafpVCai3bt3735WT2f/iwzpP0okEpdLKWW5XOZSqRQAsNLpzPOl7z4/m83fZQy/P5vd/+WoFiGesBJXq/SkpUaVH65OTs6uk9K8rFwuG8uyVKlcngfCfzoR2uEBxZQ1GDr6e8x83QzYIaKRffv2fU6b1BuI8JL29vb2arWKer0eNCooxU53HOfdzPU3Txdmb/NDfISI9jSB8WSuqfqk58PGm9T/aLRmUoJMYDB56wSyn8oimAugkhIiISBiAmQ1AkVI0YHsLkYjADq62DQ+I2r4IZUiBL7GVK6K3zwwiz2/mUe55DVAR9DxNlgcFgiJEI0nxOS+Mh6+fwYTe0uoVYOo9BQttJHiZonalrkhgqTmGpAikE0QcQGZaCDo3PZZ7PmHPajvqUPEBEd5rR+7b3zcx6ZNRx3lFQTGzmQydjqdjmUyGXupK53O2FLKFXdVGBkZERs3bqz0DXZ/sr+/9yqvXr+pWql+UymL2trabCEElcsl3/d8k0qmnplMJP5naGjtj7LZ/O8/+OCDscj/SKvis0rHUcMCCC5R8CeZdKYtDMMwlUoJY/THhoaG9o6Pj5+oQ5gTT8SkHbOTsbglQZR8jPNgZhannXbaL7q7O96kTXhZrVr7WwZybW1tVizmWL7vB8ViMQBhKJlKvtO2cM/09Oy/Tk5OnrsKhk+whggMy907xr+ycdPNtytlvyBkX5MgOfvNGVR+UkbqwhSSF6ag2hRkXDaAkAjSFhBx0QDHllhBDhgmYBBHURCEBbBhBuZnXJTmXLR1OOjpTyGRVNCaF8DmxKBhBISBQSFbxcxUDYHfqD2plDhgBjWInCYEUoCwxUEmY4QM4xmErgZrbnThqBvoqkH94RrKPynB3euCFEHEBBOEMKE/y9L6JADCzp0rZvbh4WEDAErRL2fn5l6tteZDhQ/EAkYw2Wx4xLbtNb7vaxyhxUpTU0QDrTWArwD4Sn4i/4xKufpWIeXzM5mMU6lUUKlUfCISiXj8qVLIW21l/3Eul3sDEf1wVVNcpeOkool6vQ5mXAzg6lK5xEpJq1wuz1pW6jFph8wsce+h6UTNKjeKxFfm50vkem7X7AzOIYGfLGMHOhpQbPrriYgeBvCXU1PVj9Rr9Zdord+QSqXO1FqjXq+F8/O+UUp1JROp1wsSr5yYmPzQ4Pe+++eIinKvcsfjDYjDABp50P9H6/BGgiCAWSUVhdUQc9tnMf+tWci4hEjIRgkyAqQlIeICkASRkkisj8MeikH1WnAGYmDR0LC0Zw6oZ5GGxgzMzbgoFz109ybRM5CEkAQTgczxBEISDV/n3KyL/EQFbj04CAg50nAZDGELkNWQnXA2RP2hOvRUgNqvawimA0A3ANF4BkYzCGjkGVY1DDNgCwhHRODKRlpShkH4z7u//V95DA/LozGXNoWhr68vB+DjR/p+Llt4s5RyzVHeXzeBEQ3f4HcBfHdvNruRqngrEd3c3t7eWavVUKvVNIhMV2fnRTMz/scnJiYuwaGlvlZplZpApJt+tRUE5pDv+1BKDUS1JnVnZ5ecm5/9ZG9fcv+x+g6NAUcHPr3YR9esl9sz2PNjAD9eQj4ek6bW2j0iAsZJAP84Ozv70XKlcgsYb43HExdKKVCpVHh+fs4IIeK9PX3vyD5j0+5Bok8u11lilU4kII6PawwPy93j47sueNaLPipt5w2h74UwUEQE0a4QbLARpAU0GxgCKGQIQ+C6BuY0xITB/N4qxJyGnVSwe20kzk4ieVEKzlMcUExCuxocHgqMuckyKmUfA2vTSCYtLKEIHbOJtBkwk91Xxux0LTKZHgBCNg2/n0gIEBH8SQ/uAzWUflKCX/DhTfngjIC2CaHFQJcC9QuwlNCikW8ouQH89kMBaFY3JN+wEVJJHXi/FrHEP4KZcIyaVAtgLSl30UnWyWcL6hgFN5pBo0LI8DBANLAbwOuy2bl312u11xPwMqXUaWEY0szMjCGiDTGKXUBEdz+eJa5W6eSn3jA0OVJIpzOyVqvKdDqFUtlTK+BDhGHIRMSWZclSsTivdfAvR6UdmkazEmaWlUqFlRKvmp2eL7l+7bZWH10rMC4hX8c1sGXxc6IqOR/bvXv3p3p6+p/PzG8homcQkWTmIAxDKSCeB+CTq9z0hJhMAYyPm5GREfGp7933rkTgXS2VdYEOfS0gZO2pNkprCBSYloT45l8JkGz4CzVBlA1UhaH2+yh9pw7rjmnET4sjc1UbUpdnoDrUAWCM7qWUQLXi45EH5jC4LoPOLgc6fIyaYgSGrhti/yNFVCs+GhUUDmiEEIBMSrDHqP60gtJd86g9WIOnQwRdEvopCuElcZgUQdvU0ACXMqQwgwXBabfQfhcDNcOQwjSYn9/yizs/XcW2MwRwbM76VsBaCiybya58HAIOmqfwllPtowD+fCY7cxsk/0AIkTTGsJSSWJt4ZNpdlaJVOlAObHCwbiann1epVvu9urvG873T43FMRLxijnAPYma2LAvVam1yaGjoN8u0zFvqYAhA3B+PO6JUKoVaa2FZVn88Ef9bw+ZPZqfnPxa6/n82C1BEB7mmJqgfp/XRLcDoA/gcgM9lJwofaWvPvLHR7URbAJIAsGPHjlV3xBMCiACPjoKA8eIFW4aH2ZjvC5KdbMP4fUJQzUQ5hLzMywY0GDoFBBkBrLEhA8CaMXAf8VEZz8L56gwyz2hDx3WdUO0SYc00/Ixo5AAaY7DvN/MI/TR6+pOPKQpVKIFq2cOeh+cRBuaAn5AbFQlkQgIBo/LDEubumEV1Tw1Bj0TwVAtBn40wTo3nM0CaQR5DHAZxyDD8JCHsl5AP6lA6thW69ffsvuvzX8fwsERUhPgU2tyalV/U5s2buTxZzlW5XrUsK2WiF7OSXWqVfmuB8f7oWho0l7eGMACq1+smmUicV8gWrgPw9UiDO5wMGWamffv2fXpmZma4q6vrGeVyGb7vh/Pz86yU6o4n439WM/zG6cLs/9OMf+3r6/z5osOffhzXpwmMFoAgn53KHujYshqr9kRSi6lg1AwPD8tfbh9/ABy8jIlCColFhZntlnNYy9VsChKGBlobGJ9h6gamauAHGuUOYP4KC+XnJVBcC+S/MYU9o7/B/J1zkFGEJjeBhxoRnpP7yshPVhol4Y5hyxWSUCl5ePTXc9ChgWzeJ9IKVVKifn8N+9+7F/v/bT/mQh/l6+OY32yjOAjUoaGrIbhuwK6BCRlhaGCYF+Z70AWAJSAZECUTyJhthb73pXP71V8MN/yGp+wpb/PmzZqI9ITteUSYi3qKrQLhKuEIwCaadV2ji1bwGyilSDTCvNmO2dAGr8fSdpklgXbt2rWzhvVzy6XyOw2b32QybSoej1uhDsP5+Xlfs84kkok3SIEfTeWn/yuXyz2NiMwBXyeLx2uNmsAYacD2KtecXBpiZDkd15s2bVI7d37+6+dvvuVtFqwPJ3/sG32VBT9BRP4BUyYREIYMpQR6B1Lo6IkjnrQW6ra69QDleQ+lWRelwEftbIH4GQmE9wfwbsui9MMi+l4xgNhTHITVcCHXUUpaAMSe/iR0uLJmxcyNNI9aJcCeX8/BGCykdbABhEPgukHhUznMfXsOfr+A+5w4am2A0YyEUOjpjKGtw0EibTfDwOG7IeZnXcxO1VCvBpBKHGSaZdF4bvoXYWjNCiuk8E5hx186Pv5pjaMs03aykjZmVR9cpaOm8fFxDA8Pg44swGzbNoIgmACQVEq1lctlVpa8Pp/Pn0FEDx8porklB7AC4L179+79GBG9NPSD16dT6Y2GDarVqi4Wi5qI7HQ6/Xu1WnVrITf9DQO8j4jujJTUJyJIbFW6TkZABICdO3eGmzZtUjt3/PdHzt90S6dVlv+n43sBSpdZutZBkqKUijA06OhOYP3ZnUi3xXBQXTcAbZ0O+tekEfoGxTkX2X1lTE/X4F4gkTrdgv6hC+/vHkXPcC/ar+loRKPqhhYnBCG7rwzblmjrdFYEikIAvqex7zdFGM0LGiYbQKUk6g/WkPvYJGpzPvxnOCgPEXRo0BaPYXBtBh3dccTiqoU9mzzqoHcgteCP3P9osaFWE8FYgO2BMz8NTWyCVCDDr8VK9VvuuWe8FmnfJ6V22KxT2vzvk7X6xyqdsmZTc7Tfjztx+F7wSyKaTCaTrykWi357e3uyWCq+HMBos9XQkbSuFh/dLIAPMfPHCrnC7xnQ6xOJxNOklLJSrphSqRSiUYDiBs9zb5ienvt+6Hp/RUTfGhlhMTr62ILgmocBrFafObUBsQmKw8PDcnx8/G82brr5UVEVH2n/vknbZ0LXzlTwyMj+NRlsOKcLJAhhaJY99BABnb0JdPTEUZxxsffheUyHNXjXOkg/oJH9+CTcfS56X9wHtggIuBGrQ4SJvSU4cYWYI2GOyFKEiT0leG4IqWihsLhMSMzvnEPhUzn4XYTq8xKoSo2klFi3oRM9AylIJWA0IwyWmwfDUhJnntOFRMrCw7+eBRsglTM6tVtLUYEMVfBvJi/ees99X/YxMiIwOmqeLBvWKq3SSmlsbExuvnrzRQGChGSpiUgaYX46MDBQPaz21XBBkGb+uOd5vy+EEPV6nY3GK6empt7X3d1dOZL21tLvsDV4pQ7g48z8iUJh5ndZmz+SltySiCfscrmMcrkUApCZTObpVa2/XpgoXNm3hn5yrDm2hwuCO+zmtUonBYnDmDsa6Rg7P/dpVuHmMAy+k7zPyM67QtmVJbNuMKNFQjIrauT6AaCoiTBxi4uNgdDX0CGjvSuOCy7rx9nndAMAZs8VcJ+dwNx35zDx4f0wdQ2KEVgzhGiUf5vcV8bhXBDN9IrpQg2leW8BDBmN4JnpL04h99EJuOdamH9WDHXSOG0gg4ufNoiB0zIAGuMzhg+4BpvNkDn6jAiwAGMD/YMp0x/EdPsPfLTvgkTF5EOlX/PL7Z97w333jfsA08kIhs3N4sEHH8xMThbenc9N/XMul//nbDb33nw+39/6nVVapWPlr02bNsWNxH8nE+m7IMVdiVTyLmPk2dGesux+Y7QBgPTgYM/33Lr7k3g8rlzX1el0cn0QmOdEQCOOBEYtWmIzBYOicmjc19f9P/2Dvddoba6rlMtfIiIdi8UUwCiVSn4mk1Ga+JXN1pJHM/9G7z4gPzHznLm54oez2fw/FIvlD+cmpl7aPCgsB4RCyPzxbNy7SicAECNU1MPDw/KX3/78T3b30jWeZV7Ns8GPYz/0RfafsjL3qRzV7q8YExhNDhmRECyTjYT9hVJvNjUS3gUQBhpGM4bWteGiKwbQHo9hrsOgemMS5Ydr2P+Pe6HLGsIWC2bP8ryH2enageCYxROQhHotRCFbgWwpBScTEoWxHKb+Jw//WQnMnicgiHDeBb04a2M3pBQI/MZBTlgCwqYD440LyKSETEomhwwEtLvf0zNfneZH37tP4Ks1GcuyH3L4HyzCy3Zv/+9bgZEo5ObkZOpt27YRAMRisRSB/7Strf2tmXTbWy1l/ykz96yeVFfp+IEjOIoY5ZV6nxv1oVgSkRFCfLzZEV6QYGJ+7UFmp2Vo7969nfnd+VSziXUTIFuCZiQzU39/z7f6BnpfqE3wND8IfhaLOY1DL4MJ6Hss8gVhntXennlTzI69PZNJvQlkXgAA69evP9xeW13lmpPYZHqIpogRgfFRfR/wcQwPf+qCeXq2O117hfut2rOL3y91xXpjsIds2AMWrD5lREKxsIhlvJHuQBaRykgSMUkUdSJNtcew8fJ+PPKrGezLlsA3JoCv1zD54f0Y+uPTICwB1o3IzqlcFZm2GJQlDgJFjtIZp3JV6EBDKtEIoIkLFD6bx+zXZuBfl8BsD6PdtnH2hT1ItcegCc37MweGg2LIXG+oiDpgMnVN7DGFcyH5kwH5+314eQ9B0QMU/VLExE5W5hO7d3xuFwA0zMunRmpF4/hMc6VSscsYA2auMcyqD3GVjhu15A4eVXYOo2GijHMwViqW/rdlWb3lSpmlUtfmcrMXENEvlzJlNj9Tyn5Xcl1ma26ykLNj9n7PDz4xMNBze8tvDhSgWD8saJB25SYLX4jH40/1fd9E9tjHJAtMXK/XfO17vuu5gbMSsDPGiFWuOUUAsUGjBgANDw+L8fFx/UvgawC+dtHw8BBP8dNq+8vPrz5KTwX4fKmUEjEJUg0tsYFajShP0SYQWxPj+OlxE1/vkNUZE2df3gvnXgu//vUMcEMc9LU6sh+dxNCb1wAGEETw3BBzM3X0DaYRhmYhwEbKRlRpcc6FkAKsG8n2M3fMYPbL0/CuS2C2m9GXSeCcy3uhHAm/FGp3rwv3NzXh7fMpKIRkXAaiKjocNDp8GF9De4ELwgMg8YCwxXdVt3NXPBk88MPx8UaX5OFhifHz+FQBwxZDjSSiZpdreXJ2qlylU9l8SlEbeqKV8xYRmt1YprIThc+nE8k3FIvzfjqdjpWK868B8CeHs2Iwc8ZxYutct76uo7Ptyny2MAHgduw4OMAt6uYOZha5yYK/lBnzmMlAEJFsyliUnLZKTy5AbPBbQ1sEYXhYDDe0xwlE1RZueMtbYvlH504L/eB84wXnsI918Kg9YtRu1txL+7C+dm89XVQlqTolnLNiJn1ZG6/d2C7j7Tbu+1keuMYB7qhg6nMF9L24H7qqIQRhbsZFR3dioeRbszzqzFQNWhtIISASAuWflTH92TyCZyUw181YO5TBWRf1oL7f1dM/mBL1X3nSL/jQtRAMMw3CfpI0C4FZMHwAE8ISjyBB96pBa1/HeYnsztFPuK0LsWnTJrVz82ZzqiXcr9IqnSqAmsvN3Fqv115LRKpWq7FhDO/5xZ6/JqK55YJriCh0XdeEYejVqq4NUO0ImqzJTuRXF3yVjgkQD1g2xsd1ox74iBgevo8KhQJ9/YMf9AD8Orq+uPhHm171Kmc2H3YTB+ezb57tz+ibgqlwQ+VHNcyeYXHv83rNxov75e578xBXO6A7ZxBb66Dt6W0wVQOvHqJc9NDVE0cYNoJuXFejXPQgqOH/C6Z85D8+Cf8cG7NrgPVndWIwlTD7PzZBtd2uDIoeIPgHFBPfUG3yTkvRb7rO6J+Lxr4sDQ8PSwAYP+88xugo79y5M8TOnavcs0qrdLyNF1F7sm3btv04O5H/USqdurparQbpdHqoJMVNAD6FZSrXUKPDsAAiLe0oA2NWaZXUY/v5qBkfbzU1jFATIFu/tXPnTr3zE59wAeyPrm+cecPLRpOhf4MOzZvdB82z9jy0X3ZcldZnX9Ehfh0rkZqJYfq/8oifHofdbcN4GsU5Fx1dcQCNhqKl+RpC30DIRhJ94dM5eDajdLHC2oE00g9q/eg398pgPoCw8QXRoT70y6+dsx10SBQobdq0aSEKrLe3l8cbCMjAaFMzXqVVOiXIGHNKm8A3b94siCjM5ab+VQhxdWTeZDLmD5n5/zVbN63SKp1kgLhIc8QotwDkIQc4YIQwfB9tKhRo59dvKwEYAzB24fVbn49Av3Puu+VnxB+qY2hT0uQvJyGzVRQ+k8Oat60FEVCrBvC8ELGYhDYGlaK3UJt09o5ZlO+toPo7SXQnHLbvqHLhXlcaFfxCZegdP7/zc3c0R3HA5AkAoxyB9qneZuWxbBKrPsQnl5aljxe/EB3MGyto5XQ8AFEzMxWLxa+Uy+WJWCw2VK1WtaWsZ+RyM5eNjo7efbx6cdKJ9p/TqmydSvR4mhQYGDUYH9cR+FBkiqRf3Dl2+y93fO5ZMsOvq00HM+b2smjfy9rdHEflVxUUvz8PlZIIPYNaxYcUAoGnUa+GUDEJL+9j9kvTcK+KI2ZJY32hQuX7aoIS+Kd0v3zaz+/83B0YGRGInrdz586wkSs4atDMvD9VUZCZHn30UQdASmsNIhJBEATGyPmlNr5msEPL78HMZgVv76TKrfRoNRBouU1XkEgdLqe04YND22LWWObm0xHfcLTi8RXkq3ILv4GO8l01cw7b29vnQPSZRCIBZg6TySTB6FcfZryLP6ORkRGBzUs/Z2RkRDBYH+fDIS1abH2kd4HFh4zHDUSPT0FGYw5d95Mgp5mPuO6H7Pv0hEZALZgimz66n98x/h9Wkq51dXi/3OnKWIG1f5GDmdunEZY0IIFqOQAA1KshwsBAxARmvzSNeooheqRJfK0u/GLoIo7X/uJbn/2TH46P16OOEyZq0HtKgF+z2PDhLgCSiDgWi7UJIU4LgoCllASgnkhYM0vdt16v+wBqUXV9bdt23CKrl5npoYceskZGRgQzU5RoLJlZYgoAOPk4FDRdXGC50V7SJMsAF6WUTQAXGWN0NMaF9ejp6Wmsy+INhU4KAW2+1+Mvc4wAjRJhTERgxvoIVOT27dtVa6Hthx56SEVpEacx00JCvWF2lwNEIVrr9/I6IuJorRfuDUAxszDGJGA4o7UGM0vP80IKQjeScz5aGRCCP10ulwMisqrVKpOgF5Vz5T5ESfcHgxBNN+bP0WU2NhsBt451+/bt6t5775XR/+s5sIyMqC3TcuORzcLly4M5+038j9agn4j40ksvxdjYmIzkmlrlF8TJ1gMEABcAzj///BXxLNGC3DRlgZY5N4XNQ7AQAgjDFDPTPffcI1v2lOZfWvyMZvGBJl166aUMAJJE0ff9hg8XBAbC5qFmifsewv9hGIpjlc/16+8REbTnlFLN+8GgwaeO41CrDGzfvl1lMhlBRMzgzij1jIQQgOHiyeB0XgDGTZs2qZ/dMfZzHdfXhNL8IP7jQCpHaDfQmP/WLFRColbxwQDqVR+wCfWHaij+tASx3ubYXS5p11TZCW/Z/a3x/9y0aZMCQDgFfYAtycWHu8Jdu3ZZQqi3x+NxC0ColGIYTLS1tT0a3ccAQNPvcvbZZ8+BMWFZFgPQsViMNPjNRMQbNmzwRkdHDRFx9DckIt3VRc9NJJPrfN/XUkppjKkKiMJxMNUefChmDptza64BM4vBwfQMwL+JxWJsjAni8XjaBS5oGaMhIrNx40afiAwzB81NiYhg2AQnRRUQhokSz48vPwq6t3mYqNfrEFJumtozNUhE/pYtW0Ii0s1rw4YN3vT0dIaB5/m+1+xMARK0e8n3Ysxe3/dhjFGVSoVt27lscnL6vGitW+8dEJERLG5IJBM9YRiGtm1TGIbZOMWzEQ8eleIBgHp7e3+hjb4zlUqJIAiCTCbTU+Ha1tbKNTt27GiUbDPi/mgfl+Vyme1Y7Pr8ZP7maJwLY92yZUu4ceNGP5/PnymVenGtVmUAMtQhM/jR5bVq0q3dMZbSDJnoUdMAQhWN4ZqJPRPPJKJg69atuqVYgCEi78EHH4wJIV5Sq9XBYCGEZBDnG5v9erGCfQLMaMpA8y8vBvLGgup7bdsGEYWxWAwQ4ioi4ssuuyxo2VOCpWRIaxOMHlqBywCAUHxPuVzWAFl1zwURXcyPsNMqmy1rV1+sEVuWXTtW+SyXy1FdIXq4Xq/DMNvVahUEvj6Xy/Vt3LjxIBnYsmVLuGHDBu9Xv5pKE9Fzq9UqiEiGQQgIvledRBjAC4XFv/H57FnXPG84Fsa/be/GhpDZzH13XmSubgd1KHhuCN/XIAHMfnMG2jds3R8arjEZqV+++5uf/0qja8ep5xeMykzpycnJF8XjqWHPc302S5xIow2BgEstZZ1dq9WYmRGPx8n13G9ETC2b/iQi4u3btysiCnOThR9blnUlM4tyucyO49xSyM2Ma9Yf19p/yLLaS8yVhNZ6iFheIwjv8H0/Yl6LPc+dLHu1R44jIIp6vQ4QXZHLFT4hQvxt75reB5snSiIKs/vzn7Us+5mMCmttiCBvnZzMf4sIPtA4lkaoGhDwtHq9BgCqWq2yE3NunpycvIuIvna8fE9HqxXW63Uw+JziXOnToQn+rqur615mFkcJEkuaJo1Rd1fK1bJSKul5nnEcZ8Az3o5CYfqTWpuHGukHIQDpKCXXhoF+eSxmr6/X6yylFNVqNZAh3bXofRoAcJLOrmq1mnMcp9fzPKOUahOk75jKz/ynHwb3CyHLACDYdJKQVxo2v+95HpgNHMfhMAjuaV/bPjs2NiaPoYg8EZGZnJy8lQ3fSAQKgoABvGr37t3/BiAAgM2bNze0QKF+UCqVKkqpRBiGbIxREOKzU1MzHzcBf4fIzBKINOm0EPaFJgxfbcVkr+d5zMwyDEIizd9dxtXAk/smb8m0t19TLJW+R0S3LQUOzPoHpWKxKpVKaB0yETmWExvPThTezUTfj8VE3hijwzDsZBYbbKneZMXsq6rVKgNQYRgQjPnZQZv90mZZbshNDQRcnp3IfRKCyFKW1F7wob41fd9v4fWIT8RnXNd9IxFkrVZjEP48O5m/FMwlCBINGSIQELLhK6rVKgBYpVLJJOLxF+ZyU3f19XV/qbmvRHsMAfh5Pju1K5lKXlkul0PHcc7NY/p72YncvWiYopqjZmZIEDJaR1XChCA2+v/Oz8+/6nApNctR890bI++q1Wo1JWU8CALjOM6A67k78tnpTxqYRwCqAiEkZIKEPC3U+hWxWOxs13WNlFLW3XpdSrpDnWyAsHPnzhCbNqmHvv2ViQs3bb3Z+Pp7gigdlAIu7ypR53O7USv7CMHwHnVR/kUFUpGBR9KQfsvunf/zhUsvfZ21c+e/B6esRwiAgLisvT394lJRQCm5rAcgCHy4rssAQsdxrGKxWIRnPtCqFS5mHmnZH69Wq2+UUpLWGq7rcjqducX3vVs8DxU2NZ+ZlCCVzrRlqFarIQxDMLNJJpPS9dz/Ov30091WwH2sc/YDn+Px+BrXdV8ZkPi7lv+nR0ZGRP9Q73/m81Ov6GjvuHJmZiawLKsrlUhsbXVPNU26QRDAdd2mP1W3t7dv8H3/xWgUlHgiTKfk+z7btt1vmF8WBMF7jpMVoXno2ZvNFm7rbO96w/T0tO+6ruU4zlnJZPL/+L6PMAwB2JBSwnEcVKtVuK7LRBR0dHTY09PT/923pv+B1sMCEfHY2Jhsb2+fy2bzH02n03/p+77vuq6IxWJDyWTqf4dhgCBoiJnjOM0TO8IwNEIICsOQDOgDkbn0mNxTzEz333//N8D0m3g8sb5Wq2nbti/t7ey9ioh2NnkwGvsjucn8WFtbx2tmZmb8MAwtIpLJRPK1AL3Wc12AgIRlQSqFSqUCz/MYQNjW1mYVi6VfMOnvR5u8aT2gFiYLz02k0+NCEDrbO96YzebtgYG+WxeBgyCiR3OT+a+k0+mt8/Nzoed5ZFlWX7It+c/lUinwPVNtKJLSSSTicSEEKpWKISJYtoVKpTIvA/nlVnlt0o4dEZ+HPOf5HjGz8H2fLctaE4/HX6G1QTKZQD6X/QaA7zd5vWVsd01O5D7e29v7+1NThYBIxFOp9AsbLSgPOsDB9314ngcikr7vB319vWfmC+7LiOiLra6T8fFxsXXrVl2YKLzD9/0dlmUpz/OCeDx+iWVZl6Cl5zEzg4hQrVYRxTuAmZFKpZ9fqlQuAPAdHGXLvJa57cnl8p9pb29/7czMTFCv1y3Hcc5JJlPvDgI/4lMblmXBtm1Uq1XU63UmorC9vd2em539XG9v74PqpISEpqa4c2z3xmfe8iZpy09DaV38YVFmrm6Dl9EwzCj9sAhdC3WsPS4D3/9/u3f+z4caZdROWTBspVq14vq1WlUDkIc5J0ohhEyn01bg+6UgDF+x5ikDjyylCRGRGRsbkz097fdMTGT/b19v3/83Mz0DwyasVEqGGVJKmWoyqtaay+Wy3+wc0NnZac3Pzd1nTPwDrZvGImkyzKzB0MysD++4Z258B1oIYaIZPez7lcjcC25YApmIqJ7NZl9cKpW+2NPTe+H8/BzK5XLYOoYogMNmw1UATsNXQrperzMzhg6j0ZrmOKK/fIRNeuG70bhXMD8yUkryPO9hqWSrdk0tfhrNjSAMHMVBwzCzKJVKfzk7O3dZV1fXZTMzM+x5XuB5niYi0eK35Gq1qqNcPdXR0WnPzRUftGz5J0sFGQwPDxtmFvfff/97hBBP6+7uvm56epp93w+CYFYzY8En5HmejiZsWZYlOzo6UMgX3jO4pn/72NjYcgcnPnjdeTG/8vbt29WWLVvK2Wz+U7FYbMTzPM9xnFgpCP4AQGsyMI/wiOCc+fP5+fkrurq6Ns7MzDIzh8VisdmbVACA67qRWZ4lAJlOZyzP8+fsmPzD7u6+WqvsNM2xmujptm1henq63NvblzbAGQf7Lw8EcuT25N5VLpc2ZzKZ3mKxqIMgMEEQgIgsKUQ7EcEYg1qtFoIarcuVUiqVTKM4N/v/9azrnVxKfjdvhmZmymaz28vl0mQ6nRksl8thEAQIgsAAMFqHgkBL5VXzyMiIsGz51rnZ2d7Ojq4bK9UKKpVyGIEKiABjGJZl2WGjhRFHvMjlciUk5u6m6bipyUVVfwQR3bVv3+SrU8nkvycSiVi5XDb1er1VllhKKbXWDMAQkYqA1WijWYKf0gKIrYd+05CJBo8sZd3Ztm0bmFlMTk6+a35+/srGu19aBjzPM8xsiEgQkdXV2WXPz80/7AXiXSMjI+KkTVzduXOnHh4elrvv+u/bdBB8xkrEpLu/rmv3VREohlfwUf5pyai4LcIg3Gs88RYAND5+3pMlRymRTDl2MpmMZzIZe6krnUrbsZgjmdkrl0pfrBTLW9asGbj9cGbBrVu3GmYWQ0MDfzkzOzOqLOV3dHSoZDJl27YtpZQQQkBKCdu2KR6P2+3t7VYymZTlUmmn69dfODSUWYg8PASjhUg6cVvatp2MJ2KSSMSWtZMKEUulEzKZTNqJRMJq78goIipF2qdoFkonIjMyMiIGBgYerdbKm+aLc+8lopzjOCqdTtuZTMZOpVJ2X3+PbZg/BcJ/9w/0ylQyJZPJlJ1MJhWA87PZbLLFzNNK6UwmJR3HiccTMUmCrMO8l2QyFZeO48STqbhk5vhh5qcOzC9ptXdkFEC5np6ecrMDQ6ttEIz2TCYjM5mMdBwnTisIeiMi3rYNaGtrm9HGv7FYKo0JIdDe3m51dHQ40dqqRCKhUqmU1dHR4bRl2mzLskSpVPpiWHWv7+npmVzqfUb/zeeee25ZCLxobnb2o1LKsC3TZrW3dzjpdNpOJBIqmUyqdDoda29vd9LptBRCFKYL038yuKb/z5iZljOVEpHlxG0Zs2OJdCYpAUovZRJrbL78yXK5HLa1tSeISCopX17YX9jQoh3yNmzjgYGBguvVbpifn79NCOK2tjbV0dERS6VSdiKRjNYhbbe1tTltbe2W4ziiXq//qFor3djd3f2jxbIzNTUV8aD4arlcrvX29qanpgv/MdjfOxLxkT74XWyjgacMPBKE5rm1au2nbW1tsi3TZjmOY1mWhaZ8KaUQi8VUOpW2Ozo6lBSyODM9/ba+wb6PLCe/0fugwcHBKcHWVt/z96XTaZXJZFQkA04mk7EZh8pcNDbu6ekpd/d23VQsl95ORL+xbVslk8mGDCXTdn9/nx0E4d0AfbF/oFcmkymZSqXseDyuGHT53r1725fS0sbGxuRppw1+slZ3r63X619jZpNIJKxMJmOn02m7ra0tZtu2IkFvJqJad3e3TKfTMpFIWJm2lG0YTwWAe+655yCeF6BEPGFLy7JSli0lgEPkLfJt8tDQ0DTX9PXF+dJnhBDc1tZmdbR3OKlkakEGksmU3dHe4WQyGVsIQfOl4hcrNf/atWu7J7Zt23aSt/tp9BXki7e8aG1I8mdcM22pp6aw4f87g3K3F7D/4xPazjgy9P3f2/2dz41FPRxP6ST6pjDkcrmrJNmbtPb9pcx8BkRCkNbaPOp55ifr1w/uaf39Cp5DRMS5XO4CQLxEkLzKsH7KQb22GASivJTyPkXiCx09HV9snjQXO9ibz83un3q+ZcmNhsMak0ho7d85ODi4q9U30Pz9xEThEqXo2ay1DwAkpW2C8N6BBqjTEsEBC3Pbu3dvZ9JJXhmEwTkAhAGRY1t+savj3+3Jyctisfgzfd/3hBCQRCLQplapyE9v2NBdiu69cKLPZ/Mvk1IOaWaPSMSNCT4zMDDwaOs8m//O5aavl8SXamZXEjkG4q6+vq7vtY63+e99+/atsW3n5c35SSltA/PTvr6+bzS/0/ybzWaTxPQKIkozszGAMSb+yTVr2mZW4ldp/c7+/fmnCkEvsJRcH4Z6EIRU9D5rUohJJv6NMfS1gYHuu1fCM6333rs3uzFmqecppc4NQr+XgQ4wa0Fi2hjOSkv+uFwufuWMM87ILzfu5vPy+fyZEtZwGIZ1qWRMh8He/qH+zyw3jomJqZfaCqcFWvu2VA40vtg92H3fUmsPAPv27bsoZsWeJ5R1Tuj7axhwGCBBVBJCTGutH1WW/c3t2+/8ToumY5ab//5H9l8VS8Uv7Onp+rfFz1pqfrt377YHBwdfojWeZ7Q+l5kzLRYTAuBJIR9iNndr1p9czHNHeh8P/uTBns613TcGQdBHTCEEQERK6+D2wcHBXy0jQwuf5fP5lBD2ZWHob2SGI8DGisWk58mPW/DWSVs+2/fDOmCEAZEAaSb978v1tmxdv0KhcBaH/HRA9LBgTcxOaML7h4aGPj85mX+TlCLJzBoGrKRytA5+2jfY9/XFcpHLTV2rSF4RclgTQqSCwHxnaKj3rmWKvLfIQOFiIczzlLLO0mHQD1AmQu+SkjKnjX7IeOHXBtcN3nM0++YTTs2UjAs23fKXF21+CV94/dbwJT//33z1n7w23Pi0Yb5gyy3bW773W5ubNjLC4mhD+hd/f2pqKr34YmZ18HNGxBN8YKDDhb3/NlMzpH+p97wUbyz3/cPcWyxz76WeebzfEZ2odVhKFpa659GMZ/H9HnnkEWexbGWz2WTrd5bpmYhjGe8TJUOHS/tYZh1PGRk4mYJM6OkveEH6gk237L3wmcPmuve/UV/ywhfrC545HF64afgZrcD5JNrcmnleR7rkYwGp5nOO8J1mHtsRGSfKtWodnziqOY6tTFBb+tstXg9a6r7bt29XR5jfQfc4ijGLI4zxoHEcbtOL8qVWNI4V8o48zFzFsRwgW+/dOr4of1VFczgakD2Il1fAhyten8Otw9hY417N3MCVzv0Y5idXyCPiGDf/JWVgpb8fGxuTS/HdkrK5nVcac9L8vVzq/S7xPHW4g0rz2UezTsvx6RIycGynridaSxwfH9cXbr7l7UTqH2Abn7S0teff+cu7PvdsMBNWu00/5pPV4fxUqyv05Hivx/ldUjPi8GTnkRO8DscsX6uy9bisPrWG9h1uzU+JavBRoAyJkD6pTTBl6sZibSBI/AsAwubNqya0x7qzHUgYPuRaXZ0nz3s97jvNKcIjTzRPr8rWE/r2V7zmp0h7lFEzPDwsfvbd8Smw+LiKOaR1+EA1Uf4qAMbOnavdKFZplVZplVbpMdEp0y9s/LxGOgVJfIyNAYg/9+uvf92LfIerJ61VWqVVWqVV+u0AxEZ3CqZfbh9/IAy8bxDU9tXXt0qrtEqrtErHi04135sAdqJ/3Xn3aqJfTO25z7/vvvtWtcNVWqVVWqVVesz0/wOnpqRcHXXmfQAAAABJRU5ErkJggg==" alt="3Shamrocks Studio" width="226" height="33"><span>© 2026 3Shamrocks Studio. All rights reserved.</span></div>
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10l"; window.LP_BUILD = "file";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10m"; window.LP_BUILD = "file";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -2376,21 +2409,51 @@ function persist(c) {
   const lib = store.get("lp:lib") || []; if (!lib.includes(c.key)) { lib.push(c.key); store.set("lp:lib", lib); }
 }
 function forget(c) {
-  recs.del(c.key);
+  recs.del(c.key); recs.del(c.key + "|a");
   store.set("lp:lib", (store.get("lp:lib") || []).filter(k => k !== c.key));
   state.clips = state.clips.filter(x => x !== c);
 }
 async function restoreLibrary() {
-  const keys = store.get("lp:lib") || [], all = await recs.many(keys);
+  const keys = store.get("lp:lib") || [], all = await recs.many(keys), snd = await recs.many(keys.map(k => k + "|a"));
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i], prev = all[i] || store.get(key);
     if (state.clips.some(c => c.key === key)) continue;
     if ((prev?.v !== 3 && prev?.v !== 4) || !prev.raw?.penalty) continue;
-    const c = { id: ++uid, key, pickSel: prev.pickSel || 0, file: null, name: prev.name || key.slice(8).split("|")[0], size: prev.size || 0, status: "done", raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb };
+    const c = { id: ++uid, key, pickSel: prev.pickSel || 0, file: null, name: prev.name || key.slice(8).split("|")[0], size: prev.size || 0, status: "done", raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb, proxy: snd[i] instanceof Blob ? snd[i] : null };
     c.result = ClipEngine.decide(c.raw, { strictness: state.strictness, minKeep: state.minKeep });
     state.clips.push(c);
   }
   render();
+}
+
+// ---------- the sound copy: a small sound-only file (about 0.3 MB a minute) saved with the scan, so Picks
+// and parts still play after the phone restarts the app (web apps can't keep a link to the video itself)
+let proxyChain = Promise.resolve();
+async function makeProxy(y, sr) {
+  const M = await mb(); let codec = null, rate = 24000;
+  for (const r of [24000, 48000]) { try { codec = await M.getFirstEncodableAudioCodec(["opus", "aac"], { numberOfChannels: 1, sampleRate: r, bitrate: 40000 }); } catch { codec = null; } if (codec) { rate = r; break; } }
+  if (!codec) return null;
+  const output = new M.Output({ format: codec === "opus" ? new M.WebMOutputFormat() : new M.Mp4OutputFormat({ fastStart: "in-memory" }), target: new M.BufferTarget() });
+  const src = new M.AudioSampleSource({ codec, bitrate: 40000 }); output.addAudioTrack(src); await output.start();
+  const ratio = sr / rate, total = Math.floor(y.length / ratio), CH = rate * 5;
+  for (let k = 0; k < total; k += CH) {
+    const n = Math.min(CH, total - k), d = new Float32Array(n);
+    for (let j = 0; j < n; j++) { const p = (k + j) * ratio, i = p | 0, f = p - i; d[j] = y[i] * (1 - f) + (y[i + 1] || 0) * f; }
+    const smp = new M.AudioSample({ data: d, format: "f32", numberOfChannels: 1, sampleRate: rate, timestamp: k / rate }); await src.add(smp); smp.close?.();
+  }
+  await output.finalize();
+  return new Blob([output.target.buffer], { type: codec === "opus" ? "audio/webm" : "audio/mp4" });
+}
+function saveProxy(c, getPCM, idle) {
+  proxyChain = proxyChain.then(async () => {
+    if (c.proxy || !c.key) return;
+    try {
+      while (idle && busy) await new Promise(r => setTimeout(r, 1000));
+      const pcm = await getPCM(); if (!pcm) return;
+      const b = await within(makeProxy(pcm.data, pcm.sampleRate), 120000, "sound copy");
+      if (b && b.size > 1000) { c.proxy = b; await recs.set(c.key + "|a", b); if (cur() === c && !c.file) openStudio(c, true); }
+    } catch (e) { diagLog("sound copy failed: " + String(e?.message || e).slice(0, 60)); }
+  });
 }
 
 // ---------- clip model
@@ -2581,11 +2644,13 @@ const LIMITS = { perAdd: 30, minSec: 5, pickSec: 20, maxSec: 30 * 60, bestMaxSec
 function addFiles(files, recorded) {
   if (!files.length) return;
   let over = 0; if (files.length > LIMITS.perAdd) { over = files.length - LIMITS.perAdd; files = files.slice(0, LIMITS.perAdd); }
-  const keys = new Set(files.map(fileKey));
+  const keys = new Set(files.map(fileKey)), oldIds = {};
+  state.clips.forEach(c => { if (keys.has(c.key)) oldIds[c.key] = c; });
   state.clips = state.clips.filter(c => !keys.has(c.key));
   let known = 0;
   for (const f of files) {
-    state.clips.push({ id: ++uid, key: fileKey(f), file: f, name: f.name, size: f.size, status: "queued", progress: 0, parts: [], override: null, checking: true });
+    const old = oldIds[fileKey(f)];
+    state.clips.push({ id: old ? old.id : ++uid, proxy: old?.proxy || null, key: fileKey(f), file: f, name: f.name, size: f.size, status: "queued", progress: 0, parts: [], override: null, checking: true });
   }
   state.filter = "all"; setView("clips"); render();
   const added = state.clips.filter(c => c.checking);
@@ -2595,13 +2660,14 @@ function addFiles(files, recorded) {
     if (prev?.v === 4 && prev.raw?.penalty && prev.raw.chromaQ) {
       Object.assign(c, { raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb, pickSel: prev.pickSel || 0, status: "done" });
       c.result = ClipEngine.decide(c.raw, { strictness: state.strictness, minKeep: state.minKeep }); known++;
+      if (!c.proxy) { const b = await recs.get(c.key + "|a"); if (b instanceof Blob) c.proxy = b; else saveProxy(c, () => decodeAudioStream(c.file, () => { }), true); }
     }
     c.checking = false;
   })).then(() => {
     render(); pump();
     const n = added.length - known;
     toast(over ? `Scanning the first ${LIMITS.perAdd}. Add the other ${over} when these are done.` : recorded ? "Got the take. Scanning now." : n ? `Scanning ${n} clip${n > 1 ? "s" : ""}. Picks coming up.` : "Already scanned. Ready to play.");
-    if (state.openId) renderStudio();
+    const oc = cur(); if (oc && oc.file && !player && oc.status === "done") openStudio(oc, true); else if (state.openId) renderStudio();
   });
 }
 $("#pick").onchange = e => { const f = [...e.target.files]; e.target.value = ""; addFiles(f, false); };
@@ -2674,7 +2740,7 @@ async function pump() {
     const base = c.decoder === "stream" ? 0.25 : 0;
     { const d0 = y.length / sr; if (d0 > LIMITS.maxSec) throw Object.assign(new Error("too long"), { code: "too_long" }); if (d0 < LIMITS.minSec) throw Object.assign(new Error("too short"), { code: "too_short" }); }
     c.raw = await ClipEngine.analyzePCM(y, sr, p => { c.progress = base + p * (0.7 - base); renderCard(c); }, 150);
-    delete c.raw._dbg; y = null;
+    delete c.raw._dbg; { const pcm = { data: y, sampleRate: sr }; saveProxy(c, async () => pcm); } y = null;
     c.phase = "watching"; c.raw.cameraChecked = false;
     let peak = 0, best = -1; c.raw.highlight.forEach((h, i) => { if (h > best) { best = h; peak = i * CELL; } });
     try { // camera check is a bonus; the sound analysis stands without it
@@ -3147,28 +3213,37 @@ function closeQuickSort(finished) {
 // ---------- studio
 let video = null, player = null, stopAt = null, queue = [], audioCtx = null, audioBuf = { id: null, buf: null };
 const cur = () => state.clips.find(c => c.id === state.openId);
-function openStudio(c) {
+function openStudio(c, keep) {
   if (c.status === "queued" || c.status === "listening") return;
-  state.openId = c.id; state.tab = "pick"; c.sel = c.parts?.length ? 0 : -1;
+  const reopen = keep && state.openId === c.id;
+  if (!reopen) { state.tab = "pick"; c.sel = c.parts?.length ? 0 : -1; }
+  state.openId = c.id;
   const stage = $("#sStage");
-  player?.destroy(); player = null;
+  stopAudio(); player?.destroy(); player = null; c.audioOnly = !c.file; unfloat();
   if (c.file) {
-    player = new Seg(stage, { onTick: drawWave }); video = player.v;
+    player = new Seg(stage, { onTick: () => { drawWave(); markRows(); } }); video = player.v;
+    video.addEventListener("pause", markRows); video.addEventListener("play", () => { c._played = true; markRows(); });
     player.onChip = () => { const c2 = cur(); if (!c2) return; if (player.ranges) { stopBand(); player.set(null, "Full take", fmt(c2.raw?.duration || 0)); } else showPick(c2); };
     player.load(c.url || (c.url = URL.createObjectURL(c.file)));
     stage.querySelector(".pv")?.insertAdjacentHTML("beforeend", `<div class="credit" id="sCredit" aria-hidden="true"></div><svg class="bug" aria-hidden="true"><use href="#logo"/></svg>`);
     video.addEventListener("error", () => { c.audioOnly = true; player?.destroy(); player = null; stage.innerHTML = `<div class="ph">This video can't be previewed here.<br>Tap a part to hear it.</div>`; video = null; });
     showPick(c);
   } else {
-    video = null; stage.innerHTML = `<div class="ph relink"><p>Scanned before. Add this video again to play and save it.</p><button class="btn" type="button" data-act="gallery">${icon("i-film")}Re-add ${esc(c.name)}</button></div>`;
+    video = null;
+    stage.innerHTML = c.proxy ? `<div class="listen"${c.thumb ? ` style="--th:url(${c.thumb})"` : ""}>
+        <button class="lplay" type="button" data-act="stage-play" aria-label="Play">${icon("i-play")}</button>
+        <div class="lmeta"><b id="lLabel">Pick</b><span id="lTime">0:00</span><div class="ltrack"><i id="lFill"></i></div></div>
+        <p class="lnote">${icon("i-ear")}<span>Sound only. Re-add the video to watch and save.</span><button class="linkbtn" type="button" data-act="gallery">Re-add</button></p></div>`
+      : `<div class="ph relink"><p>Add this video again to play it. After that, its Picks and parts play anytime, even after a restart.</p><button class="btn" type="button" data-act="gallery">${icon("i-film")}Re-add ${esc(c.name)}</button></div>`;
   }
-  $("#studio").hidden = false; document.body.style.overflow = "hidden"; $("#studio").scrollTop = 0;
-  renderStudio();
+  $("#studio").hidden = false; document.body.style.overflow = "hidden"; if (!reopen) $("#studio").scrollTop = 0;
+  watchStage();
+  renderStudio(); listenUI();
 }
 // load the current pick into the player (not playing yet), so the first thing on screen is the pick
 function showPick(c) { if (!player) return; const S = srcOf(c); if (S) player.set(S.ranges, S.label, `${fmt(S.len)} · tap for full take`); else player.set(null, "Full take", fmt(c.raw?.duration || 0)); }
 function closeStudio() {
-  stopBand(); stopAudio(); stopAt = null; queue = [];
+  stopBand(); stopAudio(); stopAt = null; queue = []; unfloat(); playMark = null;
   player?.destroy(); player = null; video = null;
   state.openId = null; $("#studio").hidden = true; document.body.style.overflow = ""; render();
 }
@@ -3287,7 +3362,7 @@ function exportSheetHTML(c) {
     </div>` : ""}
     <div class="exgroup"><span>Sound</span><button type="button" class="opt" data-act="sound-open" ${busy ? "disabled" : ""}>${icon("i-sliders")}<span class="grow"><strong>${sndOf(c).fx ? `Studio sound · ${fxLabel(c)}` : "As recorded"}</strong><em>${S.ranges.length > 1 && !o.sep && sndOf(c).fx ? "Polish works on a Pick or a single part." : "Tap to change polish and mixer levels."}</em></span><span class="chev">›</span></button></div>
     <button class="btn wide" type="button" data-act="export-go" ${busy || !c.file || !downloads ? "disabled" : ""}>${icon("i-save")}Save ${files > 1 ? files + " files" : S.kind === "clean" ? "clean cut" : S.label}${o.band ? " + band" : ""} · ${fmt(S.len)}</button>
-    ${!c.file ? `<p class="hint">Add this video again to export it. LickPick doesn't keep copies.</p>` : !downloads ? `<p class="hint">Saving isn't available in this view.</p>` : ""}
+    ${!c.file ? `<p class="hint">Add this video again to save it. LickPick keeps a small sound copy for listening, never the video.</p>` : !downloads ? `<p class="hint">Saving isn't available in this view.</p>` : ""}
     <div class="status" id="exStatus" aria-live="polite">${esc(c.exStatus || "")}</div>
     ${c.lastShare && !busy ? `<button class="btn wide sharebtn" type="button" data-act="share-last">${icon("i-share")}<span><b>Share ${esc(c.lastShare.name.length > 26 ? c.lastShare.name.slice(0, 24) + "…" : c.lastShare.name)}</b><em>Instagram, TikTok, YouTube, WhatsApp, Drive…${c.captions?.length ? " Caption included." : ""}</em></span></button>` : ""}`;
 }
@@ -3429,7 +3504,7 @@ function segmentsPanel(c) {
         <div class="grp"><div class="lbl">Ends <b>${fmtP(p.end)}</b></div><div class="btns"><button type="button" data-nudge="${g.i}:e:-0.5" aria-label="End half a second earlier">−½s</button><button type="button" data-nudge="${g.i}:e:0.5" aria-label="End half a second later">+½s</button><button type="button" data-here="${g.i}:e">Here</button></div></div>
       </div>`)(c.parts[g.i]) : "";
     const kept = g.kind === "part" && g.on;
-    return `<div class="segrow t-${g.tier}${kept ? "" : " out"}${sel ? " sel" : ""}" data-seg="${k}">
+    return `<div class="segrow t-${g.tier}${kept ? "" : " out"}${sel ? " sel" : ""}" data-seg="${k}" data-s="${g.s}" data-e="${g.e}" role="button" tabindex="0" aria-label="Play ${TIERS[g.tier][0]}, ${fmt(g.s)} to ${fmt(g.e)}">
       <button class="segplay" type="button" data-seek="${g.s}" data-seek-end="${g.e}" data-seek-label="${TIERS[g.tier][0]} ${fmt(g.s)}" aria-label="Play ${TIERS[g.tier][0]} part at ${fmt(g.s)}">${icon("i-play")}</button>
       <span class="segmid">${tierTag(g.tier)}<span class="segt"><b>${fmt(g.s)}–${fmt(g.e)}</b> · ${g.e - g.s < 10 ? (g.e - g.s).toFixed(1) + "s" : fmt(g.e - g.s)}</span><em>${esc(g.why)}</em></span>
       <button class="switch" type="button" data-segkeep="${k}" aria-pressed="${kept}" aria-label="${kept ? "Kept. Tap to leave it out" : "Left out. Tap to keep it"}">${icon(kept ? "i-check" : "i-plus")}</button>
@@ -3437,7 +3512,7 @@ function segmentsPanel(c) {
   }).join("");
   return `<div class="segsum">${tierBar(c, segs, "tierbar big")}
       <div class="seglegend">${Object.keys(TIERS).filter(t => tot[t] > 0).map(t => `<span>${tierTag(t)}<b>${fmt(tot[t])}</b></span>`).join("")}</div></div>
-    ${c.edited ? `<p class="hint">Edited by you. <button class="linkbtn" type="button" data-act="reset">Reset to LickPick's cut</button></p>` : `<p class="hint">Tap ▶ to hear any part. Tap + to keep something LickPick left out.</p>`}
+    ${c.edited ? `<p class="hint">Edited by you. <button class="linkbtn" type="button" data-act="reset">Reset to LickPick's cut</button></p>` : `<p class="hint">Tap any row to hear it. Tap + to keep something LickPick left out.</p>`}
     <div class="segrows">${rows}</div>
     <div class="status" id="saveStatus" aria-live="polite">${esc(c.saveStatus || "")}</div>`;
 }
@@ -3554,7 +3629,7 @@ function windowAudio(c, s, e) {
   const ctx = ensureCtx();
   const p = (async () => {
     try {
-      if (streamBroken) throw new Error("stream");
+      if (streamBroken || !c.file) throw new Error("stream");
       const M = await mb(), input = new M.Input({ source: new M.BlobSource(c.file), formats: M.ALL_FORMATS });
       const at = await input.getPrimaryAudioTrack(); if (!at || !(await at.canDecode())) throw new Error("nodec");
       const sr = at.sampleRate, ch = Math.min(2, at.numberOfChannels), n = Math.ceil((e - s) * sr), out = [new Float32Array(n), new Float32Array(n)];
@@ -3570,8 +3645,8 @@ function windowAudio(c, s, e) {
       const b = ctx.createBuffer(2, n, sr); b.copyToChannel(out[0], 0); b.copyToChannel(out[1], 1); return b;
     } catch (err) {
       if (String(err).includes("stalled")) streamBroken = true;
-      if (c.file.size > 160e6) throw err;
-      const full = await new Promise((res, rej) => { c.file.arrayBuffer().then(ab => { const pr = ctx.decodeAudioData(ab, res, rej); if (pr?.then) pr.then(res, rej); }, rej); });
+      const blob = c.file && c.file.size <= 160e6 ? c.file : c.proxy; if (!blob) throw err;
+      const full = await new Promise((res, rej) => { blob.arrayBuffer().then(ab => { const pr = ctx.decodeAudioData(ab, res, rej); if (pr?.then) pr.then(res, rej); }, rej); });
       const sr = full.sampleRate, a = Math.round(s * sr), n = Math.max(1, Math.min(full.length - a, Math.ceil((e - s) * sr)));
       const b = ctx.createBuffer(2, n, sr);
       for (let k = 0; k < 2; k++) b.copyToChannel(full.getChannelData(Math.min(k, full.numberOfChannels - 1)).subarray(a, a + n), k);
@@ -3593,7 +3668,7 @@ function stopBand() {
   if (bandPlaying) { bandPlaying = false; stopAt = null; video?.pause(); }
 }
 function bandPreview(c) {
-  if (!c.file) { toast("Re-add this video first."); return; }
+  if (!c.file && !c.proxy) { toast("Re-add this video first."); return; }
   if (bandPlaying) { stopBand(); renderStudio(); return; }
   const say = t => { c.bandStatus = t; const el = $("#bandStatus"); if (el) el.textContent = t; };
   const ctx = ensureCtx(); try { if (ctx.state === "suspended") ctx.resume(); } catch { }   // inside the tap
@@ -3731,29 +3806,66 @@ function audioTick() {
   const seg = audioPlan.find(p => now >= p.at && now < p.at + (p.b - p.a));
   if (seg) c.playT = seg.a + (now - seg.at);
   else if (now >= audioPlan[audioPlan.length - 1].at + (audioPlan[audioPlan.length - 1].b - audioPlan[audioPlan.length - 1].a)) { c.playT = audioPlan[audioPlan.length - 1].b; audioPlan = null; }
-  drawWave();
+  drawWave(); listenUI(); markRows();
   raf = audioPlan ? requestAnimationFrame(audioTick) : 0;
 }
 async function playRanges(c, ranges, label) {
-  stopAudio(); if (!ranges.length) return;
+  stopAudio(); if (!ranges.length) return; c._played = true; playMark = null;
   if (player && !c.audioOnly) {
     stopBand();
     player.set(ranges, label || "Selection", fmt(ranges.reduce((t, [a, b]) => t + b - a, 0)));
     if (video.readyState >= 1) player.play(); else video.addEventListener("loadedmetadata", () => player.play(), { once: true });
     return;
   }
-  if (!c.file) return;
+  const blob = c.proxy || c.file; if (!blob) { toast("Re-add this video to hear it."); return; }
   try {
     audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    if (audioBuf.id !== c.id) audioBuf = { id: c.id, buf: await audioCtx.decodeAudioData(await c.file.arrayBuffer()) };
+    if (audioCtx.state === "suspended") audioCtx.resume().catch(() => { });   // inside the tap
+    const tok = playRanges.tok = {};
+    if (audioBuf.id !== c.id) { listenUI(label, true); audioBuf = { id: c.id, buf: await new Promise((res, rej) => { blob.arrayBuffer().then(ab => { const pr = audioCtx.decodeAudioData(ab, res, rej); if (pr?.then) pr.then(res, rej); }, rej); }) }; }
+    if (playRanges.tok !== tok) return;
     if (audioCtx.state === "suspended") await audioCtx.resume();
+    audioLabel = label || "Selection"; audioRanges = ranges;
     let at = audioCtx.currentTime + 0.05; audioPlan = []; audioNodes = [];
     for (const [a, b] of ranges) { const n = audioCtx.createBufferSource(); n.buffer = audioBuf.buf; n.connect(audioCtx.destination); n.start(at, a, b - a); audioPlan.push({ at, a, b }); audioNodes.push(n); at += b - a; }
     if (!raf) raf = requestAnimationFrame(audioTick);
-  } catch { }
+    listenUI();
+  } catch (e) { diagLog("sound play failed: " + String(e?.message || e).slice(0, 60)); toast("Couldn't play the sound on this phone."); listenUI(); }
 }
-let audioNodes = [];
-function stopAudio() { for (const n of audioNodes) { try { n.stop(); } catch { } } audioNodes = []; audioPlan = null; }
+let audioNodes = [], audioLabel = "", audioRanges = null;
+function stopAudio() { for (const n of audioNodes) { try { n.stop(); } catch { } } audioNodes = []; audioPlan = null; listenUI(); markRows(); }
+function pausePlay() { const c = cur(); if (audioPlan && c) { c._resume = { label: audioLabel, ranges: audioRanges, t: c.playT || 0 }; stopAudio(); } else if (player && video && !video.paused) player.pause(); markRows(); }
+// what's left of a set of ranges from time t on
+const fromT = (R, t) => R.filter(([a, b]) => b > t + 0.2).map(([a, b]) => [Math.max(a, t), b]);
+// sound-only stage: label, time and play state of what's playing (or what's selected)
+function listenUI(label, loading) {
+  const c = cur(), b = $("#lLabel"); if (!c || !b) return;
+  const S = srcOf(c), playing = !!audioPlan, R = playing ? audioRanges : S?.ranges || [], tot = R.reduce((t, [a, e]) => t + e - a, 0);
+  let x = 0; if (playing) { const t = c.playT || 0; for (const [a, e] of R) { if (t >= e) x += e - a; else { x += Math.max(0, t - a); break; } } }
+  b.textContent = loading ? "Loading sound…" : playing ? audioLabel : S?.label || "Full take";
+  $("#lTime").textContent = `${fmt(x)} / ${fmt(tot)}`; $("#lFill").style.width = (tot ? Math.min(100, x / tot * 100) : 0) + "%";
+  const pb = document.querySelector(".listen .lplay"); if (pb) { pb.innerHTML = icon(playing ? "i-pause" : "i-play"); pb.setAttribute("aria-label", playing ? "Pause" : "Play"); }
+}
+// ---------- now playing: the row under the playhead lights up, and the picture floats when scrolled away
+let playMark = null, stageIO = null, stageSeen = true;
+const isPlaying = () => !!audioPlan || (!!video && !video.paused) || bandPlaying;
+function markRows() {
+  const c = cur(); if (!c) return;
+  const on = isPlaying(), t = nowT(c);
+  document.querySelectorAll(".segrow").forEach(r => { const hit = on && t >= +r.dataset.s - 0.05 && t < +r.dataset.e; if (r.classList.contains("playing") !== hit) { r.classList.toggle("playing", hit); const b = r.querySelector(".segplay"); if (b) b.innerHTML = icon(hit ? "i-pause" : "i-play"); } });
+  floatCheck();
+}
+function watchStage() {
+  try { stageIO?.disconnect(); stageIO = new IntersectionObserver(es => { stageSeen = es[0].isIntersecting; floatCheck(); }, { threshold: 0.35 }); stageIO.observe($("#sStage")); } catch { stageIO = null; }
+}
+function floatCheck() {
+  const st = $("#sStage"), c = cur(), el = st?.querySelector(".pv") || st?.firstElementChild; if (!el || el.classList.contains("relink")) return;
+  const want = !stageSeen && !!c?._played && !$("#studio").hidden;
+  if (want === el.classList.contains("float")) return;
+  if (want) { st.style.minHeight = st.offsetHeight + "px"; const bar = $("#sBar"); el.style.bottom = (bar && !bar.hidden ? Math.max(12, innerHeight - bar.getBoundingClientRect().top + 10) : 16) + "px"; el.classList.add("float"); if (!el.querySelector(".floatx")) el.insertAdjacentHTML("beforeend", `<button class="floatx" type="button" data-act="float-close" aria-label="Close the mini player">${icon("i-x")}</button>`); }
+  else unfloat();
+}
+function unfloat() { const st = $("#sStage"); if (!st) return; st.querySelectorAll(".float").forEach(e => e.classList.remove("float")); st.style.minHeight = ""; }
 const nowT = c => video ? video.currentTime : (c.playT || 0);
 
 // ---------- editing
@@ -3781,7 +3893,7 @@ function openRowMenu(id) {
     <button class="opt" type="button" data-act="row-pick" ${pk ? "" : "disabled"}>${stk("i-star", "volt", "r2")}<span class="grow"><strong>Save the Pick</strong><em>${pk ? `${fmt(pk.len)} from ${fmt(pk.s)}` : "No pick yet"}</em></span></button>
     <button class="opt" type="button" data-act="row-clean" ${on ? "" : "disabled"}>${stk("i-cut", "cyan")}<span class="grow"><strong>Save the clean cut</strong><em>${on ? `${fmt(keptSeconds(c))}, mistakes removed` : "Nothing kept"}</em></span></button>
     <button class="opt" type="button" data-act="row-remove">${stk("i-x", "red", "r2")}<span class="grow"><strong>Remove from list</strong><em>The video stays on your phone</em></span></button>
-    ${c.file ? "" : `<p class="hint">Add this video again to save from it. LickPick doesn't keep copies.</p>`}`;
+    ${c.file ? "" : `<p class="hint">Add this video again to save from it. LickPick keeps a small sound copy for listening, never the video.</p>`}`;
   $("#rowSheet").hidden = false;
 }
 function rowAct(act) {
@@ -3866,12 +3978,13 @@ Return only JSON: [{"caption": string, "hashtags": [string]}]`, { modelTier: "qu
 }
 
 // ---------- events
+document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList?.contains("segrow")) { e.preventDefault(); e.target.click(); } });
 document.addEventListener("click", e => {
   const t = e.target.closest("button");
   if (!t) {
     const card = e.target.closest("[data-open]"); if (card) { openCardAt(card); return; }
     const g = e.target.closest("[data-seg]"), c = cur();
-    if (g && c) { const x = segsOf(c)[+g.dataset.seg]; if (x) { if (x.kind === "part") { c.sel = x.i; c.selCut = null; } else { c.selCut = x.s; c.sel = -1; } renderStudio(); } return; }
+    if (g && c) { if (e.target.closest(".trim,.trimcap")) return; if (g.classList.contains("playing")) { pausePlay(); return; } const x = segsOf(c)[+g.dataset.seg]; if (x) { if (x.kind === "part") { c.sel = x.i; c.selCut = null; } else { c.selCut = x.s; c.sel = -1; } renderStudio(); playRanges(c, [[x.s, x.e]], `${TIERS[x.tier][0]} ${fmt(x.s)}`); } return; }
     const s = e.target.closest("[data-sel]"); if (s && c) { c.sel = +s.dataset.sel; renderStudio(); } return; }
   const d = t.dataset;
   if (d.more) { openRowMenu(+d.more); return; }
@@ -3896,6 +4009,8 @@ document.addEventListener("click", e => {
   if (d.act === "share-last") { const c = cur(); if (c?.lastShare) { const txt = shareText(c); try { if (txt) navigator.clipboard?.writeText(txt).catch(() => { }); } catch { } navigator.share({ files: [c.lastShare], title: c.lastShare.name, text: txt || undefined }).catch(() => { }); } return; }
   if (d.act === "tips-open") { $("#intro").hidden = true; openTips(); return; }
   if (d.act === "tour") { openIntro(); return; }
+  if (d.act === "stage-play") { const c = cur(); if (!c) return; if (audioPlan) { pausePlay(); return; } const S = srcOf(c), R0 = S ? S.ranges : [[0, c.raw?.duration || 0]], lb = S ? S.label : "Full take", r = c._resume; c._resume = null; playRanges(c, r && r.label === lb && fromT(R0, r.t).length ? fromT(R0, r.t) : R0, lb); return; }
+  if (d.act === "float-close") { const c = cur(); pausePlay(); if (c) c._played = false; unfloat(); return; }
   if (d.act === "report-open") { $("#rules").hidden = true; openReport(); return; }
   if (d.act === "report-copy") { copyText(t, $("#reportTxt").value); return; }
   if (d.plan) { planSel = d.plan; document.querySelectorAll("[data-plan]").forEach(b => b.setAttribute("aria-checked", String(b.dataset.plan === planSel))); const g = $("#proGo"); if (g) { g.href = PRO_URL ? planURL(planSel) : requestURL(planSel); const P = PLANS.find(p => p[0] === planSel); g.innerHTML = `${icon("i-bolt")}Unlock ${P[3]} · ${P[1]}`; } return; }
@@ -3945,21 +4060,21 @@ document.addEventListener("click", e => {
   if (d.toggle != null) { const p = c.parts[+d.toggle]; p.on = !p.on; edited(c); return; }
   if (d.nudge) { const [i, w, dv] = d.nudge.split(":"); const p = c.parts[+i]; if (w === "s") p.start += +dv; else p.end += +dv; clampPart(c, +i); edited(c); return; }
   if (d.here) { const [i, w] = d.here.split(":"); const p = c.parts[+i]; if (w === "s") p.start = nowT(c); else p.end = nowT(c); clampPart(c, +i); edited(c); return; }
-  if (d.act === "pick-play") { const pk = pickOf(c); if (pk) playRanges(c, pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`); return; }
+  if (d.act === "pick-play") { const pk = pickOf(c), lb = `Pick ${"ABC"[c.pickSel || 0]}`; if (isPlaying() && (audioPlan ? audioLabel : player?.label) === lb) { pausePlay(); return; } if (pk) playRanges(c, pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`); return; }
   if (d.act === "pick-save" || d.act === "export-open") { openExport(c); return; }
   if (d.act === "export-close") { $("#exportSheet").hidden = true; return; }
   if (d.act === "export-go") return doExport(c);
   if (d.ex) { const o = exOpts(c); if (d.ex.startsWith("fmt:")) o.fmt = d.ex.slice(4); else o[d.ex] = !o[d.ex]; if (d.ex === "sep" && o.sep) o.band = false; if (d.ex === "band" && o.band) o.sep = false; renderExport(c); return; }
-  if (d.src) { stopBand(); if (!c.exporting) c.exStatus = ""; if (d.src === "clean") c.src = "clean"; else { c.src = "pick"; const i = +d.src.split(":")[1]; if (i !== (c.pickSel || 0)) { c.pickSel = i; c._bandA = null; persist(c); } } renderStudio(); renderExport(c); showPick(c); const S = srcOf(c); if (S && c.file && $("#exportSheet").hidden) playRanges(c, S.ranges, S.label); return; }
+  if (d.src) { stopBand(); if (!c.exporting) c.exStatus = ""; if (d.src === "clean") c.src = "clean"; else { c.src = "pick"; const i = +d.src.split(":")[1]; if (i !== (c.pickSel || 0)) { c.pickSel = i; c._bandA = null; persist(c); } } renderStudio(); renderExport(c); showPick(c); const S = srcOf(c); if (S && (c.file || c.proxy) && $("#exportSheet").hidden) playRanges(c, S.ranges, S.label); return; }
   if (d.vote) { const all = store.get("lp:fb") || {}, pk = pickOf(c); all[c.key] = { ...(all[c.key] || {}), v: d.vote, pick: pk ? [+pk.s.toFixed(1), +pk.e.toFixed(1)] : null, sel: c.pickSel || 0 }; store.set("lp:fb", all); diagLog(`vote ${d.vote}: ${c.name}`); renderStudio(); toast(d.vote === "yes" ? "Noted. Thanks!" : "Noted. Show me where your best part is."); return; }
   if (d.act === "mark-best") { const all = store.get("lp:fb") || {}; all[c.key] = { ...(all[c.key] || {}), at: +nowT(c).toFixed(1) }; store.set("lp:fb", all); renderStudio(); toast(`Marked ${fmt(nowT(c))}. It goes in your test report.`); return; }
   if (d.padj) { const p = pickBase(c); if (!p) return; stopBand(); c.pickAdj = c.pickAdj || {}; const k = adjKey(c);
     if (d.padj === "reset") delete c.pickAdj[k];
     else { const [w, n] = d.padj.split(":"), a = c.pickAdj[k] || { s: 0, e: 0 }, D = c.raw.duration, L = barLen(p); a[w] += +n * L;
       if (p.s + a.s < 0) a.s = -p.s; if (p.e + a.e > D) a.e = D - p.e; if ((p.e + a.e) - (p.s + a.s) < Math.max(3, L)) a[w] -= +n * L; c.pickAdj[k] = a; }
-    c.src = "pick"; c._bandA = null; renderStudio(); showPick(c); const pk = pickOf(c); if (pk && c.file) { const edge = d.padj.startsWith("e") ? Math.max(pk.s, pk.e - 4) : pk.s; playRanges(c, [[edge, pk.e]], d.padj.startsWith("e") ? "End of pick" : `Pick ${"ABC"[c.pickSel || 0]}`); } return; }
+    c.src = "pick"; c._bandA = null; renderStudio(); showPick(c); const pk = pickOf(c); if (pk && (c.file || c.proxy)) { const edge = d.padj.startsWith("e") ? Math.max(pk.s, pk.e - 4) : pk.s; playRanges(c, [[edge, pk.e]], d.padj.startsWith("e") ? "End of pick" : `Pick ${"ABC"[c.pickSel || 0]}`); } return; }
   if (d.act === "pick-band") { state.tab = "band"; renderStudio(); return; }
-  if (d.cand != null) { stopBand(); c.pickSel = +d.cand; c._bandA = null; persist(c); renderStudio(); showPick(c); const pk = pickOf(c); if (pk && c.file) playRanges(c, pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`); return; }
+  if (d.cand != null) { stopBand(); c.pickSel = +d.cand; c._bandA = null; persist(c); renderStudio(); showPick(c); const pk = pickOf(c); if (pk && (c.file || c.proxy)) playRanges(c, pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`); return; }
   if (d.plen) { stopBand(); state.pickLen = d.plen === "auto" ? "auto" : +d.plen; c.pickSel = 0; syncRules(); render(); renderStudio(); showPick(c); return; }
   if (d.act === "forget") { const x = c; closeStudio(); forget(x); render(); renderBoxes(); toast("Removed from the list. The video is untouched."); return; }
   if (d.act === "playall") { c.src = "clean"; renderSrc(c); playRanges(c, onParts(c).map(p => [p.start, p.end]), "Clean cut"); return; }
@@ -3988,6 +4103,7 @@ document.addEventListener("click", e => {
   if (d.vibe) { c.note = $("#postNote")?.value ?? c.note; c.vibe = d.vibe; renderStudio(); return; }
   if (d.act === "captions") return writeCaptions(c);
   if (d.capcopy != null) { const cp = c.captions[+d.capcopy]; copyText(t, `${cp.caption}\n\n${tagLine(cp)}${store.get("lp:credit") === 0 ? "" : "\n" + CREDIT}`); return; }
+  if (d.seek != null && t.closest(".segrow.playing")) { pausePlay(); return; }
   if (d.seek != null) { const s = +d.seek, e = d.seekEnd != null ? +d.seekEnd : Math.min(c.raw.duration, s + 10); playRanges(c, [[s, e]], d.seekLabel || `Cut ${fmt(s)}`); return; }
   if ("ovr" in d) { c.override = d.ovr || null; persist(c); renderStudio(); return; }
   if (d.act === "reset") { c.edited = false; redecide(c, true); c.sel = c.parts.length ? 0 : -1; persist(c); renderStudio(); return; }
