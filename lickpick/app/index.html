@@ -14,16 +14,16 @@
    5. Duotone icons: ink line over an offset neon fill.
    Palette: volt (the pick, primary), hot, cyan, blaze, on violet-black.
    Meaning, everywhere: volt = best / keep / primary action, cyan = good / selected, blaze = needs your ears
-   (Review, Worth a look), red = junk (Trash, Useless). Hot pink is brand only: shadows, stripe, Pro. One dark theme.
+   (Review, Worth a look; grape purple, was orange), red = junk (Trash, Useless). Hot pink is brand only: shadows, stripe, Pro. One dark theme.
    ===================================================================== */
 :root{
   color-scheme:dark;
   --stage:#0B0912; --panel:#15111F; --raise:#1E1830; --line:#332A4A; --mute:#8F83B3;
   --text:#FFF7F0; --dim:#C9BEDB; --ink:#07060B;
-  --volt:#FFE600; --hot:#FF2E88; --cyan:#2BE7FF; --blaze:#FF6A1F; --red:#FF3D5A;
+  --volt:#FFE600; --hot:#FF2E88; --cyan:#2BE7FF; --blaze:#B47CFF; --red:#FF3D5A;
   --keep:var(--volt); --review:var(--blaze); --trash:var(--red);
   --amp:linear-gradient(90deg,var(--hot) 0 25%,var(--blaze) 25% 50%,var(--volt) 50% 75%,var(--cyan) 75%);
-  --fire:linear-gradient(110deg,var(--hot),var(--blaze) 55%,var(--volt));
+  --fire:linear-gradient(110deg,var(--cyan),var(--blaze) 50%,var(--hot));
   --display:"Dela Gothic One","Arial Black",Impact,sans-serif;
   --body:"Archivo",ui-sans-serif,system-ui,sans-serif;
   --r:16px;
@@ -109,7 +109,7 @@ svg.i .d{fill:var(--ic2);stroke:none;transform:translate(1.6px,1.6px)}
 .strip i{position:absolute;top:0;bottom:0;background:var(--fire);background-size:300px 100%}
 .strip .prog{background:var(--cyan)}
 .card .stamp{width:34px;height:36px}
-.card.v-keep{border-color:#4D460F} .card.v-review{border-color:#5C2F16} .card.v-trash{border-color:#5A1D2A}
+.card.v-keep{border-color:#4D460F} .card.v-review{border-color:#3E2C66} .card.v-trash{border-color:#5A1D2A}
 
 /* verdict stamp: a tilted pick in the verdict color */
 .stamp{display:inline-grid;place-items:center;width:24px;height:26px;background:var(--sc);transform:rotate(-8deg);flex:none;padding-bottom:4px;vertical-align:middle}
@@ -140,8 +140,8 @@ svg.i .d{fill:var(--ic2);stroke:none;transform:translate(1.6px,1.6px)}
 .foot svg{width:14px;height:14px;vertical-align:-2px;margin-right:6px}
 
 /* ---------- bottom nav with the pick button ---------- */
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--ink);padding:6px 16px calc(8px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:1fr 92px 1fr;align-items:end}
-.nav::before{content:"";position:absolute;left:0;right:0;top:-4px;height:4px;background:var(--amp)}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--ink);border-top:1px solid var(--line);padding:6px 16px calc(8px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:1fr 92px 1fr;align-items:end}
+
 .nv{position:relative;border:0;background:none;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:800;font-size:12px;padding:8px 0 2px}
 .nv svg.i{width:26px;height:26px;--ic2:transparent}
 .nv[aria-current=page]{color:var(--volt)} .nv[aria-current=page] svg.i{--ic2:var(--hot)}
@@ -935,11 +935,11 @@ input[type=range]{min-height:44px}
     <div class="row2"><span><b>How picky</b></span>
       <span class="seg" id="picky"><button type="button" data-picky="0.25">Chill</button><button type="button" data-picky="0.5">Normal</button><button type="button" data-picky="0.8">Strict</button></span></div>
     <p class="hint">Trash is only suggested when a clip has no music at all. Your own edits are never changed.</p>
-    <p class="sfoot"><svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. LickPick never deletes.<br>© 2026 3Shamrocks Studio. All rights reserved.</p>
+    <p class="sfoot">LickPick 1.1 · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. LickPick never deletes.<br>© 2026 3Shamrocks Studio. All rights reserved.</p>
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10f"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-10g"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -3381,7 +3381,7 @@ function drawWave() {
   const D = c.raw?.duration || 1, loud = c.raw?.loud || (c.raw?.highlight || []).map(h => -50 + h * 40);
   const bars = Math.max(40, Math.floor(W / 3.2)), pad = 8, mid = H / 2;
   const sorted = loud.filter(v => v > -90).sort((a, b) => a - b), top = sorted.length ? sorted[Math.floor(sorted.length * 0.98)] : -10, floor = top - 42;
-  const grad = g.createLinearGradient(0, 0, W, 0); grad.addColorStop(0, "#FF2E88"); grad.addColorStop(.55, "#FF6A1F"); grad.addColorStop(1, "#FFE600");
+  const grad = g.createLinearGradient(0, 0, W, 0); grad.addColorStop(0, "#2BE7FF"); grad.addColorStop(.5, "#B47CFF"); grad.addColorStop(1, "#FF2E88");
   const parts = c.parts || [];
   for (const p of parts) { g.fillStyle = p.on ? "rgba(255,230,0,.07)" : "rgba(156,143,192,.07)"; g.fillRect(p.start / D * W, 0, (p.end - p.start) / D * W, H); }
   const kept = t => parts.some(p => p.on && t >= p.start && t < p.end), inPart = t => parts.some(p => t >= p.start && t < p.end);
