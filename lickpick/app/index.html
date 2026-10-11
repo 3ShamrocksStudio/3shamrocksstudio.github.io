@@ -1050,6 +1050,41 @@ input[type=range]{min-height:44px}
 .chsug b{font-weight:900}.chsug em{font-style:normal;font-size:11px;color:var(--cyan)}
 .ched .btn{margin-top:10px}
 .chbtns{margin-top:8px}
+
+/* 1.16 sound tab: a play bar that stays on screen while you edit */
+.btransport{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:10px;margin:0 -2px 10px;padding:8px 10px;border:2px solid var(--cyan);border-radius:16px;background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(8px);box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.btransport .bt-play{width:48px;height:48px;padding:0;border-radius:50%;flex:none}
+.btransport .bt-play svg.i{width:22px;height:22px}
+.bt-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.bt-mid b{font-size:14px}.bt-mid em{font-style:normal;font-size:12.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bt-prog{display:block;height:4px;border-radius:2px;background:var(--line);overflow:hidden}.bt-prog u{display:block;height:100%;width:0;background:var(--volt);text-decoration:none}
+.sndfold>summary{list-style:none;cursor:pointer}.sndfold>summary::-webkit-details-marker{display:none}
+.sndfold .foldv{margin-left:auto;font-weight:800;font-size:13px;color:var(--cyan)}
+.sndfold:not([open])>summary{margin-bottom:0}
+.opt.check{border-color:var(--volt)}
+
+.titlerow{display:flex;flex-direction:column;gap:8px;margin:6px 0 2px}
+.titlerow input[type=text]{width:100%;border:2px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:10px 12px;font:700 16px var(--body)}
+.lays{display:grid;gap:10px}
+.layrow{display:grid;grid-template-columns:1fr auto;gap:6px 8px;align-items:center;padding:8px 10px;border:2px solid var(--line);border-radius:12px;background:var(--panel)}
+.layrow b{font-size:13.5px}.layrow .bseg{width:auto}.layrow .bseg:first-of-type{grid-column:1/-1}
+.layrow input[type=range]{grid-column:1/-1;width:100%}
+
+/* 1.16 layers */
+.layers .foldv{margin-left:auto;font-weight:800;font-size:13px;color:var(--cyan)}
+.lyrow{display:grid;grid-template-columns:72px 1fr;gap:10px;padding:10px 0;border-top:2px solid var(--line)}
+.lyrow:first-of-type{border-top:0}
+.laycam{width:72px;aspect-ratio:9/16;object-fit:cover;border-radius:10px;border:2px solid var(--ink);background:#000;box-shadow:2px 2px 0 var(--cyan)}
+.laycam.none{display:grid;place-items:center;color:var(--dim)}
+.lyrow.muted .laycam{filter:grayscale(1) brightness(.6)}
+.laymain{min-width:0;display:flex;flex-direction:column;gap:6px}
+.laymain>b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.laymain>em{font-style:normal;font-size:12.5px;color:var(--dim)}
+.laynudge{display:flex;flex-wrap:wrap;gap:6px}
+.laynudge button{min-height:40px;padding:0 10px;border-radius:10px;border:2px solid var(--line);background:var(--raise);color:var(--text);font:800 12.5px var(--body)}
+.laynudge button:active{border-color:var(--volt)}
+.laymain .mxrow{grid-template-columns:56px 1fr 48px;min-height:44px}
+.hint.warn{color:var(--blaze)}
+.laypick{display:grid;gap:8px;margin:8px 0}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1303,12 +1338,12 @@ input[type=range]{min-height:44px}
     <div class="row2"><span><b>How picky</b></span>
       <span class="seg" id="picky"><button type="button" data-picky="0.25">Chill</button><button type="button" data-picky="0.5">Normal</button><button type="button" data-picky="0.8">Strict</button></span></div>
     <p class="hint">Trash is only suggested when a clip has no music at all. Your own edits are never changed.</p>
-    <p class="sfoot">Version 1.15 Beta · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. Never deletes.</p>
+    <p class="sfoot">Version 1.16 Beta · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. Never deletes.</p>
     <div class="studio-line"><img src="data:image/png;base64,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" alt="3Shamrocks Studio" width="226" height="33"><span>© 2026 3Shamrocks Studio. All rights reserved.</span></div>
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-11i"; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-11j"; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -1616,7 +1651,7 @@ input[type=range]{min-height:44px}
     const bassQ = bassC.map(v => { const m = Math.max(...v); return m > 0 ? Array.from(v, x => Math.round(x / m * 9)) : new Array(12).fill(0); });
         return { _dbg, musicalSeconds, styleNotes, onsetQ, onsetF, fineRate: sr / FH, chromaQ, clarQ, bassQ, v: 4, frameRate: sr / HOP, frameOffset: N / 2 / sr, beatPeriodFrames, loud: db.map(v => Math.round(v * 10) / 10),
       duration: dur, nCells, penalty: pen, highlight,
-      info: { key: tonal ? `${NOTES[gk]} ${gmode === "maj" ? "major" : "minor"}` : "no clear key", keyRoot: tonal ? gk : null, keyMode: gmode, tempo: tempo ? Math.round(tempo) : null, tempoExact: tempo, tuning: Math.round(tuning) },
+      info: { key: tonal ? `${(gmode === "maj" ? ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"] : ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"])[gk]} ${gmode === "maj" ? "major" : "minor"}` : "no clear key", keyRoot: tonal ? gk : null, keyMode: gmode, tempo: tempo ? Math.round(tempo) : null, tempoExact: tempo, tuning: Math.round(tuning) },
     };
   }
 
@@ -1913,30 +1948,38 @@ input[type=range]{min-height:44px}
   // On-screen add-ons (chords, key and tempo, notes and tab): drawn over every frame at its time in the clip
   function composer(W, H, draw, s, mark) {
     const cv = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(W, H) : Object.assign(document.createElement("canvas"), { width: W, height: H });
-    const g = cv.getContext("2d"), stamp = mark ? stamper(W, H) : null; let base = null;
+    const g = cv.getContext("2d"); let base = null;
     return sample => {
       if (base === null) base = sample.timestamp >= s - 0.5 ? 0 : s;   // timestamps may be clip-time or output-time
-      if (stamp) g.drawImage(stamp(sample), 0, 0); else sample.draw(g, 0, 0, W, H);
+      sample.draw(g, 0, 0, W, H);
       try { draw(g, W, H, base + sample.timestamp); } catch { }
+      if (mark) drawMark(g, W, H);
       return cv;
     };
   }
-  // Free-tier mark: a small pick + "LickPick" in the lower right corner, drawn over every frame.
+  // Free-tier signature: the LickPick pick + name, small, in the lower right corner (above the platform's own UI line).
+  // the LickPick signature on free saves: the real lockup (the pick logo + "Lick" cream / "Pick" volt in Dela Gothic One), never retyped
+  const PK = typeof Path2D !== "undefined" ? new Path2D("M50 97C45 97 41 93 36 86C24 70 6 48 6 30C6 12 24 4 50 4S94 12 94 30C94 48 76 70 64 86C59 93 55 97 50 97Z") : null;
+  const PL = typeof Path2D !== "undefined" ? new Path2D("M40 30.5v27c0 3 3.2 4.8 5.8 3.2l21.5-13.5c2.4-1.5 2.4-5 0-6.4L45.8 27.3C43.2 25.7 40 27.5 40 30.5Z") : null;
+  function drawLogo(g, x, y, s) {
+    g.save(); g.translate(x + s / 2, y + s / 2); g.rotate(-8 * Math.PI / 180); g.translate(-s / 2, -s / 2); g.scale(s / 100, s / 100);
+    g.save(); g.translate(7, 5); g.fillStyle = "#FF2E88"; g.fill(PK); g.restore();
+    g.fillStyle = "#FFE600"; g.fill(PK); g.lineWidth = 4; g.lineJoin = "round"; g.strokeStyle = "#07060B"; g.stroke(PK); g.fillStyle = "#07060B"; g.fill(PL); g.restore();
+  }
+  function drawMark(g, W, H) {
+    if (!PK) return;
+    const u = Math.max(14, Math.round(Math.min(W, H) * 0.042));
+    g.save(); g.globalAlpha = 0.92; g.font = `400 ${u}px "Dela Gothic One", "Arial Black", sans-serif`; g.textAlign = "left"; g.textBaseline = "alphabetic";
+    const w1 = g.measureText("Lick").width, w2 = g.measureText("Pick").width, x = W - (w1 + w2) - u * 2.4, y = H - u * (H > W ? 5.2 : 2.6);
+    drawLogo(g, x - u * 0.2, y - u * 0.15, u * 1.5);
+    g.shadowColor = "rgba(0,0,0,.5)"; g.shadowBlur = u * 0.4;
+    g.fillStyle = "#FFF7F0"; g.fillText("Lick", x + u * 1.6, y + u); g.fillStyle = "#FFE600"; g.fillText("Pick", x + u * 1.6 + w1, y + u);
+    g.restore();
+  }
   function stamper(W, H) {
     const cv = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(W, H) : Object.assign(document.createElement("canvas"), { width: W, height: H });
-    const g = cv.getContext("2d"), u = Math.max(14, Math.round(Math.min(W, H) * 0.045));
-    const pick = (x, y, s, fill) => { g.beginPath(); g.moveTo(x, y + s * 0.18); g.bezierCurveTo(x, y - s * 0.05, x + s, y - s * 0.05, x + s, y + s * 0.18); g.bezierCurveTo(x + s, y + s * 0.55, x + s * 0.62, y + s * 0.9, x + s * 0.5, y + s); g.bezierCurveTo(x + s * 0.38, y + s * 0.9, x, y + s * 0.55, x, y + s * 0.18); g.closePath(); g.fillStyle = fill; g.fill(); };
-    return sample => {
-      sample.draw(g, 0, 0, W, H);
-      g.save(); g.globalAlpha = 0.82;
-      g.font = `800 ${u}px Archivo, system-ui, sans-serif`; const tw = g.measureText("LickPick").width;
-      const x = W - tw - u * 2.6, y = H - u * 2.4;
-      pick(x + u * 0.12, y + u * 0.12, u * 1.1, "#FF2E88"); pick(x, y, u * 1.1, "#FFE600");
-      g.fillStyle = "rgba(0,0,0,.45)"; g.fillText("LickPick", x + u * 1.5 + 2, y + u * 0.95 + 2);
-      g.fillStyle = "#fff"; g.fillText("LickPick", x + u * 1.5, y + u * 0.95);
-      g.restore();
-      return cv;
-    };
+    const g = cv.getContext("2d");
+    return sample => { sample.draw(g, 0, 0, W, H); drawMark(g, W, H); return cv; };
   }
   // Strongest stretch of `len` seconds inside the kept parts (never crosses a cut).
   function bestWindow(highlight, cell, parts, len) {
@@ -2068,7 +2111,7 @@ input[type=range]{min-height:44px}
     // back to the original length: reading faster by r raises the pitch by `cents`
     return out.map(y => { for (let i = 0; i < outLen; i++) if (wsum[i] > 1e-3) y[i] /= wsum[i]; const z = new Float32Array(n); for (let i = 0; i < n; i++) { const x = i * r, j = Math.floor(x), f = x - j; z[i] = (y[j] || 0) * (1 - f) + (y[j + 1] || 0) * f; } return z; });
   }
-  async function exportMulti(MB, file, segs, onProgress = () => { }, { xfade = 0.12, gainDb = 0, aspect = null, pos = 0.5, fx = null, take = 1, overlay = null, tuneCents = 0, fps = 30, bed = null } = {}) {
+  async function exportMulti(MB, file, segs, onProgress = () => { }, { xfade = 0.12, gainDb = 0, aspect = null, pos = 0.5, fx = null, take = 1, overlay = null, tuneCents = 0, fps = 30, bed = null, watermark = false } = {}) {
     const input = new MB.Input({ source: new MB.BlobSource(file), formats: MB.ALL_FORMATS });
     const vt = await input.getPrimaryVideoTrack(), at = await input.getPrimaryAudioTrack();
     if (!vt) throw Object.assign(new Error("no video"), { code: "no_video" });
@@ -2132,6 +2175,7 @@ input[type=range]{min-height:44px}
       }
       g2.globalAlpha = 1;
       if (overlay) { try { overlay(g2, outW, outH, lastSrcT, f / fps); } catch { } }
+      if (watermark) drawMark(g2, outW, outH);
       await vsrc.add(f / fps, 1 / fps);
       if (f % 15 === 0) onProgress(0.25 + 0.7 * f / nF);
     }
@@ -2140,7 +2184,64 @@ input[type=range]{min-height:44px}
     onProgress(1);
     return { blob: new Blob([output.target.buffer], { type: "video/mp4" }), width: outW, height: outH, duration: total };
   }
-  root.ClipExporter = Object.assign(root.ClipExporter || {}, { previewCopy, exportShort, exportMulti, pitchShift, bestWindow, levelGain, analyzeVideo });
+
+  // ---------- layers: several recordings of the same song played together, split screen, one mix.
+  // items: [{ file, s, gain }] all running for `dur` seconds from their own s. The first item is the main take.
+  // layout: "auto" picks rows for tall frames and columns for wide ones; 3 = one big on top + two below; 4 = 2x2.
+  async function exportLayers(MB, items, dur, onProgress = () => { }, { aspect = [9, 16], bed = null, watermark = false, overlay = null, fx = null, fps = 30, gainDb = 0 } = {}) {
+    const ins = [], vts = [], ats = [];
+    for (const it of items) { const input = new MB.Input({ source: new MB.BlobSource(it.file), formats: MB.ALL_FORMATS }); ins.push(input); vts.push(await input.getPrimaryVideoTrack()); ats.push(await input.getPrimaryAudioTrack()); }
+    const ratio = aspect ? aspect[0] / aspect[1] : (vts[0].displayWidth / vts[0].displayHeight);
+    const outW = ratio >= 1 ? 1920 : 1080, outH = Math.round(outW / ratio / 2) * 2;
+    const n = items.length, tall = outH >= outW;
+    // cells: [x, y, w, h]
+    let cells;
+    if (n === 1) cells = [[0, 0, outW, outH]];
+    else if (n === 2) cells = tall ? [[0, 0, outW, outH / 2], [0, outH / 2, outW, outH / 2]] : [[0, 0, outW / 2, outH], [outW / 2, 0, outW / 2, outH]];
+    else if (n === 3) cells = tall ? [[0, 0, outW, outH / 2], [0, outH / 2, outW / 2, outH / 2], [outW / 2, outH / 2, outW / 2, outH / 2]] : [[0, 0, outW / 2, outH], [outW / 2, 0, outW / 2, outH / 2], [outW / 2, outH / 2, outW / 2, outH / 2]];
+    else cells = [[0, 0, outW / 2, outH / 2], [outW / 2, 0, outW / 2, outH / 2], [0, outH / 2, outW / 2, outH / 2], [outW / 2, outH / 2, outW / 2, outH / 2]];
+    cells = cells.map(c => c.map(Math.round));
+    const vcodec = await MB.getFirstEncodableVideoCodec(["avc", "hevc", "vp9", "av1"], { width: outW, height: outH });
+    if (!vcodec) throw Object.assign(new Error("no encoder"), { code: "no_encoder" });
+    // sound: every layer at its level, the band under it, the main take's studio sound
+    const sr = ats[0]?.sampleRate || 48000, N = Math.ceil(dur * sr), L = new Float32Array(N), R = new Float32Array(N), g0 = Math.pow(10, gainDb / 20);
+    for (let i = 0; i < items.length; i++) {
+      if (!ats[i]) continue; const it = items[i], s0 = Math.max(0, it.s), lead = Math.round((s0 - it.s) * sr); let [l, r] = await decodeRange(MB, ats[i], s0, it.s + dur);   // a layer can join a little after the main take starts
+      const rs = ats[i].sampleRate / sr, chain = i === 0 && fx && root.LickFX ? [root.LickFX.channel(fx, ats[i].sampleRate, 0), root.LickFX.channel(fx, ats[i].sampleRate, 1)] : null;
+      if (chain) { for (let j = 0; j < l.length; j++) { l[j] = chain[0](l[j]); r[j] = chain[1](r[j]); } }
+      const pan = n > 1 ? (i % 2 ? 0.18 : -0.18) * (i ? 1 : 0) : 0, gl = (it.gain ?? 1) * g0 * (1 - pan), gr = (it.gain ?? 1) * g0 * (1 + pan);
+      for (let j = lead; j < N; j++) { const x = (j - lead) * rs, k = Math.floor(x), f = x - k; if (k + 1 >= l.length) break; L[j] += (l[k] * (1 - f) + l[k + 1] * f) * gl; R[j] += (r[k] * (1 - f) + r[k + 1] * f) * gr; }
+      onProgress(0.2 * (i + 1) / items.length);
+    }
+    if (bed) { const b0 = bed.buffer.getChannelData(0), b1 = bed.buffer.getChannelData(bed.buffer.numberOfChannels > 1 ? 1 : 0), bsr = bed.buffer.sampleRate; for (let i = 0; i < N; i++) { const x = i / sr * bsr, k = Math.floor(x), f = x - k; if (k + 1 >= b0.length) break; L[i] += (b0[k] * (1 - f) + b0[k + 1] * f) * bed.gain; R[i] += (b1[k] * (1 - f) + b1[k + 1] * f) * bed.gain; } }
+    let pk = 0; for (let i = 0; i < N; i++) pk = Math.max(pk, Math.abs(L[i]), Math.abs(R[i])); const norm = pk > 0.95 ? 0.95 / pk : 1;
+    const Tq = 0.89; for (const d of [L, R]) for (let i = 0; i < N; i++) { let v = d[i] * norm; const a = Math.abs(v); if (a > Tq) v = Math.sign(v) * (Tq + (1 - Tq) * Math.tanh((a - Tq) / (1 - Tq))); d[i] = v; }
+    const actx = new OfflineAudioContext(2, 1, sr), abuf = actx.createBuffer(2, N, sr); abuf.copyToChannel(L, 0); abuf.copyToChannel(R, 1);
+    // picture: each layer cropped to fill its cell, a thin ink line between cells
+    const output = new MB.Output({ format: new MB.Mp4OutputFormat({ fastStart: "in-memory" }), target: new MB.BufferTarget() });
+    const cv = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(outW, outH) : Object.assign(document.createElement("canvas"), { width: outW, height: outH });
+    const g = cv.getContext("2d"), vsrc = new MB.CanvasSource(cv, { codec: vcodec, bitrate: MB.QUALITY_HIGH, keyFrameInterval: 2 }); output.addVideoTrack(vsrc, { frameRate: fps });
+    const acodec = await MB.getFirstEncodableAudioCodec(["aac", "opus"], { numberOfChannels: 2, sampleRate: sr }); if (!acodec) throw Object.assign(new Error("no audio encoder"), { code: "no_audio_encoder" });
+    const asrc = new MB.AudioBufferSource({ codec: acodec, bitrate: MB.QUALITY_HIGH }); output.addAudioTrack(asrc);
+    await output.start();
+    const nF = Math.ceil(dur * fps);
+    const its = items.map((it, i) => { const vt = vts[i], [, , cw, ch] = cells[i], W = vt.displayWidth, H = vt.displayHeight, cr = cw / ch; let crop;
+      if (W / H > cr) { const w2 = Math.round(H * cr / 2) * 2; crop = { left: Math.round((W - w2) / 2), top: 0, width: w2, height: H }; } else { const h2 = Math.round(W / cr / 2) * 2; crop = { left: 0, top: Math.round((H - h2) * 0.35), width: W, height: h2 }; }
+      return new MB.CanvasSink(vt, { width: Math.round(cw / 2) * 2, height: Math.round(ch / 2) * 2, fit: "cover", crop, poolSize: 3 }).canvasesAtTimestamps(Array.from({ length: nF }, (_, f) => Math.max(0, it.s + f / fps)))[Symbol.asyncIterator](); });
+    const last = items.map(() => null);
+    for (let f = 0; f < nF; f++) {
+      g.fillStyle = "#0B0912"; g.fillRect(0, 0, outW, outH);
+      for (let i = 0; i < items.length; i++) { const st = await its[i].next(); if (st.value) last[i] = st.value.canvas; const [x, y, w, h] = cells[i]; if (last[i]) g.drawImage(last[i], x, y, w, h); }
+      g.fillStyle = "#0B0912"; for (const [x, y, w, h] of cells) { if (x > 0) g.fillRect(x - 3, y, 6, h); if (y > 0) g.fillRect(x, y - 3, w, 6); }
+      if (overlay) { try { overlay(g, outW, outH, items[0].s + f / fps, f / fps); } catch { } }
+      if (watermark) drawMark(g, outW, outH);
+      await vsrc.add(f / fps, 1 / fps);
+      if (f % 15 === 0) onProgress(0.2 + 0.75 * f / nF);
+    }
+    await asrc.add(abuf); await output.finalize(); onProgress(1);
+    return { blob: new Blob([output.target.buffer], { type: "video/mp4" }), width: outW, height: outH, duration: dur };
+  }
+  root.ClipExporter = Object.assign(root.ClipExporter || {}, { exportLayers, previewCopy, exportShort, exportMulti, pitchShift, bestWindow, levelGain, analyzeVideo });
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* Studio polish: one sound chain, two engines. Export runs it sample by sample (below);
@@ -2705,10 +2806,21 @@ input[type=range]{min-height:44px}
   }
   // guitar tab for a note line: standard tuning, the position that moves least
   const TUNING = [40, 45, 50, 55, 59, 64];
-  function tabFor(notes) {
-    let pos = 5; return notes.map(n => { let best = null, bc = 1e9;
-      TUNING.forEach((open, s) => { const fret = n.midi - open; if (fret < 0 || fret > 19) return; const cost = Math.abs(fret - pos) + (fret === 0 ? -0.5 : 0) + s * 0.05; if (cost < bc) { bc = cost; best = { string: s, fret }; } });
-      if (best && best.fret) pos = best.fret; return { ...n, ...(best || {}) }; });
+  // One playable way to finger the notes: the whole line in as few hand positions as possible (a 4-fret box,
+  // like a guitarist plays a scale), low on the neck, open strings when they fit. Viterbi over every string/fret choice.
+  function tabFor(all) {
+    const notes = all.filter(n => TUNING.some(open => n.midi - open >= 0 && n.midi - open <= 17));   // only notes a guitar can play
+    if (!notes.length) return all.map(n => ({ ...n }));
+    const opts = notes.map(n => { const o = []; TUNING.forEach((open, st) => { const fret = n.midi - open; if (fret >= 0 && fret <= 17) o.push({ string: st, fret }); }); return o; });
+    const own = o => o.fret * 0.04 + (o.fret > 12 ? 0.6 : 0);
+    const move = (a, b) => { const ha = a.fret || b.fret, hb = b.fret || a.fret; return Math.max(0, Math.abs(hb - ha) - 3) * 1.2 + 0.12 * Math.abs(b.string - a.string); };
+    const C = [], P = [];
+    opts.forEach((o, i) => { C.push(o.map(x => i ? Infinity : own(x))); P.push(o.map(() => -1));
+      if (i) o.forEach((x, j) => opts[i - 1].forEach((y, k) => { const v = C[i - 1][k] + move(y, x) + own(x); if (v < C[i][j]) { C[i][j] = v; P[i][j] = k; } })); });
+    const out = new Array(notes.length); let i = notes.length - 1, j = C[i].length ? C[i].indexOf(Math.min(...C[i])) : -1;
+    for (; i >= 0; i--) { out[i] = { ...notes[i], ...(j >= 0 && opts[i][j] ? opts[i][j] : {}) }; j = j >= 0 && i > 0 ? P[i][j] : (i > 0 && C[i - 1].length ? C[i - 1].indexOf(Math.min(...C[i - 1])) : -1); }
+    const byT = new Map(out.map(n => [n, n])); let q = 0;
+    return all.map(n => notes[q] === n ? out[q++] : { ...n });
   }
 
   // ---------- chords you can edit, and chords from a melody (for singers and single-note players)
@@ -2797,7 +2909,60 @@ input[type=range]{min-height:44px}
     return { H: harmonize(notes, cells, kk.key, kk.minor), notes, key: kk.key, minor: kk.minor };
   }
 
-  root.LickMusic = { QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, trackBeats, analyze, picks, chordsFor, NOTES };
+
+  // ---------- layers: line up another recording of the same song with this stretch
+  // coarse: chords (chroma, 4 per second) slid over the whole other take; fine: note attacks at ~12 ms.
+  // Any offset a whole number of loops apart sounds right, so it also prefers the other take's strongest playing.
+  function chromaSeq(raw, s, e, step = 0.25) {
+    const C = raw.chromaQ || [], out = [];   // chroma is kept per cell (CELL seconds)
+    for (let t = s; t < e; t += step) { const c = Math.floor(t / CELL), v = (C[c] || []).slice(0, 12); while (v.length < 12) v.push(0); const cl = (raw.clarQ?.[c] ?? 30) / 100; const n = Math.hypot(...v) || 1; out.push(v.map(x => x / n * (0.3 + cl))); }
+    return out;
+  }
+  function alignLayer(rawM, s, e, rawL) {
+    const step = 0.25, M = chromaSeq(rawM, s, e, step), L = chromaSeq(rawL, 0, rawL.duration, step), n = M.length;
+    if (!n || L.length < n * 0.5) return null;
+    const hlL = rawL.highlight || [], CELLL = 0.5;
+    const cand = [];
+    for (let o = -Math.floor(n * 0.25); o + n * 0.75 <= L.length; o++) {
+      let sim = 0, cnt = 0; for (let i = 0; i < n; i++) { const j = o + i; if (j < 0 || j >= L.length) continue; const a = M[i], b = L[j]; let d = 0; for (let k = 0; k < 12; k++) d += a[k] * b[k]; sim += d; cnt++; }
+      if (cnt < n * 0.75) continue;
+      const t0 = o * step, a0 = Math.max(0, Math.floor(t0 / CELLL)), a1 = Math.min(hlL.length, Math.ceil((t0 + (e - s)) / CELLL)); let h = 0; for (let i = a0; i < a1; i++) h += hlL[i] || 0; h /= Math.max(1, a1 - a0);
+      cand.push({ o, sim: sim / cnt, cover: cnt / n, h });
+    }
+    if (!cand.length) return null;
+    cand.sort((a, b) => (b.sim + 0.15 * b.h) - (a.sim + 0.15 * a.h));
+    const picks = []; for (const c of cand) { if (picks.every(p => Math.abs(p.o - c.o) * step > 2)) picks.push(c); if (picks.length >= 4) break; }
+    // fine: attacks (onsetF) cross-correlated within ±0.4 s of each coarse offset
+    const fr = rawM.fineRate, FM = rawM.onsetF || [], FL = rawL.onsetF || [], m0 = Math.floor(s * fr), m1 = Math.floor(e * fr);
+    // chords at a fine offset: the cells' chroma compared every 0.1 s (piecewise), so a one-beat slip shows up
+    const cv = (raw, t) => { const c = Math.floor(t / CELL), v = raw.chromaQ?.[c]; return v || null; };
+    const chordSim = lStart => { let sm = 0, k = 0; for (let t = s; t < e; t += 0.1) { const a = cv(rawM, t), b = cv(rawL, lStart + (t - s)); if (!a || !b) continue; let d = 0, na = 0, nb = 0; for (let q = 0; q < 12; q++) { d += a[q] * b[q]; na += a[q] * a[q]; nb += b[q] * b[q]; } sm += d / (Math.sqrt(na * nb) || 1); k++; } return k ? sm / k : 0; };
+    const fine = c => {
+      const base = c.o * step, R = Math.round(0.8 * fr); let best = -1, bk = 0, bestC = -1;
+      let nm0 = 0; for (let i = m0; i < m1; i++) nm0 += (FM[i] || 0) ** 2;
+      const rs = []; for (let k = -R; k <= R; k++) { const sh = Math.round(base * fr) + k; let sc = 0, nl = 0; for (let i = m0; i < m1; i += 1) { const j = i - m0 + sh; if (j >= 0 && j < FL.length) { sc += (FM[i] || 0) * FL[j]; nl += FL[j] * FL[j]; } } rs.push([k, sc / (Math.sqrt(nm0 * nl) || 1), sc]); }
+      // attacks decide; when two offsets a beat apart are nearly as good, the chords break the tie
+      const rmax = Math.max(...rs.map(x => x[1])), peaks = rs.filter((x, i) => x[1] >= 0.85 * rmax && (i === 0 || x[1] >= rs[i - 1][1]) && (i === rs.length - 1 || x[1] >= rs[i + 1][1]));
+      for (const [k, r, sc] of peaks) { const comb = r + 0.5 * chordSim(base + k / fr); if (comb > bestC) { bestC = comb; bk = k; best = sc; } }
+      // polish to the exact frame around the winner on attacks alone
+      for (let k = bk - 2; k <= bk + 2; k++) { const sh = Math.round(base * fr) + k; let sc = 0; for (let i = m0; i < m1; i++) { const j = i - m0 + sh; if (j >= 0 && j < FL.length) sc += (FM[i] || 0) * FL[j]; } if (sc > best) { best = sc; bk = k; } }
+      let nm = 0, nl = 0; for (let i = m0; i < m1; i++) { nm += (FM[i] || 0) ** 2; const j = i - m0 + Math.round(base * fr) + bk; if (j >= 0 && j < FL.length) nl += FL[j] ** 2; }
+      return { lStart: base + bk / fr, chords: +c.sim.toFixed(3), rhythm: +(best / (Math.sqrt(nm * nl) || 1)).toFixed(3), strength: +c.h.toFixed(3) };
+    };
+    const out = picks.map(fine).sort((a, b) => (b.chords + 0.6 * b.rhythm + 0.15 * b.strength) - (a.chords + 0.6 * a.rhythm + 0.15 * a.strength));
+    return { best: out[0], alts: out.slice(1) };
+  }
+
+
+  // ---------- spelling the way musicians write it: Bb major, not A# major; chords follow the key's sharps or flats
+  const KEY_MAJ = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"], KEY_MIN = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
+  const FLAT = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+  const flatKey = (r, minor) => r == null ? true : (minor ? [0, 2, 3, 5, 7, 10] : [0, 1, 3, 5, 8, 10]).includes(r);
+  const keyLabel = (r, minor) => r == null ? "" : (minor ? KEY_MIN[r] + " minor" : KEY_MAJ[r] + " major");
+  const spellPc = (pc, r, minor) => flatKey(r, minor) && !(r === 0 && !minor && pc === 6) && !(r === 9 && minor && pc === 6) ? FLAT[pc] : NOTES[pc];
+  function spellChord(name, r, minor) { const m = /^([A-G]#?)(.*)$/.exec(name || ""); if (!m) return name; const pc = NOTES.indexOf(m[1]); return pc < 0 ? name : spellPc(pc, r, minor) + m[2]; }
+
+  root.LickMusic = { keyLabel, spellChord, spellPc, flatKey, alignLayer, chromaSeq, QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, trackBeats, analyze, picks, chordsFor, NOTES };
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* LickBand 2: a real-sounding band that plays WITH the take.
@@ -2820,6 +2985,7 @@ input[type=range]{min-height:44px}
     ambient: { name: "Ambient", kick: [],            snare: [],                        hat: [],                         bass: [0], d: { kit: "studio", bass: "finger", line: "root", keys: "pad", play: "held", extra: "strings", room: "hall" } },
   };
   const OPTS = {
+    tempo: [["steady", "Steady"], ["follow", "Follow me"]],
     groove: [["simple", "Simple"], ["normal", "Normal"], ["busy", "Busy"]],
     feel: [["half", "Half-time"], ["normal", "Normal"], ["double", "Double"]],
     fills: [["0", "No fills"], ["4", "Every 4 bars"], ["8", "Every 8 bars"]],
@@ -2836,7 +3002,7 @@ input[type=range]{min-height:44px}
   function settle(styleKey, o = {}) {
     const st = STYLES[styleKey] || STYLES.rock, d = st.d;
     const pick = (k, v) => (v && v !== "auto" && v !== "style") ? v : d[k];
-    return { groove: o.groove || "normal", feel: o.feel || "normal", fills: o.fills ?? "8", kit: pick("kit", o.kit), bass: pick("bass", o.bass), line: o.line && o.line !== "auto" ? o.line : d.line,
+    return { tempo: o.tempo || "steady", groove: o.groove || "normal", feel: o.feel || "normal", fills: o.fills ?? "8", kit: pick("kit", o.kit), bass: pick("bass", o.bass), line: o.line && o.line !== "auto" ? o.line : d.line,
       keys: pick("keys", o.keys), play: o.play && o.play !== "auto" ? o.play : d.play, extra: o.extra && o.extra !== "style" ? o.extra : d.extra, room: pick("room", o.room) };
   }
 
@@ -2957,6 +3123,44 @@ input[type=range]{min-height:44px}
     return { kick, snare, ghost, rim, hat, bass, comp, open };
   }
 
+
+  // ---------- a steady band: the tracked beats carry the player's small timing wobbles (and the odd missed or
+  // extra beat). The band plays a clean grid fitted to them: one tempo when the player holds one, a slowly
+  // moving tempo when they really speed up or slow down. "follow" keeps every tracked beat as it was.
+  function regrid(A, mode) {
+    const B0 = A.beats || [];
+    if (mode === "follow" || B0.length < 6 || !A.pulse) return { beats: B0, bars: A.bars, steady: false };
+    const d = []; for (let i = 1; i < B0.length; i++) d.push(B0[i] - B0[i - 1]); d.sort((a, b) => a - b);
+    const p0 = d[d.length >> 1];
+    // robust straight line t = a + p*k (Huber re-weighting) through (index, time) points
+    const fitLine = pts => { let a = pts[0][1], p = p0; for (let it = 0; it < 6; it++) { let sw = 0, sk = 0, st = 0, skk = 0, skt = 0;
+        for (const [k, t] of pts) { const r = t - (a + p * k), w = Math.abs(r) < 0.03 ? 1 : 0.03 / Math.abs(r); sw += w; sk += w * k; st += w * t; skk += w * k * k; skt += w * k * t; }
+        const den = sw * skk - sk * sk; if (Math.abs(den) < 1e-9) break; p = (sw * skt - sk * st) / den; a = (st - p * sk) / sw; } return [a, p]; };
+    const dedupe = idx => { const pts = []; idx.forEach((k, i) => { if (!pts.length || pts[pts.length - 1][0] !== k) pts.push([k, B0[i]]); }); return pts; };
+    const drift90 = (pts, a, p) => { const r = pts.map(([k, t]) => Math.abs(t - (a + p * k))).sort((x, y) => x - y); return r[Math.max(0, Math.floor(r.length * 0.9) - 1)]; };
+    // 1) one tempo: every beat indexed on the median period (a missed beat skips an index, a stray one shares it)
+    let pts = dedupe(B0.map(t => Math.round((t - B0[0]) / p0))), [a, p] = fitLine(pts), drift = drift90(pts, a, p);
+    let beats, steady = drift < 0.07;
+    if (steady) { const K = pts[pts.length - 1][0] + 1; beats = Array.from({ length: K }, (_, k) => a + p * k); }
+    else {
+      // 2) a tempo that really moves: index gap by gap against the local period, then smooth the curve
+      const idx = [0]; for (let i = 1; i < B0.length; i++) { const loc = []; for (let j = Math.max(1, i - 4); j <= Math.min(B0.length - 1, i + 4); j++) loc.push(B0[j] - B0[j - 1]); loc.sort((x, y) => x - y); const lp = loc[loc.length >> 1] || p0; idx.push(idx[i - 1] + Math.max(0, Math.round((B0[i] - B0[i - 1]) / lp))); }
+      pts = dedupe(idx); [a, p] = fitLine(pts); const K = pts[pts.length - 1][0] + 1;
+      beats = Array.from({ length: K }, (_, k) => { let sw = 0, sk = 0, st = 0, skk = 0, skt = 0;
+        for (const [kk, t] of pts) { const w = Math.exp(-(((kk - k) / 6) ** 2)); sw += w; sk += w * kk; st += w * t; skk += w * kk * kk; skt += w * kk * t; }
+        const den = sw * skk - sk * sk, pp = Math.abs(den) < 1e-9 ? p : (sw * skt - sk * st) / den, aa = (st - pp * sk) / sw; return aa + pp * k; });
+    }
+    const K = beats.length;
+    // bars on the new grid: keep the player's downbeat (the most common bar phase) and each bar's energy
+    const meter = A.meter || 4, ph = {}; for (const b of A.bars || []) { const k = Math.round((b.t0 - a) / p); const m = ((k % meter) + meter) % meter; ph[m] = (ph[m] || 0) + 1; }
+    const phase = +(Object.entries(ph).sort((x, y) => y[1] - x[1])[0]?.[0] ?? 0), bars = [];
+    for (let k = phase; k + meter <= K + meter && k < K; k += meter) {
+      const t0 = beats[k], t1 = k + meter < K ? beats[k + meter] : beats[K - 1] + p * (k + meter - K + 1), near = (A.bars || []).reduce((m, b) => !m || Math.abs(b.t0 - t0) < Math.abs(m.t0 - t0) ? b : m, null);
+      bars.push({ ...(near || {}), k, t0, t1, energy: near?.energy ?? 0.7 });
+    }
+    return { beats, bars, steady, bpm: Math.round(60 / p) };
+  }
+
   // ------------------------------------------------------------- render
   // Window [s, e] of the clip. Returns { buffer (stereo), stems {drums, bass, keys, extra}, A, chords, style, set }.
   async function render(raw, s, e, opts = {}) {
@@ -3013,12 +3217,13 @@ input[type=range]{min-height:44px}
       if (opt.bassNote) { const [buf, rate] = noteOf(pk, v[0] - 12); put(inst, buf, t, gain * 0.7, pan, cut, opt.rel ?? 0.12, rate, opt.atk || 0); }
     };
 
+    const G = regrid(A, set.tempo);
     if (A.pulse && A.bars.length) {
-      const B = A.beats, ib = B.length > 1 ? (B[B.length - 1] - B[0]) / (B.length - 1) : 0.5;
+      const B = G.beats, ib = B.length > 1 ? (B[B.length - 1] - B[0]) / (B.length - 1) : 0.5;
       const beatT = k => k < B.length ? B[k] : B[B.length - 1] + (k - B.length + 1) * ib;
       const swing = st.swing || (A.swing > 0.58 ? A.swing : 0.5);
       const stepT = (k, j) => { const bi = k + (j >> 2), q = j & 3, t0 = beatT(bi), t1 = beatT(bi + 1); const frac = q === 0 ? 0 : q === 2 ? swing : q === 1 ? swing / 2 : swing + (1 - swing) / 2; return t0 + frac * (t1 - t0); };
-      const bars = A.bars.filter(b => b.t0 < endT - 0.1), FN = +set.fills || 0;
+      const bars = G.bars.filter(b => b.t0 < endT - 0.1 && b.t1 > s - 0.05), FN = +set.fills || 0;
       bars.forEach((bar, bi) => {
         const en = bar.energy ?? 0.7, vel = 0.62 + 0.38 * en, sparse = en < 0.22;
         const fill = FN && (bi + 1) % FN === 0 && bi < bars.length - 1 && !sparse;
@@ -3079,7 +3284,7 @@ input[type=range]{min-height:44px}
         }
       });
       // a clean ending: one last hit on the final bar line inside the window
-      const last = A.bars.find(b => b.t0 >= endT - 0.1) || null, fin = last && last.t0 < e ? last.t0 : null;
+      const last = G.bars.find(b => b.t0 >= endT - 0.1) || null, fin = last && last.t0 < e ? last.t0 : null;
       if (fin && parts.drums && KP) { put("drums", hit("kick"), fin, lvl.drums); put("drums", hit("crash"), fin, 0.45 * lvl.drums, -0.3); }
       if (fin && parts.bass && BP) { const h = harmonyAt(fin), [buf, rate] = noteOf(BP, bassM(h.root)); put("bass", buf, fin, lvl.bass, 0, Math.min(e, fin + 1.2), 0.3, rate); }
     } else if (parts.bass && BP) {
@@ -3125,7 +3330,7 @@ input[type=range]{min-height:44px}
     const g = pk > 0.89 ? 0.89 / pk : 1;
     if (g !== 1) { for (const b of Object.values(stems)) for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < N; i++) d[i] *= g; } for (let ch = 0; ch < 2; ch++) for (let i = 0; i < N; i++) sum[ch][i] *= g; }
     const buffer = mkBuf(sum[0], sum[1]);
-    return { buffer, stems, A, bpm: A.bpm, chords: H, style: styleKey, set, sampled, key: raw.info?.key };
+    return { buffer, stems, A, bpm: G.bpm || A.bpm, steady: G.steady, chords: H, style: styleKey, set, sampled, key: raw.info?.key };
   }
   // triad in the middle register, moving as little as possible from the last chord
   function voicing(pcs, prev) {
@@ -3211,7 +3416,7 @@ Return only JSON: {"style": string, "drums": boolean, "bass": boolean, "keys": b
     return out;
   }
 
-  root.LickBand = { STYLES, OPTS, settle, render, heuristicStyle, aiPick, NOTE, shape, hear, soundFeats, YGROUPS };
+  root.LickBand = { STYLES, OPTS, settle, regrid, render, heuristicStyle, aiPick, NOTE, shape, hear, soundFeats, YGROUPS };
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
@@ -3298,7 +3503,7 @@ function keepVideo(c) {
 // your projects: every choice in the studio is saved as you go
 let saveT = 0;
 function autosave(c) { if (!c || c.example) return; clearTimeout(saveT); saveT = setTimeout(() => persist(c), 600); }
-const PROJ = ["rates", "rateWhy", "pickAdj", "band", "ex", "captions", "note", "vibe", "src", "sugOff", "snd", "patches", "tune", "mix"];
+const PROJ = ["rates", "rateWhy", "pickAdj", "band", "ex", "captions", "note", "vibe", "src", "sugOff", "snd", "patches", "tune", "mix", "layers"];
 function projOf(c) { const o = {}; for (const k of PROJ) if (c[k] != null) { try { o[k] = JSON.parse(JSON.stringify(c[k], (kk, v) => kk === "aiBusy" || kk === "_res" || kk === "busy" ? undefined : v)); } catch { } } return o; }
 function persist(c) {
   if (c.status !== "done" || !c.key) return;
@@ -3510,6 +3715,7 @@ downloads = IN_CLAUDE ? null : localSaver;
   }
 })();
 async function mb() {
+  try { await Promise.all([document.fonts.load('400 40px "Dela Gothic One"'), document.fonts.load("800 40px Archivo")]); } catch { }   // the mark and overlays draw in the brand fonts
   if (MB) return MB;
   if (window.Mediabunny) MB = window.Mediabunny;                       // downloaded file: bundled inline
   else if (BUILD === "pwa") MB = await import("./mediabunny.min.mjs");  // installed app: cached offline
@@ -3594,12 +3800,12 @@ async function recheckOnline(L) {
 function proOK(what) { if (isPro() || lic.trial > 0) return true; openPro(what); return false; }
 function spendTrial() { if (isPro()) return; lic.trial = Math.max(0, lic.trial - 1); store.set("lp:trial", lic.trial); setTimeout(() => toast(lic.trial ? `${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left` : "That was your last free Pro save", { icon: "i-bolt", label: "Pro", run: () => openPro() }), 2800); }
 const proTag = () => isPro() ? "" : `<i class="protag">PRO</i>`;
-// Free core + one Pro unlock, paid once. No subscription (no server to renew it), no watermark (Instagram buries other apps' logos).
+// Free core + one Pro unlock, paid once. No subscription (no server to renew it). Free saves carry a small LickPick mark; Pro is clean.
 // Free = find, hear, practise and post one clip at a time. Pro (paid once) = save more, faster, with the band.
 const TIER_TABLE = [
   ["Find", [["Scan every take, unlimited", 1], ["Grades: best, good, worth a look, useless", 1], ["Pick A, B, C + Why this part", 1], ["Suggestions from your own playing", 1]]],
-  ["Play & practise", [["Play my picks, back to back", 1], ["Loop and slow down to ¾ or ½", 1], ["Hear the band, every style", 1], ["Hear every studio sound", 1]]],
-  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Vertical shorts, no watermark", 1], ["Studio sound: Clean", 1], ["Captions, hashtags, share", 1], ["Studio sound: Warm, Bright, Live room", 0], ["Pro EQ: 5-band EQ, compressor, room, A/B", 0], ["Save with the band + your mix", 0], ["Save everything in one tap", 0], ["Each part as its own file", 0], ["Coming: Beat FX, 90s looks, licks reel", -1]]],
+  ["Play & practise", [["Play my picks, back to back", 1], ["Loop and slow down to ¾ or ½", 1], ["Hear the band, every style", 1], ["Line up layers of you, and hear them", 1], ["Hear every studio sound", 1]]],
+  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Vertical shorts, with a small LickPick mark", 1], ["Studio sound: Clean", 1], ["Captions, hashtags, share", 1], ["Studio sound: Warm, Bright, Live room", 0], ["Pro EQ: 5-band EQ, compressor, room, A/B", 0], ["Save with the band + your mix", 0], ["Save layers, split screen", 0], ["Save everything in one tap", 0], ["Each part as its own file", 0], ["No LickPick mark on your videos", 0], ["Coming: Beat FX, 90s looks, licks reel", -1]]],
 ];
 const tierTableHTML = () => `<table class="cmp"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead>${TIER_TABLE.map(([g, rows]) => `<tbody><tr class="grp"><th colspan="3">${g}</th></tr>${rows.map(([l, free]) => `<tr${free > 0 ? "" : ' class="pro"'}><td>${l}</td><td>${free > 0 ? icon("i-check") : `<span class="try">${lic.trial && free === 0 ? "try" : "–"}</span>`}</td><td>${icon("i-check")}</td></tr>`).join("")}</tbody>`).join("")}</table>`;
 // What Pro adds, in a player's words
@@ -3953,7 +4159,7 @@ function phrase(c) {
   const pk = pickOf(c), cuts = (c.result?.removed || []).length;
   if (v === "trash") return c.override ? "Marked by you" : "No music found";
   const pickTxt = pk ? `<b class="pk-l">★ ${fmt(pk.len)}</b>` : c._pickJob ? "<b>Finding pick…</b>" : "<b>No pick</b>";
-  const info = c.raw?.info || {}, facts = [info.key, info.tempo && `${info.tempo} BPM`, fmt(c.raw.duration)].filter(Boolean);
+  const info = c.raw?.info || {}, facts = [keyText(c), info.tempo && `${info.tempo} BPM`, fmt(c.raw.duration)].filter(Boolean);
   return `${pickTxt} <span class="sub">${esc(facts.join(" · "))}${c.saved || c.pickSaved ? " · saved" : ""}${c.file ? "" : " · re-add to save"}</span>`;
 }
 function cardHTML(c) {
@@ -4250,7 +4456,7 @@ class Seg {
 }
 
 Seg.rate = 1;   // one practice speed for every player
-document.addEventListener("change", e => { if (e.target?.id === "capCredit") store.set("lp:credit", e.target.checked ? 1 : 0); });
+document.addEventListener("change", e => { if (e.target?.id === "capCredit") store.set("lp:credit", e.target.checked ? 1 : 0); if (e.target?.dataset?.titleby) { const c = cur(); if (c) { exOpts(c).titleBy = e.target.checked; persist(c); ovPreview(); renderExport(c); } } if (e.target?.id === "ovTitleIn") { const c = cur(); if (c) renderExport(c); } });
 
 // ---------- first run: profile and setup (kept on this phone; no account needed)
 const PLAYS = [["guitar", "Guitar", "i-pick"], ["bass", "Bass", "i-bass"], ["keys", "Keys", "i-keys"], ["drums", "Drums", "i-drum"], ["vocals", "Vocals", "i-mic"], ["other", "Other", "i-note"]];
@@ -4317,7 +4523,7 @@ function renderQuick() {
   qsVideo?.destroy(); qsVideo = new Seg(st);
   const pk = pickOf(c), rs = pk ? pk.ranges : onParts(c).map(p => [p.start, p.end]);
   qsVideo.load(c.url || (c.url = URL.createObjectURL(c.file)));
-  if (qs.reel) { const pk2 = pickOf(c), info = c.raw?.info || {}; st.querySelector(".pv")?.insertAdjacentHTML("beforeend", `<div class="credit" aria-hidden="true"><b>${esc(profile.name || "You")}</b><span>“${esc(c.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " "))}”</span><span>${esc([pk2 ? `Pick ${"ABC"[c.pickSel || 0]}` : "", info.key, info.tempo && info.tempo + " BPM"].filter(Boolean).join(" · "))}</span><span>LickPick</span></div><svg class="bug" aria-hidden="true"><use href="#logo"/></svg>`); }
+  if (qs.reel) { const pk2 = pickOf(c), info = c.raw?.info || {}; st.querySelector(".pv")?.insertAdjacentHTML("beforeend", `<div class="credit" aria-hidden="true"><b>${esc(profile.name || "You")}</b><span>“${esc(c.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " "))}”</span><span>${esc([pk2 ? `Pick ${"ABC"[c.pickSel || 0]}` : "", keyText(c), info.tempo && info.tempo + " BPM"].filter(Boolean).join(" · "))}</span><span>LickPick</span></div><svg class="bug" aria-hidden="true"><use href="#logo"/></svg>`); }
   qsVideo.set(rs, pk ? (qs.reel ? `Pick ${"ABC"[c.pickSel || 0]}` : "Best bit") : "Clean parts", rs.length ? fmt(rs.reduce((t, [a, b]) => t + b - a, 0)) : "");
   if (qs.reel) { qsVideo.onEnd = () => setTimeout(() => { if (qs.reel && !$("#sorter").hidden && qs.i < qs.ids.length - 1) reelStep(1); }, 600);
     const rp = $("#reelPrev"), rn = $("#reelNext"); if (rp) rp.disabled = qs.i === 0; if (rn) rn.disabled = qs.i >= qs.ids.length - 1;
@@ -4394,7 +4600,7 @@ function renderStudio() {
   $("#sDur").textContent = fmt(c.raw?.duration || 0);
   { const k = $("#sKept"); if (k) k.textContent = c.status === "done" ? `${fmt(keptSeconds(c))} kept` : ""; }
   const cr = $("#sCredit"); if (cr) { const pk = pickOf(c), info = c.raw?.info || {};
-    cr.innerHTML = `<b>${esc(profile.name || "You")}</b><span>“${esc(c.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " "))}”</span><span>${esc([pk ? `Pick ${"ABC"[c.pickSel || 0]}` : "", info.key, info.tempo && info.tempo + " BPM"].filter(Boolean).join(" · "))}</span><span>LickPick</span>`; }
+    cr.innerHTML = `<b>${esc(profile.name || "You")}</b><span>“${esc(c.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " "))}”</span><span>${esc([pk ? `Pick ${"ABC"[c.pickSel || 0]}` : "", keyText(c), info.tempo && info.tempo + " BPM"].filter(Boolean).join(" · "))}</span><span>LickPick</span>`; }
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === state.tab)));
   $("#sTransport").hidden = state.tab !== "parts";
   const tip = $("#tip"); if (tip) tip.hidden = state.tab !== "parts" || !!store.get("ck:tip");
@@ -4437,7 +4643,7 @@ function suggestions(c) {
   if (state.pickLen === "auto" && pk.len > 34) out.push({ id: "len30", ic: "i-phone", c: "hot", t: `Your Pick runs ${fmt(pk.len)}. Reels and TikTok hold attention best under 30 s.`, a: "Make it 30 s" });
   // 4) a band that fits the groove it measured
   if (A?.pulse && c.raw.chromaQ) { const st = LickBand.heuristicStyle(c.raw, A), nm = LickBand.STYLES[st]?.name;
-    if (nm) out.push({ id: "band:" + st, ic: "i-drum", c: "blaze", t: `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}${A.meter === 3 ? ", 3/4" : ""}${c.raw.info?.key ? `, ${c.raw.info.key}` : ""}: that's a ${nm.toLowerCase()} groove.`, a: `Hear a ${nm.toLowerCase()} band` }); }
+    if (nm) out.push({ id: "band:" + st, ic: "i-drum", c: "blaze", t: `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}${A.meter === 3 ? ", 3/4" : ""}${keyText(c) ? `, ${keyText(c)}` : ""}: that's a ${nm.toLowerCase()} groove.`, a: `Hear a ${nm.toLowerCase()} band` }); }
   return out.filter(x => !dis[x.id.split(":")[0]]).slice(0, 3);
 }
 function suggestHTML(c) {
@@ -4447,7 +4653,7 @@ function suggestHTML(c) {
 function pickPanel(c) {
   const list = picksOf(c), pk = pickOf(c), v = verdict(c), rep = report(c), k = keptSeconds(c), D = c.raw?.duration || 0;
   const verdictLine = { keep: `Worth keeping. ${fmt(k)} of clean playing.`, review: k ? `Some gold, not much: ${fmt(k)} clean.` : "Playing, but nothing clean enough.", trash: "No music found. Safe to delete." }[v] || "";
-  const facts = [c.raw?.info?.key && ["Key", c.raw.info.key], c.raw?.info?.tempo && ["Tempo", c.raw.info.tempo + " BPM"], ["Length", fmt(D)], ["Camera", c.raw?.cameraChecked ? "checked" : "not checked"]].filter(Boolean);
+  const facts = [keyText(c) && ["Key", keyText(c)], c.raw?.info?.tempo && ["Tempo", c.raw.info.tempo + " BPM"], ["Length", fmt(D)], ["Camera", c.raw?.cameraChecked ? "checked" : "not checked"]].filter(Boolean);
   const canSave = !!c.file && !!downloads && !c.exporting, L = state.pickLen;
   return `    ${!pk && c._pickJob ? `<div class="pickhero none"><p class="working"><span class="pulse"></span>Finding your best phrase…</p></div>` : pk ? `<div class="pickhero">
       <div class="pk-top"><span class="pk-tag">Pick ${"ABC"[c.pickSel || 0]}</span>${pk.why?.length ? `<span class="pk-why">${pk.why.map(esc).join(" · ")}</span>` : ""}${tasteK() > 0 && Math.abs(pk.tasteAdj || 0) > 0.004 ? `<button type="button" class="tuned" data-act="taste-open">${icon("i-bolt")}Tuned to you</button>` : ""}</div>
@@ -4588,11 +4794,12 @@ const FMTS = [["original", "Original", "Same framing, full quality"], ["vertical
 const PLATS = [["tiktok", "TikTok", "vertical", [15, 30]], ["reels", "Reels", "vertical", [15, 30]], ["shorts", "Shorts", "vertical", [15, 45]], ["feed", "IG feed", "r45", [15, 60]], ["youtube", "YouTube", "r169", [30, 90]], ["file", "Just save", "original", null]];
 function exOpts(c) {
   const S = srcOf(c);
-  if (!c.ex) { const p0 = (profile.posts || []).find(p => SOCIAL.includes(p)); c.ex = { plat: p0 || "file", fmt: p0 ? "vertical" : "original", pos: 0.5, band: false, sep: false }; }
+  if (!c.ex) { const p0 = (profile.posts || []).find(p => SOCIAL.includes(p)); c.ex = { plat: p0 || "file", fmt: p0 ? "vertical" : "original", pos: 0.5, band: false, sep: false, lay: store.get("lp:ovlay") || undefined, titleBy: true }; }
   const o = c.ex; if (o.pos == null) o.pos = 0.5; if (!o.plat) o.plat = o.fmt === "vertical" ? "reels" : "file";
   o.canV = !!S && (S.ranges.length === 1 || S.kind === "mix") && S.len <= 180 && !c.audioOnly;
   o.canBand = !!S && (S.kind === "pick" || S.kind === "mix") && !!c.raw?.chromaQ;
   o.canSep = !!S && S.kind === "clean" && S.n > 1;
+  o.canLayers = !!S && S.kind === "pick" && layersOn(c).length > 0 && !c.audioOnly; if (o.layers == null) o.layers = true;
   if (!o.canV && ASPECT[o.fmt]) o.fmt = "original";
   if (!o.canBand) o.band = false;
   if (!o.canSep) o.sep = false;
@@ -4610,27 +4817,50 @@ function exportSheetHTML(c) {
     <div class="exgroup"><span>Shape</span><div class="fmtrow" role="radiogroup">${FMTS.map(([k, l, d]) => `<button type="button" role="radio" aria-checked="${o.fmt === k}" data-ex="fmt:${k}" ${busy || (k !== "original" && !o.canV) ? "disabled" : ""}><i class="shp s-${k}"></i><b>${l}</b><em>${d}</em></button>`).join("")}</div>
       ${!o.canV ? `<p class="hint">${S.kind === "clean" ? "Reshaping works on a Pick or a single part." : "Reshaping works up to 3 minutes."}</p>` : ASPECT[o.fmt] ? framer(c, o) : ""}
     </div>
+    ${titleGroup(c, o, opt)}
     ${S.ranges.length === 1 ? ovGroup(c, S, o, opt) : ""}
-    ${o.canBand || o.canSep ? `<div class="exgroup"><span>Extras</span>
+    ${ovOn(o) ? layGroup(o, S) : ""}
+    ${o.canBand || o.canSep || S.kind === "mix" || o.canLayers ? `<div class="exgroup"><span>Extras</span>
+      ${o.canLayers ? opt("layers", !!o.layers, "i-stack", "Layers, split screen", `You and ${layersOn(c).length} more take${layersOn(c).length > 1 ? "s" : ""}, side by side, on one beat.`, false, proTag()) : ""}
       ${o.canBand ? opt("band", o.band, "i-drum", "Backing band", "Drums, bass and keys on your beat.", false, proTag()) : ""}
       ${o.canSep ? opt("sep", o.sep, "i-stack", "One file per part", `${S.n} files instead of one.`, false, proTag()) : ""}
+      ${S.kind === "mix" || o.band ? opt("alsoParts", !!o.alsoParts, "i-film", S.kind === "mix" ? "Also save each part on its own" : "Also save it without the band", S.kind === "mix" ? `Plus ${S.ranges.length} separate files of your original playing.` : "Plus a file with just your original playing.") : ""}
     </div>` : ""}
     <div class="exgroup"><span>Sound</span><button type="button" class="opt" data-act="sound-open" ${busy ? "disabled" : ""}>${icon("i-sliders")}<span class="grow"><strong>${sndOf(c).fx ? `Studio sound · ${fxLabel(c)}` : "As recorded"}</strong><em>${S.ranges.length > 1 && !o.sep && sndOf(c).fx ? "Polish works on a Pick or a single part." : "Tap to change polish and mixer levels."}</em></span><span class="chev">›</span></button></div>
-    ${c.file ? `<button class="btn wide" type="button" data-act="export-go" ${busy || !downloads ? "disabled" : ""}>${icon("i-save")}Save ${files > 1 ? files + " files" : S.kind === "clean" ? "clean cut" : S.label}${o.band ? " + band" : ""}${ASPECT[o.fmt] ? " · " + FMTS.find(f => f[0] === o.fmt)[1] : ""} · ${fmt(S.len)}</button>`
+    ${c.file ? `<button class="btn wide" type="button" data-act="export-go" ${busy || !downloads ? "disabled" : ""}>${icon("i-save")}Save ${files > 1 ? files + " files" : S.kind === "clean" ? "clean cut" : S.label}${o.canLayers && o.layers ? " + layers" : ""}${o.band ? " + band" : ""}${ASPECT[o.fmt] ? " · " + FMTS.find(f => f[0] === o.fmt)[1] : ""} · ${fmt(S.len)}</button>`
       : `<button class="btn wide" type="button" data-act="gallery">${icon("i-film")}Re-add the video to save in HD</button><p class="hint">Saving uses your original video for full quality. Pick it from the gallery and you're back here.</p>`}
     ${c.file && !downloads ? `<p class="hint">Saving isn't available in this view.</p>` : ""}
     <div class="status" id="exStatus" aria-live="polite">${esc(c.exStatus || "")}</div>
     ${c.lastShare && !busy ? `<button class="btn wide sharebtn" type="button" data-act="share-last">${icon("i-share")}<span><b>Share ${esc(c.lastShare.name.length > 26 ? c.lastShare.name.slice(0, 24) + "…" : c.lastShare.name)}</b><em>Instagram, TikTok, YouTube, WhatsApp, Drive…${c.captions?.length ? " Caption included." : ""}</em></span></button>` : ""}`;
 }
+// a name on the video: free for everyone, styled like LickPick
+function titleGroup(c, o, opt) {
+  return `<div class="exgroup"><span>Title</span>
+    ${opt("ovTitle", !!o.ovTitle, "i-text", "Name it on the video", o.title ? `“${esc(o.title)}”${o.titleBy && profile.name ? ` by ${esc(profile.name)}` : ""}` : "Song, title, anything. Shown at the top.")}
+    ${o.ovTitle ? `<div class="titlerow"><input id="ovTitleIn" type="text" maxlength="60" placeholder="Name it (song, title, vibe…)" value="${esc(o.title || "")}">${profile.name ? `<label class="credit-opt"><input type="checkbox" data-titleby="1" ${o.titleBy ? "checked" : ""}> by ${esc(profile.name)}</label>` : ""}</div>` : ""}
+  </div>`;
+}
+// where each item sits and how big: top, middle, bottom (or slide it), small, medium, large. Remembered for next time.
+const LAY_ITEMS = [["title", "Title", "ovTitle"], ["key", "Key & tempo", "ovKey"], ["chords", "Chords", "ovChords"], ["notes", "Notes & tab", "ovNotes"]];
+function layGroup(o, S) {
+  const on = LAY_ITEMS.filter(([, , f]) => o[f] && (f !== "ovTitle" || (o.title || "").trim()) && (S.ranges.length === 1 || f === "ovTitle"));
+  if (!on.length) return "";
+  return `<div class="exgroup"><span>Placement</span><div class="lays">${on.map(([k, l]) => { const L = ovLay(o, k), pos = L.y < 0.3 ? "top" : L.y > 0.7 ? "bottom" : "middle";
+    return `<div class="layrow"><b>${l}</b><span class="seg bseg">${[["top", "Top"], ["middle", "Middle"], ["bottom", "Bottom"]].map(([v, t]) => `<button type="button" data-lay="${k}:y:${v}" aria-pressed="${pos === v}">${t}</button>`).join("")}</span><span class="seg bseg">${[[0.75, "S"], [1, "M"], [1.3, "L"]].map(([v, t]) => `<button type="button" data-lay="${k}:s:${v}" aria-pressed="${Math.abs(L.s - v) < 0.01}">${t}</button>`).join("")}</span>
+      <input type="range" min="0.04" max="0.96" step="0.01" value="${L.y}" data-layy="${k}" aria-label="Move ${l} up or down"></div>`; }).join("")}</div>
+    <p class="hint">${icon("i-play")}Play the clip to see it on your video. Keep things off your face and your hands.</p></div>`;
+}
+function setLay(c, k, key, val) { const o = exOpts(c); o.lay = { ...(o.lay || {}) }; o.lay[k] = { ...ovLay(o, k), [key]: val }; store.set("lp:ovlay", o.lay); persist(c); ovPreview(); }
 function ovGroup(c, S, o, opt) {
   const [s, e] = S.ranges[0], I = ovInfo(c, s, e);
   if (I.mono == null && !I.busy && (c.file || c.proxy)) ovNotes(c, s, e).then(() => renderExport(c));
   const mono = I.mono != null && I.mono >= 0.6 && I.notes?.length >= 4, chordLine = I.chords.slice(0, 5).map(x => x.name).join(" ") || "no chords heard";
   if (o.ovNotes && !mono && I.mono != null) o.ovNotes = false;
   return `<div class="exgroup"><span>On screen${proTag()}</span>
-    ${opt("ovChords", !!o.ovChords, "i-note", "Chords", I.chords.length ? `${esc(chordLine)}${I.chords.length > 5 ? "…" : ""}, in time with you` : "No clear chords in this part", !I.chords.length)}
+    ${opt("ovChords", !!o.ovChords, "i-note", "Chords", I.chords.length ? `${esc(chordLine)}${I.chords.length > 5 ? "…" : ""}, in time with you${I.blanks ? `. ${I.blanks} unclear stretch${I.blanks > 1 ? "es" : ""} left blank` : ""}` : "No clear chords in this part", !I.chords.length)}
+    ${o.ovChords && I.chords.length ? `<button type="button" class="opt check" data-act="ch-check">${icon("i-check")}<span class="grow"><strong>Check the chords before saving</strong><em>See every chord it will show, and fix any. The band follows too.</em></span><span class="chev">›</span></button>` : ""}
     ${opt("ovKey", !!o.ovKey, "i-scope", "Key & tempo", [I.key, I.bpm ? I.bpm + " BPM" : ""].filter(Boolean).join(" · ") || "No clear key here", !I.key && !I.bpm)}
-    ${opt("ovNotes", !!o.ovNotes, "i-pick", I.voice ? "Notes you sing" : "Notes & tab", I.mono == null ? "Listening for single notes…" : mono ? (I.voice ? `${I.notes.length} notes, named as you sing them. Great for vocal practice posts.` : `${I.notes.length} notes, with guitar tab. Shows only the notes it's sure of.`) : "For single-note lines (riffs, solos, singing). This part is mostly chords.", I.mono == null || !mono)}
+    ${opt("ovNotes", !!o.ovNotes, "i-pick", I.voice ? "Notes you sing" : "Notes & tab", I.mono == null ? "Listening for single notes…" : mono ? (I.voice ? `${I.notes.length} notes, named as you sing them. Great for vocal practice posts.` : `${I.notes.length} notes it's sure of (unclear ones left out). The tab is one playable way to finger them.`) : "For single-note lines (riffs, solos, singing). This part is mostly chords.", I.mono == null || !mono)}
     ${ovOn(o) ? `<p class="hint">${icon("i-play")}Playing the clip shows it on the video, exactly as it will be saved.</p>` : ""}
   </div>`;
 }
@@ -4654,13 +4884,14 @@ function framer(c, o) {
     <label class="eqsl"><span>Frame</span><input type="range" min="0" max="1" step="0.01" value="${o.pos}" data-frame="1" aria-label="Where the frame sits"><b>${horiz ? (o.pos < 0.34 ? "Left" : o.pos > 0.66 ? "Right" : "Center") : (o.pos < 0.34 ? "Top" : o.pos > 0.66 ? "Bottom" : "Middle")}</b></label></div>`;
 }
 // ---------- on screen: chords, key & tempo, notes & tab, drawn on the video (preview and export use the same drawing)
-const ovOn = o => !!(o && (o.ovChords || o.ovKey || o.ovNotes));
+const ovOn = o => !!(o && (o.ovChords || o.ovKey || o.ovNotes || (o.ovTitle && (o.title || "").trim())));
 const ovKey = (c, s, e) => `${c.key}|${s.toFixed(2)}|${e.toFixed(2)}`;
 function ovInfo(c, s, e) {
   c._ov = c._ov || {}; const k = ovKey(c, s, e);
   if (!c._ov[k]) { let A = null; try { A = LickMusic.analyze(c.raw, s, e); } catch { }
-    const BC = c.band && (hasChEdits(c) || c.band.ch?.src === "melody") ? chordsFor(c, s, e, A) : null;
-    c._ov[k] = { s, e, chords: (BC || A?.chords || []).filter(x => x.t1 > s && x.t0 < e && x.name).map(x => ({ t0: x.t0, t1: x.t1, name: BC ? x.name : x.name.replace(/5$/, "") })), key: c.raw?.info?.key && c.raw.info.keyRoot != null ? c.raw.info.key : "", bpm: A?.pulse ? A.bpm : null, notes: null, mono: null, busy: false }; }
+    // only chords LickPick actually heard (or you set): a key-based guess ("drone") is left blank on the video
+    const BC = A ? chordsFor(c, s, e, A) : [], blanks = BC.filter(x => x.drone && !x.edited).length;
+    c._ov[k] = { s, e, blanks, chords: BC.filter(x => x.t1 > s && x.t0 < e && x.name && (!x.drone || x.edited)).map(x => ({ t0: x.t0, t1: x.t1, name: sp(c, x.name) })), key: keyText(c), bpm: A?.pulse ? A.bpm : null, notes: null, mono: null, busy: false, ks: keyCtx(c) }; }
   return c._ov[k];
 }
 // the notes need the sound itself: decoded once per stretch, resampled to 22 kHz, transcribed in the background
@@ -4678,21 +4909,31 @@ async function ovNotes(c, s, e) {
 }
 const NN = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"], noteName = m => NN[m % 12] + (Math.floor(m / 12) - 1);
 function rr(g, x, y, w, h, r) { g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, h, r); else g.rect(x, y, w, h); }
+// where each on-screen item sits (centre, as a share of the height) and how big: the player decides, defaults stay off the face
+const OV_DEF = { title: { y: 0.08, s: 1 }, key: { y: 0.16, s: 1 }, chords: { y: 0.78, s: 1 }, notes: { y: 0.89, s: 1 } };
+const ovLay = (o, k) => ({ ...OV_DEF[k], ...(o?.lay?.[k] || {}) });
 function drawOverlay(g, W, H, t, I, o) {
-  const u = Math.min(W, H) / 100, font = (wt, px) => `${wt} ${Math.round(px)}px Archivo, system-ui, sans-serif`;
+  const u0 = Math.min(W, H) / 100, font = (wt, px) => `${wt} ${Math.round(px)}px Archivo, system-ui, sans-serif`;
   g.save(); g.textBaseline = "middle";
+  if (o.ovTitle && (o.title || "").trim()) {
+    const L = ovLay(o, "title"), u = u0 * L.s, cy = H * L.y, tt = o.title.trim().slice(0, 60), by = o.titleBy && profile.name ? `by ${profile.name}` : "";
+    g.font = font(900, u * 7); let tw = g.measureText(tt).width; const maxW = W - u0 * 10, k = tw > maxW ? maxW / tw : 1; g.font = font(900, u * 7 * k); tw = g.measureText(tt).width;
+    g.font = font(700, u * 3.4); const bw = by ? g.measureText(by).width : 0, bw2 = Math.max(tw, bw) + u * 8, bh = u * (by ? 15 : 11) * Math.max(0.8, k), bx = (W - bw2) / 2, byy = cy - bh / 2;
+    g.fillStyle = "#FF2E88"; rr(g, bx + u * 0.9, byy + u * 0.9, bw2, bh, u * 3); g.fill(); g.fillStyle = "rgba(11,9,18,.9)"; rr(g, bx, byy, bw2, bh, u * 3); g.fill();
+    g.textAlign = "center"; g.fillStyle = "#FFF7F0"; g.font = font(900, u * 7 * k); g.fillText(tt, W / 2, byy + (by ? bh * 0.38 : bh / 2) + u * 0.3);
+    if (by) { g.font = font(700, u * 3.4); g.fillStyle = "#FFE600"; g.fillText(by, W / 2, byy + bh * 0.76); } g.textAlign = "start";
+  }
   if (o.ovKey && (I.key || I.bpm)) {
-    const txt = [I.key, I.bpm ? I.bpm + " BPM" : ""].filter(Boolean).join(" · "); g.font = font(800, u * 3.6); const tw = g.measureText(txt).width;
-    const x = u * 4, y = u * 4, h = u * 7; g.fillStyle = "rgba(11,9,18,.78)"; rr(g, x, y, tw + u * 8, h, h / 2); g.fill();
+    const L = ovLay(o, "key"), u = u0 * L.s, txt = [I.key, I.bpm ? I.bpm + " BPM" : ""].filter(Boolean).join(" · "); g.font = font(800, u * 3.6); const tw = g.measureText(txt).width;
+    const h = u * 7, x = u0 * 4, y = H * L.y - h / 2; g.fillStyle = "rgba(11,9,18,.78)"; rr(g, x, y, tw + u * 8, h, h / 2); g.fill();
     g.fillStyle = "#FFE600"; g.beginPath(); g.arc(x + u * 3.4, y + h / 2, u * 1.3, 0, 7); g.fill(); g.fillStyle = "#FFF7F0"; g.fillText(txt, x + u * 6, y + h / 2 + u * 0.2);
   }
-  const lowY = H * (H > W ? 0.66 : 0.72);
   if (o.ovChords && I.chords.length) {
-    const i = I.chords.findIndex(x => t >= x.t0 && t < x.t1);
+    const L = ovLay(o, "chords"), u = u0 * L.s, i = I.chords.findIndex(x => t >= x.t0 && t < x.t1);
     if (i >= 0) {
       const cur = I.chords[i], nx = I.chords.slice(i + 1).find(x => x.name !== cur.name);
       g.font = font(900, u * 11); const cw = g.measureText(cur.name).width; g.font = font(800, u * 4.4); const nt = nx ? "→ " + nx.name : ""; const nw = nt ? g.measureText(nt).width + u * 3 : 0;
-      const bw = cw + nw + u * 8, bh = u * 15, bx = (W - bw) / 2, by = lowY - bh / 2;
+      const bw = cw + nw + u * 8, bh = u * 15, bx = (W - bw) / 2, by = H * L.y - bh / 2;
       g.fillStyle = "rgba(255,46,136,1)"; rr(g, bx + u * 0.9, by + u * 0.9, bw, bh, u * 3); g.fill();
       g.fillStyle = "rgba(11,9,18,.9)"; rr(g, bx, by, bw, bh, u * 3); g.fill();
       g.fillStyle = "#FFE600"; g.font = font(900, u * 11); g.fillText(cur.name, bx + u * 4, by + bh / 2 + u * 0.6);
@@ -4701,16 +4942,16 @@ function drawOverlay(g, W, H, t, I, o) {
     }
   }
   if (o.ovNotes && I.notes?.length && I.voice) {
-    const shown = I.notes.filter(nn => nn.t <= t + 0.02).slice(-5), cur = shown.length && t < shown[shown.length - 1].e + 0.3 ? shown[shown.length - 1] : null;
-    const tw = Math.min(W - u * 8, u * 66), th = u * 13, tx = (W - tw) / 2, ty = o.ovChords ? lowY + u * 10 : lowY - th / 2;
+    const L = ovLay(o, "notes"), u = u0 * L.s, shown = I.notes.filter(nn => nn.t <= t + 0.02).slice(-5), cur = shown.length && t < shown[shown.length - 1].e + 0.3 ? shown[shown.length - 1] : null;
+    const tw = Math.min(W - u0 * 8, u * 66), th = u * 13, tx = (W - tw) / 2, ty = H * L.y - th / 2;
     g.fillStyle = "rgba(11,9,18,.86)"; rr(g, tx, ty, tw, th, u * 2.5); g.fill();
-    const step = tw / 5.4; shown.forEach((nn, j) => { const isCur = nn === cur, x = tx + step * (j + 0.7 + 5 - shown.length), txt = NN[nn.midi % 12] + (Math.floor(nn.midi / 12) - 1);
+    const step = tw / 5.4; shown.forEach((nn, j) => { const isCur = nn === cur, x = tx + step * (j + 0.7 + 5 - shown.length), txt = LickMusic.spellPc(nn.midi % 12, ...(I.ks || [null, false])) + (Math.floor(nn.midi / 12) - 1);
       g.font = font(900, u * (isCur ? 6 : 4.2)); g.fillStyle = isCur ? "#FFE600" : "rgba(255,247,240,.6)"; g.textAlign = "center"; g.fillText(txt, x, ty + th / 2 + u * 0.3);
       if (isCur && Math.abs(nn.cents || 0) >= 15) { g.font = font(800, u * 2.6); g.fillStyle = "#2BE7FF"; g.fillText(`${nn.cents > 0 ? "+" : ""}${nn.cents}¢`, x, ty + th - u * 1.6); } g.textAlign = "start"; });
   }
   if (o.ovNotes && I.notes?.length && !I.voice) {
-    const shown = I.notes.filter(nn => nn.t <= t + 0.02).slice(-6); const cur = shown.length && t < shown[shown.length - 1].e + 0.35 ? shown[shown.length - 1] : null;
-    const tw = Math.min(W - u * 8, u * 62), th = u * 17, tx = (W - tw) / 2, ty = (o.ovChords ? lowY + u * 10 : lowY - th / 2);
+    const L = ovLay(o, "notes"), u = u0 * L.s, shown = I.notes.filter(nn => nn.t <= t + 0.02).slice(-6); const cur = shown.length && t < shown[shown.length - 1].e + 0.35 ? shown[shown.length - 1] : null;
+    const tw = Math.min(W - u0 * 8, u * 62), th = u * 17, tx = (W - tw) / 2, ty = H * L.y - (th + u * 2) / 2;
     g.fillStyle = "rgba(11,9,18,.86)"; rr(g, tx, ty, tw, th + u * 2, u * 2.5); g.fill();
     const top = ty + u * 2.4, gap = (th - u * 2.4) / 5; g.strokeStyle = "rgba(255,247,240,.35)"; g.lineWidth = Math.max(1, u * 0.18);
     for (let k = 0; k < 6; k++) { g.beginPath(); g.moveTo(tx + u * 9, top + k * gap); g.lineTo(tx + tw - u * 3, top + k * gap); g.stroke(); }
@@ -4719,7 +4960,7 @@ function drawOverlay(g, W, H, t, I, o) {
     shown.forEach((nn, j) => { const x = tx + u * 11 + (j + 6 - shown.length) * step, y = top + (5 - nn.string) * gap, isCur = nn === cur, txt = String(nn.fret);
       g.font = font(900, u * (isCur ? 4.2 : 3.4)); const w = g.measureText(txt).width; g.fillStyle = "rgba(11,9,18,1)"; g.fillRect(x - w / 2 - u * 0.6, y - u * 2, w + u * 1.2, u * 4);
       g.fillStyle = isCur ? "#FFE600" : "rgba(255,247,240,.8)"; g.textAlign = "center"; g.fillText(txt, x, y + u * 0.2); g.textAlign = "start"; });
-    if (cur) { g.font = font(900, u * 5); g.fillStyle = "#2BE7FF"; g.textAlign = "right"; g.fillText(noteName(cur.midi), tx + tw - u * 3, ty - u * 3.5); g.textAlign = "start"; }
+    if (cur) { g.font = font(900, u * 5); g.fillStyle = "#2BE7FF"; g.textAlign = "right"; g.fillText(LickMusic.spellPc(cur.midi % 12, ...(I.ks || [null, false])) + (Math.floor(cur.midi / 12) - 1), tx + tw - u * 3, ty - u * 3.5); g.textAlign = "start"; }
   }
   g.restore();
 }
@@ -4742,12 +4983,13 @@ async function doExport(c) {
   if (o.sep && !proOK("Separate parts")) return;
   const prem = premFx(c) && S.ranges.length === 1 && !o.sep && !o.band;
   if (prem && !proOK(`Studio sound: ${fxLabel(c)}`)) return;
-  const ovs = ovOn(o) && S.ranges.length === 1 && !o.sep;
-  if (ovs && !prem && !proOK("Chords and tab on the video")) return;
+  const ovs = ovOn(o) && S.ranges.length === 1 && !o.sep, proOv = ovs && (o.ovChords || o.ovKey || o.ovNotes);
+  if (proOv && !prem && !proOK("Chords and tab on the video")) return;
   const ovFn = ovs ? (() => { const [s0, e0] = S.ranges[0], I = ovInfo(c, s0, e0); return (g, W, H, t) => drawOverlay(g, W, H, t, I, o); })() : null;
   const base = c.name.replace(/\.[^.]+$/, ""), tag = S.kind === "pick" ? `_pick${Math.round(S.len)}s` : "_clean";
   const say = t => { c.exStatus = t; const el = $("#exStatus"); if (el) el.textContent = t; };
   const multi = S.kind === "mix" || (S.kind === "pick" && (withPatches(c, S.ranges[0][0], S.ranges[0][1]).length > 1 || (c.tune && tuneOff(c))));
+  if (o.canLayers && o.layers) { if (!proOK("Layers, split screen")) return; return layerSave(c, S, o, say, ovFn); }
   if (multi) return multiSave(c, S, o, say, ovFn);
   if (o.band) return bandSave(c, o.fmt, say);
   c.exporting = true; renderExport(c); renderSrc(c);
@@ -4755,13 +4997,13 @@ async function doExport(c) {
     say("Preparing…");
     const M = await mb(); let n = 0;
     if (ASPECT[o.fmt]) {
-      const [[s0, e0]] = S.ranges, gainDb = ClipExporter.levelGain(c.raw.loud, CELL, s0, e0), mark = false, A = ASPECT[o.fmt];   // no watermark: Instagram buries Reels with other apps' logos
+      const [[s0, e0]] = S.ranges, gainDb = ClipExporter.levelGain(c.raw.loud, CELL, s0, e0), mark = !isPro(), A = ASPECT[o.fmt];   // free saves carry the LickPick signature; Pro is clean
       const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Making ${A[0]}:${A[1]}… ${Math.round(p * 100)}%`), { gainDb, watermark: mark, aspect: A, pos: o.pos, fx: fxOf(c), take: takeGain(c), overlay: ovFn });
       try { await offerFile(`${base}${tag}_${A[0]}x${A[1]}.mp4`, r.blob, say); n = 1; } catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
     } else if (S.ranges.length === 1 && !o.sep && (sndOf(c).fx || Math.abs(takeGain(c) - 1) > 0.01 || ovFn)) {
       // polish needs a re-encode of the sound; the picture keeps its framing
       const [[s0, e0]] = S.ranges;
-      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Polishing… ${Math.round(p * 100)}%`), { vertical: false, fx: fxOf(c), take: takeGain(c), overlay: ovFn });
+      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Polishing… ${Math.round(p * 100)}%`), { vertical: false, fx: fxOf(c), take: takeGain(c), overlay: ovFn, watermark: !isPro() });
       try { await offerFile(`${base}${tag}${sndOf(c).fx ? "_" + (sndOf(c).fx === "custom" ? "mysound" : sndOf(c).fx) : ""}.mp4`, r.blob, say); n = 1; } catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
     } else {
       const jobs = o.sep ? S.ranges.map((r, i) => ({ name: `${base}_part${i + 1}`, ranges: [r] })) : [{ name: base + tag, ranges: S.ranges }];
@@ -4769,11 +5011,21 @@ async function doExport(c) {
       if (n && o.sep) spendTrial();
     }
     diagLog(`export ${S.kind} ${o.fmt}${o.sep ? " parts" : ""}: ${n ? "saved " + n : "not saved"}`);
-    if (n && (prem || ovs)) spendTrial();
+    if (n && (prem || proOv)) spendTrial();
     if (n && S.kind === "pick" && (c.pickSel || 0) > 0) { const L = picksOf(c); prefer(c, L[c.pickSel], L[0], 1); }
     if (n) { if (S.kind === "pick") c.pickSaved = true; else c.saved = true; persist(c); renderCard(c); say(`${savedWhere()}${n > 1 ? ` ${n} files.` : ""}${S.kind === "clean" ? " You can delete the original from your gallery." : ""}`); }
   } catch (err) { console.warn("export failed", err); diagLog(`export ${S.kind} ${o.fmt} FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "unavailable" || err?.code === "not_granted" ? "Saving isn't available in this view." : err?.code === "no_encoder" ? "This browser can't make vertical videos. Original still works." : err?.code === "too_large_final" ? "Too big to save on this phone, even in pieces. Try a Pick." : "Couldn't cut this file. The original is untouched."); }
   c.exporting = false; renderExport(c); renderStudio(); renderBoxes();
+}
+// the original playing as separate files, next to a mix or a band version
+async function saveOriginals(c, S, o, say) {
+  const M = await mb(), A = ASPECT[o.fmt] || null, rs = S.kind === "mix" ? S.segs.map(g => [g.s, g.e]) : S.ranges, base = c.name.replace(/\.[^.]+$/, ""); let n = 0;
+  for (let i = 0; i < rs.length; i++) {
+    const [a, b] = rs[i], nm = `${base}_${rs.length > 1 ? `part${i + 1}` : "original"}${A ? `_${A[0]}x${A[1]}` : ""}.mp4`;
+    const r = await ClipExporter.exportShort(M, c.file, [a, b], p => say(`Original ${i + 1} of ${rs.length}… ${Math.round(p * 100)}%`), { vertical: !!A, aspect: A, pos: o.pos ?? 0.5, fx: fxOf(c), take: takeGain(c), watermark: !isPro() });
+    try { await offerFile(nm, r.blob, say); n++; } catch (err) { if (err?.code !== "declined") throw err; }
+  }
+  return n;
 }
 // a Mix, a patched Pick or a tuned Pick: built part by part, blended on the beat
 async function multiSave(c, S, o, say, ovFn) {
@@ -4790,10 +5042,11 @@ async function multiSave(c, S, o, say, ovFn) {
       else { newBand(c); for (const g of segs) { const An = LickMusic.analyze(c.raw, g.s, g.e), r = await LickBand.render(c.raw, g.s, g.e, { style: bandStyleOf(c, An), set: bandSet(c, An), parts: { drums: !!An?.pulse, bass: true, keys: true, extra: true }, analysis: An, harmony: An ? chordsFor(c, g.s, g.e, An) : null }); g.mix = bandMix(c, r); } }
     }
     const tune = c.tune ? -tuneOff(c) : 0, gainDb = ClipExporter.levelGain(c.raw.loud, CELL, segs[0].s, segs[segs.length - 1].e);
-    const overlay = ovFn && S.kind === "pick" ? (g, W, H, srcT, outT) => ovFn(g, W, H, s0 + outT) : null;
-    const r = await ClipExporter.exportMulti(M, c.file, segs, p => say(`${S.kind === "mix" ? "Mixing" : "Fixing"}… ${Math.round(p * 100)}%`), { xfade: XF, gainDb, aspect: A, pos: o.pos, fx: fxOf(c), take: takeGain(c), overlay, tuneCents: tune, bed });
+    const titleOnly = o.ovTitle && (o.title || "").trim() ? (g, W, H) => drawOverlay(g, W, H, 0, { chords: [], notes: [] }, { ovTitle: true, title: o.title, titleBy: o.titleBy, lay: o.lay }) : null;
+    const overlay = ovFn && S.kind === "pick" ? (g, W, H, srcT, outT) => ovFn(g, W, H, s0 + outT) : titleOnly;
+    const r = await ClipExporter.exportMulti(M, c.file, segs, p => say(`${S.kind === "mix" ? "Mixing" : "Fixing"}… ${Math.round(p * 100)}%`), { xfade: XF, gainDb, aspect: A, pos: o.pos, fx: fxOf(c), take: takeGain(c), overlay, tuneCents: tune, bed, watermark: !isPro() });
     const base = c.name.replace(/\.[^.]+$/, ""), name = `${base}${S.kind === "mix" ? `_mix${segs.length}` : `_pick${Math.round(S.len)}s_fixed`}${o.band ? "_band" : ""}${A ? `_${A[0]}x${A[1]}` : ""}.mp4`;
-    try { await offerFile(name, r.blob, say); spendTrial(); diagLog(`export ${S.kind} multi: saved`); say(`${savedWhere()}${S.kind === "mix" ? ` ${segs.length} parts, blended on the beat.` : ""}${tune ? ` Tuned to A440.` : ""}`); if (S.kind === "pick") c.pickSaved = true; persist(c); }
+    try { await offerFile(name, r.blob, say); spendTrial(); diagLog(`export ${S.kind} multi: saved`); const extra = o.alsoParts ? await saveOriginals(c, S, o, say) : 0; say(`${savedWhere()}${S.kind === "mix" ? ` ${segs.length} parts, blended on the beat.` : ""}${tune ? ` Tuned to A440.` : ""}${extra ? ` Plus ${extra} original file${extra > 1 ? "s" : ""}.` : ""}`); if (S.kind === "pick") c.pickSaved = true; persist(c); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
   } catch (err) { console.warn("multi export failed", err); diagLog(`export ${S.kind} multi FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "no_encoder" ? "This browser can't make videos. Open LickPick in Chrome." : "Couldn't make the video. The original is untouched."); }
   c.exporting = false; renderExport(c); renderStudio(); renderBoxes();
@@ -4941,6 +5194,10 @@ function bandA(c) {
 }
 // ---------- Sound: studio sound + mixer (your take, drums, bass, keys). Hear it all free; the band export is Pro.
 const INSTS = [["drums", "i-drum", "Drums"], ["bass", "i-bass", "Bass"], ["keys", "i-keys", "Keys"], ["extra", "i-note", "Extra"]];
+// keys and chords spelled the way musicians write them (Bb major, Eb, F#m in A major…)
+const keyCtx = c => [c?.raw?.info?.keyRoot ?? null, c?.raw?.info?.keyMode === "min"];
+const keyText = c => c?.raw?.info?.keyRoot != null ? LickMusic.keyLabel(c.raw.info.keyRoot, c.raw.info.keyMode === "min") : (c?.raw?.info?.key && c.raw.info.key !== "no clear key" ? c.raw.info.key : "");
+const sp = (c, name) => LickMusic.spellChord(name, ...keyCtx(c));
 // ---------- chords the band plays: what LickPick heard, or chords made from your melody (singers), and your edits
 const isSinger = c => (profile.plays || []).includes("vocals") || (c.band?.heard?.p?.vocals ?? 0) >= 0.35;
 const chOf = c => { const b = newBand(c); return b.ch || (b.ch = { src: null, edits: { at: {}, byName: {} }, selT: null, scope: "one" }); };
@@ -4981,18 +5238,18 @@ function chordsCard(c, A) {
   const melOK = mel?.H?.length, sel = ch.selT != null ? H.find(h => Math.abs(h.t0 - ch.selT) < 0.02) : null;
   const baseSel = sel ? base.find(h => Math.abs(h.t0 - sel.t0) < 0.02) || sel : null;
   const cur0 = sel ? LickMusic.parseChord(sel.name) || LickMusic.chord(sel.root, "5") : null;
-  const strip = H.map(h => `<button type="button" class="chchip${h.edited ? " ed" : ""}${sel === h ? " on" : ""}" data-chsel="${h.t0}" aria-pressed="${sel === h}"><b>${esc(h.name)}</b><em>${fmtP(h.t0)}</em></button>`).join("");
+  const strip = H.map(h => `<button type="button" class="chchip${h.edited ? " ed" : ""}${sel === h ? " on" : ""}" data-chsel="${h.t0}" aria-pressed="${sel === h}"><b>${esc(sp(c, h.name))}</b><em>${fmtP(h.t0)}</em></button>`).join("");
   return `<div class="chords"><div class="chhead">${icon("i-note")}<b>Chords the band plays</b>${hasChEdits(c) ? `<button type="button" class="linkbtn" data-act="ch-reset">Reset</button>` : ""}</div>
     <span class="seg bseg chsrc" role="group" aria-label="Chords from"><button type="button" data-chsrc="heard" aria-pressed="${ch.src !== "melody"}">What it heard</button><button type="button" data-chsrc="melody" aria-pressed="${ch.src === "melody"}" ${melOK ? "" : "disabled"}>${mel?.busy ? "Listening…" : "From your melody"}</button></span>
     <p class="hint">${ch.src === "melody" ? `Made from the notes you ${isSinger(c) ? "sang" : "played"}: a chord per bar that fits your melody. Change any of them.` : melOK && mel.mono >= 0.55 ? "Singing or a single-note line? Try From your melody: chords built to fit your tune." : "Tap a chord to change it. The band and the on-screen chords follow."}</p>
     <div class="chstrip" role="group" aria-label="Chords">${strip}</div>
     ${sel ? `<div class="ched">
-      <div class="chedtop"><span class="chbig">${esc(sel.name)}</span>${sel.edited ? `<span class="was">was ${esc(sel.was)}</span>` : ""}<button type="button" class="linkbtn" data-act="ch-close">Done</button></div>
-      <span class="seg bseg" role="group" aria-label="Change">${[["one", "Just this one"], ["all", `Every ${esc(baseSel?.name || sel.name)}`]].map(([k, l]) => `<button type="button" data-chscope="${k}" aria-pressed="${(ch.scope || "one") === k}">${l}</button>`).join("")}</span>
+      <div class="chedtop"><span class="chbig">${esc(sp(c, sel.name))}</span>${sel.edited ? `<span class="was">was ${esc(sp(c, sel.was))}</span>` : ""}<button type="button" class="linkbtn" data-act="ch-close">Done</button></div>
+      <span class="seg bseg" role="group" aria-label="Change">${[["one", "Just this one"], ["all", `Every ${esc(sp(c, baseSel?.name || sel.name))}`]].map(([k, l]) => `<button type="button" data-chscope="${k}" aria-pressed="${(ch.scope || "one") === k}">${l}</button>`).join("")}</span>
       <h5>Major, minor and more</h5><div class="chq">${QL.map(([q, l]) => `<button type="button" data-chq="${q}" aria-pressed="${cur0?.q === q}">${l}</button>`).join("")}</div>
-      <h5>Root</h5><div class="chroot">${LickMusic.NOTES.map((n, i) => `<button type="button" data-chroot="${i}" aria-pressed="${cur0?.root === i}">${n}</button>`).join("")}</div>
-      ${keyRoot != null && cur0 ? `<h5>Try instead</h5><div class="chsug">${LickMusic.alternatives(cur0, keyRoot, minor).map(a => `<button type="button" data-chset="${esc(a.name)}"><b>${esc(a.name)}</b><em>${esc(ch.src === "melody" && !["major", "minor", "richer"].includes(a.rn) ? "fits the key" : a.rn)}</em></button>`).join("")}</div>` : ""}
-      ${sel.edited ? `<button type="button" class="btn sm ghost" data-act="ch-undo">${icon("i-undo")}Back to ${esc(sel.was)}</button>` : ""}
+      <h5>Root</h5><div class="chroot">${LickMusic.NOTES.map((n, i) => `<button type="button" data-chroot="${i}" aria-pressed="${cur0?.root === i}">${LickMusic.spellPc(i, ...keyCtx(c))}</button>`).join("")}</div>
+      ${keyRoot != null && cur0 ? `<h5>Try instead</h5><div class="chsug">${LickMusic.alternatives(cur0, keyRoot, minor).map(a => `<button type="button" data-chset="${esc(a.name)}"><b>${esc(sp(c, a.name))}</b><em>${esc(ch.src === "melody" && !["major", "minor", "richer"].includes(a.rn) ? "fits the key" : a.rn)}</em></button>`).join("")}</div>` : ""}
+      ${sel.edited ? `<button type="button" class="btn sm ghost" data-act="ch-undo">${icon("i-undo")}Back to ${esc(sp(c, sel.was))}</button>` : ""}
     </div>` : ""}
     <div class="row-btns chbtns"><button type="button" class="btn sm ghost" data-act="ch-rich">${icon("i-bolt")}Richer (7ths)</button><button type="button" class="btn sm ghost" data-act="ch-simple">Simpler</button></div>
   </div>`;
@@ -5137,19 +5394,23 @@ function bandPanel(c) {
       <input type="range" min="0" max="1.5" step="0.05" value="${val}" data-mx="${k}" aria-label="${l} level" ${dis || !on ? "disabled" : ""}></div>`;
   const aiOff = k => b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k];
   return `${pickRef(c, w)}
-    <div class="sndcard"><div class="sndhead"><h3>${icon("i-bolt")}Studio sound</h3></div>
+    <div class="btransport" role="group" aria-label="Playback">
+      <button class="btn bt-play" type="button" data-act="band-play" aria-label="${bandPlaying ? "Stop" : "Play with the band"}">${icon(bandPlaying ? "i-stop" : "i-play")}</button>
+      <span class="bt-mid"><b>${bandPlaying ? "Playing with the band" : "Play with the band"}</b><em id="btTime">${esc(c.bandStatus || `Pick ${"ABC"[c.pickSel || 0]} · ${fmt(w.e - w.s)} · ${esc(LickBand.STYLES[bandStyleOf(c, A)]?.name || "")}`)}</em><i class="bt-prog"><u id="btProg"></u></i></span>
+      <button class="btn sm ghost" type="button" data-act="band-save" ${c.exporting || !downloads ? "disabled" : ""}>${icon("i-save")}Save${proTag()}</button>
+    </div>
+    <details class="sndcard sndfold"${n.fx === "custom" || document.querySelector(".sndfold")?.open ? " open" : ""}><summary class="sndhead"><h3>${icon("i-bolt")}Studio sound</h3><span class="foldv">${esc(fxLabel(c) || "Off")}</span></summary>
       <span class="seg wide fxseg">${[["", "Off"], ...Object.entries(LickFX.PRESETS).map(([k, v]) => [k, v.name]), ["custom", "My sound"]].map(([k, l]) => `<button type="button" data-fx="${k}" aria-pressed="${(n.fx || "") === k}">${l}${k && k !== "clean" && !isPro() ? `<i class="fxpro">PRO</i>` : ""}</button>`).join("")}</span>
       <p class="hint">${n.fx === "custom" ? "Your own EQ, compressor and room, below. " : n.fx ? "EQ, compression and a touch of room on your take. " : "One tap makes a phone recording sound like a studio take. "}${isPro() ? "" : "Clean saves free. Hear everything free, save Warm, Bright, Live room and My sound with Pro."}</p>
-      ${n.fx === "custom" ? "" : `<button class="btn ghost wide" type="button" data-act="eq-open">${icon("i-sliders")}Pro EQ: tune it yourself${proTag()}</button>`}</div>
+      ${n.fx === "custom" ? "" : `<button class="btn ghost wide" type="button" data-act="eq-open">${icon("i-sliders")}Pro EQ: tune it yourself${proTag()}</button>`}</details>
     ${n.fx === "custom" ? eqPanel(c) : ""}
     <div class="sndcard"><div class="sndhead"><h3>${icon("i-sliders")}Mixer</h3></div>
       ${strip("take", "i-mic", "You", n.takeOn, n.take, false)}
       ${INSTS.map(([k, ic, l]) => strip(k, ic, k === "extra" ? EXTRA_NAME[set.extra] : l, !!b.parts[k] && !aiOff(k) && !(k === "extra" && set.extra === "none"), b.lv[k] ?? 1, (k === "drums" && A && !A.pulse) || (k === "extra" && set.extra === "none"))).join("")}
-      <div class="row-btns"><button class="btn ghost cy" type="button" data-act="band-play">${icon(bandPlaying ? "i-stop" : "i-play")}${bandPlaying ? "Stop" : "Preview"}</button>
-        <button class="btn ghost" type="button" data-act="band-save" ${c.exporting || !downloads ? "disabled" : ""}>${icon("i-save")}With band${proTag()}</button></div>
       <div class="status" id="bandStatus" aria-live="polite">${esc(c.bandStatus || "")}</div></div>
+    ${layersCard(c)}
     <div class="sndcard"><div class="sndhead"><h3>${icon("i-drum")}Your band</h3>${store.get(MYBAND_KEY) ? `<span class="mybadge">${icon("i-star")}My band</span>` : ""}</div>
-    <div class="band-facts"><span class="fact">Tempo <b>${A?.pulse ? A.bpm + " BPM" : "free time"}</b></span><span class="fact">Feel <b>${A?.pulse ? (A.swing > 0.58 ? "swung" : "straight") : "rubato"}${A?.meter === 3 ? ", 3/4" : ""}</b></span><span class="fact">Key <b>${esc(c.raw.info?.key || "?")}</b></span></div>
+    <div class="band-facts"><span class="fact">Tempo <b>${A?.pulse ? A.bpm + " BPM" : "free time"}</b></span><span class="fact">Feel <b>${A?.pulse ? (A.swing > 0.58 ? "swung" : "straight") : "rubato"}${A?.meter === 3 ? ", 3/4" : ""}</b></span><span class="fact">Key <b>${esc(keyText(c) || "?")}</b></span></div>
     ${chordsCard(c, A)}
     <div class="heard"><div class="heardh">${icon("i-ear")}<b>Already playing</b><span>${b.heard?.busy ? "Listening…" : b.heard?.p ? "Tap to correct" : ""}</span></div>
       <div class="heardchips" role="group" aria-label="Instruments already in your take">${HEARD.filter(([k]) => k !== "vocals" || b.heard?.deep).map(([k, l]) => `<button type="button" data-heard="${k}" aria-pressed="${heardOn(c, k)}">${l}</button>`).join("")}</div>
@@ -5162,6 +5423,93 @@ function bandPanel(c) {
     <div class="row-btns mybtns"><button class="btn ghost sm" type="button" data-act="band-my-save">${icon("i-star")}Save as My band</button>${b.set && Object.keys(b.set).length ? `<button class="btn ghost sm" type="button" data-act="band-reset">${icon("i-undo")}Style defaults</button>` : ""}</div>
     </div>`;
 }
+// ---------- Layers: more takes of you (rhythm, then lead, then bass), lined up on your beat and chords, side by side
+const LAYER_MAX = 3;
+const layerClip = L => state.clips.find(x => x.key === L.key);
+function layersOf(c) { return (c.layers || []).filter(L => layerClip(L)); }
+function layersOn(c) { return layersOf(c).filter(L => L.on !== false); }
+function layerCands(c) { return state.clips.filter(x => x !== c && !x.example && x.status === "done" && x.raw?.chromaQ && x.raw?.onsetF && !(c.layers || []).some(L => L.key === x.key)); }
+function layerWk(c) { const w = bandWindow(c); return w ? `${w.s.toFixed(2)}|${w.e.toFixed(2)}` : ""; }
+function layerBeat(c) { const A = bandA(c); return A?.bpm ? 60 / A.bpm : 0.5; }
+function layerFit(c, L, x) {
+  const w = bandWindow(c); if (!w || !x?.raw) return false;
+  let r = null; try { r = LickMusic.alignLayer(c.raw, w.s, w.e, x.raw); } catch (err) { console.warn("align", err); }
+  if (!r) return false;
+  Object.assign(L, { lStart: +r.best.lStart.toFixed(3), q: { chords: r.best.chords, rhythm: r.best.rhythm }, alts: r.alts.map(a => +a.lStart.toFixed(3)), alt: 0, base: undefined, wk: layerWk(c), nudged: 0 });
+  return true;
+}
+function addLayer(c, key) {
+  const x = state.clips.find(y => y.key === key); if (!x) return;
+  c.layers = c.layers || [];
+  if (layersOf(c).length >= LAYER_MAX) { toast(`Up to ${LAYER_MAX} layers.`); return; }
+  const L = { key, gain: 1, on: true };
+  if (!layerFit(c, L, x)) { toast(`Couldn't find where ${x.name} lines up. Is it the same song?`); return; }
+  c.layers.push(L); c.layerAdd = false; persist(c); stopBand(); renderStudio();
+}
+// how sure the line-up is, in plain words (rhythm = how well the attacks match, measured, not guessed)
+function layerQ(L) {
+  const r = L.q?.rhythm ?? 0;
+  if (L.nudged) return "Moved by you";
+  return r >= 0.4 ? "Locked on your beat" : r >= 0.25 ? "Lined up. Listen, nudge a beat if it's off" : "Loose match. Try another spot or nudge";
+}
+function tempoClash(c, x) {
+  const a = c.raw?.info?.tempo, b = x?.raw?.info?.tempo; if (!a || !b) return 0;
+  const r = Math.min(...[b / a, b * 2 / a, b / 2 / a].map(v => Math.abs(v - 1)));
+  return r > 0.04 ? Math.round(r * 100) : 0;
+}
+const layURL = new Map();
+function layerSrc(x) { const b = x.file || x.vproxy; if (!b) return ""; if (!layURL.has(x.key)) layURL.set(x.key, URL.createObjectURL(b)); return layURL.get(x.key); }
+function layersCard(c) {
+  const Ls = layersOf(c), cands = layerCands(c), main = !!c.raw?.onsetF;
+  for (const L of Ls) if (L.wk !== layerWk(c)) layerFit(c, L, layerClip(L));
+  const off = L => { const v = L.lStart; return `starts at ${fmt(Math.max(0, v))}${v < 0 ? ` (joins ${(-v).toFixed(1)}s in)` : ""}`; };
+  return `<div class="sndcard layers"><div class="sndhead"><h3>${icon("i-stack")}Layers</h3><span class="foldv">${Ls.length ? `${Ls.length + 1} videos` : "Play along with yourself"}</span></div>
+    ${Ls.length ? "" : `<p class="hint">Recorded the same song more than once? Rhythm, then a lead, then bass. Add those takes here: LickPick lines them up on your beat and chords and puts you side by side.</p>`}
+    ${Ls.map((L, i) => { const x = layerClip(L), tc = tempoClash(c, x), src = layerSrc(x); return `<div class="lyrow${L.on === false ? " muted" : ""}">
+      ${src && !x.audioOnly ? `<video class="laycam" data-laycam="${i}" muted playsinline preload="metadata" src="${src}#t=${Math.max(0, L.lStart).toFixed(2)}"></video>` : `<span class="laycam none">${icon("i-mic")}</span>`}
+      <div class="laymain"><b>${esc(x.name)}</b><em>${esc(layerQ(L))} · ${off(L)}</em>
+        ${tc ? `<p class="hint warn">Tempo is ${tc}% different from this take, so it will drift apart. Best with takes at the same tempo.</p>` : ""}
+        <div class="laynudge" role="group" aria-label="Move ${esc(x.name)}"><button type="button" data-lnudge="${i}:-b">−1 beat</button><button type="button" data-lnudge="${i}:-0.01">−10ms</button><button type="button" data-lnudge="${i}:0.01">+10ms</button><button type="button" data-lnudge="${i}:b">+1 beat</button>${L.alts?.length ? `<button type="button" data-lalt="${i}">Another spot</button>` : ""}</div>
+        <div class="mxrow"><button type="button" class="mute" data-lmute="${i}" aria-pressed="${L.on === false}" aria-label="${L.on === false ? "Unmute" : "Mute"} layer">${L.on === false ? "Off" : "On"}</button>
+          <input type="range" min="0" max="1.5" step="0.05" value="${L.gain ?? 1}" data-lgain="${i}" aria-label="${esc(x.name)} level" ${L.on === false ? "disabled" : ""}>
+          <button type="button" class="mute" data-ldel="${i}" aria-label="Remove layer">${icon("i-x")}</button></div></div></div>`; }).join("")}
+    ${!main ? `<p class="hint">This clip was scanned by an older LickPick. Remove it and add it again to use layers.</p>`
+      : c.layerAdd ? (cands.length ? `<div class="laypick" role="group" aria-label="Pick a take to layer">${cands.map(x => `<button type="button" class="opt" data-ladd="${esc(x.key)}">${icon("i-film")}<span class="grow"><strong>${esc(x.name)}</strong><em>${fmt(x.raw.duration)}${x.raw.info?.tempo ? ` · ${x.raw.info.tempo} BPM` : ""}${tempoClash(c, x) ? " · different tempo" : ""}</em></span></button>`).join("")}</div>
+          <button class="btn ghost sm" type="button" data-act="layer-cancel">Cancel</button>`
+        : `<p class="hint">Add the other takes to LickPick first (they scan like any jam), then come back here.</p><div class="row-btns"><button class="btn ghost sm" type="button" data-act="gallery">${icon("i-plus")}Add videos</button><button class="btn ghost sm" type="button" data-act="layer-cancel">Cancel</button></div>`)
+      : Ls.length < LAYER_MAX ? `<button class="btn ghost wide" type="button" data-act="layer-add">${icon("i-plus")}Add a layer</button>` : ""}
+  </div>`;
+}
+// sound for a layer: its own decode, cached apart from the main take's
+const layAudio = new Map();
+function layerAudio(x, s, e) {
+  const s0 = Math.max(0, s), k = `${x.key}|${s0.toFixed(3)}|${e.toFixed(3)}`;
+  if (!layAudio.has(k)) { if (layAudio.size > 6) layAudio.delete(layAudio.keys().next().value); const p = decodeWin(x, s0, e).then(b => ({ b, lead: s0 - s })); p.catch(() => layAudio.delete(k)); layAudio.set(k, p); }
+  return layAudio.get(k);
+}
+function layerCams(c, el) {
+  const Ls = layersOf(c);
+  document.querySelectorAll(".laycam[data-laycam]").forEach(v => { const L = Ls[+v.dataset.laycam]; if (!L) return;
+    if (el == null) { v.pause(); return; }
+    const t = L.lStart + el; if (t < 0 || L.on === false) { if (!v.paused) v.pause(); return; }
+    if (Math.abs(v.currentTime - t) > 0.15) { try { v.currentTime = t; } catch { } } if (v.paused) v.play().catch(() => { }); });
+}
+async function layerSave(c, S, o, say, ovFn) {
+  const [s0, e0] = S.ranges[0], w = bandWindow(c), Ls = layersOn(c);
+  const gone = Ls.find(L => !layerClip(L)?.file); if (gone) { say(`Re-add ${layerClip(gone)?.name || "the layer video"} from your gallery to save the layers.`); return; }
+  stopBand(); c.exporting = true; renderExport(c); renderStudio();
+  try {
+    let bed = null;
+    if (o.band) { say("Building the band…"); const r = await bandRender(c); if (Math.abs(r.w.s - s0) < 0.05) bed = bandMix(c, r); }
+    const M = await mb(), A = ASPECT[o.fmt] || null, sh = w ? s0 - w.s : 0;
+    const items = [{ file: c.file, s: s0, gain: takeGain(c) }, ...Ls.map(L => ({ file: layerClip(L).file, s: L.lStart + sh, gain: L.gain ?? 1 }))];
+    const r = await ClipExporter.exportLayers(M, items, e0 - s0, p => say(`Layering ${items.length} videos… ${Math.round(p * 100)}%`), { aspect: A, bed, watermark: !isPro(), overlay: ovFn, fx: fxOf(c), gainDb: A ? ClipExporter.levelGain(c.raw.loud, CELL, s0, e0) : 0 });
+    const name = `${c.name.replace(/\.[^.]+$/, "")}_layers${items.length}${bed ? "_band" : ""}${A ? `_${A[0]}x${A[1]}` : ""}.mp4`;
+    try { await offerFile(name, r.blob, say); spendTrial(); diagLog(`export layers ${items.length}: saved`); const extra = o.alsoParts ? await saveOriginals(c, S, o, say) : 0; c.pickSaved = true; persist(c); say(`${savedWhere()} ${items.length} videos side by side${bed ? " with the band" : ""}.${extra ? " Plus your original take." : ""}`); }
+    catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
+  } catch (err) { console.warn("layers export failed", err); diagLog(`export layers FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "no_encoder" || err?.code === "no_audio_encoder" ? "This browser can't make videos. Open LickPick in Chrome." : "Couldn't make the layered video. Your originals are untouched."); }
+  c.exporting = false; renderExport(c); renderStudio();
+}
 function heardText(c) {
   const b = c.band; if (!b.heard?.p) return "LickPick listens for drums, bass and other instruments so the band doesn't double them.";
   const on = HEARD.filter(([k]) => heardOn(c, k)).map(x => x[1].toLowerCase()), off = [];
@@ -5169,11 +5517,12 @@ function heardText(c) {
   return (on.length ? `Heard ${on.join(", ")}.` : "Sounds like just you.") + (off.length ? ` The band leaves out ${off.join(" and ")}.` : " The full band plays.") + (b.heard.deep ? "" : b.heard.busy ? "" : " (Quick listen: drums and bass only.)");
 }
 // the band's knobs: the four that change the feel most, then sounds
-const BOPT_LABEL = { groove: "Groove", feel: "Feel", fills: "Fills", kit: "Drum kit", bass: "Bass sound", line: "Bass line", keys: "Keys sound", play: "Keys play", extra: "Extra", room: "Room" };
+const BOPT_LABEL = { tempo: "Beat", groove: "Groove", feel: "Feel", fills: "Fills", kit: "Drum kit", bass: "Bass sound", line: "Bass line", keys: "Keys sound", play: "Keys play", extra: "Extra", room: "Room" };
 function bandOpts(c, set, A) {
   const b = c.band, O = LickBand.OPTS;
-  const row = k => `<div class="bopt"><span class="boptl">${BOPT_LABEL[k]}</span><span class="seg bseg" role="group" aria-label="${BOPT_LABEL[k]}">${O[k].map(([v, l]) => { const eff = k === "line" || k === "play" ? (b.set[k] || "auto") === v || (!b.set[k] && v === "auto") : set[k] === v; return `<button type="button" data-bset="${k}:${v}" aria-pressed="${eff}"${(k === "feel" || k === "groove" || k === "fills") && A && !A.pulse ? " disabled" : ""}>${l}</button>`; }).join("")}</span></div>`;
-  return `<h4 class="bandh">Shape it</h4><div class="bopts">${["groove", "feel", "kit", "extra"].map(row).join("")}</div>
+  const row = k => `<div class="bopt"><span class="boptl">${BOPT_LABEL[k]}</span><span class="seg bseg" role="group" aria-label="${BOPT_LABEL[k]}">${O[k].map(([v, l]) => { const eff = k === "line" || k === "play" ? (b.set[k] || "auto") === v || (!b.set[k] && v === "auto") : set[k] === v; return `<button type="button" data-bset="${k}:${v}" aria-pressed="${eff}"${(k === "feel" || k === "groove" || k === "fills" || k === "tempo") && A && !A.pulse ? " disabled" : ""}>${l}</button>`; }).join("")}</span></div>`;
+  return `<h4 class="bandh">Shape it</h4><div class="bopts">${["tempo", "groove", "feel", "kit", "extra"].map(row).join("")}</div>
+    <p class="hint">${set.tempo === "follow" ? "Follow me: the band copies every push and pull of your timing. Best for free, rubato playing." : "Steady: one clean tempo fitted to your playing, so the band never hiccups. It still follows a song that really speeds up."}</p>
     <details class="bmore"${b.moreOpen || document.querySelector(".bmore")?.open ? " open" : ""}><summary>${icon("i-sliders")}Sounds, fills and room</summary><div class="bopts">${["bass", "line", "keys", "play", "fills", "room"].map(row).join("")}</div></details>`;
 }
 // the Pro EQ editor: curve with draggable bands over a live spectrum, band controls, dynamics, output meter
@@ -5309,8 +5658,14 @@ function ensureCtx() { try { audioCtx = audioCtx || new (window.AudioContext || 
 function windowAudio(c, s, e) {
   const key = `${c.key}|${s}|${e}`;
   if (winAudio.key === key && winAudio.p) return winAudio.p;
+  const p = decodeWin(c, s, e);
+  p.catch(() => { if (winAudio.p === p) { winAudio.key = ""; winAudio.p = null; } });
+  winAudio.key = key; winAudio.p = p;
+  return p;
+}
+function decodeWin(c, s, e) {
   const ctx = ensureCtx();
-  const p = (async () => {
+  return (async () => {
     try {
       if (streamBroken || !c.file) throw new Error("stream");
       const M = await mb(), input = new M.Input({ source: new M.BlobSource(c.file), formats: M.ALL_FORMATS });
@@ -5336,16 +5691,13 @@ function windowAudio(c, s, e) {
       return b;
     }
   })();
-  p.catch(() => { if (winAudio.p === p) { winAudio.key = ""; winAudio.p = null; } });
-  winAudio.key = key; winAudio.p = p;
-  return p;
 }
 function bandPrefetch(c) {
   if (!c?.file || !c.band || !bandWindow(c) || !c.raw.chromaQ) return;
   setTimeout(() => { if (cur() === c && state.tab === "band") { bandRender(c).catch(() => { }); const w = bandWindow(c); windowAudio(c, w.s, w.e).catch(() => { }); } }, 80);
 }
 function stopBand() {
-  for (const n of bandNodes) { try { n.stop(); } catch { } } bandNodes = []; clearInterval(bandSync); bandSync = 0; bandChain = null;
+  for (const n of bandNodes) { try { n.stop(); } catch { } } bandNodes = []; try { layerCams(cur() || {}, null); } catch { } clearInterval(bandSync); bandSync = 0; bandChain = null;
   if (video) { video.muted = false; }
   if (player && player.ext) { player.ext = null; player.onToggle = null; player.pause(); }
   if (bandPlaying) { bandPlaying = false; stopAt = null; video?.pause(); }
@@ -5353,11 +5705,12 @@ function stopBand() {
 function bandPreview(c) {
   if (!c.file && !c.proxy) { toast("Re-add this video first."); return; }
   if (bandPlaying) { stopBand(); renderStudio(); return; }
-  const say = t => { c.bandStatus = t; const el = $("#bandStatus"); if (el) el.textContent = t; };
+  const say = t => { c.bandStatus = t; const el = $("#bandStatus"); if (el) el.textContent = t; const b2 = $("#btTime"); if (b2 && t) b2.textContent = t; };
   const ctx = ensureCtx(); try { if (ctx.state === "suspended") ctx.resume(); } catch { }   // inside the tap
   const w = bandWindow(c), token = {}; bandPreview.token = token; bandPlaying = true; renderStudio();
   if (!bandCache.res || bandCache.key !== bandKey(c).key || winAudio.key !== `${c.key}|${w.s}|${w.e}`) say("Lining up the band…");
-  Promise.all([bandRender(c), windowAudio(c, w.s, w.e)]).then(async ([r, orig]) => {
+  const Ls = layersOn(c);
+  Promise.all([bandRender(c), windowAudio(c, w.s, w.e), Promise.all(Ls.map(L => layerAudio(layerClip(L), L.lStart, L.lStart + (w.e - w.s)).catch(() => null)))]).then(async ([r, orig, lays]) => {
     if (!bandPlaying || bandPreview.token !== token) return;
     if (ctx.state === "suspended") await ctx.resume().catch(() => { });
     say("");
@@ -5367,14 +5720,16 @@ function bandPreview(c) {
     mixNodes = { take: og }; const srcs = [a];
     if (r.stems) for (const [k] of INSTS) { const g = ctx.createGain(); g.gain.value = stemGain(c, k); g.connect(outN); const sN = ctx.createBufferSource(); sN.buffer = r.stems[k]; sN.connect(g); srcs.push(sN); mixNodes[k] = g; }
     else { bandGainNode = ctx.createGain(); bandGainNode.gain.value = c.band.gain; bandGainNode.connect(outN); const bnd = ctx.createBufferSource(); bnd.buffer = r.buffer; bnd.connect(bandGainNode); srcs.push(bnd); }
-    const t0 = ctx.currentTime + 0.15; for (const x of srcs) x.start(t0); bandNodes = srcs;
+    const t0 = ctx.currentTime + 0.15; for (const x of srcs) x.start(t0);
+    lays.forEach((la, i) => { if (!la) return; const g = ctx.createGain(); g.gain.value = Ls[i].gain ?? 1; g.connect(outN); const sN = ctx.createBufferSource(); sN.buffer = la.b; sN.connect(g); sN.start(t0 + la.lead); srcs.push(sN); mixNodes["L" + (c.layers.indexOf(Ls[i]))] = g; });
+    bandNodes = srcs;
     a.onended = () => { if (bandPreview.token === token && bandPlaying) { stopBand(); renderStudio(); } };
     // the picture follows the sound: one clock, the audio's
     if (player) { player.set([[w.s, w.e]], "Pick + band", fmt(w.e - w.s)); player.ext = () => Math.max(0, Math.min(w.e - w.s, ctx.currentTime - t0)); player.onToggle = () => { stopBand(); renderStudio(); }; player.loopTick(); }
     if (video && !c.audioOnly) {
       queue = []; stopAt = null; video.muted = true;
       try { video.currentTime = w.s; } catch { } video.play().catch(() => { });
-      bandSync = setInterval(() => { if (!bandPlaying) return; const target = w.s + Math.max(0, ctx.currentTime - t0); if (Math.abs(video.currentTime - target) > 0.12) { try { video.currentTime = target; } catch { } } }, 300);
+      bandSync = setInterval(() => { if (!bandPlaying) return; const target = w.s + Math.max(0, ctx.currentTime - t0); { const el = $("#btTime"), pr = $("#btProg"), el2 = Math.max(0, ctx.currentTime - t0); if (el) el.textContent = `${fmt(el2)} / ${fmt(w.e - w.s)}`; if (pr) pr.style.width = Math.min(100, el2 / (w.e - w.s) * 100) + "%"; layerCams(c, el2); } if (Math.abs(video.currentTime - target) > 0.12) { try { video.currentTime = target; } catch { } } }, 300);
     }
   }).catch(err => { console.warn("band preview failed", err); diagLog("band preview failed: " + String(err?.message || err).slice(0, 80)); if (bandPreview.token === token) { stopBand(); say("Couldn't play the band on this phone."); renderStudio(); } });
 }
@@ -5398,9 +5753,9 @@ async function bandSave(c, shape, say0) {
     const r = await bandRender(c), M = await mb();
     const gainDb = vertical ? ClipExporter.levelGain(c.raw.loud, CELL, r.w.s, r.w.e) : 0;
     const mix = bandMix(c, r);
-    const out = await ClipExporter.exportShort(M, c.file, [r.w.s, r.w.e], p => say(`Mixing… ${Math.round(p * 100)}%`), { gainDb, mix, aspect: A, pos: o0.pos ?? 0.5, fx: fxOf(c), take: takeGain(c), overlay: ovOn(o0) ? (() => { const I = ovInfo(c, r.w.s, r.w.e); return (g, W, H, t) => drawOverlay(g, W, H, t, I, o0); })() : null });
+    const out = await ClipExporter.exportShort(M, c.file, [r.w.s, r.w.e], p => say(`Mixing… ${Math.round(p * 100)}%`), { gainDb, mix, aspect: A, pos: o0.pos ?? 0.5, fx: fxOf(c), take: takeGain(c), watermark: !isPro(), overlay: ovOn(o0) ? (() => { const I = ovInfo(c, r.w.s, r.w.e); return (g, W, H, t) => drawOverlay(g, W, H, t, I, o0); })() : null });
     const name = `${c.name.replace(/\.[^.]+$/, "")}_${r.style}${A ? `_${A[0]}x${A[1]}` : ""}.mp4`;
-    try { await offerFile(name, out.blob, say); spendTrial(); diagLog(`export band ${vertical ? "vertical" : "original"}: saved`); say(`${savedWhere()} ${mix ? "Band mixed in." : "Saved."}${sndOf(c).fx ? ` Studio sound: ${fxLabel(c)}.` : ""}`); }
+    try { await offerFile(name, out.blob, say); spendTrial(); diagLog(`export band ${vertical ? "vertical" : "original"}: saved`); const extra = o0.alsoParts ? await saveOriginals(c, srcOf(c), o0, say) : 0; say(`${savedWhere()} ${mix ? "Band mixed in." : "Saved."}${sndOf(c).fx ? ` Studio sound: ${fxLabel(c)}.` : ""}${extra ? " Plus the original without the band." : ""}`); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
   } catch (err) { diagLog(`export band FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "no_encoder" || err?.code === "no_audio_encoder" ? "This browser can't make videos. Open LickPick in Chrome." : "Couldn't make the video. The original is untouched."); }
   c.exporting = false; renderStudio(); renderExport(c);
@@ -5419,7 +5774,7 @@ function postPanel(c) {
 }
 // Offline captions: built from what LickPick measured, the vibe and your note. Never invents facts.
 function localCaptions(c) {
-  const v = c.vibe || "Hype", key = c.raw?.info?.key, bpm = c.raw?.info?.tempo, note = (c.note || "").trim().replace(/\s+/g, " ");
+  const v = c.vibe || "Hype", key = keyText(c), bpm = c.raw?.info?.tempo, note = (c.note || "").trim().replace(/\s+/g, " ");
   const what = note ? note.replace(/[.!]+$/, "") : "this one";
   const facts = [key && `in ${key}`, bpm && `${bpm} BPM`].filter(Boolean).join(", ");
   const pick = a => a[(c.capSeed = ((c.capSeed || 0) + 1)) % a.length];
@@ -5710,7 +6065,10 @@ async function saveCut(M, c, fileBase, ranges, say) {
   while (queue.length) {
     const r = queue.shift(), secs = r.reduce((s, [a, b]) => s + b - a, 0) || 1;
     const label = split ? `${fileBase}_pt${k + 1}` : fileBase;
-    const blob = await ClipExporter.exportRanges(M, c.file, r, p => say(`Cutting ${label}… ${Math.round(p * 100)}%`));
+    // free saves carry the LickPick signature, so they're re-encoded with the mark; Pro cuts are copied as they are
+    const blob = !isPro() ? (r.length === 1 ? (await ClipExporter.exportShort(M, c.file, r[0], p => say(`Cutting ${label}… ${Math.round(p * 100)}%`), { vertical: false, aspect: null, watermark: true })).blob
+      : (await ClipExporter.exportMulti(M, c.file, r.map(([a, b]) => ({ s: a, e: b })), p => say(`Cutting ${label}… ${Math.round(p * 100)}%`), { xfade: 0.04, watermark: true })).blob)
+      : await ClipExporter.exportRanges(M, c.file, r, p => say(`Cutting ${label}… ${Math.round(p * 100)}%`));
     let tooBig = blob.size >= saveCap;
     if (!tooBig) {
       try { await offerFile(`${label}.mp4`, blob, say); n++; k++; continue; }
@@ -5735,7 +6093,7 @@ async function writeCaptions(c) {
   if (!sampler) { c.captions = localCaptions(c); c.capStatus = ""; renderStudio(); return; }
   const say = t => { c.capStatus = t; const el = $("#capStatus"); if (el) el.textContent = t; };
   const w = shortWindow(c);
-  const facts = { vibe: c.vibe || "Hype", instruments: profile.plays, musiciansNote: c.note || "(none)", key: c.raw?.info?.key, tempoBPM: c.raw?.info?.tempo, cleanLengthSeconds: Math.round(keptSeconds(c)), shortLengthSeconds: w ? Math.round(w.e - w.s) : null };
+  const facts = { vibe: c.vibe || "Hype", instruments: profile.plays, musiciansNote: c.note || "(none)", key: keyText(c), tempoBPM: c.raw?.info?.tempo, cleanLengthSeconds: Math.round(keptSeconds(c)), shortLengthSeconds: w ? Math.round(w.e - w.s) : null };
   c.writing = true; renderStudio(); say("Writing…");
   try {
     const out = await sampler.json(`You write social media captions for a musician posting a short video of themselves playing.
@@ -5872,6 +6230,7 @@ document.addEventListener("click", e => {
   if (d.act === "export-go") return doExport(c);
   if (d.plat) { const o = exOpts(c), P = PLATS.find(p => p[0] === d.plat); o.plat = d.plat; if (P) o.fmt = o.canV || P[2] === "original" ? P[2] : "original"; renderExport(c); return; }
   if (d.lenfit) { const L = +d.lenfit; state.pickLen = L; c.pickSel = 0; c.src = "pick"; syncRules(); render(); renderStudio(); showPick(c); const iv = setInterval(() => { if (!c._pickJob && pickOf(c)) { clearInterval(iv); renderExport(c); renderSrc(c); toast(`Picks are now ${L} s. Change it any time under Pick length.`); } }, 150); setTimeout(() => clearInterval(iv), 15000); return; }
+  if (d.lay) { const [k, key, v] = d.lay.split(":"); setLay(c, k, key, key === "y" ? ({ top: { title: 0.08, key: 0.16, chords: 0.26, notes: 0.36 }[k], middle: 0.5, bottom: { title: 0.7, key: 0.72, chords: 0.78, notes: 0.89 }[k] })[v] : +v); renderExport(c); return; }
   if (d.ex && d.ex.startsWith("ov")) { const o = exOpts(c); o[d.ex] = !o[d.ex]; persist(c); renderExport(c); ovPreview(); return; }
   if (d.ex) { const o = exOpts(c); if (d.ex.startsWith("fmt:")) o.fmt = d.ex.slice(4); else o[d.ex] = !o[d.ex]; if (d.ex === "sep" && o.sep) o.band = false; if (d.ex === "band" && o.band) o.sep = false; renderExport(c); return; }
   if (d.src) { stopBand(); if (!c.exporting) c.exStatus = ""; if (d.src === "clean" || d.src === "mix") c.src = d.src; else { c.src = "pick"; const i = +d.src.split(":")[1]; if (i !== (c.pickSel || 0)) { c.pickSel = i; c._bandA = null; persist(c); } } renderStudio(); renderExport(c); showPick(c); const S = srcOf(c); if (S && (c.file || c.proxy) && $("#exportSheet").hidden) playRanges(c, S.ranges, S.label); return; }
@@ -5898,6 +6257,7 @@ document.addEventListener("click", e => {
     const nm = d.chset || (d.chq ? LickMusic.chord(k.root, d.chq).name : LickMusic.chord(+d.chroot, k.q).name);
     const was = bandPlaying; stopBand(); setChord(c, nm); renderStudio(); if (was) bandPreview(c); return;
   }
+  if (d.act === "ch-check") { $("#exportSheet").hidden = true; state.tab = "band"; c.src = "pick"; const ch = chOf(c), H = bandChords(c); ch.selT = H[0]?.t0 ?? null; renderStudio(); showPick(c); setTimeout(() => document.querySelector(".chords")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60); return; }
   if (d.act === "ch-close") { chOf(c).selT = null; renderStudio(); return; }
   if (d.act === "ch-undo") { const ch = chOf(c), base = chordBase(c, bandA(c)).find(x => Math.abs(x.t0 - ch.selT) < 0.02); if (base) { delete ch.edits.at[base.t0.toFixed(2)]; delete ch.edits.byName[base.name]; } bandCache.key = ""; c._ov = null; stopBand(); persist(c); renderStudio(); return; }
   if (d.act === "ch-reset") { const ch = chOf(c); ch.edits = { at: {}, byName: {} }; ch.selT = null; bandCache.key = ""; c._ov = null; stopBand(); persist(c); renderStudio(); return; }
@@ -5935,6 +6295,13 @@ document.addEventListener("click", e => {
     const node = mixNodes[k]; if (node && bandPlaying) node.gain.value = k === "take" ? takeGain(c) : stemGain(c, k);
     renderStudio(); return;
   }
+  if (d.act === "layer-add") { c.layerAdd = true; renderStudio(); return; }
+  if (d.act === "layer-cancel") { c.layerAdd = false; renderStudio(); return; }
+  if (d.ladd) { addLayer(c, d.ladd); return; }
+  if (d.lnudge) { const [i, v] = d.lnudge.split(":"), L = layersOf(c)[+i]; if (!L) return; const was = bandPlaying; stopBand(); L.lStart = +(L.lStart + (v === "b" ? layerBeat(c) : v === "-b" ? -layerBeat(c) : +v)).toFixed(3); L.nudged = 1; persist(c); renderStudio(); if (was) bandPreview(c); return; }
+  if (d.lalt != null) { const L = layersOf(c)[+d.lalt]; if (!L?.alts?.length) return; const was = bandPlaying; stopBand(); if (L.base == null) L.base = L.lStart; L.alt = ((L.alt || 0) + 1) % (L.alts.length + 1); L.lStart = L.alt ? L.alts[L.alt - 1] : L.base; L.nudged = 0; persist(c); renderStudio(); toast(L.alt ? `Spot ${L.alt + 1} of ${L.alts.length + 1}.` : "Back to the best spot."); if (was) bandPreview(c); return; }
+  if (d.lmute != null) { const L = layersOf(c)[+d.lmute]; if (!L) return; L.on = L.on === false; const node = mixNodes["L" + c.layers.indexOf(L)]; if (node) node.gain.value = L.on ? (L.gain ?? 1) : 0; persist(c); renderStudio(); return; }
+  if (d.ldel != null) { const L = layersOf(c)[+d.ldel]; if (!L) return; stopBand(); c.layers = c.layers.filter(x => x !== L); persist(c); renderStudio(); return; }
   if (d.act === "band-play") { bandPreview(c); return; }
   if (d.act === "band-save") { c.src = "pick"; exOpts(c).band = true; c.ex.sep = false; openExport(c); return; }
   if (d.bfmt != null) { c.band.vertical = d.bfmt === "1"; renderStudio(); return; }
@@ -5954,8 +6321,11 @@ $("#list").addEventListener("pointerdown", e => { longPressed = false; const el 
 ["pointerup", "pointercancel", "pointerleave"].forEach(ev => $("#list").addEventListener(ev, () => clearTimeout(lpT)));
 $("#list").addEventListener("contextmenu", e => { if (e.target.closest("[data-open]")) e.preventDefault(); });
 document.addEventListener("input", e => {
+  if (e.target.id === "ovTitleIn") { const c = cur(); if (!c) return; exOpts(c).title = e.target.value; persist(c); ovPreview(); return; }
+  if (e.target.dataset?.layy) { const c = cur(); if (!c) return; setLay(c, e.target.dataset.layy, "y", +e.target.value); return; }
   if (e.target.dataset?.frame) { const c = cur(); if (!c) return; const o = exOpts(c); o.pos = +e.target.value; const fb = $("#fbox"), A = ASPECT[o.fmt]; if (fb && A) { const src = (c.vw || 1080) / (c.vh || 1920), tgt = A[0] / A[1], horiz = src > tgt, frac = horiz ? tgt / src : src / tgt, off = (1 - frac) * o.pos * 100; fb.style[horiz ? "left" : "top"] = off + "%"; const lb = e.target.parentElement.querySelector("b"); if (lb) lb.textContent = horiz ? (o.pos < 0.34 ? "Left" : o.pos > 0.66 ? "Right" : "Center") : (o.pos < 0.34 ? "Top" : o.pos > 0.66 ? "Bottom" : "Middle"); } return; }
   const eqId = e.target.dataset?.eq; if (eqId) { const c = cur(); if (!c) return; eqInput(eqId, +e.target.value); if (video) hookVideo(); eqChanged(c); return; }
+  if (e.target.dataset?.lgain != null) { const c = cur(); if (!c) return; const L = layersOf(c)[+e.target.dataset.lgain]; if (!L) return; L.gain = +e.target.value; const node = mixNodes["L" + c.layers.indexOf(L)]; if (node && bandPlaying) node.gain.setTargetAtTime(L.gain, node.context.currentTime, 0.03); persist(c); return; }
   const mx = e.target.dataset?.mx; if (mx) { const c = cur(); if (!c) return; const v = +e.target.value;
     if (mx === "take") sndOf(c).take = v; else { c.band.lv = c.band.lv || { drums: 1, bass: 1, keys: 1 }; c.band.lv[mx] = v; }
     const node = mixNodes[mx]; if (node && bandPlaying) node.gain.setTargetAtTime(mx === "take" ? takeGain(c) : stemGain(c, mx), node.context.currentTime, 0.03);

@@ -1,5 +1,5 @@
 // LickPick service worker: works offline, and receives videos shared from the gallery.
-const CACHE = "lp-2026-10-11i";
+const CACHE = "lp-2026-10-11j";
 const SHELL = ["./", "./index.html", "./mediabunny.min.mjs", "./manifest.webmanifest", "./icon-192-v3.png", "./icon-512-v3.png", "./icon-maskable-512-v3.png"];
 
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
