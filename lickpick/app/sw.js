@@ -1,10 +1,10 @@
 // LickPick service worker: works offline, and receives videos shared from the gallery.
-const CACHE = "lp-2026-10-11g";
+const CACHE = "lp-2026-10-11h";
 const SHELL = ["./", "./index.html", "./mediabunny.min.mjs", "./manifest.webmanifest", "./icon-192-v3.png", "./icon-512-v3.png", "./icon-maskable-512-v3.png"];
 
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && !k.startsWith("lp-snd-")).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 
 function inbox() {
@@ -34,5 +34,7 @@ self.addEventListener("fetch", e => {
       .catch(() => caches.match("./index.html")));
     return;
   }
+  // band sounds and the listening model: fetched on first use, then kept for offline
+  if (url.pathname.includes("/snd/")) { e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request).then(r => { if (r.ok) { const copy = r.clone(); caches.open("lp-snd-1").then(c => c.put(e.request, copy)); } return r; }))); return; }
   e.respondWith(caches.match(e.request, { ignoreSearch: true }).then(hit => hit || fetch(e.request)));
 });
