@@ -1030,6 +1030,26 @@ input[type=range]{min-height:44px}
 .mixn{width:24px;height:24px;border-radius:50%;background:var(--cyan);color:var(--ink);font-style:normal;font-weight:900;display:grid;place-items:center;flex:none;font-size:13px}.mixn.off{background:none;border:2px dashed var(--line)}
 .mixup{border:2px solid var(--line);background:var(--panel);border-radius:12px;width:40px;color:var(--text);font-weight:900}
 .warnline{color:var(--blaze)}
+
+/* 1.15 chords you can change */
+.chords{margin:10px 0;padding:10px 12px;border:2px solid var(--line);border-radius:14px;background:var(--raise)}
+.chhead{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:8px}.chhead svg.i{width:18px;height:18px;color:var(--volt)}.chhead .linkbtn{margin-left:auto}
+.chsrc{margin-bottom:6px}
+.chstrip{display:flex;gap:6px;overflow-x:auto;padding:4px 0 6px;scrollbar-width:none}.chstrip::-webkit-scrollbar{display:none}
+.chchip{flex:none;display:flex;flex-direction:column;align-items:center;min-width:58px;border:2px solid var(--line);background:var(--panel);border-radius:12px;padding:6px 10px;color:var(--text)}
+.chchip b{font:900 17px/1.1 var(--body)}.chchip em{font-style:normal;font-size:11px;color:var(--dim)}
+.chchip.ed{border-color:var(--hot)}.chchip.ed b::after{content:"•";color:var(--hot);margin-left:2px}
+.chchip.on{border-color:var(--volt);background:color-mix(in srgb,var(--volt) 14%,var(--panel))}
+.ched{margin-top:6px;padding:10px;border-radius:12px;background:var(--panel);border:2px solid var(--volt)}
+.chedtop{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}.chbig{font:900 30px/1 var(--body);color:var(--volt)}.chedtop .was{color:var(--dim);font-size:13px}.chedtop .linkbtn{margin-left:auto}
+.ched h5{margin:10px 0 6px;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.chq,.chroot,.chsug{display:flex;flex-wrap:wrap;gap:6px}
+.chq button,.chroot button{border:2px solid var(--line);background:none;border-radius:10px;padding:6px 10px;font-weight:800;font-size:13px;color:var(--text);min-width:40px}
+.chq button[aria-pressed=true],.chroot button[aria-pressed=true]{background:var(--volt);color:var(--ink);border-color:var(--volt)}
+.chsug button{border:2px solid var(--cyan);background:none;border-radius:12px;padding:5px 10px;color:var(--text);display:flex;flex-direction:column;align-items:center}
+.chsug b{font-weight:900}.chsug em{font-style:normal;font-size:11px;color:var(--cyan)}
+.ched .btn{margin-top:10px}
+.chbtns{margin-top:8px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1283,12 +1303,12 @@ input[type=range]{min-height:44px}
     <div class="row2"><span><b>How picky</b></span>
       <span class="seg" id="picky"><button type="button" data-picky="0.25">Chill</button><button type="button" data-picky="0.5">Normal</button><button type="button" data-picky="0.8">Strict</button></span></div>
     <p class="hint">Trash is only suggested when a clip has no music at all. Your own edits are never changed.</p>
-    <p class="sfoot">Version 1.14 Beta · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. Never deletes.</p>
+    <p class="sfoot">Version 1.15 Beta · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. Never deletes.</p>
     <div class="studio-line"><img src="data:image/png;base64,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" alt="3Shamrocks Studio" width="226" height="33"><span>© 2026 3Shamrocks Studio. All rights reserved.</span></div>
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-11h"; window.LP_SND = "../app/snd/"; window.LP_BUILD = "file";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-11i"; window.LP_SND = "../app/snd/"; window.LP_BUILD = "file";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -2646,7 +2666,7 @@ input[type=range]{min-height:44px}
     }
     const loud = fr.filter(F => F.e >= gate).length, voiced = fr.filter(F => F.midi > 0).length, mono = loud ? voiced / loud : 0;
     const notes = onsetNotes(y, sr, t0, fr);
-    return { mono: +mono.toFixed(2), notes };
+    return { mono: +mono.toFixed(2), notes, track: fr.map(F => F.midi || 0), hop, sr, t0 };
   }
   // Onset-based transcription: at each attack, the partials that just appeared (spectral difference) say which note
   // started, even while the previous one still rings.
@@ -2690,7 +2710,94 @@ input[type=range]{min-height:44px}
       TUNING.forEach((open, s) => { const fret = n.midi - open; if (fret < 0 || fret > 19) return; const cost = Math.abs(fret - pos) + (fret === 0 ? -0.5 : 0) + s * 0.05; if (cost < bc) { bc = cost; best = { string: s, fret }; } });
       if (best && best.fret) pos = best.fret; return { ...n, ...(best || {}) }; });
   }
-  root.LickMusic = { notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, trackBeats, analyze, picks, chordsFor, NOTES };
+
+  // ---------- chords you can edit, and chords from a melody (for singers and single-note players)
+  const QUAL = { maj: [[0, 4, 7], ""], min: [[0, 3, 7], "m"], "7": [[0, 4, 7, 10], "7"], maj7: [[0, 4, 7, 11], "maj7"], m7: [[0, 3, 7, 10], "m7"], sus2: [[0, 2, 7], "sus2"], sus4: [[0, 5, 7], "sus4"], dim: [[0, 3, 6], "dim"], "5": [[0, 7], "5"] };
+  const chord = (root, q) => { const Q = QUAL[q] || QUAL.maj; return { root, q, pcs: Q[0].map(i => (root + i) % 12), name: NOTES[root] + Q[1] }; };
+  // read a name like "F#m7" back into root + quality
+  function parseChord(name) { const m = /^([A-G]#?)(.*)$/.exec(name || ""); if (!m) return null; const root = NOTES.indexOf(m[1]); const suf = m[2]; const q = Object.keys(QUAL).find(k => QUAL[k][1] === suf) || (suf === "" ? "maj" : null); return root >= 0 && q ? chord(root, q) : null; }
+  const SC_MAJ = [0, 2, 4, 5, 7, 9, 11], SC_MIN = [0, 2, 3, 5, 7, 8, 10];
+  // the chords that belong to a key, with their roman numerals
+  function keyChords(key, minor) {
+    const sc = minor ? SC_MIN : SC_MAJ, RN = ["I", "II", "III", "IV", "V", "VI", "VII"];
+    return sc.map((st, d) => { const r = (key + st) % 12, third = (sc[(d + 2) % 7] - st + 12) % 12, fifth = (sc[(d + 4) % 7] - st + 12) % 12;
+      let q = third === 3 ? (fifth === 6 ? "dim" : "min") : "maj"; if (minor && d === 4) q = "maj";   // minor keys: the V is usually major
+      const rn = q === "maj" ? RN[d] : RN[d].toLowerCase() + (q === "dim" ? "°" : ""); return { ...chord(r, q), deg: d, rn }; });
+  }
+  // a few good swaps for one chord in this key: shares notes, same job in the song
+  function alternatives(cur, key, minor) {
+    if (key == null) return [];
+    const K = keyChords(key, minor), share = (a, b) => a.pcs.filter(p => b.pcs.includes(p)).length, out = [];
+    for (const c of K) if (c.name !== cur.name && c.q !== "dim" && share(c, cur) >= 2) out.push(c);
+    const par = chord(cur.root, cur.q === "min" ? "maj" : "min"); if (!out.some(c => c.name === par.name)) out.push({ ...par, rn: cur.q === "min" ? "major" : "minor" });
+    const d = K.find(c => c.root === cur.root && c.q === (cur.q === "min" || cur.q === "m7" ? "min" : "maj")), rich = d ? (d.deg === 4 ? "7" : d.q === "min" ? "m7" : "maj7") : null;
+    if (rich && rich !== cur.q) out.push({ ...chord(cur.root, rich), rn: "richer" });
+    return out.slice(0, 6);
+  }
+  // sung or single-note melody -> notes, from the pitch track (soft attacks too: voice, violin, sax)
+  function melodyNotes(R) {
+    const tr = R.track || [], dt = R.hop / R.sr, notes = []; let i = 0;
+    const smooth = tr.map((m, k) => { if (!m) return 0; const w = tr.slice(Math.max(0, k - 2), k + 3).filter(x => x); w.sort((a, b) => a - b); return w[w.length >> 1]; });
+    while (i < smooth.length) {
+      if (!smooth[i]) { i++; continue; }
+      let j = i + 1, sum = smooth[i], n = 1;
+      while (j < smooth.length && smooth[j] && Math.abs(smooth[j] - sum / n) < 0.75) { sum += smooth[j]; n++; j++; }
+      if (n * dt >= 0.12) notes.push({ t: R.t0 + i * dt, e: R.t0 + j * dt, midi: Math.round(sum / n), cents: Math.round((sum / n - Math.round(sum / n)) * 100) });
+      i = j;
+    }
+    return notes;
+  }
+  // the most likely key from the melody alone (Krumhansl profiles)
+  function keyOfNotes(notes) {
+    // long notes, the first and the last note weigh more: melodies start and settle on home
+    const h = new Array(12).fill(0); notes.forEach((n, i) => { h[((n.midi % 12) + 12) % 12] += (n.e - n.t) * (i === notes.length - 1 ? 1.5 : 1); });
+    const KM = [6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88], Km = [6.33, 2.68, 3.52, 5.38, 2.6, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17];
+    const corr = (p, r) => { let s = 0; for (let i = 0; i < 12; i++) s += h[(i + r) % 12] * p[i]; return s; };
+    let best = { s: -1 }; for (let r = 0; r < 12; r++) for (const [p, minor] of [[KM, false], [Km, true]]) { const sc = corr(p, r); if (sc > best.s) best = { s: sc, key: r, minor }; }
+    return best;
+  }
+  // harmonise a melody: one chord per bar (or per phrase in free time), chord tones on the long and strong notes,
+  // the usual progressions preferred (V to I, IV to V, ii to V), ending home. Viterbi over the bars.
+  function harmonize(notes, cells, key, minor) {
+    if (!notes.length || !cells.length) return [];
+    const K = keyChords(key, minor).filter(c => c.q !== "dim"), PRI = [0.35, 0.12, 0.05, 0.3, 0.3, 0.2, 0];
+    const fit = (c, cell) => { let s = 0, tot = 0; for (const n of notes) { const a = Math.max(n.t, cell.t0), b = Math.min(n.e, cell.t1); if (b <= a) continue; let w = b - a; if (Math.abs(n.t - cell.t0) < 0.15) w *= 1.6; tot += w; s += c.pcs.includes(((n.midi % 12) + 12) % 12) ? w : -0.55 * w; } return tot ? s / tot : null; };
+    const TR = (a, b) => (a.deg === 4 && b.deg === 0 ? 0.25 : 0) + (a.deg === 3 && b.deg === 4 ? 0.12 : 0) + (a.deg === 1 && b.deg === 4 ? 0.15 : 0) + (a.deg === b.deg ? 0.05 : 0);
+    const S = cells.map(() => K.map(() => -1e9)), B = cells.map(() => K.map(() => 0));
+    cells.forEach((cell, i) => K.forEach((c, k) => {
+      const f = fit(c, cell), own = (f == null ? 0 : f) + PRI[c.deg] * 0.4 + (i === cells.length - 1 && c.deg === 0 ? 0.3 : 0) + (i === 0 && c.deg === 0 ? 0.15 : 0);
+      if (!i) { S[0][k] = own; return; }
+      K.forEach((p, j) => { const v = S[i - 1][j] + own + TR(p, c) + (f == null && p.deg === c.deg ? 0.4 : 0); if (v > S[i][k]) { S[i][k] = v; B[i][k] = j; } });
+    }));
+    let k = S[cells.length - 1].indexOf(Math.max(...S[cells.length - 1])); const pick = [];
+    for (let i = cells.length - 1; i >= 0; i--) { pick[i] = K[k]; k = B[i][k]; }
+    return cells.map((cell, i) => ({ t0: cell.t0, t1: cell.t1, root: pick[i].root, pcs: pick[i].pcs, name: pick[i].name, q: pick[i].q })).reduce((m, h) => { const l = m[m.length - 1]; if (l && l.name === h.name) l.t1 = h.t1; else m.push(h); return m; }, []);
+  }
+  // singers rarely give the beat tracker a clean pulse: find the beat from where the notes start, bars of 4
+  function gridFromNotes(notes, s, e) {
+    const on = notes.map(n => n.t); if (on.length < 8) return [];
+    let best = { sc: 0 };
+    for (let bpm = 60; bpm <= 160; bpm += 1) { const p = 60 / bpm; let c = 0, sn = 0; for (const t of on) { const ph = ((t - on[0]) / p) % 1, d = Math.min(ph, 1 - ph); c += Math.cos(2 * Math.PI * d); sn += Math.sin(2 * Math.PI * ph); } const sc = Math.hypot(c, sn) / on.length; if (sc > best.sc + 0.01) best = { sc, p }; }
+    if (best.sc < 0.6) return [];
+    const p = best.p, bar = 4 * p;
+    // the downbeat: the phase where the longest notes start
+    let ph0 = on[0], bestW = -1; for (let k = 0; k < 4; k++) { const st = on[0] + k * p; let w = 0; for (const n of notes) { const x = ((n.t - st) / bar) % 1, d = Math.min(Math.abs(x), Math.abs(1 - x)); if (d * bar < 0.12) w += n.e - n.t; } if (w > bestW) { bestW = w; ph0 = st; } }
+    let t = ph0; while (t - bar > s - 0.05) t -= bar;
+    const cells = []; for (; t < e - 0.3; t += bar) cells.push({ t0: Math.max(s, t), t1: Math.min(e, t + bar) });
+    return cells;
+  }
+  // chords for a melody in a window: bars when there's a beat, otherwise phrases of about 2.5 s
+  function melodyPlan(raw, A, R, s, e) {
+    const notes = melodyNotes(R).filter(n => n.e > s && n.t < e); if (notes.length < 4) return null;
+    const kk = keyOfNotes(notes);   // from the sung notes themselves: a voice's overtones mislead the chord-based key
+    let cells = A?.pulse && A.bars?.length ? A.bars.filter(b => b.t1 > s && b.t0 < e).map(b => ({ t0: Math.max(s, b.t0), t1: Math.min(e, b.t1) })) : [];
+    if (A?.pulse && cells.length && (cells[0].t1 - cells[0].t0) > 3.2) cells = cells.flatMap(c => { const m = (c.t0 + c.t1) / 2; return [{ t0: c.t0, t1: m }, { t0: m, t1: c.t1 }]; });
+    if (!cells.length) cells = gridFromNotes(notes, s, e);
+    if (!cells.length) { const n = Math.max(1, Math.round((e - s) / 2.5)); cells = Array.from({ length: n }, (_, i) => ({ t0: s + (e - s) * i / n, t1: s + (e - s) * (i + 1) / n })); }
+    return { H: harmonize(notes, cells, kk.key, kk.minor), notes, key: kk.key, minor: kk.minor };
+  }
+
+  root.LickMusic = { QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, trackBeats, analyze, picks, chordsFor, NOTES };
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* LickBand 2: a real-sounding band that plays WITH the take.
@@ -2856,7 +2963,7 @@ input[type=range]{min-height:44px}
     const SR = opts.sampleRate || 32000, dur = Math.max(0.5, e - s), N = Math.ceil(dur * SR);
     const parts = Object.assign({ drums: true, bass: true, keys: true, extra: true }, opts.parts || {});
     const A = opts.analysis || root.LickMusic.analyze(raw, s, e);
-    const H = root.LickMusic.harmonyPlan(raw, A);
+    const H = opts.harmony || root.LickMusic.harmonyPlan(raw, A);   // the player's edited chords (or chords from their melody) when given
     const styleKey = STYLES[opts.style] ? opts.style : heuristicStyle(raw, A);
     const set = settle(styleKey, opts.set || {});
     const style0 = STYLES[styleKey];
@@ -2943,7 +3050,7 @@ input[type=range]{min-height:44px}
           st2.forEach((j, n) => {
             const t = at(j); if (!ok(t)) return;
             const h = harmonyAt(t + 0.005), nextT = n + 1 < st2.length ? at(st2[n + 1]) : bar.t1;
-            const third = h.pcs.length > 2 ? h.pcs[1] : h.pcs[0], fifth = h.pcs[h.pcs.length - 1];
+            const third = h.pcs.length > 2 ? h.pcs[1] : h.pcs[0], fifth = h.pcs.find(p => (p - h.root + 12) % 12 === 7) ?? h.pcs[h.pcs.length - 1];
             let m;
             if (line === "walk") {
               const nb = harmonyAt(bar.t1 + 0.01), q = n % 4, rootM = bassM(h.root, prevM ?? 36);
@@ -3023,10 +3130,10 @@ input[type=range]{min-height:44px}
   // triad in the middle register, moving as little as possible from the last chord
   function voicing(pcs, prev) {
     const opts = [];
-    for (let base = 52; base <= 60; base++) {
+    for (const span of [12, 16]) { for (let base = 52; base <= 60; base++) {
       const v = pcs.map(p => base + ((p - base) % 12 + 12) % 12).sort((a, b) => a - b);
-      if (v[v.length - 1] - v[0] <= 12) opts.push(v);
-    }
+      if (v[v.length - 1] - v[0] <= span) opts.push(v);
+    } if (opts.length) break; }
     if (!prev) return opts.sort((a, b) => Math.abs(a[0] - 55) - Math.abs(b[0] - 55))[0];
     const cost = v => v.reduce((s, m) => s + Math.min(...prev.map(p => Math.abs(p - m))), 0);
     return opts.sort((a, b) => cost(a) - cost(b))[0];
@@ -4574,7 +4681,7 @@ function ovGroup(c, S, o, opt) {
   return `<div class="exgroup"><span>On screen${proTag()}</span>
     ${opt("ovChords", !!o.ovChords, "i-note", "Chords", I.chords.length ? `${esc(chordLine)}${I.chords.length > 5 ? "…" : ""}, in time with you` : "No clear chords in this part", !I.chords.length)}
     ${opt("ovKey", !!o.ovKey, "i-scope", "Key & tempo", [I.key, I.bpm ? I.bpm + " BPM" : ""].filter(Boolean).join(" · ") || "No clear key here", !I.key && !I.bpm)}
-    ${opt("ovNotes", !!o.ovNotes, "i-pick", "Notes & tab", I.mono == null ? "Listening for single notes…" : mono ? `${I.notes.length} notes, with guitar tab. Shows only the notes it's sure of.` : "For single-note lines (riffs, solos). This part is mostly chords.", I.mono == null || !mono)}
+    ${opt("ovNotes", !!o.ovNotes, "i-pick", I.voice ? "Notes you sing" : "Notes & tab", I.mono == null ? "Listening for single notes…" : mono ? (I.voice ? `${I.notes.length} notes, named as you sing them. Great for vocal practice posts.` : `${I.notes.length} notes, with guitar tab. Shows only the notes it's sure of.`) : "For single-note lines (riffs, solos, singing). This part is mostly chords.", I.mono == null || !mono)}
     ${ovOn(o) ? `<p class="hint">${icon("i-play")}Playing the clip shows it on the video, exactly as it will be saved.</p>` : ""}
   </div>`;
 }
@@ -4603,7 +4710,8 @@ const ovKey = (c, s, e) => `${c.key}|${s.toFixed(2)}|${e.toFixed(2)}`;
 function ovInfo(c, s, e) {
   c._ov = c._ov || {}; const k = ovKey(c, s, e);
   if (!c._ov[k]) { let A = null; try { A = LickMusic.analyze(c.raw, s, e); } catch { }
-    c._ov[k] = { s, e, chords: (A?.chords || []).filter(x => x.t1 > s && x.t0 < e && x.name).map(x => ({ t0: x.t0, t1: x.t1, name: x.name.replace(/5$/, "") })), key: c.raw?.info?.key && c.raw.info.keyRoot != null ? c.raw.info.key : "", bpm: A?.pulse ? A.bpm : null, notes: null, mono: null, busy: false }; }
+    const BC = c.band && (hasChEdits(c) || c.band.ch?.src === "melody") ? chordsFor(c, s, e, A) : null;
+    c._ov[k] = { s, e, chords: (BC || A?.chords || []).filter(x => x.t1 > s && x.t0 < e && x.name).map(x => ({ t0: x.t0, t1: x.t1, name: BC ? x.name : x.name.replace(/5$/, "") })), key: c.raw?.info?.key && c.raw.info.keyRoot != null ? c.raw.info.key : "", bpm: A?.pulse ? A.bpm : null, notes: null, mono: null, busy: false }; }
   return c._ov[k];
 }
 // the notes need the sound itself: decoded once per stretch, resampled to 22 kHz, transcribed in the background
@@ -4613,7 +4721,9 @@ async function ovNotes(c, s, e) {
     const b = await windowAudio(c, s, e), x = b.getChannelData(0), r = b.sampleRate / 22050, n = Math.floor(x.length / r), y = new Float32Array(n);
     for (let i = 0; i < n; i++) { const p = i * r, j = Math.floor(p), f = p - j; y[i] = x[j] * (1 - f) + (x[j + 1] || 0) * f; }
     await new Promise(res => setTimeout(res, 0));
-    const R = LickMusic.notesFromPCM(y, 22050, s); I.mono = R.mono; I.notes = LickMusic.tabFor(R.notes).filter(nn => nn.string != null);
+    const R = LickMusic.notesFromPCM(y, 22050, s); I.mono = R.mono;
+    if (isSinger(c)) { I.voice = true; I.notes = LickMusic.melodyNotes(R); }   // sung notes: soft starts, no tab
+    else I.notes = LickMusic.tabFor(R.notes).filter(nn => nn.string != null);
   } catch (err) { I.mono = 0; I.notes = []; diagLog("notes failed: " + String(err?.message || err).slice(0, 60)); }
   I.busy = false; return I;
 }
@@ -4641,7 +4751,15 @@ function drawOverlay(g, W, H, t, I, o) {
       const prog = Math.min(1, (t - cur.t0) / (cur.t1 - cur.t0)); g.fillStyle = "#2BE7FF"; g.fillRect(bx + u * 3, by + bh - u * 1.6, (bw - u * 6) * prog, u * 0.6);
     }
   }
-  if (o.ovNotes && I.notes?.length) {
+  if (o.ovNotes && I.notes?.length && I.voice) {
+    const shown = I.notes.filter(nn => nn.t <= t + 0.02).slice(-5), cur = shown.length && t < shown[shown.length - 1].e + 0.3 ? shown[shown.length - 1] : null;
+    const tw = Math.min(W - u * 8, u * 66), th = u * 13, tx = (W - tw) / 2, ty = o.ovChords ? lowY + u * 10 : lowY - th / 2;
+    g.fillStyle = "rgba(11,9,18,.86)"; rr(g, tx, ty, tw, th, u * 2.5); g.fill();
+    const step = tw / 5.4; shown.forEach((nn, j) => { const isCur = nn === cur, x = tx + step * (j + 0.7 + 5 - shown.length), txt = NN[nn.midi % 12] + (Math.floor(nn.midi / 12) - 1);
+      g.font = font(900, u * (isCur ? 6 : 4.2)); g.fillStyle = isCur ? "#FFE600" : "rgba(255,247,240,.6)"; g.textAlign = "center"; g.fillText(txt, x, ty + th / 2 + u * 0.3);
+      if (isCur && Math.abs(nn.cents || 0) >= 15) { g.font = font(800, u * 2.6); g.fillStyle = "#2BE7FF"; g.fillText(`${nn.cents > 0 ? "+" : ""}${nn.cents}¢`, x, ty + th - u * 1.6); } g.textAlign = "start"; });
+  }
+  if (o.ovNotes && I.notes?.length && !I.voice) {
     const shown = I.notes.filter(nn => nn.t <= t + 0.02).slice(-6); const cur = shown.length && t < shown[shown.length - 1].e + 0.35 ? shown[shown.length - 1] : null;
     const tw = Math.min(W - u * 8, u * 62), th = u * 17, tx = (W - tw) / 2, ty = (o.ovChords ? lowY + u * 10 : lowY - th / 2);
     g.fillStyle = "rgba(11,9,18,.86)"; rr(g, tx, ty, tw, th + u * 2, u * 2.5); g.fill();
@@ -4720,7 +4838,7 @@ async function multiSave(c, S, o, say, ovFn) {
     if (o.band) {
       say("Building the band…");
       if (S.kind === "pick") { const r = await bandRender(c); bed = bandMix(c, r); }
-      else { newBand(c); for (const g of segs) { const An = LickMusic.analyze(c.raw, g.s, g.e), r = await LickBand.render(c.raw, g.s, g.e, { style: bandStyleOf(c, An), set: bandSet(c, An), parts: { drums: !!An?.pulse, bass: true, keys: true, extra: true }, analysis: An }); g.mix = bandMix(c, r); } }
+      else { newBand(c); for (const g of segs) { const An = LickMusic.analyze(c.raw, g.s, g.e), r = await LickBand.render(c.raw, g.s, g.e, { style: bandStyleOf(c, An), set: bandSet(c, An), parts: { drums: !!An?.pulse, bass: true, keys: true, extra: true }, analysis: An, harmony: An ? chordsFor(c, g.s, g.e, An) : null }); g.mix = bandMix(c, r); } }
     }
     const tune = c.tune ? -tuneOff(c) : 0, gainDb = ClipExporter.levelGain(c.raw.loud, CELL, segs[0].s, segs[segs.length - 1].e);
     const overlay = ovFn && S.kind === "pick" ? (g, W, H, srcT, outT) => ovFn(g, W, H, s0 + outT) : null;
@@ -4874,6 +4992,69 @@ function bandA(c) {
 }
 // ---------- Sound: studio sound + mixer (your take, drums, bass, keys). Hear it all free; the band export is Pro.
 const INSTS = [["drums", "i-drum", "Drums"], ["bass", "i-bass", "Bass"], ["keys", "i-keys", "Keys"], ["extra", "i-note", "Extra"]];
+// ---------- chords the band plays: what LickPick heard, or chords made from your melody (singers), and your edits
+const isSinger = c => (profile.plays || []).includes("vocals") || (c.band?.heard?.p?.vocals ?? 0) >= 0.35;
+const chOf = c => { const b = newBand(c); return b.ch || (b.ch = { src: null, edits: { at: {}, byName: {} }, selT: null, scope: "one" }); };
+const hasChEdits = c => { const e = c.band?.ch?.edits; return !!e && (Object.keys(e.at || {}).length + Object.keys(e.byName || {}).length) > 0; };
+function applyEdits(H, ed) {
+  if (!ed) return H;
+  return H.map(h => { const nm = ed.at?.[h.t0.toFixed(2)] || ed.byName?.[h.name]; if (!nm || nm === h.name) return h; const k = LickMusic.parseChord(nm); return k ? { ...h, root: k.root, pcs: k.pcs, name: k.name, q: k.q, power: k.q === "5", drone: false, edited: true, was: h.name } : h; });
+}
+// the plan before edits, for the band's window
+function chordBase(c, A) {
+  const ch = chOf(c), w = bandWindow(c), key = `${c.key}|${w.s.toFixed(2)}|${w.e.toFixed(2)}`;
+  if (ch.src === "melody" && ch.mel?.key === key && ch.mel.H?.length) return ch.mel.H;
+  return A ? LickMusic.harmonyPlan(c.raw, A) : [];
+}
+function bandChords(c, A) { A = A || bandA(c); return applyEdits(chordBase(c, A), chOf(c).edits); }
+// chords for any other stretch (mix parts, overlays): heard chords with the same edits by name
+function chordsFor(c, s, e, A) { A = A || (() => { try { return LickMusic.analyze(c.raw, s, e); } catch { return null; } })(); if (!A) return []; const w = bandWindow(c); if (w && Math.abs(w.s - s) < 0.05 && Math.abs(w.e - e) < 0.05) return bandChords(c, A); return applyEdits(LickMusic.harmonyPlan(c.raw, A), { byName: chOf(c).edits.byName }); }
+// chords from the melody: transcribe the stretch (voice-friendly), harmonise it bar by bar
+async function bandMelody(c) {
+  const ch = chOf(c), w = bandWindow(c); if (!w) return;
+  const key = `${c.key}|${w.s.toFixed(2)}|${w.e.toFixed(2)}`; if (ch.mel?.key === key) return;
+  ch.mel = { key, busy: true };
+  try {
+    const b = await windowAudio(c, w.s, w.e), x = b.getChannelData(0), r = b.sampleRate / 22050, n = Math.floor(x.length / r), y = new Float32Array(n);
+    for (let i = 0; i < n; i++) { const p = i * r, j = Math.floor(p), f = p - j; y[i] = x[j] * (1 - f) + (x[j + 1] || 0) * f; }
+    await new Promise(res => setTimeout(res, 0));
+    const R = LickMusic.notesFromPCM(y, 22050, w.s), M = LickMusic.melodyPlan(c.raw, bandA(c), R, w.s, w.e);
+    ch.mel = { key, mono: R.mono, H: M?.H || null, keyName: M ? LickMusic.NOTES[M.key] + (M.minor ? " minor" : " major") : "", keyRoot: M?.key, minor: M?.minor };
+    if (ch.src == null && M?.H && R.mono >= 0.55 && isSinger(c)) { ch.src = "melody"; bandCache.key = ""; }
+  } catch (err) { ch.mel = { key, mono: 0, H: null }; diagLog("melody chords failed: " + String(err?.message || err).slice(0, 60)); }
+  if (cur() === c && state.tab === "band") renderStudio();
+}
+const QL = [["maj", "Major"], ["min", "Minor"], ["7", "7"], ["maj7", "Maj7"], ["m7", "m7"], ["sus2", "sus2"], ["sus4", "sus4"], ["dim", "dim"], ["5", "Power"]];
+function chordsCard(c, A) {
+  const ch = chOf(c), H = bandChords(c, A), base = chordBase(c, A), mel = ch.mel, w = bandWindow(c);
+  if (!H.length) return "";
+  const keyRoot = ch.src === "melody" && mel?.keyRoot != null ? mel.keyRoot : c.raw.info?.keyRoot, minor = ch.src === "melody" && mel?.keyRoot != null ? mel.minor : c.raw.info?.keyMode === "min";
+  const melOK = mel?.H?.length, sel = ch.selT != null ? H.find(h => Math.abs(h.t0 - ch.selT) < 0.02) : null;
+  const baseSel = sel ? base.find(h => Math.abs(h.t0 - sel.t0) < 0.02) || sel : null;
+  const cur0 = sel ? LickMusic.parseChord(sel.name) || LickMusic.chord(sel.root, "5") : null;
+  const strip = H.map(h => `<button type="button" class="chchip${h.edited ? " ed" : ""}${sel === h ? " on" : ""}" data-chsel="${h.t0}" aria-pressed="${sel === h}"><b>${esc(h.name)}</b><em>${fmtP(h.t0)}</em></button>`).join("");
+  return `<div class="chords"><div class="chhead">${icon("i-note")}<b>Chords the band plays</b>${hasChEdits(c) ? `<button type="button" class="linkbtn" data-act="ch-reset">Reset</button>` : ""}</div>
+    <span class="seg bseg chsrc" role="group" aria-label="Chords from"><button type="button" data-chsrc="heard" aria-pressed="${ch.src !== "melody"}">What it heard</button><button type="button" data-chsrc="melody" aria-pressed="${ch.src === "melody"}" ${melOK ? "" : "disabled"}>${mel?.busy ? "Listening…" : "From your melody"}</button></span>
+    <p class="hint">${ch.src === "melody" ? `Made from the notes you ${isSinger(c) ? "sang" : "played"}: a chord per bar that fits your melody. Change any of them.` : melOK && mel.mono >= 0.55 ? "Singing or a single-note line? Try From your melody: chords built to fit your tune." : "Tap a chord to change it. The band and the on-screen chords follow."}</p>
+    <div class="chstrip" role="group" aria-label="Chords">${strip}</div>
+    ${sel ? `<div class="ched">
+      <div class="chedtop"><span class="chbig">${esc(sel.name)}</span>${sel.edited ? `<span class="was">was ${esc(sel.was)}</span>` : ""}<button type="button" class="linkbtn" data-act="ch-close">Done</button></div>
+      <span class="seg bseg" role="group" aria-label="Change">${[["one", "Just this one"], ["all", `Every ${esc(baseSel?.name || sel.name)}`]].map(([k, l]) => `<button type="button" data-chscope="${k}" aria-pressed="${(ch.scope || "one") === k}">${l}</button>`).join("")}</span>
+      <h5>Major, minor and more</h5><div class="chq">${QL.map(([q, l]) => `<button type="button" data-chq="${q}" aria-pressed="${cur0?.q === q}">${l}</button>`).join("")}</div>
+      <h5>Root</h5><div class="chroot">${LickMusic.NOTES.map((n, i) => `<button type="button" data-chroot="${i}" aria-pressed="${cur0?.root === i}">${n}</button>`).join("")}</div>
+      ${keyRoot != null && cur0 ? `<h5>Try instead</h5><div class="chsug">${LickMusic.alternatives(cur0, keyRoot, minor).map(a => `<button type="button" data-chset="${esc(a.name)}"><b>${esc(a.name)}</b><em>${esc(ch.src === "melody" && !["major", "minor", "richer"].includes(a.rn) ? "fits the key" : a.rn)}</em></button>`).join("")}</div>` : ""}
+      ${sel.edited ? `<button type="button" class="btn sm ghost" data-act="ch-undo">${icon("i-undo")}Back to ${esc(sel.was)}</button>` : ""}
+    </div>` : ""}
+    <div class="row-btns chbtns"><button type="button" class="btn sm ghost" data-act="ch-rich">${icon("i-bolt")}Richer (7ths)</button><button type="button" class="btn sm ghost" data-act="ch-simple">Simpler</button></div>
+  </div>`;
+}
+// set the selected chord (just this one, or every chord with the same name)
+function setChord(c, name) {
+  const ch = chOf(c), A = bandA(c), base = chordBase(c, A), b0 = base.find(h => Math.abs(h.t0 - ch.selT) < 0.02); if (!b0) return;
+  if ((ch.scope || "one") === "all") { ch.edits.byName[b0.name] = name; for (const k of Object.keys(ch.edits.at)) { const h = base.find(x => x.t0.toFixed(2) === k); if (h && h.name === b0.name) delete ch.edits.at[k]; } }
+  else ch.edits.at[b0.t0.toFixed(2)] = name;
+  bandCache.key = ""; c._ov = null; persist(c);
+}
 // ---------- band 2: one band per clip, shaped by the player; "My band" is the player's own starting point
 const MYBAND_KEY = "lp:myband";
 function newBand(c) {
@@ -4882,7 +5063,8 @@ function newBand(c) {
   return (c.band = { style: my?.style || "auto", set: { ...(my?.set || {}) }, parts: { drums: true, bass: true, keys: true, extra: true }, gain: 0.8, vertical: true, lv: { drums: 1, bass: 1, keys: 1, extra: 1, ...(my?.lv || {}) } });
 }
 const bandStyleOf = (c, A) => { const b = c.band; return b.style === "auto" ? (b.ai?.style || LickBand.heuristicStyle(c.raw, A)) : b.style; };
-const bandSet = (c, A) => { const b = c.band, set = { ...b.set }; if (b.style === "auto" && b.ai?.extra && !set.extra) set.extra = b.ai.extra; return LickBand.settle(bandStyleOf(c, A), set); };
+// singers start from a gentle piano bed
+const bandSet = (c, A) => { const b = c.band, set = { ...(isSinger(c) ? { groove: "simple", keys: "piano", play: "held" } : {}), ...b.set }; if (b.style === "auto" && b.ai?.extra && !set.extra) set.extra = b.ai.extra; return LickBand.settle(bandStyleOf(c, A), set); };
 const EXTRA_NAME = { strings: "Strings", brass: "Brass", gtr: "Guitar", none: "Extra" };
 // what's already playing in the take: the band leaves those parts out (the player can correct it)
 const HEARD = [["drums", "Drums", 0.5], ["bass", "Bass", 0.6], ["guitar", "Guitar", 0.7], ["keys", "Keys", 0.75], ["strings", "Strings", 0.7], ["brass", "Horns", 0.85], ["vocals", "Vocals", 0.35]];
@@ -4999,6 +5181,7 @@ function bandPanel(c) {
   const A = bandA(c), styles = LickBand.STYLES, auto = LickBand.heuristicStyle(c.raw, A);
   const picked = b.style === "auto" ? (b.ai?.style || auto) : b.style, set = bandSet(c, A);
   if (!b.heard || b.heard.key !== `${c.key}|${w.s.toFixed(2)}|${w.e.toFixed(2)}`) setTimeout(() => bandHear(c), 0);
+  if (!b.ch?.mel || b.ch.mel.key !== `${c.key}|${w.s.toFixed(2)}|${w.e.toFixed(2)}`) setTimeout(() => bandMelody(c), 30);
   const H = A ? LickMusic.harmonyPlan(c.raw, A) : [], names = []; for (const h of H) if (names[names.length - 1] !== h.name) names.push(h.name);
   const strip = (k, ic, l, on, val, dis) => `<div class="mxrow${on ? "" : " muted"}${dis ? " dis" : ""}">${stk(ic, k === "take" ? "volt" : k === "drums" ? "hot" : k === "bass" ? "cyan" : "blaze", k === "bass" ? "r2" : "")}<span class="mxn">${l}</span>
       <button type="button" class="mute" data-mute="${k}" aria-pressed="${!on}" ${dis ? "disabled" : ""} aria-label="${on ? "Mute" : "Unmute"} ${l}">${on ? "On" : "Off"}</button>
@@ -5018,7 +5201,7 @@ function bandPanel(c) {
       <div class="status" id="bandStatus" aria-live="polite">${esc(c.bandStatus || "")}</div></div>
     <div class="sndcard"><div class="sndhead"><h3>${icon("i-drum")}Your band</h3>${store.get(MYBAND_KEY) ? `<span class="mybadge">${icon("i-star")}My band</span>` : ""}</div>
     <div class="band-facts"><span class="fact">Tempo <b>${A?.pulse ? A.bpm + " BPM" : "free time"}</b></span><span class="fact">Feel <b>${A?.pulse ? (A.swing > 0.58 ? "swung" : "straight") : "rubato"}${A?.meter === 3 ? ", 3/4" : ""}</b></span><span class="fact">Key <b>${esc(c.raw.info?.key || "?")}</b></span></div>
-    ${names.length ? `<div class="chordline"><span>Chords it heard</span><div>${chordLoop(names)}</div></div>` : ""}
+    ${chordsCard(c, A)}
     <div class="heard"><div class="heardh">${icon("i-ear")}<b>Already playing</b><span>${b.heard?.busy ? "Listening…" : b.heard?.p ? "Tap to correct" : ""}</span></div>
       <div class="heardchips" role="group" aria-label="Instruments already in your take">${HEARD.filter(([k]) => k !== "vocals" || b.heard?.deep).map(([k, l]) => `<button type="button" data-heard="${k}" aria-pressed="${heardOn(c, k)}">${l}</button>`).join("")}</div>
       <p class="hint">${heardText(c)}</p></div>
@@ -5157,15 +5340,15 @@ let mixNodes = {};
 let bandPlaying = false, bandNodes = [], bandGainNode = null, bandSync = 0, bandCache = { key: "", res: null, p: null };
 function bandKey(c) {
   const w = bandWindow(c), b = c.band, A = bandA(c);
-  const style = bandStyleOf(c, A), set = bandSet(c, A);
+  const style = bandStyleOf(c, A), set = bandSet(c, A), harmony = A ? bandChords(c, A) : null;
   const parts = { drums: !(A && !A.pulse), bass: true, keys: true, extra: set.extra !== "none" };   // render every track; the mixer mutes and levels them
-  return { w, style, set, parts, A, key: JSON.stringify([c.key || c.id, w.s, w.e, style, parts, set]) };
+  return { w, style, set, parts, A, harmony, key: JSON.stringify([c.key || c.id, w.s, w.e, style, parts, set, (harmony || []).map(h => h.name + "@" + h.t0.toFixed(2))]) };
 }
 // One render per setting, shared by prefetch, preview and save.
 function bandRender(c) {
-  const { w, style, set, parts, A, key } = bandKey(c);
+  const { w, style, set, parts, A, harmony, key } = bandKey(c);
   if (bandCache.key !== key) {
-    const p = LickBand.render(c.raw, w.s, w.e, { style, set, parts, analysis: A }).then(res => { if (bandCache.key === key) bandCache.res = res; return res; });
+    const p = LickBand.render(c.raw, w.s, w.e, { style, set, parts, analysis: A, harmony }).then(res => { if (bandCache.key === key) bandCache.res = res; return res; });
     p.catch(() => { if (bandCache.key === key) bandCache = { key: "", res: null, p: null }; });
     bandCache = { key, res: null, p };
   }
@@ -5757,6 +5940,26 @@ document.addEventListener("click", e => {
   if (d.act === "playall") { c.src = "clean"; renderSrc(c); playRanges(c, onParts(c).map(p => [p.start, p.end]), "Clean cut"); return; }
   if (d.act === "rescue") { if (c.raw) rescue(c); return; }
   if (d.bstyle) { stopBand(); c.band.style = d.bstyle; if (d.bstyle === "auto" && sampler && !c.band.ai) bandAi(c); else renderStudio(); return; }
+  if (d.chsel != null) { const ch = chOf(c), t = +d.chsel; ch.selT = ch.selT != null && Math.abs(ch.selT - t) < 0.02 ? null : t; renderStudio(); if (ch.selT != null) { const w = bandWindow(c); const h = bandChords(c).find(x => Math.abs(x.t0 - t) < 0.02); if (h && w) playRanges(c, [[Math.max(w.s, h.t0), Math.min(w.e, h.t1, h.t0 + 4)]], h.name); } return; }
+  if (d.chsrc) { const ch = chOf(c); stopBand(); ch.src = d.chsrc; ch.selT = null; bandCache.key = ""; c._ov = null; persist(c); renderStudio(); return; }
+  if (d.chscope) { chOf(c).scope = d.chscope; renderStudio(); return; }
+  if (d.chq || d.chroot != null || d.chset) {
+    const ch = chOf(c), h = bandChords(c).find(x => Math.abs(x.t0 - ch.selT) < 0.02); if (!h) return;
+    const k = LickMusic.parseChord(h.name) || LickMusic.chord(h.root, "5");
+    const nm = d.chset || (d.chq ? LickMusic.chord(k.root, d.chq).name : LickMusic.chord(+d.chroot, k.q).name);
+    const was = bandPlaying; stopBand(); setChord(c, nm); renderStudio(); if (was) bandPreview(c); return;
+  }
+  if (d.act === "ch-close") { chOf(c).selT = null; renderStudio(); return; }
+  if (d.act === "ch-undo") { const ch = chOf(c), base = chordBase(c, bandA(c)).find(x => Math.abs(x.t0 - ch.selT) < 0.02); if (base) { delete ch.edits.at[base.t0.toFixed(2)]; delete ch.edits.byName[base.name]; } bandCache.key = ""; c._ov = null; stopBand(); persist(c); renderStudio(); return; }
+  if (d.act === "ch-reset") { const ch = chOf(c); ch.edits = { at: {}, byName: {} }; ch.selT = null; bandCache.key = ""; c._ov = null; stopBand(); persist(c); renderStudio(); return; }
+  if (d.act === "ch-rich" || d.act === "ch-simple") {
+    const ch = chOf(c), A = bandA(c), base = chordBase(c, A), mel = ch.src === "melody" && ch.mel?.keyRoot != null, kr = mel ? ch.mel.keyRoot : c.raw.info?.keyRoot, mn = mel ? ch.mel.minor : c.raw.info?.keyMode === "min";
+    const K = kr != null ? LickMusic.keyChords(kr, mn) : [], dom = ["blues", "funk"].includes(bandStyleOf(c, A));   // blues and funk: dominant sevenths on every major chord
+    ch.edits.at = {}; for (const h of base) { const k = LickMusic.parseChord(h.name); if (!k || k.q === "5" || k.q === "dim") continue;
+      const minorish = ["min", "m7"].includes(k.q), deg = K.find(x => x.root === k.root)?.deg;
+      ch.edits.byName[h.name] = d.act === "ch-simple" ? LickMusic.chord(k.root, minorish ? "min" : "maj").name : LickMusic.chord(k.root, minorish ? "m7" : deg === 4 || dom ? "7" : "maj7").name; }
+    bandCache.key = ""; c._ov = null; stopBand(); persist(c); renderStudio(); toast(d.act === "ch-rich" ? "Richer chords: sevenths where they fit the key." : "Simpler chords: plain major and minor."); return;
+  }
   if (d.bset) { const [k, v] = d.bset.split(":"), was = bandPlaying; stopBand(); const b = newBand(c); if (v === "auto") delete b.set[k]; else b.set[k] = v; if (k === "extra") { b.touched = b.touched || {}; b.touched.extra = true; b.parts.extra = v !== "none"; } persist(c); renderStudio(); if (was) bandPreview(c); return; }
   if (d.heard) { const b = newBand(c), k = d.heard; b.heard = b.heard || { key: "", p: null }; b.heard.fix = { ...(b.heard.fix || {}), [k]: !heardOn(c, k) }; b.touched = {}; applyHeard(c); stopBand(); renderStudio(); return; }
   if (d.act === "band-my-save") { const b = newBand(c); store.set(MYBAND_KEY, { style: b.style, set: { ...b.set }, lv: { ...b.lv } }); toast("Saved as My band. New clips start with it."); renderStudio(); return; }
