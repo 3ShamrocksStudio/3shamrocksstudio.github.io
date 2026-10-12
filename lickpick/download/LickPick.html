@@ -1310,7 +1310,106 @@ input[type=range]{min-height:44px}
 .row-btns>:only-child{grid-column:1/-1}
 .opt,.dtg,.seg button,.chipset button{min-width:0;overflow-wrap:anywhere}
 .beatwarn{display:flex;gap:8px;align-items:flex-start;margin:0;padding:10px;border-radius:12px;background:color-mix(in srgb,var(--volt) 14%,transparent);border:2px solid var(--volt);font-size:13px;line-height:1.35}.beatwarn svg.i{flex:none;width:18px;height:18px;color:var(--volt)}
+
+/* ================= 2.6 minimal: one idea per screen, motion that shows the way ================= */
+/* boot: the logo and nothing else, a short 90s-TV pop (colour split that settles into the brand shadow) */
+#boot{position:fixed;inset:0;z-index:999;display:grid;place-items:center;background:var(--stage);pointer-events:none;animation:btOut .38s cubic-bezier(.6,0,.4,1) 1.45s forwards}
+.bt-stage{display:flex;align-items:center;gap:14px}
+.bt-pick{width:84px;height:84px;transform-origin:50% 60%;animation:btPop .62s cubic-bezier(.2,1.6,.4,1) both,btSplit .9s steps(6,end) .1s both}
+.bt-word{font:400 48px/1 var(--display);color:var(--text);display:inline-flex;overflow:hidden;padding:4px 8px 6px 2px}
+.bt-word span,.bt-word b{display:inline-block;font-weight:400;animation:btSlide .5s cubic-bezier(.2,1.3,.4,1) both,btTxt .9s steps(5,end) both}
+.bt-word span{animation-delay:.28s,.28s}.bt-word b{color:var(--volt);animation-delay:.4s,.4s}
+@keyframes btPop{0%{transform:scale(0) rotate(-40deg)}100%{transform:scale(1) rotate(-8deg)}}
+@keyframes btSplit{0%{filter:drop-shadow(-9px 0 0 var(--cyan)) drop-shadow(9px 4px 0 var(--hot))}40%{filter:drop-shadow(6px -5px 0 var(--cyan)) drop-shadow(-6px 6px 0 var(--hot))}70%{filter:drop-shadow(-3px 2px 0 var(--cyan)) drop-shadow(4px 4px 0 var(--hot))}100%{filter:drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}}
+@keyframes btSlide{0%{transform:translateY(110%) skewX(-12deg)}100%{transform:none}}
+@keyframes btTxt{0%{text-shadow:-5px 0 0 var(--cyan),5px 3px 0 var(--hot)}60%{text-shadow:3px -2px 0 var(--cyan),-3px 3px 0 var(--hot)}100%{text-shadow:3px 3px 0 var(--hot)}}
+@keyframes btOut{to{opacity:0;transform:scale(1.04);visibility:hidden}}
+@media (prefers-reduced-motion:reduce){#boot{animation:btOut .2s ease .6s forwards}.bt-pick,.bt-word span,.bt-word b{animation:none}.bt-word{text-shadow:3px 3px 0 var(--hot)}}
+@media (max-width:360px){.bt-pick{width:66px;height:66px}.bt-word{font-size:38px}}
+
+/* welcome: lockup, one line, the buttons */
+.obline{margin:10px 0 0;text-align:center;color:var(--dim);font-weight:700;font-size:15px}
+.ob-first .ob-body{justify-content:center}
+
+/* home: one slim line, one action */
+.weekcard{display:none}
+.wkstrip{display:flex;align-items:center;gap:10px;margin:2px 0 12px}
+.wks{display:inline-flex;align-items:baseline;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--text);font:inherit;min-width:0}
+.wks b{font-weight:900;font-size:14px;white-space:nowrap}.wks em{font-style:normal;color:var(--mute);font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wks.on{border-color:var(--hot)}
+.wkplay{margin-left:auto;min-height:40px;padding:0 14px;box-shadow:none}
+.wkready{margin:0 0 14px;animation:lpBreath 2.6s ease-in-out infinite}
+.session{display:none}
+.quickbar{display:flex!important;flex-wrap:wrap;gap:8px;margin:0 0 12px;padding:0}
+.quickbar[hidden]{display:none!important}
+.qchip{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 14px;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--text);font:800 13.5px var(--body);white-space:nowrap}
+.qchip svg.i{width:17px;height:17px;color:var(--volt)}
+.qchip b{font-weight:900;color:var(--volt)}
+.qchip:disabled{opacity:.4}
+.qchip .protag{margin-left:2px}
+
+/* studio: words-only step bar with one sliding marker; no banner, no dividers, no stickers */
+.scrhead{display:none!important}
+#sStepbar{margin:0}
+.stepbar{position:relative;display:grid!important;grid-template-columns:repeat(4,1fr);gap:0;margin:0 -16px;padding:6px 16px 8px;background:var(--stage);border:0}
+.stepbar .sbm{position:absolute;top:6px;bottom:8px;left:16px;width:calc((100% - 32px)/4);border-radius:12px;background:var(--sc);box-shadow:3px 3px 0 var(--ink);transform:translateX(calc(var(--i,0) * 100%));transition:transform .34s cubic-bezier(.3,1.35,.5,1),background-color .3s}
+.stepbar .sb{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;min-width:0;min-height:42px;padding:0 4px;border:0!important;background:none!important;box-shadow:none!important;color:var(--mute);font:900 14.5px/1 var(--body);letter-spacing:.01em;transition:color .25s}
+.stepbar .sb svg.i,.stepbar .sb i{display:none!important}
+.stepbar .sb.on{color:var(--ink)}
+.stepbar .sb:not(.on):active{color:var(--text)}
+.sect{gap:12px;padding-top:4px}
+.sect+.sect{margin-top:0;padding-top:0;border-top:0}
+.secth{display:none}
+.dockbar:empty{display:none}
+.dockbar .dsrc em{font-style:normal;font-weight:800;color:var(--sc)}
+
+/* folds: one line each, open on tap */
+details.fold{margin-top:10px;border-radius:16px;background:var(--panel);border:2px solid var(--line);transition:border-color .2s}
+details.fold[open]{border-color:var(--sc)}
+details.fold>summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 16px;cursor:pointer;font:900 15px var(--body)}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary b{font-weight:900}
+details.fold>summary em{margin-left:auto;font-style:normal;font-weight:700;font-size:13px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
+details.fold>summary::after{content:"";flex:none;width:9px;height:9px;border-right:2.5px solid var(--mute);border-bottom:2.5px solid var(--mute);transform:rotate(45deg) translateY(-2px);transition:transform .25s}
+details.fold[open]>summary::after{transform:rotate(225deg) translateY(-2px)}
+details.fold>summary em+::after{margin-left:0}
+.foldin{display:flex;flex-direction:column;gap:12px;padding:2px 14px 16px;animation:lpUp .3s ease both}
+
+/* tips: off by default, one tap on (?) in the header shows them all */
+#studio:not(.tips) .panel .hint:not(.keep):not(.working),#studio:not(.tips) .panel .ai-why{display:none}
+.tipsbtn{margin-left:auto}.tipsbtn[aria-pressed=true]{background:var(--sc);color:var(--ink);border-color:var(--ink)}
+.s-top #sName{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* bottom bar: back, next (step colour), save */
+#sNav{display:flex;gap:10px;flex:1;min-width:0}
+#sNav .navb{flex:none;width:52px;padding:0;box-shadow:none}
+#sNav .navb svg.i{width:20px;height:20px}
+#sNav .navn{flex:1;min-width:0;background:var(--sc)!important;color:var(--ink)!important;border-color:var(--ink)!important;box-shadow:4px 4px 0 var(--ink)!important;font-weight:900}
+#sNav .navn svg.i{width:18px;height:18px;transform:rotate(180deg)}
+#sBar:not(.last) .exportbtn{flex:none;background:var(--panel);color:var(--text);border-color:var(--line);box-shadow:none;padding:0 16px}
+#sBar:not(.last) .exportbtn .ex-l em{display:none}
+#sBar.last .exportbtn{flex:1;animation:lpBreath 2.6s ease-in-out infinite}
+
+/* motion: content rises in, the next move breathes */
+.screen .panel>*{animation:lpUp .38s cubic-bezier(.2,.9,.3,1) both}
+.screen .panel>*:nth-child(2){animation-delay:.05s}.screen .panel>*:nth-child(3){animation-delay:.1s}.screen .panel>*:nth-child(4){animation-delay:.15s}.screen .panel>*:nth-child(n+5){animation-delay:.2s}
+@keyframes lpUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes lpBreath{0%,100%{transform:none}50%{transform:translate(-1px,-1px);box-shadow:6px 6px 0 var(--hot)}}
+
+@media (prefers-reduced-motion:reduce){.screen .panel>*,.foldin,.wkready,#sBar.last .exportbtn{animation:none}.stepbar .sbm{transition:none}}
+@media (max-width:360px){.stepbar .sb{font-size:13px}}
+#sBar.last #sNav{flex:none}
+/* no rule lines anywhere: space and colour separate things */
+.s-top,.sdock,.secth{border-bottom:0!important}
+.rate,.segrow .trimcap{border-top:0!important;padding-top:4px}
+.cut{border-bottom:0!important}
+.stepbar{border-top:0!important}
+details.fold>summary b{color:var(--text)}
+#studio:not(.tips) .wlegend,#studio:not(.tips) .sugs{display:none!important}
 </style>
+
+<div id="boot" aria-hidden="true"><div class="bt-stage"><svg class="bt-pick"><use href="#logo"/></svg><span class="bt-word"><span>Lick</span><b>Pick</b></span></div></div>
+<script>setTimeout(function(){var b=document.getElementById("boot");if(b)b.remove();},2100);</script>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -1506,7 +1605,7 @@ input[type=range]{min-height:44px}
   <div class="wrap">
     <div class="s-top">
       <button class="icon-btn" type="button" data-act="close" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button>
-      <h2 id="sName"></h2><span id="sPill"></span>
+      <h2 id="sName"></h2><button class="icon-btn tipsbtn" type="button" data-act="tips" aria-pressed="false" aria-label="Show tips"><svg class="i"><use href="#i-help"/></svg></button><span id="sPill" hidden></span>
     </div>
     <div class="sdock" id="sDock">
       <div class="stage" id="sStage"></div>
@@ -1519,7 +1618,7 @@ input[type=range]{min-height:44px}
     <div class="steps" id="sSteps"></div>
   </div>
   <div class="bar" id="sBar"><div class="in"><span class="snav" id="sNav"></span>
-    <button class="btn exportbtn" type="button" data-act="export-open"><svg class="i"><use href="#i-save"/></svg><span class="ex-l"><b>Export</b><em id="sExportWhat"></em></span></button>
+    <button class="btn exportbtn" type="button" data-act="export-open"><svg class="i"><use href="#i-save"/></svg><span class="ex-l"><b>Save</b><em id="sExportWhat"></em></span></button>
   </div></div>
 </div>
 
@@ -1560,12 +1659,12 @@ input[type=range]{min-height:44px}
     <div class="row2"><span><b>How picky</b></span>
       <span class="seg" id="picky"><button type="button" data-picky="0.25">Chill</button><button type="button" data-picky="0.5">Normal</button><button type="button" data-picky="0.8">Strict</button></span></div>
     <p class="hint">Trash is only suggested when a clip has no music at all. Your own edits are never changed.</p>
-    <p class="sfoot">Version 2.5 Beta · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. Never deletes.</p>
+    <p class="sfoot">Version 2.6 Beta · <svg class="i"><use href="#i-lock"/></svg> Clips stay on your phone. Never deletes.</p>
     <div class="studio-line"><img src="data:image/png;base64,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" alt="3Shamrocks Studio" width="226" height="33"><span>© 2026 3Shamrocks Studio. All rights reserved.</span></div>
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-12f"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_SND = "../app/snd/"; window.LP_BUILD = "file";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-12g"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_SND = "../app/snd/"; window.LP_BUILD = "file";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -2130,34 +2229,66 @@ input[type=range]{min-height:44px}
 /* Vertical short: re-encodes one window of the clip, center-cropped to 9:16 (max 1080x1920).
    Audio is copied untouched when the format allows. */
 (function (root) {
-  // Gain (dB) with a soft limiter so boosted peaks never clip.
-  function gainProcess(MB, gainDb, mix, s, fx = null, take = 1) {
-    const g = Math.pow(10, gainDb / 20) * take, T = 0.89;
-    let tBase = null; const chain = [];
-    const bandCh = mix ? [mix.buffer.getChannelData(0), mix.buffer.getChannelData(mix.buffer.numberOfChannels > 1 ? 1 : 0)] : null;
+  // ---------- Mastering: the take is never waveshaped. Loudness comes from clean gain; the rare peak that would
+  // pass -1 dBFS is caught by a look-ahead limiter that only turns the level down smoothly (no added harmonics).
+  // The lift is capped so the limiter never works more than LIM_MAX dB: a peaky take stays dynamic instead of squashed.
+  const CEIL = 0.89, LIM_MAX = 3;
+  function peakOf(chs) { let p = 0; for (const d of chs) for (let i = 0; i < d.length; i++) { const a = d[i] < 0 ? -d[i] : d[i]; if (a > p) p = a; } return p; }
+  // a high percentile of the peaks (ignores one stray click when choosing the lift)
+  function peakQ(chs, q = 0.9999) { const n = chs[0].length, blk = 256, pk = []; for (let i = 0; i < n; i += blk) { let m = 0; for (const d of chs) for (let j = i; j < Math.min(n, i + blk); j++) { const a = Math.abs(d[j]); if (a > m) m = a; } pk.push(m); } pk.sort((a, b) => a - b); return pk[Math.min(pk.length - 1, Math.floor(pk.length * q))] || 0; }
+  function limiter(chs, sr, ceil = CEIL) {
+    const n = chs[0].length, la = Math.max(1, Math.round(0.005 * sr)), rel = 1 - Math.exp(-1 / (0.15 * sr));
+    const need = new Float32Array(n); let any = false;
+    for (let i = 0; i < n; i++) { let a = 0; for (const d of chs) { const v = d[i] < 0 ? -d[i] : d[i]; if (v > a) a = v; } need[i] = a > ceil ? ceil / a : 1; if (a > ceil) any = true; }
+    if (!any) return 0;
+    // minimum over [i-la, i+la] (monotonic queue), then release, then a centred moving average of the same width
+    const h = new Float32Array(n), q = new Int32Array(n + 2 * la + 2); let qh = 0, qt = 0;
+    for (let i = -la; i < n; i++) { const j = i + la; if (j < n) { while (qt > qh && need[q[qt - 1]] >= need[j]) qt--; q[qt++] = j; } while (q[qh] < i - la) qh++; if (i >= 0) h[i] = need[q[qh]]; }
+    let g = 1; for (let i = 0; i < n; i++) { g = h[i] < g ? h[i] : g + (1 - g) * rel; if (g > h[i]) g = h[i]; h[i] = g; }
+    // every sample in the window of i already needs no more than need[i], so the average never lets a peak through
+    const pre = new Float64Array(n + 1); for (let i = 0; i < n; i++) pre[i + 1] = pre[i] + h[i];
+    let most = 1;
+    for (let i = 0; i < n; i++) { const a = Math.max(0, i - la), b = Math.min(n, i + la + 1), gg = (pre[b] - pre[a]) / (b - a); if (gg < most) most = gg; for (const d of chs) d[i] *= gg; }
+    for (const d of chs) for (let i = 0; i < n; i++) if (d[i] > ceil) d[i] = ceil; else if (d[i] < -ceil) d[i] = -ceil;   // safety only, never reached in practice
+    return -20 * Math.log10(most);
+  }
+  // lift by wantDb (capped so the limiter does at most LIM_MAX dB), then limit. In place. Returns what it did.
+  // a short fade in (masks a note still ringing at the cut) and a longer fade out (the last chord rings, then goes)
+  function fades(chs, sr, [fin, fout] = [0.02, 0.12]) {
+    const n = chs[0].length, a = Math.min(n, Math.round(fin * sr)), b = Math.min(n, Math.round(fout * sr));
+    for (const d of chs) { for (let i = 0; i < a; i++) d[i] *= Math.sin(Math.PI / 2 * i / a) ** 2; for (let i = 0; i < b; i++) d[n - 1 - i] *= Math.sin(Math.PI / 2 * i / b) ** 2; }
+  }
+  function master(chs, sr, wantDb = 0) {
+    const pk = peakQ(chs), room = pk > 0 ? 20 * Math.log10(CEIL / pk) + LIM_MAX : wantDb, lift = Math.max(-12, Math.min(wantDb, room));
+    if (Math.abs(lift) > 0.01) { const g = Math.pow(10, lift / 20); for (const d of chs) for (let i = 0; i < d.length; i++) d[i] *= g; }
+    const gr = limiter(chs, sr);
+    return { lift, gr };
+  }
+  // The whole range's sound, mastered once, then handed to the encoder by timestamp (look-ahead needs the whole thing).
+  async function masteredRange(MB, at, s, e, { gainDb = 0, mix = null, fx = null, take = 1, fade = undefined }) {
+    const sr = at.sampleRate, [l, r] = await decodeRange(MB, at, s, e), n = l.length;
+    if (Math.abs(take - 1) > 1e-4) for (const d of [l, r]) for (let i = 0; i < n; i++) d[i] *= take;
+    if (fx && root.LickFX) { const c0 = root.LickFX.channel(fx, sr, 0), c1 = root.LickFX.channel(fx, sr, 1); for (let i = 0; i < n; i++) { l[i] = c0(l[i]); r[i] = c1(r[i]); } }
+    if (mix) { const b0 = mix.buffer.getChannelData(0), b1 = mix.buffer.getChannelData(mix.buffer.numberOfChannels > 1 ? 1 : 0), bsr = mix.buffer.sampleRate;
+      for (let i = 0; i < n; i++) { const x = i / sr * bsr, k = Math.floor(x), f = x - k; if (k + 1 >= b0.length) break; l[i] += (b0[k] * (1 - f) + b0[k + 1] * f) * mix.gain; r[i] += (b1[k] * (1 - f) + b1[k + 1] * f) * mix.gain; } }
+    const info = master([l, r], sr, gainDb); fades([l, r], sr, fade);
+    return { l, r, sr, info };
+  }
+  function bufferProcess(MB, M, s) {
+    let tBase = null;
     return sample => {
       if (tBase === null) tBase = sample.timestamp >= s - 0.5 ? s : 0;   // timestamps may be clip-time or output-time
-      const n = sample.numberOfFrames, ch = sample.numberOfChannels;
-      const out = new Float32Array(n * ch);
-      for (let c = 0; c < ch; c++) {
-        const plane = out.subarray(c * n, (c + 1) * n);
-        sample.copyTo(plane, { planeIndex: c, format: "f32-planar" });
-        const bc = bandCh ? bandCh[Math.min(c, 1)] : null, bsr = mix ? mix.buffer.sampleRate : 0;
-        for (let i = 0; i < n; i++) {
-          let y = plane[i] * g;
-          if (fx && root.LickFX) { if (!chain[c]) chain[c] = root.LickFX.channel(fx, sample.sampleRate, c); y = chain[c](y); }
-          if (bc) { const x = (sample.timestamp - tBase + i / sample.sampleRate) * bsr, j = Math.floor(x), f = x - j; if (j >= 0 && j + 1 < bc.length) y += (bc[j] * (1 - f) + bc[j + 1] * f) * mix.gain; }
-          const a = Math.abs(y);
-          if (a > T) y = Math.sign(y) * (T + (1 - T) * Math.tanh((a - T) / (1 - T)));
-          plane[i] = y;
-        }
-      }
+      const n = sample.numberOfFrames, ch = sample.numberOfChannels, out = new Float32Array(n * ch), o0 = Math.round((sample.timestamp - tBase) * M.sr);
+      const rs = sample.sampleRate / M.sr;
+      for (let c = 0; c < ch; c++) { const src = c ? M.r : M.l, plane = out.subarray(c * n, (c + 1) * n);
+        if (Math.abs(rs - 1) < 1e-6) { for (let i = 0; i < n; i++) { const j = o0 + i; plane[i] = j >= 0 && j < src.length ? src[j] : 0; } }
+        else { const t0 = (sample.timestamp - tBase) * M.sr; for (let i = 0; i < n; i++) { const x = t0 + i / rs, j = Math.floor(x), f = x - j; plane[i] = j >= 0 && j + 1 < src.length ? src[j] * (1 - f) + src[j + 1] * f : 0; } } }
       return new MB.AudioSample({ data: out, format: "f32-planar", numberOfChannels: ch, sampleRate: sample.sampleRate, timestamp: sample.timestamp });
     };
   }
 
   // aspect: [w, h] to crop to (9:16, 4:5, 1:1, 16:9) or null for the original framing; pos: where the crop sits, 0 to 1
-  async function exportShort(MB, file, [s, e], onProgress = () => { }, { gainDb = 0, audioCodecs = ["aac"], mix = null, vertical = true, aspect, pos = 0.5, watermark = false, fx = null, take = 1, overlay = null } = {}) {
+  async function exportShort(MB, file, [s, e], onProgress = () => { }, { gainDb = 0, audioCodecs = ["aac"], mix = null, vertical = true, aspect, pos = 0.5, watermark = false, fx = null, take = 1, overlay = null, fade = undefined } = {}) {
     const input = new MB.Input({ source: new MB.BlobSource(file), formats: MB.ALL_FORMATS });
     const vt = await input.getPrimaryVideoTrack();
     if (!vt) throw Object.assign(new Error("no video"), { code: "no_video" });
@@ -2177,11 +2308,12 @@ input[type=range]{min-height:44px}
     // Level the loudness for social (about -14 LUFS) when this device can encode the audio; otherwise copy it as is.
     let audio = {}, leveled = false;
     const shape = !!fx || Math.abs(take - 1) > 0.01;
-    if (Math.abs(gainDb) >= 1 || mix || shape) {
+    {   // the sound is always mastered: level, clean peak limiting, fades (copying it would keep clicks at the cuts)
       const at = await input.getPrimaryAudioTrack();
       const acodec = at ? await MB.getFirstEncodableAudioCodec(mix || shape ? [...new Set([...audioCodecs, "opus"])] : audioCodecs, { numberOfChannels: Math.max(2, at.numberOfChannels), sampleRate: at.sampleRate }) : null;
-      if (acodec) { audio = { codec: acodec, quality: MB.QUALITY_HIGH, numberOfChannels: mix ? 2 : undefined, process: gainProcess(MB, gainDb, mix, s, fx, take) }; leveled = Math.abs(gainDb) >= 1; }
+      if (acodec) { const Mst = await masteredRange(MB, at, s, e, { gainDb, mix, fx, take, fade }); audio = { codec: acodec, quality: MB.QUALITY_HIGH, numberOfChannels: mix ? 2 : undefined, process: bufferProcess(MB, Mst, s) }; leveled = Math.abs(Mst.info.lift) >= 1; root.__lastMaster = Mst.info; }
       else if (mix || shape) throw Object.assign(new Error("no audio encoder"), { code: "no_audio_encoder" });
+      else audio = {};
     }
     const output = new MB.Output({ format: new MB.Mp4OutputFormat({ fastStart: "in-memory" }), target: new MB.BufferTarget() });
     const conv = await MB.Conversion.init({
@@ -2425,7 +2557,7 @@ input[type=range]{min-height:44px}
     for (let r = 0; r < starts.length; r++) { const o = Math.round(starts[r] * sr), stop = r + 1 < starts.length ? Math.round(starts[r + 1] * sr) : N;
       for (let i = Math.max(0, o); i < N; i++) { const x = (i - o) / sr * bsr, k = Math.floor(x), f = x - k; if (k + 1 >= b0.length) break; const fade = r + 1 < starts.length && i > stop - 64 ? Math.max(0, (stop + 64 - i) / 128) : 1; L[i] += (b0[k] * (1 - f) + b0[k + 1] * f) * bed.gain * fade; R[i] += (b1[k] * (1 - f) + b1[k + 1] * f) * bed.gain * fade; } }
   }
-  async function exportMulti(MB, file, segs, onProgress = () => { }, { xfade = 0.12, gainDb = 0, aspect = null, pos = 0.5, fx = null, take = 1, overlay = null, tuneCents = 0, fps = 30, bed = null, watermark = false } = {}) {
+  async function exportMulti(MB, file, segs, onProgress = () => { }, { xfade = 0.12, gainDb = 0, aspect = null, pos = 0.5, fx = null, take = 1, overlay = null, tuneCents = 0, fps = 30, bed = null, watermark = false, fade = undefined } = {}) {
     const input = new MB.Input({ source: new MB.BlobSource(file), formats: MB.ALL_FORMATS });
     const vt = await input.getPrimaryVideoTrack(), at = await input.getPrimaryAudioTrack();
     if (!vt) throw Object.assign(new Error("no video"), { code: "no_video" });
@@ -2444,10 +2576,10 @@ input[type=range]{min-height:44px}
     // ---- sound
     let abuf = null;
     if (at) {
-      const sr = at.sampleRate, g0 = Math.pow(10, gainDb / 20) * take;
-      const { L, R, N } = await assemble((a, b) => decodeRange(MB, at, a, b), segs, sr, { xfade, tuneCents, gain: g0, fx, onPart: i => onProgress(0.25 * (i + 1) / segs.length) });
+      const sr = at.sampleRate;
+      const { L, R, N } = await assemble((a, b) => decodeRange(MB, at, a, b), segs, sr, { xfade, tuneCents, gain: take, fx, onPart: i => onProgress(0.25 * (i + 1) / segs.length) });
       if (bed) addBed(L, R, sr, bed, bedStarts(segs, offs));
-      const Tq = 0.89; for (const d of [L, R]) for (let i = 0; i < N; i++) { const a = Math.abs(d[i]); if (a > Tq) d[i] = Math.sign(d[i]) * (Tq + (1 - Tq) * Math.tanh((a - Tq) / (1 - Tq))); }
+      root.__lastMaster = master([L, R], sr, gainDb); fades([L, R], sr, fade);
       const ctx = new OfflineAudioContext(2, 1, sr); abuf = ctx.createBuffer(2, N, sr); abuf.copyToChannel(L, 0); abuf.copyToChannel(R, 1);
     }
     // ---- picture
@@ -2484,7 +2616,7 @@ input[type=range]{min-height:44px}
   // ---------- layers: several recordings of the same song played together, split screen, one mix.
   // items: [{ file, s, gain }] all running for `dur` seconds from their own s. The first item is the main take.
   // layout: "auto" picks rows for tall frames and columns for wide ones; 3 = one big on top + two below; 4 = 2x2.
-  async function exportLayers(MB, items, dur, onProgress = () => { }, { aspect = [9, 16], bed = null, watermark = false, overlay = null, fx = null, fps = 30, gainDb = 0 } = {}) {
+  async function exportLayers(MB, items, dur, onProgress = () => { }, { aspect = [9, 16], bed = null, watermark = false, overlay = null, fx = null, fps = 30, gainDb = 0, fade = undefined } = {}) {
     const ins = [], vts = [], ats = [];
     for (const it of items) { const input = new MB.Input({ source: new MB.BlobSource(it.file), formats: MB.ALL_FORMATS }); ins.push(input); vts.push(await input.getPrimaryVideoTrack()); ats.push(await input.getPrimaryAudioTrack()); }
     const ratio = aspect ? aspect[0] / aspect[1] : (vts[0].displayWidth / vts[0].displayHeight);
@@ -2505,13 +2637,12 @@ input[type=range]{min-height:44px}
       if (!ats[i]) continue; const it = items[i], s0 = Math.max(0, it.s), lead = Math.round((s0 - it.s) * sr); let [l, r] = await decodeRange(MB, ats[i], s0, it.s + dur);   // a layer can join a little after the main take starts
       const rs = ats[i].sampleRate / sr, chain = i === 0 && fx && root.LickFX ? [root.LickFX.channel(fx, ats[i].sampleRate, 0), root.LickFX.channel(fx, ats[i].sampleRate, 1)] : null;
       if (chain) { for (let j = 0; j < l.length; j++) { l[j] = chain[0](l[j]); r[j] = chain[1](r[j]); } }
-      const pan = n > 1 ? (i % 2 ? 0.18 : -0.18) * (i ? 1 : 0) : 0, gl = (it.gain ?? 1) * g0 * (1 - pan), gr = (it.gain ?? 1) * g0 * (1 + pan);
+      const pan = n > 1 ? (i % 2 ? 0.18 : -0.18) * (i ? 1 : 0) : 0, gl = (it.gain ?? 1) * (1 - pan), gr = (it.gain ?? 1) * (1 + pan);
       for (let j = lead; j < N; j++) { const x = (j - lead) * rs, k = Math.floor(x), f = x - k; if (k + 1 >= l.length) break; L[j] += (l[k] * (1 - f) + l[k + 1] * f) * gl; R[j] += (r[k] * (1 - f) + r[k + 1] * f) * gr; }
       onProgress(0.2 * (i + 1) / items.length);
     }
     if (bed) { const b0 = bed.buffer.getChannelData(0), b1 = bed.buffer.getChannelData(bed.buffer.numberOfChannels > 1 ? 1 : 0), bsr = bed.buffer.sampleRate; for (let i = 0; i < N; i++) { const x = i / sr * bsr, k = Math.floor(x), f = x - k; if (k + 1 >= b0.length) break; L[i] += (b0[k] * (1 - f) + b0[k + 1] * f) * bed.gain; R[i] += (b1[k] * (1 - f) + b1[k + 1] * f) * bed.gain; } }
-    let pk = 0; for (let i = 0; i < N; i++) pk = Math.max(pk, Math.abs(L[i]), Math.abs(R[i])); const norm = pk > 0.95 ? 0.95 / pk : 1;
-    const Tq = 0.89; for (const d of [L, R]) for (let i = 0; i < N; i++) { let v = d[i] * norm; const a = Math.abs(v); if (a > Tq) v = Math.sign(v) * (Tq + (1 - Tq) * Math.tanh((a - Tq) / (1 - Tq))); d[i] = v; }
+    root.__lastMaster = master([L, R], sr, gainDb); fades([L, R], sr, fade);
     const actx = new OfflineAudioContext(2, 1, sr), abuf = actx.createBuffer(2, N, sr); abuf.copyToChannel(L, 0); abuf.copyToChannel(R, 1);
     // picture: each layer cropped to fill its cell, a thin ink line between cells
     const output = new MB.Output({ format: new MB.Mp4OutputFormat({ fastStart: "in-memory" }), target: new MB.BufferTarget() });
@@ -2538,7 +2669,7 @@ input[type=range]{min-height:44px}
     await asrc.add(abuf); await output.finalize(); onProgress(1);
     return { blob: new Blob([output.target.buffer], { type: "video/mp4" }), width: outW, height: outH, duration: dur };
   }
-  root.ClipExporter = Object.assign(root.ClipExporter || {}, { assemble, timeline, warpAudio, warpSrc, warpDst, bedStarts, addBed, exportLayers, previewCopy, exportShort, exportMulti, pitchShift, bestWindow, levelGain, analyzeVideo });
+  root.ClipExporter = Object.assign(root.ClipExporter || {}, { master, limiter, peakOf, assemble, timeline, warpAudio, warpSrc, warpDst, bedStarts, addBed, exportLayers, previewCopy, exportShort, exportMulti, pitchShift, bestWindow, levelGain, analyzeVideo });
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* Studio polish: one sound chain, two engines. Export runs it sample by sample (below);
@@ -2630,10 +2761,8 @@ input[type=range]{min-height:44px}
     for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3.2); }
     conv.buffer = ir;
     let node = input; for (const x of [hp, ...bands, comp, mk]) { node.connect(x); node = x; }
-    // the same soft limiter export uses, so the meter shows what you'll save
-    const lim = ctx.createWaveShaper(), K = 2049, cur = new Float32Array(K), T = 0.89;
-    for (let i = 0; i < K; i++) { const x = (i / (K - 1)) * 2 - 1, ax = Math.abs(x); cur[i] = ax > T ? Math.sign(x) * (T + (1 - T) * Math.tanh((ax - T) / (1 - T))) : x; }
-    lim.curve = cur; lim.oversample = "2x";
+    // no waveshaper: peaks are caught by the app's master limiter, like the save's look-ahead limiter (clean, no added harmonics)
+    const lim = ctx.createGain();
     node.connect(dry); node.connect(conv); conv.connect(wet); dry.connect(lim); wet.connect(lim); lim.connect(output);
     const P = (a, v) => { try { a.setTargetAtTime(v, ctx.currentTime, 0.015); } catch { a.value = v; } };
     function set(fx2) {
@@ -3085,7 +3214,7 @@ input[type=range]{min-height:44px}
     // context: the neighbours (music comes in phrases, handling in bursts)
     return out.map((v, i) => { const nb = [-2, -1, 1, 2].map(d => out[Math.max(0, Math.min(n - 1, i + d))]); return [...v, nb.reduce((a, x) => a + x[1], 0) / 4, nb.reduce((a, x) => a + x[0], 0) / 4, nb.reduce((a, x) => a + x[3], 0) / 4]; });
   }
-  let MUS_W = [-1.4533, 4.3693, 2.9497, 1.9362, 0.5168, -2.6154, 4.0007, -10.0278, 8.6054, 6.9589, 0.6035], MUS_PEN = 1.2, TRIM = [0.7, 0.5], CLEAN_W = [3, 1.5];   // [bias, ...weights]; null = not trained yet: everything counts as music
+  let HOME_W = [0.02, 0.03], EDGES = true; let MUS_W = [-1.4533, 4.3693, 2.9497, 1.9362, 0.5168, -2.6154, 4.0007, -10.0278, 8.6054, 6.9589, 0.6035], MUS_PEN = 1.2, TRIM = [0.7, 0.5], CLEAN_W = [3, 1.5];   // [bias, ...weights]; null = not trained yet: everything counts as music
   function musicness(raw) { if (!MUS_W) return new Array(raw.loud.length).fill(1); if (raw._mus) return raw._mus; const F = cellFeats(raw); return (raw._mus = F.map(x => 1 / (1 + Math.exp(-(MUS_W[0] + x.reduce((a, v, j) => a + v * MUS_W[j + 1], 0)))))); }
   function pickSetup(raw, parts, len) {
     const loud = raw.loud || [], n = loud.length, on = raw.onsetQ || [], fr = raw.frameRate || 21.5;
@@ -3131,7 +3260,7 @@ input[type=range]{min-height:44px}
     return { loud, act, clar, soft, offKey, cell, rL, rA, rC, lo, hi, target, cands, raw, mus, winClean };
   }
   function pickPart(X, ps, pe) {
-    const { loud, act, clar, soft, cell, rL, rA, rC, lo, hi, target, cands, raw, mus, winClean } = X;
+    const ps0 = ps, pe0 = pe; const { loud, act, clar, soft, cell, rL, rA, rC, lo, hi, target, cands, raw, mus, winClean } = X;
     // trim the part to where the music is: walk in from each end past cells that read as handling
     { const a0 = Math.floor(ps / CELL), b0 = Math.min(mus.length, Math.ceil(pe / CELL)); let a = a0, b = b0 - 1;
       const ok = i => mus[i] >= TRIM[0] && (mus[i + 1] ?? 1) >= TRIM[1] && (mus[i + 2] ?? 1) >= TRIM[1];
@@ -3140,9 +3269,12 @@ input[type=range]{min-height:44px}
       while (b > a && !okE(b)) b--;
       if (b > a) { ps = Math.max(ps, a * CELL); pe = Math.min(pe, (b + 1) * CELL); } }
     if (pe - ps < Math.min(8, lo)) return;
+    (X.music || (X.music = [])).push([ps, pe, ps0, pe0]);
 
       // boundaries: bar lines inside steady-groove zones, quiet gaps between phrases elsewhere
-      const zones = (pe - ps < 12 ? [{ s: ps, e: pe }] : pulseZones(raw, ps, pe)).map(z => ({ ...z, A: analyze(raw, z.s, z.e) })).filter(z => z.A.pulse && z.A.bars.length >= 2);
+      const zones = (pe - ps < 12 ? [{ s: ps, e: pe }] : pulseZones(raw, ps, pe)).map(z => ({ ...z, A: analyze(raw, z.s, z.e), K: keyAround(raw, z.s, z.e) })).filter(z => z.A.pulse && z.A.bars.length >= 2);
+      // home chord: a phrase that starts on the key's own chord, and above all one that comes home at the end, sounds finished
+      const homeAt = (z, t) => { if (!z?.K || !z.A.chords?.length) return false; const h = z.A.chords.find(x => t >= x.t0 - 0.05 && t < x.t1 - 0.05); return !!h && h.root === z.K.k && !!h.minor === (z.K.mode === "min"); };
       const inZone = t => zones.some(z => t > z.s + 0.5 && t < z.e - 0.5);
       const bounds = [ps, pe];
       for (const z of zones) for (const b of z.A.bars) { bounds.push(b.t0); if (b.t1 <= pe) bounds.push(b.t1); }
@@ -3168,8 +3300,9 @@ input[type=range]{min-height:44px}
         const tail = mean(cell.slice(Math.max(a, b - Math.round(barLen / CELL || 4)), b)), arc = tail >= mean(w) * 0.9 ? 0.02 : -0.03;
         const mw = mus.slice(a, b), notMus = mean(mw.map(v => 1 - v)), edge = Math.min(...mus.slice(Math.max(a, b - 2), b)), edgeS = Math.min(...mus.slice(a, Math.min(b, a + 2)));
         const wc = winClean(a, b);
-        const score = mean(w) + 0.06 * variety - 0.5 * drop + square + fit + arc - MUS_PEN * notMus - (edge < 0.4 ? 0.3 : 0) - (edgeS < 0.4 ? 0.2 : 0) - CLEAN_W[0] * wc.off - CLEAN_W[1] * wc.drift;
-        cands.push({ s, e, len: L, score, bars, pulse: !!z, bpm: z?.A.bpm || null, feat: { energy: mean(lw.map(rL)), activity: mean(act.slice(a, b).map(rA)), tone: mean(clar.slice(a, b).map(rC)), tight: 1 - mean(soft.slice(a, b)), variety } });
+        const home = (z && onBars ? (homeAt(z, s + 0.1) ? HOME_W[0] : 0) + (homeAt(z, e + 0.1) || homeAt(z, e - 0.3) ? HOME_W[1] : 0) : 0);
+        const score = mean(w) + home + 0.06 * variety - 0.5 * drop + square + fit + arc - MUS_PEN * notMus - (edge < 0.4 ? 0.3 : 0) - (edgeS < 0.4 ? 0.2 : 0) - CLEAN_W[0] * wc.off - CLEAN_W[1] * wc.drift;
+        cands.push({ s, e, len: L, score, bars, barLen: barLen || 0, pulse: !!z, bpm: z?.A.bpm || null, feat: { energy: mean(lw.map(rL)), activity: mean(act.slice(a, b).map(rA)), tone: mean(clar.slice(a, b).map(rC)), tight: 1 - mean(soft.slice(a, b)), variety } });
       }
       }
   // the musician's taste, learned from their ratings: nudges the ranking, never invents a phrase
@@ -3192,9 +3325,52 @@ input[type=range]{min-height:44px}
       if (out.some(o => Math.min(o.e, c.e) - Math.max(o.s, c.s) > 0.4 * Math.min(o.len, c.len))) continue;
       out.push(c); if (out.length === 3) break;
     }
-    for (const c of out) c.why = reasons(c);
+    for (const c of out) { if (EDGES) phraseEdges(X, c); else c.endAt = c.e; c.why = reasons(c); }
     out.curve = X.cell; out.lo = X.lo; out.stats = st;   // phrase strength per cell, so the app can show why this part won
     return out;
+  }
+  // ---------- cut like an editor: a Pick starts where the phrase starts and ends on the one, ringing out.
+  // Near the start of the music (within a bar or 3 s), the Pick starts with the music itself (the intro is the
+  // phrase start); otherwise at the first attack after a breath in the bar before, else just before the bar line.
+  // It ends on the next downbeat and lets it ring (RING s, faded on save), or with the music when its end is close.
+  const PRE = 0.12, RING = 1.4;
+  function attackIn(raw, a, b) {
+    const F = raw.onsetF, f2 = raw.fineRate; if (!F || !f2) return null;
+    const i0 = Math.max(0, Math.floor(a * f2)), i1 = Math.min(F.length - 1, Math.ceil(b * f2)); let ref = 0;
+    for (let i = i0; i <= Math.min(F.length - 1, i1 + Math.round(f2)); i++) ref = Math.max(ref, F[i]);
+    if (!ref) return null;
+    for (let i = i0 + 1; i < i1; i++) if (F[i] >= 0.3 * ref && F[i] >= F[i - 1] && F[i] >= F[i + 1]) return i / f2 + FINE_OFF - 0.01;
+    return null;
+  }
+  function phraseEdges(X, c) {
+    const R = (X.music || []).find(r => c.s >= r[0] - 0.05 && c.e <= r[1] + 0.05); if (!R) { c.endAt = c.e; return; }
+    const [m0r, m1r, ps0, pe0] = R, m0 = m0r > ps0 + 0.1 ? Math.min(c.s, m0r + 0.3) : m0r, m1 = m1r < pe0 - 0.1 ? Math.max(c.e, m1r - 0.5) : m1r, bar = c.barLen || 2.4, near = Math.max(3, bar + 0.25), loud = X.loud, pen = X.raw.penalty || {};
+    // only clean playing is added: no wrong notes, drift, stops or handling in the stretch
+    const bad = i => Math.max(X.soft[i] || 0, pen["stopped / restarted"]?.[i] || 0, pen["failed attempt, replayed after"]?.[i] || 0, pen["talking"]?.[i] || 0) > 0.25 || (X.mus[i] ?? 1) < 0.6;
+    const clean = (a, b) => { for (let i = Math.max(0, Math.floor(a / CELL)); i < Math.min(loud.length, Math.ceil(b / CELL)); i++) if (bad(i)) return false; return true; };
+    let s = c.s, e = c.e;
+    const a0 = Math.floor(c.s / CELL), b0 = Math.ceil(c.e / CELL), med = median(loud.slice(a0, b0)), mus = X.mus;
+    const solid = i => (mus[i] ?? 0) >= 0.9 && (mus[i + 1] ?? 0) >= 0.9 && (mus[i + 2] ?? 0) >= 0.85 && loud[i] > med - 12;
+    if (s - m0 <= near && clean(m0, s) && c.e - m0 <= X.hi + 1) {
+      // the music's own first phrase: the first solid half second (a thump or rustle before it is not the start)
+      let i = Math.floor(m0 / CELL); while (i < a0 && !solid(i)) i++;
+      const t = i * CELL, o = i < a0 ? attackIn(X.raw, Math.max(m0, t - 0.25), s + 0.3) : null;
+      if (o != null && o < s) s = Math.max(m0, t - 0.25, o - PRE); else s = Math.max(m0, s - 0.06);
+    }
+    else {
+      // a breath (a clearly quieter half second) in the bar before: start with the phrase that follows it
+      const a = Math.max(0, Math.floor((s - bar) / CELL)), b = Math.floor(s / CELL), lw = loud.slice(a, Math.min(loud.length, b + 4)), med = median(lw);
+      let g = -1; for (let i = b - 1; i >= a; i--) if (loud[i] < med - 9) { g = i; break; }
+      const o = g >= 0 ? attackIn(X.raw, (g + 1) * CELL - 0.1, s + 0.2) : null;
+      s = o != null && o < s + 0.15 ? Math.max(m0, o - PRE) : Math.max(m0, s - 0.06);
+    }
+    // ring out: until the sound has died away (or the music stops), never past RING
+    const ringTo = (t0, tmax) => { for (let i = Math.ceil(t0 / CELL); i * CELL < tmax; i++) if ((mus[i] ?? 0) < 0.7 || loud[i] < med - 15) return Math.max(t0, i * CELL); return tmax; };
+    let endAt = e;
+    if (m1 - e <= near && clean(e, m1) && m1 - s <= X.hi + 1.5) { let j = Math.ceil(m1 / CELL) - 1; while (j >= b0 && !((mus[j] ?? 0) >= 0.9 && (mus[j - 1] ?? 0) >= 0.9 && loud[j] > med - 12)) j--; endAt = Math.max(e, (j + 1) * CELL); e = ringTo(endAt, Math.min(m1, endAt + 0.5)); }
+    else e = clean(e, e + RING) ? ringTo(e, Math.min(m1, e + RING)) : Math.min(m1, e + 0.4);
+    if (e < endAt) e = endAt;
+    c.s = s; c.e = e; c.len = e - s; c.endAt = endAt;
   }
   function picks(raw, parts, len = "auto", taste = null) { const X = pickSetup(raw, parts, len); for (const [ps, pe] of parts) pickPart(X, ps, pe); return pickFinish(X, taste); }
   // the same features for any stretch (a segment the musician rates), on the same scale as the Picks
@@ -3523,7 +3699,7 @@ input[type=range]{min-height:44px}
   const spellPc = (pc, r, minor) => flatKey(r, minor) && !(r === 0 && !minor && pc === 6) && !(r === 9 && minor && pc === 6) ? FLAT[pc] : NOTES[pc];
   function spellChord(name, r, minor) { const m = /^([A-G]#?)(.*)$/.exec(name || ""); if (!m) return name; const pc = NOTES.indexOf(m[1]); return pc < 0 ? name : spellPc(pc, r, minor) + m[2]; }
 
-  root.LickMusic = { _getHypW: () => HYP_W, _unsure: v => { UNSURE = v; }, offbeat, _chMix: v => { CH_MIX = v; }, beatHyps, _hypW: w => { HYP_W = w; }, _pulseMin: v => { PULSE_MIN = v; }, guessTempo, keyLabel, spellChord, spellPc, flatKey, alignLayer, chromaSeq, QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, harmonyPlanOld, keyOfWindow, _hp: v => { HP = { ...HP, ...v }; }, _offShift: v => { OFF_SHIFT = v; }, _meterRep: v => { METER_REP = v; }, cellFeats, musicness, _musW: w => { MUS_W = w; }, _musPen: v => { MUS_PEN = v; }, _trim: v => { TRIM = v; }, _cleanW: v => { CLEAN_W = v; }, _cands: () => LAST_CANDS, offRatio, _getHp: () => HP, trackBeats, analyze, picks, chordsFor, NOTES };
+  root.LickMusic = { _getHypW: () => HYP_W, _unsure: v => { UNSURE = v; }, offbeat, _chMix: v => { CH_MIX = v; }, beatHyps, _hypW: w => { HYP_W = w; }, _pulseMin: v => { PULSE_MIN = v; }, guessTempo, keyLabel, spellChord, spellPc, flatKey, alignLayer, chromaSeq, QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, harmonyPlanOld, keyOfWindow, _hp: v => { HP = { ...HP, ...v }; }, _offShift: v => { OFF_SHIFT = v; }, _meterRep: v => { METER_REP = v; }, cellFeats, musicness, _musW: w => { MUS_W = w; }, _musPen: v => { MUS_PEN = v; }, _trim: v => { TRIM = v; }, _cleanW: v => { CLEAN_W = v; }, _homeW: v => { HOME_W = v; }, _edges: v => { EDGES = v; }, _cands: () => LAST_CANDS, offRatio, _getHp: () => HP, trackBeats, analyze, picks, chordsFor, NOTES };
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* LickBand 2: a real-sounding band that plays WITH the take.
@@ -3736,7 +3912,7 @@ input[type=range]{min-height:44px}
     const drift90 = (pts, a, p) => { const r = pts.map(([k, t]) => Math.abs(t - (a + p * k))).sort((x, y) => x - y); return r[Math.max(0, Math.floor(r.length * 0.9) - 1)]; };
     // 1) one tempo: every beat indexed on the median period (a missed beat skips an index, a stray one shares it)
     let pts = dedupe(B0.map(t => Math.round((t - B0[0]) / p0))), [a, p] = fitLine(pts), drift = drift90(pts, a, p);
-    let beats, steady = drift < 0.07;
+    let beats, steady = drift < 0.03;   // within 30 ms of one tempo: play it straight; more: follow the player's drift (smoothed)
     if (steady) { const K = pts[pts.length - 1][0] + 1; beats = Array.from({ length: K }, (_, k) => a + p * k); }
     else {
       // 2) a tempo that really moves: index gap by gap against the local period, then smooth the curve
@@ -3810,7 +3986,8 @@ input[type=range]{min-height:44px}
     const harmonyAt = t => H.find(h => t >= h.t0 - 1e-3 && t < h.t1) || H[H.length - 1];
     const lvl = { drums: 0.8, bass: 0.6, keys: set.keys === "pad" ? 0.24 : set.keys === "organ" ? 0.26 : 0.32, extra: XK === "brass" ? 0.26 : XK === "gtr" ? 0.24 : 0.2 };
     const bassM = (pc, near) => { let m = 28 + ((pc - 4 + 12) % 12); if (near != null) { while (m + 12 <= 48 && Math.abs(m + 12 - near) < Math.abs(m - near)) m += 12; } return m; };
-    const endT = e - 0.04, ok = t => t >= s - 0.005 && t < endT;
+    // the music ends on the one at endAt (the take then rings out to e): the band plays to there, then one last hit
+    const endT = Math.min(e, opts.endAt ?? e) - 0.04, ok = t => t >= s - 0.005 && t < endT;
     let prevV = null;
     const strike = (inst, pk, t, cut, pcs, gain, pan, opt = {}) => {
       if (!pk) return; const v = voicing(pcs, prevV); prevV = v;
@@ -3888,7 +4065,9 @@ input[type=range]{min-height:44px}
       // a clean ending: one last hit on the final bar line inside the window
       const last = G.bars.find(b => b.t0 >= endT - 0.1) || null, fin = last && last.t0 < e ? last.t0 : null;
       if (fin && parts.drums && KP) { put("drums", hit("kick", 1), fin, lvl.drums); put("drums", hit("crash", 1), fin, 0.55 * lvl.drums, -0.3); }
-      if (fin && parts.bass && BP) { const h = harmonyAt(fin), [buf, rate] = noteOf(BP, bassM(h.root)); put("bass", buf, fin, lvl.bass, 0, Math.min(e, fin + 1.2), 0.3, rate); }
+      if (fin && parts.bass && BP) { const h = harmonyAt(fin), [buf, rate] = noteOf(BP, bassM(h.root)); put("bass", buf, fin, lvl.bass, 0, Math.min(e, fin + 1.6), 0.4, rate); }
+      // and the keys hold that last chord while it rings
+      if (fin && parts.keys && KYP && set.play === "rhythm" && e - fin > 0.4) { const h = harmonyAt(fin); prevV = null; strike("keys", KYP, fin, Math.min(e, fin + 1.8), h.pcs, lvl.keys * 0.9, 0.2, { rel: 0.4 }); }
     } else if (parts.bass && BP) {
       // free time: soft bass under each chord, no drums
       for (const h of H) { const [buf, rate] = noteOf(BP, bassM(h.root)); for (let t = Math.max(s, h.t0); t < h.t1 - 0.2; t += 2.4) put("bass", buf, t, 0.55 * lvl.bass, 0, Math.min(h.t1, t + 2.4), 0.4, rate); }
@@ -3897,8 +4076,10 @@ input[type=range]{min-height:44px}
     const held = (inst, pk, gain, pan, opt) => {
       prevV = null;
       for (const h of H) {
-        const t0 = Math.max(s, h.t0), t1 = Math.min(e, h.t1); if (t1 - t0 < 0.15) continue;
-        const marks = [t0]; if (A.pulse) for (const b of A.bars) if (b.t0 > t0 + 0.3 && b.t0 < t1 - 0.3) marks.push(b.t0);
+        const E2 = endT + 0.04, t0 = Math.max(s, h.t0); if (t0 >= E2 - 0.05) continue;
+        const t1 = h.t1 >= E2 ? e : Math.min(e, h.t1); if (t1 - t0 < 0.15) continue;   // the chord on the last one rings to the end
+        const marks = [t0]; if (A.pulse) for (const b of A.bars) if (b.t0 > t0 + 0.3 && b.t0 < Math.min(t1, E2 + 0.05) - 0.3) marks.push(b.t0);
+        if (A.pulse && t1 > E2 + 0.3 && E2 > t0 + 0.3) marks.push(E2);   // strike the last chord on the one
         const sus = opt.sus || 2.6; for (let i = 0; i < marks.length; i++) { let t = marks[i]; const tEnd = i + 1 < marks.length ? marks[i + 1] : t1; while (t < tEnd - 0.05) { const segEnd = Math.min(tEnd, t + sus); strike(inst, pk, t, segEnd, h.pcs, (h.drone ? 0.85 : 1) * gain * (i === 0 && t === marks[0] ? 1 : 0.8), pan, { ...opt, atk: t === marks[i] ? (opt.atk || 0) : 0.25 }); t = segEnd; } }
       }
     };
@@ -4653,10 +4834,10 @@ function testerCard() {
 function weekCard() {
   const L = jamLog(), st = streakOf(L), r = rankOf(L.saves), ch = weekChallenge(), doneW = L.weeks.includes(ch.w), chDone = L.done[ch.w] != null;
   const ready = state.clips.filter(c => !c.example && c.status === "done" && pickOf(c) && !c.pickSaved).length;
-  return `<div class="weekcard"><div class="wkhead">${stk("i-bolt", st ? "hot" : "volt")}<span><b>${st ? `${st}-week streak` : "Start a streak"}</b><em>${esc(r.name)}${r.next ? ` · ${esc(RANKS[r.i][2])}` : ""}</em></span>${doneW ? `<i class="wkok">${icon("i-check")}This week</i>` : ""}</div>
-    <div class="wkch${chDone ? " done" : ""}"><span class="wkl">This week</span><b>${esc(ch.c[0])}</b><em>${chDone ? "Done. Nice." : esc(ch.c[1])}</em></div>
-    ${ready ? `<button class="btn wide" type="button" data-act="wk-ready">${icon("i-star")}${ready} Pick${ready > 1 ? "s" : ""} ready to save</button>` : ""}
-    ${store.get("lp:remind") ? "" : `<button class="linkbtn wkrem" type="button" data-act="wk-remind">${icon("i-clock")}Weekly jam reminder</button>`}</div>`;
+  // 2.6: one slim line (streak and stage, this week's challenge on tap) and, when there is one, the one thing to do
+  const withPick = state.clips.filter(c => !c.example && c.status === "done" && c.file && pickOf(c)).length; void chDone;
+  return `<div class="wkstrip"><button type="button" class="wks${doneW ? " on" : ""}" data-act="wk-info" aria-label="Streak and this week's challenge"><b>${st ? `${st}-week streak` : "Start a streak"}</b><em>${esc(r.name)}</em></button>${withPick ? `<button class="btn ghost sm wkplay" type="button" data-act="reel">${icon("i-play")}Play picks</button>` : ""}</div>
+    ${ready ? `<button class="btn wide wkready" type="button" data-act="wk-ready">${icon("i-star")}${ready} Pick${ready > 1 ? "s" : ""} ready to save</button>` : ""}`;
 }
 // after a save: the moment to give a reason to come back
 function afterSave(c) {
@@ -4877,8 +5058,10 @@ function pickOf(c) {
   const a = c.pickAdj?.[adjKey(c)]; if (!a || (!a.s && !a.e)) return p;
   const D = c.raw?.duration || p.e, s = Math.max(0, p.s + a.s), e = Math.min(D, p.e + a.e);
   if (e - s < 3) return p;
-  return { ...p, s, e, len: e - s, ranges: [[s, e]], bars: p.bars ? Math.max(1, Math.round((e - s) / barLen(p))) : 0, adj: true };
+  return { ...p, s, e, len: e - s, ranges: [[s, e]], bars: p.bars ? Math.max(1, Math.round((e - s) / barLen(p))) : 0, adj: true, endAt: p.endAt != null ? Math.max(s + 1, Math.min(e, p.endAt + (a.e || 0))) : e };
 }
+// fades on save: a Pick fades in quickly and lets its last chord ring out; anything else just avoids clicks
+function fadeFor(c, S) { if (S?.kind !== "pick") return [0.02, 0.12]; const pk = pickOf(c), ring = pk?.endAt != null ? pk.e - pk.endAt : 0; return [0.06, ring > 0.3 ? Math.min(1.1, ring) : 0.15]; }
 // What gets exported: the selected Pick, or the whole clean cut
 function srcOf(c) {
   const pk = pickOf(c), on = onParts(c);
@@ -4947,8 +5130,7 @@ function renderTop() {
   const done = real.filter(c => c.status === "done"), withPick = done.filter(c => c.file && pickOf(c));
   const played = done.reduce((t, c) => t + (c.raw?.duration || 0), 0), clean = done.reduce((t, c) => t + keptSeconds(c), 0);
   $("#top").innerHTML = `${testerCard()}${done.length ? weekCard() : ""}${counts.busy ? `<div class="working"><span class="pulse"></span>Checking ${counts.busy} clip${counts.busy > 1 ? "s" : ""}. Keep LickPick open.</div>` : ""}
-    ${done.length ? `<div class="session"><div class="sstats"><span><b>${fmt(played)}</b>played</span><span><b>${fmt(clean)}</b>clean</span></div>
-      <button class="btn reelbtn" type="button" data-act="reel" ${withPick.length ? "" : "disabled"}>${icon("i-play")}<span><b>Play my picks</b><em>${withPick.length} lick${withPick.length === 1 ? "" : "s"}, back to back</em></span></button></div>` : ""}`;
+`; void played; void clean; void withPick;
   $("#sortCta").innerHTML = "";
   renderQuickbar();
 }
@@ -4962,11 +5144,10 @@ function renderQuickbar() {
   const tidy = state.clips.filter(c => !c.example && c.status === "done" && (verdict(c) === "trash" || c.saved)).length;
   // Add/Record live on the + button and Cleanup in the bottom bar: this row is only what to do with the clips you have
   const b = (act, ic, label, sub, opts = {}) => `<button class="qb${opts.hot ? " hot" : ""}" type="button" data-act="${act}" ${opts.off ? "disabled" : ""}>${stk(ic, opts.c || "volt", opts.t)}<span><b>${label}</b><em>${sub}</em></span>${opts.pro && !isPro() ? `<i class="qpro" aria-label="Pro">${icon("i-bolt")}</i>` : ""}</button>`;
-  qb.hidden = !state.clips.some(c => !c.example);
-  const scanning = state.clips.some(c => verdict(c) === "busy"), none = scanning ? "after scan" : "none left";
-  qb.innerHTML = b("quicksort", "i-ear", "Review", rev ? `${rev} to check` : scanning ? "after scan" : "all done", { off: !rev, hot: rev > 0, c: "blaze" })
-    + b("save-picks", "i-star", "Save picks", picks ? `${picks} ready` : none.toLowerCase(), { off: !picks || !downloads || bulk.running, pro: picks > 1, c: "volt", t: "r2" })
-    + b("save-all", "i-cut", "Save cuts", cleans ? `${cleans} ready` : none.toLowerCase(), { off: !cleans || !downloads || bulk.running, pro: cleans > 1, c: "cyan" });
+  // 2.6: only what you can do right now, as slim chips (nothing to do = no row)
+  void b; const chip = (act, ic, label, n, pro) => `<button class="qchip" type="button" data-act="${act}" ${bulk.running || (act !== "quicksort" && !downloads) ? "disabled" : ""}>${icon(ic)}${label}<b>${n}</b>${pro && !isPro() ? `<i class="protag">PRO</i>` : ""}</button>`;
+  const items = [rev && chip("quicksort", "i-ear", "Listen & sort", rev), picks > 1 && chip("save-picks", "i-star", "Save all picks", picks, true), cleans && chip("save-all", "i-cut", "Save cuts", cleans, cleans > 1)].filter(Boolean);
+  qb.hidden = !items.length; qb.innerHTML = items.join("");
   const bl = $("#bulkLine"); if (bl) { bl.hidden = !bulk.msg; bl.innerHTML = bulk.running ? `<span class="pulse"></span>${esc(bulk.msg)}` : esc(bulk.msg); }
 }
 // Select mode: tap cards to pick several, then act on them together
@@ -5224,9 +5405,9 @@ function renderOnboard() {
   $("#onboard").classList.toggle("ob-first", step === "welcome");
   if (step === "welcome") {
     // one screen: show, don't tell. Four stickers, one privacy strip, then straight to your jams
+    // 2.6: the lockup, one line, the button. Nothing else.
     B.innerHTML = `<div class="ob-hero"><span class="lockup big" aria-label="LickPick"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></span></div><h1>Your best take, found.</h1>
-      <div class="obfeat">${[["i-star", "Best part", "volt"], ["i-drum", "Your band", "hot"], ["i-share", "Ready to post", "cyan"]].map(([ic, l, c], i) => `<div>${stk(ic, c, i % 2 ? "r2" : "")}<b>${l}</b></div>`).join("")}</div>
-      <div class="obsafe">${[["i-phone", "On your phone"], ["i-lock", "No account"], ["i-check", "Never deletes"]].map(([ic, l]) => `<span>${icon(ic)}${l}</span>`).join("")}</div>`;
+      <p class="obline">Private. On your phone. Free.</p>`;
     next.hidden = true; ctas.hidden = false;
   } else {
     const L = state.pickLen;
@@ -5314,6 +5495,7 @@ function closeQuickSort(finished) {
 let video = null, player = null, stopAt = null, queue = [], audioCtx = null, audioBuf = { id: null, buf: null };
 const cur = () => state.clips.find(c => c.id === state.openId);
 function openStudio(c, keep) {
+  { const tp = !!store.get("lp:tips"); $("#studio").classList.toggle("tips", tp); $(".tipsbtn")?.setAttribute("aria-pressed", tp); }
   if (c.status === "queued" || c.status === "listening") return;
   const reopen = keep && state.openId === c.id;
   if (!reopen) { c._tv = taste.ver; c._tFrozen = { ...tasteFor(), w: { ...taste.w } }; }   // what you're looking at stays put while you rate it
@@ -5410,16 +5592,18 @@ function stepInfo(c, k) {
 }
 // one screen per step; inside it, numbered sections in the order you work
 const SECT_IC = { choose: ["i-star", "volt"], fix: ["i-rescue", "volt"], arrange: ["i-loop", "volt"], band: ["i-drum", "hot"], sound: ["i-sliders", "hot"], layers: ["i-stack", "hot"] };
-const sect = (id, n, title, body, sub = "") => `<section class="sect sect-${id}" id="sec-${id}"><h3 class="secth">${stk(...(SECT_IC[id] || ["i-star", "volt"]))}<span>${title}${sub ? `<em>${sub}</em>` : ""}</span></h3>${body}</section>`;
+// 2.6: the step's main work is open with no header (the step tab already names it); the rest folds away, one line each
+const sect = (id, n, title, body, sub = "") => n === "a" ? `<section class="sect sect-${id}" id="sec-${id}">${body}</section>`
+  : `<details class="fold sect-${id}" id="sec-${id}" data-fold="${id}"${state.folds?.has(id) ? " open" : ""}><summary><b>${title}</b>${sub ? `<em>${sub}</em>` : ""}</summary><div class="foldin">${body}</div></details>`;
 function stepBody(c, k) {
   const pk = pickOf(c);
   switch (k) {
-    case "choose": return sect("choose", "a", "Your best take", choosePanel(c), "Tap to hear")
-      + sect("fix", "b", "Clean it up", fixPanel(c), "Notes, timing, tuning")
-      + sect("arrange", "c", "Length", arrangePanel(c), "Loop on the bar");
+    case "choose": return sect("choose", "a", "Your best take", choosePanel(c))
+      + sect("fix", "b", "Fix", fixPanel(c), esc(stepInfo(c, "fix")[0]))
+      + sect("arrange", "c", "Loop & tempo", arrangePanel(c), esc(stepInfo(c, "arrange")[0]));
     case "band": return sect("band", "a", "The band", bandPanel(c))
-      + (bandOn(c) ? sect("sound", "b", "Mix & sound", soundPanel(c)) : "")
-      + sect("layers", bandOn(c) ? "c" : "b", "Play along with you", pk ? `${layersCard(c)}${srcOf(c)?.plan && !srcOf(c).plan.simple ? `<p class="hint">Layers play with the Pick as recorded. Tightening, fixes and loops are left out when you save layers.</p>` : ""}` : `<p class="hint">Layers line up with your Pick. Choose a Pick first.</p>`, "Another take, side by side");
+      + (bandOn(c) ? sect("sound", "b", "Mix & studio sound", soundPanel(c), esc(fxLabel(c) || "Levels")) : "")
+      + sect("layers", "c", "Play along with you", pk ? `${layersCard(c)}${srcOf(c)?.plan && !srcOf(c).plan.simple ? `<p class="hint">Layers play with the Pick as recorded. Tightening, fixes and loops are left out when you save layers.</p>` : ""}` : `<p class="hint keep">Layers line up with your Pick. Choose a Pick first.</p>`, esc(stepInfo(c, "layers")[0]));
     case "look": return lookPanel(c);
     case "post": return postPanel(c);
   }
@@ -5444,14 +5628,18 @@ function renderStudio() {
   if (c.status === "error") box.innerHTML = `<p class="hint">LickPick ${esc(c.error)}. Watch it and decide yourself.</p>`;
   else if (c.status !== "done") box.innerHTML = `<p class="hint working"><span class="pulse"></span>Listening… the steps open when the scan is done.</p>`;
   else { const k = STEPS.some(x => x[0] === state.step) ? state.step : (state.step = "choose"), [title, sub] = STEP_TITLE[k], dir = state.stepDir || 0; state.stepDir = 0;
-    sbar.innerHTML = `<nav class="stepbar" role="tablist" aria-label="Steps">${STEPS.map(([kk, l, ic], i) => { const [, done] = stepInfo(c, kk); return `<button type="button" role="tab" class="sb${kk === k ? " on" : ""}${done ? " done" : ""}" data-step="${kk}" aria-selected="${kk === k}" aria-label="Step ${i + 1}: ${l}" data-sc="${kk}">${icon(done && kk !== k ? "i-check" : ic)}<span><i>${i + 1}</i>${l}</span></button>`; }).join("")}</nav>`;
-    box.innerHTML = `<section class="screen${dir > 0 ? " in-r" : dir < 0 ? " in-l" : ""}" id="sPanel" data-stepk="${k}"><header class="scrhead">${icon(STEPS.find(x => x[0] === k)[2])}<span class="scrn">Step ${STEPS.findIndex(x => x[0] === k) + 1} of ${STEPS.length}</span><h2>${title}</h2><p>${esc(sub)}</p><em class="scrsum">${esc(stepInfo(c, k)[0])}</em></header><div class="panel">${stepBody(c, k)}</div></section>`;
+    const ki = STEPS.findIndex(x => x[0] === k), prevI = +(sbar.dataset.i ?? ki); sbar.dataset.i = ki; void title; void sub;
+    sbar.innerHTML = `<nav class="stepbar" role="tablist" aria-label="Steps" style="--i:${prevI}"><i class="sbm" aria-hidden="true"></i>${STEPS.map(([kk, l], i) => `<button type="button" role="tab" class="sb${kk === k ? " on" : ""}" data-step="${kk}" aria-selected="${kk === k}" aria-label="Step ${i + 1} of ${STEPS.length}: ${l}" data-sc="${kk}">${l}</button>`).join("")}</nav>`;
+    requestAnimationFrame(() => sbar.firstElementChild?.style.setProperty("--i", ki));
+    box.innerHTML = `<section class="screen${dir > 0 ? " in-r" : dir < 0 ? " in-l" : ""}" id="sPanel" data-stepk="${k}"><div class="panel">${stepBody(c, k)}</div></section>`;
     if (lg && k === "choose") box.querySelector("#sPanel .panel")?.prepend(lg);
     setTimeout(() => { const on = sbar.querySelector(".sb.on"); if (on) { const bar = on.parentElement; bar.scrollTo({ left: on.offsetLeft - bar.clientWidth / 2 + on.clientWidth / 2, behavior: "smooth" }); } }, 0); }
   if (c.status === "done" && state.step === "band") { bandPrefetch(c); eqStartLoop(); }
-  if (state.sect && c.status === "done") { const id = state.sect; state.sect = null; setTimeout(() => { const el = document.getElementById("sec-" + id); if (el) el.scrollIntoView({ block: "start", behavior: "smooth" }); }, 60); }
+  if (state.sect && c.status === "done") { const id = state.sect; state.sect = null; setTimeout(() => { const el = document.getElementById("sec-" + id); if (el) { if (el.tagName === "DETAILS") { el.open = true; (state.folds ||= new Set()).add(id); } el.scrollIntoView({ block: "start", behavior: "smooth" }); } }, 60); }
   renderSrc(c);
 }
+// folds remember being open while you work
+document.addEventListener("toggle", e => { const d = e.target; if (!(d instanceof HTMLElement) || !d.matches?.("details.fold")) return; const f = (state.folds ||= new Set()); d.open ? f.add(d.dataset.fold) : f.delete(d.dataset.fold); }, true);
 // the video tucks into a thumbnail as you scroll into the steps, and comes back at the top
 let dockAuto = false;
 $("#studio").addEventListener("scroll", () => { const st = $("#studio"), want = dockAuto ? st.scrollTop > 8 : st.scrollTop > 60; if (want !== dockAuto) { dockAuto = want; $("#sDock")?.classList.toggle("mini", want || !!store.get("lp:dockmini")); setTimeout(drawWave, 20); } }, { passive: true });
@@ -5469,19 +5657,16 @@ function renderDock(c) {
   const el = $("#sDockBar"); if (!el || !c) return;
   const S = srcOf(c), o = c.status === "done" ? exOpts(c) : {}, nL = layersOn(c).length, mini = !!store.get("lp:dockmini");
   $("#sDock")?.classList.toggle("mini", mini || dockAuto);
-  el.innerHTML = c.status !== "done" || !S ? "" : `<span class="dsrc"><b>${esc(S.label)}</b><em id="dockStatus">${esc(c.bandStatus || `${fmt(S.len)}${S.plan?.T ? " · tight" : ""}${S.plan && S.plan.segs.length > S.plan.n ? " · fixed" : ""}`)}</em></span>
-    ${o.canBand ? `<button type="button" class="dtg" data-act="dock-band" aria-pressed="${bandOn(c)}">${icon("i-drum")}Band</button>` : ""}
-    ${nL && S.plan?.simple ? `<button type="button" class="dtg" data-act="dock-layers" aria-pressed="${o.layers !== false}">${icon("i-stack")}+${nL}</button>` : ""}
-    <button type="button" class="dtg sz" data-act="dock-size" aria-label="${mini ? "Bigger video" : "Smaller video"}">${mini ? "▴" : "▾"}</button>`;
+  void o; void nL;
+  el.innerHTML = c.status !== "done" || !S || !c.bandStatus ? "" : `<span class="dsrc"><em id="dockStatus">${esc(c.bandStatus)}</em></span>`;
 }
 function choosePanel(c) {
-  const parts = state.tab === "parts";
+  const parts = state.tab === "parts" || c.src === "clean";   // the Cut chip above is "all segments": one row, not two
   return `${!c.raw?.fluxA && c.file && !c.example ? `<div class="beatwarn">${icon("i-ear")}<span><b>Scanned by an older LickPick.</b> Re-listen to get the new beat and chord reading (much better on real guitar). Your settings stay.</span></div><button class="btn wide" type="button" data-act="relisten">${icon("i-ear")}Re-listen with LickPick 2.1</button>` : ""}<div class="srcbar" id="sSrc" role="radiogroup" aria-label="What to use"></div>
-    <span class="seg wide chsub" role="tablist"><button type="button" data-tab="pick" aria-pressed="${!parts}">Best phrase</button><button type="button" data-tab="parts" aria-pressed="${parts}">All segments</button></span>
     ${parts ? `<div class="transport"><button class="btn sm ghost cy" type="button" data-act="playall">${icon("i-play")}Clean cut</button><button class="btn sm ghost pk" type="button" data-act="rescue">${icon("i-rescue")}Keep from here</button></div>${segmentsPanel(c)}` : pickPanel(c)}`;
 }
 function fixPanel(c) {
-  const pk = pickOf(c); if (!pk) return `<p class="hint">Fixes work on a Pick. Choose one first.</p>`;
+  const pk = pickOf(c); if (!pk) return `<p class="hint keep">Fixes work on a Pick. Choose one first.</p>`;
   const A = c.raw?.chromaQ ? bandA(c) : null, T0 = A?.pulse && !A.forced ? LickBand.tightMap(A, 1) : null, on = !!tightFor(c);
   const ms = T0 ? Math.round(T0.maxShift * 1000) : 0;
   const tight = !T0 ? `<div class="fixcard"><h4>${icon("i-clock")}Timing</h4><p class="hint">${A?.forced ? "This Pick is in free time (no steady beat in your playing), so there's nothing to tighten. The band can still play a steady beat: see Band." : "No steady beat found in this Pick, so LickPick leaves your timing as played."}</p></div>`
@@ -5489,7 +5674,7 @@ function fixPanel(c) {
       <button type="button" class="btn ${on ? "" : "ghost"} wide" data-act="tight-toggle" aria-pressed="${on}">${on ? `${icon("i-check")}Tightened to ${T0.bpm} BPM` : `${icon("i-bolt")}Tighten timing`}</button>
       <p class="hint">Moves every beat onto one steady tempo. The sound is stretched between beats (pitch stays) and the picture moves with it. The band locks to the same grid.${T0.maxStretch > 0.12 ? ` Some beats move a lot (up to ${Math.round(T0.maxStretch * 100)}% stretch), so listen before you save.` : ""}</p></div>`;
   const pins = pinsIn(c, pk.s, pk.e), canFix = pins.some(p => !(c.patches || []).some(x => p.t >= x.bar[0] && p.t < x.bar[1]) && patchFor(c, p));
-  return `${c.raw?.chromaQ ? beatCard(c, A) : ""}${tight}${pinsHTML(c, pk)}${canFix || (T0 && !on) || (tuneOff(c) && !c.tune) ? `<button class="btn wide" type="button" data-act="fix-all">${icon("i-bolt")}Fix everything</button>` : ""}<p class="hint">Play (top) to hear the result. Every fix can be undone.</p>`;
+  return `${tight}${pinsHTML(c, pk)}${canFix || (T0 && !on) || (tuneOff(c) && !c.tune) ? `<button class="btn wide" type="button" data-act="fix-all">${icon("i-bolt")}Fix everything</button>` : ""}<p class="hint">Play (top) to hear the result. Every fix can be undone.</p>`;
 }
 function arrangePanel(c) {
   const pk = pickOf(c), S = srcOf(c), n = loopN(c), P = S?.kind === "pick" ? S.plan : null, rep = P ? P.repLen : pk?.len || 0;
@@ -5497,7 +5682,7 @@ function arrangePanel(c) {
   return `${pk ? `<div class="sndcard"><div class="sndhead"><h3>${icon("i-loop")}Loop the Pick</h3><span class="foldv">${n > 1 ? `×${n} · ${fmt(S?.len || rep * n)}` : "Off"}</span></div>
       <span class="seg wide" role="group" aria-label="Repeat">${[1, 2, 3, 4].map(k => `<button type="button" data-loop="${k}" aria-pressed="${n === k && c.src !== "mix"}">${k === 1 ? "Once" : `×${k}`}</button>`).join("")}</span>
       <span class="seg wide" role="group" aria-label="Fill a length">${[15, 30, 60].map(t => `<button type="button" data-loop="${fill(t)}" aria-pressed="false">Fill ${t}s</button>`).join("")}</span>
-      <p class="hint">Repeats Pick ${"ABC"[c.pickSel || 0]} on the bar with a short blend, so the beat never skips. The band keeps playing across every repeat.${rep && Math.abs(rep - pk.len) > 0.05 ? ` Tightened: each repeat is ${fmt(rep)}.` : ""}</p></div>` : `<p class="hint">Loops work on a Pick.</p>`}
+      <p class="hint">Repeats Pick ${"ABC"[c.pickSel || 0]} on the bar with a short blend, so the beat never skips. The band keeps playing across every repeat.${rep && Math.abs(rep - pk.len) > 0.05 ? ` Tightened: each repeat is ${fmt(rep)}.` : ""}</p></div>` : `<p class="hint keep">Loops work on a Pick.</p>`}
     ${pk && c.raw?.chromaQ ? (() => { const A = bandA(c), sp = speedOf(c); return A?.pulse && !A.forced ? `<div class="sndcard"><div class="sndhead"><h3>${icon("i-clock")}Tempo</h3><span class="foldv">${Math.round(A.bpm * sp)} BPM${sp !== 1 ? ` (${sp > 1 ? "+" : ""}${Math.round((sp - 1) * 100)}%)` : ""}</span></div>
       <span class="seg wide"><button type="button" data-speed="-">Slower</button><button type="button" data-speed="1" aria-pressed="${sp === 1}">As played</button><button type="button" data-speed="+">Faster</button></span>
       <p class="hint">Speeds the whole video up or slows it down (picture and sound together, pitch stays). The band plays at the new tempo.</p></div>` : ""; })() : ""}
@@ -5522,14 +5707,14 @@ function soundPanel(c) {
 }
 const optBtn = (k, on, ic, t, d, dis, extra = "") => `<button type="button" class="opt" role="switch" aria-checked="${on}" data-ex="${k}" ${dis ? "disabled" : ""}>${icon(ic)}<span class="grow"><strong>${t}${extra}</strong><em>${d}</em></span><span class="tgl"></span></button>`;
 function lookPanel(c) {
-  const S = srcOf(c); if (!S) return `<p class="hint">Choose a part first.</p>`;
+  const S = srcOf(c); if (!S) return `<p class="hint keep">Choose a part first.</p>`;
   const o = exOpts(c);
   return `${lookGroup(c, o)}${titleGroup(c, o, optBtn)}${one(S) ? ovGroup(c, S, o, optBtn) : ""}${ovOn(o) ? layGroup(o, S) : ""}<p class="hint">You see it on the video above as you change it.</p>`;
 }
 // the bar at the bottom: back, next step, and Export always one tap away
 function renderNav(c) {
   const nav = $("#sNav"); if (!nav || !c) return; const i = STEPS.findIndex(x => x[0] === state.step), next = STEPS[i + 1];
-  nav.innerHTML = `<button class="btn ghost navb" type="button" data-act="step-back" aria-label="Back" ${i <= 0 ? "disabled" : ""}>‹</button>${next ? `<button class="btn ghost navn" type="button" data-act="step-next">Next: ${next[1]} ›</button>` : ""}`;
+  nav.innerHTML = `<button class="btn ghost navb" type="button" data-act="step-back" aria-label="Back" ${i <= 0 ? "disabled" : ""}>${icon("i-back")}</button>${next ? `<button class="btn navn" type="button" data-act="step-next">${next[1]}<svg class="i"><use href="#i-back"/></svg></button>` : ""}`;
   $("#sBar")?.classList.toggle("last", !next);
 }
 function renderSrc(c) {
@@ -5579,7 +5764,7 @@ function pickPanel(c) {
   return `    ${!pk && c._pickJob ? `<div class="pickhero none"><p class="working"><span class="pulse"></span>Finding your best phrase…</p></div>` : pk ? `<div class="pickhero">
       <span class="pk-eyebrow">${icon("i-star")}${(c.pickSel || 0) ? "Your next best take" : "Your best take"}</span>
       <div class="pk-top"><span class="pk-tag">Pick ${"ABC"[c.pickSel || 0]}</span>${pk.why?.length ? `<span class="pk-why">${pk.why.map(esc).join(" · ")}</span>` : ""}${tasteK() > 0 && Math.abs(pk.tasteAdj || 0) > 0.004 ? `<button type="button" class="tuned" data-act="taste-open">${icon("i-bolt")}Tuned to you</button>` : ""}</div>
-      <div class="pk-big"><strong>${fmt(pk.len)}</strong><span>${fmt(pk.s)} → ${fmt(pk.e)}${pk.bars ? ` · ${pk.bars} bars` : ""}</span></div>
+      <div class="pk-big"><strong>${fmt(pk.len)}</strong><span>${fmt(pk.s)} → ${fmt(pk.e)}</span></div>
       ${rateStrip(c, pk.s, pk.e, `Rate Pick ${"ABC"[c.pickSel || 0]}`)}
       <div class="row-btns"><button class="btn ink" type="button" data-act="hero-play">${icon("i-play")}Play it</button><button class="btn ghost" type="button" data-act="reel-one">${icon("i-loop")}Loop it</button></div>
     </div>
@@ -5659,7 +5844,7 @@ function padJoins(segs, c) { const D = c.raw.duration; return segs.map((g, i) =>
 // ---------- the Pick as it will be saved: patched bars, tightened timing, repeated as a loop. Preview and export share it.
 // the take follows the band: with the band on, your beats lock to its grid and your off-beats take its feel (unless you say no)
 const speedOf = c => c.speed && Math.abs(c.speed - 1) > 0.001 ? c.speed : 1;
-function tightOn(c) { const t = c.tight; if (t?.user) return !!t.on || speedOf(c) !== 1; if (layersOn(c).length && c.ex?.layers !== false) return !!t?.on || speedOf(c) !== 1; return !!t?.on || (bandOn(c) && !!c.band?.beatOK) || speedOf(c) !== 1; }   // the take locks to the band once you've confirmed the beat
+function tightOn(c) { const t = c.tight; if (t?.user) return !!t.on || speedOf(c) !== 1; if (layersOn(c).length && c.ex?.layers !== false) return !!t?.on || speedOf(c) !== 1; return !!t?.on || speedOf(c) !== 1; }   // your sound is never stretched unless you ask: the band follows you
 function feelFor(c, A) { if (!bandOn(c) || c.feel === "mine" || !A) return null; const st = LickBand.STYLES[bandStyleOf(c, A)]; return st?.swing || (A.swing > 0.58 ? A.swing : 0.5); }
 function tightFor(c) {
   if (!c.raw?.chromaQ || !tightOn(c)) return null; const w = bandWindow(c); if (!w) return null;
@@ -5959,12 +6144,12 @@ async function doExport(c) {
     const M = await mb(); let n = 0;
     if (ASPECT[o.fmt]) {
       const [[s0, e0]] = S.ranges, gainDb = ClipExporter.levelGain(c.raw.loud, CELL, s0, e0), mark = !isPro(), A = ASPECT[o.fmt];   // free saves carry the LickPick signature; Pro is clean
-      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Making ${A[0]}:${A[1]}… ${Math.round(p * 100)}%`), { gainDb, watermark: mark, aspect: A, pos: o.pos, fx: fxOf(c), take: takeGain(c), overlay: ovFn });
+      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Making ${A[0]}:${A[1]}… ${Math.round(p * 100)}%`), { gainDb, watermark: mark, aspect: A, pos: o.pos, fx: fxOf(c), take: takeGain(c), overlay: ovFn, fade: fadeFor(c, S) });
       try { await offerFile(`${base}${tag}_${A[0]}x${A[1]}.mp4`, r.blob, say); n = 1; } catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
     } else if (S.ranges.length === 1 && !o.sep && (sndOf(c).fx || Math.abs(takeGain(c) - 1) > 0.01 || ovFn || look)) {
       // polish needs a re-encode of the sound; the picture keeps its framing
       const [[s0, e0]] = S.ranges;
-      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Polishing… ${Math.round(p * 100)}%`), { vertical: false, fx: fxOf(c), take: takeGain(c), overlay: ovFn, watermark: !isPro() });
+      const r = await ClipExporter.exportShort(M, c.file, [s0, e0], p => say(`Polishing… ${Math.round(p * 100)}%`), { vertical: false, fx: fxOf(c), take: takeGain(c), overlay: ovFn, watermark: !isPro(), fade: fadeFor(c, S) });
       try { await offerFile(`${base}${tag}${sndOf(c).fx ? "_" + (sndOf(c).fx === "custom" ? "mysound" : sndOf(c).fx) : ""}.mp4`, r.blob, say); n = 1; } catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
     } else {
       const jobs = o.sep ? S.ranges.map((r, i) => ({ name: `${base}_part${i + 1}`, ranges: [r] })) : [{ name: base + tag, ranges: S.ranges }];
@@ -6001,13 +6186,13 @@ async function multiSave(c, S, o, say, ovFn) {
     if (o.band) {
       say("Building the band…");
       if (S.kind === "pick") { const r = await bandRender(c); bed = bandMix(c, r); }
-      else { newBand(c); for (const g of segs) { const An = LickMusic.analyze(c.raw, g.s, g.e), r = await LickBand.render(c.raw, g.s, g.e, { style: bandStyleOf(c, An), set: bandSet(c, An), parts: { drums: !!An?.pulse, bass: true, keys: true, extra: true }, analysis: An, harmony: An ? chordsFor(c, g.s, g.e, An) : null }); g.mix = bandMix(c, r); } }
+      else { newBand(c); for (const g of segs) { const An = LickMusic.analyze(c.raw, g.s, g.e), r = await LickBand.render(c.raw, g.s, g.e, { style: bandStyleOf(c, An), set: bandSet(c, An), parts: { drums: !!An?.pulse, bass: true, keys: true, extra: true }, analysis: An, harmony: An ? chordsFor(c, g.s, g.e, An) : null }); c._btrim = bandTrimFor(c, r, g); g.mix = bandMix(c, r); } }
     }
     const tune = c.tune ? -tuneOff(c) : 0, gainDb = ClipExporter.levelGain(c.raw.loud, CELL, segs[0].s, segs[segs.length - 1].e);
     const titleOnly = o.ovTitle && (o.title || "").trim() ? (g, W, H) => drawOverlay(g, W, H, 0, { chords: [], notes: [] }, { ovTitle: true, title: o.title, titleBy: o.titleBy, lay: o.lay }) : null;
     // chords and tab follow the Pick's own time (so they repeat with a loop and stay on the beat when tightened)
     const overlay = ovFn && S.kind === "pick" ? (g, W, H, srcT, outT) => ovFn(g, W, H, S.plan ? S.plan.winSrc(outT) : s0 + outT) : titleOnly;
-    const r = await ClipExporter.exportMulti(M, c.file, segs, p => say(`${S.kind === "mix" ? "Mixing" : "Fixing"}… ${Math.round(p * 100)}%`), { xfade: XF, gainDb, aspect: A, pos: o.pos, fx: fxOf(c), take: takeGain(c), overlay, tuneCents: tune, bed, watermark: !isPro() });
+    const r = await ClipExporter.exportMulti(M, c.file, segs, p => say(`${S.kind === "mix" ? "Mixing" : "Fixing"}… ${Math.round(p * 100)}%`), { xfade: XF, gainDb, aspect: A, pos: o.pos, fx: fxOf(c), take: takeGain(c), overlay, tuneCents: tune, bed, watermark: !isPro(), fade: fadeFor(c, S) });
     const base = c.name.replace(/\.[^.]+$/, ""), name = `${base}${S.kind === "mix" ? `_mix${segs.length}` : `_pick${Math.round(S.len)}s${S.plan?.n > 1 ? `_x${S.plan.n}` : ""}${S.plan?.T ? "_tight" : ""}`}${o.band ? "_band" : ""}${A ? `_${A[0]}x${A[1]}` : ""}.mp4`;
     try { await offerFile(name, r.blob, say); if (!freeLock) spendTrial(); diagLog(`export ${S.kind} multi: saved`); const extra = o.alsoParts ? await saveOriginals(c, S, o, say) : 0; say(`${savedWhere()}${S.kind === "mix" ? ` ${segs.length} parts, blended on the beat.` : ""}${tune ? ` Tuned to A440.` : ""}${extra ? ` Plus ${extra} original file${extra > 1 ? "s" : ""}.` : ""}`); if (S.kind === "pick") c.pickSaved = true; persist(c); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
@@ -6145,7 +6330,7 @@ function partsPanel(c) {
       </div>` : ""}
     </div>`).join("") + note + `<div class="status" id="saveStatus" aria-live="polite">${esc(c.saveStatus || "")}</div>`;
 }
-function shortWindow(c) { const p = pickOf(c); return p ? { s: p.s, e: p.e } : null; }
+function shortWindow(c) { const p = pickOf(c); return p ? { s: p.s, e: p.e, endAt: p.endAt ?? p.e } : null; }
 const pickRef = (c, w) => `<div class="pickref"><span>${icon("i-star")}Pick ${"ABC"[c.pickSel || 0]} · ${fmt(w.s)} → ${fmt(w.e)} · ${fmt(w.e - w.s)}</span><button class="btn sm ghost" type="button" data-tab="pick">Change</button></div>`;
 // ---------- band: drums, bass and keys locked to the clip's beat and key
 function bandWindow(c) { return shortWindow(c); }
@@ -6304,7 +6489,23 @@ function stemGain(c, k) {
   if (k === "drums" && A && !A.pulse) return 0;
   if (b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k]) return 0;
   if (k === "extra" && bandSet(c, A).extra === "none") return 0;
-  return b.parts[k] ? (b.lv?.[k] ?? 1) * b.gain : 0;
+  return b.parts[k] ? (b.lv?.[k] ?? 1) * b.gain * (c._btrim ?? 1) : 0;
+}
+// The band sits under the take, whatever the take's level: at full band volume its loudness is BAND_BAL dB below
+// your playing (the default volume, 0.8, puts it about 6 dB under). Measured on the real sound of both.
+const BAND_BAL = 4;
+function bandTrimFor(c, r, w) {
+  const L = c.raw?.loud || [], v = L.slice(Math.floor(w.s / CELL), Math.ceil(w.e / CELL)).filter(x => x > -60); if (!v.length || !r) return 1;
+  const takeDb = 10 * Math.log10(v.reduce((a, x) => a + Math.pow(10, x / 10), 0) / v.length);
+  // the parts that will play, at their own mixer levels (measured once per render, so muting a part just removes it)
+  const t0 = c._btrim; c._btrim = 1; const bg = c.band?.gain || 1;
+  const parts = r.stems ? Object.entries(r.stems).map(([k, b]) => [b, c.band ? stemGain(c, k) / bg : 1]).filter(([, g]) => g > 0) : [[r.buffer, 1]]; c._btrim = t0;
+  if (!parts.length) return 1;
+  const sr = parts[0][0].sampleRate, n = parts[0][0].length, B = Math.round(0.4 * sr), ch = parts.map(([b, g]) => [b.getChannelData(0), b.getChannelData(b.numberOfChannels > 1 ? 1 : 0), g]);
+  const es = []; for (let a = 0; a + B <= n; a += B) { let ss = 0; for (let i = a; i < a + B; i++) { let m = 0; for (const [l, rr, g] of ch) m += (l[i] + rr[i]) * 0.5 * g; ss += m * m; } const e = ss / B; if (e > 1e-6) es.push(e); }
+  if (!es.length) return 1;
+  const bandDb = 10 * Math.log10(es.reduce((a, x) => a + x, 0) / es.length);
+  return Math.max(0.05, Math.min(4, Math.pow(10, (takeDb - BAND_BAL - bandDb) / 20)));
 }
 const premFx = c => { const f = sndOf(c).fx; return !!f && f !== "clean"; };
 const fxLabel = c => { const f = sndOf(c).fx; return f === "custom" ? "My sound" : f && LickFX.PRESETS[f] ? LickFX.PRESETS[f].name : ""; };
@@ -6332,12 +6533,20 @@ function saveEq() { store.set("lp:myeq", myEq); }
 // ---------- the monitor: everything you hear in the studio runs through the sound chain, so edits are live
 const mon = { ctx: null, ab: "fx", srcs: new WeakMap(), peak: -90, hold: 0 };
 let bandChain = null;
+// everything you hear goes through one gentle peak limiter (the same -1 dB ceiling as the save), never a hard clip
+const masterNodes = new WeakMap();
+function masterOut(ctx) {
+  let m = masterNodes.get(ctx); if (m) return m;
+  try { m = ctx.createDynamicsCompressor(); m.threshold.value = -1.5; m.knee.value = 0; m.ratio.value = 20; m.attack.value = 0.002; m.release.value = 0.15; m.connect(ctx.destination); }
+  catch { m = ctx.destination; }
+  masterNodes.set(ctx, m); return m;
+}
 function monitor() {
   const ctx = ensureCtx(); if (!ctx) return null;
   if (mon.ctx !== ctx) {
     mon.ctx = ctx; mon.in = ctx.createGain(); mon.chain = LickFX.graph(ctx, null); mon.dry = ctx.createGain(); mon.wet = ctx.createGain();
     mon.an = ctx.createAnalyser(); mon.an.fftSize = 4096; mon.an.smoothingTimeConstant = 0.78;
-    mon.in.connect(mon.chain.input); mon.chain.output.connect(mon.wet); mon.in.connect(mon.dry); mon.wet.connect(mon.an); mon.dry.connect(mon.an); mon.an.connect(ctx.destination);
+    mon.in.connect(mon.chain.input); mon.chain.output.connect(mon.wet); mon.in.connect(mon.dry); mon.wet.connect(mon.an); mon.dry.connect(mon.an); mon.an.connect(masterOut(ctx));
     monSync(cur());
   }
   return mon;
@@ -6356,7 +6565,7 @@ function hookVideo() {
 }
 // mix the band's tracks at the mixer levels into one buffer for saving
 function bandMix(c, r) {
-  if (!r.stems) return { buffer: r.buffer, gain: c.band.gain };
+  if (!r.stems) return { buffer: r.buffer, gain: c.band.gain * (c._btrim ?? 1) };
   const ks = INSTS.map(([k]) => k).filter(k => stemGain(c, k) > 0); if (!ks.length) return null;
   const b0 = r.stems[ks[0]], n = b0.length, out = new OfflineAudioContext(2, 1, b0.sampleRate).createBuffer(2, n, b0.sampleRate);
   for (let ch = 0; ch < 2; ch++) { const d = out.getChannelData(ch); for (const k of ks) { const src = r.stems[k].getChannelData(ch), g = stemGain(c, k); for (let i = 0; i < n; i++) d[i] += src[i] * g; } }
@@ -6401,8 +6610,8 @@ function beatCard(c, A) {
 }
 function bandPanel(c) {
   const w = bandWindow(c);
-  if (!w) return `<p class="hint">The band plays with a Pick. Choose one first.</p>`;
-  if (!c.raw.chromaQ) return `<p class="hint">This clip was scanned by an older LickPick. Remove it from the list and add it again so the band can hear your chords.</p>`;
+  if (!w) return `<p class="hint keep">The band plays with a Pick. Choose one first.</p>`;
+  if (!c.raw.chromaQ) return `<p class="hint keep">This clip was scanned by an older LickPick. Remove it from the list and add it again so the band can hear your chords.</p>`;
   const b = newBand(c), o = exOpts(c), on = bandOn(c);
   const A = bandA(c), styles = LickBand.STYLES, auto = LickBand.heuristicStyle(c.raw, A);
   const picked = b.style === "auto" ? (b.ai?.style || auto) : b.style, set = bandSet(c, A);
@@ -6420,13 +6629,12 @@ function bandPanel(c) {
     <h4 class="bandh">Plays</h4><div class="chipset" role="group" aria-label="Instruments">${plays}</div>
     ${b.parts.extra && set.extra !== "none" ? `<div class="chipset xtra" role="group" aria-label="Extra instrument"><span class="xl">Extra:</span>${Object.entries(EXTRA_NAME).filter(([v]) => v !== "none").map(([v, l]) => `<button type="button" data-bset="extra:${v}" aria-pressed="${set.extra === v}">${l}</button>`).join("")}</div>` : ""}
     <p class="hint">${heardText(c)}</p>
-    ${followCard(c, A)}
-    ${beatCard(c, A)}
+    ${A?.pulse ? sub("beat", "Beat & timing", `${A.bpm} BPM${tightOn(c) ? " · locked" : ""}`, `${beatCard(c, A)}${followCard(c, A)}`) : ""}
     ${sub("chords", "Chords", esc((bandChords(c, A) || []).slice(0, 4).map(h => sp(c, h.name)).join(" ") || "—"), chordsCard(c, A))}
     ${sub("shape", "Groove & sounds", esc([set.groove, set.feel !== "normal" ? set.feel : "", set.kit].filter(Boolean).join(" · ")), bandOpts(c, set, A))}
     ${sub("heard", "Already in your take", esc(HEARD.filter(([k]) => heardOn(c, k)).map(x => x[1]).join(", ") || "Just you"), `<div class="heard"><div class="heardchips" role="group" aria-label="Instruments already in your take">${HEARD.filter(([k]) => k !== "vocals" || b.heard?.deep).map(([k, l]) => `<button type="button" data-heard="${k}" aria-pressed="${heardOn(c, k)}">${l}</button>`).join("")}</div><p class="hint">${b.heard?.busy ? "Listening…" : "Tap to correct. The band leaves out what's already playing."}</p></div>`)}
     <div class="row-btns mybtns"><button class="btn ghost sm" type="button" data-act="band-my-save">${icon("i-star")}Save as My band</button>${b.set && Object.keys(b.set).length ? `<button class="btn ghost sm" type="button" data-act="band-reset">${icon("i-undo")}Style defaults</button>` : ""}</div>
-    <p class="hint">Levels for each instrument are in Sound → Mixer.</p>` : ""}
+` : ""}
     <div class="status" id="bandStatus" aria-live="polite">${esc(c.bandStatus || "")}</div>`;
 }
 // ---------- Layers: more takes of you (rhythm, then lead, then bass), lined up on your beat and chords, side by side
@@ -6509,7 +6717,7 @@ async function layerSave(c, S, o, say, ovFn) {
     if (o.band) { say("Building the band…"); const r = await bandRender(c); if (Math.abs(r.w.s - s0) < 0.05) bed = bandMix(c, r); }
     const M = await mb(), A = ASPECT[o.fmt] || null, sh = w ? s0 - w.s : 0;
     const items = [{ file: c.file, s: s0, gain: takeGain(c) }, ...Ls.map(L => ({ file: layerClip(L).file, s: L.lStart + sh, gain: L.gain ?? 1 }))];
-    const r = await ClipExporter.exportLayers(M, items, e0 - s0, p => say(`Layering ${items.length} videos… ${Math.round(p * 100)}%`), { aspect: A, bed, watermark: !isPro(), overlay: ovFn, fx: fxOf(c), gainDb: A ? ClipExporter.levelGain(c.raw.loud, CELL, s0, e0) : 0 });
+    const r = await ClipExporter.exportLayers(M, items, e0 - s0, p => say(`Layering ${items.length} videos… ${Math.round(p * 100)}%`), { aspect: A, bed, watermark: !isPro(), overlay: ovFn, fx: fxOf(c), gainDb: A ? ClipExporter.levelGain(c.raw.loud, CELL, s0, e0) : 0, fade: fadeFor(c, S) });
     const name = `${c.name.replace(/\.[^.]+$/, "")}_layers${items.length}${bed ? "_band" : ""}${A ? `_${A[0]}x${A[1]}` : ""}.mp4`;
     try { await offerFile(name, r.blob, say); spendTrial(); diagLog(`export layers ${items.length}: saved`); const extra = o.alsoParts ? await saveOriginals(c, S, o, say) : 0; c.pickSaved = true; persist(c); say(`${savedWhere()} ${items.length} videos side by side${bed ? " with the band" : ""}.${extra ? " Plus your original take." : ""}`); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
@@ -6648,19 +6856,19 @@ function bandKey(c) {
   const parts = { drums: !(A && !A.pulse), bass: true, keys: true, extra: set.extra !== "none" };   // render every track; the mixer mutes and levels them
   // tightened: the band plays the steady grid the take was moved onto, in the take's new time
   const T = A ? tightFor(c) : null, W = t => ClipExporter.warpDst(T.knots, t);
-  const rw = T ? { s: W(w.s), e: W(w.e) } : w, A2 = T ? { ...A, swing: T.feel ?? A.swing, beats: A.beats.map(W), bars: A.bars.map(b => ({ ...b, t0: W(b.t0), t1: W(b.t1) })), chords: (A.chords || []).map(h => ({ ...h, t0: W(h.t0), t1: W(h.t1) })) } : A;
+  const rw = T ? { s: W(w.s), e: W(w.e), endAt: W(w.endAt ?? w.e) } : w, A2 = T ? { ...A, swing: T.feel ?? A.swing, beats: A.beats.map(W), bars: A.bars.map(b => ({ ...b, t0: W(b.t0), t1: W(b.t1) })), chords: (A.chords || []).map(h => ({ ...h, t0: W(h.t0), t1: W(h.t1) })) } : A;
   const H2 = T && harmony ? harmony.map(h => ({ ...h, t0: W(h.t0), t1: W(h.t1) })) : harmony, set2 = T ? { ...set, tempo: "follow" } : set;
-  return { w, rw, style, set: set2, parts, A: A2, harmony: H2, key: JSON.stringify([c.key || c.id, rw.s, rw.e, style, parts, set2, (H2 || []).map(h => h.name + "@" + h.t0.toFixed(2)), A?.forced ? A.bpm : 0]) };
+  return { w, rw, style, set: set2, parts, A: A2, harmony: H2, key: JSON.stringify([c.key || c.id, rw.s, rw.e, rw.endAt, style, parts, set2, (H2 || []).map(h => h.name + "@" + h.t0.toFixed(2)), A?.forced ? A.bpm : 0]) };
 }
 // One render per setting, shared by prefetch, preview and save.
 function bandRender(c) {
   const { w, rw, style, set, parts, A, harmony, key } = bandKey(c);
   if (bandCache.key !== key) {
-    const p = LickBand.render(c.raw, rw.s, rw.e, { style, set, parts, analysis: A, harmony }).then(res => { if (bandCache.key === key) bandCache.res = res; return res; });
+    const p = LickBand.render(c.raw, rw.s, rw.e, { style, set, parts, analysis: A, harmony, endAt: rw.endAt }).then(res => { if (bandCache.key === key) bandCache.res = res; return res; });
     p.catch(() => { if (bandCache.key === key) bandCache = { key: "", res: null, p: null }; });
     bandCache = { key, res: null, p };
   }
-  return bandCache.p.then(res => ({ ...res, style, w }));
+  return bandCache.p.then(res => { if (res._trim == null) res._trim = bandTrimFor(c, res, w); c._btrim = res._trim; return { ...res, style, w }; });
 }
 // The take's own audio for the window, decoded once, so preview plays band and take off one clock.
 const winAudio = { key: "", p: null };
@@ -6747,7 +6955,7 @@ function bandPreview(c) {
     if (!bandPlaying || bandPreview.token !== token) return;
     if (ctx.state === "suspended") await ctx.resume().catch(() => { });
     say("");
-    const outN = monitor()?.an || ctx.destination, og = ctx.createGain(); og.gain.value = takeGain(c); og.connect(outN);
+    const outN = monitor()?.an || masterOut(ctx), og = ctx.createGain(); og.gain.value = takeGain(c); og.connect(outN);
     const chain = LickFX.graph(ctx, mon.ab === "dry" ? null : fxOf(c)); chain.output.connect(og); bandChain = chain;
     const a = ctx.createBufferSource(); a.buffer = orig; a.connect(chain.input);
     mixNodes = { take: og }; const srcs = [a], t0 = ctx.currentTime + 0.15, total = orig.duration;
@@ -6756,7 +6964,7 @@ function bandPreview(c) {
     const starts = simple ? [0] : ClipExporter.bedStarts(P.segs, P.offs);
     if (r && clickOn && r.click) { const g = ctx.createGain(); g.gain.value = 0.9; g.connect(outN); starts.forEach((st, i) => { const sN = ctx.createBufferSource(); sN.buffer = r.click; sN.connect(g); sN.start(t0 + st, 0, i + 1 < starts.length ? starts[i + 1] - st : undefined); srcs.push(sN); }); }
     if (r && withBand) { if (r.stems) for (const [k] of INSTS) { const g = ctx.createGain(); g.gain.value = stemGain(c, k); g.connect(outN); mixNodes[k] = g; starts.forEach((st, i) => { const sN = ctx.createBufferSource(); sN.buffer = r.stems[k]; sN.connect(g); const dur = i + 1 < starts.length ? starts[i + 1] - st : undefined; sN.start(t0 + st, 0, dur); srcs.push(sN); }); }
-      else { bandGainNode = ctx.createGain(); bandGainNode.gain.value = c.band.gain; bandGainNode.connect(outN); for (const st of starts) { const bnd = ctx.createBufferSource(); bnd.buffer = r.buffer; bnd.connect(bandGainNode); bnd.start(t0 + st); srcs.push(bnd); } } }
+      else { bandGainNode = ctx.createGain(); bandGainNode.gain.value = c.band.gain * (c._btrim ?? 1); bandGainNode.connect(outN); for (const st of starts) { const bnd = ctx.createBufferSource(); bnd.buffer = r.buffer; bnd.connect(bandGainNode); bnd.start(t0 + st); srcs.push(bnd); } } }
     lays.forEach((la, i) => { if (!la) return; const g = ctx.createGain(); g.gain.value = Ls[i].gain ?? 1; g.connect(outN); const sN = ctx.createBufferSource(); sN.buffer = la.b; sN.connect(g); sN.start(t0 + la.lead); srcs.push(sN); mixNodes["L" + (c.layers.indexOf(Ls[i]))] = g; });
     bandNodes = srcs;
     a.onended = () => { if (bandPreview.token === token && bandPlaying) { stopBand(); if (player?.loop) bandPreview(c); else renderDock(c); } };
@@ -6792,7 +7000,7 @@ async function bandSave(c, shape, say0) {
     const r = await bandRender(c), M = await mb();
     const gainDb = vertical ? ClipExporter.levelGain(c.raw.loud, CELL, r.w.s, r.w.e) : 0;
     const mix = bandMix(c, r);
-    const out = await ClipExporter.exportShort(M, c.file, [r.w.s, r.w.e], p => say(`Mixing… ${Math.round(p * 100)}%`), { gainDb, mix, aspect: A, pos: o0.pos ?? 0.5, fx: fxOf(c), take: takeGain(c), watermark: !isPro(), overlay: ovOn(o0) ? (() => { const I = ovInfo(c, r.w.s, r.w.e); return (g, W, H, t) => drawOverlay(g, W, H, t, I, o0); })() : null });
+    const out = await ClipExporter.exportShort(M, c.file, [r.w.s, r.w.e], p => say(`Mixing… ${Math.round(p * 100)}%`), { gainDb, mix, aspect: A, pos: o0.pos ?? 0.5, fx: fxOf(c), take: takeGain(c), watermark: !isPro(), fade: fadeFor(c, srcOf(c)), overlay: ovOn(o0) ? (() => { const I = ovInfo(c, r.w.s, r.w.e); return (g, W, H, t) => drawOverlay(g, W, H, t, I, o0); })() : null });
     const name = `${c.name.replace(/\.[^.]+$/, "")}_${r.style}${A ? `_${A[0]}x${A[1]}` : ""}.mp4`;
     try { await offerFile(name, out.blob, say); if (!freeBand(c)) spendTrial(); diagLog(`export band ${vertical ? "vertical" : "original"}: saved`); const extra = o0.alsoParts ? await saveOriginals(c, srcOf(c), o0, say) : 0; say(`${savedWhere()} ${mix ? "Band mixed in." : "Saved."}${sndOf(c).fx ? ` Studio sound: ${fxLabel(c)}.` : ""}${extra ? " Plus the original without the band." : ""}`); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
@@ -7232,6 +7440,12 @@ document.addEventListener("click", e => {
   if (d.profLook) { profile.look = d.profLook === "studio" ? "" : d.profLook; t.parentElement.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === t))); store.set("lp:profile", profile); return; }
   if (d.playI) { const k = d.playI, i = profile.plays.indexOf(k); if (i >= 0) profile.plays.splice(i, 1); else profile.plays.push(k); t.setAttribute("aria-pressed", String(i < 0)); return; }
   if (d.act === "hero-play") { const b = $("#sStage .pb-play") || $(".pb-play"); try { $("#studio").scrollTo({ top: 0, behavior: "smooth" }); } catch { } b?.click(); return; }
+  if (d.act === "wk-info") { const L = jamLog(), st = streakOf(L), r = rankOf(L.saves), ch = weekChallenge(), chDone = L.done[ch.w] != null;
+    $("#winBody").innerHTML = `${stk("i-bolt", st ? "hot" : "volt", "r2")}<h2>${st ? `${st}-week streak` : "Start a streak"}</h2><p>Save one video a week to keep it going.</p>
+      <div class="winrow"><span><b>${L.saves}</b>saved</span><span><b>${st}</b>weeks</span><span><b>${esc(r.name)}</b>stage</span></div>
+      <div class="wkch${chDone ? " done" : ""}"><span class="wkl">This week</span><b>${esc(ch.c[0])}</b><em>${chDone ? "Done. Nice." : esc(ch.c[1])}</em></div>
+      <div class="row-btns">${store.get("lp:remind") ? "" : `<button class="btn" type="button" data-act="wk-remind">${icon("i-clock")}Remind me weekly</button>`}<button class="btn ghost" type="button" data-act="win-close">Close</button></div>`;
+    $("#winSheet").hidden = false; return; }
   if (d.act === "wk-remind") { remindIcs(); $("#winSheet").hidden = true; return; }
   if (d.act === "win-close") { $("#winSheet").hidden = true; return; }
   if (d.act === "wk-ready") { const x = state.clips.find(y => !y.example && y.status === "done" && pickOf(y) && !y.pickSaved); if (x) openStudio(x); return; }
@@ -7267,9 +7481,10 @@ document.addEventListener("click", e => {
   if (d.picky) { state.strictness = +d.picky; syncRules(); state.clips.forEach(c => { redecide(c); persist(c); }); render(); return; }
   const c = cur(); if (!c) return;
   if (d.act === "close") return closeStudio();
+  if (d.act === "tips") { const on = !$("#studio").classList.contains("tips"); $("#studio").classList.toggle("tips", on); t.setAttribute("aria-pressed", on); store.set("lp:tips", on ? 1 : 0); return; }
   if (d.act === "sound-open") { $("#exportSheet").hidden = true; openStep(c, "sound"); return; }
   if (d.act === "look-open") { $("#exportSheet").hidden = true; openStep(c, "look"); return; }
-  if (d.tab) { stopBand(); state.tab = d.tab; state.step = "choose"; renderStudio(); if (d.tab === "pick") { c.src = "pick"; player?.pause(); showPick(c); } return; }
+  if (d.tab) { stopBand(); state.tab = d.tab; state.step = "choose"; if (d.tab === "parts" && onParts(c).length) c.src = "clean"; renderStudio(); if (d.tab === "pick") { c.src = "pick"; player?.pause(); showPick(c); } return; }
   if (d.step) { openStep(c, d.step); return; }
   if (d.act === "step-next" || d.act === "step-back") { const i = STEPS.findIndex(x => x[0] === state.step) + (d.act === "step-next" ? 1 : -1); if (i >= 0 && i < STEPS.length) openStep(c, STEPS[i][0]); return; }
   if (d.zoom) { const v = viewOf(c), D = c.raw?.duration || 1, now = nowT(c), span = v.b - v.a; if (d.zoom === "fit") { c._view = null; drawWave(); return; } const ns = d.zoom === "in" ? span / 2 : span * 2, ctr = now >= v.a && now <= v.b ? now : (v.a + v.b) / 2; setZoom(c, ctr - ns / 2, ns); return; }
@@ -7290,7 +7505,7 @@ document.addEventListener("click", e => {
     const on = !!b.parts[k] && !(b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k]); b.touched = { ...(b.touched || {}), [k]: true }; b.parts[k] = !on; persist(c); renderStudio(); return; }
   if (d.groove) { const b = newBand(c), want = d.groove === "2"; stopBand(); if (!!b.fix?.shift !== want) { b.fix = { ...(b.fix || {}), shift: want }; c._bandA = null; c._tight = null; } b.click = false; persist(c); renderStudio(); bandPreview(c); return; }
   if (d.bchk) { const b = newBand(c), was = bandPlaying;
-    if (d.bchk === "yes") { b.beatOK = true; b.click = false; state.beatChk = null; stopBand(); persist(c); renderStudio(); toast("Groove locked. Your take now sits on the band's beat."); if (was) bandPreview(c); return; }
+    if (d.bchk === "yes") { b.beatOK = true; b.click = false; state.beatChk = null; stopBand(); persist(c); renderStudio(); toast("Groove locked. The band follows your playing."); if (was) bandPreview(c); return; }
     if (d.bchk === "half") { stopBand(); b.fix = { ...(b.fix || {}), shift: !(b.fix?.shift) }; c._bandA = null; c._tight = null; b.click = true; persist(c); renderStudio(); bandPreview(c); toast("Moved half a beat. Listen again."); return; }
     if (d.bchk === "speed") { state.beatChk = "speed"; b.click = true; persist(c); renderStudio(); if (!was) bandPreview(c); return; } }
   if (d.balt) { const b = newBand(c), o = (c._alts?.out || []).find(x => x.bpm === +d.balt); if (!o) return; stopBand(); b.grid = { beats: o.beats }; delete b.fix; c._bandA = null; c._tight = null; b.click = true; persist(c); renderStudio(); bandPreview(c); return; }
@@ -7343,7 +7558,7 @@ document.addEventListener("click", e => {
   if (d.lay) { const [k, key, v] = d.lay.split(":"); setLay(c, k, key, key === "y" ? ({ top: { title: 0.08, key: 0.16, chords: 0.26, notes: 0.36 }[k], middle: 0.5, bottom: { title: 0.7, key: 0.72, chords: 0.78, notes: 0.89 }[k] })[v] : +v); renderExport(c); return; }
   if (d.ex && d.ex.startsWith("ov")) { const o = exOpts(c); o[d.ex] = !o[d.ex]; persist(c); renderExport(c); if (state.step === "look") renderStudio(); ovPreview(); return; }
   if (d.ex) { const o = exOpts(c); if (d.ex.startsWith("fmt:")) o.fmt = d.ex.slice(4); else o[d.ex] = !o[d.ex]; if (d.ex === "sep" && o.sep) o.band = false; if (d.ex === "band" && o.band) o.sep = false; renderExport(c); return; }
-  if (d.src) { stopBand(); if (!c.exporting) c.exStatus = ""; if (d.src === "clean" || d.src === "mix") c.src = d.src; else { c.src = "pick"; const i = +d.src.split(":")[1]; if (i !== (c.pickSel || 0)) { c.pickSel = i; c._bandA = null; persist(c); } } renderStudio(); renderExport(c); showPick(c); const S = srcOf(c); if (S && (c.file || c.proxy) && $("#exportSheet").hidden) playRanges(c, S.ranges, S.label); return; }
+  if (d.src) { stopBand(); if (!c.exporting) c.exStatus = ""; state.tab = d.src === "clean" ? "parts" : "pick"; if (d.src === "clean" || d.src === "mix") c.src = d.src; else { c.src = "pick"; const i = +d.src.split(":")[1]; if (i !== (c.pickSel || 0)) { c.pickSel = i; c._bandA = null; persist(c); } } renderStudio(); renderExport(c); showPick(c); const S = srcOf(c); if (S && (c.file || c.proxy) && $("#exportSheet").hidden) playRanges(c, S.ranges, S.label); return; }
   if (d.vote) { const all = store.get("lp:fb") || {}, pk = pickOf(c); if (pk && all[c.key]?.v !== d.vote) rateStretch(c, pk.s, pk.e, d.vote === "yes" ? 2 : -1, []); all[c.key] = { ...(all[c.key] || {}), v: d.vote, pick: pk ? [+pk.s.toFixed(1), +pk.e.toFixed(1)] : null, sel: c.pickSel || 0 }; store.set("lp:fb", all); diagLog(`vote ${d.vote}: ${c.name}`); renderStudio(); toast(d.vote === "yes" ? "Noted. Thanks!" : "Noted. Show me where your best part is."); return; }
   if (d.act === "mark-best") { const all = store.get("lp:fb") || {}; all[c.key] = { ...(all[c.key] || {}), at: +nowT(c).toFixed(1) }; store.set("lp:fb", all); renderStudio(); toast(`Marked ${fmt(nowT(c))}. It goes in your test report.`); return; }
   if (d.padj) { const p = pickBase(c); if (!p) return; stopBand(); c.pickAdj = c.pickAdj || {}; const k = adjKey(c);
@@ -7440,7 +7655,7 @@ document.addEventListener("input", e => {
   const mx = e.target.dataset?.mx; if (mx) { const c = cur(); if (!c) return; const v = +e.target.value;
     if (mx === "take") sndOf(c).take = v; else { c.band.lv = c.band.lv || { drums: 1, bass: 1, keys: 1 }; c.band.lv[mx] = v; }
     const node = mixNodes[mx]; if (node && bandPlaying) node.gain.setTargetAtTime(mx === "take" ? takeGain(c) : stemGain(c, mx), node.context.currentTime, 0.03);
-    return; } if (e.target.id === "search") { state.q = e.target.value; render(); return; } if (e.target.id === "bandGain") { const c = cur(); if (c?.band) { c.band.gain = +e.target.value; if (bandGainNode) bandGainNode.gain.value = c.band.gain; } } });
+    return; } if (e.target.id === "search") { state.q = e.target.value; render(); return; } if (e.target.id === "bandGain") { const c = cur(); if (c?.band) { c.band.gain = +e.target.value; if (bandGainNode) bandGainNode.gain.value = c.band.gain * (c._btrim ?? 1); } } });
 $("#proSheet").addEventListener("click", e => { if (e.target.id === "proSheet") $("#proSheet").hidden = true; });
 $("#winSheet").addEventListener("click", e => { if (e.target.id === "winSheet") $("#winSheet").hidden = true; });
 // a streak at risk: from Thursday, a quiet reminder that one jam this week keeps it (once a day at most)
@@ -7484,7 +7699,15 @@ async function takeShared() {
   } catch { toast("Couldn't open the shared videos."); }
 }
 if (BUILD === "pwa") {
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(() => { });
+  // updates: check whenever the app comes back; a new version takes over at once, and the page reloads by itself
+  // when you're not in the middle of something (otherwise one tap on the toast)
+  if ("serviceWorker" in navigator) {
+    const had = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.register("./sw.js").then(reg => { reg.update().catch(() => { }); document.addEventListener("visibilitychange", () => { if (!document.hidden) reg.update().catch(() => { }); }); }).catch(() => { });
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => { if (!had || reloaded) return; const busy = !$("#studio").hidden || state.clips.some(c => verdict(c) === "busy") || bulk.running;
+      if (!busy) { reloaded = true; location.reload(); } else toast("New LickPick ready.", { icon: "i-bolt", label: "Update", run: () => { reloaded = true; location.reload(); } }); });
+  }
   takeShared();
 }
 if (!IN_CLAUDE) navigator.storage?.persist?.().catch(() => { });
@@ -7517,8 +7740,9 @@ else if (store.get("lp:tour") !== TOUR_V && !navigator.webdriver) setTimeout(() 
 // test hooks (no UI): open a step, switch the band, open the export sheet
 window.__lpStep = (k, sub) => { const c = cur(); if (!c) return; if (sub) state.bsub = sub; $("#exportSheet").hidden = true; state.step = k; renderStudio(); };   // old names (fix, sound…) open their screen and scroll to the section
 window.__lpBand = on => { const c = cur(); if (!c) return; const o = exOpts(c); o.band = !!on && o.canBand; if (o.band) newBand(c); renderStudio(); };
+window.__lpDockBand = () => { const c = cur(); if (!c) return; const o = exOpts(c); if (!o.canBand) return; stopBand(); o.band = !o.band; if (o.band) { o.sep = false; const b = newBand(c); c.src = c.src === "mix" ? "pick" : c.src; if (!b.beatOK) { b.click = false; state.beatChk = null; state.step = "band"; } } persist(c); renderStudio(); renderExport(c); bandPreview(c); };   // test hook: the old Band switch under the video
 window.__lpExport = () => { const c = cur(); if (c && $("#exportSheet").hidden) openExport(c); };
-window.__ck = state; window.__lp = { BUILD, IN_CLAUDE, lic, verifyKey, t: { openStudio, closeStudio, setView, render, renderStudio, cur, openPro } };
+window.__ck = state; window.__lp = { BUILD, IN_CLAUDE, lic, verifyKey, t: { openStudio, closeStudio, setView, render, renderStudio, cur, openPro, bandRender, bandA, tightFor, pickPlan } };
 })();
 
 </script>
