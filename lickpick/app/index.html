@@ -1206,10 +1206,10 @@ input[type=range]{min-height:44px}
 .ob-hero .lockup.big{display:inline-flex;align-items:center;gap:14px}
 .ob-hero .lockup.big svg{width:76px!important;height:76px!important;transform:rotate(-8deg)}
 .ob-hero .lockup.big .word{font:400 46px/1 var(--display);color:var(--text)}.ob-hero .lockup.big .word b{font-weight:400;color:var(--volt)}
-.obrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.obrow div{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:16px 8px 14px;border-radius:18px;background:var(--panel);border:2px solid var(--line)}
-.obrow .stk{width:52px;height:52px;border-radius:15px}.obrow .stk svg.i{width:28px!important;height:28px!important}
-.obrow b{font-size:14.5px;line-height:1.15}
+.obfeat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.obfeat div{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:16px 8px 14px;border-radius:18px;background:var(--panel);border:2px solid var(--line)}
+.obfeat .stk{width:52px;height:52px;border-radius:15px}.obfeat .stk svg.i{width:28px!important;height:28px!important}
+.obfeat b{font-size:14.5px;line-height:1.15}
 .weekcard{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;background:var(--panel);border:2px solid var(--line);box-shadow:4px 4px 0 var(--hot);margin-bottom:12px}
 .wkhead{display:flex;align-items:center;gap:12px}.wkhead span{display:flex;flex-direction:column;flex:1;min-width:0}.wkhead b{font:400 19px/1.1 var(--display)}.wkhead em{font-style:normal;color:var(--dim);font-size:13px}
 .wkok{display:inline-flex;align-items:center;gap:4px;font-style:normal;font-weight:800;font-size:12px;color:var(--cyan)}.wkok svg.i{width:16px;height:16px}
@@ -1393,7 +1393,7 @@ input[type=range]{min-height:44px}
     <div id="obBody" class="ob-body"></div>
     <div class="ob-foot"><button class="btn wide" type="button" data-act="ob-next" id="obNext">Done</button>
       <div class="obctas" id="obCtas" hidden><button class="btn wide main" type="button" data-act="ob-gallery"><svg class="i"><use href="#i-film"/></svg>Add jams</button>
-        <div class="obrow"><button class="btn ghost" type="button" data-act="ob-record"><svg class="i"><use href="#i-rec"/></svg>Record</button><button class="btn ghost" type="button" data-act="ob-skip">Look around</button></div></div></div>
+        <div class="obrow"><button class="btn ghost" type="button" data-act="ob-record"><svg class="i"><use href="#i-rec"/></svg>Record</button><button class="btn ghost" type="button" data-act="ob-skip">Explore</button></div></div></div>
   </div>
 </div>
 
@@ -1499,7 +1499,7 @@ input[type=range]{min-height:44px}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-12d"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-12e"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -5092,7 +5092,7 @@ function renderOnboard() {
   if (step === "welcome") {
     // one screen: show, don't tell. Four stickers, one privacy strip, then straight to your jams
     B.innerHTML = `<div class="ob-hero"><span class="lockup big" aria-label="LickPick"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></span></div><h1>Your best take, found.</h1>
-      <div class="obrow">${[["i-star", "Best part", "volt"], ["i-drum", "Your band", "hot"], ["i-share", "Ready to post", "cyan"]].map(([ic, l, c], i) => `<div>${stk(ic, c, i % 2 ? "r2" : "")}<b>${l}</b></div>`).join("")}</div>
+      <div class="obfeat">${[["i-star", "Best part", "volt"], ["i-drum", "Your band", "hot"], ["i-share", "Ready to post", "cyan"]].map(([ic, l, c], i) => `<div>${stk(ic, c, i % 2 ? "r2" : "")}<b>${l}</b></div>`).join("")}</div>
       <div class="obsafe">${[["i-phone", "On your phone"], ["i-lock", "No account"], ["i-check", "Never deletes"]].map(([ic, l]) => `<span>${icon(ic)}${l}</span>`).join("")}</div>`;
     next.hidden = true; ctas.hidden = false;
   } else {
