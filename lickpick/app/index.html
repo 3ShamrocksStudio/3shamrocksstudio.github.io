@@ -577,6 +577,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 .pro-pill svg.i{width:16px;height:16px;color:var(--ink);--ic2:transparent}
 .pro-pill.on{background:var(--panel);color:var(--volt);border-color:var(--line);box-shadow:none} .pro-pill.on svg.i{color:var(--volt)}
 .mlist{display:flex;flex-direction:column;gap:6px;margin:4px 0 10px}
+a.mrow{text-decoration:none}
 .mrow{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;padding:10px 12px;border-radius:14px;border:2px solid var(--line);background:var(--panel);color:var(--text)}
 .mrow svg.i{width:24px;height:24px;color:var(--volt);justify-self:center}
 .mrow b{display:block;font-size:15px} .mrow em{font-style:normal;color:var(--dim);font-size:12.5px}
@@ -1187,6 +1188,7 @@ input[type=range]{min-height:44px}
 .scrhead .scrn{grid-column:2;grid-row:1;font:900 13px var(--body);color:var(--mute)}
 .scrhead p{margin:0;grid-column:1/-1;color:var(--dim);font-size:14.5px}
 .scrhead .scrsum{grid-column:1/-1;font-style:normal;font-weight:800;font-size:13px;color:var(--cyan)}
+.profmeta{display:flex;flex-direction:column;gap:6px;margin-top:6px;padding:14px;border:2px solid var(--line);border-radius:14px;color:var(--dim);font-size:14px}.profmeta b{color:var(--text)}.profmeta a,.linkbtn{color:var(--cyan);font-weight:800;text-decoration:underline;background:none;border:0;padding:0;font:inherit;cursor:pointer}
 .confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:999}
 .snav{display:flex;gap:8px;flex:1.4;min-width:0}
 .snav .navb{flex:0 0 52px;padding:0;font-size:24px}
@@ -1433,10 +1435,11 @@ input[type=range]{min-height:44px}
     <div class="row2"><h2>Menu</h2><button class="icon-btn" type="button" data-act="rules-done" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
     <div class="mlist">
       <button class="mrow" type="button" id="helpBtn"><i class="stk s-cyan" aria-hidden="true"><svg class="i"><use href="#i-help"/></svg></i><span><b>How it works</b><em>A 30-second tour</em></span><span class="chev">›</span></button>
-      <button class="mrow" type="button" data-act="ob-open"><i class="stk s-volt r2" aria-hidden="true"><svg class="i"><use href="#i-sliders"/></svg></i><span><b>Profile & setup</b><em>Instruments, pick length, name</em></span><span class="chev">›</span></button>
+      <button class="mrow" type="button" data-act="ob-open"><i class="stk s-volt r2" aria-hidden="true"><svg class="i"><use href="#i-sliders"/></svg></i><span><b>Profile & setup</b><em>Name, @, instruments, your Look</em></span><span class="chev">›</span></button>
       <button class="mrow" type="button" data-act="taste-open"><i class="stk s-hot" aria-hidden="true"><svg class="i"><use href="#i-bolt"/></svg></i><span><b>Your taste</b><em>What LickPick learned from your ratings</em></span><span class="chev">›</span></button>
       <button class="mrow" type="button" data-act="tips-open"><i class="stk s-hot r2" aria-hidden="true"><svg class="i"><use href="#i-rec"/></svg></i><span><b>Recording tips</b><em>Get the best Pick, plus the limits</em></span><span class="chev">›</span></button>
       <button class="mrow" type="button" data-act="fb-open"><i class="stk s-volt" aria-hidden="true"><svg class="i"><use href="#i-share"/></svg></i><span><b>Send feedback</b><em>3 quick questions, sent your way</em></span><span class="chev">›</span></button>
+      <a class="mrow" href="mailto:lickpick.app@gmail.com?subject=LickPick%20help"><i class="stk s-cyan r2" aria-hidden="true"><svg class="i"><use href="#i-help"/></svg></i><span><b>Help & contact</b><em>lickpick.app@gmail.com</em></span><span class="chev">›</span></a>
       <button class="mrow" type="button" data-act="report-open"><i class="stk s-blaze" aria-hidden="true"><svg class="i"><use href="#i-copy"/></svg></i><span><b>Test report</b><em>Copy what happened, to share with us</em></span><span class="chev">›</span></button>
       <button class="mrow pro" type="button" data-act="pro-open"><i class="stk s-hot r2" aria-hidden="true"><svg class="i"><use href="#i-bolt"/></svg></i><span><b id="menuPro">Pro</b><em id="menuProSub">No mark, band export, captions</em></span><span class="chev">›</span></button>
       <button class="mrow" type="button" id="installBtn" data-act="install" hidden><i class="stk s-cyan" aria-hidden="true"><svg class="i"><use href="#i-install"/></svg></i><span><b>Install app</b><em>Home screen, works offline</em></span><span class="chev">›</span></button>
@@ -1451,7 +1454,7 @@ input[type=range]{min-height:44px}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-12a"; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-12b"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -4081,6 +4084,7 @@ async function mb() {
 const PRO_URL = window.LP_PRO_URL || "";
 // No checkout yet: buyers send a request by email, pay the owner directly, and get a signed key back.
 const SELL = window.LP_SELL || "";
+const SUPPORT = window.LP_SUPPORT || "lickpick.app@gmail.com";
 const LIC_PUB = {"kty": "EC", "x": "wZVUGy_SYFx4TY7lyHMPF5C_837vFPbB9eBEbApunYc", "y": "ZtpOqjQhxztds2nv7uWA0dglpCuYVzodX6l-Hb-ERsI", "crv": "P-256"};
 const lic = { tier: window.LP_OWNER ? "owner" : "free", trial: 10, exp: "", plan: "" };
 { const t = store.get("lp:trial"); if (typeof t === "number") lic.trial = t; if (!store.get("lp:trial10")) { lic.trial = Math.max(lic.trial, 10); store.set("lp:trial", lic.trial); store.set("lp:trial10", 1); } }   // free Pro uses went 3 → 10
@@ -4219,14 +4223,15 @@ function openFeedback() {
   $("#fbBody").innerHTML = FBQ.map(([k, q, opts]) => `<p class="fbq">${q}</p><div class="fbopts">${opts.map(o => `<button type="button" data-fbq="${k}" data-fbv="${o}" aria-pressed="${fb.a[k] === o}">${o}</button>`).join("")}</div>`).join("")
     + `<p class="fbq">What's missing, confusing or broken?</p><textarea id="fbText" placeholder="Anything. Even one word helps.">${esc(fb.text)}</textarea>
     <p class="hint">Your answers and a short technical report (phone model, version, scan times; no videos) go wherever you choose to send them.</p>
-    <button class="btn wide" type="button" data-act="fb-send">${icon("i-share")}Send feedback</button>`;
+    <div class="row-btns"><button class="btn" type="button" data-act="fb-send">${icon("i-share")}Send</button><button class="btn ghost" type="button" data-act="fb-mail">${icon("i-copy")}Email us</button></div>
+    <p class="hint">Or write to <a href="mailto:${SUPPORT}">${SUPPORT}</a></p>`;
   $("#rules").hidden = true; $("#fbSheet").hidden = false;
 }
 async function sendFeedback() {
   fb.text = $("#fbText")?.value || "";
   const txt = [`LickPick beta feedback`, ...FBQ.map(([k, q]) => `${q} ${fb.a[k] || "-"}`), `Notes: ${fb.text.trim() || "-"}`, ``, testReport()].join("\n");
   try { if (navigator.share) { await navigator.share({ title: "LickPick feedback", text: txt }); toast("Thanks! That helps a lot."); $("#fbSheet").hidden = true; return; } } catch (e) { if (e?.name === "AbortError") return; }
-  try { await navigator.clipboard.writeText(txt); toast("Copied. Paste it to Dave in WhatsApp or email."); } catch { openReport(); }
+  try { await navigator.clipboard.writeText(txt); toast(`Copied. Paste it in an email to ${SUPPORT}.`); } catch { openReport(); }
 }
 function testReport() {
   const fb = store.get("lp:fb") || {}, ua = navigator.userAgent, real = state.clips.filter(c => !c.example);
@@ -4830,11 +4835,13 @@ document.addEventListener("change", e => { if (e.target?.id === "capCredit") sto
 // ---------- first run: profile and setup (kept on this phone; no account needed)
 const PLAYS = [["guitar", "Guitar", "i-pick"], ["bass", "Bass", "i-bass"], ["keys", "Keys", "i-keys"], ["drums", "Drums", "i-drum"], ["vocals", "Vocals", "i-mic"], ["other", "Other", "i-note"]];
 const POSTS = [["reels", "Instagram Reels"], ["tiktok", "TikTok"], ["shorts", "YouTube Shorts"], ["none", "Not posting yet"]];
-const profile = Object.assign({ name: "", plays: [], posts: [], done: false }, store.get("lp:profile") || {});
+const profile = Object.assign({ name: "", handle: "", look: "", plays: [], posts: [], done: false }, store.get("lp:profile") || {});
 let ob = 0;
 const OB = ["welcome", "you"];   // first run shows only "welcome"; "you" is the optional setup, opened from the menu
 function openOnboard(start = 0) { ob = start; renderOnboard(); $("#onboard").hidden = false; document.body.style.overflow = "hidden"; }
 function closeOnboard() { $("#onboard").hidden = true; document.body.style.overflow = ""; profile.done = true; store.set("lp:profile", profile); store.set("ck:intro", 1); renderTop(); }
+const byName = () => profile.name || (profile.handle ? "@" + profile.handle : "");
+const cleanHandle = v => String(v || "").trim().replace(/^@+/, "").replace(/[^\w.]/g, "").slice(0, 30);
 function renderOnboard() {
   const step = OB[ob], B = $("#obBody"), next = $("#obNext"), ctas = $("#obCtas");
   $("#onboard").classList.toggle("ob-first", step === "welcome");
@@ -4849,7 +4856,11 @@ function renderOnboard() {
     B.innerHTML = `<h1>${profile.name ? `Hey ${esc(profile.name)}` : "Your setup"}</h1>
       <div class="field"><label>Pick length</label><span class="seg wide">${[["auto", "Auto"], [15, "15s"], [30, "30s"], [45, "45s"], [60, "60s"]].map(([v, l]) => `<button type="button" data-oblen="${v}" aria-pressed="${L === v}">${l}</button>`).join("")}</span><p class="hint" id="obLenHint">${lenHint(L)}</p></div>
       <div class="field"><label>You play <span class="optl">for hashtags · optional</span></label><div class="chips">${PLAYS.map(([k, l, ic]) => `<button type="button" data-play-i="${k}" aria-pressed="${profile.plays.includes(k)}">${icon(ic)}${l}</button>`).join("")}</div></div>
-      <div class="field"><label for="obName">Name <span class="optl">on your video credit · optional</span></label><input id="obName" maxlength="40" autocomplete="nickname" placeholder="Stage name" value="${esc(profile.name)}"></div>`;
+      <div class="field"><label for="obName">Name <span class="optl">on your video credit · optional</span></label><input id="obName" maxlength="40" autocomplete="nickname" placeholder="Stage name" value="${esc(profile.name)}"></div>
+      <div class="field"><label for="obHandle">Your @ <span class="optl">Instagram / TikTok · “by @you” on your title · optional</span></label><input id="obHandle" maxlength="31" autocapitalize="off" autocomplete="off" placeholder="@yourname" value="${profile.handle ? "@" + esc(profile.handle) : ""}"></div>
+      <div class="field"><label>Posts to <span class="optl">sets the shape and length · optional</span></label><div class="chips">${[["reels", "Reels"], ["tiktok", "TikTok"], ["shorts", "Shorts"], ["none", "Just saving"]].map(([k, l]) => `<button type="button" data-post-i="${k}" aria-pressed="${profile.posts.includes(k)}">${l}</button>`).join("")}</div></div>
+      <div class="field"><label>Your Look <span class="optl">every new video starts with it</span></label><div class="chips">${LOOKS.map(([k, l]) => `<button type="button" data-prof-look="${k}" aria-pressed="${(profile.look || "studio") === k}">${l}${!lookFree(LOOKS.find(x => x[0] === k)) && !isPro() ? " ·PRO" : ""}</button>`).join("")}</div></div>
+      <div class="profmeta"><span><b>${isPro() ? "Pro" : "Free"}</b>${isPro() ? " · thank you!" : ` · <button type="button" class="linkbtn" data-act="ob-pro">see Pro</button>`}</span><span>${state.clips.filter(c => !c.example).length} clips · ${madeList().length} made</span><span>No account. All of this stays on this phone.</span><span>Help: <a href="mailto:${SUPPORT}">${SUPPORT}</a></span></div>`;
     next.hidden = false; next.textContent = "Done"; ctas.hidden = true;
   }
 }
@@ -5349,7 +5360,7 @@ const one = S => !!S && (S.kind === "pick" || S.ranges.length === 1);
 const win0 = S => S.kind === "pick" && S.plan ? [S.plan.s, S.plan.e] : S.ranges[0];
 function exOpts(c) {
   const S = srcOf(c);
-  if (!c.ex) { const p0 = (profile.posts || []).find(p => SOCIAL.includes(p)); c.ex = { plat: p0 || "file", fmt: p0 ? "vertical" : "original", pos: 0.5, band: false, sep: false, lay: store.get("lp:ovlay") || undefined, titleBy: true }; }
+  if (!c.ex) { const p0 = (profile.posts || []).find(p => SOCIAL.includes(p)); c.ex = { plat: p0 || "file", fmt: p0 ? "vertical" : "original", pos: 0.5, band: false, sep: false, lay: store.get("lp:ovlay") || undefined, titleBy: true, ...(profile.look ? { look: profile.look } : {}) }; }
   const o = c.ex; if (o.pos == null) o.pos = 0.5; if (!o.plat) o.plat = o.fmt === "vertical" ? "reels" : "file";
   o.canV = !!S && (one(S) || S.kind === "mix") && S.len <= 180 && !c.audioOnly;
   o.canBand = !!S && (S.kind === "pick" || S.kind === "mix") && !!c.raw?.chromaQ;
@@ -5390,8 +5401,8 @@ function exportSheetHTML(c) {
 // a name on the video: free for everyone, styled like LickPick
 function titleGroup(c, o, opt) {
   return `<div class="exgroup"><span>Title</span>
-    ${opt("ovTitle", !!o.ovTitle, "i-text", "Name it on the video", o.title ? `“${esc(o.title)}”${o.titleBy && profile.name ? ` by ${esc(profile.name)}` : ""}` : "Song, title, anything. Shown at the top.")}
-    ${o.ovTitle ? `<div class="titlerow"><input id="ovTitleIn" type="text" maxlength="60" placeholder="Name it (song, title, vibe…)" value="${esc(o.title || "")}">${profile.name ? `<label class="credit-opt"><input type="checkbox" data-titleby="1" ${o.titleBy ? "checked" : ""}> by ${esc(profile.name)}</label>` : ""}</div>` : ""}
+    ${opt("ovTitle", !!o.ovTitle, "i-text", "Name it on the video", o.title ? `“${esc(o.title)}”${o.titleBy && byName() ? ` by ${esc(byName())}` : ""}` : "Song, title, anything. Shown at the top.")}
+    ${o.ovTitle ? `<div class="titlerow"><input id="ovTitleIn" type="text" maxlength="60" placeholder="Name it (song, title, vibe…)" value="${esc(o.title || "")}">${byName() ? `<label class="credit-opt"><input type="checkbox" data-titleby="1" ${o.titleBy ? "checked" : ""}> by ${esc(byName())}</label>` : ""}</div>` : ""}
   </div>`;
 }
 // where each item sits and how big: top, middle, bottom (or slide it), small, medium, large. Remembered for next time.
@@ -5470,7 +5481,7 @@ function drawOverlay(g, W, H, t, I, o) {
   const u0 = Math.min(W, H) / 100, font = (wt, px) => `${wt} ${Math.round(px)}px Archivo, system-ui, sans-serif`;
   g.save(); g.textBaseline = "middle";
   if (o.ovTitle && (o.title || "").trim()) {
-    const L = ovLay(o, "title"), u = u0 * L.s, cy = H * L.y, tt = o.title.trim().slice(0, 60), by = o.titleBy && profile.name ? `by ${profile.name}` : "";
+    const L = ovLay(o, "title"), u = u0 * L.s, cy = H * L.y, tt = o.title.trim().slice(0, 60), by = o.titleBy && byName() ? `by ${byName()}` : "";
     const LK = lookOf(o), tf = px => LK[3] === "Archivo" ? font(900, px) : `${LK[3] === "Playfair Display" ? "italic " : ""}${LK[4]} ${Math.round(px * (LK[3] === "Bebas Neue" || LK[3] === "Caveat" ? 1.35 : LK[3] === "Space Mono" ? 0.8 : 1))}px "${LK[3]}", Archivo, sans-serif`;
     g.font = tf(u * 7); let tw = g.measureText(tt).width; const maxW = W - u0 * 10, k = tw > maxW ? maxW / tw : 1; g.font = tf(u * 7 * k); tw = g.measureText(tt).width;
     g.font = font(700, u * 3.4); const bw = by ? g.measureText(by).width : 0, bw2 = Math.max(tw, bw) + u * 8, bh = u * (by ? 15 : 11) * Math.max(0.8, k), bx = (W - bw2) / 2, byy = cy - bh / 2;
@@ -6796,6 +6807,7 @@ document.addEventListener("click", e => {
   if (d.act === "fb-close") { fb.text = $("#fbText")?.value || fb.text; $("#fbSheet").hidden = true; return; }
   if (d.fbq) { fb.text = $("#fbText")?.value || fb.text; fb.a[d.fbq] = d.fbv; openFeedback(); return; }
   if (d.act === "fb-send") { sendFeedback(); return; }
+  if (d.act === "fb-mail") { fb.text = $("#fbText")?.value || ""; const body = [...FBQ.map(([k, q]) => `${q} ${fb.a[k] || "-"}`), `Notes: ${fb.text.trim() || "-"}`, ``, testReport()].join("\n").slice(0, 1800); location.href = `mailto:${SUPPORT}?subject=${encodeURIComponent("LickPick feedback " + (window.LP_VER || ""))}&body=${encodeURIComponent(body)}`; toast("Thanks! That helps a lot."); return; }
   if (d.act === "report-open") { $("#rules").hidden = true; openReport(); return; }
   if (d.act === "report-copy") { copyText(t, $("#reportTxt").value); return; }
   if (d.plan) { planSel = d.plan; document.querySelectorAll("[data-plan]").forEach(b => b.setAttribute("aria-checked", String(b.dataset.plan === planSel))); const g = $("#proGo"); if (g) { g.href = PAY?.checkout?.[planSel] || (PRO_URL ? planURL(planSel) : requestURL(planSel)); const P = PLANS.find(p => p[0] === planSel); g.innerHTML = `${icon("i-bolt")}Unlock ${P[3]} · ${P[1]}`; } return; }
@@ -6808,10 +6820,12 @@ document.addEventListener("click", e => {
   if (d.act === "ob-open") { $("#rules").hidden = true; openOnboard(1); return; }
   if (d.act === "ob-skip") { const first = OB[ob] === "welcome"; closeOnboard(); if (first && store.get("lp:tour") !== TOUR_V && !navigator.webdriver) openIntro(); return; }
   if (d.act === "ob-back") { if (ob > 0) { ob--; renderOnboard(); } return; }
-  if (d.act === "ob-next") { if (OB[ob] === "you") profile.name = ($("#obName")?.value || "").trim().slice(0, 40); if (ob < OB.length - 1) { ob++; renderOnboard(); } else closeOnboard(); return; }
+  if (d.act === "ob-next") { if (OB[ob] === "you") { profile.name = ($("#obName")?.value || "").trim().slice(0, 40); profile.handle = cleanHandle($("#obHandle")?.value); applyProfileDefaults(); } if (ob < OB.length - 1) { ob++; renderOnboard(); } else closeOnboard(); return; }
   if (d.oblen) { state.pickLen = d.oblen === "auto" ? "auto" : +d.oblen; syncRules(); document.querySelectorAll("[data-oblen]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.oblen === d.oblen))); $("#obLenHint").textContent = lenHint(state.pickLen); return; }
+  if (d.profLook) { profile.look = d.profLook === "studio" ? "" : d.profLook; t.parentElement.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === t))); store.set("lp:profile", profile); return; }
   if (d.playI) { const k = d.playI, i = profile.plays.indexOf(k); if (i >= 0) profile.plays.splice(i, 1); else profile.plays.push(k); t.setAttribute("aria-pressed", String(i < 0)); return; }
-  if (d.postI) { const k = d.postI; if (k === "none") profile.posts = profile.posts.includes("none") ? [] : ["none"]; else { profile.posts = profile.posts.filter(x => x !== "none"); const i = profile.posts.indexOf(k); if (i >= 0) profile.posts.splice(i, 1); else profile.posts.push(k); } renderOnboard(); return; }
+  if (d.act === "ob-pro") { profile.name = ($("#obName")?.value || profile.name).trim().slice(0, 40); profile.handle = cleanHandle($("#obHandle")?.value ?? profile.handle); closeOnboard(); openPro(); return; }
+  if (d.postI) { if ($("#obName")) { profile.name = $("#obName").value.trim().slice(0, 40); profile.handle = cleanHandle($("#obHandle")?.value); } const k = d.postI; if (k === "none") profile.posts = profile.posts.includes("none") ? [] : ["none"]; else { profile.posts = profile.posts.filter(x => x !== "none"); const i = profile.posts.indexOf(k); if (i >= 0) profile.posts.splice(i, 1); else profile.posts.push(k); } renderOnboard(); return; }
   if (d.pickyI) { state.strictness = +d.pickyI; syncRules(); state.clips.forEach(c => { redecide(c); persist(c); }); renderOnboard(); return; }
   if (d.act === "ob-record" || d.act === "ob-gallery") { if (OB[ob] === "you") profile.name = ($("#obName")?.value || "").trim().slice(0, 40); closeOnboard(); openPicker(d.act === "ob-record" ? $("#rec") : $("#pick")); return; }
   if (d.act === "intro-skip") { closeIntro(); return; }
