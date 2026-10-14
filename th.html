@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trashure-Hunters — Case Study · 3Shamrocks Studio</title>
+<meta name="description" content="Trashure-Hunters: a rebellion against indifference. Turning real-world cleanup into a competitive adventure — a living IP built with human storytelling + strategic AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#04140d; --bg2:#082018; --ink:#eafff4; --mut:#9fcdb8; --dim:#6f9c86;
+ --lime:#2ee6a0; --lime2:#13d08a; --teal:#0b6e4f; --line:rgba(46,230,160,.18);
+ --max:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.pix{font-family:'Press Start 2P',monospace;text-transform:uppercase;letter-spacing:.02em}
+.kick{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--lime);letter-spacing:.06em}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:13px 22px;font-weight:700;font-size:15px;cursor:pointer;transition:transform .14s,box-shadow .14s;border:2px solid transparent}
+.btn-p{background:var(--lime);color:#04140d;box-shadow:0 2px 0 #0e8a5e}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 5px 0 #0e8a5e}
+.btn-g{border-color:rgba(234,255,244,.3);color:var(--ink)}
+.btn-g:hover{background:rgba(255,255,255,.06)}
+/* top nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(12px);background:rgba(4,20,13,.72);border-bottom:1px solid transparent;transition:border-color .2s}
+.nav.on{border-bottom-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav .back{font-size:13px;color:var(--mut);display:inline-flex;align-items:center;gap:8px}
+.nav .back:hover{color:var(--ink)}
+.nav .th{height:28px}
+/* hero */
+.hero{position:relative;padding:150px 0 70px;overflow:hidden;text-align:center;background:radial-gradient(900px 500px at 50% -10%,#0d3b2a,transparent 60%)}
+.hero .bokeh{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.hero .k1{width:360px;height:360px;background:radial-gradient(circle,#13d08a,transparent 70%);top:-80px;left:-40px;opacity:.4;animation:drift 20s ease-in-out infinite}
+.hero .k2{width:320px;height:320px;background:radial-gradient(circle,#0b6e4f,transparent 70%);bottom:-120px;right:-40px;opacity:.5;animation:drift 24s ease-in-out infinite reverse}
+@keyframes drift{50%{transform:translate(30px,-20px)}}
+.hero .wrap{position:relative;z-index:2}
+.hero .thlogo{height:84px;margin:0 auto 22px;filter:drop-shadow(0 10px 30px rgba(46,230,160,.4))}
+.hero h1{font-size:clamp(30px,5.2vw,56px);font-weight:900;line-height:1.04;letter-spacing:-.02em;max-width:18ch;margin:0 auto}
+.hero h1 em{font-style:normal;color:var(--lime)}
+.hero .sub{color:var(--mut);max-width:60ch;margin:22px auto 30px;font-size:clamp(15px,2vw,19px)}
+.hero .pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.hero .pills span{font-family:'Press Start 2P',monospace;font-size:10px;color:#04140d;background:var(--lime);padding:10px 12px;border-radius:8px}
+.heroart{margin-top:44px;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 70px rgba(0,0,0,.5)}
+/* sections */
+.sec{padding:76px 0}
+.sec-k{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--lime);margin-bottom:14px}
+.sec-t{font-size:clamp(24px,3.4vw,36px);font-weight:900;letter-spacing:-.01em}
+.lead{color:var(--mut);font-size:17px;max-width:62ch;margin-top:16px}
+.band{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.big{font-size:clamp(40px,8vw,92px);font-weight:900;color:var(--lime);font-family:'Press Start 2P',monospace;line-height:1.1}
+.stat-row{display:flex;gap:36px;flex-wrap:wrap;margin-top:18px}
+.stat-row .st b{display:block;font-family:'Press Start 2P',monospace;font-size:20px;color:#fff}
+.stat-row .st span{font-size:13px;color:var(--dim)}
+/* core loop */
+.loop3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
+@media(max-width:760px){.loop3{grid-template-columns:1fr}}
+.lp{border:1px solid var(--line);border-radius:18px;padding:28px;background:rgba(46,230,160,.04);transition:transform .18s,background .18s}
+.lp:hover{transform:translateY(-6px);background:rgba(46,230,160,.09)}
+.lp .num{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--lime);margin-bottom:14px}
+.lp h4{font-size:19px;font-weight:800;margin-bottom:8px}
+.lp p{color:var(--mut);font-size:14.5px}
+/* monsters */
+.mgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:12px;margin-top:30px}
+@media(max-width:760px){.mgrid{grid-template-columns:repeat(4,1fr)}}
+.mgrid img{width:100%;border-radius:14px;background:rgba(255,255,255,.05);padding:8px;transition:transform .2s}
+.mgrid img:hover{transform:translateY(-8px) rotate(-5deg) scale(1.08)}
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+@media(max-width:760px){.gal{grid-template-columns:1fr}}
+.gal img{width:100%;border-radius:14px;border:1px solid var(--line)}
+/* cta */
+.cta{text-align:center;padding:90px 0}
+.cta h2{font-size:clamp(26px,4vw,42px);font-weight:900}
+.cta p{color:var(--mut);max-width:48ch;margin:16px auto 28px}
+footer{border-top:1px solid var(--line);padding:32px 0;text-align:center}
+footer .cpy{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--dim)}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav"><div class="wrap">
+  <a class="back" href="index.html">← 3Shamrocks Studio</a>
+  <img class="th" src="https://static.wixstatic.com/media/cf68b3_269e393ea39a46b891585fb6878d2d73~mv2.png/v1/fit/w_200,h_56,al_c,q_90,enc_auto/img.png" alt="Trashure-Hunters">
+</div></nav>
+
+<header class="hero">
+  <div class="bokeh k1"></div><div class="bokeh k2"></div>
+  <div class="wrap">
+    <img class="thlogo" src="https://static.wixstatic.com/media/cf68b3_269e393ea39a46b891585fb6878d2d73~mv2.png/v1/fit/w_420,h_170,al_c,q_90,enc_auto/img.png" alt="Trashure-Hunters">
+    <div class="kick" style="margin-bottom:18px">★ Flagship IP · Case Study</div>
+    <h1>A rebellion against <em>indifference</em>.</h1>
+    <p class="sub">We live in an era of environmental numbness — we see the problem, but we've stopped caring. Trashure-Hunters was built to break that cycle: a digital ecosystem that turns environmental awareness into a fun adventure, proving technology can do more than distract us — it can inspire change.</p>
+    <div class="pills"><span>Clean</span><span>Conquer</span><span>Collect</span></div>
+    <div class="heroart reveal">
+      <img src="https://static.wixstatic.com/media/cf68b3_b6bbe773fbca4503a3fb5e8f6a21b873~mv2.jpg/v1/fit/w_1040,h_585,q_92,enc_auto/img.jpg" alt="Trashure-Hunters world">
+    </div>
+  </div>
+</header>
+
+<!-- The problem -->
+<section class="sec band"><div class="wrap">
+  <div class="reveal"><div class="sec-k">The norm of neglect</div>
+  <div class="big">2.12B</div>
+  <div class="sec-t" style="margin-top:6px">tons of trash discarded every year.</div>
+  <p class="lead">Yet the real barrier to change isn't infrastructure — it's <b style="color:var(--ink)">environmental numbness</b>. As a society we've developed a psychological blind spot to the trash literally all around us. The strategic challenge: how do you transform a global crisis into a personal cause? The answer — architect a system that treats remediation not as a civic duty, but as a high-stakes asset in a digital economy.</p>
+  </div>
+</div></section>
+
+<!-- Core loop -->
+<section class="sec"><div class="wrap">
+  <div class="reveal"><div class="sec-k">The core loop</div>
+  <div class="sec-t">Clean. Conquer. Collect.</div>
+  <p class="lead">Transforming real-world trash into a competitive digital adventure — one piece at a time.</p></div>
+  <div class="loop3">
+    <div class="lp reveal"><div class="num">01 · VERIFY</div><h4>Prove the impact</h4><p>An AI-powered "Before &amp; After" protocol validates real-world cleanup — no fake claims, only verified impact.</p></div>
+    <div class="lp reveal"><div class="num">02 · CONQUER</div><h4>Own your turf</h4><p>Geolocation turf-war mechanics drive community-scale action — players compete to claim and clean real territory.</p></div>
+    <div class="lp reveal"><div class="num">03 · EVOLVE</div><h4>Collect &amp; grow</h4><p>A high-fidelity AR collection loop fuels the internal "Trash-Cash" economy — cleanup becomes a currency.</p></div>
+  </div>
+</div></section>
+
+<!-- Monster IP -->
+<section class="sec band"><div class="wrap">
+  <div class="reveal"><div class="sec-k">Systemic design + rapid production</div>
+  <div class="sec-t">A whole living world, built in weeks.</div>
+  <p class="lead">Creating a world this complex normally takes a large studio and years. With a custom production pipeline — generative AI steered by sharp creative art direction — we built a massive, cohesive ecosystem of unique, cute "Trashure" monster archetypes in weeks. The focus shifted from "how do we build it" to "what do we build next."</p></div>
+  <div class="mgrid">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_5055a411b7924657aaf9265fd6935a99~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_e5422f5c05a94384bbbcec8fc487ae32~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_3e57983aba9245a09603ff5ad6170e20~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_2748a820c19a44e79a0558db4a0e281e~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_8119aceea11d42c788494aac860e7bf1~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_37e0e6cd7eaa43ca9a8bc883693b6d3b~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_db6a6dc8d56244cfae7a875abb61049f~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_8b022eff9cec45e5962bfdb77c0b2739~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_dcb15c0b0c7f449aba46f4d0a3b55f11~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_dcb9324a8bbd44c8b1ea6b29b6e67ae9~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_551be63fce124fc3b823c4d31a6be2c2~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_42bc12f9d2e94982aa2ee02de0005103~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_9659dc9bc2284a4288cd3f7f1133058d~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_b769ceae8a964eb0a4d6b6b6e68fde64~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_9cf405bf45b84893bdfd9cf68a2c1bc8~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_9ca8edfc9d3849b0bdf47dd0ff157856~mv2.png/v1/fill/w_160,h_160,al_c,q_90,enc_auto/m.png" alt="monster" loading="lazy">
+  </div>
+</div></section>
+
+<!-- Gameplay gallery -->
+<section class="sec"><div class="wrap">
+  <div class="reveal"><div class="sec-k">The world</div><div class="sec-t">One cohesive universe.</div></div>
+  <div class="gal">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_8bbff0cd85ba4e97ab90414b4c9f8620~mv2.png/v1/fit/w_640,h_360,q_90,enc_auto/g.png" alt="TH" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_63f63014d0df42f5be7b3b7d1c124e0f~mv2.png/v1/fit/w_640,h_360,q_90,enc_auto/g.png" alt="TH" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_acd068d549f141e1890262f9452f3404~mv2.png/v1/fit/w_640,h_360,q_90,enc_auto/g.png" alt="TH" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_41de6f12c73b42cbba41bacad5933933~mv2.jpg/v1/fit/w_640,h_360,q_90,enc_auto/g.jpg" alt="TH" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_d0b60fa8a4b545b780e6910202f7a032~mv2.png/v1/fit/w_640,h_360,q_90,enc_auto/g.png" alt="TH" loading="lazy">
+    <img class="reveal" src="https://static.wixstatic.com/media/cf68b3_1fe960af8c0d4f8fafa8630604bdd627~mv2.png/v1/fit/w_640,h_360,q_90,enc_auto/g.png" alt="TH" loading="lazy">
+  </div>
+</div></section>
+
+<section class="cta"><div class="wrap reveal">
+  <div class="kick" style="margin-bottom:14px">All the solutions, one small place</div>
+  <h2>From a raw vision to a living IP.</h2>
+  <p>InsurTech, HealthTech, AR gaming, virtual worlds, B2B or B2C — 3Shamrocks Studio turns raw visions into living products.</p>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <a class="btn btn-p" href="https://3shamrocksstudio.github.io/th-mvp-web" target="_blank" rel="noopener">Play the MVP ↗</a>
+    <a class="btn btn-g" href="index.html">← Back to portfolio</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap"><div class="cpy">© 2026 3Shamrocks Studio · Trashure-Hunters</div></div></footer>
+
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(function(e){io.observe(e);});
+var nav=document.getElementById('nav');
+addEventListener('scroll',function(){ nav.classList.toggle('on',scrollY>24); });
+</script>
+</body>
+</html>
