@@ -126,7 +126,7 @@ nav.scrolled{
   font-family:var(--font-head);font-size:17px;font-weight:700;
   color:var(--white);letter-spacing:-0.02em;
 }
-.nav-logo img{width:28px;height:28px;object-fit:contain}
+.nav-logo img{width:44px;height:44px;object-fit:contain}
 .nav-logo .dot{color:var(--purple)}
 .nav-links{
   display:flex;align-items:center;gap:28px;
@@ -164,6 +164,7 @@ nav.scrolled{
     radial-gradient(ellipse 70% 60% at 75% 50%, rgba(130,57,234,0.14) 0%, transparent 70%),
     radial-gradient(ellipse 40% 40% at 15% 70%, rgba(61,204,110,0.07) 0%, transparent 60%);
 }
+.river-of-three{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .hero-grid-lines{
   position:absolute;inset:0;pointer-events:none;
   background-image:
@@ -267,16 +268,10 @@ nav.scrolled{
   width:clamp(200px,28vw,340px);
   height:auto;
   position:relative;z-index:1;
-  /* Mask: fade bottom → feet blend into page. Radial ellipse clips gray bg at edges */
-  mask-image:
-    radial-gradient(ellipse 82% 100% at 50% 40%, black 35%, rgba(0,0,0,0.9) 58%, transparent 82%),
-    linear-gradient(to bottom, black 50%, rgba(0,0,0,0.8) 73%, transparent 96%);
-  mask-composite:intersect;
-  -webkit-mask-image:
-    radial-gradient(ellipse 82% 100% at 50% 40%, black 35%, rgba(0,0,0,0.9) 58%, transparent 82%),
-    linear-gradient(to bottom, black 50%, rgba(0,0,0,0.8) 73%, transparent 96%);
-  -webkit-mask-composite:source-in;
-  filter:drop-shadow(0 -8px 32px rgba(130,57,234,0.35)) drop-shadow(0 20px 40px rgba(0,0,0,0.7));
+  /* Simple bottom-fade — cutout PNG has clean transparent bg, no edge clipping needed */
+  mask-image:linear-gradient(to bottom, black 58%, rgba(0,0,0,0.65) 80%, transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom, black 58%, rgba(0,0,0,0.65) 80%, transparent 100%);
+  filter:drop-shadow(0 0 36px rgba(130,57,234,0.48)) drop-shadow(0 16px 30px rgba(0,0,0,0.5));
   animation:standChar 5s ease-in-out infinite;
 }
 .minime-bubble{
@@ -439,8 +434,7 @@ section{
 .c-shomer{--card-accent:#faac22;--card-glow:rgba(250,172,34,0.08);--card-shadow:rgba(250,172,34,0.2)}
 .c-trashure{--card-accent:#f0a030;--card-glow:rgba(240,160,48,0.08);--card-shadow:rgba(240,160,48,0.2)}
 .c-chore{--card-accent:#FF8A5B;--card-glow:rgba(255,138,91,0.08);--card-shadow:rgba(255,138,91,0.2)}
-.c-ezra{--card-accent:#00c8a0;--card-glow:rgba(0,200,160,0.08);--card-shadow:rgba(0,200,160,0.2)}
-.c-fairent{--card-accent:#3d9eff;--card-glow:rgba(61,158,255,0.08);--card-shadow:rgba(61,158,255,0.2)}
+.c-rookieking{--card-accent:#B8860B;--card-glow:rgba(184,134,11,0.08);--card-shadow:rgba(184,134,11,0.22)}
 .c-j8nix{--card-accent:#8239ea;--card-glow:rgba(130,57,234,0.08);--card-shadow:rgba(130,57,234,0.2)}
 
 /* Featured card (full width) */
@@ -471,8 +465,7 @@ section{
 .c-shomer .card-visual{background:linear-gradient(135deg,#0c1b39 0%,#1e315f 50%,#0a1428 100%)}
 .c-trashure .card-visual{background:linear-gradient(135deg,#1a0d00 0%,#2a1800 50%,#3d2800 100%)}
 .c-chore .card-visual{background:linear-gradient(135deg,#1a0a00 0%,#2d1400 50%,#3d1800 100%)}
-.c-ezra .card-visual{background:linear-gradient(135deg,#001a14 0%,#002a20 50%,#001818 100%)}
-.c-fairent .card-visual{background:linear-gradient(135deg,#001428 0%,#001e3a 50%,#001230 100%)}
+.c-rookieking .card-visual{background:linear-gradient(135deg,#0a1628 0%,#0d1e36 50%,#111a2a 100%)}
 .c-j8nix .card-visual{background:linear-gradient(135deg,#0a0014 0%,#14002a 50%,#08001e 100%)}
 
 /* ─── CARD LOGO ───── */
@@ -662,7 +655,61 @@ footer{
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-bg"></div>
+  <div class="hero-bg">
+    <!-- River of Three — flowing shamrock tribute to 3S brand & TH storyline -->
+    <svg class="river-of-three" viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="riv1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#8239ea" stop-opacity="0"/>
+          <stop offset="30%" stop-color="#8239ea" stop-opacity="0.5"/>
+          <stop offset="65%" stop-color="#3dcc6e" stop-opacity="0.32"/>
+          <stop offset="100%" stop-color="#8239ea" stop-opacity="0.2"/>
+        </linearGradient>
+        <linearGradient id="riv2" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#3dcc6e" stop-opacity="0"/>
+          <stop offset="40%" stop-color="#3dcc6e" stop-opacity="0.28"/>
+          <stop offset="100%" stop-color="#8239ea" stop-opacity="0.18"/>
+        </linearGradient>
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Main river — meanders from left to right across hero -->
+      <path d="M-20,350 C120,290 240,420 420,310 S610,180 760,270 S900,380 1020,330"
+        stroke="url(#riv1)" stroke-width="3" fill="none" opacity="0.7" filter="url(#glow)"/>
+      <!-- Secondary tributary — lower, green -->
+      <path d="M-20,420 C100,450 220,390 360,430 S560,470 700,400 S880,360 1020,400"
+        stroke="url(#riv2)" stroke-width="1.5" fill="none" opacity="0.45"/>
+      <!-- Shamrock 1 — river source, left -->
+      <g transform="translate(140,305)" opacity="0.22" filter="url(#glow)">
+        <circle cx="0" cy="-11" r="11" fill="#3dcc6e"/>
+        <circle cx="-11" cy="3" r="11" fill="#3dcc6e"/>
+        <circle cx="11" cy="3" r="11" fill="#3dcc6e"/>
+        <rect x="-2" y="13" width="4" height="16" rx="2" fill="#3dcc6e"/>
+      </g>
+      <!-- Shamrock 2 — river confluence, center -->
+      <g transform="translate(420,308)" opacity="0.18" filter="url(#glow)">
+        <circle cx="0" cy="-13" r="13" fill="#8239ea"/>
+        <circle cx="-13" cy="4" r="13" fill="#8239ea"/>
+        <circle cx="13" cy="4" r="13" fill="#8239ea"/>
+        <rect x="-2.5" y="16" width="5" height="18" rx="2" fill="#8239ea"/>
+      </g>
+      <!-- Shamrock 3 — river end, right -->
+      <g transform="translate(760,265)" opacity="0.2" filter="url(#glow)">
+        <circle cx="0" cy="-10" r="10" fill="#3dcc6e"/>
+        <circle cx="-10" cy="3" r="10" fill="#3dcc6e"/>
+        <circle cx="10" cy="3" r="10" fill="#3dcc6e"/>
+        <rect x="-2" y="12" width="4" height="14" rx="2" fill="#3dcc6e"/>
+      </g>
+      <!-- Ripple dots along the river -->
+      <circle cx="220" cy="355" r="2" fill="#8239ea" opacity="0.3"/>
+      <circle cx="290" cy="375" r="1.5" fill="#3dcc6e" opacity="0.25"/>
+      <circle cx="540" cy="220" r="2" fill="#3dcc6e" opacity="0.28"/>
+      <circle cx="630" cy="235" r="1.5" fill="#8239ea" opacity="0.22"/>
+      <circle cx="870" cy="310" r="2" fill="#3dcc6e" opacity="0.25"/>
+    </svg>
+  </div>
   <div class="hero-grid-lines"></div>
 
   <div class="hero-content">
@@ -691,7 +738,7 @@ footer{
 
   <div class="hero-character">
     <div class="minime-stand">
-      <img src="assets/studio/minime.jpg" alt="Dave — 3Shamrocks Studio" class="minime-img">
+      <img src="assets/studio/minime-cutout.png" alt="Dave — 3Shamrocks Studio" class="minime-img">
       <div class="minime-bubble">Built with <strong>passion</strong> + AI ✦</div>
     </div>
   </div>
@@ -702,10 +749,7 @@ footer{
   <div class="clients-label">Building value for companies like</div>
   <div class="clients-strip">
     <span>AposHealth</span>
-    <span>Winplant</span>
-    <span>Visua</span>
-    <span>Eldan</span>
-    <span>Guberman</span>
+    <span>Vibrant Gastro</span>
   </div>
 </div>
 
@@ -716,7 +760,7 @@ footer{
   <p class="section-sub">A living portfolio — each product has its own brand, interface, and working software. Click any to explore the full case study.</p>
 
   <div class="minime-guide reveal">
-    <img src="assets/studio/minime.jpg" alt="Dave" class="minime-guide-img">
+    <img src="assets/studio/minime-cutout.png" alt="Dave" class="minime-guide-img">
     <p class="minime-guide-text">"Every product in this lab started as a <strong>problem worth solving</strong>. I obsess over the craft until the experience feels inevitable — from a raw concept to pixel-perfect, shipped product."</p>
   </div>
 
@@ -750,7 +794,7 @@ footer{
     </a>
 
     <!-- CHORE ROYALE — using actual chore-wars.svg logo -->
-    <a class="product-card c-chore reveal" href="choreroyale-case.html">
+    <a class="product-card c-chore reveal" href="https://3shamrocksstudio.github.io/chore-wars/landing.html" target="_blank">
       <div class="card-visual">
         <img src="assets/products/chore-wars.svg" class="card-logo" alt="Chore Royale" loading="lazy">
       </div>
@@ -762,30 +806,36 @@ footer{
       </div>
     </a>
 
-    <!-- FAIRENT -->
-    <a class="product-card c-fairent reveal" href="fairent-case.html">
+    <!-- ROOKIE & KING™ -->
+    <a class="product-card c-rookieking reveal" href="https://3shamrocksstudio.github.io/gambit-app/" target="_blank">
       <div class="card-visual">
-        <div class="card-wordmark">FAIRENT</div>
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="90" height="90" style="position:relative;z-index:2;filter:drop-shadow(0 4px 20px rgba(184,134,11,0.6))">
+          <defs>
+            <linearGradient id="kingGold" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FFD700"/>
+              <stop offset="100%" stop-color="#B8860B"/>
+            </linearGradient>
+          </defs>
+          <!-- King crown cross -->
+          <rect x="46" y="6" width="8" height="22" rx="3" fill="url(#kingGold)"/>
+          <rect x="36" y="12" width="28" height="8" rx="3" fill="url(#kingGold)"/>
+          <!-- Crown body -->
+          <path d="M30 30 L36 28 L42 34 L50 26 L58 34 L64 28 L70 30 L70 42 L30 42 Z" fill="url(#kingGold)" opacity="0.9"/>
+          <!-- Torso -->
+          <path d="M32 42 L68 42 L64 72 L36 72 Z" fill="url(#kingGold)" opacity="0.85"/>
+          <!-- Base -->
+          <rect x="26" y="72" width="48" height="8" rx="3" fill="url(#kingGold)"/>
+          <rect x="22" y="80" width="56" height="8" rx="3" fill="url(#kingGold)"/>
+          <!-- Shimmer highlights -->
+          <rect x="48" y="8" width="3" height="18" rx="1.5" fill="rgba(255,255,255,0.35)"/>
+          <polygon points="32,44 38,44 35,58" fill="rgba(255,255,255,0.15)"/>
+        </svg>
       </div>
       <div class="card-body">
-        <div class="card-tag">PropTech · Justice</div>
-        <div class="card-name">Fairent</div>
-        <div class="card-desc">Stop paying more than you should. A proptech platform that exposes rent overcharges, guides tenants through reclaim processes, and levels the playing field between renters and landlords.</div>
-        <div class="card-cta">Explore Case Study <div class="card-cta-arrow">→</div></div>
-      </div>
-    </a>
-
-    <!-- EZRA -->
-    <a class="product-card c-ezra reveal" href="ezra-case.html">
-      <div class="card-visual">
-        <img src="assets/products/ezra.jpg" class="card-logo" alt="Ezra" loading="lazy"
-          style="border-radius:16px">
-      </div>
-      <div class="card-body">
-        <div class="card-tag">AI Agent · Elder Care</div>
-        <div class="card-name">Ezra</div>
-        <div class="card-desc">A compassionate AI companion designed for seniors. Ezra bridges the gap between aging adults and modern technology — making daily tasks, medical reminders, and family connections effortless.</div>
-        <div class="card-cta">Explore Case Study <div class="card-cta-arrow">→</div></div>
+        <div class="card-tag">LinkedIn · Chess · Strategy</div>
+        <div class="card-name">Rookie & King™</div>
+        <div class="card-desc">The LinkedIn chess game you didn't know you needed. Challenge connections, play thought leaders, and elevate professional networking from scrolling to strategy — one move at a time.</div>
+        <div class="card-cta">Open App <div class="card-cta-arrow">→</div></div>
       </div>
     </a>
 
@@ -814,7 +864,7 @@ footer{
 
   <div class="work-strip">
     <div class="work-item reveal">
-      <img src="assets/work/aposhealth/thumb.jpg" alt="AposHealth" class="work-item-img" onerror="this.style.background='#0d1828';this.alt=''">
+      <img src="assets/work/aposhealth/screen-1.png" alt="AposHealth" class="work-item-img" onerror="this.style.background='#0d1828';this.alt=''">
       <div class="work-item-body">
         <div class="work-item-role">Product Design Director</div>
         <div class="work-item-name">AposHealth</div>
@@ -822,7 +872,7 @@ footer{
       </div>
     </div>
     <div class="work-item reveal">
-      <img src="assets/work/vibrant/thumb.jpg" alt="VIBRANT" class="work-item-img" onerror="this.style.background='#001428';this.alt=''">
+      <img src="assets/work/vibrant/screen-1.png" alt="VIBRANT" class="work-item-img" onerror="this.style.background='#001428';this.alt=''">
       <div class="work-item-body">
         <div class="work-item-role">Brand + UX Design</div>
         <div class="work-item-name">VIBRANT.</div>
@@ -837,7 +887,7 @@ footer{
   <div class="about-grid">
     <div class="about-visual reveal">
       <div class="about-bg-glow"></div>
-      <img src="assets/studio/minime.jpg" alt="Dave Markovich — Founder" class="about-minime">
+      <img src="assets/studio/minime-cutout.png" alt="Dave Markovich — Founder" class="about-minime">
     </div>
     <div class="about-content">
       <div class="section-label">The Studio</div>
@@ -874,7 +924,7 @@ footer{
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-inner">
-    <img src="assets/studio/minime.jpg" alt="Dave" class="contact-minime reveal" style="mask-image:radial-gradient(ellipse 80% 95% at 50% 42%,black 40%,transparent 85%);-webkit-mask-image:radial-gradient(ellipse 80% 95% at 50% 42%,black 40%,transparent 85%);filter:drop-shadow(0 0 30px var(--purple-glow))">
+    <img src="assets/studio/minime-cutout.png" alt="Dave" class="contact-minime reveal" style="mask-image:radial-gradient(ellipse 80% 95% at 50% 42%,black 40%,transparent 85%);-webkit-mask-image:radial-gradient(ellipse 80% 95% at 50% 42%,black 40%,transparent 85%);filter:drop-shadow(0 0 30px var(--purple-glow))">
     <h2 class="contact-title reveal">Got something<br><em>worth building?</em></h2>
     <p class="contact-sub reveal">Pitch your idea and get a straight answer on feasibility and timing. No fluff, just craft.</p>
     <div class="contact-actions reveal">
