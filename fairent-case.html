@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fairent — Fair Renting Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =============================================
+   FAIRENT — CASE STUDY
+   Layout: vertical narrative, full-width bands
+   Color: dark-first, #3d9eff accent (sky blue)
+   Type: Syne / Inter / Space Grotesk
+   ============================================= */
+
+:root {
+  /* 3SDS palette */
+  --black:    #08080f;
+  --black-2:  #0d0d1a;
+  --purple:   #8239ea;
+  --green:    #3dcc6e;
+  --white:    #f4f4fc;
+  --muted:    rgba(200,200,225,0.55);
+  /* Fairent accent */
+  --blue:     #3d9eff;
+  --blue-dim: rgba(61,158,255,0.10);
+  --blue-mid: rgba(61,158,255,0.22);
+  /* Surface tokens */
+  --bg:       var(--black);
+  --bg-2:     var(--black-2);
+  --surface:  rgba(255,255,255,0.04);
+  --border:   rgba(255,255,255,0.08);
+  --text:     var(--white);
+  --text-sub: var(--muted);
+  /* Type */
+  --font-display: 'Syne', 'Helvetica Neue', sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-label:   'Space Grotesk', 'Helvetica Neue', sans-serif;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+
+/* ── UTILITIES ──────────────────────────────── */
+.gutter {
+  padding-left:  max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+
+.container {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding-inline: max(24px, env(safe-area-inset-left, 0px));
+}
+
+.label {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 20px;
+}
+
+.eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1.5px;
+  background: var(--blue);
+  flex-shrink: 0;
+}
+
+/* reveal-on-scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1),
+              transform 0.65s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.24s; }
+.reveal-delay-4 { transition-delay: 0.32s; }
+.reveal-delay-5 { transition-delay: 0.40s; }
+.reveal-delay-6 { transition-delay: 0.48s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ── NAV ────────────────────────────────────── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(8,8,15,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding-inline: max(24px, env(safe-area-inset-left, 0px));
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-back {
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-sub);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--blue); }
+.nav-back svg { width: 14px; height: 14px; }
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--blue);
+  display: inline-block;
+}
+
+.nav-cta {
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--blue);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.nav-cta:hover { opacity: 0.85; }
+
+/* ── HERO ───────────────────────────────────── */
+.hero {
+  padding-block: 96px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle grid lines */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(61,158,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61,158,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* radial glow behind content */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(61,158,255,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: var(--blue-dim);
+  border: 1px solid rgba(61,158,255,0.25);
+  border-radius: 100px;
+  padding: 5px 14px;
+  margin-bottom: 32px;
+}
+
+.hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 7vw, 80px);
+  font-weight: 800;
+  line-height: 1.03;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  margin-bottom: 24px;
+  color: var(--white);
+}
+
+.hero-h1 em {
+  font-style: normal;
+  color: var(--blue);
+}
+
+.hero-sub {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text-sub);
+  max-width: 540px;
+  line-height: 1.65;
+  margin-bottom: 40px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 64px;
+}
+
+.btn-primary {
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--blue);
+  border: none;
+  border-radius: 8px;
+  padding: 14px 28px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.btn-ghost {
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-sub);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 28px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+
+/* Balance scale SVG */
+.hero-scale {
+  margin-bottom: 56px;
+}
+
+.scale-svg { overflow: visible; }
+
+.scale-beam {
+  animation: tilt 4s ease-in-out infinite;
+  transform-origin: 150px 60px;
+}
+
+@keyframes tilt {
+  0%,100% { transform: rotate(0deg); }
+  40%      { transform: rotate(-3deg); }
+  70%      { transform: rotate(2deg); }
+}
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-stat { text-align: center; }
+
+.hero-stat-num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-stat-label {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-sub);
+  margin-top: 3px;
+}
+
+/* ── PROBLEM ────────────────────────────────── */
+.section { padding-block: 88px; }
+.section-alt { background: var(--bg-2); }
+
+.section-header {
+  margin-bottom: 56px;
+}
+
+.section-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: var(--white);
+  margin-bottom: 14px;
+}
+
+.section-sub {
+  font-size: 16px;
+  color: var(--text-sub);
+  max-width: 520px;
+  line-height: 1.65;
+}
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.problem-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.problem-card:hover { border-color: rgba(61,158,255,0.35); }
+
+.problem-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--blue);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.problem-card:hover::before { opacity: 1; }
+
+.problem-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--blue-dim);
+  border: 1px solid rgba(61,158,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: var(--blue);
+}
+
+.problem-icon svg { width: 22px; height: 22px; }
+
+.problem-stat {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--blue);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 8px;
+}
+
+.problem-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+
+.problem-desc {
+  font-size: 14px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+/* ── FAIRNESS SCORE ─────────────────────────── */
+.score-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.score-copy .section-sub { max-width: 400px; }
+
+.score-breakdown {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.score-row-label {
+  font-family: var(--font-label);
+  font-size: 12px;
+  color: var(--text-sub);
+  min-width: 140px;
+}
+
+.score-bar-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.9s cubic-bezier(0.22,1,0.36,1);
+}
+
+.score-bar-fill.animated { transform: scaleX(1); }
+
+.score-row-val {
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--white);
+  min-width: 28px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Listing card mockup */
+.listing-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.listing-img {
+  height: 180px;
+  background: linear-gradient(135deg, rgba(61,158,255,0.12) 0%, rgba(130,57,234,0.10) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.listing-img-label {
+  font-family: var(--font-label);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.25);
+}
+
+.listing-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(61,158,255,0.15);
+  border: 1px solid rgba(61,158,255,0.3);
+  color: var(--blue);
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 4px 9px;
+  border-radius: 5px;
+}
+
+.listing-score-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 52px;
+  height: 52px;
+}
+
+.listing-body { padding: 20px; }
+
+.listing-addr {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.listing-meta {
+  font-family: var(--font-label);
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 16px;
+}
+
+.listing-price-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.listing-price {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.listing-price-sub {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.listing-tag {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 4px 9px;
+  border-radius: 5px;
+  background: rgba(61,204,110,0.12);
+  color: var(--green);
+  border: 1px solid rgba(61,204,110,0.25);
+}
+
+.listing-fees {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fee-chip {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-sub);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+/* SVG ring */
+.ring-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-svg { transform: rotate(-90deg); }
+
+.ring-bg   { stroke: rgba(255,255,255,0.07); fill: none; }
+.ring-fill { fill: none; stroke: var(--blue); stroke-linecap: round;
+             transition: stroke-dashoffset 1.4s cubic-bezier(0.22,1,0.36,1); }
+
+.ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-num {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.ring-denom {
+  font-family: var(--font-label);
+  font-size: 10px;
+  color: var(--text-sub);
+  margin-top: 2px;
+}
+
+.ring-label {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--blue);
+  margin-top: 4px;
+}
+
+/* ── FEATURES ───────────────────────────────── */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 24px;
+  transition: border-color 0.25s, background 0.25s;
+}
+
+.feature-card:hover {
+  border-color: rgba(61,158,255,0.3);
+  background: rgba(61,158,255,0.04);
+}
+
+.feature-num {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(61,158,255,0.4);
+  margin-bottom: 16px;
+}
+
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  background: var(--blue-dim);
+  border: 1px solid rgba(61,158,255,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--blue);
+  margin-bottom: 16px;
+}
+.feature-icon svg { width: 20px; height: 20px; }
+
+.feature-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.feature-desc {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+/* ── SCANNER FLOW ───────────────────────────── */
+.scanner-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  position: relative;
+}
+
+/* connector line between steps */
+.scanner-wrap::before {
+  content: '';
+  position: absolute;
+  top: 56px;
+  left: calc(16.66% + 28px);
+  right: calc(16.66% + 28px);
+  height: 1px;
+  background: linear-gradient(90deg, var(--blue) 0%, var(--blue) 50%, rgba(61,158,255,0.3) 100%);
+}
+
+.scanner-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.scanner-step-num {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--blue-dim);
+  border: 2px solid rgba(61,158,255,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--blue);
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.scanner-step-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: rgba(61,158,255,0.06);
+  border: 1px solid rgba(61,158,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--blue);
+  margin-bottom: 20px;
+}
+.scanner-step-icon svg { width: 32px; height: 32px; }
+
+.scanner-step-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.scanner-step-desc {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+.scanner-detail-box {
+  margin-top: 12px;
+  background: rgba(61,158,255,0.05);
+  border: 1px solid rgba(61,158,255,0.12);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  color: var(--blue);
+  text-align: left;
+}
+
+/* ── PRICE CHART ────────────────────────────── */
+.chart-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 28px;
+}
+
+.chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.chart-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.chart-subtitle {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.chart-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  color: var(--text-sub);
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  height: 180px;
+  position: relative;
+  padding-bottom: 40px;
+}
+
+/* grid lines */
+.chart-bars::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: calc(100% - 40px);
+  background-image: repeating-linear-gradient(
+    to top,
+    rgba(255,255,255,0.05) 0,
+    rgba(255,255,255,0.05) 1px,
+    transparent 1px,
+    transparent 33.33%
+  );
+}
+
+/* average line */
+.chart-avg-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1.5px dashed rgba(61,204,110,0.55);
+  pointer-events: none;
+}
+
+.chart-avg-line::after {
+  content: 'Market avg';
+  position: absolute;
+  right: 0;
+  top: -18px;
+  font-family: var(--font-label);
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 0.05em;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  position: relative;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar-val {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-sub);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.bar-body {
+  width: 100%;
+  border-radius: 5px 5px 2px 2px;
+  background: var(--blue);
+  min-height: 4px;
+  transition: height 1.2s cubic-bezier(0.22,1,0.36,1);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.bar-body.highlighted { background: var(--blue); }
+.bar-body.dimmed      { background: rgba(61,158,255,0.38); }
+
+.bar-label {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-label);
+  font-size: 10px;
+  color: var(--text-sub);
+  white-space: nowrap;
+  text-align: center;
+  width: max-content;
+}
+
+/* ── FOR LANDLORDS ──────────────────────────── */
+.landlord-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.landlord-points {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.landlord-point {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.landlord-point-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(61,204,110,0.10);
+  border: 1px solid rgba(61,204,110,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green);
+  flex-shrink: 0;
+}
+.landlord-point-icon svg { width: 18px; height: 18px; }
+
+.landlord-point-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.landlord-point-desc {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+.trust-meter {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.trust-meter-title {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.trust-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.trust-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trust-bar-name {
+  font-family: var(--font-label);
+  font-size: 12px;
+  color: var(--text-sub);
+  min-width: 120px;
+}
+
+.trust-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.trust-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1s cubic-bezier(0.22,1,0.36,1);
+}
+.trust-bar-fill.animated { transform: scaleX(1); }
+.trust-bar-fill.blue  { background: var(--blue); }
+.trust-bar-fill.green { background: var(--green); }
+
+.trust-bar-pct {
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--white);
+  min-width: 32px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── CTA ────────────────────────────────────── */
+.cta-section {
+  padding-block: 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(61,158,255,0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.cta-inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.cta-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  text-wrap: balance;
+  margin-bottom: 16px;
+}
+
+.cta-sub {
+  font-size: 16px;
+  color: var(--text-sub);
+  max-width: 460px;
+  margin-inline: auto;
+  margin-bottom: 40px;
+  line-height: 1.65;
+}
+
+.waitlist-form {
+  display: flex;
+  gap: 12px;
+  max-width: 420px;
+  margin-inline: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.waitlist-input {
+  flex: 1;
+  min-width: 220px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.waitlist-input::placeholder { color: var(--text-sub); }
+.waitlist-input:focus { border-color: var(--blue); }
+
+.waitlist-btn {
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--blue);
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+.waitlist-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.cta-note {
+  margin-top: 16px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  color: var(--text-sub);
+  letter-spacing: 0.04em;
+}
+
+.waitlist-success {
+  display: none;
+  font-family: var(--font-label);
+  font-size: 14px;
+  color: var(--green);
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  background: rgba(61,204,110,0.08);
+  border: 1px solid rgba(61,204,110,0.25);
+  border-radius: 8px;
+  max-width: 380px;
+  margin-inline: auto;
+}
+
+/* ── FOOTER ─────────────────────────────────── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding-block: 32px;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.footer-brand {
+  font-family: var(--font-label);
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.footer-brand span { color: var(--blue); }
+
+.footer-link {
+  font-family: var(--font-label);
+  font-size: 12px;
+  color: var(--text-sub);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+.footer-link:hover { color: var(--blue); }
+.footer-link svg { width: 14px; height: 14px; }
+
+/* ── DIVIDER ────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin-block: 0;
+}
+
+/* ── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 820px) {
+  .problem-grid   { grid-template-columns: 1fr; }
+  .score-layout   { grid-template-columns: 1fr; }
+  .feature-grid   { grid-template-columns: 1fr 1fr; }
+  .landlord-grid  { grid-template-columns: 1fr; gap: 40px; }
+  .scanner-wrap   { grid-template-columns: 1fr; }
+  .scanner-wrap::before { display: none; }
+  .scanner-step   { align-items: flex-start; text-align: left; flex-direction: row; gap: 16px; padding: 0; margin-bottom: 20px; }
+  .scanner-step-num { margin-bottom: 0; flex-shrink: 0; width: 44px; height: 44px; font-size: 16px; }
+  .scanner-step-icon { display: none; }
+  .hero-stats     { gap: 28px; }
+}
+
+@media (max-width: 560px) {
+  .feature-grid { grid-template-columns: 1fr; }
+  .hero { padding-block: 64px 56px; }
+  .section { padding-block: 64px; }
+  .nav-cta { display: none; }
+  .chart-bars { gap: 8px; }
+  .bar-val { font-size: 9px; }
+  .bar-label { font-size: 9px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  NAV                                     ║
+     ╚══════════════════════════════════════════╝ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-back" aria-label="Back to portfolio">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 2L4 7l5 5"/>
+      </svg>
+      Portfolio
+    </a>
+    <div class="nav-logo">
+      <span class="nav-logo-dot"></span>
+      Fairent
+    </div>
+    <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+  </div>
+</nav>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  HERO                                    ║
+     ╚══════════════════════════════════════════╝ -->
+<section class="hero">
+  <div class="container hero-inner">
+
+    <div class="hero-badge reveal">
+      <span class="hero-badge-dot"></span>
+      Early Access — Israel Beta
+    </div>
+
+    <h1 class="hero-h1 reveal reveal-delay-1">
+      Renting should<br>be <em>fair.</em>
+    </h1>
+
+    <p class="hero-sub reveal reveal-delay-2">
+      Fairent gives renters full visibility into costs, contracts, and landlord history — before they sign. No hidden fees. No legal traps. No surprises.
+    </p>
+
+    <div class="hero-actions reveal reveal-delay-3">
+      <a href="#waitlist" class="btn-primary">Join the Waitlist</a>
+      <a href="#features" class="btn-ghost">See How It Works</a>
+    </div>
+
+    <!-- Balance Scale SVG -->
+    <div class="hero-scale reveal reveal-delay-4">
+      <svg class="scale-svg" width="300" height="140" viewBox="0 0 300 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Pillar -->
+        <rect x="148" y="62" width="4" height="70" rx="2" fill="rgba(255,255,255,0.12)"/>
+        <rect x="136" y="128" width="28" height="4" rx="2" fill="rgba(255,255,255,0.10)"/>
+        <!-- Center knob -->
+        <circle cx="150" cy="62" r="5" fill="#3d9eff" opacity="0.8"/>
+
+        <!-- Beam + pans (animated) -->
+        <g class="scale-beam">
+          <!-- Beam -->
+          <rect x="50" y="59" width="200" height="3" rx="1.5" fill="rgba(61,158,255,0.45)"/>
+          <!-- Left strings -->
+          <line x1="70" y1="62" x2="58" y2="98" stroke="rgba(61,158,255,0.35)" stroke-width="1.2"/>
+          <line x1="70" y1="62" x2="82" y2="98" stroke="rgba(61,158,255,0.35)" stroke-width="1.2"/>
+          <!-- Left pan -->
+          <path d="M48 98 Q70 106 92 98" stroke="#3d9eff" stroke-width="1.8" fill="rgba(61,158,255,0.08)" stroke-linecap="round"/>
+          <!-- Left pan label -->
+          <text x="70" y="119" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="9" fill="rgba(61,158,255,0.7)" font-weight="600" letter-spacing="0.1em">RENTER</text>
+          <!-- Left pan icon: checkmark -->
+          <text x="70" y="93" text-anchor="middle" font-size="11" fill="#3d9eff" opacity="0.8">✓</text>
+
+          <!-- Right strings -->
+          <line x1="230" y1="62" x2="218" y2="98" stroke="rgba(61,158,255,0.35)" stroke-width="1.2"/>
+          <line x1="230" y1="62" x2="242" y2="98" stroke="rgba(61,158,255,0.35)" stroke-width="1.2"/>
+          <!-- Right pan -->
+          <path d="M208 98 Q230 106 252 98" stroke="rgba(61,158,255,0.5)" stroke-width="1.8" fill="rgba(61,158,255,0.06)" stroke-linecap="round"/>
+          <!-- Right pan label -->
+          <text x="230" y="119" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="9" fill="rgba(200,200,225,0.45)" font-weight="600" letter-spacing="0.1em">LANDLORD</text>
+          <!-- Right pan icon: shield -->
+          <text x="230" y="93" text-anchor="middle" font-size="11" fill="rgba(200,200,225,0.4)">⊛</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="hero-stats reveal reveal-delay-5">
+      <div class="hero-stat">
+        <div class="hero-stat-num">4M+</div>
+        <div class="hero-stat-label">Renters in Israel</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">₪2,400</div>
+        <div class="hero-stat-label">Avg hidden fees / deal</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">68%</div>
+        <div class="hero-stat-label">Leases with illegal clauses</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">Web + Mobile</div>
+        <div class="hero-stat-label">Platform</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  PROBLEM                                 ║
+     ╚══════════════════════════════════════════╝ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow reveal">The Problem</div>
+      <h2 class="section-h2 reveal reveal-delay-1">The rental market is<br>designed against you.</h2>
+      <p class="section-sub reveal reveal-delay-2">From the first listing to the day you move in, renters face opacity at every step. Fairent changes that.</p>
+    </div>
+    <div class="problem-grid">
+
+      <div class="problem-card reveal reveal-delay-1">
+        <div class="problem-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="problem-stat">₪2,400</div>
+        <div class="problem-title">The Hidden Fees Trap</div>
+        <p class="problem-desc">Agency commissions, key money, municipal tax gaps, maintenance reserves — disclosed only after you've fallen in love with an apartment. Average renters pay ₪2,400 in undisclosed fees per lease cycle.</p>
+      </div>
+
+      <div class="problem-card reveal reveal-delay-2">
+        <div class="problem-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 10h8M8 14h5"/>
+          </svg>
+        </div>
+        <div class="problem-stat">68%</div>
+        <div class="problem-title">Unfair Contracts</div>
+        <p class="problem-desc">Most standard leases in Israel contain clauses that are illegal under the Tenants Protection Law — automatic deposit forfeitures, liability waivers, early-exit penalties that exceed legal limits.</p>
+      </div>
+
+      <div class="problem-card reveal reveal-delay-3">
+        <div class="problem-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <div class="problem-stat">3×</div>
+        <div class="problem-title">No Renter Power</div>
+        <p class="problem-desc">Landlords have legal resources, templates, and experience. First-time renters have nothing. Disputes are settled informally — and tenants lose three times more often due to lack of documentation.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  FAIRNESS SCORE                          ║
+     ╚══════════════════════════════════════════╝ -->
+<section class="section section-alt" id="features">
+  <div class="container">
+    <div class="score-layout">
+
+      <div class="score-copy">
+        <div class="eyebrow reveal">Fairness Score</div>
+        <h2 class="section-h2 reveal reveal-delay-1">Every listing gets a score. Every landlord earns their rating.</h2>
+        <p class="section-sub reveal reveal-delay-2">Fairent analyzes price vs. market data, lease terms, landlord response rate, and past tenant reviews to produce one transparent number: the Fairness Score.</p>
+        <div class="score-breakdown reveal reveal-delay-3" id="scoreBreakdown">
+          <div class="score-row">
+            <span class="score-row-label">Price vs. Market</span>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:82%"></div></div>
+            <span class="score-row-val">8.2</span>
+          </div>
+          <div class="score-row">
+            <span class="score-row-label">Contract Terms</span>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:75%"></div></div>
+            <span class="score-row-val">7.5</span>
+          </div>
+          <div class="score-row">
+            <span class="score-row-label">Landlord Rating</span>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:80%"></div></div>
+            <span class="score-row-val">8.0</span>
+          </div>
+          <div class="score-row">
+            <span class="score-row-label">Transparency</span>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:77%"></div></div>
+            <span class="score-row-val">7.7</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Listing card mockup -->
+      <div class="reveal reveal-delay-2">
+        <div class="listing-card">
+          <div class="listing-img">
+            <span class="listing-img-label">PROPERTY PREVIEW</span>
+            <div class="listing-badge">Verified Listing</div>
+            <!-- Ring badge on the card -->
+            <div class="listing-score-badge">
+              <div style="position:relative; width:52px; height:52px;">
+                <svg class="ring-svg" width="52" height="52" viewBox="0 0 52 52" id="listingRingSvg">
+                  <circle class="ring-bg" cx="26" cy="26" r="21" stroke-width="4"/>
+                  <circle class="ring-fill" id="listingRingFill" cx="26" cy="26" r="21"
+                    stroke-width="4"
+                    stroke-dasharray="131.9"
+                    stroke-dashoffset="131.9"/>
+                </svg>
+                <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                  <span style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--white);line-height:1;font-variant-numeric:tabular-nums;">7.8</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-size:8px;color:var(--blue);font-weight:600;letter-spacing:0.06em;">FAIR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="listing-body">
+            <div class="listing-addr">12 HaNamal St, Apt 4</div>
+            <div class="listing-meta">Tel Aviv · 3BR · 85m² · Available Nov 1</div>
+            <div class="listing-price-row">
+              <div>
+                <div class="listing-price">₪7,200<span class="listing-price-sub">/mo</span></div>
+              </div>
+              <div class="listing-tag">↓4% vs market</div>
+            </div>
+            <div class="listing-fees">
+              <span class="fee-chip">Agency: ₪7,200</span>
+              <span class="fee-chip">Utilities est.: ₪320/mo</span>
+              <span class="fee-chip">Deposit: 2 months</span>
+              <span class="fee-chip">Maint. hist: 2 issues/yr</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  FEATURE GRID                            ║
+     ╚══════════════════════════════════════════╝ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow reveal">Platform Features</div>
+      <h2 class="section-h2 reveal reveal-delay-1">Everything you need to rent with confidence.</h2>
+    </div>
+    <div class="feature-grid">
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-num">01</div>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+          </svg>
+        </div>
+        <div class="feature-title">Transparent Pricing</div>
+        <p class="feature-desc">Every cost disclosed before you enquire: agency fees, utilities estimate, municipal tax split, deposit terms, and maintenance history. Zero surprises.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9S3 16.97 3 12 7.03 3 12 3s9 4.03 9 9z"/>
+          </svg>
+        </div>
+        <div class="feature-num">02</div>
+        <div class="feature-title">AI Contract Scanner</div>
+        <p class="feature-desc">Upload your lease PDF. Our AI flags illegal clauses, liability overreach, and unfair terms — cross-referenced against the Israeli Tenants Protection Law.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <div class="feature-num">03</div>
+        <div class="feature-title">Fairness Score</div>
+        <p class="feature-desc">A single 1–10 score per listing, combining market price positioning, contract fairness, landlord responsiveness, and verified tenant feedback.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <div class="feature-num">04</div>
+        <div class="feature-title">Tenant Reviews</div>
+        <p class="feature-desc">Verified reviews from past renters on both the property and the landlord. Reviews are identity-verified and cannot be removed by landlords.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="feature-num">05</div>
+        <div class="feature-title">Price History</div>
+        <p class="feature-desc">See how rent has moved per neighborhood and per building over 3 years. Know before you negotiate whether the price is trending up or cooling.</p>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        <div class="feature-num">06</div>
+        <div class="feature-title">Legal Library & Dispute Tracker</div>
+        <p class="feature-desc">Full Israeli tenant rights library, standardized contract templates, and a dispute tracker to document issues, log communications, and send formal legal notices.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  CONTRACT SCANNER FLOW                   ║
+     ╚══════════════════════════════════════════╝ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header" style="text-align:center; align-items:center; display:flex; flex-direction:column;">
+      <div class="eyebrow reveal">Contract Scanner</div>
+      <h2 class="section-h2 reveal reveal-delay-1">Know what you're signing<br>before you sign it.</h2>
+      <p class="section-sub reveal reveal-delay-2" style="text-align:center; margin-inline:auto;">Upload any lease PDF. Fairent's AI parses every clause, checks it against Israeli law, and delivers a plain-language fairness report in under 60 seconds.</p>
+    </div>
+
+    <div class="scanner-wrap reveal">
+
+      <div class="scanner-step">
+        <div class="scanner-step-num">1</div>
+        <div class="scanner-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <div>
+          <div class="scanner-step-title">Upload Your Lease</div>
+          <p class="scanner-step-desc">Drag in your lease PDF, or paste a contract link. Fairent accepts Hebrew, Arabic, and English leases.</p>
+          <div class="scanner-detail-box">Supports: PDF, DOCX, scanned images (OCR)</div>
+        </div>
+      </div>
+
+      <div class="scanner-step">
+        <div class="scanner-step-num">2</div>
+        <div class="scanner-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+          </svg>
+        </div>
+        <div>
+          <div class="scanner-step-title">AI Analyzes All Clauses</div>
+          <p class="scanner-step-desc">Our model reads every clause and checks it against 14 legal frameworks, including the 1994 Tenants Protection Law and 2023 amendments.</p>
+          <div class="scanner-detail-box">Checks: 47 clause categories · 14 legal frameworks</div>
+        </div>
+      </div>
+
+      <div class="scanner-step">
+        <div class="scanner-step-num">3</div>
+        <div class="scanner-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="scanner-step-title">Get Your Fairness Report</div>
+          <p class="scanner-step-desc">Plain-language summary of flagged clauses, severity rating, suggested amendments, and a contract Fairness Score you can share with your landlord.</p>
+          <div class="scanner-detail-box">Output: PDF report + shareable link · ~60 seconds</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  MARKET PRICE CHART                      ║
+     ╚══════════════════════════════════════════╝ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow reveal">Price Intelligence</div>
+      <h2 class="section-h2 reveal reveal-delay-1">Know the real price<br>of every neighborhood.</h2>
+      <p class="section-sub reveal reveal-delay-2">Fairent aggregates rental data from thousands of listings to show you where prices actually are — not where landlords want them to be.</p>
+    </div>
+
+    <div class="chart-wrap reveal reveal-delay-2" id="chartWrap">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Average Monthly Rent by Area</div>
+          <div class="chart-subtitle">3-bedroom apartment · Central Israel · Q3 2024</div>
+        </div>
+        <div class="chart-legend">
+          <div class="chart-legend-item">
+            <div class="legend-swatch" style="background:var(--blue)"></div>
+            Avg Rent (₪/mo)
+          </div>
+          <div class="chart-legend-item">
+            <div class="legend-swatch" style="background:var(--green);border-top:2px dashed var(--green);height:0;margin-top:1px;"></div>
+            Market Average
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-bars" id="chartBars">
+        <!-- avg line: market avg is ~₪6,100, max is ₪8,200. Height area = 140px (180-40 for labels). avg = 6100/8200 = 74% height -->
+        <div class="chart-avg-line" style="bottom: calc(40px + 140px * 0.744)"></div>
+        <!-- bars will be filled by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  FOR LANDLORDS                           ║
+     ╚══════════════════════════════════════════╝ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="landlord-grid">
+
+      <div>
+        <div class="eyebrow reveal">For Landlords</div>
+        <h2 class="section-h2 reveal reveal-delay-1">Transparency is your competitive advantage.</h2>
+        <p class="section-sub reveal reveal-delay-2" style="margin-bottom:32px;">The best landlords already know: fair dealing finds better tenants faster. A Fairent profile proves your track record before the first viewing.</p>
+        <div class="landlord-points">
+          <div class="landlord-point reveal reveal-delay-2">
+            <div class="landlord-point-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <div>
+              <div class="landlord-point-title">Attract Serious Renters</div>
+              <p class="landlord-point-desc">Listings with a Fairness Score above 7.5 get 2.4× more qualified enquiries. Transparent pricing filters out window shoppers.</p>
+            </div>
+          </div>
+          <div class="landlord-point reveal reveal-delay-3">
+            <div class="landlord-point-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="landlord-point-title">Build a Verifiable Reputation</div>
+              <p class="landlord-point-desc">Your Fairent Landlord Profile aggregates reviews, response rate, and dispute history — a verified trust signal you own and carry between properties.</p>
+            </div>
+          </div>
+          <div class="landlord-point reveal reveal-delay-4">
+            <div class="landlord-point-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <div>
+              <div class="landlord-point-title">Reduce Disputes, Protect Yourself</div>
+              <p class="landlord-point-desc">Fairent's standardized lease templates are legally vetted and accepted by both parties — fewer disputes, fewer legal costs, faster resolution when issues do arise.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-3">
+        <div class="trust-meter">
+          <div class="trust-meter-title">Landlord Trust Benchmark</div>
+          <div class="trust-bars" id="trustBars">
+            <div class="trust-bar-row">
+              <span class="trust-bar-name">Response Rate</span>
+              <div class="trust-bar-track"><div class="trust-bar-fill blue" style="width:94%"></div></div>
+              <span class="trust-bar-pct">94%</span>
+            </div>
+            <div class="trust-bar-row">
+              <span class="trust-bar-name">Lease Transparency</span>
+              <div class="trust-bar-track"><div class="trust-bar-fill green" style="width:88%"></div></div>
+              <span class="trust-bar-pct">88%</span>
+            </div>
+            <div class="trust-bar-row">
+              <span class="trust-bar-name">Deposit Return Rate</span>
+              <div class="trust-bar-track"><div class="trust-bar-fill blue" style="width:100%"></div></div>
+              <span class="trust-bar-pct">100%</span>
+            </div>
+            <div class="trust-bar-row">
+              <span class="trust-bar-name">Renter Satisfaction</span>
+              <div class="trust-bar-track"><div class="trust-bar-fill green" style="width:91%"></div></div>
+              <span class="trust-bar-pct">4.6/5</span>
+            </div>
+            <div class="trust-bar-row">
+              <span class="trust-bar-name">Dispute Rate</span>
+              <div class="trust-bar-track"><div class="trust-bar-fill blue" style="width:8%"></div></div>
+              <span class="trust-bar-pct">8%</span>
+            </div>
+          </div>
+          <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
+            <div class="label" style="margin-bottom:8px;">Verified Landlord · 12 Leases</div>
+            <div style="font-size:13px; color:var(--text-sub); line-height:1.6;">This profile earned a <span style="color:var(--green); font-weight:600;">Trusted Landlord</span> badge — displayed on all listings and searchable by tenants.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  CTA                                     ║
+     ╚══════════════════════════════════════════╝ -->
+<section class="cta-section" id="waitlist">
+  <div class="container cta-inner">
+    <div class="eyebrow reveal" style="justify-content:center; margin-bottom:24px;">
+      Early Access
+    </div>
+    <h2 class="cta-h2 reveal reveal-delay-1">Join the waitlist.<br>Rent fairly.</h2>
+    <p class="cta-sub reveal reveal-delay-2">
+      We're launching in Israel first. Be among the first renters and landlords to experience a market built on clarity.
+    </p>
+
+    <form class="waitlist-form reveal reveal-delay-3" id="waitlistForm" onsubmit="handleWaitlist(event)">
+      <input
+        type="email"
+        class="waitlist-input"
+        id="waitlistEmail"
+        placeholder="your@email.com"
+        required
+        autocomplete="email"
+        aria-label="Email address"
+      />
+      <button type="submit" class="waitlist-btn">Request Access</button>
+    </form>
+    <div class="waitlist-success" id="waitlistSuccess">
+      ✓ &nbsp;You're on the list. We'll be in touch.
+    </div>
+    <div class="cta-note reveal reveal-delay-4">No spam. No obligation. Early access only — limited spots.</div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  FOOTER                                  ║
+     ╚══════════════════════════════════════════╝ -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      © 2024 <span>3Shamrocks Studio</span> · All rights reserved
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="font-family:var(--font-label);font-size:11px;color:var(--text-sub);letter-spacing:0.08em;">CONCEPT PRODUCT</span>
+      <span style="width:4px;height:4px;border-radius:50%;background:var(--border);display:inline-block;"></span>
+      <span style="font-family:var(--font-label);font-size:11px;color:rgba(61,158,255,0.5);">PropTech · Legal Tech</span>
+    </div>
+    <a href="index.html" class="footer-link">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 2L4 7l5 5"/>
+      </svg>
+      Back to Portfolio
+    </a>
+  </div>
+</footer>
+
+<script>
+/* ── SCROLL REVEAL ──────────────────────────── */
+(function () {
+  var els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el){ el.classList.add('visible'); });
+    return;
+  }
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(function(el){ obs.observe(el); });
+})();
+
+/* ── FAIRNESS RING ANIMATION ────────────────── */
+(function () {
+  var ring = document.getElementById('listingRingFill');
+  if (!ring) return;
+  var circumference = 2 * Math.PI * 21; // r=21
+  var score = 7.8;
+  var targetOffset = circumference * (1 - score / 10);
+
+  var obs = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      ring.style.strokeDashoffset = targetOffset;
+      obs.disconnect();
+    }
+  }, { threshold: 0.4 });
+  var wrap = document.getElementById('listingRingSvg');
+  if (wrap) obs.observe(wrap);
+})();
+
+/* ── SCORE BAR ANIMATION ────────────────────── */
+(function () {
+  var section = document.getElementById('scoreBreakdown');
+  if (!section) return;
+  var obs = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      section.querySelectorAll('.score-bar-fill').forEach(function(bar) {
+        bar.classList.add('animated');
+      });
+      obs.disconnect();
+    }
+  }, { threshold: 0.4 });
+  obs.observe(section);
+})();
+
+/* ── TRUST BAR ANIMATION ────────────────────── */
+(function () {
+  var section = document.getElementById('trustBars');
+  if (!section) return;
+  var obs = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      section.querySelectorAll('.trust-bar-fill').forEach(function(bar, i) {
+        setTimeout(function() { bar.classList.add('animated'); }, i * 120);
+      });
+      obs.disconnect();
+    }
+  }, { threshold: 0.4 });
+  obs.observe(section);
+})();
+
+/* ── BAR CHART ──────────────────────────────── */
+(function () {
+  var bars = document.getElementById('chartBars');
+  if (!bars) return;
+
+  var data = [
+    { label: 'Tel Aviv C.', val: 8200, highlight: true  },
+    { label: 'Ramat Aviv',  val: 7500, highlight: true  },
+    { label: 'Florentin',   val: 6800, highlight: false },
+    { label: 'Ra\'anana',   val: 5600, highlight: false },
+    { label: 'Kiryat Ono', val: 4900, highlight: false },
+    { label: 'Modi\'in',    val: 4200, highlight: false },
+  ];
+
+  var max = 8200;
+  var maxH = 140; // px available for bars (180px area - 40px for labels)
+
+  data.forEach(function(d) {
+    var heightPct = (d.val / max);
+    var heightPx  = Math.round(maxH * heightPct);
+
+    var col  = document.createElement('div');
+    col.className = 'bar-col';
+
+    var valEl = document.createElement('div');
+    valEl.className = 'bar-val';
+    valEl.textContent = '₪' + d.val.toLocaleString();
+
+    var bodyEl = document.createElement('div');
+    bodyEl.className = 'bar-body ' + (d.highlight ? 'highlighted' : 'dimmed');
+    bodyEl.style.height = '0px';
+    bodyEl.style.transition = 'height 1.1s cubic-bezier(0.22,1,0.36,1)';
+
+    var lblEl = document.createElement('div');
+    lblEl.className = 'bar-label';
+    lblEl.textContent = d.label;
+
+    col.appendChild(valEl);
+    col.appendChild(bodyEl);
+    bars.appendChild(col);
+
+    // position label absolutely at bottom
+    bodyEl.style.position = 'relative';
+    bodyEl.appendChild(lblEl);
+    lblEl.style.position = 'absolute';
+    lblEl.style.bottom    = 'calc(-40px)';
+    lblEl.style.left      = '50%';
+    lblEl.style.transform = 'translateX(-50%)';
+
+    // Animate on scroll
+    var obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        setTimeout(function() {
+          bodyEl.style.height = heightPx + 'px';
+        }, 80);
+        obs.disconnect();
+      }
+    }, { threshold: 0.3 });
+    obs.observe(bars);
+  });
+})();
+
+/* ── WAITLIST FORM ──────────────────────────── */
+function handleWaitlist(e) {
+  e.preventDefault();
+  var form    = document.getElementById('waitlistForm');
+  var success = document.getElementById('waitlistSuccess');
+  if (form && success) {
+    form.style.display = 'none';
+    success.style.display = 'flex';
+  }
+}
+</script>
+</body>
+</html>
