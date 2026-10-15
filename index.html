@@ -126,7 +126,7 @@ nav.scrolled{
   font-family:var(--font-head);font-size:17px;font-weight:700;
   color:var(--white);letter-spacing:-0.02em;
 }
-.nav-logo img{height:56px;width:auto;object-fit:contain}
+.nav-logo img{height:80px;width:auto;object-fit:contain}
 .nav-logo .dot{color:var(--purple)}
 .nav-links{
   display:flex;align-items:center;gap:28px;
@@ -253,7 +253,24 @@ nav.scrolled{
   position:relative;
   display:flex;flex-direction:column;
   align-items:center;justify-content:flex-end;
+  perspective:900px;
 }
+.minime-eye-wrap{
+  position:relative;display:inline-block;
+  transform-style:preserve-3d;
+  transition:transform 0.08s ease-out;
+  will-change:transform;
+}
+.minime-pupil{
+  position:absolute;
+  width:6px;height:7px;border-radius:50%;
+  background:#1a0d2e;
+  pointer-events:none;
+  transition:transform 0.06s ease-out;
+  transform:translate(-50%,-50%);
+}
+#mp-left{ top:29.5%;left:42.5%; }
+#mp-right{ top:29.5%;left:57%; }
 /* Ground glow beneath feet */
 .minime-stand::after{
   content:'';
@@ -326,6 +343,13 @@ section{
   transition:color 0.2s;
 }
 .clients-strip span:hover{color:var(--muted)}
+.clients-strip img{
+  height:clamp(22px,3vw,34px);width:auto;max-width:120px;
+  object-fit:contain;
+  filter:brightness(0) invert(1) opacity(0.32);
+  transition:filter 0.25s;
+}
+.clients-strip img:hover{filter:brightness(0) invert(1) opacity(0.6)}
 
 /* ─── PRODUCTS GRID ───────────────────────── */
 #work{padding-top:120px}
@@ -465,10 +489,10 @@ section{
   background:linear-gradient(to right,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.15) 65%,transparent 100%);
 }
 
-/* TH logo — overlaid, prominent, never cropped */
+/* TH logo — overlaid, compact, never cropped */
 .th-logo{
-  width:clamp(140px,18vw,220px);height:auto;
-  position:absolute;top:50%;left:40px;transform:translateY(-50%);
+  width:clamp(80px,10vw,130px);height:auto;
+  position:absolute;top:50%;left:32px;transform:translateY(-50%);
   z-index:3;object-fit:contain;
   filter:drop-shadow(0 0 40px rgba(240,160,48,0.85)) drop-shadow(0 4px 16px rgba(0,0,0,0.9));
 }
@@ -657,7 +681,6 @@ footer{
 <nav id="main-nav">
   <a href="#" class="nav-logo">
     <img src="assets/studio/3S_logo.png" alt="3Shamrocks Studio">
-    3Shamrocks<span class="dot">.</span>
   </a>
   <div class="nav-links">
     <a href="#work" class="hide-mobile">Work</a>
@@ -698,17 +721,24 @@ footer{
 
   <div class="hero-character">
     <div class="minime-stand">
-      <img src="assets/studio/minime-cutout.png" alt="Dave Markovich, 3Shamrocks Studio" class="minime-img">
+      <div class="minime-eye-wrap" id="minime-eye-wrap">
+        <img src="assets/studio/minime-cutout.png" alt="Dave Markovich, 3Shamrocks Studio" class="minime-img">
+        <div class="minime-pupil" id="mp-left"></div>
+        <div class="minime-pupil" id="mp-right"></div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- CLIENT STRIP -->
 <div class="clients">
-  <div class="clients-label">Building value for companies like</div>
+  <div class="clients-label">Trusted by</div>
   <div class="clients-strip">
-    <span>AposHealth</span>
-    <span>Vibrant Gastro</span>
+    <img src="assets/work/aposhealth/logo.png" alt="AposHealth">
+    <img src="assets/work/vibrant/logo-new.png" alt="Vibrant Gastro">
+    <img src="assets/work/clients/eldan.png" alt="Eldan">
+    <img src="assets/work/clients/winplant.png" alt="Winplant">
+    <img src="assets/work/clients/guberman.png" alt="Guberman">
   </div>
 </div>
 
@@ -942,6 +972,43 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
     if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}
   });
 });
+
+/* MINIME EYE TRACKING */
+(function(){
+  var wrap=document.getElementById('minime-eye-wrap');
+  var pL=document.getElementById('mp-left');
+  var pR=document.getElementById('mp-right');
+  if(!wrap||!pL||!pR) return;
+  var MAX_PX=3.5; /* max pupil travel in px */
+  var MAX_TILT=8; /* max head-tilt degrees */
+  var raf=null;
+  function update(mx,my){
+    var r=wrap.getBoundingClientRect();
+    var cx=r.left+r.width/2, cy=r.top+r.height/2;
+    /* head tilt: subtle 3D rotate toward cursor */
+    var dx=(mx-cx)/window.innerWidth;
+    var dy=(my-cy)/window.innerHeight;
+    wrap.style.transform='rotateY('+(dx*MAX_TILT)+'deg) rotateX('+(-dy*(MAX_TILT*0.6))+'deg)';
+    /* pupil shift: small offset in direction of cursor */
+    var dist=Math.sqrt(dx*dx+dy*dy)||1;
+    var factor=Math.min(1,dist*2.5);
+    var px=(dx/dist)*MAX_PX*factor;
+    var py=(dy/dist)*MAX_PX*factor;
+    pL.style.transform='translate(calc(-50% + '+px.toFixed(2)+'px), calc(-50% + '+py.toFixed(2)+'px))';
+    pR.style.transform='translate(calc(-50% + '+px.toFixed(2)+'px), calc(-50% + '+py.toFixed(2)+'px))';
+    raf=null;
+  }
+  document.addEventListener('mousemove',function(ev){
+    if(raf) return;
+    raf=requestAnimationFrame(function(){ update(ev.clientX,ev.clientY); });
+  });
+  /* idle: return to center when mouse leaves */
+  document.addEventListener('mouseleave',function(){
+    wrap.style.transform='rotateY(0deg) rotateX(0deg)';
+    pL.style.transform='translate(-50%,-50%)';
+    pR.style.transform='translate(-50%,-50%)';
+  });
+})();
 </script>
 </body>
 </html>
