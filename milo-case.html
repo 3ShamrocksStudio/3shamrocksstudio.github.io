@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08080f">
+<title>MILO — Smart Pet Care App</title>
+<meta name="description" content="MILO: Every wag. Every purr. Every moment — tracked with love. A smart pet care companion for dog and cat families.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ──────────────────────────────────────────────────────────
+   MILO — warm dark, pet-forward
+   Layout: full-bleed sections, centered content, max 1100px
+   Accent: #ff6b35 (energy, warmth) | Secondary: #4ecdc4 (care)
+   ────────────────────────────────────────────────────────── */
+:root {
+  /* 3SDS base */
+  --black:     #08080f;
+  --black-2:   #0d0d1a;
+  --purple:    #8239ea;
+  --green:     #3dcc6e;
+  --white:     #f4f4fc;
+  --muted:     rgba(200,200,225,0.55);
+
+  /* MILO brand */
+  --orange:        #ff6b35;
+  --orange-light:  #ff8f5e;
+  --orange-dim:    rgba(255,107,53,0.10);
+  --orange-glow:   rgba(255,107,53,0.22);
+  --orange-border: rgba(255,107,53,0.28);
+  --teal:          #4ecdc4;
+  --teal-dim:      rgba(78,205,196,0.10);
+  --teal-border:   rgba(78,205,196,0.28);
+
+  /* surfaces */
+  --bg-card:   #111124;
+  --bg-lift:   #161630;
+  --border:    rgba(200,200,225,0.07);
+  --border-2:  rgba(200,200,225,0.14);
+
+  /* type */
+  --f-display: 'Syne', system-ui, sans-serif;
+  --f-body:    'Inter', system-ui, sans-serif;
+  --f-label:   'Space Grotesk', system-ui, sans-serif;
+
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+img  { max-width: 100%; display: block; }
+a    { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
+
+body {
+  font-family: var(--f-body);
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TYPE SCALE ── */
+h1, h2, h3, h4 { font-family: var(--f-display); line-height: 1.1; letter-spacing: -0.02em; }
+h1 { font-size: clamp(2.8rem, 7vw, 6rem);  font-weight: 800; }
+h2 { font-size: clamp(2rem,   4vw, 3rem);  font-weight: 800; }
+h3 { font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 700; }
+h4 { font-size: clamp(1rem,   1.5vw, 1.2rem); font-weight: 600; }
+p  { color: var(--muted); line-height: 1.75; font-size: clamp(1rem, 1.5vw, 1.1rem); }
+
+/* ── LAYOUT ── */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+section { padding-block: 100px; }
+
+/* ── UTILITIES ── */
+.label-tag {
+  font-family: var(--f-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.eyebrow::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 1.5px;
+  background: var(--orange);
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--f-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 5px 13px;
+  border-radius: 100px;
+  border: 1px solid;
+  line-height: 1;
+}
+.badge-orange { color: var(--orange); border-color: var(--orange-border); background: var(--orange-dim); }
+.badge-teal   { color: var(--teal);   border-color: var(--teal-border);   background: var(--teal-dim);   }
+.badge-neutral {
+  color: var(--white);
+  border-color: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05);
+  animation: badge-pulse 2.8s ease-in-out infinite;
+}
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+/* ── BUTTONS ── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-label);
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--orange);
+  padding: 14px 28px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: transform 0.22s, box-shadow 0.22s;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(255,107,53,0.38);
+}
+.btn-primary:active { transform: none; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-label);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-2);
+  padding: 14px 28px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.22s, border-color 0.22s;
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(200,200,225,0.24);
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ── PAW PRINT DECORATION ── */
+.paw {
+  position: absolute;
+  font-size: 1em;
+  opacity: 0.04;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  animation: float-paw 9s ease-in-out infinite;
+}
+@keyframes float-paw {
+  0%, 100% { transform: var(--paw-rot, rotate(-20deg)) translateY(0); }
+  50%       { transform: var(--paw-rot, rotate(-20deg)) translateY(-14px); }
+}
+
+/* ════════════════════════════════════════
+   NAV
+   ════════════════════════════════════════ */
+.nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 100;
+  background: rgba(8,8,15,0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+.nav.scrolled { box-shadow: 0 4px 28px rgba(0,0,0,0.6); }
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 16px;
+}
+
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-label);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--white); }
+.nav-back svg { flex-shrink: 0; }
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-logo {
+  width: 34px;
+  height: 34px;
+  background: var(--orange);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.nav-name {
+  font-family: var(--f-display);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.nav-cta {
+  font-family: var(--f-label);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--orange);
+  padding: 8px 18px;
+  border: 1px solid var(--orange-border);
+  border-radius: 100px;
+  background: var(--orange-dim);
+  transition: background 0.2s, color 0.2s;
+}
+.nav-cta:hover { background: var(--orange); color: #fff; }
+
+@media (max-width: 560px) { .nav-cta { display: none; } }
+
+/* ════════════════════════════════════════
+   HERO
+   ════════════════════════════════════════ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding-block: 110px 140px;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% -5%, rgba(255,107,53,0.14) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 35% at 15% 90%, rgba(130,57,234,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 30% at 85% 80%, rgba(78,205,196,0.07) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* paw floaters */
+.hero .paw:nth-child(1) { font-size: 100px; top:  8%; left:  4%; --paw-rot: rotate(-22deg); animation-delay: 0s; }
+.hero .paw:nth-child(2) { font-size:  72px; top: 28%; right: 6%; --paw-rot: rotate( 16deg); animation-delay: -3s; }
+.hero .paw:nth-child(3) { font-size:  56px; bottom: 18%; left: 10%; --paw-rot: rotate(  7deg); animation-delay: -6s; }
+.hero .paw:nth-child(4) { font-size: 110px; bottom: 20%; right:12%; --paw-rot: rotate(-10deg); animation-delay: -4.5s; opacity: 0.025; }
+.hero .paw:nth-child(5) { font-size:  44px; top: 62%; left: 2%;  --paw-rot: rotate( 30deg); animation-delay: -1.5s; opacity: 0.02; }
+
+.hero-inner { position: relative; z-index: 1; }
+
+.hero-badge-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.hero-wordmark {
+  font-family: var(--f-display);
+  font-size: clamp(88px, 17vw, 200px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.88;
+  background: linear-gradient(140deg, var(--white) 0%, var(--orange-light) 55%, var(--orange) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 28px;
+}
+
+.hero-subtitle {
+  font-family: var(--f-display);
+  font-size: clamp(16px, 2.5vw, 22px);
+  font-weight: 600;
+  color: rgba(244,244,252,0.70);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.hero-tagline {
+  font-size: clamp(15px, 2vw, 18px);
+  color: var(--muted);
+  max-width: 480px;
+  margin: 0 auto 52px;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ════════════════════════════════════════
+   FOR EVERY PET PARENT
+   ════════════════════════════════════════ */
+.pain { background: var(--black-2); position: relative; overflow: hidden; }
+
+.pain-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+@media (max-width: 760px) { .pain-inner { grid-template-columns: 1fr; gap: 48px; } }
+
+.pain-copy h2 { margin-bottom: 18px; }
+.pain-copy p  { margin-bottom: 12px; max-width: 460px; }
+
+.pain-cards { display: flex; flex-direction: column; gap: 14px; }
+
+.pain-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 22px 24px;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  transition: border-color 0.25s;
+}
+.pain-card:hover { border-color: var(--orange-border); }
+
+.pain-icon { font-size: 26px; flex-shrink: 0; margin-top: 1px; }
+
+.pain-text { min-width: 0; }
+.pain-text strong {
+  display: block;
+  font-family: var(--f-label);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.pain-text span {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* ════════════════════════════════════════
+   FEATURE GRID
+   ════════════════════════════════════════ */
+.features { position: relative; overflow: hidden; }
+
+.features-header {
+  text-align: center;
+  max-width: 580px;
+  margin: 0 auto 68px;
+}
+.features-header .eyebrow { justify-content: center; }
+.features-header .eyebrow::after { display: none; }
+.features-header h2 { margin-bottom: 14px; }
+
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+@media (max-width: 880px) { .feat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .feat-grid { grid-template-columns: 1fr; } }
+
+.feat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+.feat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--orange), var(--teal));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.feat-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--orange-border);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45), 0 0 24px rgba(255,107,53,0.07);
+}
+.feat-card:hover::before { opacity: 1; }
+
+.feat-icon {
+  width: 52px;
+  height: 52px;
+  background: var(--orange-dim);
+  border: 1px solid var(--orange-border);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 22px;
+}
+
+.feat-title {
+  font-family: var(--f-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+
+.feat-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ════════════════════════════════════════
+   VET READY SPOTLIGHT
+   ════════════════════════════════════════ */
+.vet-ready { background: var(--black-2); overflow: hidden; position: relative; }
+.vet-ready::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 65% 65% at 85% 50%, rgba(78,205,196,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.vet-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+@media (max-width: 760px) { .vet-inner { grid-template-columns: 1fr; gap: 48px; } }
+
+.vet-copy h2 { margin-bottom: 18px; }
+.vet-copy h2 em { color: var(--teal); font-style: normal; }
+.vet-copy p  { max-width: 440px; margin-bottom: 28px; }
+
+.vet-pill-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Summary card */
+.vet-card {
+  background: var(--bg-card);
+  border: 1px solid var(--teal-border);
+  border-radius: 26px;
+  padding: 28px;
+  position: relative;
+}
+.vet-card::after {
+  content: '🏥';
+  position: absolute;
+  top: -18px;
+  right: 24px;
+  font-size: 30px;
+}
+
+.vet-pet-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+.vet-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--orange), var(--purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.vet-pet-name {
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+.vet-pet-meta {
+  font-family: var(--f-label);
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.vet-ready-pill {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Timeline */
+.timeline { display: flex; flex-direction: column; }
+
+.tl-entry {
+  display: flex;
+  gap: 16px;
+  padding-bottom: 20px;
+  position: relative;
+}
+.tl-entry:last-child { padding-bottom: 0; }
+.tl-entry:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 30px;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+
+.tl-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--teal);
+  background: var(--teal-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.tl-body { min-width: 0; }
+.tl-date {
+  font-family: var(--f-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--teal);
+  text-transform: uppercase;
+}
+.tl-event {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--white);
+  margin-top: 3px;
+  line-height: 1.35;
+}
+.tl-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* ════════════════════════════════════════
+   ACTIVITY DASHBOARD
+   ════════════════════════════════════════ */
+.activity { position: relative; }
+
+.activity-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+@media (max-width: 760px) { .activity-inner { grid-template-columns: 1fr; } }
+
+.activity-copy h2 { margin-bottom: 18px; }
+.activity-copy p  { max-width: 440px; }
+
+/* stat tiles */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 32px;
+}
+.stat-tile {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px 20px;
+}
+.stat-tile.teal { border-color: var(--teal-border); }
+
+.stat-label {
+  font-family: var(--f-label);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-family: var(--f-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--orange);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.stat-tile.teal .stat-value { color: var(--teal); }
+.stat-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+/* Chart card */
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  padding: 28px;
+}
+.chart-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.chart-title {
+  font-family: var(--f-label);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+}
+.chart-legend {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--f-label);
+  font-size: 11px;
+  color: var(--muted);
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Bar chart */
+.chart-body {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  height: 170px;
+  padding-bottom: 28px;
+  position: relative;
+}
+.chart-body::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 28px 0;
+  background: repeating-linear-gradient(
+    0deg,
+    var(--border) 0px, var(--border) 1px,
+    transparent 1px, transparent 25%
+  );
+  pointer-events: none;
+}
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  height: 100%;
+  justify-content: flex-end;
+}
+.bar-pair {
+  width: 100%;
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: calc(100% - 22px);
+}
+.bar {
+  flex: 1;
+  border-radius: 5px 5px 0 0;
+  min-height: 4px;
+  transition: opacity 0.2s;
+}
+.bar:hover { opacity: 0.75; }
+.bar-a { background: linear-gradient(180deg, var(--orange) 0%, rgba(255,107,53,0.5) 100%); }
+.bar-h { background: linear-gradient(180deg, var(--teal) 0%, rgba(78,205,196,0.4) 100%); }
+.bar-day {
+  font-family: var(--f-label);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.chart-footer {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+.chart-foot-tile {
+  flex: 1;
+  background: var(--bg-lift);
+  border-radius: 14px;
+  padding: 12px 16px;
+  min-width: 0;
+}
+.cft-label {
+  font-family: var(--f-label);
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.cft-val {
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* ════════════════════════════════════════
+   COMMUNITY
+   ════════════════════════════════════════ */
+.community { background: var(--black-2); overflow: hidden; position: relative; }
+
+.community-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 72px;
+  align-items: center;
+}
+@media (max-width: 760px) { .community-inner { grid-template-columns: 1fr; gap: 48px; } }
+
+.community-copy h2 { margin-bottom: 18px; }
+.community-copy p  { max-width: 440px; margin-bottom: 32px; }
+
+.comm-feature-list { display: flex; flex-direction: column; gap: 14px; }
+.comm-feature {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 15px;
+  color: rgba(244,244,252,0.75);
+}
+.comm-feature .cf-icon {
+  font-size: 20px;
+  width: 38px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Map mockup */
+.map-mock {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  position: relative;
+}
+.map-grid-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(78,205,196,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78,205,196,0.04) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.map-pin {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+.pin-bubble {
+  background: var(--orange);
+  color: #fff;
+  font-family: var(--f-label);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(255,107,53,0.45);
+  letter-spacing: 0.03em;
+}
+.pin-bubble.teal  { background: var(--teal);   color: #08080f; box-shadow: 0 4px 14px rgba(78,205,196,0.4); }
+.pin-bubble.purp  { background: var(--purple);              box-shadow: 0 4px 14px rgba(130,57,234,0.4); }
+.pin-stem {
+  width: 2px;
+  height: 8px;
+  background: var(--orange);
+  border-radius: 2px;
+}
+.pin-stem.teal   { background: var(--teal); }
+.pin-stem.purp   { background: var(--purple); }
+
+.map-you {
+  position: absolute;
+  top: 52%;
+  left: 46%;
+  transform: translate(-50%, -50%);
+}
+.you-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--orange);
+  border: 2px solid rgba(255,107,53,0.5);
+  animation: you-pulse 2.2s ease-in-out infinite;
+}
+@keyframes you-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,53,0.5); }
+  50%       { box-shadow: 0 0 0 10px rgba(255,107,53,0); }
+}
+.you-label {
+  font-family: var(--f-label);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--orange);
+  margin-top: 4px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ════════════════════════════════════════
+   PET PROFILES
+   ════════════════════════════════════════ */
+.profiles { position: relative; }
+
+.profiles-header {
+  text-align: center;
+  max-width: 540px;
+  margin: 0 auto 68px;
+}
+.profiles-header .eyebrow { justify-content: center; }
+.profiles-header .eyebrow::after { display: none; }
+.profiles-header h2 { margin-bottom: 14px; }
+
+.profiles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+@media (max-width: 880px) { .profiles-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .profiles-grid { grid-template-columns: 1fr; } }
+
+.profile-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  padding: 28px;
+  text-align: center;
+  transition: transform 0.25s, border-color 0.25s;
+}
+.profile-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-2);
+}
+
+.profile-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  position: relative;
+}
+.status-dot {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 2.5px solid var(--bg-card);
+}
+.status-dot.good  { background: var(--green); }
+.status-dot.warn  { background: var(--orange); }
+
+.profile-name {
+  font-family: var(--f-display);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.profile-breed {
+  font-family: var(--f-label);
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.p-stat {
+  background: var(--bg-lift);
+  border-radius: 14px;
+  padding: 12px 10px;
+}
+.p-stat-val {
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--orange);
+  font-variant-numeric: tabular-nums;
+}
+.p-stat-key {
+  font-family: var(--f-label);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.profile-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.p-tag {
+  font-family: var(--f-label);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.p-tag.warn { color: var(--orange); border-color: var(--orange-border); background: var(--orange-dim); }
+
+/* ════════════════════════════════════════
+   MEMORIES
+   ════════════════════════════════════════ */
+.memories { background: var(--black-2); overflow: hidden; }
+
+.memories-header {
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto 56px;
+}
+.memories-header .eyebrow { justify-content: center; }
+.memories-header .eyebrow::after { display: none; }
+.memories-header h2 { margin-bottom: 14px; }
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+@media (max-width: 700px) { .memory-grid { grid-template-columns: 1fr 1fr; } }
+
+.memory-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform 0.25s;
+  cursor: default;
+}
+.memory-card:hover { transform: scale(1.03); }
+
+.memory-photo {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  position: relative;
+}
+.memory-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 45%, rgba(8,8,15,0.85) 100%);
+}
+
+.memory-info { padding: 14px 16px; }
+.memory-title {
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.memory-date {
+  font-family: var(--f-label);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ════════════════════════════════════════
+   WAITLIST CTA
+   ════════════════════════════════════════ */
+.waitlist {
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding-block: 130px;
+}
+.waitlist::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 105%, rgba(255,107,53,0.12) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 50% -5%,  rgba(130,57,234,0.07) 0%, transparent 55%);
+  pointer-events: none;
+}
+.waitlist-inner { position: relative; z-index: 1; }
+.waitlist .eyebrow { justify-content: center; }
+.waitlist .eyebrow::after { display: none; }
+.waitlist h2 { margin-bottom: 18px; }
+
+.waitlist-sub {
+  font-size: clamp(16px, 2vw, 18px);
+  color: var(--muted);
+  max-width: 460px;
+  margin: 0 auto 52px;
+  line-height: 1.7;
+}
+
+.waitlist-form {
+  display: flex;
+  gap: 10px;
+  max-width: 460px;
+  margin: 0 auto 20px;
+}
+@media (max-width: 500px) { .waitlist-form { flex-direction: column; } }
+
+.waitlist-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-2);
+  border-radius: 100px;
+  padding: 14px 22px;
+  color: var(--white);
+  font-family: var(--f-body);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.waitlist-input::placeholder { color: var(--muted); }
+.waitlist-input:focus {
+  border-color: var(--orange-border);
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.12);
+}
+.waitlist-input.invalid {
+  border-color: var(--orange-border);
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.15);
+}
+
+.waitlist-success {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 32px;
+  background: var(--orange-dim);
+  border: 1px solid var(--orange-border);
+  border-radius: 22px;
+  max-width: 440px;
+  margin: 0 auto;
+}
+.waitlist-success.show { display: flex; }
+.success-emoji { font-size: 36px; }
+.success-title {
+  font-family: var(--f-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--orange);
+}
+.success-sub { font-size: 14px; color: var(--muted); }
+
+.waitlist-perks {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 44px;
+}
+.perk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-label);
+  font-size: 13px;
+  color: rgba(244,244,252,0.70);
+}
+.perk-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding-block: 48px 40px;
+}
+.footer-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.footer-logo {
+  width: 38px;
+  height: 38px;
+  background: var(--orange);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.footer-wordmark {
+  font-family: var(--f-display);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.footer-studio {
+  font-family: var(--f-label);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.footer-links {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.footer-link {
+  font-family: var(--f-label);
+  font-size: 12px;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.footer-link:hover { color: var(--white); }
+
+.footer-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+.app-badge-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: var(--f-label);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.footer-copy {
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-family: var(--f-label);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .footer-main { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav class="nav" id="mainNav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        3Shamrocks Studio
+      </a>
+      <div class="nav-brand">
+        <div class="nav-logo">🐾</div>
+        <span class="nav-name">MILO</span>
+      </div>
+      <a href="#waitlist" class="nav-cta">Join Waitlist →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <span class="paw" aria-hidden="true">🐾</span>
+  <span class="paw" aria-hidden="true">🐾</span>
+  <span class="paw" aria-hidden="true">🐾</span>
+  <span class="paw" aria-hidden="true">🐾</span>
+  <span class="paw" aria-hidden="true">🐾</span>
+
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-badge-row">
+        <span class="badge badge-neutral">⬤ Coming Soon</span>
+        <span class="badge badge-orange">PetTech</span>
+        <span class="badge badge-teal">iOS &amp; Android</span>
+      </div>
+      <h1 class="hero-wordmark">MILO</h1>
+      <p class="hero-subtitle">Your Pet's Personal Assistant</p>
+      <p class="hero-tagline">Every wag. Every purr. Every moment — tracked with love.</p>
+      <div class="hero-ctas">
+        <a href="#waitlist" class="btn-primary">Join Waitlist 🐾</a>
+        <a href="#features" class="btn-ghost">See Features ↓</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FOR EVERY PET PARENT ══════════════ -->
+<section class="pain">
+  <div class="container">
+    <div class="pain-inner">
+      <div class="pain-copy reveal">
+        <div class="eyebrow"><span class="label-tag">The problem</span></div>
+        <h2>For every pet parent who worries</h2>
+        <p>You love your pet unconditionally. But keeping up with health, meds, vet visits, nutrition, and activity — scattered across sticky notes, reminders, and your best guess? That's a full-time job.</p>
+        <p>MILO takes that weight off your shoulders.</p>
+      </div>
+      <div class="pain-cards">
+        <div class="pain-card reveal" style="transition-delay: 0.08s">
+          <div class="pain-icon">💊</div>
+          <div class="pain-text">
+            <strong>Missed medications</strong>
+            <span>"Did Bella get her flea treatment this month? I think I did it last week... or was that the month before?"</span>
+          </div>
+        </div>
+        <div class="pain-card reveal" style="transition-delay: 0.16s">
+          <div class="pain-icon">🏥</div>
+          <div class="pain-text">
+            <strong>Vet visits without history</strong>
+            <span>"What was she eating before she got sick? I wish I'd written down when the symptoms started."</span>
+          </div>
+        </div>
+        <div class="pain-card reveal" style="transition-delay: 0.24s">
+          <div class="pain-icon">📋</div>
+          <div class="pain-text">
+            <strong>Records scattered everywhere</strong>
+            <span>"The vet card is somewhere in a drawer, vaccine records on my phone, microchip number on a piece of paper..."</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FEATURE GRID ══════════════ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <div class="eyebrow"><span class="label-tag">Core features</span></div>
+      <h2>One app for everything your pet needs</h2>
+      <p>MILO is proactive, organized, and always ready — so you can focus on the moments that matter.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card reveal" style="transition-delay: 0.04s">
+        <div class="feat-icon">📔</div>
+        <div class="feat-title">Pet Health Journal</div>
+        <p class="feat-desc">Log daily meals, water intake, mood, energy, and symptoms. Spot patterns before they become problems.</p>
+      </div>
+      <div class="feat-card reveal" style="transition-delay: 0.08s">
+        <div class="feat-icon">🏥</div>
+        <div class="feat-title">Vet Ready</div>
+        <p class="feat-desc">Auto-generate a pre-visit health summary with symptom timeline. Show up to every appointment prepared — no guessing.</p>
+      </div>
+      <div class="feat-card reveal" style="transition-delay: 0.12s">
+        <div class="feat-icon">⏰</div>
+        <div class="feat-title">Smart Reminders</div>
+        <p class="feat-desc">Never miss medications, vaccinations, flea treatments, or grooming. MILO tracks the schedule so you don't have to.</p>
+      </div>
+      <div class="feat-card reveal" style="transition-delay: 0.16s">
+        <div class="feat-icon">🏃</div>
+        <div class="feat-title">Activity Tracker</div>
+        <p class="feat-desc">Log walks, play sessions, and calories burned. Connect with wearables for real-time activity data and fitness goals by breed.</p>
+      </div>
+      <div class="feat-card reveal" style="transition-delay: 0.20s">
+        <div class="feat-icon">🗺️</div>
+        <div class="feat-title">Community</div>
+        <p class="feat-desc">Find nearby dog parks, off-leash areas, pet-friendly spots, and local meetups. Connect with pet families in your neighborhood.</p>
+      </div>
+      <div class="feat-card reveal" style="transition-delay: 0.24s">
+        <div class="feat-icon">🪪</div>
+        <div class="feat-title">Pet ID Passport</div>
+        <p class="feat-desc">Digital passport with complete medical history. Essential for emergencies, boarding, and international travel.</p>
+      </div>
+      <div class="feat-card reveal" style="transition-delay: 0.28s">
+        <div class="feat-icon">🔬</div>
+        <div class="feat-title">Breed Insights</div>
+        <p class="feat-desc">Behavior tips, breed-specific health risks, and nutritional advice tailored to your dog or cat — not generic advice for every pet.</p>
+      </div>
+      <div class="feat-card reveal" style="transition-delay: 0.32s">
+        <div class="feat-icon">📸</div>
+        <div class="feat-title">Memories</div>
+        <p class="feat-desc">A photo and video timeline of your pet's milestones — from their first day home to every big adventure in between.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ VET READY SPOTLIGHT ══════════════ -->
+<section class="vet-ready">
+  <div class="container">
+    <div class="vet-inner">
+      <div class="vet-copy reveal">
+        <div class="eyebrow"><span class="label-tag" style="color: var(--teal);">Killer feature</span></div>
+        <h2>Show up to the vet <em>prepared</em></h2>
+        <p>MILO generates a complete pre-visit health report automatically — symptom timeline, recent meals, behavior changes, medications, and weight history — everything your vet needs before you even say hello.</p>
+        <div class="vet-pill-row">
+          <span class="badge badge-teal">📊 Auto-generated reports</span>
+          <span class="badge badge-teal">📤 Shareable with your vet</span>
+        </div>
+      </div>
+      <div class="vet-card reveal" style="transition-delay: 0.15s">
+        <div class="vet-pet-header">
+          <div class="vet-avatar">🐕</div>
+          <div>
+            <div class="vet-pet-name">Buddy</div>
+            <div class="vet-pet-meta">Golden Retriever · Male · 4 yrs · 32.5 kg</div>
+          </div>
+          <div class="vet-ready-pill">
+            <span class="badge badge-teal" style="font-size: 9px;">Vet Ready ✓</span>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="tl-entry">
+            <div class="tl-dot">😴</div>
+            <div class="tl-body">
+              <div class="tl-date">3 days ago · Oct 12</div>
+              <div class="tl-event">Lethargy — less active than usual</div>
+              <div class="tl-note">~6 hours. Energy returned by evening.</div>
+            </div>
+          </div>
+          <div class="tl-entry">
+            <div class="tl-dot">🍽️</div>
+            <div class="tl-body">
+              <div class="tl-date">2 days ago · Oct 13</div>
+              <div class="tl-event">Reduced appetite — ate 60% of normal meal</div>
+              <div class="tl-note">Royal Canin Adult, 300g offered, 180g eaten.</div>
+            </div>
+          </div>
+          <div class="tl-entry">
+            <div class="tl-dot">💊</div>
+            <div class="tl-body">
+              <div class="tl-date">Yesterday · Oct 14</div>
+              <div class="tl-event">Frontline flea treatment administered</div>
+              <div class="tl-note">Monthly. Next due: Nov 14.</div>
+            </div>
+          </div>
+          <div class="tl-entry">
+            <div class="tl-dot">📋</div>
+            <div class="tl-body">
+              <div class="tl-date">Today · Oct 15</div>
+              <div class="tl-event">Vet visit summary generated</div>
+              <div class="tl-note">30-day log, vaccinations, meds, weight chart included.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ ACTIVITY DASHBOARD ══════════════ -->
+<section class="activity">
+  <div class="container">
+    <div class="activity-inner">
+      <div class="activity-copy reveal">
+        <div class="eyebrow"><span class="label-tag">Health &amp; Activity</span></div>
+        <h2>Every step.<br>Every tail wag. Tracked.</h2>
+        <p>MILO turns your pet's daily activity into meaningful health data. Spot trends, celebrate progress, and share weekly summaries with your vet.</p>
+        <div class="stat-grid">
+          <div class="stat-tile">
+            <div class="stat-label">This Week</div>
+            <div class="stat-value">38.4 km</div>
+            <div class="stat-sub">↑ 12% vs last week</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Daily Steps</div>
+            <div class="stat-value">9,240</div>
+            <div class="stat-sub">Goal: 10,000</div>
+          </div>
+          <div class="stat-tile teal">
+            <div class="stat-label">Health Score</div>
+            <div class="stat-value">94</div>
+            <div class="stat-sub">Excellent — keep it up!</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Logs This Week</div>
+            <div class="stat-value">21</div>
+            <div class="stat-sub">Meals, mood, activity</div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card reveal" style="transition-delay: 0.15s">
+        <div class="chart-head">
+          <span class="chart-title">Weekly Overview — Buddy</span>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <span class="legend-dot" style="background: var(--orange);"></span>
+              Activity
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background: var(--teal);"></span>
+              Health
+            </div>
+          </div>
+        </div>
+        <div class="chart-body" role="img" aria-label="Bar chart: weekly activity highest on Saturday, health scores consistently strong">
+          <div class="bar-col">
+            <div class="bar-pair">
+              <div class="bar bar-a" style="height: 56%;"></div>
+              <div class="bar bar-h" style="height: 72%;"></div>
+            </div>
+            <span class="bar-day">Mon</span>
+          </div>
+          <div class="bar-col">
+            <div class="bar-pair">
+              <div class="bar bar-a" style="height: 68%;"></div>
+              <div class="bar bar-h" style="height: 76%;"></div>
+            </div>
+            <span class="bar-day">Tue</span>
+          </div>
+          <div class="bar-col">
+            <div class="bar-pair">
+              <div class="bar bar-a" style="height: 42%;"></div>
+              <div class="bar bar-h" style="height: 60%;"></div>
+            </div>
+            <span class="bar-day">Wed</span>
+          </div>
+          <div class="bar-col">
+            <div class="bar-pair">
+              <div class="bar bar-a" style="height: 82%;"></div>
+              <div class="bar bar-h" style="height: 88%;"></div>
+            </div>
+            <span class="bar-day">Thu</span>
+          </div>
+          <div class="bar-col">
+            <div class="bar-pair">
+              <div class="bar bar-a" style="height: 62%;"></div>
+              <div class="bar bar-h" style="height: 80%;"></div>
+            </div>
+            <span class="bar-day">Fri</span>
+          </div>
+          <div class="bar-col">
+            <div class="bar-pair">
+              <div class="bar bar-a" style="height: 96%;"></div>
+              <div class="bar bar-h" style="height: 94%;"></div>
+            </div>
+            <span class="bar-day">Sat</span>
+          </div>
+          <div class="bar-col">
+            <div class="bar-pair">
+              <div class="bar bar-a" style="height: 78%;"></div>
+              <div class="bar bar-h" style="height: 86%;"></div>
+            </div>
+            <span class="bar-day">Sun</span>
+          </div>
+        </div>
+        <div class="chart-footer">
+          <div class="chart-foot-tile">
+            <div class="cft-label">Best Day</div>
+            <div class="cft-val" style="color: var(--orange);">Saturday 🌟</div>
+          </div>
+          <div class="chart-foot-tile">
+            <div class="cft-label">Active Streak</div>
+            <div class="cft-val" style="color: var(--teal);">7 days 🔥</div>
+          </div>
+          <div class="chart-foot-tile">
+            <div class="cft-label">Avg. Score</div>
+            <div class="cft-val" style="color: var(--white); font-variant-numeric: tabular-nums;">79%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ COMMUNITY ══════════════ -->
+<section class="community">
+  <div class="container">
+    <div class="community-inner">
+      <div class="community-copy reveal">
+        <div class="eyebrow"><span class="label-tag">Community</span></div>
+        <h2>Find your pet's people</h2>
+        <p>Connect with pet parents in your area. Discover dog parks, off-leash areas, pet-friendly cafes, and local events — all on one live map.</p>
+        <div class="comm-feature-list">
+          <div class="comm-feature">
+            <span class="cf-icon">🌳</span>
+            <span>Dog parks and off-leash areas nearby</span>
+          </div>
+          <div class="comm-feature">
+            <span class="cf-icon">☕</span>
+            <span>Pet-friendly restaurants and cafes</span>
+          </div>
+          <div class="comm-feature">
+            <span class="cf-icon">🎉</span>
+            <span>Local meetups, playdates, and breed events</span>
+          </div>
+          <div class="comm-feature">
+            <span class="cf-icon">👨‍⚕️</span>
+            <span>Vets, groomers, and pet boarding nearby</span>
+          </div>
+          <div class="comm-feature">
+            <span class="cf-icon">👥</span>
+            <span>Breed-specific community groups</span>
+          </div>
+        </div>
+      </div>
+      <div class="map-mock reveal" style="transition-delay: 0.15s" aria-label="Community map showing nearby pet-friendly places">
+        <div class="map-grid-bg"></div>
+        <div class="map-pin" style="top: 18%; left: 30%;">
+          <div class="pin-bubble">🌳 Yarkon Park</div>
+          <div class="pin-stem"></div>
+        </div>
+        <div class="map-pin" style="top: 42%; left: 62%;">
+          <div class="pin-bubble teal">☕ Café Paws</div>
+          <div class="pin-stem teal"></div>
+        </div>
+        <div class="map-pin" style="top: 65%; left: 22%;">
+          <div class="pin-bubble purp">🎉 Sunday Meetup</div>
+          <div class="pin-stem purp"></div>
+        </div>
+        <div class="map-pin" style="top: 28%; left: 72%;">
+          <div class="pin-bubble">🌳 Habikta Park</div>
+          <div class="pin-stem"></div>
+        </div>
+        <div class="map-pin" style="top: 72%; left: 58%;">
+          <div class="pin-bubble teal">👨‍⚕️ PetClinic TLV</div>
+          <div class="pin-stem teal"></div>
+        </div>
+        <div class="map-you">
+          <div class="you-dot"></div>
+          <div class="you-label">YOU</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PET PROFILES ══════════════ -->
+<section class="profiles">
+  <div class="container">
+    <div class="profiles-header reveal">
+      <div class="eyebrow"><span class="label-tag">Pet Profiles</span></div>
+      <h2>Every pet gets their own space</h2>
+      <p>Multi-pet families welcome. Each pet has their own complete profile — health records, activity history, memories, and breed insights — all organized and always ready.</p>
+    </div>
+    <div class="profiles-grid">
+      <!-- Profile: Buddy -->
+      <div class="profile-card reveal" style="transition-delay: 0.05s">
+        <div class="profile-avatar" style="background: linear-gradient(135deg, #ff6b35, #ff8f5e);">
+          🐕
+          <div class="status-dot good" title="Health status: Good"></div>
+        </div>
+        <div class="profile-name">Buddy</div>
+        <div class="profile-breed">Golden Retriever · 4 yrs · Male</div>
+        <div class="profile-stats">
+          <div class="p-stat">
+            <div class="p-stat-val">32.5 kg</div>
+            <div class="p-stat-key">Weight</div>
+          </div>
+          <div class="p-stat">
+            <div class="p-stat-val">94</div>
+            <div class="p-stat-key">Health</div>
+          </div>
+        </div>
+        <div class="profile-tags">
+          <span class="p-tag">Vaccinated ✓</span>
+          <span class="p-tag">Neutered</span>
+          <span class="p-tag">Microchipped</span>
+        </div>
+      </div>
+      <!-- Profile: Luna -->
+      <div class="profile-card reveal" style="transition-delay: 0.10s">
+        <div class="profile-avatar" style="background: linear-gradient(135deg, #8239ea, #4ecdc4);">
+          🐈
+          <div class="status-dot good" title="Health status: Good"></div>
+        </div>
+        <div class="profile-name">Luna</div>
+        <div class="profile-breed">British Shorthair · 2 yrs · Female</div>
+        <div class="profile-stats">
+          <div class="p-stat">
+            <div class="p-stat-val">4.2 kg</div>
+            <div class="p-stat-key">Weight</div>
+          </div>
+          <div class="p-stat">
+            <div class="p-stat-val">88</div>
+            <div class="p-stat-key">Health</div>
+          </div>
+        </div>
+        <div class="profile-tags">
+          <span class="p-tag">Vaccinated ✓</span>
+          <span class="p-tag">Indoor cat</span>
+          <span class="p-tag">Spayed</span>
+        </div>
+      </div>
+      <!-- Profile: Max -->
+      <div class="profile-card reveal" style="transition-delay: 0.15s">
+        <div class="profile-avatar" style="background: linear-gradient(135deg, #3dcc6e, #4ecdc4);">
+          🐩
+          <div class="status-dot warn" title="Health status: Vet check due"></div>
+        </div>
+        <div class="profile-name">Max</div>
+        <div class="profile-breed">French Bulldog · 1 yr · Male</div>
+        <div class="profile-stats">
+          <div class="p-stat">
+            <div class="p-stat-val">11 kg</div>
+            <div class="p-stat-key">Weight</div>
+          </div>
+          <div class="p-stat">
+            <div class="p-stat-val">76</div>
+            <div class="p-stat-key">Health</div>
+          </div>
+        </div>
+        <div class="profile-tags">
+          <span class="p-tag warn">Vet Due !</span>
+          <span class="p-tag">Puppy</span>
+          <span class="p-tag">Neutered</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ MEMORIES ══════════════ -->
+<section class="memories">
+  <div class="container">
+    <div class="memories-header reveal">
+      <div class="eyebrow"><span class="label-tag">Memories</span></div>
+      <h2>A lifetime of moments, organized</h2>
+      <p>Every photo, every milestone, every first — your pet's story, beautifully preserved and always within reach.</p>
+    </div>
+    <div class="memory-grid">
+      <div class="memory-card reveal" style="transition-delay: 0.05s">
+        <div class="memory-photo" style="background: linear-gradient(135deg, #2a1206, #4a2010);">🏠</div>
+        <div class="memory-info">
+          <div class="memory-title">First Day Home</div>
+          <div class="memory-date">March 3, 2022</div>
+        </div>
+      </div>
+      <div class="memory-card reveal" style="transition-delay: 0.10s">
+        <div class="memory-photo" style="background: linear-gradient(135deg, #0a1f0a, #0d3a14);">🌿</div>
+        <div class="memory-info">
+          <div class="memory-title">First Park Visit</div>
+          <div class="memory-date">April 12, 2022</div>
+        </div>
+      </div>
+      <div class="memory-card reveal" style="transition-delay: 0.15s">
+        <div class="memory-photo" style="background: linear-gradient(135deg, #0d0d22, #1a1040);">🎂</div>
+        <div class="memory-info">
+          <div class="memory-title">First Birthday</div>
+          <div class="memory-date">January 20, 2023</div>
+        </div>
+      </div>
+      <div class="memory-card reveal" style="transition-delay: 0.20s">
+        <div class="memory-photo" style="background: linear-gradient(135deg, #0d1422, #0d2a40);">🏖️</div>
+        <div class="memory-info">
+          <div class="memory-title">Beach Adventure</div>
+          <div class="memory-date">July 8, 2023</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ WAITLIST CTA ══════════════ -->
+<section class="waitlist" id="waitlist">
+  <div class="container">
+    <div class="waitlist-inner">
+      <div class="eyebrow reveal" style="justify-content: center;">
+        <span class="label-tag">Early Access</span>
+      </div>
+      <h2 class="reveal" style="margin-bottom: 18px; transition-delay: 0.06s">Be first. Be a founding member.</h2>
+      <p class="waitlist-sub reveal" style="transition-delay: 0.12s">MILO is in design phase. Join the waitlist for early access, founding member pricing, and a real say in what we build next.</p>
+
+      <form class="waitlist-form reveal" id="waitlistForm" novalidate style="transition-delay: 0.18s">
+        <input
+          type="email"
+          id="waitlistEmail"
+          class="waitlist-input"
+          placeholder="your@email.com"
+          autocomplete="email"
+          required
+        >
+        <button type="submit" class="btn-primary">Join Waitlist 🐾</button>
+      </form>
+
+      <div class="waitlist-success" id="waitlistSuccess" role="status" aria-live="polite">
+        <div class="success-emoji">🐾</div>
+        <div class="success-title">You're on the list!</div>
+        <div class="success-sub">We'll reach out when MILO is ready for early access. Your pet will thank you.</div>
+      </div>
+
+      <div class="waitlist-perks reveal" style="transition-delay: 0.24s">
+        <div class="perk"><span class="perk-dot"></span>Free during beta</div>
+        <div class="perk"><span class="perk-dot"></span>Founding member pricing</div>
+        <div class="perk"><span class="perk-dot"></span>Shape the product</div>
+        <div class="perk"><span class="perk-dot"></span>iOS &amp; Android</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <div class="footer-logo">🐾</div>
+        <div>
+          <div class="footer-wordmark">MILO</div>
+          <div class="footer-studio">A 3Shamrocks Studio product</div>
+        </div>
+      </div>
+      <div class="footer-badges">
+        <div class="app-badge-pill">
+          <span>🍎</span>
+          <span>App Store — Coming Soon</span>
+        </div>
+        <div class="app-badge-pill">
+          <span>🤖</span>
+          <span>Google Play — Coming Soon</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="index.html" class="footer-link">Portfolio</a>
+        <a href="#features" class="footer-link">Features</a>
+        <a href="#waitlist" class="footer-link">Waitlist</a>
+      </div>
+    </div>
+    <div class="footer-copy">
+      © 2026 3Shamrocks Studio · Built with ❤️ for pet families everywhere · markodave@gmail.com
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── SCROLL REVEAL ──
+(function () {
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    items.forEach(function (el) { el.classList.add('in'); });
+    return;
+  }
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+  items.forEach(function (el) { obs.observe(el); });
+}());
+
+// ── NAV SCROLL SHADOW ──
+(function () {
+  var nav = document.getElementById('mainNav');
+  if (!nav) return;
+  window.addEventListener('scroll', function () {
+    nav.classList.toggle('scrolled', window.scrollY > 24);
+  }, { passive: true });
+}());
+
+// ── WAITLIST FORM ──
+(function () {
+  var form    = document.getElementById('waitlistForm');
+  var success = document.getElementById('waitlistSuccess');
+  var input   = document.getElementById('waitlistEmail');
+  if (!form) return;
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = (input.value || '').trim();
+    var valid = email.length > 4 && email.indexOf('@') > 0 && email.indexOf('.') > email.indexOf('@');
+
+    if (!valid) {
+      input.classList.add('invalid');
+      input.focus();
+      setTimeout(function () { input.classList.remove('invalid'); }, 2200);
+      return;
+    }
+
+    // best-effort local storage
+    try {
+      var list = JSON.parse(localStorage.getItem('milo-wl') || '[]');
+      if (!list.includes(email)) { list.push(email); }
+      localStorage.setItem('milo-wl', JSON.stringify(list));
+    } catch (_) {}
+
+    form.style.display = 'none';
+    success.classList.add('show');
+  });
+}());
+</script>
+</body>
+</html>

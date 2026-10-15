@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08080f">
+<title>SH✡MER Nature — Wilderness Safety</title>
+<meta name="description" content="SH✡MER Nature: Offline maps, group tracking, SOS beacon, and survival tools for hikers, trail runners, and outdoor adventurers. The guardian concept applied to the wilderness.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════
+   DESIGN TOKENS — SH✡MER Nature
+   ═══════════════════════════════════════════════════ */
+:root {
+  /* 3SDS base palette */
+  --black:   #08080f;
+  --black-2: #0d0d1a;
+  --black-3: #111120;
+  --purple:  #8239ea;
+  --green:   #3dcc6e;
+  --white:   #f4f4fc;
+  --muted:   rgba(200,200,225,0.55);
+  --muted2:  rgba(200,200,225,0.30);
+  --muted3:  rgba(200,200,225,0.12);
+
+  /* SH✡MER Nature accent colors */
+  --ng:      #52e87d;   /* nature green — survival signal */
+  --to:      #ff8c42;   /* trail orange — heat, alert, danger */
+  --ng-dim:  rgba(82,232,125,0.09);
+  --ng-dim2: rgba(82,232,125,0.05);
+  --ng-glow: rgba(82,232,125,0.28);
+  --ng-line: rgba(82,232,125,0.14);
+  --to-dim:  rgba(255,140,66,0.10);
+  --to-glow: rgba(255,140,66,0.28);
+  --to-line: rgba(255,140,66,0.18);
+
+  --max: 1100px;
+  --r:   12px;
+  color-scheme: dark;
+}
+
+/* ─── RESET ─── */
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0 }
+html { scroll-behavior: smooth }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none }
+img { display: block; max-width: 100% }
+
+/* ─── TOPOGRAPHIC GRID OVERLAY (body-wide, very subtle) ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-radial-gradient(ellipse 500% 250% at 20% 30%,
+      transparent 0, transparent 55px,
+      rgba(82,232,125,0.025) 56px, transparent 57px),
+    repeating-radial-gradient(ellipse 400% 200% at 75% 65%,
+      transparent 0, transparent 70px,
+      rgba(82,232,125,0.018) 71px, transparent 72px),
+    repeating-radial-gradient(ellipse 300% 150% at 50% 85%,
+      transparent 0, transparent 42px,
+      rgba(82,232,125,0.015) 43px, transparent 44px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── LAYOUT ─── */
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding-left:  max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+
+/* ─── TYPOGRAPHY ─── */
+h1, h2, h3, h4 {
+  font-family: 'Syne', sans-serif;
+  line-height: 1.12;
+}
+.eyebrow {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ng);
+  display: block;
+  margin-bottom: 14px;
+}
+.eyebrow.orange { color: var(--to); }
+.section-intro {
+  color: var(--muted);
+  font-size: 17px;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 13px 26px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s, background .2s;
+  text-decoration: none;
+}
+.btn-green {
+  background: var(--ng);
+  color: var(--black);
+}
+.btn-green:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 36px var(--ng-glow);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(244,244,252,0.18);
+}
+.btn-ghost:hover {
+  border-color: rgba(244,244,252,0.45);
+  background: rgba(244,244,252,0.04);
+}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .75s cubic-bezier(.16,1,.3,1),
+              transform .75s cubic-bezier(.16,1,.3,1);
+}
+.reveal.in { opacity: 1; transform: none; }
+.d1 { transition-delay: .08s }
+.d2 { transition-delay: .16s }
+.d3 { transition-delay: .24s }
+.d4 { transition-delay: .32s }
+.d5 { transition-delay: .42s }
+
+/* ══════════════════════════════════════════════════
+   NAV
+   ══════════════════════════════════════════════════ */
+nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 200;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  background: rgba(8,8,15,0.80);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-bottom: 1px solid var(--ng-line);
+  transition: background .3s;
+}
+nav.solid { background: rgba(8,8,15,0.97); }
+
+.nav-wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 max(24px, env(safe-area-inset-left, 0px));
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  transition: color .2s;
+}
+.nav-back:hover { color: var(--white); }
+.nav-back svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.nav-logo .accent { color: var(--ng); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.badge-concept {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--to);
+  border: 1px solid var(--to-line);
+  background: var(--to-dim);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+/* ══════════════════════════════════════════════════
+   HERO
+   ══════════════════════════════════════════════════ */
+#hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 120px 24px 100px;
+}
+
+#star-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -5%, rgba(12,18,42,0.95) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 20% 90%, rgba(82,232,125,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 50% at 80% 85%, rgba(255,140,66,0.04) 0%, transparent 55%),
+    linear-gradient(180deg, #080c1c 0%, var(--black) 55%, var(--black) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 860px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--to);
+  border: 1px solid var(--to-line);
+  background: var(--to-dim);
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 36px;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--to);
+  animation: pulsedot 2.2s ease-in-out infinite;
+}
+@keyframes pulsedot {
+  0%,100% { opacity:1; transform: scale(1) }
+  50%      { opacity:.4; transform: scale(.65) }
+}
+
+.hero-eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ng);
+  margin-bottom: 22px;
+}
+
+.hero-h1 {
+  font-size: clamp(46px,7.5vw,96px);
+  font-weight: 800;
+  line-height: 1.03;
+  letter-spacing: -.035em;
+  margin-bottom: 28px;
+}
+.hero-h1 em { font-style: normal; color: var(--ng); }
+
+.hero-sub {
+  color: var(--muted);
+  font-size: clamp(16px,2vw,19px);
+  max-width: 560px;
+  margin: 0 auto 44px;
+  line-height: 1.65;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted2);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.scroll-nub {
+  width: 1px;
+  height: 38px;
+  background: linear-gradient(to bottom, var(--ng), transparent);
+  animation: scrollpulse 2.4s ease-in-out infinite;
+  transform-origin: top;
+}
+@keyframes scrollpulse {
+  0%   { opacity:1; transform: scaleY(1) }
+  80%  { opacity:0; transform: scaleY(.1) }
+  100% { opacity:0 }
+}
+
+/* ══════════════════════════════════════════════════
+   THE GAP — problem framing
+   ══════════════════════════════════════════════════ */
+#gap {
+  position: relative;
+  padding: 100px 0;
+  background: var(--black-2);
+  overflow: hidden;
+}
+#gap::before {
+  content: '';
+  position: absolute;
+  top: -120px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 500px;
+  background: radial-gradient(ellipse, rgba(255,140,66,.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.gap-inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.gap-blockquote {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(22px,3.5vw,48px);
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: -.025em;
+  max-width: 780px;
+  margin: 0 auto 56px;
+}
+.gap-blockquote em {
+  font-style: normal;
+  color: var(--to);
+}
+
+.gap-stats {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.gap-stat {
+  background: rgba(255,140,66,.06);
+  border: 1px solid var(--to-line);
+  border-radius: var(--r);
+  padding: 24px 20px;
+}
+.gap-stat .num {
+  font-family: 'Syne', sans-serif;
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--to);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.gap-stat .desc {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: .04em;
+}
+
+/* ══════════════════════════════════════════════════
+   GUARDIAN CONCEPT
+   ══════════════════════════════════════════════════ */
+#guardian {
+  padding: 110px 0;
+  background: var(--black);
+  position: relative;
+}
+#guardian::after {
+  content: '';
+  position: absolute;
+  right: -100px; top: 50%;
+  transform: translateY(-50%);
+  width: 500px; height: 500px;
+  background: radial-gradient(ellipse, rgba(82,232,125,.04) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.guardian-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+/* orbit rings visual */
+.guardian-orbit {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+.orbit-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(82,232,125,.18);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  animation: orbitspinCW 28s linear infinite;
+}
+.orbit-ring:nth-child(2) {
+  width: 72%; height: 72%;
+  border-color: rgba(82,232,125,.28);
+  animation-direction: reverse;
+  animation-duration: 18s;
+}
+.orbit-ring:nth-child(3) {
+  width: 46%; height: 46%;
+  border-color: rgba(82,232,125,.42);
+  animation-duration: 11s;
+}
+@keyframes orbitspinCW {
+  from { transform: translate(-50%,-50%) rotate(0deg) }
+  to   { transform: translate(-50%,-50%) rotate(360deg) }
+}
+
+/* node dots on rings */
+.orbit-node {
+  position: absolute;
+  border-radius: 50%;
+  top: -5px; left: calc(50% - 5px);
+  width: 10px; height: 10px;
+  background: var(--ng);
+  box-shadow: 0 0 8px var(--ng);
+}
+.orbit-node.hot {
+  background: var(--to);
+  box-shadow: 0 0 8px var(--to);
+}
+
+.orbit-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 76px; height: 76px;
+  background: var(--ng-dim);
+  border: 2px solid var(--ng);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  box-shadow: 0 0 32px var(--ng-glow), inset 0 0 20px rgba(82,232,125,.05);
+  z-index: 10;
+}
+
+.guardian-text .label-block { margin-bottom: 18px; }
+.guardian-text h2 {
+  font-size: clamp(28px,3vw,46px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  margin-bottom: 18px;
+}
+.guardian-text h2 span { color: var(--ng); }
+.guardian-text p {
+  color: var(--muted);
+  font-size: 15.5px;
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+.guardian-bullets {
+  list-style: none;
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.guardian-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  font-size: 14.5px;
+  color: var(--muted);
+}
+.guardian-bullets li::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ng);
+  margin-top: 7px;
+  flex-shrink: 0;
+  box-shadow: 0 0 5px var(--ng);
+}
+
+/* ══════════════════════════════════════════════════
+   FEATURES GRID
+   ══════════════════════════════════════════════════ */
+#features {
+  padding: 110px 0;
+  background: var(--black-2);
+  position: relative;
+}
+
+.section-head {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.section-head h2 {
+  font-size: clamp(30px,4vw,52px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  margin-bottom: 14px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+
+.feat-card {
+  background: rgba(13,13,26,.85);
+  border: 1px solid var(--ng-line);
+  border-radius: var(--r);
+  padding: 28px 26px;
+  position: relative;
+  overflow: hidden;
+  transition: transform .28s, border-color .28s, box-shadow .28s;
+}
+.feat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ng), transparent);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.feat-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(82,232,125,.32);
+  box-shadow: 0 18px 52px rgba(82,232,125,.07);
+}
+.feat-card:hover::after { opacity: 1; }
+
+.feat-card.alert-card { border-color: var(--to-line); }
+.feat-card.alert-card::after {
+  background: linear-gradient(90deg, transparent, var(--to), transparent);
+}
+.feat-card.alert-card:hover {
+  border-color: rgba(255,140,66,.35);
+  box-shadow: 0 18px 52px rgba(255,140,66,.06);
+}
+
+.feat-icon {
+  width: 50px; height: 50px;
+  border-radius: 11px;
+  background: var(--ng-dim);
+  border: 1px solid rgba(82,232,125,.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 18px;
+}
+.feat-icon.orange-i {
+  background: var(--to-dim);
+  border-color: rgba(255,140,66,.18);
+}
+
+.feat-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 9px;
+  letter-spacing: -.01em;
+}
+.feat-card p {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.feat-tag {
+  display: inline-block;
+  margin-top: 16px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: var(--ng-dim);
+  color: var(--ng);
+}
+.feat-tag.orange { background: var(--to-dim); color: var(--to); }
+
+/* ══════════════════════════════════════════════════
+   GROUP TRACKING SHOWCASE
+   ══════════════════════════════════════════════════ */
+#tracking {
+  padding: 110px 0;
+  background: var(--black);
+  position: relative;
+}
+
+.tracking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+.mesh-display {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(10,10,20,.9);
+  border: 1px solid var(--ng-line);
+  min-height: 420px;
+}
+.mesh-display svg {
+  display: block;
+  width: 100%;
+  height: 420px;
+}
+
+.tracking-text h2 {
+  font-size: clamp(28px,3vw,46px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  margin-bottom: 18px;
+}
+.tracking-text h2 span { color: var(--ng); }
+.tracking-text p {
+  color: var(--muted);
+  font-size: 15.5px;
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+.spec-row {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 32px;
+}
+.spec-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--ng-dim);
+  border: 1px solid var(--ng-line);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.spec-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: center;
+}
+.spec-item strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.spec-item span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ══════════════════════════════════════════════════
+   SOS EMERGENCY FLOW
+   ══════════════════════════════════════════════════ */
+#sos {
+  padding: 110px 0;
+  background: linear-gradient(180deg, var(--black-2) 0%, rgba(14,8,6,.96) 100%);
+  position: relative;
+  overflow: hidden;
+}
+#sos::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 900px; height: 450px;
+  background: radial-gradient(ellipse, rgba(255,140,66,.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.sos-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.sos-connector {
+  position: absolute;
+  left: 38px;
+  top: 80px;
+  bottom: 40px;
+  width: 2px;
+  background: linear-gradient(to bottom,
+    var(--to) 0%,
+    rgba(255,140,66,.35) 60%,
+    rgba(255,140,66,.08) 100%);
+  z-index: 0;
+}
+
+.sos-steps {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sos-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  padding-bottom: 44px;
+}
+.sos-step:last-child { padding-bottom: 0; }
+
+.sos-num {
+  flex-shrink: 0;
+  width: 76px; height: 76px;
+  border-radius: 50%;
+  background: rgba(255,140,66,.10);
+  border: 2px solid var(--to);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  position: relative;
+  z-index: 2;
+}
+.sos-num.trigger-node {
+  background: var(--to);
+  font-size: 28px;
+  box-shadow: 0 0 36px var(--to-glow);
+}
+
+.sos-body {
+  padding-top: 18px;
+  flex: 1;
+}
+.sos-body h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 7px;
+}
+.sos-body p {
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+.sos-time {
+  margin-top: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  color: var(--to);
+}
+
+/* ══════════════════════════════════════════════════
+   TRAIL COMMUNITY — personas
+   ══════════════════════════════════════════════════ */
+#community {
+  padding: 110px 0;
+  background: var(--black);
+}
+
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 22px;
+}
+
+.persona-card {
+  background: var(--black-2);
+  border: 1px solid var(--muted3);
+  border-radius: var(--r);
+  padding: 36px 28px;
+  text-align: center;
+  transition: border-color .28s, transform .28s;
+}
+.persona-card:hover {
+  border-color: rgba(82,232,125,.22);
+  transform: translateY(-4px);
+}
+.persona-avatar {
+  font-size: 52px;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+.persona-card h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.persona-role {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ng);
+  margin-bottom: 16px;
+}
+.persona-card > p {
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+.persona-features {
+  list-style: none;
+  margin-top: 22px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.persona-features li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.persona-features li::before {
+  content: '✓';
+  color: var(--ng);
+  font-weight: 700;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+/* ══════════════════════════════════════════════════
+   ISRAEL TRAIL — Shvil Yisrael
+   ══════════════════════════════════════════════════ */
+#shvil {
+  padding: 110px 0;
+  background: var(--black-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.shvil-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+.trail-visual {
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(6,8,12,.9);
+  border: 1px solid var(--ng-line);
+  min-height: 440px;
+  position: relative;
+}
+.trail-visual svg {
+  display: block;
+  width: 100%;
+  height: 440px;
+}
+
+.shvil-text h2 {
+  font-size: clamp(28px,3vw,46px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  margin-bottom: 10px;
+}
+.shvil-text h2 span { color: var(--ng); }
+.shvil-hebrew {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ng);
+  direction: rtl;
+  margin-bottom: 22px;
+  opacity: .75;
+}
+.shvil-text p {
+  color: var(--muted);
+  font-size: 15.5px;
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+.shvil-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 30px;
+}
+.shvil-stat {
+  background: var(--ng-dim);
+  border: 1px solid var(--ng-line);
+  border-radius: 10px;
+  padding: 18px 16px;
+}
+.shvil-stat .num {
+  font-family: 'Syne', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--ng);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.shvil-stat .desc {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ══════════════════════════════════════════════════
+   CTA — Early Access
+   ══════════════════════════════════════════════════ */
+#cta {
+  padding: 130px 0;
+  background: var(--black);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#cta::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 800px; height: 700px;
+  background: radial-gradient(ellipse, rgba(82,232,125,.055) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.cta-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.cta-inner h2 {
+  font-size: clamp(36px,5.5vw,66px);
+  font-weight: 800;
+  letter-spacing: -.035em;
+  margin-bottom: 20px;
+}
+.cta-inner h2 span { color: var(--ng); }
+.cta-inner .lead {
+  color: var(--muted);
+  font-size: 17px;
+  margin-bottom: 44px;
+  line-height: 1.65;
+}
+
+.cta-form {
+  display: flex;
+  gap: 12px;
+  max-width: 430px;
+  margin: 0 auto 16px;
+}
+.cta-input {
+  flex: 1;
+  background: rgba(244,244,252,.06);
+  border: 1px solid rgba(244,244,252,.16);
+  border-radius: 8px;
+  padding: 13px 18px;
+  color: var(--white);
+  font-family: 'Inter', sans-serif;
+  font-size: 14.5px;
+  outline: none;
+  transition: border-color .2s;
+}
+.cta-input::placeholder { color: rgba(244,244,252,.3); }
+.cta-input:focus { border-color: var(--ng); }
+
+.cta-fine {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11.5px;
+  color: rgba(200,200,225,.35);
+}
+
+.cta-success {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--ng);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 16px 24px;
+  background: var(--ng-dim);
+  border: 1px solid rgba(82,232,125,.22);
+  border-radius: 10px;
+  max-width: 430px;
+  margin: 0 auto 16px;
+}
+
+/* ══════════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════════ */
+footer {
+  background: var(--black-2);
+  border-top: 1px solid var(--muted3);
+  padding: 44px 0;
+}
+.foot-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.foot-brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.foot-brand strong { color: var(--ng); font-weight: 600; }
+.foot-brand a { color: var(--ng); transition: opacity .2s; }
+.foot-brand a:hover { opacity: .75; }
+.foot-brand .sub {
+  display: block;
+  font-size: 11px;
+  color: rgba(200,200,225,.35);
+  margin-top: 3px;
+}
+.foot-links {
+  display: flex;
+  gap: 22px;
+}
+.foot-links a {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  transition: color .2s;
+}
+.foot-links a:hover { color: var(--white); }
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .guardian-grid,
+  .tracking-grid,
+  .shvil-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: repeat(2,1fr); }
+  .persona-grid { grid-template-columns: 1fr; }
+  .gap-stats { grid-template-columns: 1fr; max-width: 280px; }
+  .guardian-orbit { width: 260px; height: 260px; }
+  #sos .sos-connector { left: 34px; }
+  .hero-h1 { font-size: 42px; }
+}
+@media (max-width: 560px) {
+  .features-grid { grid-template-columns: 1fr; }
+  .cta-form { flex-direction: column; }
+  .nav-logo { font-size: 14px; }
+  .foot-wrap { flex-direction: column; text-align: center; }
+  .foot-links { justify-content: center; }
+  .shvil-stats { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav id="site-nav">
+  <div class="nav-wrap">
+    <a href="index.html" class="nav-back" aria-label="Back to portfolio">
+      <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9.5 11.5L5.5 7.5L9.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Portfolio
+    </a>
+    <div class="nav-logo">
+      SH✡MER <span class="accent">Nature</span>
+    </div>
+    <div class="nav-right">
+      <span class="badge-concept">Concept</span>
+      <a href="#cta" class="btn btn-green" style="padding:9px 18px;font-size:13px;">Early Access</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section id="hero" aria-label="Hero">
+  <canvas id="star-canvas" aria-hidden="true"></canvas>
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <div class="hero-content reveal">
+    <div class="hero-badge">
+      <span class="hero-badge-dot" aria-hidden="true"></span>
+      Concept Stage · 3Shamrocks Studio
+    </div>
+    <p class="hero-eyebrow">SH✡MER Nature · Outdoor Safety App</p>
+    <h1 class="hero-h1">
+      The wild has<br>
+      <em>no signal</em> —<br>
+      until now.
+    </h1>
+    <p class="hero-sub">
+      Your guardian circle, extended to every trail, summit, and canyon.
+      SH✡MER Nature brings the safety network with you — even offline.
+    </p>
+    <div class="hero-ctas">
+      <a href="#cta" class="btn btn-green">
+        Get Early Access
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#features" class="btn btn-ghost">Explore Features</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll" aria-hidden="true">
+    <div class="scroll-nub"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ═══════════════ THE GAP ═══════════════ -->
+<section id="gap" aria-labelledby="gap-title">
+  <div class="wrap">
+    <div class="gap-inner">
+      <span class="eyebrow orange" id="gap-title">The Problem</span>
+      <blockquote class="gap-blockquote reveal">
+        "You're <em>12km from the nearest road.</em><br>
+        Your phone has 8% battery.<br>
+        <em>Who knows you're here?</em>"
+      </blockquote>
+      <div class="gap-stats reveal d2">
+        <div class="gap-stat">
+          <div class="num">1,200+</div>
+          <div class="desc">Search & rescue missions per year in Israel</div>
+        </div>
+        <div class="gap-stat">
+          <div class="num">73%</div>
+          <div class="desc">Of hikers don't file a trip plan before setting out</div>
+        </div>
+        <div class="gap-stat">
+          <div class="num">6 hrs</div>
+          <div class="desc">Average emergency response time without GPS location</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ GUARDIAN CONCEPT ═══════════════ -->
+<section id="guardian" aria-labelledby="guardian-title">
+  <div class="wrap">
+    <div class="guardian-grid">
+
+      <div class="guardian-orbit reveal" aria-hidden="true">
+        <div class="orbit-ring">
+          <div class="orbit-node"></div>
+        </div>
+        <div class="orbit-ring">
+          <div class="orbit-node hot"></div>
+        </div>
+        <div class="orbit-ring">
+          <div class="orbit-node"></div>
+        </div>
+        <div class="orbit-center">✡</div>
+      </div>
+
+      <div class="guardian-text reveal d2">
+        <span class="eyebrow">The Concept</span>
+        <h2 id="guardian-title">Your <span>guardian circle</span><br>goes off-road</h2>
+        <p>
+          SH✡MER was built as a civic safety network — a community that watches over each other in real time.
+          SH✡MER Nature extends that same guardian philosophy to the places where cell towers don't reach.
+        </p>
+        <p>
+          Your hiking group becomes a mesh network. Your family becomes your base camp.
+          Emergency services are a single button away — even without signal.
+        </p>
+        <ul class="guardian-bullets">
+          <li>Bluetooth + GPS mesh keeps the group connected with zero cellular coverage</li>
+          <li>Family portal shows real-time trail position from any browser</li>
+          <li>Satellite-ready SOS transmits precise GPS coordinates within seconds</li>
+          <li>Automated check-ins notify family at every waypoint you pass</li>
+          <li>Offline survival field guide: first aid, snake ID, water sourcing</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FEATURES ═══════════════ -->
+<section id="features" aria-labelledby="features-title">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Core Features</span>
+      <h2 id="features-title">Built for where the trail ends</h2>
+      <p class="section-intro">Eight layers of protection, designed for the real conditions of wilderness hiking.</p>
+    </div>
+
+    <div class="features-grid">
+
+      <div class="feat-card reveal d1">
+        <div class="feat-icon">🗺️</div>
+        <h3>Offline-First Maps</h3>
+        <p>Download complete trail maps before you leave. Every waypoint, elevation profile, and terrain layer works fully without any cellular connection — even in the deepest Negev canyon.</p>
+        <span class="feat-tag">Core</span>
+      </div>
+
+      <div class="feat-card reveal d2">
+        <div class="feat-icon">👥</div>
+        <h3>Group Tracking</h3>
+        <p>See your entire hiking group's live positions via Bluetooth mesh + GPS. No cell signal needed. Assign trail lead and sweep roles, set spacing alerts, and keep everyone in view.</p>
+        <span class="feat-tag">Core</span>
+      </div>
+
+      <div class="feat-card alert-card reveal d3">
+        <div class="feat-icon orange-i">🆘</div>
+        <h3>SOS Beacon</h3>
+        <p>One press triggers an emergency alert that transmits your GPS coordinates to designated family contacts and national rescue services simultaneously. Satellite fallback when cellular fails.</p>
+        <span class="feat-tag orange">Safety</span>
+      </div>
+
+      <div class="feat-card alert-card reveal d1">
+        <div class="feat-icon orange-i">⚠️</div>
+        <h3>Trail Safety Alerts</h3>
+        <p>Wildfire warnings, flash flood risk, extreme heat index, and trail closures — pushed to your device before you enter the area and cached offline for the duration of your hike.</p>
+        <span class="feat-tag orange">Alerts</span>
+      </div>
+
+      <div class="feat-card reveal d2">
+        <div class="feat-icon">📍</div>
+        <h3>Auto Check-In System</h3>
+        <p>Automatic waypoint check-ins notify your family as you progress along the trail. Miss a check-in window? Your emergency contact is alerted automatically — no action required from you.</p>
+        <span class="feat-tag">Safety</span>
+      </div>
+
+      <div class="feat-card reveal d3">
+        <div class="feat-icon">📖</div>
+        <h3>Survival Field Guides</h3>
+        <p>Offline reference for snake and plant identification, wilderness first aid protocols, water sourcing, navigation by stars, and desert survival. Everything downloadable before you go.</p>
+        <span class="feat-tag">Knowledge</span>
+      </div>
+
+      <div class="feat-card reveal d1">
+        <div class="feat-icon">📒</div>
+        <h3>Trail Logbook</h3>
+        <p>Document your hike with geotagged photos, continuous GPS track recording, elevation profiles, and split timing. Syncs to cloud when you're back in signal — share or archive for future trips.</p>
+        <span class="feat-tag">Explore</span>
+      </div>
+
+      <div class="feat-card alert-card reveal d2">
+        <div class="feat-icon orange-i">🌊</div>
+        <h3>Community Hazard Reports</h3>
+        <p>Hikers report trail conditions in real time — flooding, fallen trees, washed-out paths, dangerous wildlife. Crowd-sourced hazard pins update the shared map for everyone who follows.</p>
+        <span class="feat-tag orange">Community</span>
+      </div>
+
+      <div class="feat-card reveal d3" style="grid-column: span 1;">
+        <div class="feat-icon" style="font-size:18px;">🔋</div>
+        <h3>Low-Power Mode</h3>
+        <p>When battery drops below 20%, SH✡MER Nature shifts to a minimal broadcast mode — reduced update frequency, GPS power-saving, and BLE mesh relay only — extending runtime by up to 40%.</p>
+        <span class="feat-tag">Core</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ GROUP TRACKING SHOWCASE ═══════════════ -->
+<section id="tracking" aria-labelledby="tracking-title">
+  <div class="wrap">
+    <div class="tracking-grid">
+
+      <div class="tracking-text reveal">
+        <span class="eyebrow">Group Tracking</span>
+        <h2 id="tracking-title">The group that stays <span>connected</span></h2>
+        <p>
+          SH✡MER Nature creates a Bluetooth mesh network across your group's devices.
+          Even with zero cellular coverage, each member's position propagates through the mesh —
+          hop by hop, automatically.
+        </p>
+        <p>
+          A device on a ridge can relay location data for hikers deep in a canyon.
+          The network topology adapts as the group moves. No configuration required.
+        </p>
+        <div class="spec-row">
+          <div class="spec-item">
+            <div class="spec-icon">📡</div>
+            <div>
+              <strong>Bluetooth Mesh</strong>
+              <span>~100m device-to-device relay range, multi-hop routing</span>
+            </div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-icon">🛰️</div>
+            <div>
+              <strong>GPS Precision</strong>
+              <span>±3m accuracy for trail-level position tracking</span>
+            </div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-icon">⚡</div>
+            <div>
+              <strong>Battery Efficient</strong>
+              <span>Low-power mesh mode, up to 40% extended runtime</span>
+            </div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-icon">👁️</div>
+            <div>
+              <strong>Family View</strong>
+              <span>Live group map visible to family contacts via any browser</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mesh-display reveal d2" aria-label="Group mesh network diagram">
+        <svg viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+          <!-- Topo contour lines -->
+          <ellipse cx="210" cy="210" rx="190" ry="150" fill="none" stroke="rgba(82,232,125,0.055)" stroke-width="1"/>
+          <ellipse cx="210" cy="210" rx="150" ry="118" fill="none" stroke="rgba(82,232,125,0.065)" stroke-width="1"/>
+          <ellipse cx="210" cy="210" rx="110" ry="86"  fill="none" stroke="rgba(82,232,125,0.08)"  stroke-width="1"/>
+          <ellipse cx="210" cy="210" rx="70" ry="55" fill="none" stroke="rgba(82,232,125,0.10)" stroke-width="1"/>
+          <ellipse cx="210" cy="210" rx="35"  ry="28"  fill="none" stroke="rgba(82,232,125,0.14)"  stroke-width="1"/>
+
+          <!-- Mesh connection lines -->
+          <line x1="210" y1="110" x2="130" y2="195" stroke="rgba(82,232,125,0.22)" stroke-width="1.2" stroke-dasharray="5 4"/>
+          <line x1="210" y1="110" x2="295" y2="175" stroke="rgba(82,232,125,0.22)" stroke-width="1.2" stroke-dasharray="5 4"/>
+          <line x1="130" y1="195" x2="155" y2="295" stroke="rgba(82,232,125,0.22)" stroke-width="1.2" stroke-dasharray="5 4"/>
+          <line x1="295" y1="175" x2="272" y2="285" stroke="rgba(82,232,125,0.22)" stroke-width="1.2" stroke-dasharray="5 4"/>
+          <line x1="155" y1="295" x2="272" y2="285" stroke="rgba(82,232,125,0.22)" stroke-width="1.2" stroke-dasharray="5 4"/>
+          <!-- weaker relay links -->
+          <line x1="130" y1="195" x2="72"  y2="270" stroke="rgba(82,232,125,0.13)" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="295" y1="175" x2="355" y2="248" stroke="rgba(82,232,125,0.13)" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="210" y1="110" x2="210" y2="60"  stroke="rgba(255,140,66,0.18)"stroke-width="1"  stroke-dasharray="4 4"/>
+
+          <!-- SOS pulse rings on leader -->
+          <circle cx="210" cy="110" r="26" fill="none" stroke="rgba(255,140,66,0.25)" stroke-width="1">
+            <animate attributeName="r" values="14;36;14" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".6;0;.6" dur="3s" repeatCount="indefinite"/>
+          </circle>
+
+          <!-- Satellite up-link -->
+          <line x1="210" y1="90"  x2="210" y2="28"  stroke="rgba(255,140,66,0.30)" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="210" y="20" text-anchor="middle" font-size="14" fill="rgba(255,140,66,0.6)">🛰️</text>
+
+          <!-- Hiker nodes -->
+          <!-- Trail Lead (orange) -->
+          <circle cx="210" cy="110" r="16" fill="rgba(255,140,66,0.18)" stroke="#ff8c42" stroke-width="2"/>
+          <text x="210" y="115" text-anchor="middle" font-size="12" fill="#ff8c42">🏔</text>
+          <text x="210" y="98"  text-anchor="middle" font-size="8" fill="rgba(255,140,66,0.8)" font-family="Space Grotesk" letter-spacing="0.06em" font-weight="600">LEAD</text>
+
+          <!-- Group members (green) -->
+          <circle cx="130" cy="195" r="13" fill="rgba(82,232,125,0.18)" stroke="#52e87d" stroke-width="1.8"/>
+          <text x="130" y="200" text-anchor="middle" font-size="11">🚶</text>
+
+          <circle cx="295" cy="175" r="13" fill="rgba(82,232,125,0.18)" stroke="#52e87d" stroke-width="1.8"/>
+          <text x="295" y="180" text-anchor="middle" font-size="11">🚶</text>
+
+          <circle cx="155" cy="295" r="13" fill="rgba(82,232,125,0.18)" stroke="#52e87d" stroke-width="1.8"/>
+          <text x="155" y="300" text-anchor="middle" font-size="11">🏃</text>
+
+          <circle cx="272" cy="285" r="13" fill="rgba(82,232,125,0.18)" stroke="#52e87d" stroke-width="1.8"/>
+          <text x="272" y="290" text-anchor="middle" font-size="11">🚶</text>
+
+          <!-- Relay nodes (dashed border = indirect / extending range) -->
+          <circle cx="72"  cy="270" r="11" fill="rgba(82,232,125,0.09)" stroke="rgba(82,232,125,0.42)" stroke-width="1.4" stroke-dasharray="3 2.5"/>
+          <text x="72"  y="275" text-anchor="middle" font-size="10">🚶</text>
+          <text x="72"  y="291" text-anchor="middle" font-size="8" fill="rgba(82,232,125,0.55)" font-family="Space Grotesk">relay</text>
+
+          <circle cx="355" cy="248" r="11" fill="rgba(82,232,125,0.09)" stroke="rgba(82,232,125,0.42)" stroke-width="1.4" stroke-dasharray="3 2.5"/>
+          <text x="355" y="253" text-anchor="middle" font-size="10">🚶</text>
+          <text x="355" y="269" text-anchor="middle" font-size="8" fill="rgba(82,232,125,0.55)" font-family="Space Grotesk">relay</text>
+
+          <!-- Legend -->
+          <rect x="14"  y="380" width="10" height="10" rx="5" fill="#52e87d"/>
+          <text x="30" y="389" font-size="9" fill="rgba(244,244,252,0.45)" font-family="Space Grotesk">Group member</text>
+          <rect x="130" y="380" width="10" height="10" rx="5" fill="#ff8c42"/>
+          <text x="146" y="389" font-size="9" fill="rgba(244,244,252,0.45)" font-family="Space Grotesk">Trail lead</text>
+          <rect x="240" y="380" width="10" height="10" rx="5" fill="none" stroke="rgba(82,232,125,0.5)" stroke-width="1.2" stroke-dasharray="2.5 2"/>
+          <text x="256" y="389" font-size="9" fill="rgba(244,244,252,0.45)" font-family="Space Grotesk">Relay node</text>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SOS EMERGENCY FLOW ═══════════════ -->
+<section id="sos" aria-labelledby="sos-title">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-bottom:64px;">
+      <span class="eyebrow orange">Emergency Protocol</span>
+      <h2 id="sos-title">When every second counts</h2>
+      <p class="section-intro">One button press triggers a coordinated emergency response — even without any cellular signal.</p>
+    </div>
+
+    <div class="sos-wrap">
+      <div class="sos-connector" aria-hidden="true"></div>
+      <div class="sos-steps">
+
+        <div class="sos-step reveal">
+          <div class="sos-num trigger-node" aria-hidden="true">🆘</div>
+          <div class="sos-body">
+            <h3>SOS Triggered</h3>
+            <p>User holds the SOS button for 3 seconds. The app immediately captures current GPS coordinates, battery level, last heading, group member positions, and device sensors.</p>
+            <div class="sos-time">T + 0 seconds</div>
+          </div>
+        </div>
+
+        <div class="sos-step reveal d1">
+          <div class="sos-num" aria-hidden="true" style="font-size:24px;">📡</div>
+          <div class="sos-body">
+            <h3>Mesh Network Broadcast</h3>
+            <p>The SOS signal propagates instantly through the Bluetooth mesh. Every group member's device receives the alert, begins location logging, and switches to emergency beacon mode to assist pinpointing.</p>
+            <div class="sos-time">T + 3 seconds</div>
+          </div>
+        </div>
+
+        <div class="sos-step reveal d2">
+          <div class="sos-num" aria-hidden="true" style="font-size:24px;">📲</div>
+          <div class="sos-body">
+            <h3>Family Alert Dispatched</h3>
+            <p>Emergency contacts receive a push notification with a live GPS map pin, trail name, last photo taken, group size, and a direct link to the real-time tracking view — no app required on their end.</p>
+            <div class="sos-time">T + 8 seconds</div>
+          </div>
+        </div>
+
+        <div class="sos-step reveal d3">
+          <div class="sos-num" aria-hidden="true" style="font-size:24px;">🛸</div>
+          <div class="sos-body">
+            <h3>Satellite Fallback Engaged</h3>
+            <p>If no cellular coverage exists, SH✡MER Nature engages satellite messaging integration (Apple Emergency SOS / Garmin InReach planned) to transmit the incident package directly to rescue coordination.</p>
+            <div class="sos-time">T + 15 seconds</div>
+          </div>
+        </div>
+
+        <div class="sos-step reveal d4">
+          <div class="sos-num" aria-hidden="true" style="font-size:24px;">🚁</div>
+          <div class="sos-body">
+            <h3>Rescue Coordination Package</h3>
+            <p>Search and rescue services receive a full incident package: GPS trail history, group composition, last 30 minutes of position data, pre-filled medical information, and the optimal approach route to the incident site.</p>
+            <div class="sos-time">T + 2 minutes</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TRAIL COMMUNITY ═══════════════ -->
+<section id="community" aria-labelledby="community-title">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Who It's For</span>
+      <h2 id="community-title">Every trail has its people</h2>
+      <p class="section-intro">SH✡MER Nature is designed for every kind of outdoor adventurer — and the people back home who love them.</p>
+    </div>
+
+    <div class="persona-grid">
+
+      <div class="persona-card reveal d1">
+        <div class="persona-avatar">🧭</div>
+        <h3>Trail Guides</h3>
+        <div class="persona-role">Professional Guides &amp; Tour Leaders</div>
+        <p>Manage groups of 4–30 hikers with live position tracking, built-in emergency protocols, and automated client communication tools. Run more trips with less overhead.</p>
+        <ul class="persona-features">
+          <li>Real-time group management dashboard</li>
+          <li>Multi-point route planning with waypoints</li>
+          <li>Auto-send client check-in notifications</li>
+          <li>Incident documentation and reporting</li>
+          <li>Offline guide certification resources</li>
+        </ul>
+      </div>
+
+      <div class="persona-card reveal d2">
+        <div class="persona-avatar">👨‍👩‍👧</div>
+        <h3>Families at Home</h3>
+        <div class="persona-role">The Base Camp</div>
+        <p>Follow your loved one's trail journey from home, in real time. Get check-in confirmations as they hit each waypoint, and receive instant SOS alerts if anything goes wrong — no app install needed.</p>
+        <ul class="persona-features">
+          <li>Live map tracking via any web browser</li>
+          <li>Automatic check-in notifications</li>
+          <li>Missed check-in escalation alerts</li>
+          <li>Weather conditions on their trail</li>
+          <li>Direct SOS incident notification</li>
+        </ul>
+      </div>
+
+      <div class="persona-card reveal d3">
+        <div class="persona-avatar">🏃</div>
+        <h3>Solo Adventurers</h3>
+        <div class="persona-role">Off the Grid</div>
+        <p>The freedom to go alone — without the recklessness. SH✡MER Nature is your silent safety companion, always on, always logging, always ready to call for help even when you can't.</p>
+        <ul class="persona-features">
+          <li>Solo check-in automation</li>
+          <li>Full offline survival guide access</li>
+          <li>One-tap SOS beacon</li>
+          <li>Trail logbook and GPS track archive</li>
+          <li>Community hazard reports on your route</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SHVIL YISRAEL ═══════════════ -->
+<section id="shvil" aria-labelledby="shvil-title">
+  <div class="wrap">
+    <div class="shvil-grid">
+
+      <div class="trail-visual reveal" aria-label="Shvil Yisrael trail map illustration">
+        <svg viewBox="0 0 380 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="trailLineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%"   style="stop-color:#52e87d;stop-opacity:0.95"/>
+              <stop offset="100%" style="stop-color:#52e87d;stop-opacity:0.25"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <rect width="380" height="440" fill="rgba(6,7,14,0.98)"/>
+
+          <!-- Topographic contour sweeps -->
+          <path d="M20 60  Q90 38  190 58  Q285 78  360 55"  fill="none" stroke="rgba(82,232,125,0.055)" stroke-width="1"/>
+          <path d="M15 95  Q88 72  195 92  Q290 112 362 90"  fill="none" stroke="rgba(82,232,125,0.06)" stroke-width="1"/>
+          <path d="M12 132 Q90 108 200 130 Q295 150 364 128" fill="none" stroke="rgba(82,232,125,0.065)" stroke-width="1"/>
+          <path d="M10 170 Q92 146 205 168 Q298 188 365 167" fill="none" stroke="rgba(82,232,125,0.07)" stroke-width="1"/>
+          <path d="M10 210 Q95 188 210 208 Q302 226 366 207" fill="none" stroke="rgba(82,232,125,0.075)" stroke-width="1"/>
+          <path d="M12 252 Q98 230 215 250 Q305 268 367 248" fill="none" stroke="rgba(82,232,125,0.08)" stroke-width="1"/>
+          <path d="M16 295 Q100 274 218 294 Q308 312 366 293" fill="none" stroke="rgba(82,232,125,0.085)" stroke-width="1"/>
+          <path d="M22 338 Q105 318 222 338 Q310 355 364 338" fill="none" stroke="rgba(82,232,125,0.09)" stroke-width="1"/>
+          <path d="M28 380 Q110 362 226 380 Q314 396 362 380" fill="none" stroke="rgba(82,232,125,0.09)" stroke-width="1"/>
+
+          <!-- The Shvil path — Israel shaped, north to south -->
+          <path d="M190 28 Q174 52 168 80 Q162 106 180 130 Q198 155 186 182 Q174 208 188 234 Q202 260 190 288 Q178 315 190 342 Q200 365 193 408"
+                fill="none"
+                stroke="url(#trailLineGrad)"
+                stroke-width="3.5"
+                stroke-dasharray="7 4.5"
+                stroke-linecap="round"
+                filter="url(#glow)"/>
+
+          <!-- Start / end nodes -->
+          <circle cx="190" cy="28"  r="7" fill="#52e87d" filter="url(#glow)"/>
+          <circle cx="193" cy="408" r="6" fill="rgba(82,232,125,0.45)"/>
+
+          <!-- Waypoint dots -->
+          <circle cx="168" cy="80"  r="3.5" fill="rgba(82,232,125,0.55)"/>
+          <circle cx="180" cy="130" r="3.5" fill="rgba(82,232,125,0.55)"/>
+          <circle cx="186" cy="182" r="3.5" fill="rgba(82,232,125,0.55)"/>
+          <circle cx="188" cy="234" r="3.5" fill="rgba(82,232,125,0.55)"/>
+          <circle cx="190" cy="288" r="3.5" fill="rgba(82,232,125,0.55)"/>
+          <circle cx="190" cy="342" r="3.5" fill="rgba(82,232,125,0.55)"/>
+
+          <!-- Alert node — Negev dead zone -->
+          <circle cx="189" cy="320" r="9" fill="rgba(255,140,66,0.12)" stroke="rgba(255,140,66,0.45)" stroke-width="1.3" stroke-dasharray="2.5 2"/>
+          <text x="207" y="324" font-size="8" fill="rgba(255,140,66,0.70)" font-family="Space Grotesk">No signal</text>
+
+          <!-- Labels -->
+          <text x="205" y="30"  font-size="9"  fill="rgba(82,232,125,0.85)" font-family="Space Grotesk" font-weight="600">Rosh HaNikra</text>
+          <text x="205" y="412" font-size="9"  fill="rgba(82,232,125,0.50)" font-family="Space Grotesk">Eilat</text>
+
+          <!-- Watermark km -->
+          <text x="190" y="228" text-anchor="middle" font-size="58" fill="rgba(82,232,125,0.04)" font-family="Syne" font-weight="800">1000</text>
+          <text x="190" y="248" text-anchor="middle" font-size="10"  fill="rgba(82,232,125,0.10)" font-family="Space Grotesk" letter-spacing=".15em">KILOMETERS</text>
+        </svg>
+      </div>
+
+      <div class="shvil-text reveal d2">
+        <span class="eyebrow">Israel Focus</span>
+        <h2 id="shvil-title">Built for the <span>Shvil Yisrael</span></h2>
+        <div class="shvil-hebrew">שביל ישראל</div>
+        <p>
+          The Israel National Trail stretches 1,000km from Rosh HaNikra in the north
+          to the Red Sea at Eilat — passing through Mediterranean forest, Galilee mountains,
+          Judean Hills, the Negev desert, and the Arava valley.
+        </p>
+        <p>
+          It's one of the world's great long-distance trails. And it passes through some
+          of Israel's most remote, cell-dead wilderness. Sections of the Negev can go
+          40km with no coverage whatsoever. SH✡MER Nature is built for exactly this reality.
+        </p>
+        <p>
+          Priority beta access for Shvil Yisrael community members, certified trail guides,
+          and מד"א volunteer first responders.
+        </p>
+        <div class="shvil-stats">
+          <div class="shvil-stat">
+            <div class="num">1,000+</div>
+            <div class="desc">km of national trail</div>
+          </div>
+          <div class="shvil-stat">
+            <div class="num">50K+</div>
+            <div class="desc">annual Shvil hikers</div>
+          </div>
+          <div class="shvil-stat">
+            <div class="num">60+</div>
+            <div class="desc">distinct trail sections</div>
+          </div>
+          <div class="shvil-stat">
+            <div class="num">∅ signal</div>
+            <div class="desc">in key Negev stretches</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<section id="cta" aria-labelledby="cta-title">
+  <div class="cta-inner reveal">
+    <span class="eyebrow" style="text-align:center;">Early Access</span>
+    <h2 id="cta-title">Be first on the <span>trail</span></h2>
+    <p class="lead">
+      SH✡MER Nature is in concept stage. Drop your email to get priority beta access —
+      especially for trail guides, Shvil Yisrael veterans, and outdoor safety professionals.
+    </p>
+
+    <form class="cta-form" id="cta-form" novalidate>
+      <input
+        type="email"
+        class="cta-input"
+        id="cta-email"
+        placeholder="your@email.com"
+        autocomplete="email"
+        required
+        aria-label="Email address"
+      />
+      <button type="submit" class="btn btn-green">Notify Me</button>
+    </form>
+
+    <div class="cta-success" id="cta-success" role="status" aria-live="polite">
+      ✓ &nbsp; You're on the list — we'll be in touch!
+    </div>
+
+    <p class="cta-fine">No spam. No data selling. One email when we launch.</p>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-wrap">
+      <div class="foot-brand">
+        A concept product by <strong>3Shamrocks Studio</strong> ·
+        <a href="https://3shamrocks.com">3shamrocks.com</a>
+        <span class="sub">Part of the SH✡MER family of guardian-safety products</span>
+      </div>
+      <nav class="foot-links" aria-label="Footer navigation">
+        <a href="index.html">Portfolio</a>
+        <a href="shomer-case.html">SH✡MER</a>
+        <a href="mailto:hello@3shamrocks.com">Contact</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
+<script>
+/* ─── STAR FIELD ─── */
+(function () {
+  var canvas = document.getElementById('star-canvas');
+  var ctx    = canvas.getContext('2d');
+  var stars  = [];
+  var frame  = 0;
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    buildStars();
+  }
+
+  function buildStars() {
+    stars = [];
+    var density = Math.floor((canvas.width * canvas.height) / 2800);
+    for (var i = 0; i < density; i++) {
+      stars.push({
+        x:     Math.random() * canvas.width,
+        y:     Math.random() * canvas.height * 0.78,
+        r:     Math.random() * 1.4 + 0.2,
+        a:     Math.random() * 0.65 + 0.08,
+        speed: Math.random() * 0.018 + 0.004,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+    /* a few brighter accent stars */
+    for (var j = 0; j < 8; j++) {
+      stars.push({
+        x:     Math.random() * canvas.width,
+        y:     Math.random() * canvas.height * 0.65,
+        r:     Math.random() * 0.8 + 1.4,
+        a:     0.85,
+        speed: 0.006,
+        phase: Math.random() * Math.PI * 2,
+        accent: true
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    frame++;
+    for (var i = 0; i < stars.length; i++) {
+      var s = stars[i];
+      var twinkle = Math.sin(frame * s.speed + s.phase);
+      var alpha   = Math.max(0, Math.min(1, s.a + twinkle * 0.14));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      if (s.accent) {
+        ctx.fillStyle = 'rgba(82,232,125,' + alpha + ')';
+      } else {
+        ctx.fillStyle = 'rgba(244,244,252,' + alpha + ')';
+      }
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  draw();
+  window.addEventListener('resize', resize);
+})();
+
+/* ─── SCROLL REVEAL ─── */
+(function () {
+  var els = document.querySelectorAll('.reveal');
+  var io  = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.09, rootMargin: '0px 0px -55px 0px' });
+  els.forEach(function (el) { io.observe(el); });
+})();
+
+/* ─── NAV SOLID ON SCROLL ─── */
+(function () {
+  var nav = document.getElementById('site-nav');
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 60) {
+      nav.classList.add('solid');
+    } else {
+      nav.classList.remove('solid');
+    }
+  }, { passive: true });
+})();
+
+/* ─── SMOOTH ANCHOR LINKS ─── */
+document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+  a.addEventListener('click', function (e) {
+    var target = document.querySelector(a.getAttribute('href'));
+    if (!target) return;
+    e.preventDefault();
+    var offset = target.getBoundingClientRect().top + window.scrollY - 70;
+    window.scrollTo({ top: offset, behavior: 'smooth' });
+  });
+});
+
+/* ─── CTA FORM ─── */
+(function () {
+  var form    = document.getElementById('cta-form');
+  var success = document.getElementById('cta-success');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = document.getElementById('cta-email').value.trim();
+    if (!email || !email.includes('@')) return;
+
+    /* persist locally (demo — no backend) */
+    try {
+      var stored = JSON.parse(localStorage.getItem('sn-waitlist') || '[]');
+      stored.push({ email: email, ts: Date.now() });
+      localStorage.setItem('sn-waitlist', JSON.stringify(stored));
+    } catch (_) {}
+
+    form.style.display    = 'none';
+    success.style.display = 'flex';
+  });
+})();
+</script>
+</body>
+</html>
