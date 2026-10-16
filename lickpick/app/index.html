@@ -1499,6 +1499,16 @@ details.fold>summary b{color:var(--text)}
 .acct.on{border-color:var(--cyan)}.acct.off{opacity:.8}
 .acct .avatar{width:36px;height:36px;border-radius:50%;flex:none;border:2px solid var(--line)}
 .acct>svg.i{width:26px;height:26px;color:var(--cyan);flex:none}
+/* sign gate */
+#signgate{position:fixed;inset:0;z-index:50;background:var(--stage);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:40px 24px;text-align:center}
+#signgate .sg-logo{display:flex;align-items:center;gap:10px}
+#signgate .sg-logo svg{width:52px;height:52px;filter:drop-shadow(3px 3px 0 var(--hot))}
+#signgate .sg-logo .word{font:900 28px/1 var(--head);letter-spacing:-.02em}
+#signgate .sg-logo .word b{color:var(--cyan)}
+#signgate .sg-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;border:2px solid var(--hot);color:var(--hot);font:800 12px var(--body);letter-spacing:.08em;text-transform:uppercase}
+#signgate h2{font:900 28px/1.15 var(--head);letter-spacing:-.02em;margin:0}
+#signgate .sg-sub{color:var(--dim);font-size:15px;margin:0;max-width:280px}
+#signgate .btn.wide{max-width:300px;width:100%}
 
 /* 3.1: payment lore, Backstage, the band's chart */
 .lore{margin:6px 0 2px;font-size:14px;line-height:1.45;color:var(--text)}
@@ -1521,6 +1531,13 @@ details.fold>summary b{color:var(--text)}
 
 <div id="boot" aria-hidden="true"><div class="bt-stage"><svg class="bt-pick" viewBox="0 0 100 100"><use href="#logo"/></svg><span class="bt-word"><i>L</i><i>i</i><i>c</i><i>k</i><i class="v">P</i><i class="v">i</i><i class="v">c</i><i class="v">k</i></span></div></div>
 <script>setTimeout(function(){var b=document.getElementById("boot");if(b)b.remove();},2300);</script>
+<div id="signgate" hidden role="dialog" aria-modal="true" aria-label="Sign in to LickPick">
+  <div class="sg-logo"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></div>
+  <span class="sg-tag">Beta</span>
+  <h2>Join the beta</h2>
+  <p class="sg-sub">Sign in with Google to use LickPick and keep your takes across phones.</p>
+  <button class="btn wide" type="button" data-act="acct-in"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg>Sign in with Google</button>
+</div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -5669,7 +5686,7 @@ function accountCard() {
   if (u) return `<div class="acct on">${u.photo ? `<img class="avatar" src="${esc(u.photo)}" alt="">` : icon("i-check")}<span class="grow"><b>${esc(u.name || u.email)}</b><em>${st.last ? `Synced ${new Date(st.last).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}` : "Signed in"} · profile, streak, taste and projects. Videos stay on this phone.</em></span><button class="btn ghost sm" type="button" data-act="acct-out">Sign out</button></div>`;
   return `<div class="acct"><span class="grow"><b>Keep it on every phone</b><em>${st?.err ? esc(st.err) + " " : ""}Profile, streak, taste and projects. Your videos never leave this phone.</em></span><button class="btn sm" type="button" data-act="acct-in" ${st?.busy ? "disabled" : ""}>${icon("i-lock")}${st?.busy ? "Signing in…" : "Sign in with Google"}</button></div>`;
 }
-if (window.LickSync) { LickSync.on(() => { if (!$("#onboard")?.hidden) renderOnboard(); const p = store.get("lp:profile"); if (p && !!p.signedIn !== !!LickSync.state.user) { p.signedIn = !!LickSync.state.user; store.set("lp:profile", p); } });
+if (window.LickSync) { LickSync.on(() => { const _gate = document.getElementById("signgate"); if (_gate && !_gate.hidden && LickSync.state.user) { _gate.hidden = true; if (!profile.done && !store.get("ck:intro")) openOnboard(0); } if (!$("#onboard")?.hidden) renderOnboard(); const p = store.get("lp:profile"); if (p && !!p.signedIn !== !!LickSync.state.user) { p.signedIn = !!LickSync.state.user; store.set("lp:profile", p); } });
   window.addEventListener("lp:synced", e => { if (e.detail.includes("lp:profile")) Object.assign(profile, store.get("lp:profile") || {}); if (e.detail.includes("lp:taste")) Object.assign(taste, store.get("lp:taste") || {}); renderTop(); renderMade?.(); renderNavBadge?.(); if (!$("#onboard")?.hidden) renderOnboard(); toast("Updated from your account."); }); }
 function renderOnboard() {
   const step = OB[ob], B = $("#obBody"), next = $("#obNext"), ctas = $("#obCtas");
@@ -8169,6 +8186,7 @@ if (location.hash.startsWith("#key=")) {
 }
 // arriving from the website's pricing (app/#pro): show Pro straight away, skipping the intro
 if (location.hash === "#pro") { if (!profile.done) { profile.done = true; store.set("lp:profile", profile); store.set("ck:intro", 1); } openPro(); history.replaceState(null, "", location.pathname); }
+else if (window.LickSync?.enabled && !window.LickSync.state.user) { document.getElementById("signgate").hidden = false; }
 else if (!profile.done && !store.get("ck:intro")) openOnboard(0);
 else if (store.get("lp:tour") !== TOUR_V && !navigator.webdriver) setTimeout(() => {   // automated test runs skip the one-time tour
    if ($("#onboard").hidden && $("#studio").hidden) openIntro(); }, 700);
