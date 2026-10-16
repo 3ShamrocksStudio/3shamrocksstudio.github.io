@@ -5052,7 +5052,7 @@ function afterSave(c) {
   $("#winBody").innerHTML = `${stk(r.won ? "i-star" : "i-bolt", r.won ? "volt" : "hot", "r2")}<h2>${r.rankUp ? `You're a ${esc(rk.name)}` : r.won ? `Challenge done: ${esc(r.ch.c[0])}` : st > 1 ? `${st} weeks in a row` : "First one saved"}</h2>
     <p>${r.rankUp && rk.next ? `${esc(RANKS[rk.i][2])} to reach ${esc(rk.next[1])}.` : st > 1 ? "Keep it going: one jam a week." : "Come back with your next jam. One a week keeps your streak."}</p>
     <div class="winrow"><span><b>${L.saves}</b>saved</span><span><b>${st}</b>week streak</span><span><b>${esc(rk.name)}</b>stage</span></div>
-    <div class="row-btns">${c?.raw?.chromaQ && pickOf(c) && !layersOf(c).length ? `<button class="btn" type="button" data-act="rec-from-save">${icon("i-rec")}Play along with it</button>` : store.get("lp:remind") ? "" : `<button class="btn" type="button" data-act="wk-remind">${icon("i-clock")}Remind me weekly</button>`}${installPrompt ? `<button class="btn ghost" type="button" data-act="install">${icon("i-install")}Install</button>` : ""}<button class="btn ghost" type="button" data-act="win-close">Nice</button></div>`;
+    <div class="row-btns">${c?.raw?.chromaQ && pickOf(c) && !layersOf(c).length ? `<button class="btn" type="button" data-act="rec-from-save">${icon("i-rec")}Play along with it</button>` : store.get("lp:remind") ? "" : `<button class="btn" type="button" data-act="wk-remind">${icon("i-clock")}Remind me weekly</button>`}${installPrompt ? `<button class="btn ghost" type="button" data-act="install">${icon("i-install")}Install</button>` : ""}${!isPro() && L.saves <= 3 ? `<button class="btn ghost" type="button" data-act="pro-open">${icon("i-bolt")}No mark · Pro</button>` : `<button class="btn ghost" type="button" onclick="shareApp()">${icon("i-share")}Share app</button>`}<button class="btn ghost" type="button" data-act="win-close">Nice</button></div>`;
   setTimeout(() => { el.hidden = false; }, 900);
 }
 
@@ -5091,6 +5091,11 @@ async function madeAct(kind, id) {
 }
 const savedWhere = () => IN_CLAUDE ? "Saved." : "Saved to Downloads.";
 function canShareFile(file) { try { return !!navigator.canShare?.({ files: [file] }); } catch { return false; } }
+function shareApp() {
+  const url = "https://3shamrocksstudio.github.io/lickpick/app/", text = "I just saved a jam with LickPick 🎸 Real backing band, clean takes. Check it out:";
+  if (navigator.share) { navigator.share({ title: "LickPick", url, text }).catch(() => {}); }
+  else { navigator.clipboard?.writeText(url).then(() => toast("LickPick link copied — paste it anywhere 🎸")).catch(() => {}); }
+}
 function offerShare(name, blob) {
   const file = new File([blob], name, { type: blob.type || "video/mp4" });
   if (!canShareFile(file)) return;
@@ -6262,7 +6267,8 @@ function exportSheetHTML(c) {
       : `<button class="btn wide" type="button" data-act="gallery">${icon("i-film")}Re-add the video to save in HD</button><p class="hint">Saving uses your original video for full quality. Pick it from the gallery and you're back here.</p>`}
     ${c.file && !downloads ? `<p class="hint">Saving isn't available in this view.</p>` : ""}
     <div class="status" id="exStatus" aria-live="polite">${esc(c.exStatus || "")}</div>
-    ${c.lastShare && !busy && !done ? `<button class="btn wide sharebtn" type="button" data-act="share-last">${icon("i-share")}<span><b>Share ${esc(c.lastShare.name.length > 26 ? c.lastShare.name.slice(0, 24) + "…" : c.lastShare.name)}</b><em>Instagram, TikTok, YouTube, WhatsApp, Drive…${c.captions?.length ? " Caption included." : ""}</em></span></button>` : ""}`;
+    ${c.lastShare && !busy && !done ? `<button class="btn wide sharebtn" type="button" data-act="share-last">${icon("i-share")}<span><b>Share ${esc(c.lastShare.name.length > 26 ? c.lastShare.name.slice(0, 24) + "…" : c.lastShare.name)}</b><em>Instagram, TikTok, YouTube, WhatsApp, Drive…${c.captions?.length ? " Caption included." : ""}</em></span></button>` : ""}
+    ${!isPro() && c.file && !busy ? `<p class="hint" style="margin-top:2px;text-align:center;line-height:1.6"><button type="button" class="linkbtn" data-act="pro-open">${icon("i-bolt")} Remove the mark · Go Pro</button><br><span style="font-size:11px;opacity:.7">Free videos carry a small LickPick signature. $4.99 once removes it forever.</span></p>` : ""}`;
 }
 // a name on the video: free for everyone, styled like LickPick
 function titleGroup(c, o, opt) {
