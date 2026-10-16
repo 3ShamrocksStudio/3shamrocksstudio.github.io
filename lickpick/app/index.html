@@ -374,7 +374,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 .ob-body h1{font:400 32px/1.08 var(--display);margin:0;text-wrap:balance}
 .ob-body p.lead{margin:0;color:var(--dim);font-size:16px}
 .ob-hero{display:grid;place-items:center;padding:22px 0 6px}
-.ob-hero svg{width:150px;height:150px;transform:rotate(-8deg)}
+.ob-hero svg{width:150px;height:150px;transform:rotate(-8deg);filter:drop-shadow(3px 3px 0 var(--hot))}
 .ob-foot{position:sticky;bottom:0;padding-top:12px;background:linear-gradient(to top,var(--stage) 70%,transparent)}
 .chips{display:flex;flex-wrap:wrap;gap:10px}
 .chips button{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;padding:11px 14px;font-weight:800;font-size:15px}
@@ -636,7 +636,7 @@ button:disabled .stk{filter:grayscale(1) brightness(.6);box-shadow:none}
 .credit{position:absolute;left:14px;bottom:14px;display:flex;flex-direction:column;gap:1px;color:#fff;font:700 12.5px/1.25 var(--body);text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 8px rgba(0,0,0,.5);pointer-events:none;transition:opacity .4s;max-width:70%}
 .credit b{font-weight:800;font-size:13.5px} .credit span:last-child{font-weight:800;letter-spacing:.04em;font-size:11px;opacity:.9}
 .pv .bigplay[hidden]~.credit{opacity:0}
-.bug{position:absolute;right:12px;bottom:12px;width:30px;height:30px;opacity:.55;pointer-events:none;transform:rotate(-8deg)}
+.bug{position:absolute;right:12px;bottom:12px;width:30px;height:30px;opacity:.55;pointer-events:none;transform:rotate(-8deg);filter:drop-shadow(3px 3px 0 var(--hot))}
 /* headings: clean, no line under them (brand rule) */
 .ob-body h1,.start h1{position:relative}
 .pro-lead{margin:0;font:400 22px/1.15 var(--display);color:var(--volt)}
@@ -1204,7 +1204,7 @@ input[type=range]{min-height:44px}
 .proj{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:var(--panel);color:var(--text);text-align:left}
 .proj b{font-size:15px;overflow-wrap:anywhere}.proj em{font-style:normal;color:var(--dim);font-size:13px}
 .ob-hero .lockup.big{display:inline-flex;align-items:center;gap:14px}
-.ob-hero .lockup.big svg{width:76px!important;height:76px!important;transform:rotate(-8deg)}
+.ob-hero .lockup.big svg{width:76px!important;height:76px!important;transform:rotate(-8deg);filter:drop-shadow(3px 3px 0 var(--hot))}
 .ob-hero .lockup.big .word{font:400 46px/1 var(--display);color:var(--text)}.ob-hero .lockup.big .word b{font-weight:400;color:var(--volt)}
 .obfeat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .obfeat div{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:16px 8px 14px;border-radius:18px;background:var(--panel);border:2px solid var(--line)}
@@ -1318,7 +1318,7 @@ input[type=range]{min-height:44px}
    letter, each one stamping down its pink shadow in time. ~1.8 s. */
 #boot{position:fixed;inset:0;z-index:999;display:grid;place-items:center;background:var(--stage);pointer-events:none;animation:btOut .35s cubic-bezier(.6,0,.4,1) 1.75s forwards}
 .bt-stage{display:flex;align-items:center}
-.bt-pick{width:84px;height:84px;flex:none;transform-origin:50% 62%;animation:btStrum 1.05s cubic-bezier(.3,.7,.3,1) both}
+.bt-pick{width:84px;height:84px;flex:none;transform-origin:50% 62%;filter:drop-shadow(3px 3px 0 var(--hot));animation:btStrum 1.05s cubic-bezier(.3,.7,.3,1) both}
 .bt-word{display:inline-flex;overflow:hidden;max-width:0;padding:6px 0 10px;font:400 48px/1 var(--display);color:var(--text);animation:btOpen .62s cubic-bezier(.5,0,.2,1) .5s forwards}
 .bt-word i{display:inline-block;font-style:normal;opacity:0;transform:translateY(-70%) rotate(-14deg);animation:btDrop .42s cubic-bezier(.2,1.7,.4,1) forwards,btStamp .42s steps(1,end) forwards}
 .bt-word i:first-child{margin-left:14px}
@@ -1330,7 +1330,7 @@ input[type=range]{min-height:44px}
 @keyframes btDrop{0%{opacity:0;transform:translateY(-70%) rotate(-14deg)}35%{opacity:1}100%{opacity:1;transform:none}}
 @keyframes btStamp{0%{text-shadow:none}60%{text-shadow:3px 3px 0 var(--hot)}100%{text-shadow:3px 3px 0 var(--hot)}}
 @keyframes btOut{to{opacity:0;transform:scale(1.03);visibility:hidden}}
-@media (prefers-reduced-motion:reduce){#boot{animation:btOut .2s ease .5s forwards}.bt-pick,.bt-word,.bt-word i{animation:none;opacity:1;transform:none;max-width:none}.bt-pick{transform:rotate(-8deg)}.bt-word i{text-shadow:3px 3px 0 var(--hot)}}
+@media (prefers-reduced-motion:reduce){#boot{animation:btOut .2s ease .5s forwards}.bt-pick,.bt-word,.bt-word i{animation:none;opacity:1;transform:none;max-width:none}.bt-pick{transform:rotate(-8deg);filter:drop-shadow(3px 3px 0 var(--hot))}.bt-word i{text-shadow:3px 3px 0 var(--hot)}}
 @media (max-width:360px){.bt-pick{width:66px;height:66px}.bt-word{font-size:38px}}
 
 /* welcome: lockup, one line, the buttons */
