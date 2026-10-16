@@ -5678,7 +5678,8 @@ function renderOnboard() {
     // one screen: show, don't tell. Four stickers, one privacy strip, then straight to your jams
     // 2.6: the lockup, one line, the button. Nothing else.
     B.innerHTML = `<div class="ob-hero"><span class="lockup big" aria-label="LickPick"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></span></div><h1>Your best take, found.</h1>
-      <p class="obline">Private. On your phone. Free.</p>`;
+      <p class="obline">Private. On your phone. Free.</p>
+      ${window.LickSync?.enabled ? accountCard() : ''}`;
     next.hidden = true; ctas.hidden = false;
   } else {
     const L = state.pickLen;

@@ -61,6 +61,21 @@ h1 em{font-style:normal;color:var(--volt)} h1 .hot{font-weight:400;color:var(--h
 .float.f2{right:-40px;bottom:16%;background:var(--cyan);transform:rotate(5deg)}
 .float.f3{left:-60px;bottom:30%;background:var(--panel);color:var(--text);border-color:var(--ink);box-shadow:4px 4px 0 var(--red)}
 .float.f3 s{text-decoration-color:var(--red);text-decoration-thickness:3px;color:var(--dim)}
+/* hero entrance animations */
+@keyframes lp-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes lp-fade{from{opacity:0}to{opacity:1}}
+@keyframes lp-phone-in{from{opacity:0;transform:rotate(4deg) translateX(24px)}to{opacity:1;transform:rotate(4deg)}}
+@media(prefers-reduced-motion:no-preference){
+  .hero .kicker{animation:lp-up .5s ease both}
+  .hero h1{animation:lp-up .55s .12s ease both}
+  .hero .lede{animation:lp-up .5s .23s ease both}
+  .hero .ctas{animation:lp-up .5s .35s ease both}
+  .hero .fine{animation:lp-up .45s .47s ease both}
+  .hero-phone{animation:lp-phone-in .7s .16s cubic-bezier(.22,.68,0,1.12) both}
+  .float.f1{animation:lp-fade .5s .54s ease both}
+  .float.f2{animation:lp-fade .5s .66s ease both}
+  .float.f3{animation:lp-fade .5s .60s ease both}
+}
 /* sections */
 section{padding:84px 0;position:relative}
 h2{font:400 clamp(32px,4.8vw,54px)/1.05 var(--display);margin:0 0 14px}
@@ -256,7 +271,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <a class="btn" href="app/"><svg class="i"><use href="#i-play"/></svg>Open LickPick free</a>
       <a class="btn ghost" href="#how">See how it works</a>
     </div>
-    <p class="fine"><svg class="i"><use href="#i-lock"/></svg>Free on Android + Chrome. Pro launch price $4.99, once. No sign-up, and your clips never leave your phone.</p>
+    <p class="fine"><svg class="i"><use href="#i-lock"/></svg>Free on Android + Chrome. Pro launch price $4.99, once. Sign in with Google to sync across phones — optional. Your clips never leave your phone.</p>
   </div>
   <div class="hero-phone" aria-hidden="true">
     <div class="phone"><img src="assets/m_pick.jpg" alt=""></div>
