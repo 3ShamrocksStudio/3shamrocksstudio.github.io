@@ -1537,6 +1537,7 @@ details.fold>summary b{color:var(--text)}
   <h2>Join the beta</h2>
   <p class="sg-sub">Sign in with Google to use LickPick and keep your takes across phones.</p>
   <button class="btn wide" type="button" data-act="acct-in"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg>Sign in with Google</button>
+  <button type="button" data-act="acct-skip" style="background:none;border:0;color:var(--dim);font:600 14px var(--body);text-decoration:underline;cursor:pointer;padding:8px">Continue without an account</button>
 </div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1800,7 +1801,7 @@ details.fold>summary b{color:var(--text)}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-16d"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = {"apiKey":"AIzaSyCVM2YJykeEVGa4FB3uoHRHijnP2elvcX0","authDomain":"lickpick-app.firebaseapp.com","projectId":"lickpick-app","storageBucket":"lickpick-app.firebasestorage.app","messagingSenderId":"881593704089","appId":"1:881593704089:web:528c399bb5f7d82c7b2208"}; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-17a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = {"apiKey":"AIzaSyCVM2YJykeEVGa4FB3uoHRHijnP2elvcX0","authDomain":"lickpick-app.firebaseapp.com","projectId":"lickpick-app","storageBucket":"lickpick-app.firebasestorage.app","messagingSenderId":"881593704089","appId":"1:881593704089:web:528c399bb5f7d82c7b2208"}; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -7826,6 +7827,8 @@ document.addEventListener("click", e => {
     if (g && c) { if (e.target.closest(".trim,.trimcap,.rate")) return; c.selSegT = +g.dataset.s; if (g.classList.contains("playing")) { pausePlay(); return; } const x = segsOf(c)[+g.dataset.seg]; if (x) { if (x.kind === "part") { c.sel = x.i; c.selCut = null; } else { c.selCut = x.s; c.sel = -1; } renderStudio(); playRanges(c, [[x.s, x.e]], `${TIERS[x.tier][0]} ${fmt(x.s)}`); } return; }
     const s = e.target.closest("[data-sel]"); if (s && c) { c.sel = +s.dataset.sel; renderStudio(); } return; }
   const d = t.dataset;
+  /* No account: everything still works on this phone; signing in later only adds the cross-phone copy. */
+  if (d.act === "acct-skip") { store.set("lp:guest", 1); document.getElementById("signgate").hidden = true; if (!profile.done && !store.get("ck:intro")) openOnboard(0); return; }
   if (d.more) { openRowMenu(+d.more); return; }
   if (d.act === "row-close") { $("#rowSheet").hidden = true; return; }
   if (d.act && d.act.startsWith("row-")) { rowAct(d.act); return; }
@@ -8186,7 +8189,7 @@ if (location.hash.startsWith("#key=")) {
 }
 // arriving from the website's pricing (app/#pro): show Pro straight away, skipping the intro
 if (location.hash === "#pro") { if (!profile.done) { profile.done = true; store.set("lp:profile", profile); store.set("ck:intro", 1); } openPro(); history.replaceState(null, "", location.pathname); }
-else if (window.LickSync?.enabled && !window.LickSync.state.user) { document.getElementById("signgate").hidden = false; }
+else if (window.LickSync?.enabled && !window.LickSync.state.user && !store.get("lp:guest")) { document.getElementById("signgate").hidden = false; }
 else if (!profile.done && !store.get("ck:intro")) openOnboard(0);
 else if (store.get("lp:tour") !== TOUR_V && !navigator.webdriver) setTimeout(() => {   // automated test runs skip the one-time tour
    if ($("#onboard").hidden && $("#studio").hidden) openIntro(); }, 700);
