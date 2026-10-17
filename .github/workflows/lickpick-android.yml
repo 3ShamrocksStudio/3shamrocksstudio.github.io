@@ -1,0 +1,35 @@
+name: LickPick Android (TWA)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lickpick/android
+    env:
+      VERSION_CODE: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build unsigned release AAB + APK
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon bundleRelease assembleRelease
+          ls -la app/build/outputs/bundle/release app/build/outputs/apk/release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lickpick-unsigned-${{ github.run_number }}
+          path: |
+            lickpick/android/app/build/outputs/bundle/release/*.aab
+            lickpick/android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
