@@ -8242,7 +8242,7 @@ document.addEventListener("input", e => {
 $("#proSheet").addEventListener("click", e => { if (e.target.id === "proSheet") $("#proSheet").hidden = true; });
 $("#winSheet").addEventListener("click", e => { if (e.target.id === "winSheet") $("#winSheet").hidden = true; });
 // a streak at risk: from Thursday, a quiet reminder that one jam this week keeps it (once a day at most)
-setTimeout(() => { try { const L = jamLog(), st = streakOf(L), wd = new Date().getDay(); if (st > 0 && !L.weeks.includes(isoWeek()) && (wd >= 4 || wd === 0) && store.get("lp:nudge") !== new Date().toDateString()) { store.set("lp:nudge", new Date().toDateString()); toast(`Your week closes Sunday. One jam keeps your ${st}-week streak.`, { icon: "i-rec", label: "Record", run: () => openPicker($("#rec")) }); } } catch { } }, 2500);
+setTimeout(() => { try { const L = jamLog(), st = streakOf(L), wd = new Date().getDay(); if (st > 0 && $("#signgate")?.hidden !== false && !L.weeks.includes(isoWeek()) && (wd >= 4 || wd === 0) && store.get("lp:nudge") !== new Date().toDateString()) { store.set("lp:nudge", new Date().toDateString()); toast(`Your week closes Sunday. One jam keeps your ${st}-week streak.`, { icon: "i-rec", label: "Record", run: () => openPicker($("#rec")) }); } } catch { } }, 2500);
 $("#exportSheet").addEventListener("click", e => { if (e.target.id === "exportSheet") $("#exportSheet").hidden = true; });
 $("#rowSheet").addEventListener("click", e => { if (e.target.id === "rowSheet") $("#rowSheet").hidden = true; });
 $("#addSheet").addEventListener("click", e => { if (e.target.id === "addSheet") $("#addSheet").hidden = true; });
