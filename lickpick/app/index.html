@@ -615,6 +615,14 @@ a.mrow{text-decoration:none}
 .reel-actions .btn{min-width:0;padding-left:8px;padding-right:8px;justify-content:center}
 #sorter:not(.reel) .reel-actions{display:none}
 #sorter.reel .qs-actions,#sorter.reel .qs-sub{display:none}
+#sorter:not(.pickoff) .po,#sorter.pickoff .qs-info,#sorter.pickoff .qs-actions,#sorter.pickoff .qs-sub{display:none}
+.po{display:flex;flex-direction:column;gap:12px}
+.po-q{margin:0;font-weight:800;font-size:17px}.po-q span{color:var(--mute);font-weight:700;font-size:13px;margin-left:4px}
+.po-ab{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.po-c{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:16px;border:2px solid var(--line);background:var(--panel)}
+.po-c.on{border-color:var(--cyan)}.po-c .btn{min-width:0;justify-content:center}
+.po-res{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--raise)}
+.po-res span{display:flex;flex-direction:column;gap:2px;min-width:0}.po-res b{font-size:16px}.po-res em{font-style:normal;color:var(--dim);font-size:13.5px}
 #rules .sfoot svg.i{width:13px;height:13px;vertical-align:-2px;color:var(--mute);--ic2:transparent}
 .ob-body{padding-bottom:24px}
 .ob-hero{padding:8px 0 0} .ob-hero svg{width:116px;height:116px}
@@ -1715,6 +1723,7 @@ details.fold>summary b{color:var(--text)}
       <button class="qs t-trash" type="button" data-act="qs-trash" aria-label="Trash"><svg class="i"><use href="#i-bin"/></svg></button>
       <button class="qs t-keep" type="button" data-act="qs-keep" aria-label="Keep"><svg class="i"><use href="#i-check"/></svg></button>
     </div>
+    <div class="po" id="poBox"></div>
     <div class="qs-sub"><button class="btn sm ghost" type="button" data-act="qs-open"><svg class="i"><use href="#i-cut"/></svg>Open</button><button class="btn sm ghost" type="button" data-act="qs-skip"><svg class="i"><use href="#i-next"/></svg>Skip</button></div>
   </div>
 </div>
@@ -4706,7 +4715,7 @@ function openTaste() {
     ${LickMusic.TASTE_F.map(f => { const v = taste.w[f] || 0, L = TASTE_LABELS[f], pct = Math.max(-1, Math.min(1, v / 2)); return `<div class="tpref"><span>${L[0]}</span><b class="tbar"><i style="${pct >= 0 ? `left:50%;width:${pct * 50}%` : `left:${50 + pct * 50}%;width:${-pct * 50}%`}"></i></b><em>${Math.abs(v) < 0.25 ? "no lean yet" : v > 0 ? L[2] : L[1]}</em></div>`; }).join("")}
     <h4 class="eqh">How strict about mistakes</h4>
     ${strict.length ? strict.map(([r, v]) => `<div class="tstrict"><span>${esc(capFirst(r))}</span><em class="${v > 1 ? "up" : "down"}">${v > 1 ? `stricter ×${v.toFixed(1)}` : `more forgiving ×${v.toFixed(1)}`}</em></div>`).join("") : `<p class="hint">Default strictness for every kind of mistake so far.</p>`}
-    ${taste.log.length ? `<h4 class="eqh">Recent feedback</h4><div class="tlog">${taste.log.slice(-8).reverse().map(l => `<div><b>${l.pref ? "Chose" : esc(RATES.find(r => r[0] === l.r)?.[1] || "")}</b><span>${esc(l.clip)} · ${l.pref ? `${fmt(l.pref[0])} over ${fmt(l.pref[1])}` : `${fmt(l.s)}–${fmt(l.e)}`}${l.why?.length ? " · " + esc(l.why.join(", ")) : ""}</span></div>`).join("")}</div>` : ""}
+    ${taste.log.length ? `<h4 class="eqh">Recent feedback</h4><div class="tlog">${taste.log.slice(-8).reverse().map(l => `<div><b>${l.pref ? "Chose" : esc(RATES.find(r => r[0] === l.r)?.[1] || "")}</b><span>${esc(l.clip)} · ${l.pref ? `${fmt(l.pref[0])} over ${l.vs ? `${esc(l.vs)} ` : ""}${fmt(l.pref[1])}` :`${fmt(l.s)}–${fmt(l.e)}`}${l.why?.length ? " · " + esc(l.why.join(", ")) : ""}</span></div>`).join("")}</div>` : ""}
     <p class="hint">${icon("i-lock")} Learned and kept only on this phone.</p>
     <div class="row-btns"><button class="btn ghost" type="button" data-act="taste-export">${icon("i-save")}Back up</button><button class="btn ghost" type="button" data-act="taste-reset">${icon("i-undo")}Start over</button></div>`;
   $("#rules").hidden = true; $("#tasteSheet").hidden = false;
@@ -5401,7 +5410,7 @@ function renderTop() {
     : withPick.length ? `<button class="hero-act quiet" type="button" data-act="reel">${icon("i-play")}<span><strong>Play my picks</strong><em>${withPick.length} lick${withPick.length === 1 ? "" : "s"}, back to back</em></span></button>`
     : `<button class="hero-act quiet" type="button" data-act="gallery">${icon("i-film")}<span><strong>Add a jam</strong><em>From your gallery or camera.</em></span></button>`;
   $("#top").innerHTML = `${testerCard()}${hero}
-    <div class="hstrip"><button type="button" class="hs" data-act="wk-info">${st ? `${st}-week streak` : "Start a streak"}<i>·</i>${esc(rk.name)}</button>${closing ? `<span class="hs">${dow === 0 ? "Week closes tonight" : "Week closes Sunday"} · 1 jam keeps it</span>` : ""}${counts.busy && done.length ? `<span class="hs busy"><span class="pulse"></span>${counts.busy} listening</span>` : ""}${ready > 1 ? `<button type="button" class="hs" data-act="save-picks">Save all ${ready}${isPro() ? "" : ` <i class="protag">PRO</i>`}</button>` : ""}</div>`;
+    <div class="hstrip"><button type="button" class="hs" data-act="wk-info">${st ? `${st}-week streak` : "Start a streak"}<i>·</i>${esc(rk.name)}</button>${!poLog().days.includes(dayKey()) && poPair() ? `<button type="button" class="hs" data-act="pickoff">Pick-off<i>·</i>30s</button>` : ""}${closing ? `<span class="hs">${dow === 0 ? "Week closes tonight" : "Week closes Sunday"} · 1 jam keeps it</span>` : ""}${counts.busy && done.length ? `<span class="hs busy"><span class="pulse"></span>${counts.busy} listening</span>` : ""}${ready > 1 ? `<button type="button" class="hs" data-act="save-picks">Save all ${ready}${isPro() ? "" : ` <i class="protag">PRO</i>`}</button>` : ""}</div>`;
   $("#sortCta").innerHTML = "";
   renderQuickbar();
 }
@@ -5790,8 +5799,78 @@ function quickDecide(kind) {
 function closeQuickSort(finished) {
   qsVideo?.destroy(); qsVideo = null;
   const wasReel = qs.reel; qs.reel = false; $("#sorter").classList.remove("reel"); if (wasReel) finished = false;
+  qs.po = null; $("#sorter").classList.remove("pickoff");
   $("#sorter").hidden = true; document.body.style.overflow = ""; render();
   if (finished && qs.done && !toastAct) toast(`Sorted ${qs.done} clip${qs.done > 1 ? "s" : ""}.`);
+}
+// ---------- Daily Pick-off: 30 seconds, two of your own phrases, one ear. Your choice teaches the taste model
+// (same learner as the rating strip); 5 Pick-off days in a week earn a Spare String. All kept on this phone.
+const dayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const poLog = () => Object.assign({ days: [], n: 0, agree: 0, total: 0, win: null, spareW: [] }, store.get("lp:pickoff") || {});
+const PO_WHY = [["Timing", "tight"], ["Tone", "tone"], ["Feel", "energy"], ["Notes", "variety"]];
+// today's pair: the same all day (date seed), Pick A of two takes, else Pick A vs Pick B of one take
+function poPair() {
+  let C = state.clips.filter(c => !c.example && c.status === "done" && c.file && pickOf(c)).sort((a, b) => String(a.key).localeCompare(String(b.key)));
+  const Cz = C.filter(c => picksOf(c)[0]?.z); if (Cz.length >= 2) C = Cz;   // phrases the taste model can learn from first
+  const h = [...dayKey()].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7); let P = [];
+  if (C.length >= 2) { const i = h % C.length, j = (i + 1 + (h >>> 8) % (C.length - 1)) % C.length; P = [[C[i], picksOf(C[i])[0]], [C[j], picksOf(C[j])[0]]]; }
+  else if (C.length === 1) { const l = picksOf(C[0]); if (l.length > 1) P = [[C[0], l[0]], [C[0], l[1]]]; }
+  if (P.length < 2 || !P[0][1] || !P[1][1]) return null;
+  if (h & 1) P.reverse();
+  return P.map(([c, p]) => ({ c, p, s: p.s, e: Math.min(p.e, p.s + 10) }));
+}
+function poWeekDays(L) { const w = isoWeek(); return L.days.filter(d => isoWeek(new Date(d + "T12:00:00")) === w).length; }
+function openPickoff() {
+  const pair = poPair(); if (!pair) { toast("Add two jams for a Pick-off."); return; }
+  qs = { ids: [], i: 0, done: 0, po: { pair, chosen: null, why: null, now: 0 } };
+  $("#sorter").classList.add("pickoff"); $("#sorter").hidden = false; document.body.style.overflow = "hidden";
+  $("#sorter h2").textContent = "Daily Pick-off"; $("#qsCount").textContent = `#${poLog().n + 1}`;
+  poHear(0, true);
+}
+function poHear(k, chain) {
+  const P = qs.po; if (!P) return; const x = P.pair[k], st = $("#qsStage");
+  qsVideo?.destroy(); qsVideo = new Seg(st); P.now = k;
+  qsVideo.load(x.c.url || (x.c.url = URL.createObjectURL(x.c.file)));
+  qsVideo.set([[x.s, x.e]], `Take ${"AB"[k]}`, fmt(x.e - x.s));
+  if (chain) qsVideo.onEnd = () => setTimeout(() => { if (qs.po === P && P.chosen == null && !$("#sorter").hidden) poHear(1, false); }, 500);
+  qsVideo.v.addEventListener("loadedmetadata", () => qsVideo.play(), { once: true });
+  qsVideo.v.addEventListener("error", () => { st.innerHTML = `<div class="ph">This video can't be previewed here.</div>`; }, { once: true });
+  renderPo();
+}
+function renderPo() {
+  const P = qs.po, box = $("#poBox"); if (!P || !box) return;
+  if (P.chosen == null) {
+    box.innerHTML = `<p class="po-q">Which take is better?</p>
+      <div class="po-ab">${[0, 1].map(k => `<div class="po-c${P.now === k ? " on" : ""}"><button class="btn ghost sm" type="button" data-po-hear="${k}">${icon("i-play")}Hear ${"AB"[k]}</button><button class="btn" type="button" data-po-pick="${k}">${"AB"[k]} wins</button></div>`).join("")}</div>
+      <p class="hint">Two of your own phrases, about 10 seconds each.</p>`;
+    return;
+  }
+  const L = poLog(), agree = P.chosen === P.model, wd = poWeekDays(L);
+  box.innerHTML = `<div class="po-res">${stk(agree ? "i-star" : "i-ear", agree ? "volt" : "hot", "r2")}<span><b>${agree ? `LickPick picked ${"AB"[P.model]} too` : `LickPick picked ${"AB"[P.model]}. Your ear wins.`}</b><em>You agree ${L.agree} of ${L.total} · your taste steers ${Math.round(tasteK() * 100)}%</em></span></div>
+    <p class="po-q">What made ${"AB"[P.chosen]} better? <span>Optional</span></p>
+    <span class="seg wide" role="group" aria-label="Why it won">${PO_WHY.map(([w]) => `<button type="button" data-po-why="${w}" aria-pressed="${P.why === w}">${w}</button>`).join("")}</span>
+    <p class="hint">A: ${esc(P.pair[0].c.name)} · B: ${esc(P.pair[1].c.name)}<br>${wd} Pick-off day${wd === 1 ? "" : "s"} this week${wd < 5 ? " · 5 earn a Spare String" : ""}</p>
+    <div class="row-btns"><button class="btn ghost" type="button" data-act="sorter-close">Done</button></div>`;
+}
+function poChoose(k) {
+  const P = qs.po; if (!P || P.chosen != null) return;
+  P.chosen = k; P.model = (P.pair[0].p.score ?? -9) >= (P.pair[1].p.score ?? -9) ? 0 : 1; qsVideo?.pause();
+  const W = P.pair[k], Lo = P.pair[1 - k], xw = W.p.z || featOf(W.c, W.s, W.e), xl = Lo.p.z || featOf(Lo.c, Lo.s, Lo.e);
+  if (xw && xl) { const d = {}; for (const f of LickMusic.TASTE_F) d[f] = (xw[f] || 0) - (xl[f] || 0); learnX(d, 1, 0.125, true); taste.n += 0.5; }
+  taste.log.push(P.entry = { t: Date.now(), clip: W.c.name, pref: [+W.p.s.toFixed(1), +Lo.p.s.toFixed(1)], ...(W.c !== Lo.c ? { vs: Lo.c.name } : {}) }); tasteSave(); retaste();
+  const L = poLog(), day = dayKey(); L.n++; L.total++; if (k === P.model) L.agree++;
+  if (!L.days.includes(day)) L.days = [...L.days, day].slice(-60);
+  L.win = { day, key: W.c.key, s: W.p.s, e: W.p.e };
+  const w = isoWeek(); let earned = false;
+  if (poWeekDays(L) >= 5 && !L.spareW.includes(w)) { L.spareW = [...L.spareW, w].slice(-10); const J = jamLog(); if (J.spare < 3) { J.spare++; store.set("lp:jams", J); earned = true; } }
+  store.set("lp:pickoff", L); renderPo();
+  if (earned) toast("5 Pick-off days this week. +1 Spare String.");
+}
+function poWhy(w) {
+  const P = qs.po; if (!P || P.chosen == null) return; const f = x => PO_WHY.find(z => z[0] === x)?.[1];
+  if (P.why) nudgeFeat(f(P.why), -0.15);
+  P.why = P.why === w ? null : w; if (P.why) nudgeFeat(f(P.why), 0.15);
+  if (P.entry) P.entry.why = P.why ? [P.why] : []; tasteSave(); retaste(); renderPo();
 }
 // ---------- studio
 let video = null, player = null, stopAt = null, queue = [], audioCtx = null, audioBuf = { id: null, buf: null };
@@ -7908,6 +7987,10 @@ document.addEventListener("click", e => {
   if (d.act === "intro-skip") { closeIntro(); return; }
   if (d.act === "intro-next") { if (slide < SLIDES.length - 1) { slide++; renderIntro(); } else closeIntro(); return; }
   if (d.act === "quicksort") { openQuickSort(); return; }
+  if (d.act === "pickoff") { openPickoff(); return; }
+  if (d.poHear != null) { poHear(+d.poHear, false); return; }
+  if (d.poPick != null) { poChoose(+d.poPick); return; }
+  if (d.poWhy) { poWhy(d.poWhy); return; }
   if (d.act === "reel") { openReel(); return; }
   if (d.act === "reel-one") { const c = cur(); if (!c || !player) return; player.loop = true; player.host.querySelector(".pb-loop")?.setAttribute("aria-pressed", "true"); if (Seg.rate === 1) { Seg.rate = 0.75; player.applyRate(); } const pk = pickOf(c); if (pk) playRanges(c, pk.ranges, `Pick ${"ABC"[c.pickSel || 0]}`); try { $("#sStage").scrollIntoView({ behavior: "smooth", block: "start" }); } catch { } toast(`Looping the Pick at ${Seg.rate === 0.75 ? "¾" : Seg.rate === 0.5 ? "½" : "full"} speed. Tap the speed button to change it.`); return; }
   if (d.act === "reel-prev" || d.act === "reel-next") { reelStep(d.act === "reel-next" ? 1 : -1); return; }
