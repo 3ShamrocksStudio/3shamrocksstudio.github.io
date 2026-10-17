@@ -5013,8 +5013,16 @@ const madeList = () => store.get("lp:made") || [];
 const RANKS = [[0, "Garage", "Save your first video"], [1, "Open mic", "Save 4 videos"], [4, "Session player", "Save 10 videos"], [10, "Headliner", "Save 25 videos"], [25, "Legend", "You made it"]];
 const isoWeek = (d = new Date()) => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())), day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y = t.getUTCFullYear(); return `${y}-${String(Math.ceil(((t - Date.UTC(y, 0, 1)) / 864e5 + 1) / 7)).padStart(2, "0")}`; };
 const prevWeek = w => { const [y, n] = w.split("-").map(Number); const d = new Date(Date.UTC(y, 0, 4 + (n - 1) * 7 - 7)); return isoWeek(new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())); };
-const jamLog = () => Object.assign({ weeks: [], saves: 0, done: {}, best: 0 }, store.get("lp:jams") || {});
-function streakOf(L) { const set = new Set(L.weeks); let w = isoWeek(); if (!set.has(w)) w = prevWeek(w); let n = 0; while (set.has(w)) { n++; w = prevWeek(w); } return n; }
+// Spare Strings: freezes for the weekly streak. Start with 2, +1 every 5 weeks (max 3), spent by themselves on a missed week
+const jamLog = () => { const L = Object.assign({ weeks: [], saves: 0, done: {}, best: 0, spare: 2, used: [] }, store.get("lp:jams") || {}); if (spareFill(L)) store.set("lp:jams", L); return L; };
+function spareFill(L) {
+  if (!L.weeks.length || !(L.spare > 0)) return 0;
+  const have = new Set([...L.weeks, ...L.used]), gap = []; let w = prevWeek(isoWeek());
+  while (!have.has(w) && gap.length <= 3) { gap.push(w); w = prevWeek(w); }
+  if (!gap.length || !have.has(w) || gap.length > L.spare) return 0;
+  L.used = [...L.used, ...gap].slice(-30); L.spare -= gap.length; L.justUsed = gap.length; return gap.length;
+}
+function streakOf(L) { const set = new Set(L.weeks), used = new Set(L.used || []); let w = isoWeek(); if (!set.has(w)) w = prevWeek(w); let n = 0; while (set.has(w) || used.has(w)) { if (set.has(w)) n++; w = prevWeek(w); } return n; }
 const rankOf = n => { let r = RANKS[0], i = 0; RANKS.forEach((x, k) => { if (n >= x[0]) { r = x; i = k; } }); return { name: r[1], i, next: RANKS[i + 1] || null }; };
 // one challenge a week, the same for every player that week; each one teaches a part of LickPick
 const CHALLENGES = [
@@ -5032,8 +5040,10 @@ function logSave(c) {
   const L = jamLog(), w = isoWeek(), before = { streak: streakOf(L), rank: rankOf(L.saves).i };
   if (!L.weeks.includes(w)) L.weeks.push(w); L.weeks = L.weeks.slice(-60); L.saves++;
   const ch = weekChallenge(); let won = false; if (c && !L.done[ch.w]) { try { if (ch.c[2](c)) { L.done[ch.w] = ch.i; won = true; } } catch { } }
-  const now = { streak: streakOf(L), rank: rankOf(L.saves).i }; L.best = Math.max(L.best || 0, now.streak); store.set("lp:jams", L);
-  return { L, won, ch, newWeek: now.streak > before.streak, rankUp: now.rank > before.rank };
+  const now = { streak: streakOf(L), rank: rankOf(L.saves).i }; L.best = Math.max(L.best || 0, now.streak);
+  const spare = now.streak > before.streak && now.streak % 5 === 0 && L.spare < 3; if (spare) L.spare++;
+  store.set("lp:jams", L);
+  return { L, won, ch, spare, newWeek: now.streak > before.streak, rankUp: now.rank > before.rank };
 }
 // a weekly reminder in the player's own calendar: an .ics file, no notifications permission, no server
 function remindIcs() {
@@ -5068,7 +5078,7 @@ function afterSave(c) {
   const big = L.saves === 1 || r.rankUp || r.newWeek || r.won; if (!big) return;
   const el = $("#winSheet"); if (!el) return;
   $("#winBody").innerHTML = `${stk(r.won ? "i-star" : "i-bolt", r.won ? "volt" : "hot", "r2")}<h2>${r.rankUp ? `You're a ${esc(rk.name)}` : r.won ? `Challenge done: ${esc(r.ch.c[0])}` : st > 1 ? `${st} weeks in a row` : "First one saved"}</h2>
-    <p>${r.rankUp && rk.next ? `${esc(RANKS[rk.i][2])} to reach ${esc(rk.next[1])}.` : st > 1 ? "Keep it going: one jam a week." : "Come back with your next jam. One a week keeps your streak."}</p>
+    <p>${r.rankUp && rk.next ? `${esc(RANKS[rk.i][2])} to reach ${esc(rk.next[1])}.` : st > 1 ? `Keep it going: one jam a week.${r.spare ? " +1 Spare String." : ""}` : "Come back with your next jam. One a week keeps your streak."}</p>
     <div class="winrow"><span><b>${L.saves}</b>saved</span><span><b>${st}</b>week streak</span><span><b>${esc(rk.name)}</b>stage</span></div>
     <div class="row-btns">${c?.raw?.chromaQ && pickOf(c) && !layersOf(c).length ? `<button class="btn" type="button" data-act="rec-from-save">${icon("i-rec")}Play along with it</button>` : store.get("lp:remind") ? "" : `<button class="btn" type="button" data-act="wk-remind">${icon("i-clock")}Remind me weekly</button>`}${installPrompt ? `<button class="btn ghost" type="button" data-act="install">${icon("i-install")}Install</button>` : ""}${!isPro() && L.saves <= 3 ? `<button class="btn ghost" type="button" data-act="pro-open">${icon("i-bolt")}No mark · Pro</button>` : `<button class="btn ghost" type="button" onclick="shareApp()">${icon("i-share")}Share app</button>`}<button class="btn ghost" type="button" data-act="win-close">Nice</button></div>`;
   setTimeout(() => { el.hidden = false; }, 900);
@@ -5383,14 +5393,15 @@ function renderTop() {
     fl.innerHTML = `<i class="fmark f-${state.filter}" style="--i:${ki}" aria-hidden="true"></i>` + F.map(([k, l, n]) => `<button type="button" role="radio" class="fchip f-${k}" data-filter="${k}" aria-checked="${state.filter === k}" ${n || k === "all" ? "" : "disabled"}>${l}<b>${n}</b></button>`).join(""); }
   const done = real.filter(c => c.status === "done"), withPick = done.filter(c => c.file && pickOf(c));
   const ready = done.filter(c => c.file && verdict(c) !== "trash" && !c.pickSaved && pickOf(c)).length, rev = done.filter(c => c.file && verdict(c) === "review").length;
-  const L = jamLog(), st = streakOf(L), rk = rankOf(L.saves);
+  const L = jamLog(), st = streakOf(L), rk = rankOf(L.saves), dow = new Date().getDay(), closing = st && !L.weeks.includes(isoWeek()) && (dow >= 4 || dow === 0);
+  if (L.justUsed && !renderTop.spareT) renderTop.spareT = setTimeout(() => { renderTop.spareT = 0; if ($("#signgate")?.hidden === false) return; const J = jamLog(), n = J.justUsed; if (!n) return; delete J.justUsed; store.set("lp:jams", J); store.set("lp:nudge", new Date().toDateString()); toast(`Missed ${n > 1 ? `${n} weeks` : "a week"}? A Spare String kept your ${streakOf(J)}-week streak.`); }, 1500);
   const hero = counts.busy && !done.length ? `<div class="hero-act quiet working"><span class="pulse"></span><span><strong>Listening to ${counts.busy} take${counts.busy > 1 ? "s" : ""}…</strong><em>Keep LickPick open. About a minute each.</em></span></div>`
     : rev ? `<button class="hero-act" type="button" data-act="quicksort"><b class="hnum">${rev}</b><span><strong>need${rev > 1 ? "" : "s"} your ears</strong><em>Listen, then keep or trash. One tap each.</em></span>${icon("i-ear")}</button>`
     : ready ? `<button class="hero-act" type="button" data-act="wk-ready"><b class="hnum">${ready}</b><span><strong>Pick${ready > 1 ? "s" : ""} ready to save</strong><em>Your best take${ready > 1 ? "s" : ""}, cut on the bar. Tap to hear ${ready > 1 ? "them" : "it"}.</em></span>${icon("i-star")}</button>`
     : withPick.length ? `<button class="hero-act quiet" type="button" data-act="reel">${icon("i-play")}<span><strong>Play my picks</strong><em>${withPick.length} lick${withPick.length === 1 ? "" : "s"}, back to back</em></span></button>`
     : `<button class="hero-act quiet" type="button" data-act="gallery">${icon("i-film")}<span><strong>Add a jam</strong><em>From your gallery or camera.</em></span></button>`;
   $("#top").innerHTML = `${testerCard()}${hero}
-    <div class="hstrip"><button type="button" class="hs" data-act="wk-info">${st ? `${st}-week streak` : "Start a streak"}<i>·</i>${esc(rk.name)}</button>${counts.busy && done.length ? `<span class="hs busy"><span class="pulse"></span>${counts.busy} listening</span>` : ""}${ready > 1 ? `<button type="button" class="hs" data-act="save-picks">Save all ${ready}${isPro() ? "" : ` <i class="protag">PRO</i>`}</button>` : ""}</div>`;
+    <div class="hstrip"><button type="button" class="hs" data-act="wk-info">${st ? `${st}-week streak` : "Start a streak"}<i>·</i>${esc(rk.name)}</button>${closing ? `<span class="hs">${dow === 0 ? "Week closes tonight" : "Week closes Sunday"} · 1 jam keeps it</span>` : ""}${counts.busy && done.length ? `<span class="hs busy"><span class="pulse"></span>${counts.busy} listening</span>` : ""}${ready > 1 ? `<button type="button" class="hs" data-act="save-picks">Save all ${ready}${isPro() ? "" : ` <i class="protag">PRO</i>`}</button>` : ""}</div>`;
   $("#sortCta").innerHTML = "";
   renderQuickbar();
 }
@@ -7882,7 +7893,7 @@ document.addEventListener("click", e => {
   if (d.playI) { const k = d.playI, i = profile.plays.indexOf(k); if (i >= 0) profile.plays.splice(i, 1); else profile.plays.push(k); t.setAttribute("aria-pressed", String(i < 0)); return; }
   if (d.act === "hero-play") { const b = $("#sStage .pb-play") || $(".pb-play"); try { $("#studio").scrollTo({ top: 0, behavior: "smooth" }); } catch { } b?.click(); return; }
   if (d.act === "wk-info") { const L = jamLog(), st = streakOf(L), r = rankOf(L.saves), ch = weekChallenge(), chDone = L.done[ch.w] != null;
-    $("#winBody").innerHTML = `${stk("i-bolt", st ? "hot" : "volt", "r2")}<h2>${st ? `${st}-week streak` : "Start a streak"}</h2><p>Save one video a week to keep it going.</p>
+    $("#winBody").innerHTML = `${stk("i-bolt", st ? "hot" : "volt", "r2")}<h2>${st ? `${st}-week streak` : "Start a streak"}</h2><p>Save one video a week to keep it going. ${L.spare > 0 ? `${L.spare} Spare String${L.spare > 1 ? "s" : ""} cover${L.spare > 1 ? "" : "s"} a missed week.` : "No Spare Strings left. You earn one every 5 weeks."}</p>
       <div class="winrow"><span><b>${L.saves}</b>saved</span><span><b>${st}</b>weeks</span><span><b>${esc(r.name)}</b>stage</span></div>
       <div class="wkch${chDone ? " done" : ""}"><span class="wkl">This week</span><b>${esc(ch.c[0])}</b><em>${chDone ? "Done. Nice." : esc(ch.c[1])}</em></div>
       <div class="row-btns">${store.get("lp:remind") ? "" : `<button class="btn" type="button" data-act="wk-remind">${icon("i-clock")}Remind me weekly</button>`}<button class="btn ghost" type="button" data-act="win-close">Close</button></div>`;
@@ -8114,7 +8125,7 @@ document.addEventListener("input", e => {
 $("#proSheet").addEventListener("click", e => { if (e.target.id === "proSheet") $("#proSheet").hidden = true; });
 $("#winSheet").addEventListener("click", e => { if (e.target.id === "winSheet") $("#winSheet").hidden = true; });
 // a streak at risk: from Thursday, a quiet reminder that one jam this week keeps it (once a day at most)
-setTimeout(() => { try { const L = jamLog(), st = streakOf(L), wd = new Date().getDay(); if (st > 0 && !L.weeks.includes(isoWeek()) && (wd >= 4 || wd === 0) && store.get("lp:nudge") !== new Date().toDateString()) { store.set("lp:nudge", new Date().toDateString()); toast(`Your ${st}-week streak ends Sunday. One jam keeps it.`, { icon: "i-rec", label: "Record", run: () => openPicker($("#rec")) }); } } catch { } }, 2500);
+setTimeout(() => { try { const L = jamLog(), st = streakOf(L), wd = new Date().getDay(); if (st > 0 && !L.weeks.includes(isoWeek()) && (wd >= 4 || wd === 0) && store.get("lp:nudge") !== new Date().toDateString()) { store.set("lp:nudge", new Date().toDateString()); toast(`Your week closes Sunday. One jam keeps your ${st}-week streak.`, { icon: "i-rec", label: "Record", run: () => openPicker($("#rec")) }); } } catch { } }, 2500);
 $("#exportSheet").addEventListener("click", e => { if (e.target.id === "exportSheet") $("#exportSheet").hidden = true; });
 $("#rowSheet").addEventListener("click", e => { if (e.target.id === "rowSheet") $("#rowSheet").hidden = true; });
 $("#addSheet").addEventListener("click", e => { if (e.target.id === "addSheet") $("#addSheet").hidden = true; });
