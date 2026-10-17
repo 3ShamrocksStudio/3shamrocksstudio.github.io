@@ -5402,7 +5402,7 @@ function renderTop() {
     fl.innerHTML = `<i class="fmark f-${state.filter}" style="--i:${ki}" aria-hidden="true"></i>` + F.map(([k, l, n]) => `<button type="button" role="radio" class="fchip f-${k}" data-filter="${k}" aria-checked="${state.filter === k}" ${n || k === "all" ? "" : "disabled"}>${l}<b>${n}</b></button>`).join(""); }
   const done = real.filter(c => c.status === "done"), withPick = done.filter(c => c.file && pickOf(c));
   const ready = done.filter(c => c.file && verdict(c) !== "trash" && !c.pickSaved && pickOf(c)).length, rev = done.filter(c => c.file && verdict(c) === "review").length;
-  const L = jamLog(), st = streakOf(L), rk = rankOf(L.saves), dow = new Date().getDay(), closing = st && !L.weeks.includes(isoWeek()) && (dow >= 4 || dow === 0);
+  const L = jamLog(), st = streakOf(L), rk = rankOf(L.saves), dow = new Date().getDay(), closing = st && !L.weeks.includes(isoWeek()) && (dow >= 4 || dow === 0), po = poLog(), today = dayKey();
   if (L.justUsed && !renderTop.spareT) renderTop.spareT = setTimeout(() => { renderTop.spareT = 0; if ($("#signgate")?.hidden === false) return; const J = jamLog(), n = J.justUsed; if (!n) return; delete J.justUsed; store.set("lp:jams", J); store.set("lp:nudge", new Date().toDateString()); toast(`Missed ${n > 1 ? `${n} weeks` : "a week"}? A Spare String kept your ${streakOf(J)}-week streak.`); }, 1500);
   const hero = counts.busy && !done.length ? `<div class="hero-act quiet working"><span class="pulse"></span><span><strong>Listening to ${counts.busy} take${counts.busy > 1 ? "s" : ""}…</strong><em>Keep LickPick open. About a minute each.</em></span></div>`
     : rev ? `<button class="hero-act" type="button" data-act="quicksort"><b class="hnum">${rev}</b><span><strong>need${rev > 1 ? "" : "s"} your ears</strong><em>Listen, then keep or trash. One tap each.</em></span>${icon("i-ear")}</button>`
@@ -5410,7 +5410,7 @@ function renderTop() {
     : withPick.length ? `<button class="hero-act quiet" type="button" data-act="reel">${icon("i-play")}<span><strong>Play my picks</strong><em>${withPick.length} lick${withPick.length === 1 ? "" : "s"}, back to back</em></span></button>`
     : `<button class="hero-act quiet" type="button" data-act="gallery">${icon("i-film")}<span><strong>Add a jam</strong><em>From your gallery or camera.</em></span></button>`;
   $("#top").innerHTML = `${testerCard()}${hero}
-    <div class="hstrip"><button type="button" class="hs" data-act="wk-info">${st ? `${st}-week streak` : "Start a streak"}<i>·</i>${esc(rk.name)}</button>${!poLog().days.includes(dayKey()) && poPair() ? `<button type="button" class="hs" data-act="pickoff">Pick-off<i>·</i>30s</button>` : ""}${closing ? `<span class="hs">${dow === 0 ? "Week closes tonight" : "Week closes Sunday"} · 1 jam keeps it</span>` : ""}${counts.busy && done.length ? `<span class="hs busy"><span class="pulse"></span>${counts.busy} listening</span>` : ""}${ready > 1 ? `<button type="button" class="hs" data-act="save-picks">Save all ${ready}${isPro() ? "" : ` <i class="protag">PRO</i>`}</button>` : ""}</div>`;
+    <div class="hstrip"><button type="button" class="hs" data-act="wk-info">${st ? `${st}-week streak` : "Start a streak"}<i>·</i>${esc(rk.name)}</button>${po.win?.day !== today && poPair() ? `<button type="button" class="hs" data-act="pickoff">Pick-off<i>·</i>30s</button>` : !(po.shed || []).includes(today) && shedTarget() ? `<button type="button" class="hs" data-act="shed">Woodshed<i>·</i>2 min</button>` : ""}${closing ? `<span class="hs">${dow === 0 ? "Week closes tonight" : "Week closes Sunday"} · 1 jam keeps it</span>` : ""}${counts.busy && done.length ? `<span class="hs busy"><span class="pulse"></span>${counts.busy} listening</span>` : ""}${ready > 1 ? `<button type="button" class="hs" data-act="save-picks">Save all ${ready}${isPro() ? "" : ` <i class="protag">PRO</i>`}</button>` : ""}</div>`;
   $("#sortCta").innerHTML = "";
   renderQuickbar();
 }
@@ -5850,7 +5850,7 @@ function renderPo() {
     <p class="po-q">What made ${"AB"[P.chosen]} better? <span>Optional</span></p>
     <span class="seg wide" role="group" aria-label="Why it won">${PO_WHY.map(([w]) => `<button type="button" data-po-why="${w}" aria-pressed="${P.why === w}">${w}</button>`).join("")}</span>
     <p class="hint">A: ${esc(P.pair[0].c.name)} · B: ${esc(P.pair[1].c.name)}<br>${wd} Pick-off day${wd === 1 ? "" : "s"} this week${wd < 5 ? " · 5 earn a Spare String" : ""}</p>
-    <div class="row-btns"><button class="btn ghost" type="button" data-act="sorter-close">Done</button></div>`;
+    <div class="row-btns"><button class="btn" type="button" data-act="shed">${icon("i-loop")}Woodshed · 2 min</button><button class="btn ghost" type="button" data-act="sorter-close">Done</button></div>`;
 }
 function poChoose(k) {
   const P = qs.po; if (!P || P.chosen != null) return;
@@ -5861,10 +5861,42 @@ function poChoose(k) {
   const L = poLog(), day = dayKey(); L.n++; L.total++; if (k === P.model) L.agree++;
   if (!L.days.includes(day)) L.days = [...L.days, day].slice(-60);
   L.win = { day, key: W.c.key, s: W.p.s, e: W.p.e };
-  const w = isoWeek(); let earned = false;
-  if (poWeekDays(L) >= 5 && !L.spareW.includes(w)) { L.spareW = [...L.spareW, w].slice(-10); const J = jamLog(); if (J.spare < 3) { J.spare++; store.set("lp:jams", J); earned = true; } }
-  store.set("lp:pickoff", L); renderPo();
+  const earned = poEarn(L); store.set("lp:pickoff", L); renderPo();
   if (earned) toast("5 Pick-off days this week. +1 Spare String.");
+}
+function poEarn(L) { const w = isoWeek(); if (poWeekDays(L) < 5 || L.spareW.includes(w)) return false; L.spareW = [...L.spareW, w].slice(-10); const J = jamLog(); if (J.spare >= 3) return false; J.spare++; store.set("lp:jams", J); return true; }
+// ---------- Woodshed: today's Pick (the Pick-off winner, else your newest Pick) looped at 3/4 speed for 2 minutes of playing
+let shed = null;
+function shedTarget() {
+  const W = poLog().win; let c = W?.day === dayKey() ? state.clips.find(x => x.key === W.key && x.file && x.status === "done") : null;
+  if (c) return { c, s: W.s, e: W.e };
+  c = state.clips.find(x => !x.example && x.status === "done" && x.file && pickOf(x)); const p = c && pickOf(c);
+  return p ? { c, s: p.s, e: p.e } : null;
+}
+function openShed() {
+  const T = shedTarget(); if (!T) { toast("Add a jam first."); return; }
+  if (!$("#sorter").hidden) closeQuickSort(false);
+  openStudio(T.c); if (!player || cur() !== T.c) return;
+  stopShed(false); shed = { c: T.c, left: 120, prev: Seg.rate, iv: 0 };
+  player.loop = true; player.host.querySelector(".pb-loop")?.setAttribute("aria-pressed", "true"); Seg.rate = 0.75; player.applyRate();
+  playRanges(T.c, [[T.s, T.e]], "Woodshed"); player.chipText = "2:00 left · ¾×"; player.ui();
+  shed.iv = setInterval(shedTick, 1000);
+  toast("Woodshed: today's Pick on loop at ¾ speed. Play along for 2 minutes.");
+}
+function shedTick() {
+  if (!shed) return; if (!player || cur() !== shed.c || player.label !== "Woodshed") return stopShed(false);
+  if (!player.v.paused) shed.left--;
+  player.chipText = `${fmt(shed.left)} left · ¾×`; player.ui();
+  if (shed.left <= 0) stopShed(true);
+}
+function stopShed(done) {
+  if (!shed) return; clearInterval(shed.iv); const S = shed; shed = null; Seg.rate = S.prev;
+  if (player) { player.loop = false; player.host.querySelector(".pb-loop")?.setAttribute("aria-pressed", "false"); player.applyRate(); }
+  if (!done) return;
+  player?.pause(); if (player) { player.chipText = "2 min done"; player.ui(); }
+  const L = poLog(), day = dayKey(); L.shed = [...(L.shed || []).filter(d => d !== day), day].slice(-60); if (!L.days.includes(day)) L.days = [...L.days, day].slice(-60);
+  const earned = poEarn(L); store.set("lp:pickoff", L);
+  toast(earned ? "2 minutes in the shed. 5 days this week: +1 Spare String." : "2 minutes in the shed. Nice work.");
 }
 function poWhy(w) {
   const P = qs.po; if (!P || P.chosen == null) return; const f = x => PO_WHY.find(z => z[0] === x)?.[1];
@@ -5912,6 +5944,7 @@ function openStudio(c, keep) {
 // load the current pick into the player (not playing yet), so the first thing on screen is the pick
 function showPick(c) { if (!player) return; const S = srcOf(c); if (S) player.set(S.ranges, S.label, `${fmt(S.len)} · tap for full take`); else player.set(null, "Full take", fmt(c.raw?.duration || 0)); }
 function closeStudio() {
+  stopShed(false);
   { const c0 = cur(); if (c0) { c0._tv = null; c0._tFrozen = null; } if (c0?._retaste) { c0._retaste = false; redecide(c0); persist(c0); } }   // new cut rules apply once you leave, so nothing moves under your finger
   stopBand(); stopAudio(); stopAt = null; queue = []; unfloat(); playMark = null;
   player?.destroy(); player = null; video = null;
@@ -7988,6 +8021,7 @@ document.addEventListener("click", e => {
   if (d.act === "intro-next") { if (slide < SLIDES.length - 1) { slide++; renderIntro(); } else closeIntro(); return; }
   if (d.act === "quicksort") { openQuickSort(); return; }
   if (d.act === "pickoff") { openPickoff(); return; }
+  if (d.act === "shed") { openShed(); return; }
   if (d.poHear != null) { poHear(+d.poHear, false); return; }
   if (d.poPick != null) { poChoose(+d.poPick); return; }
   if (d.poWhy) { poWhy(d.poWhy); return; }
