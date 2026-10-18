@@ -1796,6 +1796,8 @@ details.fold>summary b{color:var(--text)}
       <button class="mrow" type="button" data-act="tips-open"><i class="stk s-hot r2" aria-hidden="true"><svg class="i"><use href="#i-rec"/></svg></i><span><b>Recording tips</b><em>Get the best Pick, plus the limits</em></span><span class="chev">›</span></button>
       <button class="mrow" type="button" data-act="fb-open"><i class="stk s-volt" aria-hidden="true"><svg class="i"><use href="#i-share"/></svg></i><span><b>Send feedback</b><em>3 quick questions, sent your way</em></span><span class="chev">›</span></button>
       <a class="mrow" href="mailto:lickpick.app@gmail.com?subject=LickPick%20help"><i class="stk s-cyan r2" aria-hidden="true"><svg class="i"><use href="#i-help"/></svg></i><span><b>Help & contact</b><em>lickpick.app@gmail.com</em></span><span class="chev">›</span></a>
+      <a class="mrow" href="../privacy.html" target="_blank" rel="noopener"><i class="stk s-cyan" aria-hidden="true"><svg class="i"><use href="#i-lock"/></svg></i><span><b>Privacy policy</b><em>What stays on your phone, what doesn't</em></span><span class="chev">›</span></a>
+      <div id="menuAcct" style="display:contents"></div>
       <button class="mrow" type="button" data-act="report-open"><i class="stk s-blaze" aria-hidden="true"><svg class="i"><use href="#i-copy"/></svg></i><span><b>Test report</b><em>Copy what happened, to share with us</em></span><span class="chev">›</span></button>
       <button class="mrow pro" type="button" data-act="pro-open"><i class="stk s-hot r2" aria-hidden="true"><svg class="i"><use href="#i-bolt"/></svg></i><span><b id="menuPro">Pro</b><em id="menuProSub">No mark, band export, captions</em></span><span class="chev">›</span></button>
       <button class="mrow" type="button" id="installBtn" data-act="install" hidden><i class="stk s-cyan" aria-hidden="true"><svg class="i"><use href="#i-install"/></svg></i><span><b>Install app</b><em>Home screen, works offline</em></span><span class="chev">›</span></button>
@@ -4455,6 +4457,17 @@ Return only JSON: {"style": string, "drums": boolean, "bass": boolean, "keys": b
     S.busy = false; emit();
   }
   async function signOut() { try { const { auth, au } = await load(); await auth.signOut(au); } catch { } S.user = null; emit(); }
+  // delete the account: the cloud copy (Firestore users/{uid}) first, then the sign-in itself. Google may ask to sign in
+  // again first (a security rule for old sign-ins). Videos and this phone's copy are not touched.
+  async function deleteAccount() {
+    const { auth, au, fs, db } = await load(); const u = au.currentUser; if (!u) throw new Error("not signed in");
+    clearTimeout(pushT); pending = {};
+    const gone = async () => { await fs.deleteDoc(fs.doc(db, "users", u.uid)); await auth.deleteUser(u); };
+    try { await gone(); }
+    catch (e) { if (!/recent-login/i.test(String(e?.code || e))) throw e; await auth.reauthenticateWithPopup(u, new auth.GoogleAuthProvider()); await gone(); }
+    try { localStorage.removeItem("lp:syncAt"); } catch { }
+    S.user = null; S.last = 0; emit();
+  }
   // the user's doc: one object per key, each with the time it was last changed on any device
   function local() { const o = {}; for (const k of KEYS) { const v = store.get(k); if (v != null) o[k] = v; } return o; }
   async function pull() {
@@ -4478,7 +4491,7 @@ Return only JSON: {"style": string, "drums": boolean, "bass": boolean, "keys": b
   }
   // call after any local change to a synced key; batched
   function changed(k) { if (!KEYS.includes(k) || !S.user) return; pending[k] = store.get(k); clearTimeout(pushT); pushT = setTimeout(() => { const o = pending; pending = {}; push(o).catch(() => { }); }, 1500); }
-  root.LickSync = { enabled: !!CFG, state: S, load, signIn, signOut, pull, changed, on: f => S.listeners.add(f), KEYS };
+  root.LickSync = { enabled: !!CFG, state: S, load, signIn, signOut, deleteAccount, pull, changed, on: f => S.listeners.add(f), KEYS };
   if (CFG && (store.get("lp:profile")?.signedIn)) load().catch(() => { });
 })(typeof window !== "undefined" ? window : globalThis);
 
@@ -5707,7 +5720,33 @@ function accountCard() {
   if (u) return `<div class="acct on">${u.photo ? `<img class="avatar" src="${esc(u.photo)}" alt="">` : icon("i-check")}<span class="grow"><b>${esc(u.name || u.email)}</b><em>${st.last ? `Synced ${new Date(st.last).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}` : "Signed in"} · profile, streak, taste and projects. Videos stay on this phone.</em></span><button class="btn ghost sm" type="button" data-act="acct-out">Sign out</button></div>`;
   return `<div class="acct"><span class="grow"><b>Keep it on every phone</b><em>${st?.err ? esc(st.err) + " " : ""}Profile, streak, taste and projects. Your videos never leave this phone.</em></span><button class="btn sm" type="button" data-act="acct-in" ${st?.busy ? "disabled" : ""}>${icon("i-lock")}${st?.busy ? "Signing in…" : "Sign in with Google"}</button></div>`;
 }
-if (window.LickSync) { LickSync.on(() => { const _gate = document.getElementById("signgate"); if (_gate && !_gate.hidden && LickSync.state.user) { _gate.hidden = true; if (!profile.done && !store.get("ck:intro")) openOnboard(0); } if (!$("#onboard")?.hidden) renderOnboard(); const p = store.get("lp:profile"); if (p && !!p.signedIn !== !!LickSync.state.user) { p.signedIn = !!LickSync.state.user; store.set("lp:profile", p); } });
+// Menu: the account rows. Signed in: Sign out + Delete account (in the app). Otherwise: sign in, and how to delete by email.
+function renderMenuAcct() {
+  const box = $("#menuAcct"); if (!box) return;
+  const Y = window.LickSync, u = Y?.enabled && Y.state?.user, row = (attrs, ic, b, em) => `<${attrs.startsWith("href") ? "a" : "button type=\"button\""} class="mrow" ${attrs}><i class="stk s-cyan r2" aria-hidden="true">${icon(ic)}</i><span><b>${b}</b><em>${em}</em></span><span class="chev">›</span></${attrs.startsWith("href") ? "a" : "button"}>`;
+  box.innerHTML = (u ? row(`data-act="acct-out"`, "i-back", "Sign out", esc(u.email || u.name || "Your Google account"))
+    : Y?.enabled ? row(`data-act="acct-in"${Y.state?.busy ? " disabled" : ""}`, "i-lock", Y.state?.busy ? "Signing in…" : "Sign in with Google", Y.state?.err ? esc(Y.state.err) : "Keep your profile and streak on every phone") : "")
+    + (u ? row(`data-act="acct-del"`, "i-bin", "Delete account", "Remove your account and its cloud copy")
+      : row(`href="../delete-account.html" target="_blank" rel="noopener"`, "i-bin", "Delete account", "How to delete a LickPick account"));
+}
+function openDeleteAcct() {
+  const u = window.LickSync?.state?.user; if (!u) { renderMenuAcct(); return; }
+  $("#rules").hidden = true;
+  const sh = $("#proSheet"), h = sh.querySelector("h2"); h.className = ""; h.textContent = "Delete account";
+  $("#proBody").innerHTML = `<p class="hint">This deletes the LickPick account for <b>${esc(u.email || u.name)}</b>: your sign-in and the cloud copy of your profile, streak, taste and project settings. It can't be undone.</p>
+    <p class="hint">Your videos were never uploaded. They stay on this phone, and LickPick keeps working without an account.</p>
+    <div class="row-btns"><button class="btn" type="button" data-act="acct-del-go">${icon("i-bin")}Delete my account</button><button class="btn ghost" type="button" data-act="pro-close">Keep it</button></div>
+    <p class="hint">Or <a href="../delete-account.html" target="_blank" rel="noopener">ask us by email</a>.</p><div class="status" id="delStatus" role="status"></div>`;
+  sh.hidden = false;
+}
+async function deleteAcct(btn) {
+  const st = $("#delStatus");
+  if (btn.dataset.sure !== "1") { btn.dataset.sure = "1"; btn.lastChild.textContent = "Tap again to delete for good"; if (st) st.textContent = "Last check: this removes your account now."; return; }
+  btn.disabled = true; if (st) st.textContent = "Deleting…";
+  try { await window.LickSync.deleteAccount(); store.set("lp:guest", 1); $("#proSheet").hidden = true; renderMenuAcct(); toast("Account deleted. Your videos are still on this phone."); }
+  catch (e) { btn.disabled = false; btn.dataset.sure = ""; btn.lastChild.textContent = "Delete my account"; if (st) st.textContent = /network/i.test(String(e?.code || e)) ? "No connection. Try again when you're online." : /popup|cancel/i.test(String(e?.code || e)) ? "Google needs you to sign in again first. Try once more." : "Couldn't delete it here. Use \"ask us by email\" below and we'll do it."; }
+}
+if (window.LickSync) { LickSync.on(() => { renderMenuAcct(); const _gate = document.getElementById("signgate"); if (_gate && !_gate.hidden && LickSync.state.user) { _gate.hidden = true; if (!profile.done && !store.get("ck:intro")) openOnboard(0); } if (!$("#onboard")?.hidden) renderOnboard(); const p = store.get("lp:profile"); if (p && !!p.signedIn !== !!LickSync.state.user) { p.signedIn = !!LickSync.state.user; store.set("lp:profile", p); } });
   window.addEventListener("lp:synced", e => { if (e.detail.includes("lp:profile")) Object.assign(profile, store.get("lp:profile") || {}); if (e.detail.includes("lp:taste")) Object.assign(taste, store.get("lp:taste") || {}); renderTop(); renderMade?.(); renderNavBadge?.(); if (!$("#onboard")?.hidden) renderOnboard(); toast("Updated from your account."); }); }
 function renderOnboard() {
   const step = OB[ob], B = $("#obBody"), next = $("#obNext"), ctas = $("#obCtas");
@@ -8051,6 +8090,8 @@ document.addEventListener("click", e => {
   // global actions (account, Rec room, closing sheets) work with or without a take open: keep them above the take guard
   if (d.act === "acct-in") { window.LickSync?.signIn(); return; }
   if (d.act === "acct-out") { window.LickSync?.signOut(); return; }
+  if (d.act === "acct-del") { openDeleteAcct(); return; }
+  if (d.act === "acct-del-go") { deleteAcct(t); return; }
   if (d.act === "rec-close") { recClose(); return; }
   if (d.act === "rec-start") { recStart(); return; }
   if (d.act === "rec-stop") { recStop(); return; }
@@ -8269,6 +8310,7 @@ window.addEventListener("popstate", e => {
 });
 document.addEventListener("keydown", e => { if (e.key === "Escape") { if (state.sel) setSelect(false); else closeTop(); } });
 function syncRules() {
+  renderMenuAcct();
   $("#minVal").textContent = state.minKeep + "s";
   document.querySelectorAll("#picky button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.picky === state.strictness)));
   store.set("ck:settings", { minKeep: state.minKeep, strictness: state.strictness, pickLen: state.pickLen });
