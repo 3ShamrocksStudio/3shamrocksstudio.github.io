@@ -8048,6 +8048,18 @@ document.addEventListener("click", e => {
   if (d.act === "rules-done") { $("#rules").hidden = true; return; }
   if (d.act === "min-" || d.act === "min+") { state.minKeep = Math.min(300, Math.max(15, state.minKeep + (d.act === "min+" ? 5 : -5))); syncRules(); render(); if (state.openId) renderStudio(); return; }
   if (d.picky) { state.strictness = +d.picky; syncRules(); state.clips.forEach(c => { redecide(c); persist(c); }); render(); return; }
+  // global actions (account, Rec room, closing sheets) work with or without a take open: keep them above the take guard
+  if (d.act === "acct-in") { window.LickSync?.signIn(); return; }
+  if (d.act === "acct-out") { window.LickSync?.signOut(); return; }
+  if (d.act === "rec-close") { recClose(); return; }
+  if (d.act === "rec-start") { recStart(); return; }
+  if (d.act === "rec-stop") { recStop(); return; }
+  if (d.act === "rec-again") { recAgain(); return; }
+  if (d.act === "rec-keep") { recKeep(); return; }
+  if (d.act === "rec-flip") { recFlip(); return; }
+  if (d.act === "rec-phones") { REC.phones = !REC.phones; store.set("lp:phones", REC.phones ? 1 : 0); recRender(); return; }
+  if (d.act === "rec-from-save") { $("#winSheet").hidden = true; $("#exportSheet").hidden = true; const c = cur(); if (c) { state.step = "band"; (state.folds ||= new Set()).add("layers"); renderStudio(); recOpen(c); } return; }
+  if (d.act === "export-close") { $("#exportSheet").hidden = true; return; }
   const c = cur(); if (!c) return;
   if (d.act === "close") return closeStudio();
   if (d.act === "tips") { const on = !$("#studio").classList.contains("tips"); $("#studio").classList.toggle("tips", on); t.setAttribute("aria-pressed", on); store.set("lp:tips", on ? 1 : 0); return; }
@@ -8120,7 +8132,6 @@ document.addEventListener("click", e => {
   if (d.act === "mix-play") { const segs = mixSegs(c); if (segs.length > 1) playRanges(c, segs.map(g => [g.s, g.e]), "Mix"); return; }
   if (d.act === "mix-save") { c.src = "mix"; openExport(c); return; }
   if (d.act === "pick-save" || d.act === "export-open") { openExport(c); return; }
-  if (d.act === "export-close") { $("#exportSheet").hidden = true; return; }
   if (d.act === "export-go") return doExport(c);
   if (d.plat) { const o = exOpts(c), P = PLATS.find(p => p[0] === d.plat); o.plat = d.plat; if (P) o.fmt = o.canV || P[2] === "original" ? P[2] : "original"; renderExport(c); return; }
   if (d.lenfit) { const L = +d.lenfit; state.pickLen = L; c.pickSel = 0; c.src = "pick"; syncRules(); render(); renderStudio(); showPick(c); const iv = setInterval(() => { if (!c._pickJob && pickOf(c)) { clearInterval(iv); renderExport(c); renderSrc(c); toast(`Picks are now ${L} s. Change it any time under Pick length.`); } }, 150); setTimeout(() => clearInterval(iv), 15000); return; }
@@ -8193,17 +8204,7 @@ document.addEventListener("click", e => {
   }
   if (d.act === "layer-add") { c.layerAdd = true; renderStudio(); return; }
   if (d.act === "layer-gallery") { if (!pickOf(c)) { toast("Layers line up with a Pick. Choose one first."); return; } state.layerFor = c.key; openPicker($("#pick")); return; }
-  if (d.act === "acct-in") { window.LickSync?.signIn(); return; }
-  if (d.act === "acct-out") { window.LickSync?.signOut(); return; }
   if (d.act === "rec-open") { recOpen(c); return; }
-  if (d.act === "rec-from-save") { $("#winSheet").hidden = true; $("#exportSheet").hidden = true; if (c) { state.step = "band"; (state.folds ||= new Set()).add("layers"); renderStudio(); recOpen(c); } return; }
-  if (d.act === "rec-close") { recClose(); return; }
-  if (d.act === "rec-start") { recStart(); return; }
-  if (d.act === "rec-stop") { recStop(); return; }
-  if (d.act === "rec-again") { recAgain(); return; }
-  if (d.act === "rec-keep") { recKeep(); return; }
-  if (d.act === "rec-flip") { recFlip(); return; }
-  if (d.act === "rec-phones") { REC.phones = !REC.phones; store.set("lp:phones", REC.phones ? 1 : 0); recRender(); return; }
   if (d.act === "layer-cancel") { c.layerAdd = false; renderStudio(); return; }
   if (d.ladd) { addLayer(c, d.ladd); return; }
   if (d.lnudge) { const [i, v] = d.lnudge.split(":"), L = layersOf(c)[+i]; if (!L) return; const was = bandPlaying; stopBand(); L.lStart = +(L.lStart + (v === "b" ? layerBeat(c) : v === "-b" ? -layerBeat(c) : +v)).toFixed(3); L.nudged = 1; persist(c); renderStudio(); if (was) bandPreview(c); return; }
