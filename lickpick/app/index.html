@@ -39,7 +39,7 @@ button,a.btn{font:inherit;color:inherit;cursor:pointer;text-decoration:none}
 .pickclip{clip-path:url(#pickClip)}
 /* the pick's offset shadow, always on (brand rule, same as the logo) */
 .pkw{display:inline-grid;flex:none;font-style:normal;filter:drop-shadow(var(--so,3px) var(--so,3px) 0 var(--sh,var(--hot)))}
-.sh-keep,.sh-review,.sh-thumb,.sh-play{--sh:var(--hot)} .sh-trash{--sh:var(--volt)} .sh-busy,.sh-off{--sh:var(--ink)}
+.sh-keep,.sh-review,.sh-thumb,.sh-play{--sh:var(--hot)} .sh-trash{--sh:var(--volt)} .sh-busy,.sh-bad,.sh-off{--sh:var(--ink)}
 .cp .pkw{--so:2px;vertical-align:-5px;margin-right:6px}
 .card>.pkw:last-child{--so:3px}
 
@@ -114,7 +114,7 @@ svg.i .d{fill:var(--ic2);stroke:none;transform:translate(1.6px,1.6px)}
 /* verdict stamp: a tilted pick in the verdict color */
 .stamp{display:inline-grid;place-items:center;width:24px;height:26px;background:var(--sc);transform:rotate(-8deg);flex:none;padding-bottom:4px;vertical-align:middle}
 .stamp svg.i{width:58%;height:58%;color:var(--ink);--ic2:transparent;stroke-width:3.2}
-.stamp.keep{--sc:var(--keep)} .stamp.review{--sc:var(--review)} .stamp.trash{--sc:var(--trash)} .stamp.busy{--sc:var(--line)}
+.stamp.keep{--sc:var(--keep)} .stamp.review{--sc:var(--review)} .stamp.trash{--sc:var(--trash)} .stamp.busy,.stamp.bad{--sc:var(--line)}
 .cp .stamp{width:18px;height:20px;margin-right:6px;vertical-align:-5px;padding-bottom:3px}
 
 /* cleanup */
@@ -4769,7 +4769,7 @@ const onParts = c => (c.parts || []).filter(p => p.on);
 const keptSeconds = c => onParts(c).reduce((s, p) => s + p.end - p.start, 0);
 const hasMusic = c => (c.raw?.musicalSeconds ?? 99) >= Math.min(8, Math.max(1.5, (c.raw?.duration || 0) * 0.5)) || c.parts.length > 0;
 function verdict(c) {
-  if (c.status === "error") return "review";
+  if (c.status === "error") return c.bad ? "bad" : "review";
   if (c.status !== "done") return "busy";
   if (c.override) return c.override;
   if (keptSeconds(c) >= state.minKeep) return "keep";
@@ -5239,6 +5239,7 @@ async function decodeAudioStream(file, onP) {
   const at = await stall(input.getPrimaryAudioTrack(), 8000);
   if (!at || !(await stall(at.canDecode(), 8000))) return null;
   const dur = await stall(at.computeDuration(), 8000), SR = 22050;
+  if (!(dur >= 1)) throw Object.assign(new Error("unreadable"), { code: "unreadable" });   // empty or broken: under a second of readable sound
   if (dur > LIMITS.maxSec) throw Object.assign(new Error("too long"), { code: "too_long" });
   if (dur < LIMITS.minSec) throw Object.assign(new Error("too short"), { code: "too_short" });
   const out = new Float32Array(Math.ceil(dur * SR) + SR);
@@ -5281,7 +5282,8 @@ async function pump() {
   busy = true; keepAwake(true); c.status = "listening"; c.phase = "listening"; c._t0 = performance.now(); renderCard(c); renderTop();
   try {
     let y = null, sr = 22050;
-    if (!streamBroken) try { const st = await decodeAudioStream(c.file, p => { c.progress = p * 0.25; renderCard(c); }); if (st) { y = st.data; sr = st.sampleRate; c.decoder = "stream"; } } catch (e) { y = null; if (e?.code === "too_long" || e?.code === "too_short") throw e; if (String(e).includes("stalled")) streamBroken = true; }
+    if (!c.file?.size) throw Object.assign(new Error("empty file"), { code: "unreadable" });
+    if (!streamBroken) try { const st = await decodeAudioStream(c.file, p => { c.progress = p * 0.25; renderCard(c); }); if (st) { y = st.data; sr = st.sampleRate; c.decoder = "stream"; } } catch (e) { y = null; if (e?.code === "too_long" || e?.code === "too_short" || e?.code === "unreadable") throw e; if (String(e).includes("stalled")) streamBroken = true; }
     if (!y) {
       // a file the phone can't decode must never block the clips behind it
       const audio = await within(decodeAudio(c.file), 45000 + c.size / 2e6 * 1000, "decode"); c.decoder = "full";
@@ -5289,7 +5291,7 @@ async function pump() {
       if (audio.numberOfChannels > 1) { const r = audio.getChannelData(1); const m = new Float32Array(y.length); for (let i = 0; i < y.length; i++) m[i] = (y[i] + r[i]) / 2; y = m; }
     }
     const base = c.decoder === "stream" ? 0.25 : 0;
-    { const d0 = y.length / sr; if (d0 > LIMITS.maxSec) throw Object.assign(new Error("too long"), { code: "too_long" }); if (d0 < LIMITS.minSec) throw Object.assign(new Error("too short"), { code: "too_short" }); }
+    { const d0 = y.length / sr; if (!(d0 >= 1)) throw Object.assign(new Error("unreadable"), { code: "unreadable" }); if (d0 > LIMITS.maxSec) throw Object.assign(new Error("too long"), { code: "too_long" }); if (d0 < LIMITS.minSec) throw Object.assign(new Error("too short"), { code: "too_short" }); }
     c.raw = await ClipEngine.analyzePCM(y, sr, p => { c.progress = base + p * (0.62 - base); renderCard(c); }, 150);
     delete c.raw._dbg;
     // the listening model's second opinion on the whole take (music / talking / silence / noise per half second)
@@ -5309,7 +5311,12 @@ async function pump() {
     redecide(c, true); c.status = "done"; keepVideo(c); c.scanMs = performance.now() - c._t0; diag.scans.push({ name: c.name, sec: Math.round(c.raw.duration), scan: +(c.scanMs / 1000).toFixed(1) }); persist(c); unpend(c);
   } catch (err) {
     { const j = keepJobs.get(c.key); keepJobs.delete(c.key); (j || Promise.resolve()).then(() => vault.del("v", c.key)); c.inLib = false; }   // a failed scan keeps no copy
-    diagLog("scan failed: " + c.name + " (" + String(err?.code || err?.message || err || "unreadable").slice(0, 80) + ")"); unpend(c); c.status = "error"; c.errorMsg = err?.code === "too_long" ? "Over 30 minutes. Trim it in your gallery, then add it again." : err?.code === "too_short" ? "Under 5 seconds. Too short to judge." : ""; c.error = err?.code === "too_long" ? "can't scan videos over 30 minutes" : err?.code === "too_short" ? "can't judge a clip under 5 seconds" : /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
+    diagLog("scan failed: " + c.name + " (" + String(err?.code || err?.message || err || "unreadable").slice(0, 80) + ")"); unpend(c);
+    // a file nothing can read (empty, damaged, not a video) is marked as such, not sent for review. A real video whose
+    // sound can't be read (no audio track) stays a "watch it yourself" review.
+    let bad = err?.code === "unreadable";
+    if (!bad && !["too_long", "too_short"].includes(err?.code) && !/memory|allocation|range/i.test(String(err))) { try { const M = await mb(), inp = new M.Input({ source: new M.BlobSource(c.file), formats: M.ALL_FORMATS }); bad = !(await within(inp.getPrimaryVideoTrack(), 5000, "probe")); } catch { bad = true; } }
+    c.bad = bad; c.status = "error"; c.errorMsg = bad ? "Can't read this file. It may be empty or damaged." : err?.code === "too_long" ? "Over 30 minutes. Trim it in your gallery, then add it again." : err?.code === "too_short" ? "Under 5 seconds. Too short to judge." : ""; c.error = err?.code === "too_long" ? "can't scan videos over 30 minutes" : err?.code === "too_short" ? "can't judge a clip under 5 seconds" : /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
   }
   busy = false; renderCard(c); renderTop(); renderBoxes(); if (state.openId === c.id) renderStudio(); pump();
 }
@@ -5372,8 +5379,8 @@ function report(c) {
 }
 
 // ---------- home screen
-const VICON = { keep: "i-check", review: "i-ear", trash: "i-bin", busy: "i-pick" };
-const VLABEL = { keep: "Keep", review: "Review", trash: "Trash", busy: "Working" };
+const VICON = { keep: "i-check", review: "i-ear", trash: "i-bin", busy: "i-pick", bad: "i-x" };
+const VLABEL = { keep: "Keep", review: "Review", trash: "Trash", busy: "Working", bad: "Can't read this file" };
 // Every pick shape carries its offset shadow, like the logo (wrapper: a clip-path would cut the shadow off)
 // 90s sticker icon: a tilted neon badge, thick ink outline, hard offset shadow
 const stk = (ic, c = "volt", tilt = "") => `<i class="stk s-${c}${tilt ? " " + tilt : ""}" aria-hidden="true">${icon(ic)}</i>`;
@@ -5382,6 +5389,7 @@ const stamp = v => `${pkw(`<i class="stamp ${v} pickclip" title="${VLABEL[v]}">$
 function phrase(c) {
   if (c.status === "queued") return `<b>Waiting</b>${fmtSize(c.size)}`;
   if (c.status === "listening") return `<b>${c.phase === "watching" ? "Watching" : "Listening"}</b>${Math.round((c.progress || 0) * 100)}%`;
+  if (c.status === "error" && c.bad) return `<b>Can't read this file</b> It may be empty or damaged.`;
   if (c.status === "error") return c.errorMsg ? `<b>Not checked</b> ${esc(c.errorMsg)}` : `<b>Not checked</b>${esc(c.error)}. Open it to play it yourself.`;
   const v = verdict(c), k = keptSeconds(c), n = onParts(c).length;
   const pk = pickOf(c), cuts = (c.result?.removed || []).length;
@@ -5412,7 +5420,7 @@ function renderCard(c) {
 }
 function renderTop() {
   const real = state.clips.filter(c => !c.example);
-  const counts = { keep: 0, review: 0, trash: 0, busy: 0 };
+  const counts = { keep: 0, review: 0, trash: 0, busy: 0, bad: 0 };
   state.clips.forEach(c => counts[verdict(c)]++);
   if (!real.length) {
     $("#quickbar").hidden = true; if ($("#filters")) $("#filters").hidden = true;
@@ -5969,9 +5977,10 @@ function openStudio(c, keep) {
   if (!reopen) { state.tab = "pick"; state.step = "choose"; c.sel = c.parts?.length ? 0 : -1; c.selSegT = null; }
   state.openId = c.id;
   const stage = $("#sStage");
-  const vsrc = c.file || c.vproxy;
+  const bad = c.status === "error" && c.bad, vsrc = bad ? null : c.file || c.vproxy;   // a file nothing can read isn't loaded into the player
   stopAudio(); player?.destroy(); player = null; c.audioOnly = !vsrc; unfloat();
-  if (vsrc) {
+  if (bad) { video = null; stage.innerHTML = `<div class="ph">Can't read this file.</div>`; }
+  else if (vsrc) {
     player = new Seg(stage, { onTick: () => { drawWave(); markRows(); } }); video = player.v;
     video.addEventListener("pause", markRows); video.addEventListener("play", () => { c._played = true; markRows(); });
     player.onPlay = () => { const c2 = cur(); if (c2 && c2.status === "done" && needsEngine(c2)) { bandPreview(c2); return true; } return false; };
@@ -6093,7 +6102,8 @@ function renderStudio() {
   drawWave(); renderWaveLegend(c); renderDock(c);
   $("#studio").dataset.step = c.status === "done" ? state.step : "";
   const box = $("#sSteps"), sbar = $("#sStepbar"); if (sbar) sbar.innerHTML = ""; if (lg) box.before(lg);
-  if (c.status === "error") box.innerHTML = `<p class="hint">LickPick ${esc(c.error)}. Watch it and decide yourself.</p>`;
+  if (c.status === "error" && c.bad) box.innerHTML = `<p class="hint">LickPick can't read this file. It may be empty or damaged. Remove it from the list, or add the original again.</p>`;
+  else if (c.status === "error") box.innerHTML = `<p class="hint">LickPick ${esc(c.error)}. Watch it and decide yourself.</p>`;
   else if (c.status !== "done") box.innerHTML = `<p class="hint working"><span class="pulse"></span>Listening… the steps open when the scan is done.</p>`;
   else { const k = STEPS.some(x => x[0] === state.step) ? state.step : (state.step = "choose"), [title, sub] = STEP_TITLE[k], dir = state.stepDir || 0; state.stepDir = 0;
     const ki = STEPS.findIndex(x => x[0] === k), prevI = +(sbar.dataset.i ?? ki); sbar.dataset.i = ki; void title; void sub;
