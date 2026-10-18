@@ -8247,7 +8247,27 @@ setTimeout(() => { try { const L = jamLog(), st = streakOf(L), wd = new Date().g
 $("#exportSheet").addEventListener("click", e => { if (e.target.id === "exportSheet") $("#exportSheet").hidden = true; });
 $("#rowSheet").addEventListener("click", e => { if (e.target.id === "rowSheet") $("#rowSheet").hidden = true; });
 $("#addSheet").addEventListener("click", e => { if (e.target.id === "addSheet") $("#addSheet").hidden = true; });
-document.addEventListener("keydown", e => { if (e.key === "Escape") { if (state.sel) setSelect(false); else if (!$("#onboard").hidden) closeOnboard(); else if (!$("#intro").hidden) closeIntro(); else if (!$("#rowSheet").hidden) $("#rowSheet").hidden = true; else if (!$("#exportSheet").hidden) $("#exportSheet").hidden = true; else if (!$("#proSheet").hidden) $("#proSheet").hidden = true; else if (!$("#addSheet").hidden) $("#addSheet").hidden = true; else if (!$("#rules").hidden) $("#rules").hidden = true; else if (!$("#sorter").hidden) closeQuickSort(false); else if (state.openId) closeStudio(); } });
+// ---------- Back and Escape close the top layer. Each open layer (take editor, sheets, menu, Pro…) gets a history entry,
+// so the phone's Back button (and the Play build, which closes the app on Back at the root) closes it instead of leaving.
+// At the home screen there's no entry of ours, so Back leaves as usual.
+const NAV_LAYERS = ["studio", "sorter", "onboard", "intro", "pickHelp", "madeSheet", "tasteSheet", "fbSheet", "rowSheet", "addSheet", "rules", "proSheet", "exportSheet", "winSheet", "recSheet"];
+const NAV_CLOSE = { studio: () => closeStudio(), sorter: () => closeQuickSort(false), onboard: () => closeOnboard(), intro: () => closeIntro(), recSheet: () => recClose(),
+  madeSheet: () => { $("#madeSheet").querySelector("video")?.pause(); $("#madeSheet").hidden = true; } };
+let navOrder = [], navDepth = 0, navSkip = 0;
+const navOpen = () => { const vis = NAV_LAYERS.filter(id => { const el = document.getElementById(id); return el && !el.hidden; }); navOrder = navOrder.filter(id => vis.includes(id)).concat(vis.filter(id => !navOrder.includes(id))); return navOrder; };
+function navSync() {
+  if (navSkip) return; const n = navOpen().length;
+  try { if (n > navDepth) { for (let i = navDepth; i < n; i++) history.pushState({ lpNav: i + 1 }, ""); navDepth = n; } else if (n < navDepth) { const k = navDepth - n; navDepth = n; navSkip++; history.go(-k); } } catch { }
+}
+function closeTop() { const L = navOpen(), id = L[L.length - 1]; if (!id) return false; (NAV_CLOSE[id] || (() => { document.getElementById(id).hidden = true; }))(); return true; }
+{ const mo = new MutationObserver(navSync); NAV_LAYERS.forEach(id => { const el = document.getElementById(id); if (el) mo.observe(el, { attributes: true, attributeFilter: ["hidden"] }); }); }
+window.addEventListener("popstate", e => {
+  if (navSkip) { navSkip--; navSync(); return; }
+  navDepth = Math.max(0, +e.state?.lpNav || 0);
+  for (let guard = 0; navOpen().length > navDepth && guard < 4; guard++) { const before = navOpen().length; closeTop(); if (navOpen().length >= before) break; }
+  navSync();   // a layer that didn't close keeps its entry
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") { if (state.sel) setSelect(false); else closeTop(); } });
 function syncRules() {
   $("#minVal").textContent = state.minKeep + "s";
   document.querySelectorAll("#picky button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.picky === state.strictness)));
