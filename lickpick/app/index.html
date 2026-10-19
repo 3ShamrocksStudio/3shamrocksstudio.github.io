@@ -1622,7 +1622,6 @@ details.fold>summary b{color:var(--text)}
   <div class="hbtns">
     <button class="icon-btn" type="button" data-act="tour" aria-label="How it works"><svg class="i"><use href="#i-help"/></svg></button>
     <button class="pro-pill" id="proBadge" type="button" data-act="pro-open" aria-label="LickPick Pro"><svg class="i"><use href="#i-bolt"/></svg>PRO</button>
-    <button class="icon-btn" id="rulesBtn" type="button" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
   </div>
 </header>
 
@@ -1646,7 +1645,7 @@ details.fold>summary b{color:var(--text)}
 <div class="scrim" id="madeSheet" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="madeTitle">
     <div class="row2"><h2 id="madeTitle" class="rowtitle">Short</h2><button class="icon-btn" type="button" data-act="made-close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
-    <video class="madevid" controls playsinline></video>
+    <div class="madevid" id="madeStage"></div>
     <button class="btn wide" type="button" data-act="made-share"><svg class="i"><use href="#i-share"/></svg>Share</button>
   </div>
 </div>
@@ -1766,6 +1765,7 @@ details.fold>summary b{color:var(--text)}
       <div class="dockbar" id="sDockBar"></div>
       <div class="wave" id="sWave" aria-label="Timeline: drag to scrub, pinch or use − + to zoom. Drag a Pick's edges to trim it, a bar at a time."><canvas id="sCanvas"></canvas><span class="wavetip" id="waveTip" hidden></span></div>
       <div class="tc"><span id="sNow">0:00</span><span class="zoomer" role="group" aria-label="Zoom the timeline"><button type="button" data-zoom="out" aria-label="Zoom out">−</button><button type="button" data-zoom="fit" aria-label="Show the whole take">Fit</button><button type="button" data-zoom="in" aria-label="Zoom in">+</button></span><span id="sDur">0:00</span></div>
+      <div class="editbar" id="sEdit" role="toolbar" aria-label="Trim the Pick" hidden></div>
       <div id="sStepbar"></div>
     </div>
     <div class="wlegend" id="wLeg"></div>
@@ -1788,8 +1788,8 @@ details.fold>summary b{color:var(--text)}
 </div>
 
 <div class="scrim" id="exportSheet" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-label="Export">
-    <div class="row2"><h2>Export</h2><button class="icon-btn" type="button" data-act="export-close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Save">
+    <div class="row2"><h2>Save</h2><button class="icon-btn" type="button" data-act="export-close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
     <div id="exBody" class="exbody"></div>
   </div>
 </div>
@@ -5276,7 +5276,8 @@ async function madeAct(kind, id) {
   const file = new File([b], m.name, { type: b.type || "video/mp4" });
   if (kind === "share") { if (canShareFile(file)) navigator.share({ files: [file], title: m.name }).catch(() => { }); else toast("Sharing isn't available here. Use Save."); return; }
   if (kind === "save") { try { await downloads.save({ filename: m.name, data: file }); toast(savedWhere()); } catch { } return; }
-  if (kind === "play") { const sh = $("#madeSheet"); sh.querySelector("h2").textContent = m.name; const v = sh.querySelector("video"); if (v.src) URL.revokeObjectURL(v.src); v.src = URL.createObjectURL(file); sh.hidden = false; v.play().catch(() => { }); sh.dataset.id = id; }
+  if (kind === "play") { const sh = $("#madeSheet"); sh.querySelector("h2").textContent = m.name; const old = madePlayer?.v?.src; madePlayer?.destroy(); if (old) URL.revokeObjectURL(old);   // 3.3: saves play in the same branded player as the studio
+    madePlayer = new Seg($("#madeStage")); madePlayer.load(URL.createObjectURL(file)); madePlayer.set(null, "", ""); sh.hidden = false; madePlayer.play(); sh.dataset.id = id; }
 }
 const savedWhere = () => IN_CLAUDE ? "Saved." : "Saved to Downloads.";
 function canShareFile(file) { try { return !!navigator.canShare?.({ files: [file] }); } catch { return false; } }
@@ -5512,16 +5513,17 @@ const stk = (ic, c = "volt", tilt = "") => `<i class="stk s-${c}${tilt ? " " + t
 const pkw = (inner, cls = "") => `<i class="pkw ${cls}">${inner}</i>`;
 const stamp = v => `${pkw(`<i class="stamp ${v} pickclip" title="${VLABEL[v]}">${icon(VICON[v])}</i>`, "sh-" + v)}<span class="sr">${VLABEL[v]}</span>`;
 function phrase(c) {
-  if (c.status === "queued") return `<b>Waiting</b>${fmtSize(c.size)}`;
-  if (c.status === "listening") return `<b>${c.phase === "watching" ? "Watching" : "Listening"}</b>${Math.round((c.progress || 0) * 100)}%`;
-  if (c.status === "error" && c.bad) return `<b>Can't read this file</b> It may be empty or damaged.`;
-  if (c.status === "error") return c.errorMsg ? `<b>Not checked</b> ${esc(c.errorMsg)}` : `<b>Not checked</b>${esc(c.error)}. Open it to play it yourself.`;
+  // 3.3: every file says its state in one pill: In line · Scanning n% · Can't read · Not checked · Saved
+  if (c.status === "queued") return `<b class="fst f-wait">In line</b> ${fmtSize(c.size)}`;
+  if (c.status === "listening") return `<b class="fst f-scan">${c.phase === "watching" ? "Watching" : "Scanning"} ${Math.round((c.progress || 0) * 100)}%</b>`;
+  if (c.status === "error" && c.bad) return `<b class="fst f-bad">Can't read</b> It may be empty or damaged.`;
+  if (c.status === "error") return c.errorMsg ? `<b class="fst f-err">Not checked</b> ${esc(c.errorMsg)}` : `<b class="fst f-err">Not checked</b> ${esc(c.error)}. Open it to play it yourself.`;
   const v = verdict(c), k = keptSeconds(c), n = onParts(c).length;
   const pk = pickOf(c), cuts = (c.result?.removed || []).length;
   if (v === "trash") return c.override ? "Marked by you" : "No music found";
   const pickTxt = pk ? `<b class="pk-l">★ ${fmt(pk.len)}</b>` : c._pickJob ? "<b>Finding pick…</b>" : "<b>No pick</b>";
   const info = c.raw?.info || {}, facts = [keyText(c), info.tempo && `${info.tempo} BPM`, fmt(c.raw.duration)].filter(Boolean);
-  return `${pickTxt} <span class="sub">${esc(facts.join(" · "))}${c.saved || c.pickSaved ? " · saved" : ""}${c.file ? "" : " · re-add to save"}</span>`;
+  return `${c.saved || c.pickSaved ? `<b class="fst f-saved">Saved</b> ` : ""}${pickTxt} <span class="sub">${esc(facts.join(" · "))}${c.file ? "" : " · re-add to save"}</span>`;
 }
 // a take's name as a musician would say it: hashes and camera names become "Jam · Tue 11:22"
 function takeName(c) {
@@ -5763,22 +5765,27 @@ class Seg {
     host.innerHTML = `<div class="player"><div class="pv"><video playsinline preload="metadata"></video>
       <button class="bigplay" type="button" aria-label="Play"><span class="pkw"><span class="pickclip">${icon("i-play")}</span></span></button>
       <button class="segchip" type="button"></button></div>
-      <div class="pbar"><button class="pb-play" type="button" aria-label="Play">${icon("i-play")}</button><div class="ptrack" role="slider" aria-label="Position"><i></i></div><span class="ptime">0:00 / 0:00</span>
-      <button class="pb-speed" type="button" aria-label="Playback speed">1×</button><button class="pb-loop" type="button" aria-pressed="false" aria-label="Loop">${icon("i-loop")}</button><button class="pb-full" type="button" aria-label="Full screen">${icon("i-expand")}</button></div></div>`;
+      <div class="pbar"><button class="pb-play" type="button" aria-label="Play">${icon("i-play")}</button><div class="ptrack" role="slider" aria-label="Position" tabindex="0"><i></i><b class="pknob"></b></div><span class="ptime">0:00 / 0:00</span><i class="pb-beat" aria-hidden="true"></i>
+      <span class="pb-tools"><button class="pb-speed" type="button" aria-label="Playback speed">1×</button><button class="pb-loop" type="button" aria-pressed="false" aria-label="Loop">${icon("i-loop")}</button><button class="pb-band" type="button" aria-pressed="false" aria-label="Play with the band" hidden>${icon("i-drum")}</button><button class="pb-full" type="button" aria-label="Full screen">${icon("i-expand")}</button></span></div></div>`;
     const q = sel => host.querySelector(sel);
     this.v = q("video"); this.big = q(".bigplay"); this.chip = q(".segchip"); this.pbtn = q(".pb-play"); this.track = q(".ptrack"); this.fill = q(".ptrack i"); this.time = q(".ptime");
     const tog = () => { if (this.onToggle) return this.onToggle(); if (this.v.paused && this.onPlay?.()) return; this.v.paused ? this.play() : this.pause(); };
     this.big.onclick = tog; this.pbtn.onclick = tog; this.v.onclick = tog;
-    q(".pb-speed").onclick = e => { const R = [1, 0.75, 0.5], r = R[(R.indexOf(Seg.rate) + 1) % R.length]; Seg.rate = r; this.applyRate(); e.currentTarget.textContent = r === 1 ? "1×" : r === 0.75 ? "¾×" : "½×"; e.currentTarget.classList.toggle("on", r !== 1); };
+    q(".pb-speed").onclick = e => { if (this.ext && this.onSpeedExt) return this.onSpeedExt(); const R = [1, 0.75, 0.5], r = R[(R.indexOf(Seg.rate) + 1) % R.length]; Seg.rate = r; this.applyRate(); e.currentTarget.textContent = r === 1 ? "1×" : r === 0.75 ? "¾×" : "½×"; e.currentTarget.classList.toggle("on", r !== 1); };
     this.v.addEventListener("loadedmetadata", () => this.applyRate());
-    q(".pb-loop").onclick = e => { this.loop = !this.loop; e.currentTarget.setAttribute("aria-pressed", String(this.loop)); };
+    // Loop: on while paused = loop it and play (one tap); while playing = just switch looping
+    q(".pb-loop").onclick = e => { this.loop = !this.loop; e.currentTarget.setAttribute("aria-pressed", String(this.loop)); if (this.loop && !this.ext && this.v.paused) tog(); };
+    q(".pb-band").onclick = () => this.onBand?.();
     q(".pb-full").onclick = () => { const el = q(".player"); try { document.fullscreenElement ? document.exitFullscreen() : (el.requestFullscreen || el.webkitRequestFullscreen).call(el); } catch { } };
     this.chip.onclick = () => this.onChip?.();
     let drag = false;
-    const seek = ev => { if (this.ext) return; const r = this.track.getBoundingClientRect(); this.seekVirt(Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)) * this.total()); };
-    this.track.addEventListener("pointerdown", e => { drag = true; try { this.track.setPointerCapture(e.pointerId); } catch { } seek(e); });
+    // scrubbing works with the band too: the bar follows your finger, and everything restarts together where you let go
+    const frac = ev => { const r = this.track.getBoundingClientRect(); return Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)); };
+    const seek = ev => { const f = frac(ev); if (this.ext) { this._extSeek = f * this.total(); this.fill.style.width = f * 100 + "%"; this.track.style.setProperty("--kx", f * 100 + "%"); return; } this.seekVirt(f * this.total()); };
+    this.track.addEventListener("pointerdown", e => { drag = true; this._extSeek = null; try { this.track.setPointerCapture(e.pointerId); } catch { } seek(e); });
     this.track.addEventListener("pointermove", e => { if (drag) seek(e); });
-    this.track.addEventListener("pointerup", () => { drag = false; });
+    this.track.addEventListener("pointerup", () => { drag = false; if (this.ext && this._extSeek != null && this.onSeekExt) { const x = this._extSeek; this._extSeek = null; this.onSeekExt(x); } });
+    this.track.addEventListener("keydown", e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault(); const x = Math.max(0, Math.min(this.total(), this.virt() + (e.key === "ArrowRight" ? 5 : -5))); if (this.ext) this.onSeekExt?.(x); else this.seekVirt(x); });
     this.v.addEventListener("play", () => this.ui()); this.v.addEventListener("pause", () => this.ui());
     this.v.addEventListener("loadedmetadata", () => { this.goStart(); this.ui(); });
     this.v.addEventListener("seeked", () => { this.ui(); this.onTick(); });
@@ -5820,15 +5827,16 @@ class Seg {
   }
   ui() {
     const playing = this.ext ? true : !this.v.paused, tot = this.total(), x = Math.min(tot, this.virt());
-    this.fill.style.width = (tot ? x / tot * 100 : 0) + "%";
+    if (this._extSeek == null) { const pc = (tot ? x / tot * 100 : 0) + "%"; this.fill.style.width = pc; this.track.style.setProperty("--kx", pc); } this.track.setAttribute("aria-valuenow", Math.round(x)); this.track.setAttribute("aria-valuemax", Math.round(tot)); this.track.setAttribute("aria-valuetext", fmt(x));
     this.time.textContent = `${fmt(x)} / ${fmt(tot)}`;
-    const ic = playing ? "i-pause" : "i-play"; this.pbtn.innerHTML = icon(ic); this.pbtn.setAttribute("aria-label", playing ? "Pause" : "Play"); this.big.hidden = playing;
+    const ic = playing ? "i-pause" : "i-play"; this.pbtn.innerHTML = icon(ic); this.pbtn.setAttribute("aria-label", playing ? "Pause" : "Play"); if (playing) this._started = true; this.big.hidden = playing || !!this._started;
     this.chip.innerHTML = `${this.label ? `<b>${esc(this.label)}</b>` : ""}${this.chipText ? `<span>${esc(this.chipText)}</span>` : ""}`; this.chip.hidden = !this.label && !this.chipText;
   }
   destroy() { cancelAnimationFrame(this.raf); try { this.v.pause(); this.v.removeAttribute("src"); this.v.load(); } catch { } this.host.innerHTML = ""; }
 }
 
 Seg.rate = 1;   // one practice speed for every player
+let madePlayer = null;
 document.addEventListener("change", e => { if (e.target?.id === "capCredit") store.set("lp:credit", e.target.checked ? 1 : 0); if (e.target?.dataset?.titleby) { const c = cur(); if (c) { exOpts(c).titleBy = e.target.checked; persist(c); ovPreview(); renderExport(c); } } if (e.target?.id === "ovTitleIn") { const c = cur(); if (c) renderExport(c); } });
 
 // ---------- first run: profile and setup (kept on this phone; no account needed)
@@ -6110,6 +6118,8 @@ function openStudio(c, keep) {
     video.addEventListener("pause", markRows); video.addEventListener("play", () => { c._played = true; markRows(); });
     player.onPlay = () => { const c2 = cur(); if (c2 && c2.status === "done" && needsEngine(c2)) { bandPreview(c2); return true; } return false; };
     player.onChip = () => { const c2 = cur(); if (!c2) return; if (player.ranges) { stopBand(); player.set(null, "Full take", fmt(c2.raw?.duration || 0)); } else showPick(c2); };
+    player.onBand = () => { const c2 = cur(); if (c2) bandToggle(c2); };
+    player.onSpeedExt = () => toast("Speed is for practising without the band. Tap the drum to turn the band off, then slow it down.");
     player.load(c.file ? (c.url || (c.url = URL.createObjectURL(c.file))) : (c.vurl || (c.vurl = URL.createObjectURL(c.vproxy))));
     video.addEventListener("loadedmetadata", () => { c.vw = video.videoWidth; c.vh = video.videoHeight; lookLive(c); });
     stage.querySelector(".pv")?.insertAdjacentHTML("beforeend", `<div class="credit" id="sCredit" aria-hidden="true"></div><svg class="bug" aria-hidden="true"><use href="#logo"/></svg><canvas id="ovCv" class="ovcv" hidden></canvas>${c.file ? "" : `<button class="pvbadge" type="button" data-act="gallery">${icon("i-film")}Watch copy · Re-add for HD save</button>`}`);
@@ -6136,7 +6146,7 @@ function closeStudio() {
   { const c0 = cur(); if (c0) { c0._tv = null; c0._tFrozen = null; } if (c0?._retaste) { c0._retaste = false; redecide(c0); persist(c0); } }   // new cut rules apply once you leave, so nothing moves under your finger
   stopBand(); stopAudio(); stopAt = null; queue = []; unfloat(); playMark = null;
   player?.destroy(); player = null; video = null;
-  state.openId = null; $("#studio").hidden = true; document.body.style.overflow = ""; render();
+  state.openId = null; state._shownStep = null; $("#studio").hidden = true; document.body.style.overflow = ""; render();
 }
 // ---------- Looks: one tap = a picture filter + a title font. The LickPick mark, chords and tab stay in brand fonts.
 // fonts: free Google Fonts (SIL OFL; Permanent Marker Apache 2.0), latin subset, loaded on first use and cached offline
@@ -6232,12 +6242,15 @@ function renderStudio() {
   else if (c.status !== "done") box.innerHTML = `<p class="hint working"><span class="pulse"></span>Listening… the steps open when the scan is done.</p>`;
   else { const k = STEPS.some(x => x[0] === state.step) ? state.step : (state.step = "choose"), [title, sub] = STEP_TITLE[k], dir = state.stepDir || 0; state.stepDir = 0;
     const ki = STEPS.findIndex(x => x[0] === k), prevI = +(sbar.dataset.i ?? ki); sbar.dataset.i = ki; void title; void sub;
-    sbar.innerHTML = `<nav class="stepbar" role="tablist" aria-label="Steps" style="--i:${prevI}"><i class="sbm" aria-hidden="true"></i>${STEPS.map(([kk, l], i) => `<button type="button" role="tab" class="sb${kk === k ? " on" : ""}" data-step="${kk}" aria-selected="${kk === k}" aria-label="Step ${i + 1} of ${STEPS.length}: ${l}" data-sc="${kk}">${l}</button>`).join("")}</nav>`;
+    sbar.innerHTML = `<nav class="stepbar" role="tablist" aria-label="Tools" style="--i:${prevI}"><i class="sbm" aria-hidden="true"></i>${STEPS.map(([kk, l, ic], i) => `<button type="button" role="tab" class="sb${kk === k ? " on" : ""}" data-step="${kk}" aria-selected="${kk === k}" aria-label="${l}, tool ${i + 1} of ${STEPS.length}" data-sc="${kk}">${icon(kk === "choose" ? "i-cut" : ic)}<span>${l}</span>${kk === "band" && c.status === "done" && bandOn(c) ? `<i class="sbdot" aria-hidden="true"></i>` : ""}</button>`).join("")}</nav>`;
     requestAnimationFrame(() => sbar.firstElementChild?.style.setProperty("--i", ki));
-    box.innerHTML = `<section class="screen${dir > 0 ? " in-r" : dir < 0 ? " in-l" : ""}" id="sPanel" data-stepk="${k}"><div class="panel">${stepBody(c, k)}</div></section>`;
+    // 3.3: the panel only animates in when you change tool, never on every tap inside it (no jumping buttons)
+    const fresh = state._shownStep !== `${c.id}|${k}`; state._shownStep = `${c.id}|${k}`;
+    box.innerHTML = `<section class="screen${fresh ? " fresh" : ""}${dir > 0 ? " in-r" : dir < 0 ? " in-l" : ""}" id="sPanel" data-stepk="${k}"><div class="panel">${stepBody(c, k)}</div></section>`;
     if (lg && k === "choose") box.querySelector("#sPanel .panel")?.prepend(lg);
     setTimeout(() => { const on = sbar.querySelector(".sb.on"); if (on) { const bar = on.parentElement; bar.scrollTo({ left: on.offsetLeft - bar.clientWidth / 2 + on.clientWidth / 2, behavior: "smooth" }); } }, 0); }
   if (c.status === "done" && state.step === "band") { bandPrefetch(c); eqStartLoop(); }
+  syncBandBtn(c); renderEditBar(c);
   if (state.sect && c.status === "done") { const id = state.sect; state.sect = null; setTimeout(() => { const el = document.getElementById("sec-" + id); if (el) { if (el.tagName === "DETAILS") { el.open = true; (state.folds ||= new Set()).add(id); } el.scrollIntoView({ block: "start", behavior: "smooth" }); } }, 60); }
   renderSrc(c);
 }
@@ -6317,8 +6330,8 @@ function lookPanel(c) {
 // the bar at the bottom: back, next step, and Export always one tap away
 function renderNav(c) {
   const nav = $("#sNav"); if (!nav || !c) return; const i = STEPS.findIndex(x => x[0] === state.step), next = STEPS[i + 1];
-  nav.innerHTML = `<button class="btn ghost navb" type="button" data-act="step-back" aria-label="Back" ${i <= 0 ? "disabled" : ""}>${icon("i-back")}</button>${next ? `<button class="btn navn" type="button" data-act="step-next">${next[1]}<svg class="i"><use href="#i-back"/></svg></button>` : ""}`;
-  $("#sBar")?.classList.toggle("last", !next);
+  nav.innerHTML = ""; void i; void next;   // 3.3: the tool rail under the player is the only step navigation
+  $("#sBar")?.classList.add("last");
 }
 function renderSrc(c) {
   const S = srcOf(c), el = $("#sSrc"); renderNav(c);
@@ -6365,15 +6378,9 @@ function pickPanel(c) {
   const facts = [keyText(c) && ["Key", keyText(c)], c.raw?.info?.tempo && ["Tempo", c.raw.info.tempo + " BPM"], ["Length", fmt(D)], ["Camera", c.raw?.cameraChecked ? "checked" : "not checked"]].filter(Boolean);
   const canSave = !!c.file && !!downloads && !c.exporting, L = state.pickLen;
   return `    ${!pk && c._pickJob ? `<div class="pickhero none"><p class="working"><span class="pulse"></span>Finding your best phrase…</p></div>` : pk ? `<div class="pickhero">
-      <span class="pk-eyebrow">${icon("i-star")}${(c.pickSel || 0) ? "Your next best take" : "Your best take"}</span>
-      <div class="pk-top"><span class="pk-tag">Pick ${"ABC"[c.pickSel || 0]}</span>${pk.why?.length ? `<span class="pk-why">${pk.why.map(esc).join(" · ")}</span>` : ""}${tasteK() > 0 && Math.abs(pk.tasteAdj || 0) > 0.004 ? `<button type="button" class="tuned" data-act="taste-open">${icon("i-bolt")}Tuned to you</button>` : ""}</div>
-      <div class="pk-big"><strong>${fmt(pk.len)}</strong><span>${fmt(pk.s)} → ${fmt(pk.e)}</span></div>
+      <div class="pk-top"><span class="pk-tag">${icon("i-star")}Pick ${"ABC"[c.pickSel || 0]}</span><span class="pk-big"><strong>${fmt(pk.len)}</strong><span>${fmt(pk.s)} → ${fmt(pk.e)}</span></span>${tasteK() > 0 && Math.abs(pk.tasteAdj || 0) > 0.004 ? `<button type="button" class="tuned" data-act="taste-open">${icon("i-bolt")}Tuned to you</button>` : ""}</div>
+      ${pk.why?.length ? `<span class="pk-why">${(c.pickSel || 0) ? "Next best · " : "Your best take · "}${pk.why.map(esc).join(" · ")}</span>` : ""}
       ${rateStrip(c, pk.s, pk.e, `Rate Pick ${"ABC"[c.pickSel || 0]}`)}
-      <div class="row-btns"><button class="btn ink" type="button" data-act="hero-play">${icon("i-play")}Play it</button><button class="btn ghost" type="button" data-act="reel-one">${icon("i-loop")}Loop it</button></div>
-    </div>
-    <div class="finetune">
-      <div class="grp"><div class="lbl">Starts <b>${fmtP(pk.s)}</b></div><div class="btns"><button type="button" data-padj="s:-1" aria-label="Start one bar earlier">−1 bar</button><button type="button" data-padj="s:1" aria-label="Start one bar later">+1 bar</button></div></div>
-      <div class="grp"><div class="lbl">Ends <b>${fmtP(pk.e)}</b></div><div class="btns"><button type="button" data-padj="e:-1" aria-label="End one bar earlier">−1 bar</button><button type="button" data-padj="e:1" aria-label="End one bar later">+1 bar</button></div></div>
     </div>
     <p class="hint">${pk.adj ? `Nudged by you. <button class="linkbtn" type="button" data-padj="reset">Undo nudges</button>` : list.length > 1 ? "Not feeling it? Tap B or C. Drag the yellow handles on the timeline to add or trim time, a bar at a time." : "Drag the yellow handles on the timeline to add or trim time, a bar at a time."}</p>${suggestHTML(c)}` : `<div class="pickhero none"><p>${hasMusic(c) ? `A Pick needs ${state.pickLen === "auto" ? "about 20" : Math.round(state.pickLen * 0.8)} seconds of clean playing in one go. ${state.pickLen === "auto" || state.pickLen > 15 ? "For short clips, set Pick length to 15s below. " : ""}Or open Segments and keep what you like.` : "No music found in this clip."}</p></div>`}
 <details class="bsub" data-bsub="pmore"${state.bsub === "pmore" ? " open" : ""}><summary><b>Length, why this part, scan</b><em>${L === "auto" ? "Auto length" : L + "s"}</em></summary><div class="bsubin">
@@ -8218,7 +8225,7 @@ document.addEventListener("click", e => {
   if (d.view) { setView(d.view); render(); return; }
   if (d.madeEdit) { madeAct("edit", d.madeEdit); return; }
   if (d.madePlay || d.madeShare || d.madeSave || d.madeDel) { const k = d.madePlay ? "play" : d.madeShare ? "share" : d.madeSave ? "save" : "del"; madeAct(k, d.madePlay || d.madeShare || d.madeSave || d.madeDel); return; }
-  if (d.act === "made-close") { const sh = $("#madeSheet"); const v = sh.querySelector("video"); v.pause(); sh.hidden = true; return; }
+  if (d.act === "made-close") { madePlayer?.pause(); $("#madeSheet").hidden = true; return; }
   if (d.act === "made-share") { madeAct("share", $("#madeSheet").dataset.id); return; }
   if (t.id === "fab") { $("#addSheet").hidden = false; return; }
   if (d.act === "record") { $("#addSheet").hidden = true; openPicker($("#rec")); return; }
@@ -8514,7 +8521,7 @@ $("#addSheet").addEventListener("click", e => { if (e.target.id === "addSheet") 
 // At the home screen there's no entry of ours, so Back leaves as usual.
 const NAV_LAYERS = ["studio", "sorter", "onboard", "intro", "pickHelp", "madeSheet", "tasteSheet", "fbSheet", "rowSheet", "addSheet", "rules", "proSheet", "exportSheet", "winSheet", "recSheet"];
 const NAV_CLOSE = { studio: () => closeStudio(), sorter: () => closeQuickSort(false), onboard: () => closeOnboard(), intro: () => closeIntro(), recSheet: () => recClose(),
-  madeSheet: () => { $("#madeSheet").querySelector("video")?.pause(); $("#madeSheet").hidden = true; } };
+  madeSheet: () => { madePlayer?.pause(); $("#madeSheet").hidden = true; } };
 let navOrder = [], navDepth = 0, navSkip = 0;
 const navOpen = () => { const vis = NAV_LAYERS.filter(id => { const el = document.getElementById(id); return el && !el.hidden; }); navOrder = navOrder.filter(id => vis.includes(id)).concat(vis.filter(id => !navOrder.includes(id))); return navOrder; };
 function navSync() {
