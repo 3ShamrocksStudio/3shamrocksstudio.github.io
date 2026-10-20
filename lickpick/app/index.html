@@ -4568,7 +4568,11 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     const noteOf = (pk, m, v = 0.75) => { let best = pk.keys[0]; for (const k of pk.keys) if (Math.abs(k - m) < Math.abs(best - m)) best = k; const n = pk.notes[best];
       if (Array.isArray(n)) { const li = Math.max(0, Math.min(n.length - 1, Math.floor(v * n.length * 0.999))); return [n[li], Math.pow(2, (m - best) / 12), 1]; }
       return [n, Math.pow(2, (m - best) / 12), 1]; };
-    const ST = { drums: [new Float32Array(N), new Float32Array(N)], bass: [new Float32Array(N), new Float32Array(N)], keys: [new Float32Array(N), new Float32Array(N)], extra: [new Float32Array(N), new Float32Array(N)] }, pending = [];
+    // each track is written straight into an AudioBuffer (no copies), and released as soon as it's processed: a 6 min
+    // band used to hold every track 4 times over (~1.2 GB); now about one set of tracks at a time
+    const BF = new OfflineAudioContext(2, 1, SR), STB = {}, ST = {};
+    for (const k of ["drums", "bass", "keys", "extra"]) { STB[k] = BF.createBuffer(2, N, SR); ST[k] = [STB[k].getChannelData(0), STB[k].getChannelData(1)]; }
+    const pending = [];
     // place a mono sound at clip time t: gain, pan (-1..1), cut time with a release, re-pitch rate, attack fade
     function put(inst, buf, t, gain, pan = 0, cut = Infinity, rel = 0.05, rate = 1, atk = 0) {
       const [L, Rt] = ST[inst];
@@ -4709,35 +4713,35 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     if (parts.extra && XP && XK === "brass" && !A.pulse) held("extra", XP, lvl.extra * 0.6, -0.2, { sus: 2, rel: 0.3, atk: 0.2 });
     await Promise.all(pending);
     // finish each track: drums get glue compression; everything gets the room
-    const mkBuf = (l, r) => { const b = new OfflineAudioContext(2, 1, SR).createBuffer(2, N, SR); b.copyToChannel(l, 0); b.copyToChannel(r, 1); return b; };
     const WET = { drums: 0.1, bass: 0.02, keys: 0.18, extra: 0.22 }, roomMul = set.room === "hall" ? 1.5 : 1;
     async function finish(k) {
-      const [l, r] = ST[k]; let any = false; for (let i = 0; i < N; i += 64) if (l[i] || r[i]) { any = true; break; }
-      if (!any) return mkBuf(l, r);
+      let [l, r] = ST[k], inB = STB[k]; ST[k] = null; STB[k] = null; let any = false; for (let i = 0; i < N; i += 64) if (l[i] || r[i]) { any = true; break; }
+      l = r = null; if (!any) return inB;
       try {
-        const ctx = new OfflineAudioContext(2, N, SR), src = ctx.createBufferSource(); src.buffer = mkBuf(l, r);
+        const ctx = new OfflineAudioContext(2, N, SR), src = ctx.createBufferSource(); src.buffer = inB;
         let head = src;
         if (k === "drums") { const c = ctx.createDynamicsCompressor(); c.threshold.value = -16; c.ratio.value = 3; c.attack.value = 0.008; c.release.value = 0.14; c.knee.value = 6; const mg = ctx.createGain(); mg.gain.value = 1.25; src.connect(c); c.connect(mg); head = mg; }
         head.connect(ctx.destination);
         if (IR) { const cv = ctx.createConvolver(); cv.normalize = true; cv.buffer = IR; const wg = ctx.createGain(); wg.gain.value = WET[k] * roomMul; head.connect(cv); cv.connect(wg); wg.connect(ctx.destination); }
-        src.start(0); const outB = await ctx.startRendering();
+        src.start(0); const outB = await ctx.startRendering(); src.buffer = null; inB = null;
         if (k === "drums") { const lag = Math.round(0.006 * SR); for (let ch = 0; ch < 2; ch++) { const d = outB.getChannelData(ch); d.copyWithin(0, lag); d.fill(0, N - lag); } }   // the compressor's 6 ms look-ahead
         return outB;
-      } catch { return mkBuf(l, r); }
+      } catch { return inB; }
     }
     const stems = {}; for (const k of Object.keys(ST)) stems[k] = await finish(k);
-    // level: the full band's peak to -1 dBFS, the same scale on every track
-    let pk = 0; const sum = [new Float32Array(N), new Float32Array(N)];
-    for (const b of Object.values(stems)) for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch), o = sum[ch]; for (let i = 0; i < N; i++) o[i] += d[i]; }
-    for (let ch = 0; ch < 2; ch++) for (let i = 0; i < N; i++) pk = Math.max(pk, Math.abs(sum[ch][i]));
+    // level: the full band's peak to -1 dBFS, the same scale on every track (peak of the sum, without building the sum)
+    let pk = 0; const SB = Object.values(stems);
+    for (let ch = 0; ch < 2; ch++) { const D = SB.map(b => b.getChannelData(ch)); for (let i = 0; i < N; i++) { let v = 0; for (const d of D) v += d[i]; if (v > pk) pk = v; else if (-v > pk) pk = -v; } }
     const g = pk > 0.89 ? 0.89 / pk : 1;
-    if (g !== 1) { for (const b of Object.values(stems)) for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < N; i++) d[i] *= g; } for (let ch = 0; ch < 2; ch++) for (let i = 0; i < N; i++) sum[ch][i] *= g; }
-    const buffer = mkBuf(sum[0], sum[1]);
+    if (g !== 1) for (const b of SB) for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < N; i++) d[i] *= g; }
+    // the full mix and the click track are built only if something asks for them (playback uses the tracks)
+    let mixB = null, clickB = null;
+    const mkMix = () => { const b = BF.createBuffer(2, N, SR); for (let ch = 0; ch < 2; ch++) { const o = b.getChannelData(ch); for (const x of SB) { const d = x.getChannelData(ch); for (let i = 0; i < N; i++) o[i] += d[i]; } } return b; };
     // a click on the band's grid (louder on the downbeat), so you can hear where LickPick thinks the beat is
-    const cl = [new Float32Array(N), new Float32Array(N)];
-    for (const t of G.beats || []) { const o = Math.round((t - s) * SR); if (o < 0 || o >= N) continue; const down = (G.bars || []).some(b => Math.abs(b.t0 - t) < 0.02), fq = down ? 2100 : 1500;
-      for (let j = 0; j < Math.min(N - o, SR * 0.035); j++) { const v = (down ? 0.5 : 0.35) * Math.sin(2 * Math.PI * fq * j / SR) * Math.exp(-j / (SR * 0.007)); cl[0][o + j] += v; cl[1][o + j] += v; } }
-    return { buffer, stems, click: mkBuf(cl[0], cl[1]), grid: G.beats, A, bpm: G.bpm || A.bpm, steady: G.steady, chords: H, style: styleKey, set, sampled, key: raw.info?.key, plan };
+    const mkClick = () => { const b = BF.createBuffer(2, N, SR), c0 = b.getChannelData(0), c1 = b.getChannelData(1);
+      for (const t of G.beats || []) { const o = Math.round((t - s) * SR); if (o < 0 || o >= N) continue; const down = (G.bars || []).some(b2 => Math.abs(b2.t0 - t) < 0.02), fq = down ? 2100 : 1500;
+        for (let j = 0; j < Math.min(N - o, SR * 0.035); j++) { const v = (down ? 0.5 : 0.35) * Math.sin(2 * Math.PI * fq * j / SR) * Math.exp(-j / (SR * 0.007)); c0[o + j] += v; c1[o + j] += v; } } return b; };
+    return { get buffer() { return mixB || (mixB = mkMix()); }, stems, get click() { return clickB || (clickB = mkClick()); }, grid: G.beats, A, bpm: G.bpm || A.bpm, steady: G.steady, chords: H, style: styleKey, set, sampled, key: raw.info?.key, plan };
   }
   // triad in the middle register, moving as little as possible from the last chord
   function voicing(pcs, prev) {
@@ -7929,7 +7933,7 @@ function bandRender(c) {
     p.catch(() => { if (bandCache.key === key) bandCache = { key: "", res: null, p: null }; });
     bandCache = { key, res: null, p };
   }
-  return bandCache.p.then(res => { if (res._trim == null) res._trim = bandTrimFor(c, res, w); c._btrim = res._trim; return { ...res, style, w }; });
+  return bandCache.p.then(res => { if (res._trim == null) res._trim = bandTrimFor(c, res, w); c._btrim = res._trim; const out = Object.defineProperties({}, Object.getOwnPropertyDescriptors(res)); out.style = style; out.w = w; return out; });   // keeps the lazy mix/click lazy
 }
 // The take's own audio for the window, decoded once, so preview plays band and take off one clock.
 const winAudio = { key: "", p: null };
