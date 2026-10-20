@@ -1,0 +1,15 @@
+import { boot, M } from "./h.mjs";
+import { execSync } from "child_process";
+const rss = () => { const out = execSync("ps -eo rss,args | grep -E 'chrom.*--type=renderer' | grep -v grep | awk '{s+=$1} END {print s}'").toString().trim(); return Math.round(+out / 1024); };
+const { b, pg } = await boot({ width: 390 });
+const R = { boot: rss() };
+await pg.setInputFiles("#pick", [`${M}/t9_long6min120.webm`]); let peak = 0;
+const iv = setInterval(() => { peak = Math.max(peak, rss()); }, 500);
+await pg.waitForFunction(() => __ck.clips.every(c => !["queued", "listening"].includes(c.status)), null, { timeout: 300000 }); R.scanPeak = peak; R.afterScan = rss();
+await pg.waitForTimeout(1500); await pg.locator("#list .card").first().click(); await pg.waitForTimeout(2000);
+await pg.locator("#sStage .pb-band").click(); await pg.waitForFunction(() => __lp.q().bandPlaying && __lp.q().player.ext, null, { timeout: 120000 }); await pg.waitForTimeout(2000); R.bandPick = rss();
+await pg.evaluate(() => { const c = __lp.t.cur(), p = __lp.t.pickOf(c), k = `${c._picks?.key}|${c.pickSel || 0}`; c.pickAdj = c.pickAdj || {}; c.pickAdj[k] = { s: -p.s, e: c.raw.duration - p.e }; __lp.t.renderStudio(); });
+await pg.locator("#sStage .pb-band").click(); await pg.waitForTimeout(300); peak = 0; await pg.locator("#sStage .pb-band").click();
+await pg.waitForFunction(() => __lp.q().bandPlaying && __lp.q().player.ext, null, { timeout: 300000 }); await pg.waitForTimeout(2000); R.bandFullPeak = peak; R.bandFull = rss();
+R.perfMem = await pg.evaluate(() => Math.round(performance.memory.usedJSHeapSize / 1e6));
+clearInterval(iv); console.log(R); await b.close();
