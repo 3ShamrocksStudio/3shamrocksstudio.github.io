@@ -62,12 +62,13 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);-webkit-font-sm
 .ms .d{width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--dim);transition:all .2s}
 .ms.done .d{background:var(--ac);border-color:var(--ac);box-shadow:0 0 10px color-mix(in srgb,var(--ac) 70%,transparent)}
 .ms .lab{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--mut);white-space:nowrap;font-weight:600}
+.ms .lab.below{bottom:auto;top:20px}
 .ms.done .lab{color:var(--ink)}
 .head{position:absolute;top:-9px;width:0;cursor:grab;touch-action:none;z-index:5}
 .head.drag{cursor:grabbing}
 .head b{position:absolute;left:-7px;width:14px;height:22px;border-radius:5px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.5)}
 .head b::after{content:"";position:absolute;left:5px;top:5px;width:4px;height:12px;border-left:1px solid #aaa;border-right:1px solid #aaa}
-.readout{margin-top:22px;display:flex;align-items:center;gap:9px;font-size:12px;color:var(--mut);min-height:18px}
+.readout{margin-top:34px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px;color:var(--mut);min-height:18px}
 .readout .tag{font-family:var(--fd);font-weight:700;font-size:10px;padding:2px 8px;border-radius:var(--pill);background:color-mix(in srgb,var(--ac) 20%,transparent);color:var(--ac)}
 .readout b{color:var(--ink);font-weight:700}
 /* action + input */
@@ -181,8 +182,8 @@ function renderRail(){
 function renderDetail(){
  var p=prodById(DB.sel); if(!p){DB.sel='j8nix';p=prodById('j8nix');}
  var ph=progMo(p)/MAXMO*100;
- var dots=p.ms.map(function(m){var md=dn(m.id,m.def);var x=m.mo/MAXMO*100;
-  return '<div class="ms'+(md?' done':'')+'" style="left:'+x+'%"><span class="lab">'+m.l+'</span><span class="d"></span></div>';}).join('');
+ var dots=p.ms.map(function(m,i){var md=dn(m.id,m.def);var x=m.mo/MAXMO*100;
+  return '<div class="ms'+(md?' done':'')+'" style="left:'+x+'%"><span class="lab'+(i%2?' below':'')+'">'+m.l+'</span><span class="d"></span></div>';}).join('');
  var ownerCls=p.owner==='claude'?'claude':(p.owner==='hold'?'claude':'you');
  var ownLab=p.owner==='you'?'You · do this':(p.owner==='claude'?'Claude handling':'On hold');
  var ownIcon=p.owner==='you'?'➤':(p.owner==='claude'?'🤖':'⏸');
