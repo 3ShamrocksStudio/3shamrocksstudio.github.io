@@ -7337,7 +7337,7 @@ function exportSheetHTML(c) {
     <div class="exgroup"><span>On the video</span><button type="button" class="opt" data-act="look-open" ${busy ? "disabled" : ""}>${icon("i-text")}<span class="grow"><strong>${esc(stepInfo(c, "look")[0])}</strong><em>Look, title, chords and tab. Tap to change.</em></span><span class="chev">›</span></button></div>
     ${o.canBand || o.canSep || S.kind === "mix" || o.canLayers ? `<div class="exgroup"><span>Extras</span>
       ${o.canLayers ? opt("layers", !!o.layers, "i-stack", "Layers, split screen", `You and ${layersOn(c).length} more take${layersOn(c).length > 1 ? "s" : ""}, side by side, on one beat.`, false, proTag()) : ""}
-      ${o.canBand ? opt("band", o.band, "i-drum", "Backing band", "Drums, bass and keys on your beat.", false, freeBand(c) || !o.band ? "" : proTag()) : ""}
+      ${o.canBand ? opt("band", o.band, "i-drum", "Backing band", beatPending(c) ? "Waiting for your 4 taps on the beat: open Band and tap along." : "Drums, bass and keys on your beat.", false, freeBand(c) || !o.band ? "" : proTag()) : ""}
       ${o.canSep ? opt("sep", o.sep, "i-stack", "One file per part", `${S.n} files instead of one.`, false, proTag()) : ""}
       ${S.kind === "mix" || o.band ? opt("alsoParts", !!o.alsoParts, "i-film", S.kind === "mix" ? "Also save each part on its own" : "Also save it without the band", S.kind === "mix" ? `Plus ${S.ranges.length} separate files of your original playing.` : "Plus a file with just your original playing.") : ""}
     </div>` : ""}
@@ -7731,6 +7731,11 @@ function bandA(c) {
     // a band plays at the felt tempo: a 172 BPM reading of an 86 BPM song is the eighth notes, so the band takes every other beat (from the downbeat)
     if (A?.pulse && !A.grid && A.bpm > 135 && !G.bpm && !G.taps?.length && !G.beats?.length && A.beats.length >= 8) { const k0 = (A.bars?.[0]?.k ?? 0) % 2, B = A.beats.filter((_, i) => i % 2 === k0); try { const A2 = LickMusic.analyze(c.raw, w.s, w.e, { beats: B }); if (A2?.pulse) { A2.halved = true; A2.given = false; A = A2; } } catch { } }
     if (G.beats?.length >= 4) { A = LickMusic.analyze(c.raw, w.s, w.e, { beats: G.beats }); A.picked = true; }
+    // round 4: your 4 taps pick the tempo level and the phase among the grid's own candidates (tapSnap), so the band keeps
+    // LickPick's tempo curve and sections; taps that fit no candidate fall back to your taps alone
+    else if (G.taps?.length >= 4 && (() => { const g1 = gridOf(c), ts = g1?.pulse ? LickMusic.tapSnap(g1.beats, G.taps, w.s - 1, w.e + 1) : null; if (!ts) return false;
+      const comp = ts.mult === 1 / 3 || ts.mult === 2 / 3 ? true : ts.mult === 3 || ts.mult === 1.5 ? false : !!g1.compound;
+      const A2 = LickMusic.analyze(c.raw, w.s, w.e, { beats: ts.beats, meter: comp ? 4 : ts.mult === 1 ? g1.meter : undefined, compound: comp }); if (!A2?.pulse) return false; A = A2; A.tapped = true; A.snapped = ts.mult; return true; })()) { }
     else if (G.taps?.length >= 4) { const T = G.taps.slice().sort((a, b) => a - b), d = T.slice(1).map((t, i) => t - T[i]).sort((a, b) => a - b), p = d[d.length >> 1];
       if (p > 0.25 && p < 1.3) { let ph = 0, n = 0; for (const t of T) { const r = ((t - T[0]) / p) % 1; ph += r > 0.5 ? r - 1 : r; n++; } const t0 = T[0] + (ph / n) * p, B = []; for (let t = t0 - p * Math.ceil((t0 - w.s) / p); t <= w.e + 0.01; t += p) B.push(+t.toFixed(4)); A = LickMusic.analyze(c.raw, w.s, w.e, { beats: B }); A.tapped = true; } }
     else if (G.bpm && (!A?.pulse || G.user)) A = LickMusic.analyze(c.raw, w.s, w.e, { bpm: G.bpm });
@@ -7738,6 +7743,8 @@ function bandA(c) {
       if (fx.mult === 2) B = B.flatMap((t, i) => i + 1 < B.length ? [t, (t + B[i + 1]) / 2] : [t]); else if (fx.mult === 0.5) B = B.filter((_, i) => i % 2 === 0);
       if (fx.shift) B = B.slice(0, -1).map((t, i) => (t + B[i + 1]) / 2);
       if (B.length >= 4) { const f0 = A.forced; A = LickMusic.analyze(c.raw, w.s, w.e, { beats: B }); A.fixed = true; A.forced = f0; } }
+    // round 4: free time inside the window (a rubato intro, a fermata): the band waits there
+    if (A?.pulse) { const g2 = gridOf(c); A.free = (g2?.free || []).filter(([u, v]) => v > w.s && u < w.e).map(([u, v]) => [Math.max(w.s, u), Math.min(w.e, v)]); }
   } catch (err) { console.warn("beat", err); } c._bandA = { key, A }; }
   return c._bandA.A;
 }
@@ -7757,14 +7764,20 @@ const chOf = c => { const b = newBand(c); return b.ch || (b.ch = { src: null, ed
 const hasChEdits = c => { const e = c.band?.ch?.edits; return !!e && (Object.keys(e.at || {}).length + Object.keys(e.byName || {}).length) > 0; };
 function applyEdits(H, ed) {
   if (!ed) return H;
-  return H.map(h => { const nm = ed.at?.[h.t0.toFixed(2)] || ed.byName?.[h.name]; if (!nm || nm === h.name) return h; const k = LickMusic.parseChord(nm); return k ? { ...h, root: k.root, pcs: k.pcs, name: k.name, q: k.q, power: k.q === "5", drone: false, edited: true, was: h.name } : h; });
+  return H.map(h => { const nm = ed.at?.[h.t0.toFixed(2)] || ed.byName?.[h.name]; if (!nm || nm === h.name) return h; const k = LickMusic.parseChord(nm); return k ? { ...h, root: k.root, pcs: k.pcs, name: k.name, q: k.q, power: k.q === "5", drone: false, edited: true, was: h.name, rest: false } : h; });
 }
 // the plan before edits, for the band's window
 // 3.3: the take's key, once (Krumhansl over the whole take). Sure: the band's chords come from that key. Not sure: rhythm only.
 function gridOf(c) { if (!c?.raw) return null; if (!c._grid || c._grid.v !== c.raw.v) { let g = null; try { g = LickMusic.bandGrid(c.raw, 0, c.raw.duration); } catch (err) { console.warn("grid", err); } c._grid = { v: c.raw.v, g }; } return c._grid.g; }
 function takeKeyOf(c) { if (!c?.raw) return null; if (!c._tk || c._tk.v !== c.raw.v) { let k = null; try { const g = gridOf(c); k = LickMusic.takeKey(c.raw, g?.pulse ? g.beats : null); } catch { } c._tk = { v: c.raw.v, k }; } return c._tk.k; }
 const keySure = c => { const k = takeKeyOf(c); return !!k && k.key != null && k.conf >= LickMusic.KEY_SURE; };
-const rhythmOnly = c => { const k = takeKeyOf(c); return !!k && !keySure(c) && !c.band?.keyForce; };
+// round 4: chord-follow. Sure key or not, the band plays the chords it hears bar by bar and rests where it isn't sure; drums
+// only when there's no bar it's sure of
+const rhythmOnly = c => { if (c.band?.keyForce) return false; const A = bandA(c); if (!A?.pulse) { const k = takeKeyOf(c); return !!k && !keySure(c); } const H = chordBase(c, A); return !H.some(h => !h.rest); };
+// round 4: the beat gate. When the beat's phase, tempo level or 3/4-vs-6/8 reading isn't clearly ahead of its rival
+// (gridOf(c).gate), the band never plays a guess: it waits for 4 taps on the beat (or a Flip / x2 / /2 fix, or "use the guess")
+function beatPending(c) { if (!bandOn(c)) return false; const b = c.band || {}, G = b.grid || {}, fx = b.fix || {};
+  if (b.guessOK || G.taps?.length >= 4 || G.bpm || G.beats?.length || fx.shift || (fx.mult && fx.mult !== 1)) return false; const g = gridOf(c); return !!(g?.pulse && g.gate); }
 // write the take's tempo and key into raw.info (the card and everything else read them from there)
 function unifyKey(c) { const i = c?.raw?.info; if (!i) return; const g = gridOf(c), k = takeKeyOf(c);
   if (g?.pulse) i.tempo = Math.round(g.bpm);
@@ -7776,11 +7789,14 @@ function queueUnify(c) { if (!c?.raw || c.example || unifyQ.has(c)) return; unif
 function unifyNext() { unifyT = 0; const c = unifyQ.values().next().value; if (!c) return; unifyQ.delete(c);
   try { if (c.raw?.info && c.raw.info.kv !== 2) { unifyKey(c); persist(c); renderCard(c); if (cur() === c && !$("#studio").hidden) renderStudio(); } } catch (err) { console.warn("key", err); }
   if (unifyQ.size) unifyT = setTimeout(unifyNext, 150); }
-function chordBase(c, A) {
+function chordBase(c, A) { if (c._cb && c._cb.A === A && c._cb.sure === keySure(c) && c._cb.src === chOf(c).src) return c._cb.H; const H = chordBase0(c, A); c._cb = { A, sure: keySure(c), src: chOf(c).src, H }; return H; }
+function chordBase0(c, A) {
   const ch = chOf(c), w = bandWindow(c), key = `${c.key}|${w.s.toFixed(2)}|${w.e.toFixed(2)}`;
   if (ch.src === "melody" && ch.mel?.key === key && ch.mel.H?.length) return ch.mel.H;
-  const tk = takeKeyOf(c);
-  return A ? LickMusic.harmonyPlan(c.raw, A, keySure(c) ? { key: tk.key, minor: tk.minor } : {}) : [];
+  const tk = takeKeyOf(c); if (!A) return [];
+  if (!A.pulse) return LickMusic.harmonyPlan(c.raw, A, keySure(c) ? { key: tk.key, minor: tk.minor } : {});
+  const H = LickMusic.chordFollow(c.raw, A, keySure(c) ? { key: tk.key, minor: tk.minor, s: w.s, e: w.e } : { scale: tk && tk.key != null ? { key: tk.key, minor: tk.minor } : null, s: w.s, e: w.e });
+  if (keySure(c)) { H.key = tk.key; H.minor = tk.minor; } return H;
 }
 function bandChords(c, A) { A = A || bandA(c); return applyEdits(chordBase(c, A), chOf(c).edits); }
 // chords for any other stretch (mix parts, overlays): heard chords with the same edits by name
@@ -7808,13 +7824,13 @@ function chordsCard(c, A) {
   const melOK = mel?.H?.length, sel = ch.selT != null ? H.find(h => Math.abs(h.t0 - ch.selT) < 0.02) : null;
   const baseSel = sel ? base.find(h => Math.abs(h.t0 - sel.t0) < 0.02) || sel : null;
   const cur0 = sel ? LickMusic.parseChord(sel.name) || LickMusic.chord(sel.root, "5") : null;
-  const strip = H.map(h => `<button type="button" class="chchip${h.edited ? " ed" : ""}${sel === h ? " on" : ""}" data-chsel="${h.t0}" aria-pressed="${sel === h}"><b>${esc(sp(c, h.name))}</b><em>${fmtP(h.t0)}</em></button>`).join("");
+  const strip = H.map(h => `<button type="button" class="chchip${h.edited ? " ed" : ""}${h.rest ? " rest" : ""}${sel === h ? " on" : ""}" data-chsel="${h.t0}" aria-pressed="${sel === h}"${h.rest ? ` aria-label="Band rests here, ${fmtP(h.t0)}. Tap to set a chord"` : ""}><b>${h.rest ? "rest" : esc(sp(c, h.name))}</b><em>${fmtP(h.t0)}</em></button>`).join("");
   return `<div class="chords"><div class="chhead">${icon("i-note")}<b>Chords the band plays</b>${hasChEdits(c) ? `<button type="button" class="linkbtn" data-act="ch-reset">Reset</button>` : ""}</div>
     <span class="seg bseg chsrc" role="group" aria-label="Chords from"><button type="button" data-chsrc="heard" aria-pressed="${ch.src !== "melody"}">What it heard</button><button type="button" data-chsrc="melody" aria-pressed="${ch.src === "melody"}" ${melOK ? "" : "disabled"}>${mel?.busy ? "Listening…" : "From your melody"}</button></span>
     <p class="hint">${ch.src === "melody" ? `Made from the notes you ${isSinger(c) ? "sang" : "played"}: a chord per bar that fits your melody. Change any of them.` : melOK && mel.mono >= 0.55 ? "Singing or a single-note line? Try From your melody: chords built to fit your tune." : "Tap a chord to change it. The band and the on-screen chords follow."}</p>
     <div class="chstrip" role="group" aria-label="Chords">${strip}</div>
     ${sel ? `<div class="ched">
-      <div class="chedtop"><span class="chbig">${esc(sp(c, sel.name))}</span>${sel.edited ? `<span class="was">was ${esc(sp(c, sel.was))}</span>` : ""}<button type="button" class="linkbtn" data-act="ch-close">Done</button></div>
+      <div class="chedtop"><span class="chbig">${sel.rest ? "rest" : esc(sp(c, sel.name))}</span>${sel.edited ? `<span class="was">was ${esc(sp(c, sel.was))}</span>` : ""}<button type="button" class="linkbtn" data-act="ch-close">Done</button></div>
       <span class="seg bseg" role="group" aria-label="Change">${[["one", "Just this one"], ["all", `Every ${esc(sp(c, baseSel?.name || sel.name))}`]].map(([k, l]) => `<button type="button" data-chscope="${k}" aria-pressed="${(ch.scope || "one") === k}">${l}</button>`).join("")}</span>
       <h5>Major, minor and more</h5><div class="chq">${QL.map(([q, l]) => `<button type="button" data-chq="${q}" aria-pressed="${cur0?.q === q}">${l}</button>`).join("")}</div>
       <h5>Root</h5><div class="chroot">${LickMusic.NOTES.map((n, i) => `<button type="button" data-chroot="${i}" aria-pressed="${cur0?.root === i}">${LickMusic.spellPc(i, ...keyCtx(c))}</button>`).join("")}</div>
@@ -8045,9 +8061,37 @@ function beatCard(c, A) {
   const b = newBand(c), fx = b.fix || {}, G = b.grid || {}, free = A && (!A.pulse || A.forced), fixed = fx.shift || (fx.mult && fx.mult !== 1) || G.taps?.length >= 4 || G.bpm;
   const what = !A?.pulse ? "free time" : `${A.bpm} BPM${A.meter === 3 ? " · 3/4" : ""}${A.swing > 0.58 ? " · swung" : ""}${A.tapped ? " · from your taps" : free ? " (yours to set)" : fixed ? " · corrected by you" : " · heard in your playing"}`;
   return `<div class="beatcard"><div class="beatrow"><span><b>Beat</b> ${what}</span><button type="button" class="dtg" data-act="beat-click" aria-pressed="${!!b.click}">${icon("i-clock")}Click</button></div>
+    ${A?.free?.length ? `<div class="beatrow"><span>Free time ${A.free.map(([u, v]) => `${fmtP(u)}–${fmtP(v)}`).join(", ")}: the band waits, then comes in on the next bar.</span><button type="button" class="dtg" data-act="countin" aria-pressed="${!!b.countin}">${icon("i-clock")}Count-in</button></div>` : ""}
     ${A?.pulse && !free ? `<span class="seg wide beatfix" role="group" aria-label="Fix the beat"><button type="button" data-bfix="shift" aria-pressed="${!!fx.shift}">½ beat later</button><button type="button" data-bfix="x2" aria-pressed="${fx.mult === 2}">×2</button><button type="button" data-bfix="half" aria-pressed="${fx.mult === 0.5}">÷2</button><button type="button" data-bpm="tap">Tap along</button></span>`
       : `<span class="seg wide beatfix"><button type="button" data-bpm="-2" aria-label="Slower">− slower</button><button type="button" data-bpm="tap">Tap along</button><button type="button" data-bpm="+2" aria-label="Faster">+ faster</button></span>`}
     <p class="hint">${A?.pulse && !free ? "Turn on Click and press play to hear where LickPick puts the beat. If the clicks fall between your strums, tap ½ beat later. Too fast or too slow: ×2 or ÷2. Or tap along while it plays." : "No steady beat in your playing. Set one: tap along while it plays, or use − / +."}${fixed ? ` <button class="linkbtn" type="button" data-bfix="reset">Back to what LickPick heard</button>` : ""}</p></div>`;
+}
+// round 4: one playful step instead of a band on the wrong beat. Your take plays; 4 taps where you'd nod your head set the
+// tempo level and the beat (snapped to what LickPick heard), the band joins at once, and it's kept with the take (and saved).
+function tap4HTML(c) {
+  const n = state.t4?.id === c.id ? state.t4.T.length : 0, playing = isPlaying();
+  return `<div class="tap4" id="tap4" role="group" aria-labelledby="tap4h">
+    <strong id="tap4h">Tap 4 beats along with your take</strong>
+    <p>Your groove can be counted more than one way. Tap where you'd nod your head and the band locks in.</p>
+    <button type="button" class="tap4btn" data-act="tap4" aria-describedby="tap4st">${icon("i-drum")}<span class="tap4l">${playing ? "Tap" : "Play & tap"}</span><span class="tap4dots" aria-hidden="true">${[0, 1, 2, 3].map(i => `<i class="${i < n ? "on" : ""}"></i>`).join("")}</span></button>
+    <p class="tap4st" id="tap4st" aria-live="polite">${n ? `${4 - n} more` : playing ? "Tap on every beat." : "Your take plays; tap on every beat."}</p>
+    <button type="button" class="linkbtn" data-act="tap4-guess">Skip: use LickPick's guess</button>
+  </div>`;
+}
+function tap4Show(c, msg) { const el = $("#tap4"); if (!el) return; const n = state.t4?.id === c.id ? state.t4.T.length : 0; el.querySelectorAll(".tap4dots i").forEach((x, i) => x.classList.toggle("on", i < n)); const st = $("#tap4st"); if (st) st.textContent = msg; const l = el.querySelector(".tap4l"); if (l) l.textContent = isPlaying() ? "Tap" : "Play & tap"; }
+function tap4(c) {
+  const t4 = state.t4?.id === c.id ? state.t4 : (state.t4 = { id: c.id, T: [] });
+  if (!isPlaying()) { t4.T = []; bandPreview(c, player ? player.virt() : 0); tap4Show(c, "Now tap on every beat."); return; }
+  if (!bandPreview.clock) { tap4Show(c, "Getting your take ready…"); return; }
+  const now = bandPreview.clock(), last = t4.T[t4.T.length - 1];
+  if (last != null && (now - last > 2.5 || now <= last)) t4.T = [];   // a pause or a jump starts over
+  t4.T.push(+now.toFixed(4)); try { navigator.vibrate?.(12); } catch { }
+  const btn = $("#tap4 .tap4btn"); if (btn) { btn.classList.remove("hit"); void btn.offsetWidth; btn.classList.add("hit"); }
+  if (t4.T.length < 4) { tap4Show(c, `${4 - t4.T.length} more`); return; }
+  const b = newBand(c), T = t4.T.slice(); b.grid = { ...(b.grid || {}), taps: T }; delete b.fix; c._bandA = null; c._tight = null;
+  const A = bandA(c); if (!A?.tapped) { delete b.grid.taps; c._bandA = null; t4.T = []; tap4Show(c, "Those taps were uneven. Try again, on every beat."); return; }
+  state.t4 = null; persist(c); const at = player ? player.virt() : 0; stopBand(); renderStudio(); bandPreview(c, at);
+  toast(`Locked in: ${A.bpm} BPM. The band is on your beat.`, { icon: "i-undo", label: "Redo", run: () => { const b2 = newBand(c); if (b2.grid) delete b2.grid.taps; c._bandA = null; persist(c); stopBand(); state.t4 = { id: c.id, T: [] }; renderStudio(); } });
 }
 function bandPanel(c) {
   const w = bandWindow(c);
@@ -8062,15 +8106,16 @@ function bandPanel(c) {
   const aiOff = k => b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k];
   const plays = INSTS.map(([k, ic, l]) => { const has = !!b.parts[k] && !aiOff(k) && !(k === "drums" && A && !A.pulse) && !(k === "extra" && set.extra === "none"); return `<button type="button" data-bpart="${k}" aria-pressed="${has}">${k === "extra" ? (set.extra === "none" ? "Extra" : EXTRA_NAME[set.extra]) : l}</button>`; }).join("");
   const sub = (id, title, sum, body) => `<details class="bsub" data-bsub="${id}"${state.bsub === id ? " open" : ""}><summary><b>${title}</b><em>${sum}</em></summary><div class="bsubin">${body}</div></details>`;
-  const tk = takeKeyOf(c), ro = rhythmOnly(c), nd = +b.nudge || 0;
+  const tk = takeKeyOf(c), ro = rhythmOnly(c), nd = +b.nudge || 0, pend = beatPending(c);
   // 3.3: the band switch lives on the player (one control). This panel shapes it: style first, then timing and level.
-  return `<div class="bandhead${on ? " on" : ""}">${icon("i-drum")}<span class="grow"><strong>${on ? `${esc(styles[picked]?.name || "Band")} band is on` : "Pick a style to hear the band"}${freeBand(c) || !on ? "" : proTag()}</strong><em>${on ? (ro ? "Drums only: no clear key in your take, so nothing can clash." : `${A?.pulse ? `${A.bpm} BPM` : "Free time"}${keyText(c) ? ` · ${esc(keyText(c))}` : ""} · plays and saves with you`) : "Or tap the drum on the player. Drums, bass and keys, on your beat."}</em></span></div>
+  return `<div class="bandhead${on ? " on" : ""}">${icon("i-drum")}<span class="grow"><strong>${on ? `${esc(styles[picked]?.name || "Band")} band is on` : "Pick a style to hear the band"}${freeBand(c) || !on ? "" : proTag()}</strong><em>${on ? (pend ? `Waiting for your 4 taps on the beat${keyText(c) ? ` · ${esc(keyText(c))}` : ""}.` : ro ? "Drums only: no chord in your take is clear enough to follow." : `${A?.pulse ? `${A.bpm} BPM` : "Free time"}${keyText(c) ? ` · ${esc(keyText(c))}` : " · follows your chords"} · plays and saves with you`) : "Or tap the drum on the player. Drums, bass and keys, on your beat."}</em></span></div>
+    ${on && pend ? tap4HTML(c) : ""}
     <div class="chipset stylechips" role="group" aria-label="Style"><button type="button" class="ai" data-bstyle="auto" aria-pressed="${on && b.style === "auto"}">${icon("i-bolt")}${sampler ? "AI pick" : "Auto"}</button>${Object.entries(styles).map(([k, v]) => `<button type="button" data-bstyle="${k}" aria-pressed="${on && b.style === k}">${v.name}${FREE_STYLES.includes(k) ? "" : proTag()}</button>`).join("")}</div>
     ${on && b.style === "auto" ? `<div class="ai-why">${b.aiBusy ? "Thinking…" : b.ai ? `<b>${esc(styles[b.ai.style].name)}.</b> ${esc(b.ai.why || "")}` : `<b>${esc(styles[picked].name)}</b> suits ${A?.pulse ? `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}` : "free time"}.${sampler ? " Tap AI pick again for Claude's call." : ""}`}</div>` : ""}
     ${on ? `<div class="timing" role="group" aria-label="Band timing">
       <span class="tlbl">Timing</span>
       <span class="nudge"><button type="button" data-bnudge="-10" aria-label="Band 10 ms earlier">−</button><button type="button" class="nval" data-bnudge="0" aria-label="Reset nudge">${nd ? `${nd > 0 ? "+" : ""}${nd} ms` : "On time"}</button><button type="button" data-bnudge="10" aria-label="Band 10 ms later">+</button></span>
-      ${A?.pulse && !free ? `<button type="button" class="tchip" data-bfix="shift" aria-pressed="${!!b.fix?.shift}">½ beat</button>` : ""}
+      ${A?.pulse && !free ? `<button type="button" class="tchip" data-bfix="shift" aria-pressed="${!!b.fix?.shift}" aria-label="Flip beat: move the band half a beat">Flip beat</button><button type="button" class="tchip" data-bfix="x2" aria-pressed="${b.fix?.mult === 2}" aria-label="Double the band's tempo">×2</button><button type="button" class="tchip" data-bfix="half" aria-pressed="${b.fix?.mult === 0.5}" aria-label="Halve the band's tempo">÷2</button>` : ""}
       <button type="button" class="tchip" data-bpm="tap" aria-label="Tap tempo: tap on every beat while it plays">${icon("i-clock")}Tap</button>
     </div>
     <label class="bvol"><span>Band level</span><input type="range" id="bandGain" min="0" max="1.4" step="0.05" value="${b.gain ?? 0.8}" aria-label="Band level"><output id="bandGainV">${Math.round((b.gain ?? 0.8) / 0.8 * 100)}%</output></label>
@@ -8079,7 +8124,7 @@ function bandPanel(c) {
     <p class="hint">${heardText(c)}</p>
     <div class="bandchart" id="bandChart">${bandChartHTML(c)}</div>
     ${A?.pulse ? sub("beat", "Beat & timing", `${A.bpm} BPM${tightOn(c) ? " · locked" : ""}`, `${beatCard(c, A)}${followCard(c, A)}`) : ""}
-    ${sub("chords", "Chords", esc((bandChords(c, A) || []).slice(0, 4).map(h => sp(c, h.name)).join(" ") || "—"), chordsCard(c, A))}
+    ${sub("chords", "Chords", esc((bandChords(c, A) || []).filter(h => !h.rest).slice(0, 4).map(h => sp(c, h.name)).join(" ") || "—"), chordsCard(c, A))}
     ${sub("shape", "Groove & sounds", esc([set.groove, set.feel !== "normal" ? set.feel : "", set.kit].filter(Boolean).join(" · ")), bandOpts(c, set, A))}
     ${sub("heard", "Already in your take", esc(HEARD.filter(([k]) => heardOn(c, k)).map(x => x[1]).join(", ") || "Just you"), `<div class="heard"><div class="heardchips" role="group" aria-label="Instruments already in your take">${HEARD.filter(([k]) => k !== "vocals" || b.heard?.deep).map(([k, l]) => `<button type="button" data-heard="${k}" aria-pressed="${heardOn(c, k)}">${l}</button>`).join("")}</div><p class="hint">${b.heard?.busy ? "Listening…" : "Tap to correct. The band leaves out what's already playing."}</p></div>`)}
     <div class="row-btns mybtns"><button class="btn ghost sm" type="button" data-act="band-my-save">${icon("i-star")}Save as My band</button>${b.set && Object.keys(b.set).length ? `<button class="btn ghost sm" type="button" data-act="band-reset">${icon("i-undo")}Style defaults</button>` : ""}</div>
@@ -8395,15 +8440,15 @@ let bandPlaying = false, bandNodes = [], bandGainNode = null, bandSync = 0, band
 function bandKey(c) {
   const w = bandWindow(c), b = c.band, A = bandA(c);
   const style = bandStyleOf(c, A), set = bandSet(c, A), harmony = A ? bandChords(c, A) : null;
-  const ro = rhythmOnly(c), parts = { drums: !(A && !A.pulse), bass: !ro, keys: !ro, extra: !ro && set.extra !== "none" };   // render every track; the mixer mutes and levels them. No clear key: rhythm only
+  const ro = rhythmOnly(c), pend = beatPending(c), parts = pend ? { drums: false, bass: false, keys: false, extra: false } : { drums: !(A && !A.pulse), bass: !ro, keys: !ro, extra: !ro && set.extra !== "none" };   // render every track; the mixer mutes and levels them. Nothing sure in the harmony: rhythm only. Beat not sure yet: silent until your 4 taps
   // tightened: the band plays the steady grid the take was moved onto, in the take's new time
   const T = A ? tightFor(c) : null, W = t => ClipExporter.warpDst(T.knots, t);
-  const rw = T ? { s: W(w.s), e: W(w.e), endAt: W(w.endAt ?? w.e) } : w, A2 = T ? { ...A, swing: T.feel ?? A.swing, beats: A.beats.map(W), bars: A.bars.map(b => ({ ...b, t0: W(b.t0), t1: W(b.t1) })), chords: (A.chords || []).map(h => ({ ...h, t0: W(h.t0), t1: W(h.t1) })) } : A;
-  let H2 = T && harmony ? harmony.map(h => ({ ...h, t0: W(h.t0), t1: W(h.t1) })) : harmony, set2 = T ? { ...set, tempo: "follow" } : set;
+  const rw = T ? { s: W(w.s), e: W(w.e), endAt: W(w.endAt ?? w.e) } : w, A2 = T ? { ...A, swing: T.feel ?? A.swing, beats: A.beats.map(W), bars: A.bars.map(b => ({ ...b, t0: W(b.t0), t1: W(b.t1) })), chords: (A.chords || []).map(h => ({ ...h, t0: W(h.t0), t1: W(h.t1) })), free: (A.free || []).map(([u, v]) => [W(u), W(v)]) } : A;
+  let H2 = T && harmony ? harmony.map(h => ({ ...h, t0: W(h.t0), t1: W(h.t1) })) : harmony, set2 = { ...(T ? { ...set, tempo: "follow" } : set), countin: !!c.band?.countin };
   // 3.3 nudge: the whole band a few ms earlier or later (the player's ears win), same in the preview and the saved video
   const nd = Math.max(-0.12, Math.min(0.12, (+b?.nudge || 0) / 1000)); let A3 = A2;
-  if (nd && A2) { const N = t => t + nd; A3 = { ...A2, beats: A2.beats.map(N), bars: (A2.bars || []).map(x => ({ ...x, t0: N(x.t0), t1: N(x.t1) })), chords: (A2.chords || []).map(h => ({ ...h, t0: N(h.t0), t1: N(h.t1) })) }; if (H2) { const k0 = H2.key, m0 = H2.minor; H2 = H2.map(h => ({ ...h, t0: N(h.t0), t1: N(h.t1) })); H2.key = k0; H2.minor = m0; } }
-  return { w, rw, style, set: set2, parts, A: A3, harmony: H2, nd, key: JSON.stringify([c.key || c.id, rw.s, rw.e, rw.endAt, style, parts, set2, (H2 || []).map(h => h.name + "@" + h.t0.toFixed(2)), A?.forced ? A.bpm : 0, nd]) };
+  if (nd && A2) { const N = t => t + nd; A3 = { ...A2, beats: A2.beats.map(N), bars: (A2.bars || []).map(x => ({ ...x, t0: N(x.t0), t1: N(x.t1) })), chords: (A2.chords || []).map(h => ({ ...h, t0: N(h.t0), t1: N(h.t1) })), free: (A2.free || []).map(([u, v]) => [N(u), N(v)]) }; if (H2) { const k0 = H2.key, m0 = H2.minor; H2 = H2.map(h => ({ ...h, t0: N(h.t0), t1: N(h.t1) })); H2.key = k0; H2.minor = m0; } }
+  return { w, rw, style, set: set2, parts, A: A3, harmony: H2, nd, key: JSON.stringify([c.key || c.id, rw.s, rw.e, rw.endAt, style, parts, set2, (H2 || []).map(h => h.name + (h.rest ? "-" : "") + "@" + h.t0.toFixed(2)), A?.forced ? A.bpm : 0, nd, (A3?.beats || []).length, A3?.beats?.[0] ?? 0, A3?.compound ? 1 : 0, (A3?.free || []).map(f => f.map(x => x.toFixed(2)).join("-")).join(",")]) };
 }
 // One render per setting, shared by prefetch, preview and save.
 function bandRender(c) {
@@ -8460,7 +8505,7 @@ function bandPrefetch(c) {
   setTimeout(() => { if (cur() === c && bandish()) { if (bandOn(c)) bandRender(c).catch(() => { }); const w = bandWindow(c); windowAudio(c, w.s, w.e).catch(() => { }); } }, 80);
 }
 function stopBand() {
-  for (const n of bandNodes) { try { n.stop(); } catch { } } bandNodes = []; try { layerCams(cur() || {}, null); } catch { } clearInterval(bandSync); bandSync = 0; bandChain = null;
+  for (const n of bandNodes) { try { n.stop(); } catch { } } bandNodes = []; try { layerCams(cur() || {}, null); } catch { } clearInterval(bandSync); bandSync = 0; bandChain = null; bandPreview.clock = null;
   if (video) { video.muted = false; try { video.playbackRate = Seg.rate; } catch { } }
   cancelAnimationFrame(bandRaf); bandRaf = 0; $("#sStage .pb-beat")?.classList.remove("on");
   if (player && player.ext) { player.ext = null; player.extTotal = null; player.onToggle = null; player.onSeekExt = null; player.pause(); }
@@ -8501,8 +8546,9 @@ function bandToggle(c, on) {
   o.band = on ?? !o.band;
   if (o.band) { o.sep = false; const b = newBand(c); b.beatOK = true; c.src = c.src === "mix" ? "pick" : c.src; }
   persist(c); renderStudio(); renderExport(c);
+  if (o.band && beatPending(c)) { state.t4 = { id: c.id, T: [] }; if (state.step !== "band") { state.step = "band"; renderStudio(); } bandPreview(c, at); setTimeout(() => $("#tap4")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); return; }   // the card says what to do: no toast over its button
   if (o.band || needsEngine(c)) bandPreview(c, at); else if (player) { showPick(c); if (was) { player.seekVirt(at); player.play(); } }
-  if (o.band && !store.get("lp:bandtip")) { store.set("lp:bandtip", 1); toast(rhythmOnly(c) ? "Band on: drums only, since your take has no clear key." : "Band on. Nudge it or change the style under Band."); }
+  if (o.band && !store.get("lp:bandtip")) { store.set("lp:bandtip", 1); toast(rhythmOnly(c) ? "Band on: drums only, since no chord in your take is clear enough." : "Band on. Nudge it or change the style under Band."); }
 }
 // 3.3: what the speakers are playing right now on the AudioContext clock (output latency included), so the picture
 // lines up with what you HEAR, not with what was just handed to the sound card
@@ -8514,7 +8560,7 @@ function bandPreview(c, from = 0) {
   const S = srcOf(c); if (S?.kind !== "pick") { if (player) player.play(); return; }
   const say = t => { c.bandStatus = t; const el = $("#bandStatus"); if (el) el.textContent = t; const b2 = $("#dockStatus"); if (b2) b2.textContent = t; if (!t) renderDock(c); };
   const ctx = ensureCtx(); try { if (ctx.state === "suspended") ctx.resume(); } catch { }   // inside the tap
-  const P = S.plan, w = bandWindow(c), token = {}, withBand = bandOn(c), clickOn = !!c.band?.click && !!c.raw?.chromaQ, simple = !P || (P.simple && !(c.tune && tuneOff(c)));
+  const pend = beatPending(c), P = S.plan, w = bandWindow(c), token = {}, withBand = bandOn(c) && !pend, clickOn = !!c.band?.click && !!c.raw?.chromaQ && !pend, simple = !P || (P.simple && !(c.tune && tuneOff(c)));
   const Ls = P?.simple ? layersOn(c) : [];
   bandPreview.token = token; bandPlaying = true; renderDock(c); syncBandBtn(c);
   say(withBand ? "Lining up the band…" : simple ? "" : "Getting the sound ready…");
@@ -8559,6 +8605,7 @@ function bandPreview(c, from = 0) {
     }).catch(() => { });
     a.onended = () => { if (bandPreview.token === token && bandPlaying) { stopBand(); if (player?.loop) bandPreview(c); else renderDock(c); } };
     const srcAt = el => simple ? w.s + el : planSrcT(P, el), elNow = () => Math.max(0, Math.min(total, heardAt(ctx) - t0 + at0));
+    bandPreview.clock = () => srcAt(elNow());   // what you hear now, in the take's own time (the 4 taps use it)
     // the beat light: the band's own beats, in the result's time
     const K = withBand || clickOn ? bandKey(c) : null, beatsEl = K?.A?.pulse && simple ? K.A.beats.map(t => t - K.rw.s).filter(t => t >= 0 && t <= total) : null;
     if (player) { player.set([[w.s, w.e]], S.label, fmt(total)); player.ext = elNow; player.extTotal = total; player.onToggle = () => { stopBand(); renderDock(c); };
@@ -9110,7 +9157,7 @@ document.addEventListener("click", e => {
   if (d.step) { openStep(c, d.step); return; }
   if (d.act === "step-next" || d.act === "step-back") { const i = STEPS.findIndex(x => x[0] === state.step) + (d.act === "step-next" ? 1 : -1); if (i >= 0 && i < STEPS.length) openStep(c, STEPS[i][0]); return; }
   if (d.zoom) { const v = viewOf(c), D = c.raw?.duration || 1, now = nowT(c), span = v.b - v.a; if (d.zoom === "fit") { c._view = null; drawWave(); return; } const ns = d.zoom === "in" ? span / 2 : span * 2, ctr = now >= v.a && now <= v.b ? now : (v.a + v.b) / 2; setZoom(c, ctr - ns / 2, ns); return; }
-  if (d.act === "dock-band" || d.act === "band-use") { const o = exOpts(c); if (!o.canBand) { toast("The band plays with a Pick."); return; } const was = bandPlaying; stopBand(); o.band = !o.band; if (o.band) { o.sep = false; const b = newBand(c); c.src = c.src === "mix" ? "pick" : c.src; if (!b.beatOK) { b.click = false; state.beatChk = null; if (state.step !== "band") state.step = "band"; } } persist(c); renderStudio(); renderExport(c); if (was || (o.band && d.act === "dock-band")) bandPreview(c); return; }
+  if (d.act === "dock-band" || d.act === "band-use") { const o = exOpts(c); if (!o.canBand) { toast("The band plays with a Pick."); return; } const was = bandPlaying; stopBand(); o.band = !o.band; if (o.band) { o.sep = false; const b = newBand(c); c.src = c.src === "mix" ? "pick" : c.src; if (!b.beatOK) { b.click = false; state.beatChk = null; if (state.step !== "band") state.step = "band"; } if (beatPending(c)) { state.t4 = { id: c.id, T: [] }; state.step = "band"; setTimeout(() => $("#tap4")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); } } persist(c); renderStudio(); renderExport(c); if (was || (o.band && d.act === "dock-band")) bandPreview(c); return; }
   if (d.act === "dock-layers") { const o = exOpts(c), was = bandPlaying; stopBand(); o.layers = o.layers === false; persist(c); renderStudio(); if (was) bandPreview(c); return; }
   if (d.act === "dock-size") { store.set("lp:dockmini", store.get("lp:dockmini") ? 0 : 1); renderDock(c); setTimeout(drawWave, 30); return; }
   if (d.act === "feel-toggle") { const was = bandPlaying; stopBand(); c.feel = c.feel === "mine" ? "band" : "mine"; c._tight = null; persist(c); renderStudio(); if (was) bandPreview(c); return; }
@@ -9131,6 +9178,9 @@ document.addEventListener("click", e => {
     if (d.bchk === "half") { stopBand(); b.fix = { ...(b.fix || {}), shift: !(b.fix?.shift) }; c._bandA = null; c._tight = null; b.click = true; persist(c); renderStudio(); bandPreview(c); toast("Moved half a beat. Listen again."); return; }
     if (d.bchk === "speed") { state.beatChk = "speed"; b.click = true; persist(c); renderStudio(); if (!was) bandPreview(c); return; } }
   if (d.balt) { const b = newBand(c), o = (c._alts?.out || []).find(x => x.bpm === +d.balt); if (!o) return; stopBand(); b.grid = { beats: o.beats }; delete b.fix; c._bandA = null; c._tight = null; b.click = true; persist(c); renderStudio(); bandPreview(c); return; }
+  if (d.act === "tap4") { tap4(c); return; }
+  if (d.act === "tap4-guess") { const b = newBand(c), was = bandPlaying, at = was && player ? player.virt() : 0; b.guessOK = true; state.t4 = null; c._bandA = null; persist(c); stopBand(); renderStudio(); bandPreview(c, at); toast("The band plays LickPick's guess. Off? Flip beat, ×2 or ÷2 under Timing."); return; }
+  if (d.act === "countin") { const b = newBand(c), was = bandPlaying, at = was && player ? player.virt() : 0; stopBand(); b.countin = !b.countin; persist(c); renderStudio(); if (was) bandPreview(c, at); return; }
   if (d.act === "beat-click") { const b = newBand(c), was = bandPlaying; stopBand(); b.click = !b.click; persist(c); renderStudio(); if (was || b.click) bandPreview(c); return; }
   if (d.bfix) { const b = newBand(c), fx = b.fix = b.fix || {}, was = bandPlaying; stopBand();
     if (d.bfix === "reset") { delete b.fix; if (b.grid) { delete b.grid.taps; if (!b.grid.bpm) delete b.grid; } }
@@ -9400,7 +9450,7 @@ window.__lpStep = (k, sub) => { const c = cur(); if (!c) return; if (sub) state.
 window.__lpBand = on => { const c = cur(); if (!c) return; const o = exOpts(c); o.band = !!on && o.canBand; if (o.band) newBand(c); renderStudio(); };
 window.__lpDockBand = () => { const c = cur(); if (!c) return; const o = exOpts(c); if (!o.canBand) return; stopBand(); o.band = !o.band; if (o.band) { o.sep = false; const b = newBand(c); c.src = c.src === "mix" ? "pick" : c.src; if (!b.beatOK) { b.click = false; state.beatChk = null; state.step = "band"; } } persist(c); renderStudio(); renderExport(c); bandPreview(c); };   // test hook: the old Band switch under the video
 window.__lpExport = () => { const c = cur(); if (c && $("#exportSheet").hidden) openExport(c); };
-window.__ck = state; window.__lp = { BUILD, IN_CLAUDE, lic, verifyKey, q: () => ({ state, player, video, bandPlaying }), t: { pickOf, pausePlay, bandKey, bandWindow, bandToggle, takeKeyOf, openStudio, closeStudio, setView, render, renderStudio, cur, openPro, bandRender, bandA, tightFor, pickPlan, REC, jamCredits, shareText, mb, srcOf, exOpts, doExport } };
+window.__ck = state; window.__lp = { BUILD, IN_CLAUDE, lic, verifyKey, q: () => ({ state, player, video, bandPlaying }), t: { pickOf, pausePlay, bandKey, bandWindow, bandToggle, takeKeyOf, gridOf, beatPending, bandChords, openStudio, closeStudio, setView, render, renderStudio, cur, openPro, bandRender, bandA, tightFor, pickPlan, REC, jamCredits, shareText, mb, srcOf, exOpts, doExport } };
 })();
 
 </script>
