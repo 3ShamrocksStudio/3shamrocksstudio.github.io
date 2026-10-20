@@ -5502,11 +5502,12 @@ async function decodeAudioStream(file, onP) {
     const mono = new Float32Array(n), tmp = new Float32Array(n);
     for (let c = 0; c < ch; c++) { smp.copyTo(tmp, { planeIndex: c, format: "f32-planar" }); for (let i = 0; i < n; i++) mono[i] += tmp[i] / ch; }
     for (let i = 0; i < n; i++) { lp += a * (mono[i] - lp); mono[i] = lp; }    // gentle low-pass before downsampling
-    const o0 = Math.round(smp.timestamp * SR), cnt = Math.floor(n / ratio);
-    for (let j = 0; j < cnt; j++) {
-      const o = o0 + j; if (o < 0 || o >= out.length) continue;
-      const p = j * ratio, i0 = Math.floor(p), f = p - i0;
-      out[o] = mono[i0] * (1 - f) + (mono[Math.min(n - 1, i0 + 1)] || 0) * f;
+    // every output sample this chunk covers, placed by time: the old per-chunk count (floor(n / ratio)) left one empty
+    // sample per 20 ms chunk at 48 kHz, a 50 Hz train of clicks under the onset detector
+    const t0 = smp.timestamp, oA = Math.ceil(t0 * SR - 1e-6), oB = Math.ceil((t0 + n / sr) * SR - 1e-6);
+    for (let o = Math.max(0, oA); o < oB && o < out.length; o++) {
+      const p = (o / SR - t0) * sr, i0 = Math.max(0, Math.floor(p)), f = p - i0;
+      out[o] = i0 + 1 < n ? mono[i0] * (1 - f) + mono[i0 + 1] * f : mono[n - 1];
       if (o > maxI) maxI = o;
     }
     smp.close?.();
