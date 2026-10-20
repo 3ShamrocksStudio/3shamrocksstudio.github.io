@@ -5024,16 +5024,25 @@ Return only JSON: {"style": string, "drums": boolean, "bass": boolean, "keys": b
     auth.onAuthStateChanged(au, u => { S.user = u ? { uid: u.uid, name: u.displayName || "", email: u.email || "", photo: u.photoURL || "" } : null; S.ready = true; emit(); if (u) pull().catch(() => { }); });
     return S.fb;
   }
+  // round 4: Firebase only notices a closed popup after its own polling (5-12 s on some phones), so the button came back
+  // late. Now: when this window gets focus back (or becomes visible) and no sign-in result has arrived within 1.5 s, the
+  // button is enabled again. A late success still signs you in (onAuthStateChanged); a newer attempt owns the state.
+  let attempt = 0;
   async function signIn() {
-    S.busy = true; S.err = ""; emit();
-    try { const { auth, au } = await load(); const p = new auth.GoogleAuthProvider(); try { await auth.signInWithPopup(au, p); } catch (e) {
+    const my = ++attempt; S.busy = true; S.err = ""; emit();
+    let t = 0, poll = 0; const release = () => { if (my === attempt && S.busy && !S.user) { S.busy = false; emit(); } };
+    const here = () => document.visibilityState !== "hidden" && (!document.hasFocus || document.hasFocus());
+    const back = () => { if (!here()) { clearTimeout(t); t = 0; return; } if (!t) t = setTimeout(release, 1500); };
+    const off = () => { clearTimeout(t); clearInterval(poll); window.removeEventListener("focus", back); document.removeEventListener("visibilitychange", back); };
+    try { const { auth, au } = await load(); const p = new auth.GoogleAuthProvider(); window.addEventListener("focus", back); document.addEventListener("visibilitychange", back); poll = setInterval(back, 300);
+      try { await auth.signInWithPopup(au, p); } catch (e) {
       // only a BLOCKED popup falls back to the full-page redirect; closing or cancelling it just returns to where you were
       const code = String(e?.code || "");
-      if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") await auth.signInWithRedirect(au, p);
-      else if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request" || code === "auth/user-cancelled") { S.busy = false; S.err = ""; emit(); return; }
+      if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") { off(); await auth.signInWithRedirect(au, p); }
+      else if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request" || code === "auth/user-cancelled") { off(); if (my === attempt) { S.busy = false; S.err = ""; emit(); } return; }
       else throw e; } }
-    catch (e) { S.err = /network/i.test(String(e?.code || e)) ? "No connection." : "Couldn't sign in."; }
-    S.busy = false; emit();
+    catch (e) { if (my === attempt) S.err = /network/i.test(String(e?.code || e)) ? "No connection." : "Couldn't sign in."; }
+    off(); if (my === attempt) { S.busy = false; emit(); }
   }
   async function signOut() { try { const { auth, au } = await load(); await auth.signOut(au); } catch { } S.user = null; emit(); }
   // delete the account: the cloud copy (Firestore users/{uid}) first, then the sign-in itself. Google may ask to sign in
