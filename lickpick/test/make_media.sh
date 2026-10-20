@@ -17,6 +17,8 @@ enc() { ffmpeg -v error -y -f lavfi -i "color=c=0x334455:s=${3:-320x180}:r=12" -
 for d in qa x y; do for f in media/$d/*.wav; do enc "$f" "media/$(basename "$f" .wav).webm"; done; done
 python3 gen_drums.py media/qa/t3_rock128.wav media/qa/truth.json media/z_drums128.wav && enc media/z_drums128.wav media/z_drums128.webm
 python3 -c "import json; a = sum((json.load(open(f'media/{d}/truth.json')) for d in ('qa', 'x', 'y')), []); json.dump(a, open('media/truth.json', 'w')); print(len(a), 'takes')"
+# round 4: takes for the tap-4-beats flow (tools/tap4.mjs): a reggae one-drop and a cumbia (beat gate) and a rock take (no gate)
+python3 gen_v4.py media/r4 tune4 1 reggae,cumbia,rock && for f in media/r4/*.wav; do enc "$f" "media/r4/$(basename "$f" .wav).webm"; done
 # edge cases: no sound, sound only, empty, cut short, not a video, portrait, h264/aac, a big 720p file
 E=media/edge
 ffmpeg -v error -y -f lavfi -i "color=c=0x334455:s=320x180:r=12" -t 30 -c:v libvpx -b:v 60k "$E/no_audio.webm"
