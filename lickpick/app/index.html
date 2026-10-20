@@ -878,7 +878,7 @@ input[type=range]{min-height:44px}
 .vh{font:900 28px/1.1 var(--display,inherit);margin:8px 0 6px}
 .libstats{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--dim);line-height:1.35;margin:0 0 14px;padding:12px;border-radius:14px;background:var(--panel);border:2px solid var(--line)}
 .libstats:empty{display:none}
-.libstats svg{width:20px;height:20px;flex:none;color:var(--cyan)} .libstats b{display:block;color:var(--text);font-size:14px}
+.libstats svg{width:20px;height:20px;flex:none;color:var(--cyan)} .libstats b{display:block;color:var(--text);font-size:14px} .libstats .nw{white-space:nowrap}
 .madelist{display:flex;flex-direction:column;gap:10px;padding-bottom:120px}
 .made{display:grid;grid-template-columns:84px 1fr;gap:12px;padding:10px;border-radius:16px;background:var(--panel);border:2px solid var(--line)}
 .mthumb{width:84px;height:110px;border-radius:12px;border:2px solid var(--ink);background:#000 center/cover;display:grid;place-items:center;color:var(--volt);box-shadow:3px 3px 0 var(--hot);padding:0}
@@ -1355,7 +1355,7 @@ input[type=range]{min-height:44px}
 .wks b{font-weight:900;font-size:14px;white-space:nowrap}.wks em{font-style:normal;color:var(--mute);font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wks.on{border-color:var(--hot)}
 .wkplay{margin-left:auto;min-height:40px;padding:0 14px;box-shadow:none}
-.wkready{margin:0 0 14px;animation:lpBreath 2.6s ease-in-out infinite}
+.wkready{margin:0 0 14px;animation:lpBreath 2.6s ease-in-out 3}
 .session{display:none}
 .quickbar{display:flex!important;flex-wrap:wrap;gap:8px;margin:0 0 12px;padding:0}
 .quickbar[hidden]{display:none!important}
@@ -1406,7 +1406,7 @@ details.fold>summary em+::after{margin-left:0}
 #sNav .navn svg.i{width:18px;height:18px;transform:rotate(180deg)}
 #sBar:not(.last) .exportbtn{flex:none;background:var(--panel);color:var(--text);border-color:var(--line);box-shadow:none;padding:0 16px}
 #sBar:not(.last) .exportbtn .ex-l em{display:none}
-#sBar.last .exportbtn{flex:1;animation:lpBreath 2.6s ease-in-out infinite}
+#sBar.last .exportbtn{flex:1;animation:lpBreath 2.6s ease-in-out 3}
 
 /* motion: content rises in, the next move breathes */
 .screen .panel>*{animation:lpUp .38s cubic-bezier(.2,.9,.3,1) both}
@@ -1440,7 +1440,7 @@ details.fold>summary b{color:var(--text)}
 #studio:not(.tips) .wlegend,#studio:not(.tips) .sugs{display:none!important}
 
 /* ================= 3SDS home: one hero, one strip, the takes ================= */
-.hero-act{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;width:100%;margin:6px 0 10px;padding:16px 18px;border-radius:18px;border:3px solid var(--ink);background:var(--volt);color:var(--ink);text-align:left;box-shadow:5px 5px 0 var(--hot);animation:lpBreath 2.6s ease-in-out infinite}
+.hero-act{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;width:100%;margin:6px 0 10px;padding:16px 18px;border-radius:18px;border:3px solid var(--ink);background:var(--volt);color:var(--ink);text-align:left;box-shadow:5px 5px 0 var(--hot);animation:lpBreath 2.6s ease-in-out 3}
 .hero-act .hnum{font:400 52px/1 var(--display);letter-spacing:-.02em}
 .hero-act>span{display:flex;flex-direction:column;gap:2px;min-width:0}
 .hero-act strong{font:400 21px/1.1 var(--display)}
@@ -1515,10 +1515,10 @@ details.fold>summary b{color:var(--text)}
 #signgate{position:fixed;inset:0;z-index:50;background:var(--stage);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:40px 24px;text-align:center}
 #signgate .sg-logo{display:flex;align-items:center;gap:10px}
 #signgate .sg-logo svg{width:52px;height:52px;filter:drop-shadow(3px 3px 0 var(--hot))}
-#signgate .sg-logo .word{font:900 28px/1 var(--head);letter-spacing:-.02em}
-#signgate .sg-logo .word b{color:var(--cyan)}
+#signgate .sg-logo .word{font:400 28px/1 var(--display);letter-spacing:-.01em}
+#signgate .sg-logo .word b{font-weight:400;color:var(--volt)}
 #signgate .sg-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;border:2px solid var(--hot);color:var(--hot);font:800 12px var(--body);letter-spacing:.08em;text-transform:uppercase}
-#signgate h2{font:900 28px/1.15 var(--head);letter-spacing:-.02em;margin:0}
+#signgate h2{font:400 26px/1.15 var(--display);letter-spacing:-.01em;margin:0}
 #signgate .sg-sub{color:var(--dim);font-size:15px;margin:0;max-width:280px}
 #signgate .btn.wide{max-width:300px;width:100%}
 #signgate .sg-st{margin:-10px 0 -10px;min-height:20px;color:var(--dim);font-size:14px}
@@ -1691,7 +1691,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
   <div class="sg-logo"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></div>
   <span class="sg-tag">Beta</span>
   <h2 id="sgTitle">Join the beta</h2>
-  <p class="sg-sub" id="sgSub">Sign in with Google to use LickPick and keep your takes across phones.</p>
+  <p class="sg-sub" id="sgSub">Signing in is optional. With Google, your profile, streak and taste follow you to every phone. Your videos stay on this one.</p>
   <button class="btn wide" type="button" data-act="acct-in"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg>Sign in with Google</button>
   <p class="sg-st" id="sgStatus" role="status" aria-live="polite"></p>
   <button type="button" data-act="acct-skip" style="background:none;border:0;color:var(--dim);font:600 14px var(--body);text-decoration:underline;cursor:pointer;padding:12px 16px;min-height:44px">Continue without an account</button>
@@ -5507,7 +5507,8 @@ function afterSave(c) {
     <p>${r.rankUp && rk.next ? `${esc(RANKS[rk.i][2])} to reach ${esc(rk.next[1])}.` : st > 1 ? `Keep it going: one jam a week.${r.spare ? " +1 Spare String." : ""}` : "Come back with your next jam. One a week keeps your streak."}</p>
     <div class="winrow"><span><b>${L.saves}</b>saved</span><span><b>${st}</b>week streak</span><span><b>${esc(rk.name)}</b>stage</span></div>
     <div class="row-btns">${c?.raw?.chromaQ && pickOf(c) && !layersOf(c).length ? `<button class="btn" type="button" data-act="rec-from-save">${icon("i-rec")}Play along with it</button>` : store.get("lp:remind") ? "" : `<button class="btn" type="button" data-act="wk-remind">${icon("i-clock")}Remind me weekly</button>`}${installPrompt ? `<button class="btn ghost" type="button" data-act="install">${icon("i-install")}Install</button>` : ""}${!isPro() && L.saves <= 3 ? `<button class="btn ghost" type="button" data-act="pro-open">${icon("i-bolt")}No mark · Pro</button>` : `<button class="btn ghost" type="button" onclick="shareApp()">${icon("i-share")}Share app</button>`}<button class="btn ghost" type="button" data-act="win-close">Nice</button></div>`;
-  setTimeout(() => { el.hidden = false; }, 900);
+  // one sheet at a time: the save sheet first; this one follows when it's closed
+  setTimeout(() => { const ex = $("#exportSheet"); if (ex && !ex.hidden) { const mo = new MutationObserver(() => { if (ex.hidden) { mo.disconnect(); setTimeout(() => { el.hidden = false; }, 250); } }); mo.observe(ex, { attributes: true, attributeFilter: ["hidden"] }); } else el.hidden = false; }, 900);
 }
 
 async function keepMade(name, blob, c) {
@@ -5527,9 +5528,11 @@ function renderMade() {
 }
 async function libStats() {
   const el = $("#libStats"); if (!el) return;
-  const n = state.clips.filter(c => c.inLib).length, line = `${n} video${n === 1 ? "" : "s"} · ${madeList().length} short${madeList().length === 1 ? "" : "s"}`;
-  if (!navigator.storage?.estimate) { el.innerHTML = `${icon("i-lock")}<span><b>Your library: ${line}</b>Kept privately on this phone, never uploaded.</span>`; return; }
-  try { const e = await navigator.storage.estimate(); el.innerHTML = `${icon("i-lock")}<span><b>Your library: ${n} video${n === 1 ? "" : "s"} · ${madeList().length} short${madeList().length === 1 ? "" : "s"} · ${fmtSize(e.usage || 0)}</b>Kept privately on this phone, never uploaded. ${fmtSize(Math.max(0, (e.quota || 0) - (e.usage || 0)))} of room left for LickPick.</span>`; } catch { el.innerHTML = ""; }
+  // items never break inside ("26 MB" stays together); the line wraps only between them
+  const n = state.clips.filter(c => c.inLib).length, m = madeList().length, nw = x => `<span class="nw">${x}</span>`;
+  const head = (...xs) => `<b>${nw("Your library:")} ${xs.map(nw).join(" · ")}</b>`;
+  if (!navigator.storage?.estimate) { el.innerHTML = `${icon("i-lock")}<span>${head(`${n} video${n === 1 ? "" : "s"}`, `${m} short${m === 1 ? "" : "s"}`)}Kept privately on this phone, never uploaded.</span>`; return; }
+  try { const e = await navigator.storage.estimate(); el.innerHTML = `${icon("i-lock")}<span>${head(`${n} video${n === 1 ? "" : "s"}`, `${m} short${m === 1 ? "" : "s"}`, fmtSize(e.usage || 0))}Kept privately on this phone, never uploaded. ${nw(`${fmtSize(Math.max(0, (e.quota || 0) - (e.usage || 0)))} of room left`)} for LickPick.</span>`; } catch { el.innerHTML = ""; }
 }
 async function madeAct(kind, id) {
   const m = madeList().find(x => x.id === id); if (!m) return;
@@ -5627,6 +5630,7 @@ async function decodeAudioStream(file, onP) {
   const input = new M.Input({ source: new M.BlobSource(file), formats: M.ALL_FORMATS });
   const stall = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("stalled")), ms))]);
   const at = await stall(input.getPrimaryAudioTrack(), 8000);
+  if (!at && await stall(input.getPrimaryVideoTrack(), 8000).catch(() => null)) throw Object.assign(new Error("no audio track"), { code: "no_audio" });   // a video with no sound at all
   if (!at || !(await stall(at.canDecode(), 8000))) return null;
   const dur = await stall(at.computeDuration(), 8000), SR = 22050;
   if (!(dur >= 1)) throw Object.assign(new Error("unreadable"), { code: "unreadable" });   // empty or broken: under a second of readable sound
@@ -5674,7 +5678,7 @@ async function pump() {
   try {
     let y = null, sr = 22050;
     if (!c.file?.size) throw Object.assign(new Error("empty file"), { code: "unreadable" });
-    if (!streamBroken) try { const st = await decodeAudioStream(c.file, p => { c.progress = p * 0.25; renderCard(c); }); if (st) { y = st.data; sr = st.sampleRate; c.decoder = "stream"; } } catch (e) { y = null; if (e?.code === "too_long" || e?.code === "too_short" || e?.code === "unreadable") throw e; if (String(e).includes("stalled")) streamBroken = true; }
+    if (!streamBroken) try { const st = await decodeAudioStream(c.file, p => { c.progress = p * 0.25; renderCard(c); }); if (st) { y = st.data; sr = st.sampleRate; c.decoder = "stream"; } } catch (e) { y = null; if (e?.code === "too_long" || e?.code === "too_short" || e?.code === "unreadable" || e?.code === "no_audio") throw e; if (String(e).includes("stalled")) streamBroken = true; }
     if (!y) {
       // a file the phone can't decode must never block the clips behind it
       const audio = await within(decodeAudio(c.file), 45000 + c.size / 2e6 * 1000, "decode"); c.decoder = "full";
@@ -5707,8 +5711,8 @@ async function pump() {
     // a file nothing can read (empty, damaged, not a video) is marked as such, not sent for review. A real video whose
     // sound can't be read (no audio track) stays a "watch it yourself" review.
     let bad = err?.code === "unreadable";
-    if (!bad && !["too_long", "too_short"].includes(err?.code) && !/memory|allocation|range/i.test(String(err))) { try { const M = await mb(), inp = new M.Input({ source: new M.BlobSource(c.file), formats: M.ALL_FORMATS }); bad = !(await within(inp.getPrimaryVideoTrack(), 5000, "probe")); } catch { bad = true; } }
-    c.bad = bad; c.status = "error"; c.errorMsg = bad ? "Can't read this file. It may be empty or damaged." : err?.code === "too_long" ? "Over 30 minutes. Trim it in your gallery, then add it again." : err?.code === "too_short" ? "Under 5 seconds. Too short to judge." : ""; c.error = err?.code === "too_long" ? "can't scan videos over 30 minutes" : err?.code === "too_short" ? "can't judge a clip under 5 seconds" : /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
+    if (!bad && !["too_long", "too_short", "no_audio"].includes(err?.code) && !/memory|allocation|range/i.test(String(err))) { try { const M = await mb(), inp = new M.Input({ source: new M.BlobSource(c.file), formats: M.ALL_FORMATS }); bad = !(await within(inp.getPrimaryVideoTrack(), 5000, "probe")); } catch { bad = true; } }
+    c.bad = bad; c.errCode = err?.code || ""; c.status = "error"; c.errorMsg = bad ? "Can't read this file. It may be empty or damaged." : err?.code === "no_audio" ? "This video has no sound, so there's nothing to listen to. Open it to watch it." : err?.code === "too_long" ? "Over 30 minutes. Trim it in your gallery, then add it again." : err?.code === "too_short" ? "Under 5 seconds. Too short to judge." : ""; c.error = err?.code === "too_long" ? "can't scan videos over 30 minutes" : err?.code === "too_short" ? "can't judge a clip under 5 seconds" : /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
   }
   busy = false; renderCard(c); renderTop(); renderBoxes(); if (state.openId === c.id) renderStudio(); pump();
 }
@@ -5783,7 +5787,7 @@ function phrase(c) {
   if (c.status === "queued") return `<b class="fst f-wait">In line</b> ${fmtSize(c.size)}`;
   if (c.status === "listening") return `<b class="fst f-scan">${c.phase === "watching" ? "Watching" : "Scanning"} ${Math.round((c.progress || 0) * 100)}%</b>`;
   if (c.status === "error" && c.bad) return `<b class="fst f-bad">Can't read</b> It may be empty or damaged.`;
-  if (c.status === "error") return c.errorMsg ? `<b class="fst f-err">Not checked</b> ${esc(c.errorMsg)}` : `<b class="fst f-err">Not checked</b> ${esc(c.error)}. Open it to play it yourself.`;
+  if (c.status === "error") return c.errorMsg ? `<b class="fst f-err">${c.errCode === "no_audio" ? "No sound" : "Not checked"}</b> ${esc(c.errorMsg)}` : `<b class="fst f-err">Not checked</b> ${esc(c.error)}. Open it to play it yourself.`;
   const v = verdict(c), k = keptSeconds(c), n = onParts(c).length;
   const pk = pickOf(c), cuts = (c.result?.removed || []).length;
   if (v === "trash") return c.override ? "Marked by you" : "No music found";
@@ -6179,7 +6183,7 @@ function renderOnboard() {
     // 2.6: the lockup, one line, the button. Nothing else.
     B.innerHTML = `<div class="ob-hero"><span class="lockup big" aria-label="LickPick"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></span></div><h1>Your best take, found.</h1>
       <p class="obline">Private. On your phone. Free.</p>
-      ${window.LickSync?.enabled ? accountCard() : ''}`;
+      ${window.LickSync?.enabled && !store.get("lp:guest") ? accountCard() : ''}`;   // just said "without an account" on the gate: don't ask again
     next.hidden = true; ctas.hidden = false;
   } else {
     const L = state.pickLen;
