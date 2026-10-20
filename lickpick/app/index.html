@@ -6613,7 +6613,7 @@ function suggestions(c) {
   // 3) too long for Reels/TikTok
   if (state.pickLen === "auto" && pk.len > 34) out.push({ id: "len30", ic: "i-phone", c: "hot", t: `Your Pick runs ${fmt(pk.len)}. Reels and TikTok hold attention best under 30 s.`, a: "Make it 30 s" });
   // 4) a band that fits the groove it measured
-  if (A?.pulse && c.raw.chromaQ) { const st = LickBand.heuristicStyle(c.raw, A), nm = LickBand.STYLES[st]?.name;
+  if (A?.pulse && c.raw.chromaQ) { const st = c.band ? autoStyle(c, A) : (st0 => isPro() || FREE_STYLES.includes(st0) ? st0 : A.bpm >= 104 && st0 !== "reggae" ? "rock" : "ballad")(LickBand.heuristicStyle(c.raw, A)), nm = LickBand.STYLES[st]?.name;
     if (nm) out.push({ id: "band:" + st, ic: "i-drum", c: "blaze", t: `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}${A.meter === 3 ? ", 3/4" : ""}${keyText(c) ? `, ${keyText(c)}` : ""}: that's a ${nm.toLowerCase()} groove.`, a: `Hear a ${nm.toLowerCase()} band` }); }
   return out.filter(x => !dis[x.id.split(":")[0]]).slice(0, 3);
 }
@@ -7344,7 +7344,9 @@ function newBand(c) {
   const my = store.get(MYBAND_KEY);
   return (c.band = { style: my?.style || "auto", set: { ...(my?.set || {}) }, parts: { drums: true, bass: true, keys: true, extra: true }, gain: 0.8, vertical: true, lv: { drums: 1, bass: 1, keys: 1, extra: 1, ...(my?.lv || {}) } });
 }
-const bandStyleOf = (c, A) => { const b = c.band; return b.style === "auto" ? (b.ai?.style || LickBand.heuristicStyle(c.raw, A)) : b.style; };
+// Auto never lands on a Pro style for a free player: the nearest free style instead (the take's swing still applies)
+const autoStyle = (c, A) => { const st = c.band?.ai?.style || LickBand.heuristicStyle(c.raw, A); return isPro() || FREE_STYLES.includes(st) ? st : (A?.pulse && A.bpm >= 104 && st !== "reggae" ? "rock" : "ballad"); };
+const bandStyleOf = (c, A) => { const b = c.band; return b.style === "auto" ? autoStyle(c, A) : b.style; };
 // singers start from a gentle piano bed
 const bandSet = (c, A) => { const b = c.band, set = { ...(isSinger(c) ? { groove: "simple", keys: "piano", play: "held" } : {}), ...b.set }; if (b.style === "auto" && b.ai?.extra && !set.extra) set.extra = b.ai.extra; return LickBand.settle(bandStyleOf(c, A), set); };
 const EXTRA_NAME = { strings: "Strings", brass: "Brass", gtr: "Electric gtr", nylon: "Nylon gtr", steel: "Steel gtr", choir: "Choir", vibes: "Vibes", sax: "Sax", synth: "Synth", none: "Extra" };
@@ -7554,8 +7556,8 @@ function bandPanel(c) {
   if (!w) return `<p class="hint keep">The band plays with a Pick. Choose one first.</p>`;
   if (!c.raw.chromaQ) return `<p class="hint keep">This clip was scanned by an older LickPick. Remove it from the list and add it again so the band can hear your chords.</p>`;
   const b = newBand(c), o = exOpts(c), on = bandOn(c);
-  const A = bandA(c), styles = LickBand.STYLES, auto = LickBand.heuristicStyle(c.raw, A);
-  const picked = b.style === "auto" ? (b.ai?.style || auto) : b.style, set = bandSet(c, A);
+  const A = bandA(c), styles = LickBand.STYLES;
+  const picked = bandStyleOf(c, A), set = bandSet(c, A);
   if (!b.heard || b.heard.key !== `${c.key}|${w.s.toFixed(2)}|${w.e.toFixed(2)}`) setTimeout(() => bandHear(c), 0);
   if (!b.ch?.mel || b.ch.mel.key !== `${c.key}|${w.s.toFixed(2)}|${w.e.toFixed(2)}`) setTimeout(() => bandMelody(c), 30);
   const free = A && (!A.pulse || A.forced), grid = b.grid?.bpm;
