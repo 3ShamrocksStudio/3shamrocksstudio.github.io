@@ -134,34 +134,44 @@ var TH_IMG={
 };
 // products: ms month-offsets along 0..18
 var PROD=[
- {id:'j8nix',nm:'J8N.IX',ac:'var(--pur)',roi:'$35k',owner:'you',act:'DM me Stripe test keys + price → I wire checkout.',
-  ms:[{id:'j1',l:'Billing',mo:1},{id:'j2',l:'First paid',mo:2.5},{id:'j3',l:'$10k MRR',mo:6},{id:'j4',l:'$35k MRR',mo:16}]},
- {id:'kit',nm:'AI Brand Kit',ac:'var(--lime)',roi:'$8k',owner:'claude',act:'Claude: ship 5 SKUs + a small membership.',
-  ms:[{id:'k1',l:'Live',mo:0,def:true},{id:'k2',l:'First sales',mo:1},{id:'k3',l:'5 SKUs',mo:3},{id:'k4',l:'Scales',mo:10}]},
- {id:'ig',nm:'IG Network',ac:'var(--cyan)',roi:'$10k',owner:'you',act:'Instagram → create 4 accounts (phone + 2FA).',
-  ms:[{id:'g1',l:'Launch 4',mo:1},{id:'g2',l:'Daily content',mo:3},{id:'g3',l:'1st affiliate $',mo:4.5},{id:'g4',l:'Compounds',mo:12}]},
- {id:'shomer',nm:'SH✡MER',ac:'var(--amber)',roi:'$30k',logo:'shomer',owner:'you',act:'Play Console → Testing → add 12 tester emails → Save.',
-  ms:[{id:'s1',l:'Internal test',mo:0,def:true},{id:'s2',l:'12 testers',mo:1},{id:'s3',l:'Verified',mo:1.5},{id:'s4',l:'Public',mo:3},{id:'s5',l:'1st license',mo:8}]},
- {id:'th',nm:'Trashure-Hunters',ac:'var(--green)',roi:'IP',logo:'th',owner:'claude',act:'Claude: finish MVP screens + COPPA.',
-  ms:[{id:'t1',l:'Core built',mo:0,def:true},{id:'t2',l:'MVP screens',mo:1},{id:'t3',l:'TestFlight',mo:2}]},
- {id:'nature',nm:'SHOMER Nature',ac:'var(--blue)',roi:'rides SHOMER',logo:'nature',owner:'you',act:'Play Console → Nature listing + data declarations.',
+ {id:'j8nix',nm:'J8N.IX',ac:'var(--pur)',roi:'$35k',owner:'you',short:'set up payments',
+  act:'1) Go to stripe.com and click “Sign up” (it’s free, ~5 min).  2) Once you’re logged in, tell me here.  → Then I connect it and it can take payments. You don’t touch any code.',
+  ms:[{id:'j1',l:'Payments on',mo:1},{id:'j2',l:'First sale',mo:2.5},{id:'j3',l:'$10k/mo',mo:6},{id:'j4',l:'$35k/mo',mo:16}]},
+ {id:'kit',nm:'AI Brand Kit',ac:'var(--lime)',roi:'$8k',owner:'claude',
+  act:'Nothing for you — I’m adding new kits to the store.',
+  ms:[{id:'k1',l:'Live',mo:0,def:true},{id:'k2',l:'First sales',mo:1},{id:'k3',l:'5 kits',mo:3},{id:'k4',l:'Scales',mo:10}]},
+ {id:'ig',nm:'IG Network',ac:'var(--cyan)',roi:'$10k',owner:'you',short:'make the 4 IG accounts',
+  act:'1) Open the Instagram app → tap “Sign up”.  2) Create 4 new accounts (keep your phone nearby — it texts you a code each time).  3) Tell me when they’re made → I hand you the names, bios and first posts.',
+  ms:[{id:'g1',l:'4 accounts',mo:1},{id:'g2',l:'Posting daily',mo:3},{id:'g3',l:'First $',mo:4.5},{id:'g4',l:'Growing',mo:12}]},
+ {id:'shomer',nm:'SH✡MER',ac:'var(--amber)',roi:'$30k',logo:'shomer',owner:'you',short:'add 12 testers',
+  act:'On a computer, go to play.google.com/console → open SH✡MER → left menu “Testing” → “Internal testing” → “Testers” tab → paste in 12 email addresses → click Save. (That starts the 14-day countdown.)',
+  ms:[{id:'s1',l:'In testing',mo:0,def:true},{id:'s2',l:'12 testers',mo:1},{id:'s3',l:'ID verified',mo:1.5},{id:'s4',l:'Public',mo:3},{id:'s5',l:'First sale',mo:8}]},
+ {id:'th',nm:'Trashure-Hunters',ac:'var(--green)',roi:'IP',logo:'th',owner:'claude',
+  act:'Nothing for you — I’m finishing the app.',
+  ms:[{id:'t1',l:'Core built',mo:0,def:true},{id:'t2',l:'Screens',mo:1},{id:'t3',l:'Test build',mo:2}]},
+ {id:'nature',nm:'SHOMER Nature',ac:'var(--blue)',roi:'rides SHOMER',logo:'nature',owner:'you',short:'open the Nature listing',
+  act:'Play Console (play.google.com/console) → “Create app” → name it “SHOMER Nature”. Tell me once it exists → I fill in every field, text and image for you.',
   ms:[{id:'n1',l:'Built',mo:0,def:true},{id:'n2',l:'Listing',mo:2},{id:'n3',l:'Live',mo:3}]},
- {id:'chore',nm:'Chore Royale',ac:'var(--orange)',roi:'opt-in',owner:'hold',act:'Hold — fire only if IG shows a family audience.',
-  ms:[{id:'c1',l:'Built',mo:0,def:true},{id:'c2',l:'Billing',mo:4}]},
- {id:'ezra',nm:'Ezra',ac:'var(--pink)',roi:'concept',owner:'hold',act:'Hold — build the do-it-for-me agent core later.',
-  ms:[{id:'e1',l:'Concept',mo:0,def:true},{id:'e2',l:'Agent core',mo:6}]},
- {id:'fair',nm:'Fairent',ac:'var(--blue)',roi:'PoC',owner:'hold',act:'Hold — solve the CBS rent-data feed first.',
-  ms:[{id:'f1',l:'PoC',mo:0,def:true},{id:'f2',l:'Data',mo:5}]},
- {id:'milo',nm:'Milo',ac:'var(--pink)',roi:'concept',owner:'hold',act:'Hold — needs clinician review before any child uses it.',
-  ms:[{id:'m1',l:'Design',mo:0,def:true},{id:'m2',l:'Review',mo:4}]}
+ {id:'chore',nm:'Chore Royale',ac:'var(--orange)',roi:'opt-in',owner:'hold',
+  act:'Parked — nothing to do. We revisit only if Instagram pulls in a family crowd.',
+  ms:[{id:'c1',l:'Built',mo:0,def:true},{id:'c2',l:'Payments',mo:4}]},
+ {id:'ezra',nm:'Ezra',ac:'var(--pink)',roi:'concept',owner:'hold',
+  act:'Parked — nothing to do right now.',
+  ms:[{id:'e1',l:'Concept',mo:0,def:true},{id:'e2',l:'Build core',mo:6}]},
+ {id:'fair',nm:'Fairent',ac:'var(--blue)',roi:'PoC',owner:'hold',
+  act:'Parked — blocked until we get rent-price data. Nothing for you.',
+  ms:[{id:'f1',l:'Prototype',mo:0,def:true},{id:'f2',l:'Get data',mo:5}]},
+ {id:'milo',nm:'Milo',ac:'var(--pink)',roi:'concept',owner:'hold',
+  act:'Parked — a child-safety expert must review it first. Nothing for you.',
+  ms:[{id:'m1',l:'Design',mo:0,def:true},{id:'m2',l:'Expert review',mo:4}]}
 ];
 var WAIT=[
- {id:'w_ops',t:'Scheduled sidebar → toggle “3SDS Daily Ops” ON'},
- {id:'w_ig',t:'Instagram → create 4 accounts (phone+2FA)'},
- {id:'w_testers',t:'Play Console → add 12 tester emails'},
- {id:'w_verify',t:'Play Console → finish identity verification'},
- {id:'w_stripe',t:'DM me J8N.IX Stripe keys'},
- {id:'w_domain',t:'Point 3shamrocks.com → GitHub Pages'}
+ {id:'w_ops',t:'Open the Scheduled list (sidebar) → find “3SDS Daily Ops” → switch it ON'},
+ {id:'w_ig',t:'Instagram app → Sign up → make 4 new accounts (phone needed for the code)'},
+ {id:'w_testers',t:'play.google.com/console → SH✡MER → Testing → Internal → Testers → paste 12 emails → Save'},
+ {id:'w_verify',t:'Play Console → Settings → finish the ID check it asks you for'},
+ {id:'w_stripe',t:'stripe.com → “Sign up” (free) → tell me when you’re logged in'},
+ {id:'w_domain',t:'Where you bought 3shamrocks.com → DNS settings → tell me the host, I’ll give exact values'}
 ];
 var MAXMO=18;
 function prodById(id){return PROD.filter(function(p){return p.id===id;})[0];}
@@ -223,8 +233,8 @@ function renderStatus(){
  var youOpen=PROD.filter(function(p){return p.owner==='you'&&doneCount(p)<p.ms.length;});
  var waitOpen=WAIT.filter(function(w){return !dn(w.id);}).length;
  var first=youOpen[0];
- document.getElementById('statusLine').innerHTML= waitOpen>0
-   ? '<b>'+waitOpen+'</b> action'+(waitOpen>1?'s':'')+' need you · next: '+(first?first.act.replace(/\.$/,''):'—')
+ document.getElementById('statusLine').innerHTML= youOpen.length>0
+   ? '<b>'+youOpen.length+'</b> thing'+(youOpen.length>1?'s':'')+' need you · start with: '+(first?first.nm+' — '+(first.short||'open it'):'—')
    : 'All your actions clear — <b>Claude is driving</b>.';
  document.getElementById('statusSub').textContent='Tap a product to open its timeline · '+PROD.length+' tracks · updated '+new Date().toISOString().slice(0,10);
 }
