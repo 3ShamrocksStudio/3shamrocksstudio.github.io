@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>3Shamrocks — Master Plan to $1M ARR</title>
+<title>3Shamrocks — Command Board · Plan to $1M ARR</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
- --brand-50:#eeecfb;--brand-100:#dcd8f6;--brand-500:#5f4fcc;--brand-600:#4f41b8;--brand-700:#43388b;
+ --brand-50:#eeecfb;--brand-100:#dcd8f6;--brand-300:#9a8ee4;--brand-500:#5f4fcc;--brand-600:#4f41b8;--brand-700:#43388b;
  --sig-500:#2aa765;--sig-600:#18895b;
- --n-0:#fff;--n-25:#f8fafc;--n-50:#f1f4f8;--n-100:#e9edf3;--n-200:#dde3ec;--n-400:#9aa4b4;--n-500:#6b7688;--n-600:#4b5567;--n-700:#333b48;--n-900:#161b24;
+ --n-0:#fff;--n-25:#f8fafc;--n-50:#f1f4f8;--n-100:#e9edf3;--n-200:#dde3ec;--n-300:#c3cbd8;--n-400:#9aa4b4;--n-500:#6b7688;--n-600:#4b5567;--n-700:#333b48;--n-900:#161b24;
  --success:#16a34a;--success-bg:#dcfce7;--success-fg:#15803d;
  --warning:#f59e0b;--warning-bg:#fef3c7;--warning-fg:#9a5a00;
  --danger:#e5484d;--danger-bg:#fee2e2;--danger-fg:#c4373c;
@@ -19,274 +19,282 @@
  --r:16px;--r-sm:10px;--pill:999px;
  --sh-sm:0 1px 3px rgb(16 23 41/.06);--sh-md:0 10px 30px rgb(16 23 41/.08);
  --fd:"Space Grotesk",system-ui,sans-serif;--fb:"Inter",system-ui,sans-serif;
- --LEFT:300px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--fb);background:var(--n-25);color:var(--n-900);line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-.wrap{max-width:1120px;margin:0 auto;padding:26px 22px 60px}
-h1{font-family:var(--fd);font-weight:700;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.wrap{max-width:1040px;margin:0 auto;padding:22px 18px 60px}
+h1{font-family:var(--fd);font-weight:700;font-size:19px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 h1 .s{color:var(--sig-500)}
 .stamp{font-family:var(--fb);font-size:11px;font-weight:600;color:var(--n-400);margin-left:auto}
-.sec{font-family:var(--fd);font-size:14px;font-weight:600;margin:34px 0 12px;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.sec{font-family:var(--fd);font-size:14px;font-weight:600;margin:30px 0 11px;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
 .sec .ico{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex:0 0 auto}
 .sec small{font-weight:500;color:var(--n-500);font-family:var(--fb);font-size:12px}
 
-/* hero */
-.hero{background:var(--grad);color:#fff;border-radius:var(--r);padding:24px 26px;box-shadow:var(--sh-md);margin:18px 0 0;display:grid;grid-template-columns:1fr 1.2fr;gap:30px;align-items:center}
-.hero .star{font-size:10.5px;text-transform:uppercase;letter-spacing:.16em;opacity:.85}
-.hero .big{font-family:var(--fd);font-weight:700;font-size:34px;line-height:1;letter-spacing:-.02em;margin-top:6px}
-.hero .dt{font-size:12.5px;opacity:.92;margin-top:7px;line-height:1.5}
-.ladder{background:rgba(255,255,255,.1);border-radius:12px;padding:14px 16px}
-.ladder .ct{font-size:10px;opacity:.9;text-transform:uppercase;letter-spacing:.09em;margin-bottom:11px}
-.steps{display:flex;align-items:flex-end;gap:8px;height:74px}
-.st{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:flex-end}
-.st .lbar{width:100%;background:rgba(255,255,255,.9);border-radius:5px 5px 0 0}
-.st .mo{font-size:9px;opacity:.85}.st .v{font-size:10px;font-weight:700}
+/* hero compact */
+.hero{background:var(--grad);color:#fff;border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh-md);margin:16px 0 0;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hero .star{font-size:10px;text-transform:uppercase;letter-spacing:.16em;opacity:.85}
+.hero .big{font-family:var(--fd);font-weight:700;font-size:26px;line-height:1;letter-spacing:-.02em}
+.hero .dt{font-size:12px;opacity:.93;flex:1;min-width:220px;border-left:1px solid rgba(255,255,255,.25);padding-left:16px;line-height:1.5}
+@media(max-width:620px){.hero .dt{border-left:none;padding-left:0;border-top:1px solid rgba(255,255,255,.25);padding-top:10px}}
 
-/* WAITING ON DAVE — the hero block */
-.dave{background:var(--n-0);border:1px solid var(--n-200);border-top:5px solid var(--brand-500);border-radius:var(--r);box-shadow:var(--sh-md);overflow:hidden;margin:18px 0 0}
-.dave-h{display:flex;align-items:center;gap:11px;padding:16px 20px;background:linear-gradient(90deg,var(--brand-50),rgba(255,255,255,0));border-bottom:1px solid var(--n-100);font-family:var(--fd);font-weight:700;font-size:17px;letter-spacing:-.01em}
+/* pipeline strip */
+.pipe{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:13px}
+@media(max-width:560px){.pipe{grid-template-columns:1fr}}
+.pp{background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r-sm);padding:12px 15px;display:flex;gap:11px;align-items:center}
+.pp .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto}
+.pp.due .ic{background:var(--info-bg)}.pp.over .ic{background:var(--danger-bg)}
+.pp .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--n-500)}
+.pp .v{font-family:var(--fd);font-weight:700;font-size:13.5px;margin-top:1px;line-height:1.2}
+.pp.over .v{color:var(--danger-fg)}
+.pp .v small{font-weight:500;font-family:var(--fb);color:var(--n-500);font-size:11px}
+
+/* dave block */
+.dave{background:var(--n-0);border:1px solid var(--n-200);border-top:5px solid var(--brand-500);border-radius:var(--r);box-shadow:var(--sh-md);overflow:hidden;margin:16px 0 0}
+.dave-h{display:flex;align-items:center;gap:11px;padding:15px 18px;background:linear-gradient(90deg,var(--brand-50),rgba(255,255,255,0));border-bottom:1px solid var(--n-100);font-family:var(--fd);font-weight:700;font-size:16px;letter-spacing:-.01em}
 .dave-h .b{width:28px;height:28px;border-radius:8px;background:var(--brand-500);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto}
-.dave-h small{font-weight:500;font-family:var(--fb);font-size:11.5px;color:var(--n-500)}
+.dave-h small{font-weight:500;font-family:var(--fb);font-size:11px;color:var(--n-500)}
 .dave-h .count{margin-left:auto;font-family:var(--fb);font-weight:700;font-size:11px;color:#fff;background:var(--danger);padding:4px 11px;border-radius:var(--pill);white-space:nowrap}
 .dave-h .count.clear{color:var(--success-fg);background:var(--success-bg)}
-.di{display:grid;grid-template-columns:24px 1fr auto;gap:14px;padding:15px 20px;border-bottom:1px solid var(--n-100);align-items:start}
-.di:last-child{border-bottom:none}
-.di .cb{width:21px;height:21px;border-radius:6px;border:2px solid var(--brand-300);margin-top:1px;flex:0 0 auto}
-.di.done .cb{background:var(--success);border-color:var(--success);position:relative}
-.di.done .cb::after{content:"✓";color:#fff;font-size:12px;font-weight:800;position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.di .act{font-weight:700;font-size:14.5px;color:var(--n-900);line-height:1.25}
+.di{display:grid;grid-template-columns:24px 1fr auto;gap:14px;padding:14px 18px;border-bottom:1px solid var(--n-100);align-items:start;cursor:pointer;transition:background .12s}
+.di:last-child{border-bottom:none}.di:hover{background:var(--n-25)}
+.cb{width:21px;height:21px;border-radius:6px;border:2px solid var(--brand-300);margin-top:1px;flex:0 0 auto;background:var(--n-0);transition:all .12s}
+.done>.cb,.di.done .cb{background:var(--success);border-color:var(--success);position:relative}
+.done>.cb::after,.di.done .cb::after{content:"✓";color:#fff;font-size:12px;font-weight:800;position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.di .act{font-weight:700;font-size:14px;color:var(--n-900);line-height:1.25}
 .di .why{font-size:12px;color:var(--n-500);margin-top:3px;line-height:1.45}
-.di.done .act{color:var(--n-400);text-decoration:line-through}
-.di.done .why{color:var(--n-400)}
+.di.done .act{color:var(--n-400);text-decoration:line-through}.di.done .why{color:var(--n-400)}
 .di .meta{text-align:right;white-space:nowrap}
 .di .meta .t{font-size:11px;font-weight:700;color:var(--n-600);font-family:var(--fd)}
-.di .meta .tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--brand-600);background:var(--brand-50);padding:2px 7px;border-radius:var(--pill);display:inline-block;margin-top:4px}
-/* AUTOPILOT — Claude is handling, secondary */
-.auto{background:var(--n-50);border:1px solid var(--n-200);border-radius:var(--r);padding:14px 18px;margin-top:13px}
-.auto-h{display:flex;align-items:center;gap:9px;font-family:var(--fd);font-weight:600;font-size:12.5px;color:var(--n-600);margin-bottom:11px}
+.tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--brand-600);background:var(--brand-50);padding:2px 7px;border-radius:var(--pill);display:inline-block;margin-top:4px}
+
+/* autopilot */
+.auto{background:var(--n-50);border:1px solid var(--n-200);border-radius:var(--r);padding:13px 16px;margin-top:12px}
+.auto-h{display:flex;align-items:center;gap:9px;font-family:var(--fd);font-weight:600;font-size:12.5px;color:var(--n-600);margin-bottom:10px}
 .auto-h small{font-weight:500;font-family:var(--fb);font-size:11px;color:var(--n-400)}
 .auto-list{display:flex;flex-wrap:wrap;gap:8px}
 .ac{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:var(--n-600);background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--pill);padding:6px 12px}
 .ac .d{width:7px;height:7px;border-radius:50%;background:var(--sig-500);box-shadow:0 0 0 3px color-mix(in srgb,var(--sig-500) 18%,transparent);flex:0 0 auto}
 
-.legend{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 0}
-.legend .t{font-size:11px;color:var(--n-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
-.chip{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:var(--pill)}
-.chip .d{width:8px;height:8px;border-radius:50%}
-.c-done{background:var(--success-bg);color:var(--success-fg)}.c-done .d{background:var(--success)}
-.c-launch{background:var(--brand-50);color:var(--brand-700)}.c-launch .d{background:var(--brand-500)}
-.c-ms{background:var(--info-bg);color:var(--info-fg)}.c-ms .d{background:var(--info)}
-.c-rev{background:#fff4d6;color:#8a5a00}.c-rev .d{background:var(--warning)}
+/* update box */
+.upd{background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r);padding:16px 18px;margin-top:12px}
+.upd-h{font-family:var(--fd);font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.upd textarea{width:100%;margin-top:10px;border:1px solid var(--n-200);border-radius:var(--r-sm);padding:11px 13px;font-family:var(--fb);font-size:13.5px;color:var(--n-900);resize:vertical;min-height:62px;background:var(--n-25)}
+.upd textarea:focus{outline:none;border-color:var(--brand-300);background:var(--n-0)}
+.upd .btnrow{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.btn{font-family:var(--fd);font-weight:600;font-size:13px;border:none;border-radius:var(--r-sm);padding:10px 16px;cursor:pointer}
+.btn-p{background:var(--brand-500);color:#fff}.btn-p:active{transform:translateY(1px)}
+.btn-g{background:var(--n-0);color:var(--n-700);border:1px solid var(--n-200)}
+.upd .hint{font-size:11.5px;color:var(--n-500);line-height:1.5}
+.upd .hint b{color:var(--brand-700)}
+.paste{margin-top:11px;display:none}
+.paste.show{display:block}
+.paste .pl{background:var(--brand-50);border:1px dashed var(--brand-300);border-radius:var(--r-sm);padding:10px 12px;font-size:12.5px;color:var(--n-900);line-height:1.5;word-break:break-word}
+.log{margin-top:12px;border-top:1px solid var(--n-100);padding-top:11px}
+.log .le{font-size:12px;color:var(--n-700);padding:6px 0;border-bottom:1px solid var(--n-50);line-height:1.5}
+.log .le b{color:var(--n-400);font-weight:600;font-family:var(--fd);font-size:10.5px;margin-right:6px}
+.log .le:last-child{border-bottom:none}
+.log-empty{font-size:12px;color:var(--n-400);font-style:italic}
 
-.board{background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r);box-shadow:var(--sh-sm);overflow:hidden}
-.board.focus{border:2px solid var(--brand-500)}
-.axis{display:grid;grid-template-columns:var(--LEFT) 1fr;border-bottom:1px solid var(--n-200);background:var(--n-25)}
-.axis .sp{padding:9px 16px;font-size:10px;font-weight:700;color:var(--n-500);text-transform:uppercase;letter-spacing:.07em;align-self:center}
-.months{display:grid;grid-template-columns:repeat(6,1fr);position:relative}
-.months .m{font-size:10px;font-weight:600;color:var(--n-500);text-align:center;padding:9px 0;border-left:1px solid var(--n-100)}
-.todayflag{position:absolute;top:0;bottom:0;left:0;width:0}
-.todayflag b{position:absolute;top:6px;left:4px;font-size:8.5px;font-weight:700;color:var(--danger);background:var(--danger-bg);padding:1px 6px;border-radius:var(--pill);white-space:nowrap}
+/* tracks — backward planned */
+.track{background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r);box-shadow:var(--sh-sm);overflow:hidden;margin-bottom:13px;border-left:4px solid var(--ac,var(--brand-500))}
+.tk-h{display:flex;align-items:center;gap:12px;padding:15px 18px 12px}
+.tk-goal{font-family:var(--fd);font-weight:700;font-size:16px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tk-goal .by{font-family:var(--fb);font-weight:600;font-size:11px;color:var(--n-500);background:var(--n-50);border:1px solid var(--n-200);padding:2px 9px;border-radius:var(--pill)}
+.tk-prog{margin-left:auto;display:flex;align-items:center;gap:9px;min-width:120px}
+.tk-bar{flex:1;height:8px;background:var(--n-100);border-radius:var(--pill);overflow:hidden}
+.tk-bar i{display:block;height:100%;background:var(--ac,var(--brand-500));border-radius:var(--pill);transition:width .3s}
+.tk-pct{font-family:var(--fd);font-weight:700;font-size:12px;color:var(--ac,var(--brand-500))}
+.tk-why{padding:0 18px;font-size:12px;color:var(--n-500);line-height:1.45}
+.chain{padding:12px 18px 4px}
+.chain-lab{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--n-400);margin-bottom:8px}
+.mil{display:grid;grid-template-columns:22px 1fr auto;gap:11px;align-items:center;padding:7px 0;cursor:pointer}
+.mdot{width:18px;height:18px;border-radius:50%;border:2px solid var(--n-300);background:var(--n-0);position:relative;flex:0 0 auto;transition:all .12s}
+.mil.done .mdot{background:var(--success);border-color:var(--success)}
+.mil.done .mdot::after{content:"✓";color:#fff;font-size:9px;font-weight:800;position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.mil .ml{font-size:13px;color:var(--n-800);line-height:1.3}
+.mil.done .ml{color:var(--n-400);text-decoration:line-through}
+.mil .md{font-size:10.5px;font-weight:600;font-family:var(--fd);color:var(--n-500);white-space:nowrap}
+.mil .md.over{color:var(--danger-fg)}.mil.done .md{color:var(--n-300)}
+.nextstep{margin:6px 14px 15px;background:color-mix(in srgb,var(--ac) 8%,#fff);border:1px solid color-mix(in srgb,var(--ac) 28%,#fff);border-radius:var(--r-sm);padding:13px 15px}
+.nextstep .nl{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ac,var(--brand-600));display:flex;align-items:center;gap:6px}
+.nextstep .na{font-family:var(--fd);font-weight:700;font-size:14.5px;margin-top:5px;line-height:1.25;color:var(--n-900)}
+.nextstep .nw{font-size:12px;color:var(--n-600);margin-top:4px;line-height:1.45}
+.nextstep.complete{background:var(--success-bg);border-color:var(--success)}
+.nextstep.complete .nl{color:var(--success-fg)}
 
-.row{display:grid;grid-template-columns:var(--LEFT) 1fr;border-bottom:1px solid var(--n-100)}
-.row:last-child{border-bottom:none}
-.row.paused{background:repeating-linear-gradient(45deg,var(--n-25),var(--n-25) 10px,#f4f6fa 10px,#f4f6fa 20px)}
-.rhead{display:flex;gap:10px;padding:14px 14px 14px 16px;border-left:4px solid var(--rc,var(--brand-500));align-items:flex-start}
-.pn{flex:1;min-width:0}
-.pn .nm{font-family:var(--fd);font-weight:600;font-size:13.5px;letter-spacing:-.01em;line-height:1.15;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.flag{font-size:9px;font-weight:700;padding:1px 7px;border-radius:var(--pill);letter-spacing:.03em}
-.f-focus{background:var(--brand-500);color:#fff}.f-go{background:var(--success-bg);color:var(--success-fg)}
-.f-gate{background:var(--warning-bg);color:var(--warning-fg)}.f-audit{background:var(--info-bg);color:var(--info-fg)}
-.f-hold{background:var(--n-100);color:var(--n-600)}
-.roi{display:flex;gap:14px;margin-top:7px}
-.roi .b .n{font-family:var(--fd);font-weight:700;font-size:14px;letter-spacing:-.02em;line-height:1.1}
-.roi .b .n.g{color:var(--sig-600)}
-.roi .b .k{font-size:9px;color:var(--n-500);text-transform:uppercase;letter-spacing:.04em}
-.desc{font-size:11px;color:var(--n-600);margin-top:7px;line-height:1.45}
-.track{position:relative;margin:0 16px 0 2px;align-self:center;height:54px}
-.track .grid i{position:absolute;top:0;bottom:0;width:1px;background:var(--n-100)}
-.bar{position:absolute;top:22px;height:11px;border-radius:var(--pill);background:color-mix(in srgb,var(--bc) 17%,#fff);border:1px solid color-mix(in srgb,var(--bc) 30%,#fff)}
-.bar .fill{position:absolute;left:0;top:-1px;bottom:-1px;border-radius:var(--pill);background:var(--bc)}
-.bar.ghost{background:repeating-linear-gradient(45deg,transparent,transparent 5px,color-mix(in srgb,var(--bc) 14%,#fff) 5px,color-mix(in srgb,var(--bc) 14%,#fff) 10px);border-style:dashed}
-.ms{position:absolute;top:17px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
-.ms .dot{width:13px;height:13px;border-radius:50%;background:#fff;border:2.5px solid var(--mc,var(--bc));z-index:2}
-.ms.done .dot{background:var(--success);border-color:var(--success)}
-.ms.done .dot::after{content:"✓";color:#fff;font-size:7.5px;font-weight:800;display:flex;align-items:center;justify-content:center;height:100%}
-.ms.rev .dot{background:var(--warning);border-color:var(--warning)}
-.ms .cap{position:absolute;font-size:9px;font-weight:600;color:var(--n-600);white-space:nowrap;text-align:center;line-height:1.05}
-.ms .cap b{display:block;color:var(--n-900);font-weight:700;font-size:9px}
-.ms.lo .cap{top:17px}.ms.hi .cap{bottom:17px}
-.foot{color:var(--n-500);font-size:11px;text-align:center;margin-top:28px;line-height:1.7}
-
-@media(max-width:760px){
- .wrap{padding:18px 14px 48px}
- .hero{grid-template-columns:1fr;gap:18px;padding:20px}
- .hero .big{font-size:30px}
- .stamp{width:100%;margin:4px 0 0}
+.foot{color:var(--n-500);font-size:11px;text-align:center;margin-top:26px;line-height:1.7}
+@media(max-width:620px){
+ .wrap{padding:18px 13px 48px}
  .di{grid-template-columns:24px 1fr;gap:12px}
- .di .meta{grid-column:2;text-align:left;margin-top:3px}
- .di .meta .tag{margin-top:0}
- .dave-h{font-size:15px}
- .axis{display:none}
- .row{grid-template-columns:1fr}
- .rhead{border-bottom:1px dashed var(--n-200)}
- .track{margin:6px 16px 20px;height:56px}
- .track::before{content:attr(data-axis);position:absolute;top:-14px;left:0;right:0;font-size:8.5px;color:var(--n-400);letter-spacing:.02em}
+ .di .meta{grid-column:2;text-align:left;margin-top:3px}.di .meta .tag{margin-top:0}
+ .tk-h{flex-wrap:wrap}.tk-prog{margin-left:0;width:100%;order:3}
+ .mil{grid-template-columns:22px 1fr}.mil .md{grid-column:2;margin-top:2px}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>3<span class="s">✡</span>Shamrocks Studio — Master Plan to $1M ARR <span class="stamp" id="stamp"></span></h1>
+  <h1>3<span class="s">✡</span>Shamrocks — Command Board <span class="stamp" id="stamp"></span></h1>
+
+  <div class="hero">
+    <div><div class="star">★ North Star</div><div class="big">$1M ARR</div></div>
+    <div class="dt">Backward-planned: every track shows the <b>goal → what must be true → the one next step</b>. ≈ $83k/mo recurring across 3 engines, target ~18 months. Bottleneck is distribution, not building.</div>
+  </div>
+
+  <div class="pipe" id="pipe"></div>
 
   <div class="dave" id="dave"></div>
   <div class="auto" id="auto"></div>
 
-  <div class="hero">
-    <div>
-      <div class="star">★ North Star · the solo-founder shape</div>
-      <div class="big">$1M ARR</div>
-      <div class="dt">≈ $83k / month recurring · target 18 months (stretch 12). One recurring product that scales + one compounding distribution channel — not a $29 grind. We run <b>3 engines at once</b>: that's the unfair advantage.</div>
+  <div class="upd">
+    <div class="upd-h">➕ Add update / note</div>
+    <textarea id="noteIn" placeholder="e.g. &quot;Sent 6 of 12 SHOMER invites&quot; or &quot;IG accounts created&quot;…"></textarea>
+    <div class="btnrow">
+      <button class="btn btn-p" id="noteBtn">Log update</button>
+      <span class="hint">Logs here on your device. <b>To make it official &amp; recompute the plan, send it to Claude in Dispatch</b> — Claude maintains this board (the page can't transmit on its own).</span>
     </div>
-    <div class="ladder">
-      <div class="ct">MRR ladder — the only numbers that matter</div>
-      <div class="steps">
-        <div class="st"><span class="v">$2k</span><div class="lbar" style="height:7%"></div><span class="mo">M3</span></div>
-        <div class="st"><span class="v">$10k</span><div class="lbar" style="height:14%"></div><span class="mo">M6</span></div>
-        <div class="st"><span class="v">$25k</span><div class="lbar" style="height:32%"></div><span class="mo">M9</span></div>
-        <div class="st"><span class="v">$45k</span><div class="lbar" style="height:56%"></div><span class="mo">M12</span></div>
-        <div class="st"><span class="v">$65k</span><div class="lbar" style="height:80%"></div><span class="mo">M15</span></div>
-        <div class="st"><span class="v">$83k</span><div class="lbar" style="height:100%"></div><span class="mo">M18</span></div>
-      </div>
+    <div class="paste" id="paste"><div class="pl" id="pl"></div>
+      <div class="btnrow"><button class="btn btn-g" id="copyBtn">📋 Copy for Dispatch</button><span class="hint" id="copied"></span></div>
     </div>
+    <div class="log" id="log"></div>
   </div>
 
-  <div class="legend">
-    <span class="t">Timeline key</span>
-    <span class="chip c-done"><span class="d"></span>Done</span>
-    <span class="chip c-launch"><span class="d"></span>Launch</span>
-    <span class="chip c-ms"><span class="d"></span>Milestone</span>
-    <span class="chip c-rev"><span class="d"></span>Revenue</span>
-  </div>
+  <div class="sec"><span class="ico" style="background:var(--brand-500)">🎯</span>Backward-planned tracks <small>goal → milestones (with dates) → do this next · tap any dot to check it off</small></div>
+  <div id="tracks"></div>
 
-  <div class="sec"><span class="ico" style="background:var(--brand-500)">★</span>Primary engine — scale this to MRR <small>fastest clean recurring revenue · no liability · daily-use loop</small></div>
-  <div class="board focus"><div class="axis"><div class="sp">Product · target MRR</div><div class="months" id="ax1"></div></div><div id="primary"></div></div>
-
-  <div class="sec"><span class="ico" style="background:var(--sig-500)">📣</span>Distribution flywheel — the compounding channel <small>cash now + the audience that feeds every product</small></div>
-  <div class="board"><div id="flywheel"></div></div>
-
-  <div class="sec"><span class="ico" style="background:var(--info)">🛡</span>Asymmetric bet — biggest ceiling, slower <small>one contract or grant could leapfrog everything</small></div>
-  <div class="board"><div id="bigbet"></div></div>
-
-  <div class="sec"><span class="ico" style="background:var(--n-400)">🧪</span>Optionality — fire only if a channel proves <small>built, parked until there's traction to pour on</small></div>
-  <div class="board"><div id="options"></div></div>
-
-  <div class="sec"><span class="ico" style="background:var(--warning)">⏸</span>Gated / paused — good products, real blockers <small>each shows the exact unlock</small></div>
-  <div class="board"><div id="paused"></div></div>
-
-  <div class="sec"><span class="ico" style="background:var(--brand-700)">🎬</span>IP / capital play — raise or licensing, long horizon</div>
-  <div class="board"><div id="ip"></div></div>
-
-  <div class="foot">© 2026 3Shamrocks Studio — Confidential · $1M = ARR run-rate (~$83k MRR) on the proven solo-founder shape: recurring revenue + one compounding channel over 12–18 months.<br>Numbers are ambitious targets, honestly modeled — not guarantees. The bottleneck is distribution, not building. · One board. Auto-refreshed daily.</div>
+  <div class="foot">© 2026 3Shamrocks Studio — Confidential · One board, maintained by Claude. Check-offs &amp; notes persist on this device.<br>Numbers are ambitious targets, honestly modeled — not guarantees.</div>
 </div>
 
 <script>
-// ONLY things that need Dave's hands — ordered by impact. Set done:true when cleared.
+/* ---------- persistence ---------- */
+var LS={g:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},
+        s:function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+var CK=LS.g('ops_checks_v2',{});      // id -> bool (user override)
+var LOG=LS.g('ops_log_v2',[]);
+function isDone(id,def){return (id in CK)?CK[id]:!!def;}
+function toggle(id,def){CK[id]=!isDone(id,def);LS.s('ops_checks_v2',CK);render();}
+
+/* ---------- data ---------- */
 var DAVE=[
- {act:'Enable “3SDS Daily Ops” in the Scheduled sidebar',why:'Switches on the morning run that keeps this whole board + health-checks auto-updating. It\'s cloud-managed now, so only you can flip it.',t:'30 sec',tag:'Keeps board live',done:false},
- {act:'Create the 4 IG mascot accounts (phone + 2FA)',why:'Unblocks the distribution flywheel — the compounding engine behind every solo-$1M story. The 4 pages are already built and waiting.',t:'~2–3h',tag:'Blocks flywheel',done:false},
- {act:'Send the 12 SH✡MER tester invites',why:'Starts the 14-day Google Play clock — the gate before SH✡MER can reach production or any paid community.',t:'~1h',tag:'Big bet',done:false},
- {act:'Finish Google Play verification',why:'Final account/identity gate before SH✡MER can go public. Only you can complete it.',t:'~15 min',tag:'Unblocks launch',done:false},
- {act:'Hand me J8N.IX billing (Stripe test keys + pricing)',why:'J8N.IX is the primary engine. With keys I wire checkout and it can take its first paying user.',t:'5 min',tag:'Primary engine',done:false},
- {act:'Point 3shamrocks.com at the live site',why:'Custom domain instead of github.io before the LinkedIn launch — makes every link look pro. DNS only.',t:'~10 min',tag:'Credibility',done:false}
+ {id:'w_ops',act:'Enable “3SDS Daily Ops” in the Scheduled sidebar',why:'Switches on the morning run that keeps this board + health-checks auto-updating. Cloud-managed, so only you can flip it.',t:'30 sec',tag:'Keeps board live'},
+ {id:'w_ig',act:'Create the 4 IG mascot accounts (phone + 2FA)',why:'Unblocks the distribution flywheel — the compounding engine behind every solo-$1M story. 4 pages already built.',t:'~2–3h',tag:'Blocks flywheel'},
+ {id:'w_testers',act:'Send the 12 SH✡MER tester invites',why:'Starts the 14-day Google Play clock — the gate before SH✡MER can reach production.',t:'~1h',tag:'Big bet'},
+ {id:'w_verify',act:'Finish Google Play verification',why:'Final account/identity gate before SH✡MER can go public.',t:'~15 min',tag:'Unblocks launch'},
+ {id:'w_stripe',act:'Hand me J8N.IX billing (Stripe test keys + pricing)',why:'J8N.IX is the primary engine. With keys I wire checkout and it can take its first paying user.',t:'5 min',tag:'Primary engine'},
+ {id:'w_domain',act:'Point 3shamrocks.com at the live site',why:'Custom domain instead of github.io before the LinkedIn launch.',t:'~10 min',tag:'Credibility'}
 ];
-// What Claude is doing itself — no action needed from Dave.
-var AUTO=['Refreshing this board every morning','Health-checking all live products','Finishing the Trashure-Hunters app MVP','Shipping more AI Brand Kit SKUs','Wiring J8N.IX checkout (once keys land)','Drafting the LinkedIn launch post','Fixing live-site bugs (e.g. Ezra link)'];
-var PRIMARY=[
- {nm:'J8N.IX — SaaS',rc:'var(--brand-500)',bc:'var(--brand-500)',flag:['f-focus','FOCUS'],roi:['$35k MRR','~M2'],
-  desc:'The only product with a daily-use loop, a clean freemium→paid path, and zero safeguarding liability. Wire billing + sync, ship weekly, build in public. This is the one we scale.',
-  bar:[0,100],fill:8,ms:[{p:4,t:'Wire billing',k:'launch',pos:'hi'},{p:14,t:'First paying users',k:'rev',pos:'lo'},{p:40,t:'$10k MRR',k:'rev',pos:'hi'},{p:95,t:'$35k MRR',k:'rev',pos:'lo'}]}
-];
-var FLYWHEEL=[
- {nm:'AI Brand Kit + Catalog',rc:'var(--sig-500)',bc:'var(--sig-500)',flag:['f-go','GO'],roi:['$8k MRR','now'],
-  desc:'Live checkout today. Ship more SKUs (fast), move from one-time to a small recurring membership. Cash + proof while the audience grows.',
-  bar:[0,100],fill:9,ms:[{p:1,t:'Kit live',k:'done',pos:'hi'},{p:8,t:'First sales',k:'rev',pos:'lo'},{p:28,t:'5 SKUs + membership',k:'launch',pos:'hi'},{p:72,t:'Catalog scales',k:'rev',pos:'lo'}]},
- {nm:'IG Mascot Network',rc:'var(--info)',bc:'var(--info)',flag:['f-go','GO · needs you'],roi:['$10k MRR','~M2'],
-  desc:'4 built pages = the compounding distribution machine. ~2–3h of your setup to launch. Build-in-public here is the engine behind every solo-$1M story.',
-  bar:[0,100],fill:6,ms:[{p:5,t:'Launch 4',k:'launch',pos:'hi'},{p:22,t:'Content engine',k:'ms',pos:'lo'},{p:33,t:'1st affiliate $',k:'rev',pos:'hi'},{p:80,t:'Audience compounds',k:'ms',pos:'lo'}]}
-];
-var BIGBET=[
- {nm:'SH✡MER (Core + Nature)',rc:'var(--info)',bc:'var(--info)',flag:['f-gate','GATE → GO'],roi:['$30k MRR','~M5'],
-  desc:'Biggest ceiling: B2B2C community licenses + grants. GATE: harden real-backend SOS delivery + security + the money model before selling it as safety. One municipal/network contract can be $5–20k/mo alone.',
-  bar:[0,100],fill:12,ms:[{p:8,t:'Fix liability + model',k:'launch',pos:'hi'},{p:28,t:'1st paid community',k:'rev',pos:'lo'},{p:55,t:'Network / grant',k:'rev',pos:'hi'},{p:92,t:'Scale licenses',k:'rev',pos:'lo'}]}
-];
-var OPTIONS=[
- {nm:'Chore Royale (ClanForge)',rc:'var(--sig-500)',bc:'var(--sig-500)',flag:['f-gate','GATE'],roi:['opt-in','if proven'],
-  desc:'Built + fun, live landing. Fire only if the IG flywheel shows a family-audience channel. Unlock: wire Stripe/IAP + store listing.',
-  bar:[25,100],ghost:1,ms:[{p:30,t:'Wire billing if traction',k:'ms',pos:'hi'}]},
- {nm:'LickPick',rc:'var(--danger)',bc:'var(--danger)',flag:['f-audit','AUDIT'],roi:['TBD','TBD'],
-  desc:'Found — live PWA (AI backing band). Needs a pricing/subscription decision + a store path before it counts toward MRR.',
-  bar:[20,100],ghost:1,ms:[{p:26,t:'Pick a pricing model',k:'ms',pos:'hi'}]},
- {nm:'Rookie & King',rc:'var(--n-400)',bc:'var(--info)',flag:['f-audit','AUDIT'],roi:['unknown','TBD'],
-  desc:'Live LinkedIn-chess prototype. Lock a monetization angle (or keep as pure distribution) before any more build.',
-  bar:[15,55],ghost:1,ms:[{p:20,t:'Monetization call',k:'ms',pos:'hi'}]}
-];
-var PAUSED=[
- {nm:'Milo (Tend)',rc:'var(--n-400)',bc:'var(--sig-500)',flag:['f-gate','GATE'],roi:['$0','after review'],
-  desc:'Quality kids mental-health companion — needs clinician review + verified crisis resources before any child uses it. Liability if rushed. Fold Heros-Haven in here.',
-  bar:[55,100],ghost:1,ms:[{p:62,t:'Clinical review',k:'ms',pos:'hi'}]},
- {nm:'Ezra (עזרא)',rc:'var(--n-400)',bc:'var(--n-500)',flag:['f-hold','HOLD'],roi:['$0','long'],
-  desc:'Warm senior-helper concept, but the “do-it-for-me” agent core (the real value) is simulated, not built. Grant/impact play, not near-term income.',
-  bar:[70,100],ghost:1,ms:[{p:78,t:'Build the agent core',k:'ms',pos:'hi'}]},
- {nm:'Fairent / Rent-Fairness',rc:'var(--n-400)',bc:'var(--brand-500)',flag:['f-hold','HOLD'],roi:['$0','distant'],
-  desc:'Differentiated rent-fairness tool, but the thesis needs legal Israeli rent data that doesn\'t exist yet. Unlock: CBS feed + backend.',
-  bar:[72,100],ghost:1,ms:[{p:80,t:'Solve data first',k:'ms',pos:'hi'}]}
-];
-var IP=[
- {nm:'Trashure-Hunters (MVP · Site · Movie)',rc:'var(--brand-700)',bc:'var(--brand-700)',flag:['f-hold','HOLD'],roi:['$0 organic','on raise'],
-  desc:'Strong IP: web MVP (~55%), live site + case study, finished screenplay. Revenue via a seed raise or IP/film licensing — a capital event, not organic ROI. Keep warm; pursue if a channel or investor appears.',
-  bar:[40,100],ghost:1,ms:[{p:48,t:'Raise or license IP',k:'ms',pos:'hi'}]}
+var AUTO=['Refreshing this board every morning','Health-checking all live products','Finishing the Trashure-Hunters app MVP','Shipping more AI Brand Kit SKUs','Wiring J8N.IX checkout (once keys land)','Drafting the LinkedIn launch post','Fixing live-site bugs'];
+var TRACKS=[
+ {id:'client',goal:'First paying client',by:'Nov 2026',ac:'var(--sig-500)',why:'Fastest cash in the door — funds the runway while products build.',
+  mils:[{id:'cl1',l:'Portfolio site live',dt:'Oct 2026',d:'2026-10-18',done:true},
+        {id:'cl2',l:'TH LinkedIn launch post published',dt:'Oct 26',d:'2026-10-26'},
+        {id:'cl3',l:'First discovery call booked',dt:'Nov',d:'2026-11-05'},
+        {id:'cl4',l:'First paid project signed',dt:'Nov',d:'2026-11-20'}],
+  next:{a:'Post the Trashure-Hunters LinkedIn launch (draft ready)',w:'Portfolio is live — the only missing step to inbound leads is hitting publish.',tag:'Cash now'}},
+ {id:'shomer',goal:'SH✡MER launched (public)',by:'Nov 2026',ac:'var(--info)',why:'Biggest ceiling — one municipal/network contract can be $5–20k/mo.',
+  mils:[{id:'sh1',l:'Internal testing live on Play',dt:'Sep 2026',d:'2026-09-20',done:true},
+        {id:'sh2',l:'12 testers + 14-day clock started',dt:'Oct 27',d:'2026-10-27'},
+        {id:'sh3',l:'Google Play verification done',dt:'Nov 3',d:'2026-11-03'},
+        {id:'sh4',l:'Production rollout (public)',dt:'Nov 17',d:'2026-11-17'},
+        {id:'sh5',l:'First paid community / license',dt:'Jan 2027',d:'2027-01-15'}],
+  next:{a:'Send the 12 SH✡MER tester invites',w:'Nothing moves until the 14-day clock starts — and only you can send them.',tag:'You · blocks launch'}},
+ {id:'j8nix',goal:'J8N.IX — first paying SaaS user',by:'Dec 2026',ac:'var(--brand-600)',why:'Primary engine: daily-use loop, clean freemium→paid, zero liability.',
+  mils:[{id:'j1',l:'App live (preview)',dt:'done',done:true},
+        {id:'j2',l:'Billing + sync wired',dt:'Nov',d:'2026-11-15'},
+        {id:'j3',l:'Freemium→paid flow live',dt:'Nov',d:'2026-11-25'},
+        {id:'j4',l:'First paying user',dt:'Dec',d:'2026-12-15'}],
+  next:{a:'Hand Claude Stripe test keys + pricing',w:'Then checkout gets wired within days. This is the gate on the primary engine.',tag:'You · 5 min'}},
+ {id:'fly',goal:'Distribution flywheel live',by:'Dec 2026',ac:'var(--sig-600)',why:'The compounding channel behind every solo-$1M story. Feeds every product.',
+  mils:[{id:'f1',l:'4 mascot pages built',dt:'done',done:true},
+        {id:'f2',l:'4 IG accounts created',dt:'Oct 24',d:'2026-10-24'},
+        {id:'f3',l:'Daily content engine running',dt:'Nov',d:'2026-11-10'},
+        {id:'f4',l:'First affiliate $',dt:'Dec',d:'2026-12-10'}],
+  next:{a:'Create the 4 IG accounts (phone + 2FA)',w:'~2–3h of setup unlocks the whole distribution machine. Only you can create accounts.',tag:'You · ~2–3h'}},
+ {id:'th',goal:'Trashure-Hunters MVP testable',by:'overdue',ac:'var(--brand-700)',why:'Flagship IP. Slipped past its Aug target — catching up behind the paying tracks.',
+  mils:[{id:'t1',l:'Core screens + map + AI camera',dt:'done',done:true},
+        {id:'t2',l:'Remaining screens + Firebase/COPPA',dt:'Aug 7',d:'2026-08-07'},
+        {id:'t3',l:'TestFlight build',dt:'Nov',d:'2026-11-30'}],
+  next:{a:'Claude: finish remaining MVP screens + COPPA',w:'Overdue since Aug. Back on deck once the paying tracks are unblocked.',tag:'Claude · catching up'}},
+ {id:'arr',goal:'$1M ARR',by:'Apr 2028',ac:'var(--brand-500)',why:'Everything above ladders up here: ≈ $83k/mo recurring across the 3 engines.',
+  mils:[{id:'a1',l:'$2k MRR — first recurring dollars',dt:'Jan 2027',d:'2027-01-31'},
+        {id:'a2',l:'$10k MRR — one engine proven',dt:'Apr 2027',d:'2027-04-30'},
+        {id:'a3',l:'$25k MRR — flywheel compounding',dt:'Jul 2027',d:'2027-07-31'},
+        {id:'a4',l:'$45k MRR',dt:'Jan 2028',d:'2028-01-31'},
+        {id:'a5',l:'$83k MRR ≈ $1M ARR',dt:'Apr 2028',d:'2028-04-30'}],
+  next:{a:'Get the first engine (J8N.IX) billing live',w:'No MRR exists until one product can charge — that unlocks the entire ladder.',tag:'Start here'}}
 ];
 
-var AX=['Now','+3mo','+6mo','+9mo','+12mo','+15mo'];
-function buildRow(p,paused){
- var grid=''; for(var g=1;g<6;g++) grid+='<i style="left:'+(g*16.667)+'%"></i>';
- var bw=p.bar[1]-p.bar[0];
- var fillW=p.fill>0?(p.fill/bw*100):0;
- var mss=p.ms.map(function(m){
-  var cls='ms '+(m.pos==='hi'?'hi':'lo')+(m.k==='done'?' done':'')+(m.k==='rev'?' rev':'');
-  var mc=m.k==='launch'?'var(--brand-500)':m.k==='ms'?'var(--info)':p.bc;
-  return '<div class="'+cls+'" style="left:'+m.p+'%;--mc:'+mc+'"><span class="dot"></span><span class="cap"><b>'+m.t+'</b></span></div>';
+/* ---------- render ---------- */
+var today=new Date();today.setHours(0,0,0,0);
+function fmtTs(ms){var d=new Date(ms);return d.toISOString().slice(0,10)+' '+d.toTimeString().slice(0,5);}
+function render(){
+ /* dave */
+ var open=DAVE.filter(function(d){return !isDone(d.id);}).length;
+ var dh='<div class="dave-h"><span class="b">⏳</span>Waiting on you <small>tap to check off</small>'+
+  (open>0?'<span class="count">'+open+' to&nbsp;do</span>':'<span class="count clear">✓ All clear</span>')+'</div>';
+ dh+=DAVE.map(function(d){var done=isDone(d.id);return '<div class="di'+(done?' done':'')+'" data-ck="'+d.id+'"><div class="cb"></div>'+
+  '<div><div class="act">'+d.act+'</div><div class="why">'+d.why+'</div></div>'+
+  '<div class="meta"><div class="t">'+d.t+'</div><span class="tag">'+d.tag+'</span></div></div>';}).join('');
+ document.getElementById('dave').innerHTML=dh;
+ /* auto */
+ document.getElementById('auto').innerHTML='<div class="auto-h"><span>🤖</span>On autopilot — Claude\'s handling these <small>nothing for you to do here</small></div>'+
+  '<div class="auto-list">'+AUTO.map(function(a){return '<span class="ac"><span class="d"></span>'+a+'</span>';}).join('')+'</div>';
+ /* pipeline */
+ var openM=[];TRACKS.forEach(function(t){t.mils.forEach(function(m){if(!isDone(m.id,m.done)&&m.d)openM.push({l:m.l,d:m.d,dt:m.dt,g:t.goal});});});
+ var over=openM.filter(function(m){return new Date(m.d)<today;}).sort(function(a,b){return new Date(a.d)-new Date(b.d);});
+ var up=openM.filter(function(m){return new Date(m.d)>=today;}).sort(function(a,b){return new Date(a.d)-new Date(b.d);});
+ var nd=up[0], ov=over[0];
+ document.getElementById('pipe').innerHTML=
+  '<div class="pp due"><div class="ic">📅</div><div><div class="k">Next due</div><div class="v">'+(nd?nd.l+' <small>· '+nd.dt+' · '+nd.g+'</small>':'nothing scheduled')+'</div></div></div>'+
+  '<div class="pp over"><div class="ic">⚠️</div><div><div class="k">Overdue</div><div class="v">'+(over.length?over.length+' — oldest: '+ov.l+' <small>('+ov.dt+')</small>':'<span style="color:var(--success-fg)">none — on track</span>')+'</div></div></div>';
+ /* tracks */
+ document.getElementById('tracks').innerHTML=TRACKS.map(function(t){
+  var total=t.mils.length, done=t.mils.filter(function(m){return isDone(m.id,m.done);}).length;
+  var pct=Math.round(done/total*100);
+  var nextComplete=false; // next step done if its first open blocking milestone cleared — simple: complete when all mils done
+  if(done===total)nextComplete=true;
+  var chain=t.mils.map(function(m){var md=isDone(m.id,m.done);
+   var over=(!md&&m.d&&new Date(m.d)<today);
+   return '<div class="mil'+(md?' done':'')+'" data-ck="'+m.id+'" data-def="'+(m.done?1:0)+'"><div class="mdot"></div>'+
+    '<div class="ml">'+m.l+'</div><div class="md'+(over?' over':'')+'">'+(over?'⚠ ':'')+m.dt+'</div></div>';}).join('');
+  return '<div class="track" style="--ac:'+t.ac+'"><div class="tk-h">'+
+    '<div class="tk-goal">🎯 '+t.goal+' <span class="by">'+(t.by==='overdue'?'⚠ overdue':'by '+t.by)+'</span></div>'+
+    '<div class="tk-prog"><div class="tk-bar"><i style="width:'+pct+'%"></i></div><span class="tk-pct">'+pct+'%</span></div></div>'+
+    '<div class="tk-why">'+t.why+'</div>'+
+    '<div class="chain"><div class="chain-lab">To get there, these must be true →</div>'+chain+'</div>'+
+    '<div class="nextstep'+(nextComplete?' complete':'')+'"><div class="nl">▶ '+(nextComplete?'Goal complete 🎉':'Do this next')+'</div>'+
+      (nextComplete?'':'<div class="na">'+t.next.a+'</div><div class="nw">'+t.next.w+'</div><span class="tag" style="margin-top:8px">'+t.next.tag+'</span>')+'</div>'+
+    '</div>';
  }).join('');
- var r=document.createElement('div'); r.className='row'+(paused?' paused':'');
- r.innerHTML=
-  '<div class="rhead" style="--rc:'+p.rc+'"><div class="pn">'+
-    '<div class="nm">'+p.nm+' <span class="flag '+p.flag[0]+'">'+p.flag[1]+'</span></div>'+
-    '<div class="roi"><div class="b"><div class="n'+(paused?'':' g')+'">'+p.roi[0]+'</div><div class="k">target</div></div>'+
-      '<div class="b"><div class="n">'+p.roi[1]+'</div><div class="k">first $</div></div></div>'+
-    '<div class="desc">'+p.desc+'</div></div></div>'+
-  '<div class="track" data-axis="Now → +15mo" style="--bc:'+p.bc+'"><div class="grid">'+grid+'</div>'+
-    '<div class="bar'+(p.ghost?' ghost':'')+'" style="left:'+p.bar[0]+'%;width:'+bw+'%">'+(fillW>0?'<div class="fill" style="width:'+fillW+'%"></div>':'')+'</div>'+mss+'</div>';
- return r;
+ /* log */
+ var lg=document.getElementById('log');
+ lg.innerHTML=LOG.length?LOG.slice(0,8).map(function(e){return '<div class="le"><b>'+fmtTs(e.ts)+'</b>'+e.text.replace(/</g,'&lt;')+'</div>';}).join(''):'<div class="log-empty">No updates logged yet.</div>';
 }
-var ax=document.getElementById('ax1');
-AX.forEach(function(m){var d=document.createElement('div');d.className='m';d.textContent=m;ax.appendChild(d);});
-var tf=document.createElement('div');tf.className='todayflag';tf.innerHTML='<b>TODAY</b>';ax.appendChild(tf);
-function fill(id,arr,paused){var el=document.getElementById(id);arr.forEach(function(p){el.appendChild(buildRow(p,paused));});}
-fill('primary',PRIMARY,false);fill('flywheel',FLYWHEEL,false);fill('bigbet',BIGBET,false);
-fill('options',OPTIONS,true);fill('paused',PAUSED,true);fill('ip',IP,true);
-var open=DAVE.filter(function(d){return !d.done;}).length;
-var dEl=document.getElementById('dave');
-var head='<div class="dave-h"><span class="b">⏳</span>Waiting on you <small>only you can do these — ordered by impact</small>'+
- (open>0?'<span class="count">'+open+' to&nbsp;do</span>':'<span class="count clear">✓ All clear</span>')+'</div>';
-var rows=DAVE.map(function(d){return '<div class="di'+(d.done?' done':'')+'"><div class="cb"></div>'+
- '<div><div class="act">'+d.act+'</div><div class="why">'+d.why+'</div></div>'+
- '<div class="meta"><div class="t">'+d.t+'</div><span class="tag">'+d.tag+'</span></div></div>';}).join('');
-dEl.innerHTML=head+rows;
-var aEl=document.getElementById('auto');
-aEl.innerHTML='<div class="auto-h"><span>🤖</span>On autopilot — Claude\'s handling these <small>nothing for you to do here</small></div>'+
- '<div class="auto-list">'+AUTO.map(function(a){return '<span class="ac"><span class="d"></span>'+a+'</span>';}).join('')+'</div>';
 document.getElementById('stamp').textContent='Updated '+new Date().toISOString().slice(0,10);
+render();
+
+/* ---------- interactions ---------- */
+document.body.addEventListener('click',function(e){
+ var el=e.target.closest('[data-ck]'); if(!el)return;
+ var def=el.getAttribute('data-def')==='1'; toggle(el.getAttribute('data-ck'),def);
+});
+document.getElementById('noteBtn').addEventListener('click',function(){
+ var ta=document.getElementById('noteIn'); var txt=(ta.value||'').trim(); if(!txt)return;
+ var e={ts:Date.now(),text:txt}; LOG.unshift(e); LS.s('ops_log_v2',LOG); ta.value='';
+ var line='📋 /ops/ update — '+fmtTs(e.ts)+': '+txt+'  →  (please recompute the Command Board.)';
+ document.getElementById('pl').textContent=line;
+ document.getElementById('paste').classList.add('show');
+ document.getElementById('copied').textContent='';
+ render();
+});
+document.getElementById('copyBtn').addEventListener('click',function(){
+ var line=document.getElementById('pl').textContent;
+ function ok(){document.getElementById('copied').textContent='Copied ✓ — paste it to Claude in Dispatch.';}
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(line).then(ok,function(){fallback(line);ok();});}
+ else{fallback(line);ok();}
+ function fallback(t){var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(_){}
+  document.body.removeChild(ta);}
+});
 </script>
 </body>
 </html>
