@@ -9354,6 +9354,8 @@ const NAV_LAYERS = ["studio", "sorter", "onboard", "intro", "pickHelp", "madeShe
 const NAV_CLOSE = { view: () => setView("clips"), studio: () => closeStudio(), sorter: () => closeQuickSort(false), onboard: () => closeOnboard(), intro: () => closeIntro(), recSheet: () => recClose(),
   madeSheet: () => { madePlayer?.pause(); $("#madeSheet").hidden = true; } };
 let navOrder = [], navDepth = 0, navSkip = 0;
+// a reload keeps the last history entry's state: start from a clean one, or the first Back after a reload did nothing
+try { if (history.state?.lpNav) history.replaceState(null, ""); } catch { }
 const navOpen = () => { const vis = (state.view && state.view !== "clips" ? ["view"] : []).concat(NAV_LAYERS.filter(id => { const el = document.getElementById(id); return el && !el.hidden; })); navOrder = navOrder.filter(id => vis.includes(id)).concat(vis.filter(id => !navOrder.includes(id))); return navOrder; };
 function navSync() {
   if (navSkip) return; const n = navOpen().length;
