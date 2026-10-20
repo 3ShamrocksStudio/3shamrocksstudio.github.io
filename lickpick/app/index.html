@@ -272,8 +272,8 @@ textarea:focus{border-color:var(--cyan);outline:none}
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:31;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--stage) 70%,transparent)}
 .bar .in{max-width:608px;margin:0 auto;display:flex;gap:12px}
 .bar .btn{flex:1}
-.protag{font:800 9.5px/1 var(--body);letter-spacing:.06em;background:none;color:var(--hot);border:1.5px solid var(--hot);border-radius:5px;padding:3px 4px 2px;margin-left:4px;display:inline-block;vertical-align:1px}
-.btn.ghost .protag{border-color:var(--hot);color:var(--hot)} .btn:not(.ghost) .protag,.tile .protag{color:var(--ink);border-color:var(--ink)}
+.protag{font:800 9.5px/1 var(--body);letter-spacing:.06em;background:none;color:#FF6FAE;border:1.5px solid #FF6FAE;border-radius:5px;padding:3px 4px 2px;margin-left:4px;display:inline-block;vertical-align:1px}
+.btn.ghost .protag{border-color:#FF6FAE;color:#FF6FAE} .btn:not(.ghost) .protag,.tile .protag{color:var(--ink);border-color:var(--ink)}
 .probadge{font:400 11px/1 var(--display);background:var(--hot);color:var(--ink);border:2px solid var(--ink);border-radius:6px;padding:4px 6px 3px;transform:rotate(-6deg);box-shadow:2px 2px 0 var(--volt);flex:none}
 .feats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .feats div{display:flex;align-items:center;gap:10px;background:var(--raise);border:2px solid var(--line);border-radius:12px;padding:10px;font-weight:800;font-size:13.5px}
@@ -501,6 +501,8 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 .list{gap:8px}
 .card{grid-template-columns:44px 1fr auto auto;gap:10px;padding:8px 6px 8px 8px;border-radius:16px;cursor:pointer}
 .card:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.card{position:relative} .card>.cardhit{position:absolute;inset:0;width:auto;height:auto;min-width:0;margin:0;padding:0;border:0;background:none;border-radius:inherit;z-index:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.card>.cardhit:focus-visible{outline:3px solid var(--cyan);outline-offset:2px} .card>.more{position:relative;z-index:1}
 .thumb{width:44px;height:48px}
 .thumb.ph svg{width:18px;height:18px;margin-top:-8px}
 .cm{gap:2px}
@@ -544,7 +546,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 .src svg.i{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
 .searchbox{display:flex;align-items:center;gap:8px;margin:0 4px 12px 0;padding:0 12px;border-radius:14px;border:2px solid var(--line);background:var(--panel)}
 .searchbox svg.i{width:18px;height:18px;color:var(--mute);--ic2:transparent}
-.searchbox input{flex:1;border:0;background:none;color:var(--text);font:600 15px var(--body);padding:11px 0;outline:none}
+.searchbox input{flex:1;border:0;background:none;color:var(--text);font:600 15px var(--body);padding:11px 0;outline:none;min-height:44px}
 .plans{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .plan{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 10px;border-radius:14px;border:2px solid var(--line);background:var(--raise);text-align:left;color:var(--text);position:relative}
 .plan b{font:400 18px var(--display)} .plan span{font-size:12px;color:var(--dim);font-weight:700}
@@ -931,6 +933,7 @@ input[type=range]{min-height:44px}
 #studio .src b{font:400 16px/1 var(--display);display:inline-flex;align-items:center;gap:4px}
 #studio .src span{font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums}
 #studio .src svg.i{width:14px;height:14px;margin:0}
+@media (max-width:420px){#studio .srcbar{gap:4px} #studio .src{gap:3px;padding:0 4px} #studio .src b{font-size:14px;gap:2px} #studio .src span{font-size:11px;letter-spacing:-.2px} #studio .src svg.i{width:11px;height:11px}}
 #studio .src[aria-checked=true]{box-shadow:2px 2px 0 var(--hot)}
 #studio .transport{display:flex;gap:8px}
 #studio .transport .btn{flex:1;height:44px;padding:0 10px;font-size:13.5px;border-width:2px;box-shadow:2px 2px 0 var(--ink)}
@@ -1356,10 +1359,11 @@ input[type=range]{min-height:44px}
 .session{display:none}
 .quickbar{display:flex!important;flex-wrap:wrap;gap:8px;margin:0 0 12px;padding:0}
 .quickbar[hidden]{display:none!important}
-.qchip{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 14px;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--text);font:800 13.5px var(--body);white-space:nowrap}
+.qchip{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 14px;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--text);font:800 13.5px var(--body);white-space:nowrap}
 .qchip svg.i{width:17px;height:17px;color:var(--volt)}
 .qchip b{font-weight:900;color:var(--volt)}
-.qchip:disabled{opacity:.4}
+/* M5: disabled chips dim by colour, not opacity, so their PRO tag keeps a readable contrast */
+.qchip:disabled{color:var(--mute)} .qchip:disabled svg.i,.qchip:disabled b{color:var(--mute)} .qchip:disabled .protag{color:#D58AAE;border-color:#D58AAE}
 .qchip .protag{margin-left:2px}
 
 /* studio: words-only step bar with one sliding marker; no banner, no dividers, no stickers */
@@ -1448,7 +1452,7 @@ details.fold>summary b{color:var(--text)}
 .hstrip{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin:0 2px 18px;min-height:28px}
 .hs{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:0;color:var(--mute);font:800 13px var(--body);letter-spacing:.02em}
 .hs i{font-style:normal;color:var(--line)}
-.hs .protag{margin-left:2px}
+.hs .protag{margin-left:2px;color:#FF6FAE}
 .hs.busy{color:var(--dim)}
 .wkstrip,.wkready,.quickbar{display:none!important}
 .sortbar{margin:0 0 10px}
@@ -1543,6 +1547,10 @@ details.fold>summary b{color:var(--text)}
 .filters .fchip{min-height:44px}
 .top .hbtns .icon-btn,#rulesBtn{width:44px;min-width:44px;min-height:44px}
 .planchip{position:relative}.planchip::after{content:"";position:absolute;left:-2px;right:-2px;top:-7px;bottom:-7px}
+/* L4: the plan chip's box is the 44 px target; the pill is drawn inside */
+#proBadge.planchip{height:44px;min-width:44px;padding:0;border:0;background:none;box-shadow:none}
+#proBadge.planchip>span{display:inline-flex;align-items:center;gap:4px;height:34px;padding:7px 10px;border-radius:999px;border:2px solid var(--line);background:var(--panel);color:var(--dim)}
+#proBadge.planchip.pro>span{background:var(--volt);color:var(--ink);border-color:var(--ink)}
 .zoomer button{min-width:44px;min-height:44px}
 .sdock .pbar button{min-width:44px;min-height:44px}
 .sdock .pbar .pb-speed{min-width:44px;min-height:44px;height:44px}
@@ -1589,6 +1597,11 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
 .pbar,.sdock .pbar{flex-wrap:wrap;padding:4px 8px 4px}
 .pbar .ptrack,.sdock .pbar .ptrack{order:-1;flex:1 1 100%;margin:8px 8px 4px;height:8px}
 .pbar .ptrack .pknob{display:block}
+/* L4: the scrubber is a 44 px tall touch target; the same 8 px track is drawn inside it */
+.pbar .ptrack,.sdock .pbar .ptrack{height:44px;margin:-10px 8px -14px;background:none}
+.pbar .ptrack::before{top:0;bottom:0}
+.pbar .ptrack::after{content:"";position:absolute;left:0;right:0;top:18px;height:8px;border-radius:6px;background:#2A2046;z-index:0}
+.pbar .ptrack i{top:18px;bottom:auto;height:8px;z-index:1} .pbar .ptrack .pknob{z-index:2}
 .sdock.mini .pb-tools .pb-speed{display:none}
 @media (max-width:380px){.pbar,.sdock .pbar{gap:0;padding:4px 4px}.pbar .ptime{font-size:12px;padding-left:2px}.pb-beat{margin:0 3px;width:9px;height:9px}.pb-tools{gap:0}}
 .editbar{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -1629,7 +1642,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
 .finetune .btns button:active{background:var(--sc);color:var(--ink)}
 /* chips take the family colour of the tool they're in */
 #studio .chipset button[aria-pressed=true]{background:var(--sc);color:var(--ink);border-color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
-#studio .chipset button{min-height:40px}
+#studio .chipset button{min-height:44px}
 /* Band */
 .bandhead{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:2px dashed var(--line);background:var(--sct)}
 .bandhead>svg.i{width:30px;height:30px;color:var(--f-band);--ic2:rgba(255,46,136,.35);flex:none}
@@ -1754,7 +1767,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
   <div class="busy-line" id="bulkLine" aria-live="polite" hidden></div>
   <div class="sortbar" id="sortbar" hidden><span>Your takes</span><button class="selbtn sortbtn" type="button" data-act="sort-cycle" id="sortBtn" aria-label="Change sort order">Newest</button><button class="selbtn" type="button" data-act="select" id="selBtn">Select</button></div>
   <div class="filters" id="filters" role="radiogroup" aria-label="Show" hidden></div>
-  <label class="searchbox" id="searchBox" hidden><svg class="i"><use href="#i-scope"/></svg><input id="search" type="search" placeholder="Search your clips" autocomplete="off"></label>
+  <label class="searchbox" id="searchBox" hidden><svg class="i"><use href="#i-scope"/></svg><input id="search" type="search" placeholder="Search your clips" aria-label="Search your clips" autocomplete="off"></label>
   <div id="list" class="list"></div>
   <button class="installbar" id="installBar" type="button" data-act="install" hidden><svg class="i"><use href="#i-install"/></svg><span><b>Install LickPick</b> home screen + share clips in</span></button>
 </main>
@@ -1884,7 +1897,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     <div class="sdock" id="sDock">
       <div class="stage" id="sStage"></div>
       <div class="dockbar" id="sDockBar"></div>
-      <div class="wave" id="sWave" aria-label="Timeline: drag to scrub, pinch or use − + to zoom. Drag a Pick's edges to trim it, a bar at a time."><canvas id="sCanvas"></canvas><span class="wavetip" id="waveTip" hidden></span></div>
+      <div class="wave" id="sWave" role="group" aria-label="Timeline: drag to scrub, pinch or use − + to zoom. Drag a Pick's edges to trim it, a bar at a time."><canvas id="sCanvas"></canvas><span class="wavetip" id="waveTip" hidden></span></div>
       <div class="tc"><span id="sNow">0:00</span><span class="zoomer" role="group" aria-label="Zoom the timeline"><button type="button" data-zoom="out" aria-label="Zoom out">−</button><button type="button" data-zoom="fit" aria-label="Show the whole take">Fit</button><button type="button" data-zoom="in" aria-label="Zoom in">+</button></span><span id="sDur">0:00</span></div>
       <div class="editbar" id="sEdit" role="toolbar" aria-label="Trim the Pick" hidden></div>
       <div id="sStepbar"></div>
@@ -5390,7 +5403,7 @@ function openReport() {
 }
 function renderBrand() {
   // your plan, always visible: FREE or PRO in the header, one tap to compare
-  const b = $("#proBadge"); b.hidden = false; b.className = "planchip" + (isPro() ? " pro" : ""); b.innerHTML = isPro() ? `${icon("i-bolt")}PRO` : "FREE";
+  const b = $("#proBadge"); b.hidden = false; b.className = "planchip" + (isPro() ? " pro" : ""); b.innerHTML = `<span>${isPro() ? `${icon("i-bolt")}PRO` : "FREE"}</span>`;
   document.querySelector(".mrow.pro")?.toggleAttribute("hidden", BETA && lic.tier === "free");
   const ps = $("#menuProSub"); if (ps) ps.textContent = isPro() ? (backstageOK() ? "Everything on · Backstage" : "Everything is on") : lic.trial ? `$4.99 once · ${lic.trial} free saves left` : "$4.99 once. The band is yours"; b.classList.toggle("on", isPro()); b.setAttribute("aria-label", isPro() ? (lic.tier === "owner" ? "Owner: everything unlocked" : "Pro unlocked") : "LickPick Pro");
   const m = $("#menuPro"); if (m) m.textContent = isPro() ? (lic.tier === "owner" ? "Owner" : "Pro on") : "Go Pro";
@@ -5786,13 +5799,13 @@ function cardHTML(c) {
   const pk = c.status === "done" ? pickOf(c) : null, D = c.raw?.duration || 1;
   const strip = c.status === "listening" ? `<div class="strip"><i class="prog" style="left:0;width:${(c.progress || 0) * 100}%"></i></div>`
     : c.status === "done" ? `<div class="strip tiers">${tierBar(c, segsOf(c), "tb")}${pk ? `<b class="pkmark" style="left:${pk.s / D * 100}%;width:${(pk.e - pk.s) / D * 100}%"></b>` : ""}</div>` : "";
-  return `${thumb}<span class="cm"><span class="cn">${esc(takeName(c))}${c.raw?.jam?.by && c.raw.jam.by !== myHandle() ? ` <i class="jamby">from @${esc(c.raw.jam.by)}</i>` : ""}</span><span class="cp">${phrase(c)}</span>${strip}</span><span class="vst">${stamp(verdict(c))}</span><span class="selmark" aria-hidden="true">${icon("i-check")}</span>${c.example ? "" : `<button class="more" type="button" data-more="${c.id}" aria-label="Actions for ${esc(c.name)}">${icon("i-more")}</button>`}`;
+  return `${thumb}<span class="cm"><span class="cn">${esc(takeName(c))}${c.raw?.jam?.by && c.raw.jam.by !== myHandle() ? ` <i class="jamby">from @${esc(c.raw.jam.by)}</i>` : ""}</span><span class="cp" id="cp-${c.id}">${phrase(c)}</span>${strip}</span><span class="vst">${stamp(verdict(c))}</span><span class="selmark" aria-hidden="true">${icon("i-check")}</span>${c.example ? "" : `<button class="more" type="button" data-more="${c.id}" aria-label="Actions for ${esc(c.name)}">${icon("i-more")}</button>`}`;
 }
 const cardEls = new Map();
 function renderCard(c) {
   const el = cardEls.get(c.id); if (!el) return;
-  el.className = `card v-${verdict(c)}${state.sel?.has(c.id) ? " selected" : ""}`; el.innerHTML = cardHTML(c);
-  if (state.sel) el.setAttribute("aria-pressed", String(state.sel.has(c.id))); else el.removeAttribute("aria-pressed");
+  // the card's own tap target is a real button laid over it; the ⋯ actions button sits above it (no button inside a button)
+  el.className = `card v-${verdict(c)}${state.sel?.has(c.id) ? " selected" : ""}`; el.innerHTML = `<button type="button" class="cardhit" aria-label="${esc(takeName(c))}" aria-describedby="cp-${c.id}"${state.sel ? ` aria-pressed="${state.sel.has(c.id)}"` : ""}></button>` + cardHTML(c);
 }
 function renderTop() {
   const real = state.clips.filter(c => !c.example);
@@ -5927,7 +5940,7 @@ function render() {
   let prev = null;
   for (const c of shown) {
     let el = cardEls.get(c.id);
-    if (!el) { el = document.createElement("div"); el.setAttribute("role", "button"); el.tabIndex = 0; el.dataset.open = c.id; cardEls.set(c.id, el); }
+    if (!el) { el = document.createElement("div"); el.dataset.open = c.id; cardEls.set(c.id, el); }
     const want = prev ? prev.nextElementSibling : list.firstElementChild;
     if (want !== el) list.insertBefore(el, want);
     prev = el; renderCard(c);
@@ -8467,7 +8480,7 @@ Return only JSON: [{"caption": string, "hashtags": [string]}]`, { modelTier: "qu
 document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList?.contains("segrow")) { e.preventDefault(); e.target.click(); } });
 document.addEventListener("click", e => {
   { const c0 = cur(); if (c0 && !$("#studio").hidden) { if (mon.ctx?.state === "suspended") mon.ctx.resume().catch(() => { }); if (video && sndOf(c0).fx) hookVideo(); } }
-  const t = e.target.closest("button");
+  const t0 = e.target.closest("button"), t = t0?.classList.contains("cardhit") ? null : t0;   // the card's own tap target opens the card
   if (!t) {
     const card = e.target.closest("[data-open]"); if (card) { openCardAt(card); return; }
     const g = e.target.closest("[data-seg]"), c = cur();
