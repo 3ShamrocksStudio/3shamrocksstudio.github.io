@@ -43,19 +43,32 @@ h1 .s{color:var(--sig-500)}
 .st .lbar{width:100%;background:rgba(255,255,255,.9);border-radius:5px 5px 0 0}
 .st .mo{font-size:9px;opacity:.85}.st .v{font-size:10px;font-weight:700}
 
-/* todo */
-.todo{background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r);box-shadow:var(--sh-sm);overflow:hidden;margin-top:4px}
-.todo .th{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--n-100);font-family:var(--fd);font-weight:700;font-size:14px}
-.todo .th .n{margin-left:auto;font-family:var(--fb);font-weight:600;font-size:11px;color:var(--n-500)}
-.ti{display:grid;grid-template-columns:34px 1fr auto;gap:13px;padding:13px 18px;border-bottom:1px solid var(--n-100);align-items:start}
-.ti:last-child{border-bottom:none}
-.ti .rank{width:28px;height:28px;border-radius:8px;background:var(--brand-50);color:var(--brand-700);font-family:var(--fd);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
-.ti.go .rank{background:var(--success-bg);color:var(--success-fg)}
-.ti .act{font-weight:600;font-size:14px;color:var(--n-900)}
-.ti .why{font-size:12px;color:var(--n-500);margin-top:3px;line-height:1.45}
-.ti .meta{text-align:right;white-space:nowrap}
-.ti .meta .t{font-size:11px;font-weight:700;color:var(--n-600);font-family:var(--fd)}
-.ti .meta .tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--brand-600);background:var(--brand-50);padding:2px 7px;border-radius:var(--pill);display:inline-block;margin-top:4px}
+/* WAITING ON DAVE — the hero block */
+.dave{background:var(--n-0);border:1px solid var(--n-200);border-top:5px solid var(--brand-500);border-radius:var(--r);box-shadow:var(--sh-md);overflow:hidden;margin:18px 0 0}
+.dave-h{display:flex;align-items:center;gap:11px;padding:16px 20px;background:linear-gradient(90deg,var(--brand-50),rgba(255,255,255,0));border-bottom:1px solid var(--n-100);font-family:var(--fd);font-weight:700;font-size:17px;letter-spacing:-.01em}
+.dave-h .b{width:28px;height:28px;border-radius:8px;background:var(--brand-500);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto}
+.dave-h small{font-weight:500;font-family:var(--fb);font-size:11.5px;color:var(--n-500)}
+.dave-h .count{margin-left:auto;font-family:var(--fb);font-weight:700;font-size:11px;color:#fff;background:var(--danger);padding:4px 11px;border-radius:var(--pill);white-space:nowrap}
+.dave-h .count.clear{color:var(--success-fg);background:var(--success-bg)}
+.di{display:grid;grid-template-columns:24px 1fr auto;gap:14px;padding:15px 20px;border-bottom:1px solid var(--n-100);align-items:start}
+.di:last-child{border-bottom:none}
+.di .cb{width:21px;height:21px;border-radius:6px;border:2px solid var(--brand-300);margin-top:1px;flex:0 0 auto}
+.di.done .cb{background:var(--success);border-color:var(--success);position:relative}
+.di.done .cb::after{content:"✓";color:#fff;font-size:12px;font-weight:800;position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.di .act{font-weight:700;font-size:14.5px;color:var(--n-900);line-height:1.25}
+.di .why{font-size:12px;color:var(--n-500);margin-top:3px;line-height:1.45}
+.di.done .act{color:var(--n-400);text-decoration:line-through}
+.di.done .why{color:var(--n-400)}
+.di .meta{text-align:right;white-space:nowrap}
+.di .meta .t{font-size:11px;font-weight:700;color:var(--n-600);font-family:var(--fd)}
+.di .meta .tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--brand-600);background:var(--brand-50);padding:2px 7px;border-radius:var(--pill);display:inline-block;margin-top:4px}
+/* AUTOPILOT — Claude is handling, secondary */
+.auto{background:var(--n-50);border:1px solid var(--n-200);border-radius:var(--r);padding:14px 18px;margin-top:13px}
+.auto-h{display:flex;align-items:center;gap:9px;font-family:var(--fd);font-weight:600;font-size:12.5px;color:var(--n-600);margin-bottom:11px}
+.auto-h small{font-weight:500;font-family:var(--fb);font-size:11px;color:var(--n-400)}
+.auto-list{display:flex;flex-wrap:wrap;gap:8px}
+.ac{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:var(--n-600);background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--pill);padding:6px 12px}
+.ac .d{width:7px;height:7px;border-radius:50%;background:var(--sig-500);box-shadow:0 0 0 3px color-mix(in srgb,var(--sig-500) 18%,transparent);flex:0 0 auto}
 
 .legend{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 0}
 .legend .t{font-size:11px;color:var(--n-500);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
@@ -110,9 +123,10 @@ h1 .s{color:var(--sig-500)}
  .hero{grid-template-columns:1fr;gap:18px;padding:20px}
  .hero .big{font-size:30px}
  .stamp{width:100%;margin:4px 0 0}
- .ti{grid-template-columns:30px 1fr;gap:11px}
- .ti .meta{grid-column:2;text-align:left;margin-top:2px}
- .ti .meta .tag{margin-top:0}
+ .di{grid-template-columns:24px 1fr;gap:12px}
+ .di .meta{grid-column:2;text-align:left;margin-top:3px}
+ .di .meta .tag{margin-top:0}
+ .dave-h{font-size:15px}
  .axis{display:none}
  .row{grid-template-columns:1fr}
  .rhead{border-bottom:1px dashed var(--n-200)}
@@ -124,6 +138,9 @@ h1 .s{color:var(--sig-500)}
 <body>
 <div class="wrap">
   <h1>3<span class="s">✡</span>Shamrocks Studio — Master Plan to $1M ARR <span class="stamp" id="stamp"></span></h1>
+
+  <div class="dave" id="dave"></div>
+  <div class="auto" id="auto"></div>
 
   <div class="hero">
     <div>
@@ -143,9 +160,6 @@ h1 .s{color:var(--sig-500)}
       </div>
     </div>
   </div>
-
-  <div class="sec"><span class="ico" style="background:var(--danger)">⚡</span>Your next moves <small>only you can do these — ordered by impact on $1M</small></div>
-  <div class="todo" id="todo"></div>
 
   <div class="legend">
     <span class="t">Timeline key</span>
@@ -177,13 +191,17 @@ h1 .s{color:var(--sig-500)}
 </div>
 
 <script>
-var TODO=[
- {rank:'1',go:true,act:'Create the 4 IG mascot accounts (phone + 2FA)',why:'Unblocks the distribution flywheel — the compounding engine behind every solo-$1M story. 4 pages are already built and waiting.',t:'~2–3h',tag:'Blocks flywheel'},
- {rank:'2',go:true,act:'Enable “3SDS Daily Ops” in the Scheduled sidebar',why:'Keeps this board + a health-check auto-updating every morning. It got moved to the cloud, so only you can switch it on.',t:'30 sec',tag:'Keeps board live'},
- {rank:'3',act:'Hand me J8N.IX billing (Stripe test keys + pricing)',why:'J8N.IX is the primary engine. With keys I wire checkout and it can take its first paying user.',t:'5 min',tag:'Primary engine'},
- {rank:'4',act:'Recruit 12 SH✡MER testers',why:'Starts the 14-day Google Play clock toward production — the gate before any paid community.',t:'~1h',tag:'Big bet'},
- {rank:'5',act:'Point 3shamrocks.com at the live site',why:'Makes every link look pro (custom domain, not github.io) before the LinkedIn launch. DNS only.',t:'~10 min',tag:'Credibility'}
+// ONLY things that need Dave's hands — ordered by impact. Set done:true when cleared.
+var DAVE=[
+ {act:'Enable “3SDS Daily Ops” in the Scheduled sidebar',why:'Switches on the morning run that keeps this whole board + health-checks auto-updating. It\'s cloud-managed now, so only you can flip it.',t:'30 sec',tag:'Keeps board live',done:false},
+ {act:'Create the 4 IG mascot accounts (phone + 2FA)',why:'Unblocks the distribution flywheel — the compounding engine behind every solo-$1M story. The 4 pages are already built and waiting.',t:'~2–3h',tag:'Blocks flywheel',done:false},
+ {act:'Send the 12 SH✡MER tester invites',why:'Starts the 14-day Google Play clock — the gate before SH✡MER can reach production or any paid community.',t:'~1h',tag:'Big bet',done:false},
+ {act:'Finish Google Play verification',why:'Final account/identity gate before SH✡MER can go public. Only you can complete it.',t:'~15 min',tag:'Unblocks launch',done:false},
+ {act:'Hand me J8N.IX billing (Stripe test keys + pricing)',why:'J8N.IX is the primary engine. With keys I wire checkout and it can take its first paying user.',t:'5 min',tag:'Primary engine',done:false},
+ {act:'Point 3shamrocks.com at the live site',why:'Custom domain instead of github.io before the LinkedIn launch — makes every link look pro. DNS only.',t:'~10 min',tag:'Credibility',done:false}
 ];
+// What Claude is doing itself — no action needed from Dave.
+var AUTO=['Refreshing this board every morning','Health-checking all live products','Finishing the Trashure-Hunters app MVP','Shipping more AI Brand Kit SKUs','Wiring J8N.IX checkout (once keys land)','Drafting the LinkedIn launch post','Fixing live-site bugs (e.g. Ezra link)'];
 var PRIMARY=[
  {nm:'J8N.IX — SaaS',rc:'var(--brand-500)',bc:'var(--brand-500)',flag:['f-focus','FOCUS'],roi:['$35k MRR','~M2'],
   desc:'The only product with a daily-use loop, a clean freemium→paid path, and zero safeguarding liability. Wire billing + sync, ship weekly, build in public. This is the one we scale.',
@@ -257,10 +275,17 @@ var tf=document.createElement('div');tf.className='todayflag';tf.innerHTML='<b>T
 function fill(id,arr,paused){var el=document.getElementById(id);arr.forEach(function(p){el.appendChild(buildRow(p,paused));});}
 fill('primary',PRIMARY,false);fill('flywheel',FLYWHEEL,false);fill('bigbet',BIGBET,false);
 fill('options',OPTIONS,true);fill('paused',PAUSED,true);fill('ip',IP,true);
-var tEl=document.getElementById('todo');
-TODO.forEach(function(d){var el=document.createElement('div');el.className='ti'+(d.go?' go':'');
- el.innerHTML='<div class="rank">'+d.rank+'</div><div><div class="act">'+d.act+'</div><div class="why">'+d.why+'</div></div>'+
- '<div class="meta"><div class="t">'+d.t+'</div><span class="tag">'+d.tag+'</span></div>';tEl.appendChild(el);});
+var open=DAVE.filter(function(d){return !d.done;}).length;
+var dEl=document.getElementById('dave');
+var head='<div class="dave-h"><span class="b">⏳</span>Waiting on you <small>only you can do these — ordered by impact</small>'+
+ (open>0?'<span class="count">'+open+' to&nbsp;do</span>':'<span class="count clear">✓ All clear</span>')+'</div>';
+var rows=DAVE.map(function(d){return '<div class="di'+(d.done?' done':'')+'"><div class="cb"></div>'+
+ '<div><div class="act">'+d.act+'</div><div class="why">'+d.why+'</div></div>'+
+ '<div class="meta"><div class="t">'+d.t+'</div><span class="tag">'+d.tag+'</span></div></div>';}).join('');
+dEl.innerHTML=head+rows;
+var aEl=document.getElementById('auto');
+aEl.innerHTML='<div class="auto-h"><span>🤖</span>On autopilot — Claude\'s handling these <small>nothing for you to do here</small></div>'+
+ '<div class="auto-list">'+AUTO.map(function(a){return '<span class="ac"><span class="d"></span>'+a+'</span>';}).join('')+'</div>';
 document.getElementById('stamp').textContent='Updated '+new Date().toISOString().slice(0,10);
 </script>
 </body>
