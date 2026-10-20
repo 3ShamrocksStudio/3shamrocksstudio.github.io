@@ -651,7 +651,9 @@ button:disabled .stk{filter:grayscale(1) brightness(.6);box-shadow:none}
 .ob-body h1,.start h1{position:relative}
 .pro-lead{margin:0;font:400 22px/1.15 var(--display);color:var(--volt)}
 .credit-opt{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--dim);min-height:44px}
-.credit-opt input{width:22px;height:22px;accent-color:var(--volt)}
+.credit-opt input{appearance:none;-webkit-appearance:none;flex:none;width:44px;height:44px;margin:0 -22px 0 -11px;border:0;border-radius:10px;cursor:pointer;background:no-repeat center/22px 22px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Crect x='1.5' y='1.5' width='19' height='19' rx='4' fill='%2315111F' stroke='%238F83B3' stroke-width='2'/%3E%3C/svg%3E")}
+.credit-opt input:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Crect x='1' y='1' width='20' height='20' rx='4' fill='%23FFE600'/%3E%3Cpath d='M6 11.5l3.2 3.2L16 8' fill='none' stroke='%230B0912' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.credit-opt input:focus-visible{outline:3px solid var(--cyan);outline-offset:-6px}
 /* ---- touch targets: 48dp Android guideline, 44px floor everywhere ---- */
 .icon-btn{width:48px;height:48px}
 .selbtn,.fchip,.seg button,.stepper button,.chipset button,.vbtns button,.vote button,.finetune .btns button,.trim .btns button,.tip button,.chips button,.segchip{min-height:44px}
@@ -1649,7 +1651,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
 .bandhead.on{border-style:solid;border-color:var(--f-band);box-shadow:3px 3px 0 var(--ink)}
 .bandhead strong{display:block;font:400 17px/1.15 var(--display)} .bandhead em{display:block;font-style:normal;color:var(--dim);font-size:13px;margin-top:3px}
 .timing{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 12px;border-radius:14px;background:var(--raise);border:2px solid var(--line)}
-.timing .tlbl{font-weight:900;font-size:13px;color:var(--f-band);margin-right:2px}
+.timing .tlbl{font-weight:900;font-size:13px;color:#FF4A97;margin-right:2px}
 .timing .nudge{display:inline-flex;border:2px solid var(--ink);border-radius:12px;overflow:hidden;box-shadow:2px 2px 0 var(--ink)}
 .timing .nudge button{min-width:44px;min-height:44px;border:0;background:var(--panel);color:var(--text);font:900 18px var(--body)}
 .timing .nudge .nval{min-width:84px;font:800 13px var(--body);background:var(--f-band);color:var(--ink)}
@@ -1657,7 +1659,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
 .timing .tchip svg.i{width:16px;height:16px;--ic2:transparent;color:var(--f-band)}
 .timing .tchip[aria-pressed=true]{background:var(--f-band);color:var(--ink);border-color:var(--ink)}
 .bvol{display:flex;align-items:center;gap:10px;font-weight:800;font-size:13px;color:var(--dim);min-height:44px}
-.bvol input{flex:1;accent-color:var(--f-band);min-height:32px}
+.bvol input{flex:1;accent-color:var(--f-band);min-height:44px}
 .bvol output{min-width:44px;text-align:right;color:var(--text)}
 /* Save: one CTA, tangerine */
 #sBar .exportbtn{background:var(--f-save);color:var(--ink);box-shadow:4px 4px 0 var(--ink);flex:1}
@@ -4855,7 +4857,12 @@ Return only JSON: {"style": string, "drums": boolean, "bass": boolean, "keys": b
   }
   async function signIn() {
     S.busy = true; S.err = ""; emit();
-    try { const { auth, au } = await load(); const p = new auth.GoogleAuthProvider(); try { await auth.signInWithPopup(au, p); } catch (e) { if (/popup/i.test(String(e?.code))) await auth.signInWithRedirect(au, p); else throw e; } }
+    try { const { auth, au } = await load(); const p = new auth.GoogleAuthProvider(); try { await auth.signInWithPopup(au, p); } catch (e) {
+      // only a BLOCKED popup falls back to the full-page redirect; closing or cancelling it just returns to where you were
+      const code = String(e?.code || "");
+      if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") await auth.signInWithRedirect(au, p);
+      else if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request" || code === "auth/user-cancelled") { S.busy = false; S.err = ""; emit(); return; }
+      else throw e; } }
     catch (e) { S.err = /network/i.test(String(e?.code || e)) ? "No connection." : "Couldn't sign in."; }
     S.busy = false; emit();
   }
@@ -6417,6 +6424,8 @@ function closeStudio() {
   { const c0 = cur(); if (c0) { c0._tv = null; c0._tFrozen = null; } if (c0?._retaste) { c0._retaste = false; redecide(c0); persist(c0); } }   // new cut rules apply once you leave, so nothing moves under your finger
   stopBand(); stopAudio(); stopAt = null; queue = []; unfloat(); playMark = null;
   player?.destroy(); player = null; video = null;
+  // release the studio's DOM (the stage, timeline legend, step panels): it is rebuilt on the next open
+  for (const id of ["sStage", "sDockBar", "sEdit", "sStepbar", "wLeg", "sSteps", "sNav"]) { const el = document.getElementById(id); if (el) el.replaceChildren(); }
   state.openId = null; state._shownStep = null; $("#studio").hidden = true; document.body.style.overflow = ""; render();
 }
 // ---------- Looks: one tap = a picture filter + a title font. The LickPick mark, chords and tab stay in brand fonts.
