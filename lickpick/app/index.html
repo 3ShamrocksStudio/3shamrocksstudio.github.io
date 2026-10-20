@@ -5961,6 +5961,7 @@ function setView(v) {
   document.querySelectorAll(".nv").forEach(b => b.toggleAttribute("aria-current", b.dataset.view === v));
   document.querySelectorAll(".nv[aria-current]").forEach(b => b.setAttribute("aria-current", "page"));
   window.scrollTo(0, 0);
+  try { navSync(); } catch { }   // My licks / Cleanup get a history entry: Back returns to Takes instead of leaving the app
 }
 // If the phone never leaves the page and no file comes back, the picker didn't open in this app.
 function openPicker(input) {
@@ -8785,10 +8786,10 @@ $("#addSheet").addEventListener("click", e => { if (e.target.id === "addSheet") 
 // so the phone's Back button (and the Play build, which closes the app on Back at the root) closes it instead of leaving.
 // At the home screen there's no entry of ours, so Back leaves as usual.
 const NAV_LAYERS = ["studio", "sorter", "onboard", "intro", "pickHelp", "madeSheet", "tasteSheet", "fbSheet", "rowSheet", "addSheet", "rules", "proSheet", "exportSheet", "winSheet", "recSheet"];
-const NAV_CLOSE = { studio: () => closeStudio(), sorter: () => closeQuickSort(false), onboard: () => closeOnboard(), intro: () => closeIntro(), recSheet: () => recClose(),
+const NAV_CLOSE = { view: () => setView("clips"), studio: () => closeStudio(), sorter: () => closeQuickSort(false), onboard: () => closeOnboard(), intro: () => closeIntro(), recSheet: () => recClose(),
   madeSheet: () => { madePlayer?.pause(); $("#madeSheet").hidden = true; } };
 let navOrder = [], navDepth = 0, navSkip = 0;
-const navOpen = () => { const vis = NAV_LAYERS.filter(id => { const el = document.getElementById(id); return el && !el.hidden; }); navOrder = navOrder.filter(id => vis.includes(id)).concat(vis.filter(id => !navOrder.includes(id))); return navOrder; };
+const navOpen = () => { const vis = (state.view && state.view !== "clips" ? ["view"] : []).concat(NAV_LAYERS.filter(id => { const el = document.getElementById(id); return el && !el.hidden; })); navOrder = navOrder.filter(id => vis.includes(id)).concat(vis.filter(id => !navOrder.includes(id))); return navOrder; };
 function navSync() {
   if (navSkip) return; const n = navOpen().length;
   try { if (n > navDepth) { for (let i = navDepth; i < n; i++) history.pushState({ lpNav: i + 1 }, ""); navDepth = n; } else if (n < navDepth) { const k = navDepth - n; navDepth = n; navSkip++; history.go(-k); } } catch { }
