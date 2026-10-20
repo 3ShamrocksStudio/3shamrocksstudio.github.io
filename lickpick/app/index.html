@@ -3489,7 +3489,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     const f4 = fit(4), f3 = fit(3);
     // 3/4 also needs the playing itself to repeat every 3 beats more than every 4 (phrases, not just chord changes)
     const rep = m => { if (!raw.fluxA) return 0; const F = raw.fluxA, fr = raw.fluxRate, o = raw.fluxOff, p = (beats[beats.length - 1] - beats[0]) / (beats.length - 1), a = Math.max(0, Math.round((beats[0] - o) * fr)), b = Math.min(F.length, Math.round((beats[beats.length - 1] - o) * fr)), L = Math.round(m * p * fr); let mu = 0; for (let i = a; i < b; i++) mu += F[i]; mu /= Math.max(1, b - a); let x = 0, y = 0; for (let i = a; i + L < b; i++) { x += (F[i] - mu) * (F[i + L] - mu); y += (F[i] - mu) ** 2; } return y ? x / y : 0; };
-    const meter = f3.sc > 0.04 && f3.sc > f4.sc * 1.25 && (!METER_REP || rep(3) >= rep(4) - METER_REP) ? 3 : 4, best = meter === 3 ? f3.ph : f4.ph;
+    const meter = forced?.meter === 3 || forced?.meter === 4 ? forced.meter : f3.sc > 0.04 && f3.sc > f4.sc * 1.25 && (!METER_REP || rep(3) >= rep(4) - METER_REP) ? 3 : 4, best = meter === 3 ? f3.ph : f4.ph;
     const bars = [];
     for (let k = best; k < beats.length; k += meter) {
       const t0 = beats[k], t1 = k + meter < beats.length ? beats[k + meter] : t0 + meter * (beats[beats.length - 1] - beats[beats.length - 2]);
@@ -3506,11 +3506,13 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     const stayAt = ps.map(j => j === 0 ? 0.03 : (meter === 4 && j === 2) ? 0.2 : 0.35);
     const chords = chordsFor(raw, sg, CHORD_STAY, stayAt).reduce((m, c) => { const l = m[m.length - 1]; if (l && l.name === c.name) { l.t1 = c.t1; l.conf = Math.max(l.conf, c.conf); l.margin = Math.max(l.margin, c.margin); l.third = Math.max(l.third ?? 0, c.third ?? 0); } else m.push({ ...c }); return m; }, []);
     // swing: where the off-beat attack sits inside each beat
-    const pos = [];
+    // (round 3: on the fine 11.6 ms flux when the scan has it; the 46 ms frames blurred a swung "and" at fast tempos)
+    const pos = [], SW = raw.fluxA ? { on: raw.fluxA, fr: raw.fluxRate, off: raw.fluxOff } : { on, fr, off };
+    const accS = t => { const f = Math.round((t - SW.off) * SW.fr); let m = 0; for (let j = f - 2; j <= f + 2; j++) m = Math.max(m, SW.on[j] || 0); return m; };
     for (let k = 0; k + 1 < beats.length; k++) {
-      const f0 = (beats[k] - off) * fr, f1 = (beats[k + 1] - off) * fr; let bi = -1, bv = 0;
-      for (let f = Math.ceil(f0 + (f1 - f0) * 0.35); f <= Math.floor(f0 + (f1 - f0) * 0.85); f++) if ((on[f] || 0) > bv) { bv = on[f]; bi = f; }
-      if (bi > 0 && bv > 0.3 * (acc(beats[k]) || 1)) pos.push((bi - f0) / (f1 - f0));
+      const f0 = (beats[k] - SW.off) * SW.fr, f1 = (beats[k + 1] - SW.off) * SW.fr; let bi = -1, bv = 0;
+      for (let f = Math.ceil(f0 + (f1 - f0) * 0.35); f <= Math.floor(f0 + (f1 - f0) * 0.85); f++) if ((SW.on[f] || 0) > bv) { bv = SW.on[f]; bi = f; }
+      if (bi > 0 && bv > 0.3 * (accS(beats[k]) || 1)) pos.push((bi - f0) / (f1 - f0));
     }
     const sp = median(pos), swing = pos.length > beats.length * 0.3 && sp > 0.6 && sp < 0.75 ? sp : 0.5;
     // energy per bar (0..1 within the window)
@@ -3519,7 +3521,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     const lo = Math.min(...be), hi = Math.max(...be);
     bars.forEach((b, i) => { b.energy = hi - lo < 3 ? 0.7 : (be[i] - lo) / (hi - lo); });
     const offR = raw.fluxA && beats.length >= 8 ? +offRatio(raw, beats).toFixed(2) : 0;
-    return { pulse: true, meter, beats, bars, chords, swing, offRatio: offR, bpm: Math.round(tb.bpm), forced: !!forced?.bpm, given: !!forced?.beats, unsure: !!tb.unsure, shifted: tb.shifted || 0 };
+    return { pulse: true, meter, compound: !!forced?.compound && meter !== 3, beats, bars, chords, swing, offRatio: offR, bpm: Math.round(tb.bpm), forced: !!forced?.bpm, given: !!forced?.beats, unsure: !!tb.unsure, shifted: tb.shifted || 0 };
   }
 
   // Steady-groove zones inside [ps, pe]: 10 s windows every 2 s that hold a real pulse, merged while the
@@ -4062,9 +4064,13 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
   // subdivision strength, chord changes on the beats (log), a chord every 3-4 beats, beat homogeneity (all, low strings),
   // beats per chord change. Trained (softmax over each take's candidates) on GuitarSet's 180 comping takes (real players,
   // annotated beats) + 64 synthetic takes; held-out players: 130/177 right level (old rule: 103/180).
-  let LAST_PH = null;
-  let TM = {"W1":[[-0.117,-3.819,-3.943,5.614,4.596,0.868,0.79,-2.58,1.904,-0.969,-0.084,0.101],[0.429,0.326,-2.156,-3.533,0.133,2.515,2.044,-0.422,-0.011,-0.092,-2.148,-0.075],[0.086,-0.066,-0.039,-0.164,0.238,-0.269,0.016,-0.086,0.01,0.106,-0.077,0.008],[-0.053,0.012,0.023,0.088,-0.151,0.155,-0.025,0.029,-0.004,-0.087,0.007,-0.004],[1.812,2.838,-2.022,3.239,-0.124,-5.703,-0.351,-0.295,-0.186,1.899,0.429,0.63],[0.043,0.001,-0.017,-0.09,0.109,-0.122,0.028,-0.012,-0.003,0.077,-0.027,0.006]],"b1":[-2.229,0.689,0.026,0.031,2.663,0.005],"w2":[5.462,-2.723,0.082,-0.047,4.051,0.04],"lin":[3.615,-0.099,4.12,-9.08,8.034,-5.211,-0.037,2.551,2.15,0.004,-2.024,0.475]}, LAST_TL = null;
-  const tmScore = x => { let s2 = 0; for (let j = 0; j < TM.W1.length; j++) { let z = TM.b1[j]; for (let i = 0; i < x.length; i++) z += TM.W1[j][i] * x[i]; s2 += TM.w2[j] * Math.tanh(z); } for (let i = 0; i < x.length; i++) s2 += TM.lin[i] * x[i]; return s2; };
+  let LAST_PH = null, LAST_SEC = null, LAST_TLG = null, LAST_PHFB = null;
+  // the beat-phase model (round 3): linear scores on the phase candidates' features (log attacks / low band / high band /
+  // chord change at the beat and on the "and", triplet positions, DP's own phase). Trained on the tune split (gen_v3 tune,
+  // GuitarSet players 00-02, Ballroom even items): test split 10/10 reggae one-drop (was 0/10), GuitarSet 50/68 (was 46/68).
+  let PHW = [0.792,1.938,-0.526,0.711,1.801,0.135,-0.296,-1.009,1.089,1.049,-0.369];
+  let TM = {"W1":[[0.101,-0.768,-1.22,0.5,1.062,-2.026,1.013,-0.56,0.674,0.544,0.074,-0.024,0.037,0.001,-0.168],[-0.044,-1.058,-1.044,-0.441,-1.76,-0.645,-1.137,0.154,-0.182,0.768,0.35,0.129,-0.163,0.26,0.338],[0.097,-0.45,-0.106,-0.503,0.754,-0.072,-0.127,0.12,-0.646,0.118,0.327,1.077,0.35,-0.206,-0.021],[0.374,0.305,-0.903,1.336,0.654,1.298,1.027,-0.508,-0.215,-0.117,0.14,0.215,0.245,0.984,0.1],[0.431,1.519,-0.247,0.606,0.355,-1.108,-1.501,-0.112,-0.203,0.434,1.061,-0.095,-0.601,0.379,-0.004],[1.163,-0.543,0.701,-0.209,-0.598,-1.57,0.589,0.568,-0.068,1.003,0.649,0.091,-0.276,-0.418,-0.153]],"b1":[-0.878,0.417,-0.425,-1.35,0.252,0.627],"w2":[3.085,-2.451,1.537,-2.744,2.323,2.554],"lin":[0.348,-0.277,0.061,0.042,0.386,-0.404,-0.321,0.149,0.234,-0.215,-0.294,0.212,0.582,-0.203,0.009]}, LAST_TL = null;
+  const tmScore = x => { let s2 = 0; for (let j = 0; j < TM.W1.length; j++) { let z = TM.b1[j]; for (let i = 0; i < x.length; i++) z += (TM.W1[j][i] || 0) * x[i]; s2 += TM.w2[j] * Math.tanh(z); } for (let i = 0; i < x.length; i++) s2 += (TM.lin[i] || 0) * x[i]; return s2; };
   const TL_R = [1 / 3, 1 / 2, 2 / 3, 3 / 4, 1, 4 / 3, 3 / 2, 2, 3];
   function levelFeats(X, L) {
     const { comb: c, OL, OC, fr, raw, a, off } = X, W = Math.round(8 * fr), H = Math.round(4 * fr), B = [];
@@ -4090,7 +4096,12 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
         for (let f = Math.max(0, Math.ceil((t0 - co) * cr)); f < (t1 - co) * cr && f < nF; f++) for (let q = 0; q < 12; q++) v[q] += LIN255[cf[f * 12 + q]]; ch.push(v); }
       const d = ch.slice(1).map((v, k) => 1 - cos(v, ch[k]));
       const conc = M => { let bst = -1; for (let p = 0; p < M; p++) { let x1 = 0, m1 = 0, x0 = 0, m0 = 0; d.forEach((x, k) => { if (k % M === p) { x1 += x; m1++; } else { x0 += x; m0++; } }); if (m1 && m0) bst = Math.max(bst, x1 / m1 - x0 / m0); } return bst; };
-      const C = [2, 3, 4, 6, 8].map(conc), mx = Math.max(...C); if (mx > 1e-4) acc.b34 = Math.max(C[1], C[2]) / mx; }
+      const C = [2, 3, 4, 6, 8].map(conc), mx = Math.max(...C); if (mx > 1e-4) { acc.b34 = Math.max(C[1], C[2]) / mx; acc.tri = (C[1] - Math.max(C[0], C[2])) / mx; } }
+    // round 3: is the grouping ABOVE this level in threes (a waltz's bar) or in twos/fours? The bass and the attacks repeat
+    // every 3 beats more than every 2 or 4 (autocorrelation of the low band and of all attacks at 2, 3 and 4 beats)
+    { const ac = (x, lag) => { let mu = 0; for (const v of x) mu += v; mu /= x.length; let num = 0, den = 0; for (let i = 0; i < x.length; i++) { const d = x[i] - mu; den += d * d; const j = Math.round(i + lag); if (j < x.length) num += d * (x[j] - mu); } return den ? num / den : 0; };
+      const tr = x => ac(x, 3 * L) - Math.max(ac(x, 2 * L), ac(x, 4 * L)); acc.triL = 3 * L < OL.length / 3 ? tr(OL) : 0; acc.triC = 3 * L < c.length / 3 ? tr(c) : 0; }
+    acc.tri = acc.tri ?? 0;
     return { B, ...acc };
   }
   const LIN255 = Array.from({ length: 256 }, (_, v) => Math.expm1(v / 255 * Math.log1p(100)));
@@ -4111,41 +4122,95 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     for (const c of cands) { const m = HP ? HP * fr / c.L : 0, mi = Math.round(m), frac = Math.abs(m - mi); c.m = +m.toFixed(2);
       c.hm = !HP ? 0 : frac > 0.2 ? -1 : mi === 4 || mi === 3 ? 1 : mi === 2 ? 0.5 : mi === 8 || mi === 6 ? 0 : -0.5; delete c._B; }
     const mb = Math.max(...cands.map(c => c.b)), mc = Math.max(...cands.map(c => c.cr));
-    for (const c of cands) { const lt = Math.log2(c.bpm / 110); c.F = [Math.log(c.b / mb), -(lt ** 2), lt, c.h, c.t, c.tm, c.q, Math.log(c.cr / mc), c.b34, c.al, c.all, c.hm]; c.sc = tmScore(c.F); }
+    for (const c of cands) { const lt = Math.log2(c.bpm / 110); c.F = [Math.log(c.b / mb), -(lt ** 2), lt, c.h, c.t, c.tm, c.q, Math.log(c.cr / mc), c.b34, c.al, c.all, c.hm, c.tri, c.triL, c.triC]; c.sc = tmScore(c.F); }
     const pick = cands.reduce((x, y) => y.sc > x.sc ? y : x); LAST_TL = cands; return { L: pick.L, cands };
   }
   function bandGrid(raw, s, e) {
     const E = fluxEnv(raw, s, e); if (!E) return null;
-    const { O, OL, OC, fr, a, off } = E, n = O.length, comb = O.map((v, i) => v + 0.7 * OL[i]);
+    const { O, OL, OH, OC, fr, a, off } = E, n = O.length, comb = O.map((v, i) => v + 0.7 * OL[i]);
     const m0 = mean(comb), o = comb.map(v => v - m0); let e0 = 0; for (const v of o) e0 += v * v; if (!e0) return null;
     const lo = Math.floor(fr * 60 / 200), hi = Math.ceil(fr * 60 / 50);
     const acfOf = (i0, i1, L0, L1) => { const out = new Float64Array(L1 + 2); let en = 0; for (let i = i0; i < i1; i++) en += o[i] * o[i]; if (!en) return out;
       for (let L = Math.max(1, L0); L <= L1 + 1; L++) { let sm = 0; for (let i = i0; i + L < i1; i++) sm += o[i] * o[i + L]; out[L] = sm / en * (i1 - i0) / Math.max(1, i1 - i0 - L); } return out; };
-    const acf = acfOf(0, n, 1, Math.min(n - 2, 4 * hi + 2));
-    const at = x => { const i = Math.floor(x), f = x - i; return (acf[i] || 0) * (1 - f) + (acf[i + 1] || 0) * f; };
-    // tempo: comb of the lag and its multiples, weighted by a felt-tempo prior (log-normal around 110 BPM)
-    const prior = bpm => Math.exp(-0.5 * (Math.log2(bpm / 110) / 0.6) ** 2);
-    const strength = L => at(L) + 0.5 * at(2 * L) + 0.33 * at(3 * L) + 0.25 * at(4 * L);
-    let best = 0, bs = -1e9; for (let L = lo; L <= hi; L += 0.25) { const sc = strength(L) * prior(60 * fr / L); if (sc > bs) { bs = sc; best = L; } }
-    if (!(bs > 0)) return null;
-    // fine period: parabola on the comb score
-    { const f = L => strength(L), y0 = f(best - 0.25), y1 = f(best), y2 = f(best + 0.25), den = y0 - 2 * y1 + y2; if (den < 0) best += 0.25 * clamp(0.5 * (y0 - y2) / den, -1, 1); }
-    // which metrical level is the beat? The autocorrelation alone can't tell 160 from 107 (3:2) or 70 from 140 (2:1) on a
+    // the beat period of a stretch [i0, i1): comb of the lag and its multiples with a felt-tempo prior (log-normal around
+    // 110 BPM), refined, then the metrical level picked by the ranker (tempoLevel). The whole take, or one tempo section.
+    // Which metrical level is the beat? The autocorrelation alone can't tell 160 from 107 (3:2) or 70 from 140 (2:1) on a
     // strummed take: every level of the bar repeats. Each candidate (the reading x 1/3, 1/2, 2/3, 3/4, 1, 4/3, 3/2, 2, 3) is
     // scored on the onset envelope as a pulse train (how strong its beats are, and what sits between them: a beat has weaker
     // 8ths or triplets after it, a 3:2 alias has its "subdivisions" in the wrong place), on where the chord changes land,
     // and on how often they change (a chord every 3-4 beats is the norm), with a gentle felt-tempo prior (~110 BPM).
-    const tl = tempoLevel({ comb, OL, OC, fr, a, off, raw, at, best, n }), L = tl.L;
+    const prior = bpm => Math.exp(-0.5 * (Math.log2(bpm / 110) / 0.6) ** 2);
+    const levelIn = (i0, i1) => {
+      const acf = acfOf(i0, i1, 1, Math.min(i1 - i0 - 2, 4 * hi + 2)), at = x => { const i = Math.floor(x), f = x - i; return (acf[i] || 0) * (1 - f) + (acf[i + 1] || 0) * f; };
+      const strength = L => at(L) + 0.5 * at(2 * L) + 0.33 * at(3 * L) + 0.25 * at(4 * L);
+      let best = 0, bs = -1e9; for (let L = lo; L <= hi; L += 0.25) { const sc = strength(L) * prior(60 * fr / L); if (sc > bs) { bs = sc; best = L; } }
+      if (!(bs > 0)) return null;
+      { const f = L => strength(L), y0 = f(best - 0.25), y1 = f(best), y2 = f(best + 0.25), den = y0 - 2 * y1 + y2; if (den < 0) best += 0.25 * clamp(0.5 * (y0 - y2) / den, -1, 1); }
+      const whole = i0 === 0 && i1 === n, sl = x => x && !whole ? x.slice(i0, i1) : x;
+      const tl = tempoLevel({ comb: sl(comb), OL: sl(OL), OC: sl(OC), fr, a: a + i0, off, raw, at, best, n: i1 - i0 });
+      return { L: tl.L, at, cands: tl.cands };
+    };
+    const LV = levelIn(0, n); if (!LV) return null; LAST_TLG = LV.cands;
+    const at = LV.at, L = LV.L;
     const clarity = at(L);
-    // local tempo: 8 s windows every second, period searched within ±8% of the take's, then median + gaussian smoothed
-    const Wn = Math.round(8 * fr), hop = Math.round(fr), Lc = [];
-    for (let c0 = 0; c0 + Wn <= n || (c0 === 0 && Lc.length === 0); c0 += hop) { const i0 = Math.max(0, Math.min(c0, n - Wn)), i1 = Math.min(n, i0 + Wn), A2 = acfOf(i0, i1, Math.floor(L * 0.9), Math.ceil(L * 1.1) * 2 + 2);
-      const f = x => { const i = Math.floor(x), g = x - i; return (A2[i] || 0) * (1 - g) + (A2[i + 1] || 0) * g; }, g2 = x => f(x) + 0.5 * f(2 * x);
-      let bl = L, bv = -1e9; for (let x = L * 0.92; x <= L * 1.08; x += 0.1) { const v = g2(x); if (v > bv) { bv = v; bl = x; } }
-      Lc.push({ c: (i0 + i1) / 2, L: bl, w: Math.max(0, bv) }); if (i1 >= n) break; }
-    const med = Lc.map((p, i) => { const win = Lc.slice(Math.max(0, i - 3), i + 4).map(q => q.L); return median(win); });
-    const sm = med.map((_, i) => { let sw = 0, sv = 0; for (let j = 0; j < med.length; j++) { const w = Math.exp(-0.5 * ((i - j) / 3) ** 2) * (0.2 + Lc[j].w); sw += w; sv += w * med[j]; } return sv / sw; });
-    const Lat = t => { if (Lc.length < 2) return sm[0] ?? L; if (t <= Lc[0].c) return sm[0]; for (let i = 1; i < Lc.length; i++) if (t <= Lc[i].c) { const g = (t - Lc[i - 1].c) / (Lc[i].c - Lc[i - 1].c); return sm[i - 1] * (1 - g) + sm[i] * g; } return sm[sm.length - 1]; };
+    // local tempo (round 3): the take's tempo SECTIONS, then a local tempo inside each. 6 s windows every 0.5 s: where the
+    // take's own tempo no longer explains the playing (its autocorrelation peak is gone) for 5 s or more, that stretch gets
+    // its own tempo, read by the same ranker as the whole take (so a 3:2 or 2:1 alias of the new tempo is ruled out the same
+    // way), and kept only if it explains that stretch clearly better than the old tempo. A song that goes from 90 to 120
+    // gets two sections, each with its own steady tempo; inside a section the tempo may drift (searched within ±8%).
+    // The old search (±8% around one tempo for the whole take) lost the band after any real tempo change.
+    const Wn = Math.round(6 * fr), hop = Math.max(1, Math.round(0.5 * fr)), Lc = [];
+    const winAcf = (i0, i1, x0, x1) => { const A2 = acfOf(i0, i1, Math.floor(x0 * 0.9), Math.ceil(x1 * 1.1) * 2 + 2), f = x => { const i = Math.floor(x), g = x - i; return (A2[i] || 0) * (1 - g) + (A2[i + 1] || 0) * g; }; return x => f(x) + 0.5 * f(2 * x); };
+    for (let c0 = 0; c0 + Wn <= n || (c0 === 0 && Lc.length === 0); c0 += hop) { const i0 = Math.max(0, Math.min(c0, n - Wn)), i1 = Math.min(n, i0 + Wn), g2 = winAcf(i0, i1, 0.6 * L, 1.7 * L);
+      let mx = -1e9, mn = 1e9, near = -1e9; for (let x = 0.6 * L; x <= 1.7 * L; x *= 1.01) { const v = g2(x); mx = Math.max(mx, v); mn = Math.min(mn, v); if (Math.abs(Math.log(x / L)) < 0.06) near = Math.max(near, v); }
+      Lc.push({ c: (i0 + i1) / 2, i0, i1, mx, mn, fit: mx > mn ? (near - mn) / (mx - mn) : 1, w: Math.max(0, mx) }); if (i1 >= n) break; }
+    const sal = (i0, i1, x) => { const g2 = winAcf(i0, i1, x, x); let bv = -1e9; for (let y = x * 0.97; y <= x * 1.03; y += 0.1) bv = Math.max(bv, g2(y)); return bv; };
+    let secs = [{ w0: 0, w1: Lc.length, L }];
+    { const minW = Math.round(5 * fr / hop), gapW = Math.round(3 * fr / hop), FO = BG.fitOld ?? 0.6;
+      // explained or not, over ~3 s (median), and short explained gaps inside an unexplained stretch don't split it
+      const fz = Lc.map((_, i) => median(Lc.slice(Math.max(0, i - 3), i + 4).map(p => p.fit))), un = fz.map(v => v < FO);
+      for (let i = 0; i < un.length; i++) if (!un[i]) { let j = i; while (j < un.length && !un[j]) j++; if (i > 0 && j < un.length && j - i <= gapW) for (let k = i; k < j; k++) un[k] = true; i = j; }
+      let w = 0;
+      while (w < Lc.length && secs.length < 4) { if (!un[w]) { w++; continue; } let w1 = w; while (w1 < Lc.length && un[w1]) w1++;
+        if (w1 - w >= minW) { const i0 = Math.round(Lc[w].c - Wn / 4), i1 = Math.round(Lc[w1 - 1].c + Wn / 4), lv = i1 - i0 > 5 * fr ? levelIn(Math.max(0, i0), Math.min(n, i1)) : null;
+          const rr = lv ? lv.L / L : 1, alias = [3 / 4, 4 / 3, 2 / 3, 3 / 2, 1 / 2, 2].some(q => Math.abs(Math.log(rr / q)) < 0.03), fzR = median(fz.slice(w, w1));
+          // a new tempo in a simple ratio to the old one (4:3, 3:2, 2:1) is also how a shuffle or a busy fill reads: only a
+          // stretch the old tempo really doesn't fit (not just a weaker fit) gets it
+          if (lv && Math.abs(Math.log(lv.L / L)) > 0.06 && (!alias || fzR < (BG.fitAlias ?? 0.35)) && sal(Math.max(0, i0), Math.min(n, i1), L) < (BG.secKeep ?? 0.85) * sal(Math.max(0, i0), Math.min(n, i1), lv.L)) {
+            const host = secs.find(sc => w >= sc.w0 && w < sc.w1), parts = [{ w0: host.w0, w1: w, L: host.L }, { w0: w, w1, L: lv.L }, { w0: w1, w1: host.w1, L: host.L }].filter(x => x.w1 > x.w0);
+            secs.splice(secs.indexOf(host), 1, ...parts); } }
+        w = w1; } }
+    secs = secs.reduce((m, sc) => { const l = m[m.length - 1]; if (l && Math.abs(Math.log(l.L / sc.L)) < 0.06) l.w1 = sc.w1; else m.push({ ...sc }); return m; }, []);
+    // one metrical level for the whole take: a section read at double (or half) speed next to its neighbour is moved to the
+    // level that makes the change a musical one (songs speed up or slow down by up to ~40%, not 2:1)
+    for (let i = 1; i < secs.length; i++) { const r = secs[i].L / secs[i - 1].L; if (r > 1.4 || r < 0.72) { const opts = [[secs[i - 1].L, secs[i].L], [secs[i - 1].L * 2, secs[i].L], [secs[i - 1].L / 2, secs[i].L], [secs[i - 1].L, secs[i].L * 2], [secs[i - 1].L, secs[i].L / 2]]
+      .filter(([x, y]) => y / x <= 1.4 && y / x >= 0.72 && [x, y].every(z => 60 * fr / z >= 50 && 60 * fr / z <= 210)).sort((u, v) => Math.abs(Math.log2(60 * fr / u[0] / 110)) + Math.abs(Math.log2(60 * fr / u[1] / 110)) - Math.abs(Math.log2(60 * fr / v[0] / 110)) - Math.abs(Math.log2(60 * fr / v[1] / 110)));
+      if (opts.length) { secs[i - 1].L = opts[0][0]; secs[i].L = opts[0][1]; } } }
+    // a section's start: the window where "the old tempo fits" turns into "the new tempo fits" (least cost over both
+    // sections), then refined on the attacks below
+    for (let i = 1; i < secs.length; i++) { const A1 = secs[i - 1], B1 = secs[i], w0 = A1.w0, w1 = B1.w1, nz = (p, v) => p.mx > p.mn ? (v - p.mn) / (p.mx - p.mn) : 0;
+      const fA = [], fB = []; for (let w = w0; w < w1; w++) { const p = Lc[w], g2 = winAcf(p.i0, p.i1, Math.min(A1.L, B1.L), Math.max(A1.L, B1.L)); let va = -1e9, vb = -1e9; for (let y = A1.L * 0.97; y <= A1.L * 1.03; y += 0.1) va = Math.max(va, g2(y)); for (let y = B1.L * 0.97; y <= B1.L * 1.03; y += 0.1) vb = Math.max(vb, g2(y)); fA.push(1 - nz(p, va)); fB.push(1 - nz(p, vb)); }
+      let bc = B1.w0, be = 1e18, ca = 0; const tb = fB.reduce((x, y) => x + y, 0); let cb = tb;
+      for (let c = 0; c < fA.length; c++) { if (c > 0) { ca += fA[c - 1]; cb -= fB[c - 1]; } if (c >= 2 && c <= fA.length - 2 && ca + cb < be) { be = ca + cb; bc = w0 + c; } }
+      A1.w1 = bc; B1.w0 = bc; }
+    secs = secs.filter(sc => sc.w1 > sc.w0);
+    secs.forEach((sc, i) => { sc.t0 = i ? (Lc[sc.w0 - 1].c + Lc[sc.w0].c) / 2 : -1e9; });
+    // inside each section: the local period near the section's own tempo (±8%), median then gaussian smoothed (never across a section cut)
+    // (±20%: wide enough for a real ramp, too narrow for a 3:2 or 4:3 alias of the section's tempo)
+    const localPath = () => Lc.map((p, w) => { const sc = secs.find(x => w >= x.w0 && w < x.w1) || secs[0], g2 = winAcf(p.i0, p.i1, sc.L * 0.82, sc.L * 1.22); let bl = sc.L, bv = -1e9; for (let x = sc.L * 0.82; x <= sc.L * 1.22; x *= 1.004) { const v = g2(x) - 0.15 * Math.abs(Math.log(x / sc.L)); if (v > bv) { bv = v; bl = x; } } return bl; });
+    let pathL = localPath();
+    // a ramp, not a step: neighbouring sections that meet at the same tempo (one ends where the next starts) are one moving section
+    if (secs.length > 1) { let merged = false; for (let i = secs.length - 1; i >= 1; i--) { const A1 = secs[i - 1], B1 = secs[i], k = 6, eA = median(pathL.slice(Math.max(A1.w0, A1.w1 - k), A1.w1)), sB = median(pathL.slice(B1.w0, Math.min(B1.w1, B1.w0 + k)));
+        if (Math.abs(Math.log(eA / sB)) < 0.05) { A1.w1 = B1.w1; A1.L = median(pathL.slice(A1.w0, A1.w1)); secs.splice(i, 1); merged = true; } }
+      if (merged) { secs.forEach((sc, i) => { sc.t0 = i ? (Lc[sc.w0 - 1].c + Lc[sc.w0].c) / 2 : -1e9; }); pathL = localPath(); } }
+    const secIx = w => secs.findIndex(x => w >= x.w0 && w < x.w1);
+    const med = pathL.map((_, i) => median(pathL.slice(Math.max(0, i - 3), i + 4).filter((_, j) => secIx(Math.max(0, i - 3) + j) === secIx(i))));
+    const sm = med.map((_, i) => { let sw = 0, sv = 0; for (let j = Math.max(0, i - 18); j <= Math.min(med.length - 1, i + 18); j++) { if (secIx(j) !== secIx(i)) continue; const w = Math.exp(-0.5 * ((i - j) / 6) ** 2) * (0.2 + Lc[j].w); sw += w; sv += w * med[j]; } return sw ? sv / sw : med[i]; });
+    secs.forEach(sc => { const q = sm.slice(sc.w0, sc.w1), k = Math.min(6, q.length); sc.drift = q.length ? Math.abs(Math.log(median(q.slice(-k)) / median(q.slice(0, k)))) : 0; });
+    LAST_SEC = { L: 60 * fr / L, fit: Lc.map(p => +p.fit.toFixed(2)), secs: secs.map(x => ({ ...x, bpm: +(60 * fr / x.L).toFixed(1), t: +((a + Math.max(0, x.t0)) / fr + off).toFixed(1) })) };
+    const secAt = t => { let k = 0; for (let i = 1; i < secs.length; i++) if (t >= secs[i].t0) k = i; return k; };
+    const Lat = t => { if (Lc.length < 2) return sm[0] ?? L; const sc = secs[secAt(t)]; if (sc.drift < 0.04) return sc.L;
+      if (t <= Lc[0].c) return sm[0]; for (let i = 1; i < Lc.length; i++) if (t <= Lc[i].c) { const g = (t - Lc[i - 1].c) / (Lc[i].c - Lc[i - 1].c); return sm[i - 1] * (1 - g) + sm[i] * g; } return sm[sm.length - 1]; };
     // dynamic programming: score = onset at the beat + best previous beat, penalising any gap far from the local period
     const tight = BG.tight, score = new Float64Array(n), back = new Int32Array(n).fill(-1);
     for (let t = 0; t < n; t++) { const Lt = Lat(t); let bv = -1e9, bj = -1;
@@ -4161,35 +4226,64 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     const ocM = OC ? mean(OC) || 1 : 1, feelOf = ph => { const at = (arr, x) => mean(fb.slice(0, -1).map((f, i) => val(arr, f + (ph + x) * (fb[i + 1] - f))));
       const s0 = at(comb, 0), h = at(comb, 0.5), t1 = at(comb, 1 / 3), t2 = at(comb, 2 / 3), sL = at(OL, 0), ch = OC ? at(OC, 0) / ocM : 1;
       const feel = t2 > 1.4 * h && t2 > 1.5 * t1 ? "swing" : t1 > 1.4 * h && t1 > 1.5 * t2 ? "short-long" : h > 1.4 * Math.max(t1, t2) ? "straight" : t1 > 0.6 * s0 && t2 > 0.6 * s0 ? "triplet" : "plain";
-      return { ph, feel, s0, h, t1, t2, sL, ch, sc: s0 + 0.5 * sL + 0.6 * Math.min(3, ch) * mean(comb) - (feel === "short-long" ? 0.6 * s0 : 0) }; };
+      // round 3: also the bass (low band) and the high band at the beat and on the "and": an off-beat skank (reggae) or a
+      // syncopated strum puts its loudest, brightest attacks on the "and" with the bass on the beat
+      const HB = OH || O, sH = at(HB, 0), hH = at(HB, 0.5), hL = at(OL, 0.5), lg = x => Math.log(x + 0.05);
+      const pf = [lg(s0), lg(sL), lg(sH), lg(ch), lg(h), lg(hL), lg(hH), lg(t1), lg(t2), ph === 0 ? 1 : 0, ph === 0.5 ? 1 : 0];
+      return { ph, feel, s0, h, t1, t2, sL, ch, sH, hH, hL, pf, sc: s0 + 0.5 * sL + 0.6 * Math.min(3, ch) * mean(comb) - (feel === "short-long" ? 0.6 * s0 : 0) }; };
     const PH = [0, 1 / 3, 0.5, 2 / 3].map(feelOf), ph0 = PH[0];
-    let phSel = ph0; for (const p of PH.slice(1)) if (p.sc > phSel.sc * (ph0.feel === "short-long" ? 1 : 1.15) && p.sc > ph0.sc * (ph0.feel === "short-long" ? 1 : 1.15)) phSel = p;
+    let phSel = ph0;
+    if (PHW) { let bv = -1e9; for (const p of PH) { const v = p.pf.reduce((x, f, i) => x + f * (PHW[i] || 0), 0); p.lsc = v; if (v > bv) { bv = v; phSel = p; } }
+      // busy even strumming (16ths): beat and "and" equally loud, the chords change on the "and" reading: that's the beat
+      const h0 = PH[2]; if (phSel === ph0 && Math.abs(h0.s0 / (ph0.s0 || 1) - 1) < 0.12 && h0.ch > 1.2 * ph0.ch && h0.sL >= 0.9 * ph0.sL) phSel = h0; }
+    else { for (const p of PH.slice(1)) if (p.sc > phSel.sc * (ph0.feel === "short-long" ? 1 : 1.15) && p.sc > ph0.sc * (ph0.feel === "short-long" ? 1 : 1.15)) phSel = p;
     // beat and "and" equally loud (busy even strumming): the chords change on the beat, never on the "and"
-    { const h0 = PH[2]; if (phSel === ph0 && ph0.feel !== "short-long" && Math.abs(h0.s0 / (ph0.s0 || 1) - 1) < 0.12 && h0.ch > 1.2 * ph0.ch && h0.sL >= 0.9 * ph0.sL) phSel = h0; }
+    { const h0 = PH[2]; if (phSel === ph0 && ph0.feel !== "short-long" && Math.abs(h0.s0 / (ph0.s0 || 1) - 1) < 0.12 && h0.ch > 1.2 * ph0.ch && h0.sL >= 0.9 * ph0.sL) phSel = h0; } }
+    LAST_PHFB = { fb: fb.slice(), a, fr, off };
     if (phSel !== ph0) { const sh =fb.slice(0, -1).map((f, i) => f + phSel.ph * (fb[i + 1] - f)); fb.length = 0; fb.push(...sh); }
     const feel = phSel.feel; LAST_PH = PH;
     // weights: a beat with a real attack counts, a beat bridged through silence barely does
+    // each tempo cut on the attacks: a straight beat line through each section's own beats (away from the cut), and the cut
+    // where switching from one line to the other lands the most attacks. The beats around the cut are re-made on those lines.
+    if (secs.length > 1) for (let i = 1; i < secs.length; i++) {
+      const t0 = secs[i].t0, pa = i > 1 ? secs[i - 1].t0 : -1e9, pb = i + 1 < secs.length ? secs[i + 1].t0 : 1e9, Z = 3 * fr;
+      const fitL = sel => { const ix = fb.map((f, j) => [j, f]).filter(([, f]) => sel(f)); if (ix.length < 6) return null; let A0 = ix[0][1], P0 = median(ix.slice(1).map((x, j) => (x[1] - ix[j][1]) / (x[0] - ix[j][0])));
+        for (let it = 0; it < 6; it++) { let sw = 0, sk = 0, st = 0, skk = 0, skt = 0; for (const [k, f] of ix) { const r = f - (A0 + P0 * (k - ix[0][0])), w = Math.abs(r) < 0.03 * fr ? 1 : 0.03 * fr / Math.abs(r); const kk = k - ix[0][0]; sw += w; sk += w * kk; st += w * f; skk += w * kk * kk; skt += w * kk * f; } const den = sw * skk - sk * sk; if (Math.abs(den) < 1e-9) break; P0 = (sw * skt - sk * st) / den; A0 = (st - P0 * sk) / sw; }
+        return { a0: A0 - P0 * ix[0][0], p: P0 }; };
+      const la = fitL(f => f < t0 - Z && f > pa + fr), lb = fitL(f => f > t0 + Z && f < pb - fr); if (!la || !lb || !(la.p > 0) || !(lb.p > 0)) continue;
+      const lo2 = t0 - 6 * fr, hi2 = t0 + 6 * fr, Abt = [], Bbt = []; for (let k = Math.ceil((lo2 - 2 * la.p - la.a0) / la.p); ; k++) { const x = la.a0 + la.p * k; if (x > hi2) break; Abt.push(x); } for (let k = Math.ceil((lo2 - lb.a0) / lb.p); ; k++) { const x = lb.a0 + lb.p * k; if (x > hi2 + 2 * lb.p) break; Bbt.push(x); }
+      let bestC = null, bs = -1e18; for (const tc of Abt.filter(x => x >= t0 - 4 * fr && x <= t0 + 4 * fr)) { let sc = 0; for (const x of Abt) if (x >= lo2 && x < tc) sc += val(comb, x); const B2 = Bbt.filter(x => x >= tc + 0.6 * lb.p); for (const x of B2) if (x <= hi2) sc += val(comb, x); if (sc > bs) { bs = sc; bestC = tc; } }
+      if (bestC == null) continue;
+      const keepA = fb.filter(f => f < lo2), keepB = fb.filter(f => f > hi2 + 2 * lb.p), midA = Abt.filter(x => x >= lo2 && x < bestC), midB = Bbt.filter(x => x >= bestC + 0.6 * lb.p && x <= hi2 + 2 * lb.p);
+      const nf = [...keepA, ...midA, ...midB, ...keepB].filter((x, j, arr) => !j || x - arr[j - 1] > 0.5 * Math.min(la.p, lb.p));
+      fb.length = 0; fb.push(...nf); secs[i].t0 = midB.length ? midB[0] - 0.25 * lb.p : bestC + 0.5 * la.p; }
     const thr = median(comb.filter(v => v > 0)) || 0.5, wOn = fb.map(f => Math.min(1, Math.max(0.05, val(comb, f) / (3 * thr))));
     const reg = fb.filter(f => val(comb, f) > thr).length / fb.length;
     const T = fb.map(f => f / fr), K = fb.map((_, i) => i);
-    // robust weighted fits of beat time against beat index
-    const lineFit = (w) => { let sw = 0, sk = 0, st = 0, skk = 0, skt = 0; K.forEach((k, i) => { const q = w[i]; sw += q; sk += q * k; st += q * T[i]; skk += q * k * k; skt += q * k * T[i]; }); const den = sw * skk - sk * sk, p = (sw * skt - sk * st) / den; return [(st - p * sk) / sw, p]; };
+    // tempo sections on the beats: each cut moves to the beat where the gaps really change length (least squares on the gaps)
+    const SR = [[0, fb.length]];
+    if (secs.length > 1) { SR.length = 0; let a0 = 0;
+      for (let i = 1; i < secs.length; i++) { const bm = fb.findIndex(f => f >= secs[i].t0); if (bm > a0 + 3 && bm < fb.length - 3) { SR.push([a0, bm]); a0 = bm; } }
+      SR.push([a0, fb.length]); }
+    // robust weighted fits of beat time against beat index (one line per tempo section)
+    const lineFit = (w, r0 = 0, r1 = K.length) => { let sw = 0, sk = 0, st = 0, skk = 0, skt = 0; for (let i = r0; i < r1; i++) { const k = K[i], q = w[i]; sw += q; sk += q * k; st += q * T[i]; skk += q * k * k; skt += q * k * T[i]; } const den = sw * skk - sk * sk, p = (sw * skt - sk * st) / den; return [(st - p * sk) / sw, p]; };
     const tukey = (r, c) => Math.abs(r) >= c ? 0 : (1 - (r / c) ** 2) ** 2;
-    let w = wOn.slice(), ab = lineFit(w);
-    for (let it = 0; it < 5; it++) { const r = T.map((x, i) => x - (ab[0] + ab[1] * K[i])); w = wOn.map((q, i) => q * tukey(r[i], 0.08)); ab = lineFit(w); }
-    const lineR = T.map((x, i) => x - (ab[0] + ab[1] * K[i]));
+    const secFit = (r0, r1) => { let w = wOn.slice(), ab = lineFit(w, r0, r1); for (let it = 0; it < 5; it++) { for (let i = r0; i < r1; i++) w[i] = wOn[i] * tukey(T[i] - (ab[0] + ab[1] * K[i]), 0.08); ab = lineFit(w, r0, r1); } return ab; };
+    const ABs = SR.map(([r0, r1]) => secFit(r0, r1)), secOf = i => SR.findIndex(([r0, r1]) => i >= r0 && i < r1), ab = ABs[0];
+    const lineAt = i => { const q = ABs[secOf(i)] || ab; return q[0] + q[1] * K[i]; };
+    const lineR = T.map((x, i) => x - lineAt(i));
     // local quadratic (weighted, gaussian over beat index): follows a tempo that really moves, averages ~10 beats of jitter
-    const curveAt = (k, ww, sig) => { const M = [0, 0, 0, 0, 0], V = [0, 0, 0];
-      for (let i = 0; i < K.length; i++) { const x = K[i] - k; if (Math.abs(x) > 4 * sig) continue; const q = ww[i] * Math.exp(-0.5 * (x / sig) ** 2); if (q < 1e-9) continue; let xp = 1; for (let d = 0; d < 5; d++) { M[d] += q * xp; if (d < 3) V[d] += q * xp * T[i]; xp *= x; } }
+    const curveAt = (k, ww, sig) => { const M = [0, 0, 0, 0, 0], V = [0, 0, 0], sk = secOf(k), [r0, r1] = SR[sk] || [0, K.length];
+      for (let i = r0; i < r1; i++) { const x = K[i] - k; if (Math.abs(x) > 4 * sig) continue; const q = ww[i] * Math.exp(-0.5 * (x / sig) ** 2); if (q < 1e-9) continue; let xp = 1; for (let d = 0; d < 5; d++) { M[d] += q * xp; if (d < 3) V[d] += q * xp * T[i]; xp *= x; } }
       const a11 = M[0], a12 = M[1], a13 = M[2], a22 = M[2], a23 = M[3], a33 = M[4], det = a11 * (a22 * a33 - a23 * a23) - a12 * (a12 * a33 - a23 * a13) + a13 * (a12 * a23 - a22 * a13);
-      if (!(M[0] > 0) || Math.abs(det) < 1e-12) return ab[0] + ab[1] * k;
+      if (!(M[0] > 0) || Math.abs(det) < 1e-12) return lineAt(k);
       return (V[0] * (a22 * a33 - a23 * a23) - a12 * (V[1] * a33 - a23 * V[2]) + a13 * (V[1] * a23 - a22 * V[2])) / det; };
     const SIG = BG.sig; let wc = wOn.slice(), cur = K.map(k => curveAt(k, wc, SIG));
     for (let it = 0; it < 4; it++) { wc = wOn.map((q, i) => q * tukey(T[i] - cur[i], 0.06)); cur = K.map(k => curveAt(k, wc, SIG)); }
-    const wrms = (r, ww) => { let a1 = 0, b1 = 0; r.forEach((x, i) => { a1 += ww[i] * x * x; b1 += ww[i]; }); return Math.sqrt(a1 / (b1 || 1)); };
-    const rmsLine = wrms(lineR, wc), rmsCurve = wrms(T.map((x, i) => x - cur[i]), wc);
-    const steady = rmsLine < 0.018 || rmsLine < rmsCurve * 1.25 + 0.004;
-    let G = steady ? K.map(k => ab[0] + ab[1] * k) : cur;
+    const wrms = (r, ww, r0 = 0, r1 = r.length) => { let a1 = 0, b1 = 0; for (let i = r0; i < r1; i++) { a1 += ww[i] * r[i] * r[i]; b1 += ww[i]; } return Math.sqrt(a1 / (b1 || 1)); };
+    const curR = T.map((x, i) => x - cur[i]), secSteady = SR.map(([r0, r1]) => { const rl = wrms(lineR, wc, r0, r1), rc = wrms(curR, wc, r0, r1); return rl < 0.018 || rl < rc * 1.25 + 0.004; });
+    const rmsLine = wrms(lineR, wc), steady = secSteady.every(Boolean);
+    let G = K.map((k, i) => secSteady[secOf(i)] ? lineAt(i) : cur[i]);
     // a tempo that moves: lock the curve's phase to the playing around each beat (~12 beats of attacks at once, like a
     // slow PLL), so the band never lags a speed-up or rushes a slow-down. Never moves for one strum.
     if (!steady) for (let it = 0; it < BG.pll; it++) {
@@ -4197,7 +4291,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
       for (let i = 0; i < G.length; i++) { let bd = 0, bv = -1e9; const sc = []; for (let q = -4 * D; q <= 4 * D; q++) { const dd = q / 4; let v = 0, sw = 0; for (let j = Math.max(0, i - 12); j <= Math.min(G.length - 1, i + 12); j++) { const w = Math.exp(-0.5 * ((j - i) / 4) ** 2); v += w * ci(G[j] * fr + dd); sw += w; } v /= sw; sc.push(v); if (v > bv) { bv = v; bd = dd; } }
         corr.push(bd / fr); }
       const sm2 = corr.map((_, i) => { let a1 = 0, b1 = 0; for (let j = Math.max(0, i - 8); j <= Math.min(corr.length - 1, i + 8); j++) { const w = Math.exp(-0.5 * ((j - i) / 3) ** 2); a1 += w * corr[j]; b1 += w; } return a1 / b1; });
-      G = G.map((x, i) => x + sm2[i]);
+      G = G.map((x, i) => secSteady[secOf(i)] ? x : x + sm2[i]);
     }
     // one phase for the whole take: where the attacks really sit around the grid (fine envelope, every beat at once)
     if (raw.onsetF) { const F = raw.onsetF, f2 = raw.fineRate, lag = [];
@@ -4212,9 +4306,33 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     while (beats[beats.length - 1] + pE <= e + 0.02) beats.push(beats[beats.length - 1] + pE);
     beats = beats.filter(x => x >= s - 0.02 && x <= e + 0.02).map(x => +x.toFixed(4));
     const bpm = 60 / median(beats.slice(1).map((x, i) => x - beats[i]));
-    const pulse = clarity >= 0.1 && reg >= 0.35 && bpm >= 50 && bpm <= 210;
-    return { beats, bpm, steady, feel, phase: +phSel.ph.toFixed(2), clarity: +clarity.toFixed(3), reg: +reg.toFixed(2), pulse, rms: Math.round(rmsLine * 1000), curve: steady ? null : Lc.map((p, i) => [+(p.c / fr + (a / fr) + off).toFixed(2), +(60 * fr / sm[i]).toFixed(1)]) };
+    // how clear the pulse is: the take's autocorrelation at its beat, or (tempo sections) each section's at its own beat
+    let clar = clarity; if (secs.length > 1) { let sw = 0, sv = 0; for (const sc of secs) { const i0 = Math.max(0, Math.round(Lc[sc.w0].c - Wn / 2)), i1 = Math.min(n, Math.round(Lc[sc.w1 - 1].c + Wn / 2)), A3 = acfOf(i0, i1, Math.floor(sc.L) - 1, Math.ceil(sc.L) + 1), f = Math.floor(sc.L), g = sc.L - f; sv += (i1 - i0) * ((A3[f] || 0) * (1 - g) + (A3[f + 1] || 0) * g); sw += i1 - i0; } clar = Math.max(clarity, sv / (sw || 1)); }
+    const pulse = clar >= 0.1 && reg >= 0.35 && bpm >= 50 && bpm <= 210;
+    // meter: 3 or 4 beats a bar; compound (6/8, 12/8) when each beat is split in three even parts at a slow beat
+    const mt = meterOf(raw, beats), sub3 = Math.min(phSel.t1, phSel.t2) > 0.25 * phSel.s0 && phSel.h < 0.35 * Math.min(phSel.t1, phSel.t2);
+    const compound = mt.meter !== 3 && bpm < 100 && sub3;
+    return { beats, bpm, steady, feel, phase: +phSel.ph.toFixed(2), clarity: +clar.toFixed(3), reg: +reg.toFixed(2), pulse, rms: Math.round(rmsLine * 1000), curve: steady ? null : Lc.map((p, i) => [+(p.c / fr + (a / fr) + off).toFixed(2), +(60 * fr / sm[i]).toFixed(1)]),
+      meter: mt.meter, p3: mt.p3, compound, sections: SR.length > 1 ? SR.map(([r0, r1]) => { const q = ABs[secOf(r0)]; return [+((a / fr) + T[r0] + off).toFixed(3), +(60 / q[1]).toFixed(1)]; }) : null };
   }
+  // ---------- meter (round 3): are the beats grouped in 3s (3/4, a waltz) or in 2s/4s, and is each beat split in three
+  // (6/8, 12/8 compound) or in two? Per-beat sequences (chord change into the beat, low-band and all-band attack) and how
+  // they repeat every 2, 3 or 4 beats: the bar is where chords change and the bass lands. Logistic on those, trained on
+  // the tune split (gen_v3 waltzes/6-8, Ballroom waltzes, GTZAN 3/4 tracks, everything else 4).
+  // test split (tempo right): gen_v3 3/4 19/19, 4/4 96/96; Ballroom waltz 48/53, 4/4 217/217; GTZAN 3/4 14/20, 4/4 333/336.
+  let MW = {"w":[0.494,0.171,0.276,0.746,0.378,0.433,0.576,0.304,0.281],"b":-0.14};
+  function meterFeats(raw, beats) {
+    if (!raw.fluxA || beats.length < 16) return null;
+    const F = raw.fluxA, FL = raw.fluxL, fr = raw.fluxRate, o = raw.fluxOff, v = (A, t) => { const i = Math.round((t - o) * fr); let m = 0; for (let j = i - 2; j <= i + 2; j++) m = Math.max(m, A[j] || 0); return m; };
+    const K = beats.length, ch = beats.map((t, k) => { if (k === 0 || k + 1 >= K) return 0; const a1 = chromaAt(raw, beats[k - 1], t), a2 = chromaAt(raw, t, beats[k + 1]); return a1 && a2 ? 1 - cos(a1, a2) : 0; });
+    const al = beats.map(t => v(FL, t)), aa = beats.map(t => v(F, t));
+    const z = x => { const m = mean(x), sd = Math.sqrt(mean(x.map(y => (y - m) ** 2))) || 1; return x.map(y => (y - m) / sd); };
+    const conc = (x, M) => { let bst = -1e9; for (let p = 0; p < M; p++) { let s1 = 0, n1 = 0, s0 = 0, n0 = 0; for (let k = 1; k + 1 < x.length; k++) if (k % M === p) { s1 += x[k]; n1++; } else { s0 += x[k]; n0++; } if (n1 && n0) bst = Math.max(bst, s1 / n1 - s0 / n0); } return bst; };
+    const ac = (x, lag) => { let num = 0, den = 0; for (let k = 0; k < x.length; k++) { den += x[k] * x[k]; if (k + lag < x.length) num += x[k] * x[k + lag]; } return den ? num / den : 0; };
+    const f = []; for (const x of [z(ch), z(al), z(aa)]) { const c2 = conc(x, 2), c3 = conc(x, 3), c4 = conc(x, 4); f.push(c3 - Math.max(c2, c4), ac(x, 3) - Math.max(ac(x, 2), ac(x, 4)), ac(x, 6) - ac(x, 4) - ac(x, 8) * 0.5); }
+    return f;
+  }
+  function meterOf(raw, beats) { const f = meterFeats(raw, beats); if (!f || !MW) return { meter: 4, p3: 0, f }; let zz = MW.b; f.forEach((x, i) => zz += x * (MW.w[i] || 0)); const p3 = 1 / (1 + Math.exp(-zz)); return { meter: p3 > 0.5 ? 3 : 4, p3: +p3.toFixed(3), f }; }
   // where the player really hit each grid beat (the attack within 50 ms), for Tighten: the band never uses these
   function snapBeats(raw, beats) {
     if (!raw.onsetF) return beats.slice(); const F = raw.onsetF, f2 = raw.fineRate;
@@ -4264,38 +4382,80 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
       if (!best || sc > best.sc) { if (best) second = Math.max(second, best.sc); best = { r, q, sc }; } else second = Math.max(second, sc); }
     best.margin = best.sc - second; best.bass = bp; return best;
   }
-  function takeKey(raw, beats) {
-    const segs = keySegs(raw, beats); if (!segs) return raw.chromaQ?.length ? { conf: 0, tonal: 0 } : null;
-    const active = segs.length; if (!active) return { conf: 0, tonal: 0 };
-    const ch = segs.map(segChord), W = segs.reduce((x, s2) => x + s2.w, 0);
-    const prof = new Float64Array(12), bass = new Float64Array(12); segs.forEach((s2, i) => { for (let q = 0; q < 12; q++) prof[q] += s2.c[q] * s2.w; if (ch[i].bass >= 0) bass[ch[i].bass] += s2.w; });
-    const bTot = bass.reduce((x, y) => x + y, 0) || 1;
-    // first and last real chords (the tonic usually starts or ends a take)
-    const stab = ch.map((x, i) => i + 1 < ch.length && x.margin > 0.05 && ch[i + 1].r === x.r && ch[i + 1].q === x.q ? i : -1).filter(i => i >= 0), firstC = stab.length ? ch[stab[0]] : null, lastC = stab.length ? ch[stab[stab.length - 1]] : null;
-    const scores = [];
-    for (let k = 0; k < 12; k++) for (const minor of [false, true]) {
-      const FIT = minor ? FIT_MIN : FIT_MAJ, sc5 = minor ? [0, 2, 3, 5, 7, 8, 10, 11] : [0, 2, 4, 5, 7, 9, 11];
-      let fit = 0, inKey = 0; ch.forEach((x, i) => { const d = (x.r - k + 12) % 12, key = d + (x.q === "5" ? (minor ? "min" : "maj") : x.q);
-        let f = FIT[key]; if (x.q === "5") { const f2 = FIT[d + (minor ? "maj" : "min")]; f = f == null ? f2 : f2 == null ? f : Math.max(f, f2); if (f != null) f *= 0.8; }
-        const v = f != null ? f : -0.6; fit += v * segs[i].w; if (f != null && f > 0.2) inKey += segs[i].w; });
-      const P = minor ? KTm : KT, rp = P.map((_, i) => P[(i - k + 12) % 12]), pr = cos(prof, rp);
-      let bIn = 0; for (const q of sc5) bIn += bass[(k + q) % 12]; bIn /= bTot;
-      const tonicBass = bass[k] / bTot, edge = [firstC, lastC].reduce((x, c2) => x + (c2 && c2.r === k && (c2.q === (minor ? "min" : "maj") || c2.q === "5") ? 1 : 0), 0);
-      const sc = fit / W + KEYP.wProf * pr + KEYP.wBass * (bIn + tonicBass) + KEYP.wEdge * edge;
-      scores.push({ k, minor, sc, fit: fit / W, inKey: inKey / W, pr, bIn, tonicBass, edge });
-    }
-    scores.sort((x, y) => y.sc - x.sc); LAST_KD = { ch, bass, prof, scores };
-    const b0 = scores[0], relK = b0.minor ? (b0.k + 3) % 12 : (b0.k + 9) % 12, rel = scores.find(x => x.k === relK && x.minor !== b0.minor);
-    const other = scores.find(x => x !== b0 && x !== rel);
-    const tonal = ch.filter(x => x.margin > 0.05).length / active, margin = b0.sc - other.sc, thirds = segs.reduce((x, s2, i) => x + (ch[i].q !== "5" ? s2.w : 0), 0) / W;
-    const par = scores.find(x => x.k === b0.k && x.minor !== b0.minor), parMargin = b0.sc - (par?.sc ?? 0), relMargin = b0.sc - (rel?.sc ?? 0);
-    // confidence: logistic on the evidence, fitted on 24 test takes + GuitarSet comping (held-out players at 0.85: 96% of
-    // the keys it's sure of are right, vs 63% before). Below KEY_SURE the band plays drums only.
-    const z = KCONF.b + [margin, parMargin, relMargin, b0.inKey, b0.bIn, tonal, b0.pr, thirds, Math.min(parMargin, 0.3) * thirds].reduce((x, v, i) => x + v * KCONF.w[i], 0);
-    const conf = 1 / (1 + Math.exp(-z));
-    return { key: b0.k, minor: b0.minor, conf: +conf.toFixed(2), margin: +margin.toFixed(3), relMargin: +relMargin.toFixed(3), parMargin: +parMargin.toFixed(3), inKey: +b0.inKey.toFixed(2), bassIn: +b0.bIn.toFixed(2), tonal: +tonal.toFixed(2), r: +b0.pr.toFixed(3), thirds: +thirds.toFixed(2) };
+  // ---------- the take's key, round 3. The old reading leaned on chord roots and the last chord: Dm G C A in C read as
+  // G major at 0.98. Now: (1) chords per beat with sevenths (a dominant 7th says "V of something"), Viterbi-smoothed;
+  // (2) every one of the 24 keys scored on the duration-weighted pitch-class profile, the share of the playing that falls
+  // OUTSIDE its scale (Dm's F rules out G major), each chord's job in the key (secondary dominants that resolve are fine,
+  // other chromatic chords count against), and the cadences heard (V(7) -> I, IV -> I, ii -> V, V -> vi; V -> i in minor);
+  // (3) confidence from the margins to the next keys and to the relative key, calibrated on the tune split so a wrong key
+  // stays below KEY_SURE (see test/offline/keytune3.mjs).
+  const KQ = [["maj", [0, 4, 7]], ["min", [0, 3, 7]], ["7", [0, 4, 7, 10]], ["m7", [0, 3, 7, 10]], ["maj7", [0, 4, 7, 11]], ["dim", [0, 3, 6]], ["5", [0, 7]]];
+  const KTPL = KQ.map(([q, iv]) => { const t = new Array(12).fill(-0.35); iv.forEach((d, k) => t[d] = k === 0 ? 1 : k === 3 ? 0.55 : 0.8); return { q, t }; });
+  // the job of each chord in a major / minor key: degree (semitones above the tonic) + quality family
+  const ROLE_MAJ = { "0maj": 1, "5maj": 0.8, "7maj": 0.85, "7dom": 0.9, "9min": 0.6, "2min": 0.6, "4min": 0.4, "11dim": 0.2, "0dom": 0.35, "5dom": 0.3, "2maj": 0.15, "2dom": 0.3, "4maj": 0.05, "4dom": 0.25, "9maj": 0.05, "9dom": 0.25, "11dom": 0.05, "5min": 0.15, "10maj": 0.25, "8maj": 0.05, "3maj": -0.1 };
+  const ROLE_MIN = { "0min": 1, "5min": 0.75, "7min": 0.45, "7maj": 0.75, "7dom": 0.9, "3maj": 0.6, "8maj": 0.7, "10maj": 0.65, "10dom": 0.4, "2dim": 0.5, "5maj": 0.2, "5dom": 0.2, "2min": 0.1, "0dom": 0.05, "11dim": 0.3 };
+  const qFam = q => q === "maj" || q === "maj7" ? "maj" : q === "min" || q === "m7" ? "min" : q === "7" ? "dom" : q;
+  let KW3 = { pr: 3.6, out: 3, fit: 0.75, cad: 1.06, ton: 0.5, tb: 0.4, last: 0.16, first: 0.06, minor: 0, stay: 0.6 };
+  // SCALE confidence (the key or its relative: same notes) gates the band's chords; EXACT confidence decides whether the
+  // key's name is shown alone. Calibrated on the tune split (gen_v3 + GuitarSet 00-02) at 98% precision for conf >= 0.85.
+  let KC3 = {"w": [0.946, -1.449, 1.982, -0.83, 0.503, -0.054, 0.077, 0.015, 0.707, 0.544], "b": -1.128}, KX3 = {"w": [0.89, 0.597, 2.273, 0.269, 0.224, -0.058, 0.111, -0.307, 0.123, -0.026], "b": -1.641};
+  function keyChords3(segs) {
+    // chord per beat: template on the overtone-free chroma + the bass note as root; Viterbi keeps a held chord as one
+    const S = 12 * KQ.length, obs = segs.map(sg => { const bt = sg.b.reduce((x, y) => x + y, 0), bp = bt > 0 ? sg.b.indexOf(Math.max(...sg.b)) : -1, o = new Float64Array(S);
+      for (let r = 0; r < 12; r++) KTPL.forEach((T, qi) => { let v = 0; for (let d = 0; d < 12; d++) v += T.t[d] * sg.c[(r + d) % 12]; o[r * KQ.length + qi] = v + (bp === r ? 0.12 : 0) - (T.q === "5" ? 0.04 : 0) - (T.q === "7" || T.q === "m7" || T.q === "maj7" ? 0.03 : 0); }); return o; });
+    if (!obs.length) return [];
+    let prev = Float64Array.from(obs[0]); const bk = [];
+    for (let i = 1; i < obs.length; i++) { let bv = -1e9, bi = 0; for (let j = 0; j < S; j++) if (prev[j] > bv) { bv = prev[j]; bi = j; } const cur = new Float64Array(S), b = new Int32Array(S), st = KW3.stay * 0.25;
+      for (let j = 0; j < S; j++) { const sv = prev[j] + st; if (sv >= bv) { cur[j] = sv + obs[i][j]; b[j] = j; } else { cur[j] = bv + obs[i][j]; b[j] = bi; } } bk.push(b); prev = cur; }
+    let j = 0; for (let k = 1; k < S; k++) if (prev[k] > prev[j]) j = k; const path = [j]; for (let i = bk.length - 1; i >= 0; i--) { j = bk[i][j]; path.push(j); } path.reverse();
+    // spans of one chord, weighted by time and clarity
+    const sp = []; path.forEach((c, i) => { const l = sp[sp.length - 1]; if (l && l.c === c) { l.w += segs[i].w; l.n++; } else sp.push({ c, r: Math.floor(c / KQ.length), q: KQ[c % KQ.length][0], w: segs[i].w, n: 1 }); });
+    return sp;
   }
-  root.LickMusic = { KEY_SURE, _kd: () => LAST_KD, _keyp: v => { if (v) KEYP = { ...KEYP, ...v }; return KEYP; }, bandGrid, _bg: v => { BG = { ...BG, ...v }; }, _tm: v => { if (v) TM = v; return TM; }, _tl: () => LAST_TL, _ph: () => LAST_PH, takeKey, snapBeats, _getHypW: () => HYP_W, _unsure: v => { UNSURE = v; }, offbeat, _chMix: v => { CH_MIX = v; }, beatHyps, _hypW: w => { HYP_W = w; }, _pulseMin: v => { PULSE_MIN = v; }, guessTempo, keyLabel, spellChord, spellPc, flatKey, alignLayer, chromaSeq, QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, harmonyPlanOld, keyOfWindow, _hp: v => { HP = { ...HP, ...v }; }, _offShift: v => { OFF_SHIFT = v; }, _meterRep: v => { METER_REP = v; }, cellFeats, musicness, _musW: w => { MUS_W = w; }, _musPen: v => { MUS_PEN = v; }, _trim: v => { TRIM = v; }, _cleanW: v => { CLEAN_W = v; }, _homeW: v => { HOME_W = v; }, _edges: v => { EDGES = v; }, _flubW: v => { FLUB_W = v; }, _cands: () => LAST_CANDS, offRatio, _getHp: () => HP, trackBeats, analyze, picks, chordsFor, NOTES };
+  function keyFeats3(raw, beats) {
+    const segs = keySegs(raw, beats); if (!segs?.length) return null;
+    const W = segs.reduce((x, s2) => x + s2.w, 0), prof = new Float64Array(12), bass = new Float64Array(12);
+    segs.forEach(s2 => { for (let q = 0; q < 12; q++) prof[q] += s2.c[q] * s2.w; const bp = s2.b.indexOf(Math.max(...s2.b)); if (s2.b[bp] > 0) bass[bp] += s2.w; });
+    const pt = prof.reduce((x, y) => x + y, 0) || 1, bt = bass.reduce((x, y) => x + y, 0) || 1, sp = keyChords3(segs), real = sp.filter(x => x.n >= 2 || x.w > 0.6);
+    const out = [];
+    for (let k = 0; k < 12; k++) for (const minor of [false, true]) {
+      const P = minor ? KTm : KT, rp = P.map((_, i) => P[(i - k + 12) % 12]), mp = mean(rp), mq = pt / 12; let sxy = 0, sxx = 0, syy = 0; for (let i = 0; i < 12; i++) { const x = prof[i] - mq, y = rp[i] - mp; sxy += x * y; sxx += x * x; syy += y * y; }
+      const pr = sxy / (Math.sqrt(sxx * syy) || 1), sc = minor ? [0, 2, 3, 5, 7, 8, 10, 11] : [0, 2, 4, 5, 7, 9, 11];
+      let outM = 0; for (let i = 0; i < 12; i++) if (!sc.includes((i - k + 12) % 12)) outM += prof[i]; outM /= pt;
+      const R = minor ? ROLE_MIN : ROLE_MAJ, role = x => { const d = (x.r - k + 12) % 12; if (x.q === "5") { const a1 = R[d + "maj"], a2 = R[d + "min"]; const v = Math.max(a1 ?? -1, a2 ?? -1); return v > -1 ? 0.8 * v : -0.5; } const v = R[d + qFam(x.q)]; return v != null ? v : -0.6; };
+      let fit = 0, fw = 0; for (const x of sp) { fit += role(x) * x.w; fw += x.w; } fit /= fw || 1;
+      // cadences between real chords (a secondary dominant that resolves down a fifth onto a chord of the key is fine)
+      let cad = 0, nT = 0; for (let i = 1; i < real.length; i++) { const A1 = real[i - 1], B1 = real[i]; if (A1.r === B1.r) continue; nT++; const da = (A1.r - k + 12) % 12, db = (B1.r - k + 12) % 12, fa = qFam(A1.q), fb2 = qFam(B1.q), domA = fa === "maj" || fa === "dom" || A1.q === "5";
+        if (!minor) { if (da === 7 && domA && db === 0 && (fb2 === "maj" || B1.q === "5")) cad += 1; else if (da === 5 && db === 0 && fb2 !== "min") cad += 0.4; else if (da === 2 && fa === "min" && db === 7 && fb2 !== "min") cad += 0.35; else if (da === 7 && domA && db === 9 && fb2 === "min") cad += 0.3; else if (da === 11 && fa === "dim" && db === 0) cad += 0.5; }
+        else { if (da === 7 && (fa === "maj" || fa === "dom") && db === 0 && fb2 !== "maj" && fb2 !== "dom") cad += 1; else if (da === 5 && fa === "min" && db === 0 && fb2 !== "maj") cad += 0.4; else if (da === 10 && db === 0 && fb2 === "min") cad += 0.3; else if (da === 2 && (fa === "dim" || A1.q === "m7b5") && db === 7) cad += 0.45; else if (da === 7 && fa === "min" && db === 0 && fb2 === "min") cad += 0.2; }
+        if ((fa === "dom" || fa === "maj") && (A1.r - B1.r + 12) % 12 === 7 && db !== 0) { const R2 = minor ? ROLE_MIN : ROLE_MAJ; if ((R2[db + fb2] ?? -1) > 0.3) cad += 0.15; } }
+      const cadR = cad / Math.max(3, nT);
+      const tonQ = minor ? "min" : "maj"; let ton = 0; for (const x of sp) if (x.r === k && (qFam(x.q) === tonQ || x.q === "5")) ton += x.w; ton /= fw || 1;
+      const tb = bass[k] / bt, last = real.length && real[real.length - 1].r === k ? 1 : 0, first = real.length && real[0].r === k ? 1 : 0;
+      out.push({ k, minor, f: [pr, -outM, fit, cadR, ton, tb, last, first, minor ? 1 : 0], outM, fit, cad, ton });
+    }
+    const tonal = segs.filter(s2 => { const m = Math.max(...s2.c); return m > 0.2; }).length / segs.length;
+    return { keys: out, sp, tonal, prof, nSeg: segs.length };
+  }
+  // confidence evidence: margins to the next key / the relative / the parallel key, and whether the pitch profile alone
+  // and the chords alone (two independent readings) land on the same key
+  function keyConfFeats(scores, KF, w) {
+    const b0 = scores[0], relK = b0.minor ? (b0.k + 3) % 12 : (b0.k + 9) % 12, rel = scores.find(x => x.k === relK && x.minor !== b0.minor), other = scores.find(x => x !== b0 && x !== rel), par = scores.find(x => x.k === b0.k && x.minor !== b0.minor);
+    const argBy = fn => scores.reduce((m, x) => fn(x) > fn(m) ? x : m, scores[0]), same = x => x.k === b0.k && x.minor === b0.minor, fam = x => same(x) || (x.minor !== b0.minor && x.k === relK);
+    const pP = argBy(x => x.f[0] * w[0] + x.f[1] * w[1]), pC = argBy(x => x.f[2] * w[2] + x.f[3] * w[3] + x.f[4] * w[4] + x.f[5] * w[5]);
+    return [b0.sc - other.sc, Math.min(b0.sc - rel.sc, 1), Math.min(b0.sc - par.sc, 1), b0.outM, b0.fit, b0.cad, KF.tonal, Math.log(1 + KF.nSeg), same(pP) ? 1 : fam(pP) ? 0.5 : 0, same(pC) ? 1 : fam(pC) ? 0.5 : 0];
+  }
+  function takeKey(raw, beats) {
+    const KF = keyFeats3(raw, beats); if (!KF) return raw.chromaQ?.length ? { conf: 0, tonal: 0 } : null;
+    const w = [KW3.pr, KW3.out, KW3.fit, KW3.cad, KW3.ton, KW3.tb, KW3.last, KW3.first, KW3.minor];
+    const scores = KF.keys.map(x => ({ ...x, sc: x.f.reduce((a1, v, i) => a1 + v * w[i], 0) })).sort((x, y) => y.sc - x.sc); LAST_KD = { scores, sp: KF.sp };
+    const cf = keyConfFeats(scores, KF, w), b0 = scores[0];
+    const relK = b0.minor ? (b0.k + 3) % 12 : (b0.k + 9) % 12, rel = scores.find(x => x.k === relK && x.minor !== b0.minor), other = scores.find(x => x !== b0 && x !== rel), par = scores.find(x => x.k === b0.k && x.minor !== b0.minor);
+    const margin = b0.sc - other.sc, relMargin = b0.sc - rel.sc, parMargin = b0.sc - par.sc;
+    const lgt = M => { if (!M) return 0; let z = M.b; cf.forEach((v, i) => z += v * (M.w[i] || 0)); return 1 / (1 + Math.exp(-z)); }, conf0 = lgt(KC3), conf = b0.fit < 0.35 ? Math.min(conf0, 0.6) : conf0, confX = Math.min(conf, lgt(KX3));   // chords that don't add up (a melody, a riff): never sure
+    return { key: b0.k, minor: b0.minor, conf: +conf.toFixed(2), confX: +confX.toFixed(2), margin: +margin.toFixed(3), relMargin: +relMargin.toFixed(3), parMargin: +parMargin.toFixed(3), out: +b0.outM.toFixed(3), fit: +b0.fit.toFixed(2), cad: +b0.cad.toFixed(2), tonal: +KF.tonal.toFixed(2), cf };
+  }
+  root.LickMusic = { keyFeats3, keyConfFeats, _kw3: v => { if (v) KW3 = { ...KW3, ...v }; return KW3; }, _kc3: v => { if (v !== undefined) KC3 = v; return KC3; }, meterFeats, meterOf, _mw: v => { if (v !== undefined) MW = v; return MW; }, _sec: () => LAST_SEC, _tlg: () => LAST_TLG, _phfb: () => LAST_PHFB, _phw: v => { if (v !== undefined) PHW = v; return PHW; }, KEY_SURE, _kd: () => LAST_KD, _keyp: v => { if (v) KEYP = { ...KEYP, ...v }; return KEYP; }, bandGrid, _bg: v => { BG = { ...BG, ...v }; }, _tm: v => { if (v) TM = v; return TM; }, _tl: () => LAST_TL, _ph: () => LAST_PH, takeKey, snapBeats, _getHypW: () => HYP_W, _unsure: v => { UNSURE = v; }, offbeat, _chMix: v => { CH_MIX = v; }, beatHyps, _hypW: w => { HYP_W = w; }, _pulseMin: v => { PULSE_MIN = v; }, guessTempo, keyLabel, spellChord, spellPc, flatKey, alignLayer, chromaSeq, QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, harmonyPlanOld, keyOfWindow, _hp: v => { HP = { ...HP, ...v }; }, _offShift: v => { OFF_SHIFT = v; }, _meterRep: v => { METER_REP = v; }, cellFeats, musicness, _musW: w => { MUS_W = w; }, _musPen: v => { MUS_PEN = v; }, _trim: v => { TRIM = v; }, _cleanW: v => { CLEAN_W = v; }, _homeW: v => { HOME_W = v; }, _edges: v => { EDGES = v; }, _flubW: v => { FLUB_W = v; }, _cands: () => LAST_CANDS, offRatio, _getHp: () => HP, trackBeats, analyze, picks, chordsFor, NOTES };
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* LickBand 2: a real-sounding band that plays WITH the take.
@@ -4447,6 +4607,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     const q = raw.onsetQ || [], fr = raw.frameRate || 21.5; let n = 0; for (let i = 1; i < q.length - 1; i++) if (q[i] > 80 && q[i] >= q[i - 1] && q[i] > q[i + 1]) n++;
     const dens = n / Math.max(1, q.length / fr), off = A?.offRatio || 0;
     if (off > 1.25 && t >= 60 && t <= 100 && dens < 4) return "reggae";
+    if (off > 1.6 && t >= 112 && t <= 176 && dens < 6) return "reggae";   // the skank on every "and", bass on the beats (one drop)
     if (dens >= 4.2 && t >= 88 && t <= 125) return "funk";
     if (t < 104) return "ballad";
     return "rock";
@@ -4538,16 +4699,24 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
   // ------------------------------------------------------------- render
   // Window [s, e] of the clip. Returns { buffer (stereo), stems {drums, bass, keys, extra}, A, chords, style, set }.
   async function render(raw, s, e, opts = {}) {
-    const SR = opts.sampleRate || 32000, dur = Math.max(0.5, e - s), N = Math.ceil(dur * SR);
+    // opts.renderTo: render only [s, renderTo) of the same band (same plan, same takes, same random): the first bars play
+    // while the rest renders; the full render's start is sample-identical, so the preview switches over seamlessly
+    const SR = opts.sampleRate || 32000, eR = opts.renderTo ? Math.max(s + 0.5, Math.min(e, opts.renderTo)) : e, dur = Math.max(0.5, eR - s), N = Math.ceil(dur * SR);
     const parts = Object.assign({ drums: true, bass: true, keys: true, extra: true }, opts.parts || {});
     const A = opts.analysis || root.LickMusic.analyze(raw, s, e);
     const H = opts.harmony || root.LickMusic.harmonyPlan(raw, A);   // the player's edited chords (or chords from their melody) when given
     const styleKey = STYLES[opts.style] ? opts.style : heuristicStyle(raw, A);
     const set = settle(styleKey, opts.set || {});
     const style0 = STYLES[styleKey];
-    // 3/4: the same instruments, in waltz shape (12 steps a bar: boom, chick, chick)
-    const st = A.meter === 3 ? { ...style0, kick: style0.kick.length ? [0] : [], snare: style0.snare?.length || style0.rim ? [4, 8] : [], rim: [], ghost: [], hat: style0.hat.length ? (style0.hat.length > 8 ? [0, 2, 4, 6, 8, 10] : [0, 4, 8]) : [], bass: style0.bass.length > 1 ? [0, 8] : [0], comp: style0.comp ? [4, 8] : undefined, walk: false } : style0;
-    const SPB = (A.meter || 4) * 4, P = shape(st, set, SPB);
+    // 3/4: the same instruments, in waltz shape (12 steps a bar: boom, chick, chick); Ballad and Rock have their own waltz
+    // (brushed ballad: kick on 1, hats on 2 and 3, bass 1 and 3; rock waltz: kick 1, snare 2 and 3, 8th hats, 8th bass).
+    // Compound 6/8 / 12/8 (each beat split in three): 6 steps a beat, eighths on every other step, kick 1 and 3, snare 2 and 4.
+    // Reggae at the take's 8th level (skank on every "and"): one drop (kick + rim on 3 only), the keys on the "and"s.
+    const cpd = !!A.compound && A.meter !== 3, W3 = { ballad: { kick: [0], snare: [], rim: [], hat: [0, 4, 8], bass: [0, 8], comp: [4, 8] }, rock: { kick: [0], snare: [4, 8], rim: [], hat: [0, 2, 4, 6, 8, 10], bass: [0, 2, 4, 6, 8, 10], comp: [4, 8] } };
+    const st = A.meter === 3 ? { ...style0, kick: style0.kick.length ? [0] : [], snare: style0.snare?.length || style0.rim ? [4, 8] : [], rim: [], ghost: [], hat: style0.hat.length ? (style0.hat.length > 8 ? [0, 2, 4, 6, 8, 10] : [0, 4, 8]) : [], bass: style0.bass.length > 1 ? [0, 8] : [0], comp: style0.comp ? [4, 8] : undefined, walk: false, ...(W3[styleKey] || {}), ghost: [] }
+      : cpd ? { ...style0, kick: style0.kick.length ? [0, 12] : [], snare: style0.snare?.length || style0.rim?.length ? [6, 18] : [], rim: [], ghost: [], hat: style0.hat.length ? (style0.hat.length > 4 ? Array.from({ length: 12 }, (_, i) => i * 2) : [0, 6, 12, 18]) : [], bass: style0.bass.length > 2 ? [0, 4, 12, 16] : [0, 12], comp: style0.comp ? [2, 4, 8, 10, 14, 16, 20, 22] : undefined, walk: false, swing: 0 }
+      : styleKey === "reggae" && (A.bpm || 0) >= 110 ? { ...style0, kick: [8], rim: [8], hat: [0, 2, 4, 6, 8, 10, 12, 14], bass: [4, 7, 8, 12], comp: [2, 6, 10, 14] } : style0;
+    const SPB = cpd ? (A.meter || 4) * 6 : (A.meter || 4) * 4, P = shape(st, set, SPB);
     const take = Math.max(0, +(opts.set?.take) || 0);   // "another take": the same band, a different performance
     const R = rng(Math.round(s * 1000) * 31 + Math.round(e * 1000) + styleKey.length * 7919 + take * 104729);
     // sounds: the chosen sampled packs, or the built-in synth if they can't load (offline first run)
@@ -4603,14 +4772,14 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
       if (opt.bassNote) { const [buf, rate] = noteOf(pk, v[0] - 12); put(inst, buf, t, gain * 0.7, pan, cut, opt.rel ?? 0.12, rate, opt.atk || 0); }
     };
 
-    const plan = { bars: 0, fills: [], sections: 0, build: 0, drop: 0, dyn: 0, ending: "ring", take, swing: A.swing > 0.58, meter: A.meter || 4 };
+    const plan = { bars: 0, fills: [], sections: 0, build: 0, drop: 0, dyn: 0, ending: "ring", take, swing: A.swing > 0.58, meter: A.meter || 4, compound: cpd };
     const G = regrid(A, set.tempo);
     if (A.pulse && A.bars.length) {
       const B = G.beats, ib = B.length > 1 ? (B[B.length - 1] - B[0]) / (B.length - 1) : 0.5;
       const beatT = k => k < B.length ? B[k] : B[B.length - 1] + (k - B.length + 1) * ib;
       // a measured swing within 0.05 of a triplet is a triplet swing (strum spread reads the swung 'and' ~15 ms late)
       const swing = st.swing || (A.swing > 0.58 ? (Math.abs(A.swing - 2 / 3) < 0.05 ? 2 / 3 : A.swing) : 0.5);
-      const stepT = (k, j) => { const bi = k + (j >> 2), q = j & 3, t0 = beatT(bi), t1 = beatT(bi + 1); const frac = q === 0 ? 0 : q === 2 ? swing : q === 1 ? swing / 2 : swing + (1 - swing) / 2; return t0 + frac * (t1 - t0); };
+      const stepT = (k, j) => { if (cpd) { const bi = k + Math.floor(j / 6), t0 = beatT(bi), t1 = beatT(bi + 1); return t0 + (j % 6) / 6 * (t1 - t0); } const bi = k + (j >> 2), q = j & 3, t0 = beatT(bi), t1 = beatT(bi + 1); const frac = q === 0 ? 0 : q === 2 ? swing : q === 1 ? swing / 2 : swing + (1 - swing) / 2; return t0 + frac * (t1 - t0); };
       const bars = G.bars.filter(b => b.t0 < endT - 0.1 && b.t1 > s - 0.05), FN = +set.fills || 0;
       // arrangement: where the band comes in, where it drops, and where the fills go (before the chords move on)
       const chordAt = t => { const h = harmonyAt(t + 0.01); return h ? h.name : ""; };
@@ -4651,7 +4820,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
         }
         if (parts.bass && BP) {
           const line = set.line, h0 = harmonyAt(bar.t0 + 0.01);
-          const steps = line === "root" ? [0, SPB / 2] : line === "eighths" || line === "octave" ? Array.from({ length: SPB / 2 }, (_, i) => i * 2) : line === "walk" ? Array.from({ length: SPB / 4 }, (_, i) => i * 4) : P.bass;
+          const steps = line === "root" ? [0, SPB / 2] : line === "eighths" || line === "octave" ? Array.from({ length: SPB / 2 }, (_, i) => i * 2) : line === "walk" ? Array.from({ length: cpd ? SPB / 6 : SPB / 4 }, (_, i) => i * (cpd ? 6 : 4)) : P.bass;
           const st2 = set.groove === "simple" && line !== "walk" ? steps.filter(j => j % (SPB / 2) === 0) : steps;
           let prevM = null;
           st2.forEach((j, n) => {
@@ -4673,12 +4842,12 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
           void h0;
         }
         if (parts.keys && KYP && set.play === "rhythm") {
-          const comp = P.comp || (SPB === 12 ? [4, 8] : set.groove === "busy" ? [0, 3, 6, 8, 11, 14] : [0, 6, 8, 14]);
+          const comp = P.comp || (SPB === 12 ? [4, 8] : cpd ? [4, 10, 16, 22] : set.groove === "busy" ? [0, 3, 6, 8, 11, 14] : [0, 6, 8, 14]);
           comp.forEach((j, n) => { const t = at(j); if (!ok(t)) return; const nx = n + 1 < comp.length ? at(comp[n + 1]) : bar.t1, h = harmonyAt(t + 0.005);
             strike("keys", KYP, hum(t, 4), Math.min(nx - 0.02, t + (set.keys === "organ" ? 0.22 : 0.42)), h.pcs, vv(0.85) * vel * lvl.keys, 0.2, { rel: 0.06 }); });
         }
         if (parts.extra && XP && XK === "gtr") {
-          const strums = SPB === 12 ? [0, 4, 8] : set.groove === "busy" ? [0, 4, 6, 8, 12, 14] : set.groove === "simple" ? [0, 8] : [0, 4, 8, 12];
+          const strums = SPB === 12 ? [0, 4, 8] : cpd ? [0, 6, 12, 18] : set.groove === "busy" ? [0, 4, 6, 8, 12, 14] : set.groove === "simple" ? [0, 8] : [0, 4, 8, 12];
           strums.forEach((j, n) => { const t = at(j); if (!ok(t)) return; const nx = n + 1 < strums.length ? at(strums[n + 1]) : bar.t1, h = harmonyAt(t + 0.005);
             strike("extra", XP, t, nx - 0.02, h.pcs, vv(n === 0 ? 0.9 : 0.7) * vel * lvl.extra, -0.35, { strum: n % 2 ? 0.008 : 0.014, rel: 0.05 }); });
         }
@@ -4743,7 +4912,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     const mkClick = () => { const b = BF.createBuffer(2, N, SR), c0 = b.getChannelData(0), c1 = b.getChannelData(1);
       for (const t of G.beats || []) { const o = Math.round((t - s) * SR); if (o < 0 || o >= N) continue; const down = (G.bars || []).some(b2 => Math.abs(b2.t0 - t) < 0.02), fq = down ? 2100 : 1500;
         for (let j = 0; j < Math.min(N - o, SR * 0.035); j++) { const v = (down ? 0.5 : 0.35) * Math.sin(2 * Math.PI * fq * j / SR) * Math.exp(-j / (SR * 0.007)); c0[o + j] += v; c1[o + j] += v; } } return b; };
-    return { get buffer() { return mixB || (mixB = mkMix()); }, stems, get click() { return clickB || (clickB = mkClick()); }, grid: G.beats, A, bpm: G.bpm || A.bpm, steady: G.steady, chords: H, style: styleKey, set, sampled, key: raw.info?.key, plan };
+    return { normGain: g, partial: !!opts.renderTo && eR < e, get buffer() { return mixB || (mixB = mkMix()); }, stems, get click() { return clickB || (clickB = mkClick()); }, grid: G.beats, A, bpm: G.bpm || A.bpm, steady: G.steady, chords: H, style: styleKey, set, sampled, key: raw.info?.key, plan };
   }
   // triad in the middle register, moving as little as possible from the last chord
   function voicing(pcs, prev) {
@@ -7258,7 +7427,7 @@ function bandA(c) {
   if (c._bandA?.key !== key) { let A = null; try {
     // 3.3: the band's beat grid is tracked ONCE over the whole take (tempo, smoothed tempo curve, phase) and cropped to the Pick
     const g0 = gridOf(c), Bg = g0?.pulse ? g0.beats.filter(t => t >= w.s - 0.02 && t <= w.e + 0.02) : [];
-    if (Bg.length >= 8) { A = LickMusic.analyze(c.raw, w.s, w.e, { beats: Bg }); if (A?.pulse) { A.given = false; A.smooth = true; A.steady = g0.steady; A.grid = true; A.played = LickMusic.snapBeats(c.raw, A.beats); } }
+    if (Bg.length >= 8) { A = LickMusic.analyze(c.raw, w.s, w.e, { beats: Bg, meter: g0.meter, compound: g0.compound }); if (A?.pulse) { A.given = false; A.smooth = true; A.steady = g0.steady; A.grid = true; A.played = LickMusic.snapBeats(c.raw, A.beats); } }
     if (!A?.pulse) A = LickMusic.analyze(c.raw, w.s, w.e);
     // a second opinion from the whole take (more playing to lock onto), cropped to the Pick: kept when its beats sit
     // clearly more on your notes than the Pick-only reading (GuitarSet, 346 Picks: beat F 0.52 -> 0.55)
@@ -7286,9 +7455,9 @@ const INSTS = [["drums", "i-drum", "Drums"], ["bass", "i-bass", "Bass"], ["keys"
 // ONE key everywhere (card, header, captions, band): the take key (takeKey, beat-synchronous, calibrated), stored in
 // raw.info at scan time. Not sure (conf < KEY_SURE) = no key shown and the band plays drums only. Takes scanned before
 // this version get it recomputed once, in the background.
-const keyInfo = c => { const i = c?.raw?.info; if (!i) return null; if (i.kv !== 2) { if (c.example) return i.keyRoot != null ? [i.keyRoot, i.keyMode === "min"] : null; queueUnify(c); return null; } return i.keyRoot != null && i.keyConf >= LickMusic.KEY_SURE ? [i.keyRoot, i.keyMode === "min"] : null; };
+const keyInfo = c => { const i = c?.raw?.info; if (!i) return null; if (i.kv !== 3) { if (c.example) return i.keyRoot != null ? [i.keyRoot, i.keyMode === "min"] : null; queueUnify(c); return null; } return i.keyRoot != null && i.keyConf >= LickMusic.KEY_SURE ? [i.keyRoot, i.keyMode === "min"] : null; };
 const keyCtx = c => keyInfo(c) || [null, false];
-const keyText = c => { const k = keyInfo(c); return k ? LickMusic.keyLabel(k[0], k[1]) : ""; };
+const keyText = c => { const k = keyInfo(c); return k ? (c.raw.info.keyBoth ? c.raw.info.key : LickMusic.keyLabel(k[0], k[1])) : ""; };
 const sp = (c, name) => LickMusic.spellChord(name, ...keyCtx(c));
 // ---------- chords the band plays: what LickPick heard, or chords made from your melody (singers), and your edits
 const isSinger = c => (profile.plays || []).includes("vocals") || (c.band?.heard?.p?.vocals ?? 0) >= 0.35;
@@ -7307,7 +7476,9 @@ const rhythmOnly = c => { const k = takeKeyOf(c); return !!k && !keySure(c) && !
 // write the take's tempo and key into raw.info (the card and everything else read them from there)
 function unifyKey(c) { const i = c?.raw?.info; if (!i) return; const g = gridOf(c), k = takeKeyOf(c);
   if (g?.pulse) i.tempo = Math.round(g.bpm);
-  i.kv = 2; i.keyConf = k?.conf ?? 0; if (k && k.key != null && k.conf >= LickMusic.KEY_SURE) { i.keyRoot = k.key; i.keyMode = k.minor ? "min" : "maj"; i.key = LickMusic.keyLabel(k.key, k.minor); } else { i.keyRoot = null; i.keyMode = null; i.key = "no clear key"; } }
+  i.kv = 3; i.keyConf = k?.conf ?? 0; if (k && k.key != null && k.conf >= LickMusic.KEY_SURE) { i.keyRoot = k.key; i.keyMode = k.minor ? "min" : "maj"; i.key = LickMusic.keyLabel(k.key, k.minor);
+    // the notes are sure, the name less so (C major or A minor): both names
+    if (!(k.confX >= LickMusic.KEY_SURE)) { const mj = k.minor ? (k.key + 3) % 12 : k.key; i.key = `${LickMusic.keyLabel(mj, false)} / ${LickMusic.keyLabel((mj + 9) % 12, true)}`; i.keyBoth = true; } else i.keyBoth = false; } else { i.keyRoot = null; i.keyMode = null; i.key = "no clear key"; } }
 const unifyQ = new Set(); let unifyT = 0;
 function queueUnify(c) { if (!c?.raw || c.example || unifyQ.has(c)) return; unifyQ.add(c); if (!unifyT) unifyT = setTimeout(unifyNext, 400); }
 function unifyNext() { unifyT = 0; const c = unifyQ.values().next().value; if (!c) return; unifyQ.delete(c);
@@ -8056,7 +8227,14 @@ function bandPreview(c, from = 0) {
   bandPreview.token = token; bandPlaying = true; renderDock(c); syncBandBtn(c);
   say(withBand ? "Lining up the band…" : simple ? "" : "Getting the sound ready…");
   const take = simple ? windowAudio(c, w.s, w.e) : planBuffer(c, P);
-  Promise.all([withBand || clickOn ? bandRender(c) : null, take, Promise.all(Ls.map(L => layerAudio(layerClip(L), L.lStart, L.lStart + (w.e - w.s)).catch(() => null)))]).then(async ([r, orig, lays]) => {
+  // first sound fast: when the band isn't rendered yet, the first few seconds (the same band, sample for sample) are
+  // rendered first and play at once; the full render takes over at the next moment it's ready (gapless switch)
+  const HEAD = 5; let headP = null, headEnd = 0, K0 = null;
+  if (withBand && simple && !clickOn && (w.e - w.s) > HEAD + 4) { try { K0 = bandKey(c); if (!(bandCache.key === K0.key && (bandCache.res || bandCache.p))) { headEnd = K0.rw.s + Math.max(0, +from || 0) + HEAD;
+    headP = LickBand.render(c.raw, K0.rw.s, K0.rw.e, { style: K0.style, set: K0.set, parts: K0.parts, analysis: K0.A, harmony: K0.harmony, endAt: K0.rw.endAt, renderTo: headEnd }).then(res => { if (!res.stems) throw new Error("no stems"); return res; }); headP.catch(() => { }); } } catch { headP = null; } }
+  // the full render starts once the first bars are out (one thread: it would hold them up otherwise)
+  const fullP = withBand || clickOn ? (headP ? headP.then(() => bandRender(c), () => bandRender(c)) : bandRender(c)) : null;
+  Promise.all([headP ? headP.catch(() => fullP) : fullP, take, Promise.all(Ls.map(L => layerAudio(layerClip(L), L.lStart, L.lStart + (w.e - w.s)).catch(() => null)))]).then(async ([r, orig, lays]) => {
     if (!bandPlaying || bandPreview.token !== token) return;
     if (ctx.state === "suspended") await ctx.resume().catch(() => { });
     say("");
@@ -8072,10 +8250,21 @@ function bandPreview(c, from = 0) {
     // the band: once, or again at the top of every repeat
     const starts = simple ? [0] : ClipExporter.bedStarts(P.segs, P.offs), lenOf = i => i + 1 < starts.length ? starts[i + 1] - starts[i] : undefined;
     if (r && clickOn && r.click) { const g = ctx.createGain(); g.gain.value = 0.9; g.connect(outN); starts.forEach((st, i) => sched(r.click, g, st, lenOf(i))); }
-    if (r && withBand) { if (r.stems) for (const [k] of INSTS) { const g = ctx.createGain(); g.gain.value = stemGain(c, k); g.connect(outN); mixNodes[k] = g; starts.forEach((st, i) => sched(r.stems[k], g, st, lenOf(i))); }
+    const headG = {};
+    if (r && withBand) { if (r.stems) for (const [k] of INSTS) { const g = ctx.createGain(); g.gain.value = stemGain(c, k); g.connect(outN); mixNodes[k] = g; let dst = g; if (r.partial) { dst = headG[k] = ctx.createGain(); dst.gain.value = 0.75; dst.connect(g); }   /* the full band's level isn't known yet (later bars are often louder): about -2.5 dB, corrected at the switch */ starts.forEach((st, i) => sched(r.stems[k], dst, st, lenOf(i))); }
       else { bandGainNode = ctx.createGain(); bandGainNode.gain.value = c.band.gain * (c._btrim ?? 1); bandGainNode.connect(outN); starts.forEach((st, i) => sched(r.buffer, bandGainNode, st, lenOf(i))); } }
     lays.forEach((la, i) => { if (!la) return; const g = ctx.createGain(); g.gain.value = Ls[i].gain ?? 1; g.connect(outN); sched(la.b, g, la.lead); mixNodes["L" + (c.layers.indexOf(Ls[i]))] = g; });
     bandNodes = srcs;
+    // the full band takes over from the first bars: fade the head out and the full in over 30 ms at one moment
+    if (r?.partial && fullP) fullP.then(F => { if (!bandPlaying || bandPreview.token !== token || !F?.stems) return;
+      const ratio = Math.min(1, (F.normGain || 1) / (r.normGain || 1)), now = Math.max(0, heardAt(ctx) - t0 + at0), hEnd = headEnd - w.s;
+      let sw = Math.max(at0 + 0.05, now + 0.25); const T = t0 + sw - at0;
+      for (const [k] of INSTS) { const hg = headG[k], g = mixNodes[k]; if (!g || !F.stems[k]) continue;
+        if (hg) { hg.gain.setValueAtTime(hg.gain.value, ctx.currentTime); hg.gain.linearRampToValueAtTime(ratio, Math.max(ctx.currentTime + 0.01, T - 0.01)); hg.gain.linearRampToValueAtTime(0, T + 0.03); }
+        const fg = ctx.createGain(); fg.gain.setValueAtTime(0, ctx.currentTime); fg.gain.setValueAtTime(0, T); fg.gain.linearRampToValueAtTime(1, T + 0.03); fg.connect(g);
+        const sN = ctx.createBufferSource(); sN.buffer = F.stems[k]; sN.connect(fg); sN.start(T, Math.min(sw, F.stems[k].duration - 0.01)); srcs.push(sN); }
+      if (sw > hEnd) diagLog("band head ran out before the full render");
+    }).catch(() => { });
     a.onended = () => { if (bandPreview.token === token && bandPlaying) { stopBand(); if (player?.loop) bandPreview(c); else renderDock(c); } };
     const srcAt = el => simple ? w.s + el : planSrcT(P, el), elNow = () => Math.max(0, Math.min(total, heardAt(ctx) - t0 + at0));
     // the beat light: the band's own beats, in the result's time
