@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3SDS Mission Control</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0b14;--card:#121524;--ink:#eef0f7;--mut:#9aa1b8;--dim:#646b85;--line:rgba(255,255,255,.08);
+ --grn:#35d07f;--grn2:#1f9e5c;--vio:#8b7bf0;--gold:#e0a828;--red:#ef6a6a;--amber:#f3a33b;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:26px 18px 60px}
+.wrap{max-width:1000px;margin:0 auto}
+.pix{font-family:'Press Start 2P',monospace}
+h1{font-family:'Press Start 2P',monospace;font-size:17px;letter-spacing:.02em;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1 .heart{font-size:22px}
+.sub{color:var(--mut);font-size:13px;margin:10px 0 4px}
+.stamp{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--grn)}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 8px;font-size:11px;color:var(--dim)}
+.legend b{color:var(--mut);font-weight:700}
+.legend .s{display:flex;align-items:center;gap:6px;background:#0f1322;border:1px solid var(--line);border-radius:7px;padding:5px 9px}
+.tier{margin-top:30px}
+.tier-h{font-family:'Press Start 2P',monospace;font-size:11px;margin-bottom:4px}
+.tier-sub{color:var(--dim);font-size:12px;margin-bottom:14px}
+.t1 .tier-h{color:var(--grn)} .t2 .tier-h{color:var(--gold)} .t3 .tier-h{color:var(--dim)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;border-left:4px solid var(--ac,var(--vio))}
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.nm{font-size:17px;font-weight:800;display:flex;align-items:center;gap:9px}
+.nm .ic{font-size:17px}
+.rev{font-size:11.5px;color:var(--mut)}
+.chip{font-family:'Press Start 2P',monospace;font-size:7px;padding:5px 7px;border-radius:5px;vertical-align:middle;margin-left:4px}
+.p1{background:rgba(53,208,127,.16);color:var(--grn)} .p2{background:rgba(224,168,40,.16);color:var(--gold)}
+.p3{background:rgba(120,130,160,.16);color:var(--dim)}
+/* xp bar */
+.xp{margin:14px 0 6px}
+.track{position:relative;height:12px;border-radius:7px;background:#070910;border:1px solid var(--line);overflow:hidden}
+.fill{position:absolute;inset:0;width:var(--pct);background:linear-gradient(90deg,var(--grn2),var(--grn));border-radius:7px 0 0 7px;box-shadow:0 0 12px rgba(53,208,127,.4)}
+.ticks{display:flex;justify-content:space-between;margin-top:7px}
+.tk{font-size:9.5px;color:var(--dim);flex:1;text-align:center;position:relative}
+.tk:first-child{text-align:left}.tk:last-child{text-align:right}
+.tk.on{color:var(--grn);font-weight:700}
+.tk.cur{color:#fff}
+.tk.cur:after{content:'◉';display:block;color:var(--grn);font-size:8px;margin-top:1px}
+.pctlab{float:right;font-family:'Press Start 2P',monospace;font-size:9px;color:var(--grn)}
+.next{display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:12.5px;color:var(--mut)}
+.next b{color:var(--ink);font-weight:700}
+.eta{margin-left:auto;white-space:nowrap;font-size:11px;color:var(--dim)}
+.eta .d{color:var(--amber);font-weight:600}
+.foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:var(--dim);font-size:11.5px;line-height:1.7}
+.foot b{color:var(--mut)}
+</style>
+</head>
+<body><div class="wrap">
+<h1><span class="heart">💚</span> 3SDS MISSION CONTROL</h1>
+<div class="sub">Every product's road to a <b style="color:var(--grn)">paying</b> model — one bar, real status. <span class="stamp" id="stamp"></span></div>
+
+<div class="legend"><b>STAGES:</b>
+<span class="s">1 Concept</span><span class="s">2 Build/MVP</span><span class="s">3 Live</span><span class="s">4 Validate</span><span class="s">5 Monetize</span><span class="s">6 💰 Paying</span>
+</div>
+
+<div id="tiers"></div>
+
+<div class="foot" id="foot"></div>
+</div>
+<script>
+var STAGES=['Concept','Build','Live','Validate','Monetize','Paying'];
+// pct→stage index (6 bands)
+function stageIdx(p){return Math.min(5,Math.floor(p/16.67));}
+var DATA=[
+{tier:1,ic:'🎨',nm:'3Shamrocks Studio',ac:'#8b7bf0',pr:1,rev:'Paid design/product projects — cash NOW',pct:75,
+ next:'Launch LinkedIn post + outreach; map 3shamrocks.com domain to the live site',eta:'First client: 1–2 wks',d:true},
+{tier:1,ic:'🛡️',nm:'SH✡MER',ac:'#e0a828',pr:1,rev:'Municipal pilots (B2G) — slow but large',pct:70,
+ next:'Recruit 12 testers → start 14-day Play clock → production; run muni pilot outreach (GTM pack ready)',eta:'Paying: ~2–3 mo'},
+{tier:1,ic:'🗑️',nm:'Trashure-Hunters',ac:'#35d07f',pr:1,rev:'B2B2C (schools/brands) + consumer',pct:55,
+ next:'Finish RN app MVP screens + Firebase/COPPA + TestFlight build',eta:'Testable: ~4–6 wks'},
+{tier:2,ic:'🎸',nm:'LickPick',ac:'#ff6b6b',pr:2,rev:'Consumer subscription',pct:45,
+ next:'Wire pricing/subscription + plan App Store path; validate with real players',eta:'—'},
+{tier:2,ic:'🌿',nm:'SHOMER Nature',ac:'#16a06a',pr:2,rev:'Rides SHOMER model',pct:55,
+ next:'Google Play listing + Data-safety declarations',eta:'—'},
+{tier:2,ic:'🧩',nm:'3S Design System',ac:'#5f8bff',pr:2,rev:'Internal multiplier (+ sellable kit)',pct:55,
+ next:'Finish tokens/components; it speeds every other product',eta:'—'},
+{tier:2,ic:'♟️',nm:'Rookie & King',ac:'#c3a3ff',pr:2,rev:'TBD (LinkedIn-viral → ?)',pct:35,
+ next:'Lock a monetization angle before more build',eta:'—'},
+{tier:2,ic:'🤝',nm:'Ezra',ac:'#0ea5e9',pr:2,rev:'Senior-care subscription / B2B',pct:35,
+ next:'Approve the 3 concept mockups → greenlight build',eta:'Blocked on review'},
+{tier:2,ic:'⚔️',nm:'Chore Royale',ac:'#f97316',pr:2,rev:'Family subscription',pct:35,
+ next:'Rebuild on the "spin/wheel" pivot from the approved mockup',eta:'—'},
+{tier:2,ic:'🏠',nm:'Fairent',ac:'#2563eb',pr:2,rev:'Freemium / lead-gen',pct:25,
+ next:'Crack the DATA strategy — make-or-break before any build',eta:'Blocked on data'},
+{tier:2,ic:'💜',nm:'Milo',ac:'#fb7185',pr:2,rev:'NGO/B2B + parent subscription',pct:30,
+ next:'Finish concept/design pass; sensitive — needs care',eta:'—'},
+{tier:3,ic:'⚡',nm:'J8N.IX',ac:'#f59e0b',pr:3,rev:'Studio showpiece (not a product line)',pct:70,next:'Parked — reframe as capability demo',eta:'Parked'},
+{tier:3,ic:'🌐',nm:'TH Website',ac:'#646b85',pr:3,rev:'Funnel to TH app',pct:90,next:'Parked — needs domain + email backend',eta:'Parked'},
+{tier:3,ic:'🎬',nm:'TH Feature Movie',ac:'#646b85',pr:3,rev:'IP/entertainment (long-game)',pct:40,next:'Parked — script ~80%',eta:'Parked'},
+{tier:3,ic:'📊',nm:'TH Pitch Deck 2026',ac:'#646b85',pr:3,rev:'Investor raise',pct:20,next:'Backlog — rebrand when fundraising',eta:'Backlog'},
+{tier:3,ic:'📈',nm:'Binance / Leumi agents',ac:'#646b85',pr:3,rev:'Personal tools (read-only)',pct:10,next:'Planned — needs read-only API keys',eta:'Planned'}
+];
+var tiersEl=document.getElementById('tiers');
+var tierMeta={1:{cls:'t1',h:'🔥 MONEY NOW',sub:'Closest to cash. This is where today\'s focus goes.'},
+ 2:{cls:'t2',h:'🚧 IN BUILD',sub:'Live or building — pick ONE to push to a paying model, not all.'},
+ 3:{cls:'t3',h:'🅿️ PARKED / BACKLOG',sub:'Intentionally paused. Don\'t spend here until Tier 1 pays.'}};
+[1,2,3].forEach(function(t){
+ var m=tierMeta[t];
+ var html='<div class="tier '+m.cls+'"><div class="tier-h">'+m.h+'</div><div class="tier-sub">'+m.sub+'</div>';
+ DATA.filter(function(d){return d.tier===t;}).forEach(function(d){
+  var cur=stageIdx(d.pct);
+  var ticks=STAGES.map(function(s,i){var c='tk';if(i<cur)c+=' on';if(i===cur)c+=' cur';return '<span class="'+c+'">'+(i+1)+' '+s+'</span>';}).join('');
+  html+='<div class="card" style="--ac:'+d.ac+'">'
+   +'<div class="top"><div class="nm"><span class="ic">'+d.ic+'</span>'+d.nm+'<span class="chip p'+d.pr+'">P'+d.pr+'</span></div><div class="rev">'+d.rev+'</div></div>'
+   +'<div class="xp"><span class="pctlab">'+d.pct+'%</span><div class="track"><div class="fill" style="--pct:'+d.pct+'%"></div></div>'
+   +'<div class="ticks">'+ticks+'</div></div>'
+   +'<div class="next"><span>▸ <b>Next:</b> '+d.next+'</span><span class="eta">'+(d.d?'<span class="d">':'')+d.eta+(d.d?'</span>':'')+'</span></div>'
+   +'</div>';
+ });
+ html+='</div>';
+ tiersEl.innerHTML+=html;
+});
+document.getElementById('stamp').textContent='UPDATED '+new Date().toISOString().slice(0,10);
+document.getElementById('foot').innerHTML='<b>The one-line truth:</b> services pay this month, SH✡MER pays later, everything else is pre-revenue. '
+ +'Don\'t widen — finish Tier 1.<br><b>Canceled/dead:</b> Media Network (faceless IG) · IG Mascot Network — removed from focus, no resources spent.<br>'
+ +'<b>This is the single source of truth.</b> Linear is the deep backlog; this bar is the daily view.';
+</script>
+</body>
+</html>
