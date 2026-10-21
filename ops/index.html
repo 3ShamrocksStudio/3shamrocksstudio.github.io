@@ -107,6 +107,33 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);-webkit-font-sm
 .t-big{background:color-mix(in srgb,var(--amber) 22%,transparent);color:var(--amber)}
 .t-later{background:color-mix(in srgb,var(--green) 20%,transparent);color:var(--green)}
 .t-parked{background:rgba(255,255,255,.08);color:var(--dim)}
+/* road to $1M */
+.road{background:var(--p1);border:1px solid var(--line);border-radius:var(--r);padding:13px 15px;display:flex;flex-direction:column;gap:11px}
+.rd-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.rd-h .t{font-family:var(--fd);font-weight:700;font-size:15px}
+.rd-h .s{font-size:12px;color:var(--mut)}
+.rd-h .s b{color:var(--ink)}
+.rd-h .due{margin-left:auto;font-family:var(--fd);font-weight:700;font-size:11px;color:var(--amber)}
+.rbar{position:relative;height:10px;border-radius:var(--pill);background:rgba(255,255,255,.1)}
+.rbar i{position:absolute;left:0;top:0;bottom:0;border-radius:var(--pill);background:linear-gradient(90deg,var(--pur),var(--cyan));min-width:2px}
+.rbar u{position:absolute;top:-4px;width:2px;height:18px;background:var(--amber);border-radius:2px}
+.rms{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px}
+.rm{flex:1 0 92px;background:var(--p2);border:1px solid var(--line);border-radius:11px;padding:8px 10px;cursor:pointer;min-width:92px}
+.rm .a{font-family:var(--fd);font-weight:700;font-size:10px;color:var(--dim);letter-spacing:.04em}
+.rm .v{font-family:var(--fd);font-weight:700;font-size:14px;margin-top:2px}
+.rm .p{font-size:10.5px;color:var(--mut);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm.done{border-color:color-mix(in srgb,var(--green) 60%,transparent)}.rm.done .a{color:var(--green)}
+.rm.next{border-color:color-mix(in srgb,var(--amber) 70%,transparent)}.rm.next .a{color:var(--amber)}
+.rm.on{background:color-mix(in srgb,var(--pur) 22%,var(--p2))}
+.reng{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+@media(max-width:720px){.reng{grid-template-columns:1fr 1fr}}
+.re{background:var(--p2);border:1px solid var(--line);border-radius:11px;padding:8px 10px;cursor:pointer}
+.re.on{background:color-mix(in srgb,var(--cyan) 16%,var(--p2))}
+.re .n{font-family:var(--fd);font-weight:600;font-size:12px}
+.re .p{font-size:10.5px;color:var(--mut);margin-top:1px}
+.re .mini i{background:var(--cyan)}
+.rdet{font-size:12.5px;line-height:1.5;color:var(--mut);background:var(--p2);border-radius:10px;padding:9px 12px;display:none}
+.rdet.show{display:block}.rdet b{color:var(--ink)}
 .foot{text-align:center;color:var(--dim);font-size:10.5px;line-height:1.6}
 .foot b{color:var(--mut)}
 </style>
@@ -114,9 +141,17 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);-webkit-font-sm
 <body>
 <div class="app">
   <div class="banner">
-    <div class="top"><div class="live"><span class="dot"></span>Mission Control</div><div class="goal">🎯 $1M ARR</div></div>
+    <div class="top"><div class="live"><span class="dot"></span>Mission Control</div><div class="goal">🎯 $1M · by 21 Apr 2027</div></div>
     <div class="st" id="statusLine">—</div>
     <div class="sub" id="statusSub"></div>
+  </div>
+
+  <div class="road" id="road">
+    <div class="rd-h"><span class="t">Road to $1M</span><span class="s" id="rdS">loading…</span><span class="due" id="rdDue"></span></div>
+    <div class="rbar"><i id="rdBar" style="width:0"></i><u id="rdPace" style="left:0" title="where we should be today"></u></div>
+    <div class="rms" id="rdMs"></div>
+    <div class="reng" id="rdEng"></div>
+    <div class="rdet" id="rdDet"></div>
   </div>
 
   <div class="body">
@@ -134,7 +169,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);-webkit-font-sm
 
 <script>
 var LS={g:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},s:function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
-var DB=LS.g('ops_cp_v1',{ck:{},notes:{},sel:'j8nix'});
+var DB=LS.g('ops_cp_v1',{ck:{},notes:{},sel:'svc'});
 function save(){LS.s('ops_cp_v1',DB);}
 function dn(id,def){return (id in DB.ck)?DB.ck[id]:!!def;}
 
@@ -145,15 +180,18 @@ var TH_IMG={
 };
 // products: ms month-offsets along 0..18
 var PROD=[
- {id:'j8nix',nm:'J8N.IX',ac:'var(--pur)',roi:'$35k',owner:'you',short:'set up payments',
-  act:'1) Go to stripe.com and click “Sign up” (it’s free, ~5 min).  2) Once you’re logged in, tell me here.  → Then I connect it and it can take payments. You don’t touch any code.',
+ {id:'svc',nm:'3S Services',ac:'var(--cyan)',roi:'$600k',owner:'you',short:'approve offer + send 20 names',
+  act:'1) Approve the offer & prices (Fractional Head of Design ₪40–50k/mo · AI Design Sprint ₪55k · Design System ₪110k).  2) Send me 20 names you’d call — past clients, founders, ex-colleagues.  → I write every Hebrew message, follow-up, proposal and SOW. You take the calls.',
+  ms:[{id:'v1',l:'Offer locked',mo:0.3},{id:'v2',l:'1st deal',mo:1},{id:'v3',l:'4 retainers',mo:3},{id:'v4',l:'8 retainers',mo:5},{id:'v5',l:'$600k',mo:6}]},
+ {id:'j8nix',nm:'J8N.IX',ac:'var(--pur)',roi:'$35k',owner:'you',short:'open payments account',
+  act:'Open a Lemon Squeezy (or Paddle) account — it handles VAT, cards and invoices for every 3S product.  Tell me when you’re logged in → I connect J8N.IX, the AI Brand Kit and SH✡MER Plus. No code for you.',
   ms:[{id:'j1',l:'Payments on',mo:1},{id:'j2',l:'First sale',mo:2.5},{id:'j3',l:'$10k/mo',mo:6},{id:'j4',l:'$35k/mo',mo:16}]},
  {id:'kit',nm:'AI Brand Kit',ac:'var(--lime)',roi:'$8k',owner:'claude',
   act:'Nothing for you — I’m adding new kits to the store.',
   ms:[{id:'k1',l:'Live',mo:0,def:true},{id:'k2',l:'First sales',mo:1},{id:'k3',l:'5 kits',mo:3},{id:'k4',l:'Scales',mo:10}]},
- {id:'ig',nm:'IG Network',ac:'var(--cyan)',roi:'$10k',owner:'you',short:'make the 4 IG accounts',
-  act:'1) Open the Instagram app → tap “Sign up”.  2) Create 4 new accounts (keep your phone nearby — it texts you a code each time).  3) Tell me when they’re made → I hand you the names, bios and first posts.',
-  ms:[{id:'g1',l:'4 accounts',mo:1},{id:'g2',l:'Posting daily',mo:3},{id:'g3',l:'First $',mo:4.5},{id:'g4',l:'Growing',mo:12}]},
+ {id:'ig',nm:'IG Network',ac:'var(--cyan)',roi:'$10k',owner:'claude',
+  act:'Nothing for you — the 4 accounts exist and Metricool is connected. I’m producing profiles + first posts.',
+  ms:[{id:'g1',l:'4 accounts',mo:0,def:true},{id:'g2',l:'Posting daily',mo:3},{id:'g3',l:'First $',mo:4.5},{id:'g4',l:'Growing',mo:12}]},
  {id:'shomer',nm:'SH✡MER',ac:'var(--amber)',roi:'$30k',logo:'shomer',owner:'you',short:'add 12 testers',
   act:'On a computer, go to play.google.com/console → open SH✡MER → left menu “Testing” → “Internal testing” → “Testers” tab → paste in 12 email addresses → click Save. (That starts the 14-day countdown.)',
   ms:[{id:'s1',l:'In testing',mo:0,def:true},{id:'s2',l:'12 testers',mo:1},{id:'s3',l:'ID verified',mo:1.5},{id:'s4',l:'Public',mo:3},{id:'s5',l:'First sale',mo:8}]},
@@ -177,14 +215,17 @@ var PROD=[
   ms:[{id:'m1',l:'Design',mo:0,def:true},{id:'m2',l:'Expert review',mo:4}]}
 ];
 var WAIT=[
- {id:'w_ops',t:'Open the Scheduled list (sidebar) → find “3SDS Daily Ops” → switch it ON'},
- {id:'w_ig',t:'Instagram app → Sign up → make 4 new accounts (phone needed for the code)'},
+ {id:'w_offer',t:'Approve the services offer + prices (3S Services card)'},
+ {id:'w_names',t:'Send me 20 names you’d call — I write every message'},
+ {id:'w_fb',t:'Mac Terminal: firebase login:ci → send me the token (closes SH✡MER security hole)'},
+ {id:'w_twilio',t:'Twilio → Verify → Fraud Guard → Standard (before public SH✡MER)'},
+ {id:'w_mor',t:'Open a Lemon Squeezy account → tell me when logged in (turns on product sales)'},
  {id:'w_testers',t:'play.google.com/console → SH✡MER → Testing → Internal → Testers → paste 12 emails → Save'},
- {id:'w_verify',t:'Play Console → Settings → finish the ID check it asks you for'},
- {id:'w_stripe',t:'stripe.com → “Sign up” (free) → tell me when you’re logged in'},
- {id:'w_domain',t:'Where you bought 3shamrocks.com → DNS settings → tell me the host, I’ll give exact values'}
+ {id:'w_supa',t:'Send Supabase URL + anon key + token (unblocks Trashure-Hunters)'},
+ {id:'w_apple',t:'Apple Developer — enroll ($99, longest lead time)'}
 ];
 var META={
+ svc:{tier:'money',stage:'Offer ready to sell',what:'Dave as fractional Head of Design + fixed-price AI Design Sprints and Design System installs, for Israeli Seed–Series B startups. AI pipeline + a small bench do the delivery.',earn:'Monthly retainers and fixed-price projects. 60% of the $1M plan — the only engine that can move six figures in 6 months.'},
  j8nix:{tier:'money',stage:'Live preview',what:'An all-in-one work dashboard — calendar, tasks, projects, a voice assistant — in one page. For solo founders & small teams.',earn:'A monthly subscription. This is the main recurring engine toward $1M.'},
  kit:{tier:'money',stage:'Selling (Gumroad)',what:'Ready-made AI brand kits — logos, templates, guidelines — as instant downloads. For founders & creators who need a brand fast.',earn:'One-time sales now → a small membership next. The fastest first dollar we have.'},
  ig:{tier:'money',stage:'Pages built, not live',what:'4 themed AI/brand Instagram pages that pull in an audience and point it at everything we sell.',earn:'Affiliate links + promoting our own products. This is the traffic engine behind every sale.'},
@@ -267,6 +308,34 @@ function renderStatus(){
 }
 function renderAll(){renderRail();renderDetail();renderWait();renderStatus();}
 renderAll();
+
+/* ---- Road to $1M (data from ops/data.json, maintained by Claude) ---- */
+var ROAD=null,RSEL=null;
+function money(n){return n>=1e6?'$'+(Math.round(n/1e5)/10)+'M':(n>=1000?'$'+Math.round(n/1000)+'k':'$'+n);}
+function dayMs(s){return new Date(s+'T00:00:00').getTime();}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function bookedTotal(eng){return (ROAD.booked||[]).filter(function(b){return !eng||b.engine===eng;}).reduce(function(a,b){return a+(+b.amount||0);},0);}
+function paceToday(){var now=Date.now(),pts=[{t:dayMs(ROAD.start),v:0}].concat(ROAD.milestones.map(function(m){return {t:dayMs(m.date),v:m.target};}));
+ if(now<=pts[0].t)return 0;for(var i=1;i<pts.length;i++){if(now<=pts[i].t){var a=pts[i-1],b=pts[i];return a.v+(b.v-a.v)*(now-a.t)/(b.t-a.t);}}return ROAD.goal;}
+function renderRoad(){
+ if(!ROAD)return;var tot=bookedTotal(),now=Date.now();
+ var left=Math.max(0,Math.ceil((dayMs(ROAD.deadline)-now)/864e5));
+ var next=ROAD.milestones.filter(function(m){return tot<m.target;})[0];
+ document.getElementById('rdS').innerHTML='<b>'+money(tot)+'</b> booked of '+money(ROAD.goal)+' · '+left+' days left · updated '+esc(ROAD.updated);
+ document.getElementById('rdDue').textContent=next?('next: '+money(next.target)+' by '+new Date(next.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'🎯 goal hit';
+ document.getElementById('rdBar').style.width=Math.min(100,tot/ROAD.goal*100)+'%';
+ document.getElementById('rdPace').style.left=Math.min(100,paceToday()/ROAD.goal*100)+'%';
+ document.getElementById('rdMs').innerHTML=ROAD.milestones.map(function(m){var st=tot>=m.target?'done':(next&&next.id===m.id?'next':'');
+  var d=new Date(m.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  return '<div class="rm '+st+(RSEL===m.id?' on':'')+'" data-rd="'+m.id+'"><div class="a">'+m.id+' · '+d+(st==='done'?' ✓':'')+'</div><div class="v">'+money(m.target)+'</div><div class="p">'+esc(m.short)+'</div></div>';}).join('');
+ document.getElementById('rdEng').innerHTML=ROAD.engines.map(function(e){var b=bookedTotal(e.id);
+  return '<div class="re'+(RSEL===e.id?' on':'')+'" data-rd="'+e.id+'"><div class="n">'+esc(e.nm)+'</div><div class="p">'+money(b)+' / '+money(e.target)+' · '+esc(e.short)+'</div><div class="mini"><i style="width:'+Math.min(100,b/e.target*100)+'%"></i></div></div>';}).join('');
+ var det=document.getElementById('rdDet'),it=ROAD.milestones.concat(ROAD.engines).filter(function(x){return x.id===RSEL;})[0];
+ if(it){det.innerHTML='<b>'+esc(it.nm||it.id)+'</b> — '+esc(it.detail);det.classList.add('show');}else{det.classList.remove('show');det.innerHTML='';}
+}
+document.getElementById('road').addEventListener('click',function(e){var c=e.target.closest('[data-rd]');if(!c)return;var id=c.getAttribute('data-rd');RSEL=(RSEL===id)?null:id;renderRoad();});
+fetch('data.json?v='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){ROAD=d;renderRoad();})
+ .catch(function(){document.getElementById('rdS').textContent='roadmap data unavailable — refresh';});
 
 document.body.addEventListener('click',function(e){
  var sel=e.target.closest('[data-sel]');if(sel){DB.sel=sel.getAttribute('data-sel');save();renderAll();return;}
