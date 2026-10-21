@@ -96,6 +96,17 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);-webkit-font-sm
 .wc.done .x{background:var(--green);border-color:var(--green);position:relative}
 .wc.done .x::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#06130c}
 .wc.done span{color:var(--dim);text-decoration:line-through}
+.about{background:var(--p2);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.about .ab-h{display:flex;align-items:center;gap:8px;font-family:var(--fd);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.about .stg{margin-left:auto;font-size:10px;font-weight:700;color:var(--ac);background:color-mix(in srgb,var(--ac) 16%,transparent);padding:3px 10px;border-radius:var(--pill);text-transform:none;letter-spacing:0}
+.about .ab-r{font-size:12.5px;line-height:1.5;color:var(--mut)}
+.about .ab-r b{color:var(--ink);font-weight:700;font-family:var(--fd);font-size:10px;text-transform:uppercase;letter-spacing:.05em;display:block;margin-top:10px;margin-bottom:2px}
+.about .ab-r b:first-child{margin-top:0}
+.tier-b{font-size:9px;font-weight:700;padding:3px 8px;border-radius:var(--pill);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.t-money{background:color-mix(in srgb,var(--lime) 22%,transparent);color:var(--lime)}
+.t-big{background:color-mix(in srgb,var(--amber) 22%,transparent);color:var(--amber)}
+.t-later{background:color-mix(in srgb,var(--green) 20%,transparent);color:var(--green)}
+.t-parked{background:rgba(255,255,255,.08);color:var(--dim)}
 .foot{text-align:center;color:var(--dim);font-size:10.5px;line-height:1.6}
 .foot b{color:var(--mut)}
 </style>
@@ -173,6 +184,19 @@ var WAIT=[
  {id:'w_stripe',t:'stripe.com → “Sign up” (free) → tell me when you’re logged in'},
  {id:'w_domain',t:'Where you bought 3shamrocks.com → DNS settings → tell me the host, I’ll give exact values'}
 ];
+var META={
+ j8nix:{tier:'money',stage:'Live preview',what:'An all-in-one work dashboard — calendar, tasks, projects, a voice assistant — in one page. For solo founders & small teams.',earn:'A monthly subscription. This is the main recurring engine toward $1M.'},
+ kit:{tier:'money',stage:'Selling (Gumroad)',what:'Ready-made AI brand kits — logos, templates, guidelines — as instant downloads. For founders & creators who need a brand fast.',earn:'One-time sales now → a small membership next. The fastest first dollar we have.'},
+ ig:{tier:'money',stage:'Pages built, not live',what:'4 themed AI/brand Instagram pages that pull in an audience and point it at everything we sell.',earn:'Affiliate links + promoting our own products. This is the traffic engine behind every sale.'},
+ shomer:{tier:'big',stage:'In Google Play testing',what:'A one-tap citizen safety network with a live city dashboard. For neighbourhoods & municipalities.',earn:'Paid community / municipal licences. Biggest ceiling, but the slowest kind of sale.'},
+ nature:{tier:'big',stage:'Built, needs store listing',what:'The nature version of SH✡MER — wildfire, illegal dumping, injured wildlife.',earn:'Rides the same licence model as SH✡MER.'},
+ th:{tier:'later',stage:'Web MVP + case study',what:'A real-world cleanup game with original monster characters. For players & eco-brands.',earn:'Later — through a funding raise or licensing the characters, not near-term sales.'},
+ chore:{tier:'parked',stage:'Prototype + landing',what:'A family game that turns chores into quests. For parents & kids.',earn:'Family subscription — parked until there is an audience to sell to.'},
+ ezra:{tier:'parked',stage:'Concept + mockups',what:'A Hebrew-first AI helper that does digital tasks FOR seniors, not just explains them.',earn:'Subscription / grants — parked; the core “do-it-for-me” engine isn’t built yet.'},
+ fair:{tier:'parked',stage:'Prototype (PoC)',what:'Tells renters if they’re overpaying and how to negotiate it down.',earn:'Freemium / leads — parked until we get legal rent-price data.'},
+ milo:{tier:'parked',stage:'Design',what:'A gentle companion app that builds real resilience in at-risk kids.',earn:'NGO/school + parent plans — parked until a child-safety expert reviews it.'}
+};
+var TIER={money:['t-money','💰 Money now'],big:['t-big','🛡 Big bet'],later:['t-later','🎬 Later'],parked:['t-parked','⏸ Parked']};
 var MAXMO=18;
 function prodById(id){return PROD.filter(function(p){return p.id===id;})[0];}
 function doneCount(p){return p.ms.filter(function(m){return dn(m.id,m.def);}).length;}
@@ -185,8 +209,9 @@ function logoHTML(p){var big=arguments[1];var cls=big?'logo':'logo';
 
 function renderRail(){
  document.getElementById('rail').innerHTML=PROD.map(function(p){
+  var mo=(META[p.id]&&META[p.id].tier==='money')?'💰 ':'';
   return '<div class="pchip'+(p.id===DB.sel?' sel':'')+'" data-sel="'+p.id+'" style="--ac:'+p.ac+'">'+logoHTML(p)+
-   '<div class="meta"><div class="nm">'+p.nm+'</div><div class="mini"><i style="width:'+pct(p)+'%"></i></div></div><div class="pc">'+pct(p)+'%</div></div>';
+   '<div class="meta"><div class="nm">'+mo+p.nm+'</div><div class="mini"><i style="width:'+pct(p)+'%"></i></div></div><div class="pc">'+pct(p)+'%</div></div>';
  }).join('');
 }
 function renderDetail(){
@@ -197,8 +222,10 @@ function renderDetail(){
  var ownerCls=p.owner==='claude'?'claude':(p.owner==='hold'?'claude':'you');
  var ownLab=p.owner==='you'?'You · do this':(p.owner==='claude'?'Claude handling':'On hold');
  var ownIcon=p.owner==='you'?'➤':(p.owner==='claude'?'🤖':'⏸');
+ var mt=META[p.id]||{tier:'parked',stage:'',what:'',earn:''}; var tb=TIER[mt.tier];
  document.getElementById('detail').innerHTML=
-  '<div class="dhead" style="--ac:'+p.ac+'">'+logoHTML(p,true)+'<div class="t">'+p.nm+'</div><div class="roi"><b>'+p.roi+'</b><span>target</span></div></div>'+
+  '<div class="dhead" style="--ac:'+p.ac+'">'+logoHTML(p,true)+'<div class="t">'+p.nm+' <span class="tier-b '+tb[0]+'">'+tb[1]+'</span></div><div class="roi"><b>'+p.roi+'</b><span>target</span></div></div>'+
+  '<div class="about" style="--ac:'+p.ac+'"><div class="ab-h">📋 About this project <span class="stg">'+mt.stage+'</span></div><div class="ab-r"><b>What it is</b>'+mt.what+'<b>How it makes money</b>'+mt.earn+'</div></div>'+
   '<div class="tl" style="--ac:'+p.ac+'"><div class="tl-axis"><span>Now</span><span>+3</span><span>+6</span><span>+9</span><span>+12</span><span>+18mo</span></div>'+
     '<div class="scrub" id="scrub"><div class="prog" style="width:'+ph+'%"></div>'+dots+'<div class="head" id="head" style="left:'+ph+'%"><b></b></div></div>'+
     '<div class="readout" id="readout"></div></div>'+
