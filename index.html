@@ -6,8 +6,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#08080f">
 <title>3Shamrocks Studio</title>
-<meta name="description" content="3Shamrocks Studio: AI-Augmented Product and Brand Design. Tel Aviv. Est. 2007. Senior design at startup speed.">
-<meta property="og:title" content="3Shamrocks Studio — AI-Augmented Design">
+<meta name="description" content="3Shamrocks Studio. Product and brand design by Dave Markovich. Est. 2007. Senior design at startup speed.">
+<meta property="og:title" content="3Shamrocks Studio">
 <meta property="og:description" content="Boutique product design studio. Brand, UX, and product systems built at startup speed.">
 <link rel="icon" type="image/png" href="assets/studio/3shamrocks.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -110,7 +110,7 @@ nav{
 }
 nav.scrolled{background:rgba(8,8,15,0.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-color:var(--line)}
 .nav-logo{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-size:17px;font-weight:700;color:var(--white);letter-spacing:-0.02em}
-.nav-logo img{height:70px;width:auto;object-fit:contain}
+.nav-logo img{height:34px;width:auto;object-fit:contain}
 .nav-links{display:flex;align-items:center;gap:24px;font-family:var(--font-mono);font-size:13px;font-weight:500}
 .nav-links a{color:var(--muted);transition:color 0.2s}
 .nav-links a:hover{color:var(--white)}
@@ -647,6 +647,35 @@ footer{
   .process-step{padding:24px 20px}
   .footer-cols{grid-template-columns:1fr}
 }
+
+/* ===== REVISIONS ===== */
+.stat-heart,.stat-heart span{background:linear-gradient(120deg,#6BBF2E 0%,#A7D129 45%,#F5C840 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent!important}
+.chip-logo{width:60px;height:60px;object-fit:contain;padding:0!important;background:none!important;border:none!important;border-radius:0!important;filter:drop-shadow(0 10px 22px rgba(0,0,0,0.5));animation:chipFloat var(--dur,6s) ease-in-out var(--del,0s) infinite alternate}
+.hero-plant{position:absolute;left:50%;top:42%;width:155%;max-width:none;transform:translate(-50%,-50%);z-index:0;opacity:0.26;filter:drop-shadow(0 20px 60px rgba(61,204,110,0.3));pointer-events:none;animation:plantFloat 7s ease-in-out infinite alternate}
+@keyframes plantFloat{from{transform:translate(-50%,-50%) scale(1)}to{transform:translate(-50%,-53%) scale(1.05)}}
+.hero-xp{position:absolute;left:50%;bottom:101%;transform:translateX(-50%);width:230px;max-width:70vw;z-index:4}
+.hero-xp-top{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--green-2);margin-bottom:6px}
+.hero-xp-bar{height:9px;border-radius:100px;background:rgba(255,255,255,0.08);border:1px solid var(--line);overflow:hidden}
+.hero-xp-fill{height:100%;width:0;border-radius:100px;background:linear-gradient(90deg,var(--purple),var(--green));box-shadow:0 0 12px var(--green-glow);transition:width 1.8s cubic-bezier(0.2,0.8,0.2,1)}
+.clients-note{font-family:var(--font-mono);font-size:12px;color:var(--muted);letter-spacing:0.02em;max-width:360px}
+.about-minime{width:clamp(260px,34vw,460px)!important}
+.about-visual{overflow:visible}
+.c-nature{--card-accent:#2F7D52}
+.c-milo{--card-accent:#EF6440}
+.c-fairent{--card-accent:#6550FF}
+.c-media{--card-accent:#E0A828}
+.c-nature .card-visual{background:url(assets/art/p-forest.jpg) center/cover no-repeat}
+.c-milo .card-visual{background:url(assets/art/new/milo.jpg) center/cover no-repeat}
+.c-fairent .card-visual{background:url(assets/art/new/fairent.jpg) center/cover no-repeat}
+.c-media .card-visual{background:linear-gradient(135deg,#1e315f,#0d1c2b)}
+.c-nature .card-visual::after,.c-milo .card-visual::after,.c-fairent .card-visual::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,0.1),rgba(0,0,0,0.6));pointer-events:none}
+.contact-carousel{position:relative;width:min(420px,82vw);aspect-ratio:3/4;margin:0 auto 28px;border-radius:24px;overflow:hidden;border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,0.5)}
+.contact-carousel .cslide{position:absolute;inset:0;opacity:0;transition:opacity 0.9s ease}
+.contact-carousel .cslide.on{opacity:1}
+.contact-carousel .cslide img{width:100%;height:100%;object-fit:cover}
+.contact-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:3}
+.contact-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.4);transition:width 0.3s,background 0.3s}
+.contact-dots i.on{width:20px;border-radius:100px;background:var(--green)}
 </style>
 </head>
 <body>
@@ -660,7 +689,6 @@ footer{
     <img src="assets/studio/3shamrocks.png" alt="3Shamrocks Studio">
   </a>
   <div class="nav-links">
-    <span class="nav-avail hide-mobile">Open for projects</span>
     <a href="#work" class="hide-mobile">Work</a>
     <a href="#process" class="hide-mobile">Process</a>
     <a href="#about" class="hide-mobile">Studio</a>
@@ -678,12 +706,12 @@ footer{
   <div class="hero-grid-bg"></div>
 
   <div class="hero-content">
-    <div class="hero-eyebrow">Tel Aviv · Est. 2007</div>
+    <div class="hero-eyebrow">Est. 2007</div>
     <h1>
       <span class="word" style="--d:0.15s">Senior</span>&nbsp;<span class="word" style="--d:0.25s">product</span>&nbsp;<span class="word" style="--d:0.35s">design,</span><br>
       <span class="word" style="--d:0.45s">at</span>&nbsp;<em><span class="word" style="--d:0.55s">startup</span>&nbsp;<span class="word" style="--d:0.65s">speed.</span></em>
     </h1>
-    <p class="hero-sub">Dave Markovich — product design director with 20+ years of experience. AI-augmented workflows deliver brand, UX, and design systems in weeks, not months.</p>
+    <p class="hero-sub">I am Dave Markovich. I have been designing products for more than 20 years. I take an idea and turn it into a real, finished product. The brand, the interface, and the working app, built in weeks.</p>
     <div class="hero-actions">
       <a href="#work" class="btn-primary">See the work</a>
       <a href="mailto:markodave@gmail.com" class="btn-ghost">Start a project</a>
@@ -695,29 +723,29 @@ footer{
       </div>
       <div class="stat-divider"></div>
       <div class="stat">
-        <div class="stat-val">Gold<span>★</span></div>
-        <div class="stat-lbl">FESPA 2015 Award</div>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <div class="stat-val">+<span id="stat-retention">68</span><span>%</span></div>
-        <div class="stat-lbl">User retention · Vibrant</div>
+        <div class="stat-val stat-heart">+<span id="stat-retention">68</span><span>%</span></div>
+        <div class="stat-lbl">User retention at Vibrant</div>
       </div>
     </div>
   </div>
 
   <div class="hero-character">
     <div class="hero-chips">
-      <span class="chip chip-purple chip-a">AI-Augmented</span>
-      <span class="chip chip-green chip-b">20+ Years</span>
-      <span class="chip chip-gold chip-c">Gold ★ FESPA</span>
-      <span class="chip chip-white chip-d">Product Design</span>
-      <span class="chip chip-green chip-e">LickPick · LIVE</span>
-      <span class="chip chip-teal chip-f">Ezra · LIVE</span>
+      <img class="chip chip-logo chip-a" src="assets/products/trashure.png" alt="Trashure-Hunters" loading="lazy">
+      <img class="chip chip-logo chip-b" src="assets/products/shomergency.png" alt="SH✡MER" loading="lazy">
+      <img class="chip chip-logo chip-c" src="assets/products/chore-wars.svg" alt="Chore Royale" loading="lazy">
+      <img class="chip chip-logo chip-d" src="assets/products/j8nix.png" alt="J8N.IX" loading="lazy">
+      <img class="chip chip-logo chip-e" src="assets/products/milo.svg" alt="Milo" loading="lazy">
+      <img class="chip chip-logo chip-f" src="assets/products/design-system.png" alt="3SDS" loading="lazy">
     </div>
     <div class="minime-stand">
+      <img class="hero-plant" src="assets/studio/plant.jpg" alt="" aria-hidden="true">
+      <div class="hero-xp">
+        <div class="hero-xp-top"><span>Studio</span><span>Level 20</span></div>
+        <div class="hero-xp-bar"><div class="hero-xp-fill" id="xp-fill"></div></div>
+      </div>
       <div class="minime-eye-wrap" id="minime-eye-wrap">
-        <img src="assets/studio/minime-cutout.png" alt="Dave Markovich, 3Shamrocks Studio" class="minime-img">
+        <img src="assets/studio/minime_nobg.png" alt="Dave Markovich, 3Shamrocks Studio" class="minime-img">
         <div class="minime-pupil" id="mp-left"></div>
         <div class="minime-pupil" id="mp-right"></div>
       </div>
@@ -727,14 +755,11 @@ footer{
 
 <!-- CLIENT STRIP -->
 <div class="clients">
-  <div class="clients-label">Trusted by</div>
+  <div class="clients-label">Still building with</div>
   <div class="clients-strip">
-    <img src="assets/work/aposhealth/logo.png" alt="AposHealth">
     <img src="assets/work/vibrant/logo-new.png" alt="Vibrant Gastro">
-    <img src="assets/work/clients/eldan.png" alt="Eldan">
-    <img src="assets/work/clients/winplant.png" alt="Winplant">
-    <img src="assets/work/clients/guberman.png" alt="Guberman">
   </div>
+  <div class="clients-note">Ongoing product and brand work with Vibrant Gastro, a TIME Best Invention team.</div>
 </div>
 
 <!-- MARQUEE TICKER -->
@@ -743,7 +768,7 @@ footer{
     <span>Product Design</span><span class="ticker-sep">·</span>
     <span>Brand Identity</span><span class="ticker-sep">·</span>
     <span>Design Systems</span><span class="ticker-sep">·</span>
-    <span>AI-Augmented Delivery</span><span class="ticker-sep">·</span>
+    <span>Rapid Delivery</span><span class="ticker-sep">·</span>
     <span>UX Strategy</span><span class="ticker-sep">·</span>
     <span>Web Applications</span><span class="ticker-sep">·</span>
     <span>Mobile PWAs</span><span class="ticker-sep">·</span>
@@ -757,7 +782,7 @@ footer{
     <span>Product Design</span><span class="ticker-sep">·</span>
     <span>Brand Identity</span><span class="ticker-sep">·</span>
     <span>Design Systems</span><span class="ticker-sep">·</span>
-    <span>AI-Augmented Delivery</span><span class="ticker-sep">·</span>
+    <span>Rapid Delivery</span><span class="ticker-sep">·</span>
     <span>UX Strategy</span><span class="ticker-sep">·</span>
     <span>Web Applications</span><span class="ticker-sep">·</span>
     <span>Mobile PWAs</span><span class="ticker-sep">·</span>
@@ -779,110 +804,92 @@ footer{
 
   <div class="minime-guide reveal">
     <img src="assets/studio/dave-portrait.png" alt="Dave Markovich" class="minime-guide-img">
-    <p class="minime-guide-text">"Every product in this lab started as a <strong>problem worth solving</strong>. I obsess over the craft until the experience feels inevitable — from concept to pixel-perfect, shipped product."</p>
+    <p class="minime-guide-text">"Every product here started as a <strong>problem worth solving</strong>. I keep working the craft until the thing feels obvious and right, from the first idea to a finished app you can actually use."</p>
   </div>
 
   <div class="products-grid">
 
-    <!-- TRASHURE HUNTERS — FEATURED -->
+    <!-- 1 · TRASHURE-HUNTERS (FEATURED) -->
     <a class="product-card c-trashure featured reveal" href="th.html">
       <div class="card-visual">
-        <div class="status-badge status-flagship">Flagship IP</div>
-        <img src="assets/products/trashure.png" class="th-logo" alt="Trashure Hunters" loading="lazy">
+        <div class="status-badge status-flagship">Flagship</div>
+        <img src="assets/products/trashure.png" class="th-logo" alt="Trashure-Hunters" loading="lazy">
         <img src="assets/work/trashure/hero-group.png" class="th-monsters" alt="" loading="lazy" aria-hidden="true">
       </div>
       <div class="card-body">
         <div class="featured-badge">★ Flagship</div>
-        <div class="card-tag">AR Gaming · IP · Entertainment</div>
-        <div class="card-name">Trashure Hunters</div>
-        <div class="card-desc">A rebellion against indifference. A digital ecosystem that turns real-world cleanup into competitive adventure — with original monster IP, AR gameplay, and a "Trash-Cash" economy built on AI-generated world design.</div>
-        <div class="card-cta">Explore Case Study <div class="card-cta-arrow">→</div></div>
+        <div class="card-tag">Eco game · AR</div>
+        <div class="card-name">Trashure-Hunters</div>
+        <div class="card-desc">Pick up real trash, prove it with a photo, and grow your own creatures. Cleaning the world turns into a game, with its own monster cast and a map you take over block by block.</div>
+        <div class="card-cta">See the case study <div class="card-cta-arrow">→</div></div>
       </div>
     </a>
 
-    <!-- LICKPICK -->
-    <a class="product-card c-lickpick reveal" href="https://3shamrocksstudio.github.io/lickpick/app/" target="_blank">
+    <!-- 2 · LICKPICK -->
+    <a class="product-card c-lickpick reveal" href="https://3shamrocksstudio.github.io/lickpick/app/" target="_blank" rel="noopener">
       <div class="card-visual">
-        <div class="status-badge status-live">Live App</div>
+        <div class="status-badge status-live">Live app</div>
         <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width="72" height="72" style="position:relative;z-index:2;filter:drop-shadow(0 0 24px rgba(61,204,110,0.5))">
           <path d="M40 6 C24 6 11 19 11 35 C11 52 25 66 37 73 C38.5 73.8 41.5 73.8 43 73 C55 66 69 52 69 35 C69 19 56 6 40 6Z" fill="url(#lp-g)"/>
           <circle cx="40" cy="38" r="7" fill="rgba(255,255,255,0.15)"/>
           <circle cx="40" cy="38" r="3" fill="rgba(255,255,255,0.3)"/>
-          <defs>
-            <linearGradient id="lp-g" x1="40" y1="6" x2="40" y2="74" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#52e87d"/>
-              <stop offset="100%" stop-color="#1a8c42"/>
-            </linearGradient>
-          </defs>
+          <defs><linearGradient id="lp-g" x1="40" y1="6" x2="40" y2="74" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#52e87d"/><stop offset="100%" stop-color="#1a8c42"/></linearGradient></defs>
         </svg>
       </div>
       <div class="card-body">
-        <div class="card-tag">iOS PWA · Music · Backing Band</div>
+        <div class="card-tag">Music · PWA</div>
         <div class="card-name">LickPick™</div>
-        <div class="card-desc">Your guitar teacher never left the room. A full AI-powered backing band in your pocket — real drums, real bass, real rhythm. Play to it, record the take, share it. No studio. No band. No excuses.</div>
-        <div class="card-cta">Open App <div class="card-cta-arrow">→</div></div>
+        <div class="card-desc">A full backing band in your pocket. Real drums, real bass, real rhythm. Play along, record the take, and keep the one that sounded best. No studio and no band needed.</div>
+        <div class="card-cta">Open the app <div class="card-cta-arrow">→</div></div>
       </div>
     </a>
 
-    <!-- EZRA -->
-    <a class="product-card c-ezra reveal" href="https://3shamrocksstudio.github.io/ezra/" target="_blank">
+    <!-- 3 · SHOMER -->
+    <a class="product-card c-shomer reveal" href="https://www.shomer-app.co.il/" target="_blank" rel="noopener">
       <div class="card-visual">
-        <div class="status-badge status-live">Live App</div>
-        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width="72" height="72" style="position:relative;z-index:2;filter:drop-shadow(0 0 24px rgba(248,200,98,0.45))">
-          <rect x="10" y="16" width="52" height="36" rx="14" fill="url(#ez-g)"/>
-          <path d="M18 52 L14 64 L30 57" fill="url(#ez-g)"/>
-          <text x="26" y="40" font-family="serif" font-size="18" fill="rgba(255,255,255,0.9)" font-weight="700">עז</text>
-          <circle cx="66" cy="18" r="4" fill="#f8c862" opacity="0.7"/>
-          <circle cx="62" cy="11" r="2.5" fill="#f8c862" opacity="0.45"/>
-          <circle cx="72" cy="13" r="1.8" fill="#f8c862" opacity="0.35"/>
-          <defs>
-            <linearGradient id="ez-g" x1="10" y1="16" x2="62" y2="52" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#f8c862"/>
-              <stop offset="100%" stop-color="#c47e08"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-      <div class="card-body">
-        <div class="card-tag">AI · Hebrew · Senior Assistant</div>
-        <div class="card-name">Ezra™</div>
-        <div class="card-desc">The AI companion built for a generation that earned its peace. Simple, warm, always present — Ezra speaks Hebrew, handles the digital world, and brings loved ones closer. Designed for senior dignity.</div>
-        <div class="card-cta">Open App <div class="card-cta-arrow">→</div></div>
-      </div>
-    </a>
-
-    <!-- SHOMER -->
-    <a class="product-card c-shomer reveal" href="shomer-case.html">
-      <div class="card-visual">
-        <div class="status-badge status-dev">In Dev</div>
+        <div class="status-badge status-live">Live</div>
         <img src="assets/products/shomergency.png" class="card-logo" alt="SH✡MER" loading="lazy">
       </div>
       <div class="card-body">
-        <div class="card-tag">Safety Tech · Community</div>
+        <div class="card-tag">Community safety</div>
         <div class="card-name">SH✡MER</div>
-        <div class="card-desc">Israel's real-time emergency guardian network. One-tap SOS, live threat intelligence, and rapid community dispatch. Built for a country that watches over each other.</div>
-        <div class="card-cta">Explore Case Study <div class="card-cta-arrow">→</div></div>
+        <div class="card-desc">Neighbors looking out for neighbors. One tap sends an alarm and your live location to the people near you who can actually help. It works with no app store and no signal.</div>
+        <div class="card-cta">Open the live product <div class="card-cta-arrow">→</div></div>
       </div>
     </a>
 
-    <!-- CHORE ROYALE -->
-    <a class="product-card c-chore reveal" href="https://3shamrocksstudio.github.io/chore-wars/landing.html" target="_blank">
+    <!-- 4 · SHOMER NATURE -->
+    <a class="product-card c-nature reveal" href="https://www.shomer-app.co.il/nature.html" target="_blank" rel="noopener">
       <div class="card-visual">
-        <div class="status-badge status-dev">In Dev</div>
+        <div class="status-badge status-dev">In dev</div>
+        <img src="assets/products/shomer-forest.png" class="card-logo" alt="SH✡MER Nature" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Protecting the wild</div>
+        <div class="card-name">SH✡MER Nature</div>
+        <div class="card-desc">The same guardian idea, out in nature. Report a hazard, a fire, or an animal in trouble across forests, beaches and open water, and reach people who can act fast.</div>
+        <div class="card-cta">Open the live product <div class="card-cta-arrow">→</div></div>
+      </div>
+    </a>
+
+    <!-- 5 · CHORE ROYALE -->
+    <a class="product-card c-chore reveal" href="https://3shamrocksstudio.github.io/chore-wars/landing.html" target="_blank" rel="noopener">
+      <div class="card-visual">
+        <div class="status-badge status-dev">In dev</div>
         <img src="assets/products/chore-wars.svg" class="card-logo" alt="Chore Royale" loading="lazy">
       </div>
       <div class="card-body">
-        <div class="card-tag">Gaming · Family · Household</div>
+        <div class="card-tag">Family · Game</div>
         <div class="card-name">Chore Royale</div>
-        <div class="card-desc">Battle for household dominance. A gamified family chore platform where kids earn XP, climb leaderboards, and compete for real rewards. "Clean your room" becomes "conquer your castle."</div>
-        <div class="card-cta">Play Now <div class="card-cta-arrow">→</div></div>
+        <div class="card-desc">The family chore game show. Spin for your chores, battle your siblings, keep a streak, and trade your stars for real rewards. Cleaning your room finally counts for something.</div>
+        <div class="card-cta">See the landing page <div class="card-cta-arrow">→</div></div>
       </div>
     </a>
 
-    <!-- ROOKIE & KING -->
-    <a class="product-card c-rookieking reveal" href="https://3shamrocksstudio.github.io/gambit-app/" target="_blank">
+    <!-- 6 · ROOKIE & KING -->
+    <a class="product-card c-rookieking reveal" href="https://3shamrocksstudio.github.io/gambit-app/" target="_blank" rel="noopener">
       <div class="card-visual">
-        <div class="status-badge status-live">Live App</div>
+        <div class="status-badge status-live">Live app</div>
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="88" height="88" style="position:relative;z-index:2;filter:drop-shadow(0 4px 20px rgba(184,134,11,0.55))">
           <defs><linearGradient id="kingGold" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FFD700"/><stop offset="100%" stop-color="#B8860B"/></linearGradient></defs>
           <rect x="46" y="6" width="8" height="22" rx="3" fill="url(#kingGold)"/>
@@ -891,29 +898,86 @@ footer{
           <path d="M32 42 L68 42 L64 72 L36 72 Z" fill="url(#kingGold)" opacity="0.85"/>
           <rect x="26" y="72" width="48" height="8" rx="3" fill="url(#kingGold)"/>
           <rect x="22" y="80" width="56" height="8" rx="3" fill="url(#kingGold)"/>
-          <rect x="48" y="8" width="3" height="18" rx="1.5" fill="rgba(255,255,255,0.35)"/>
-          <polygon points="32,44 38,44 35,58" fill="rgba(255,255,255,0.15)"/>
         </svg>
       </div>
       <div class="card-body">
-        <div class="card-tag">LinkedIn · Chess · Strategy</div>
-        <div class="card-name">Rookie & King™</div>
-        <div class="card-desc">The LinkedIn chess game you didn't know you needed. Challenge connections, play thought leaders, and elevate professional networking from scrolling to strategy. One move at a time.</div>
-        <div class="card-cta">Open App <div class="card-cta-arrow">→</div></div>
+        <div class="card-tag">Chess · Networking</div>
+        <div class="card-name">Rookie &amp; King™</div>
+        <div class="card-desc">The chess game for your professional network. Challenge your connections, play the people you look up to, and turn scrolling into a real move. One game at a time.</div>
+        <div class="card-cta">Open the app <div class="card-cta-arrow">→</div></div>
       </div>
     </a>
 
-    <!-- J8N.IX -->
+    <!-- 7 · J8N.IX -->
     <a class="product-card c-j8nix reveal" href="j8nix-case.html">
       <div class="card-visual">
         <div class="status-badge status-concept">Concept</div>
         <img src="assets/products/j8nix.png" class="card-logo" alt="J8N.IX" loading="lazy" style="width:130px;height:auto;position:relative;z-index:2">
       </div>
       <div class="card-body">
-        <div class="card-tag">AI · Productivity · Workflow</div>
+        <div class="card-tag">Studio operations</div>
         <div class="card-name">J8N.IX</div>
-        <div class="card-desc">Intelligence that integrates. An AI-powered workflow engine built for creative and operational teams. Automates the repetitive, amplifies the human, connects the systems that run your work.</div>
-        <div class="card-cta">Explore Case Study <div class="card-cta-arrow">→</div></div>
+        <div class="card-desc">The control room for the whole studio. Every project, the state it is in, and the next thing that needs doing, all in one place. Said out loud it is "Jenix".</div>
+        <div class="card-cta">See the case study <div class="card-cta-arrow">→</div></div>
+      </div>
+    </a>
+
+    <!-- 8 · EZRA -->
+    <a class="product-card c-ezra reveal" href="https://3shamrocksstudio.github.io/ezra/" target="_blank" rel="noopener">
+      <div class="card-visual">
+        <div class="status-badge status-live">Live app</div>
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width="72" height="72" style="position:relative;z-index:2;filter:drop-shadow(0 0 24px rgba(248,200,98,0.45))">
+          <rect x="10" y="16" width="52" height="36" rx="14" fill="url(#ez-g)"/>
+          <path d="M18 52 L14 64 L30 57" fill="url(#ez-g)"/>
+          <text x="26" y="40" font-family="serif" font-size="18" fill="rgba(255,255,255,0.9)" font-weight="700">עז</text>
+          <defs><linearGradient id="ez-g" x1="10" y1="16" x2="62" y2="52" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f8c862"/><stop offset="100%" stop-color="#c47e08"/></linearGradient></defs>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Help for seniors</div>
+        <div class="card-name">Ezra · עזרא</div>
+        <div class="card-desc">A warm Hebrew helper for older people that does the task for them and shows exactly what it did. It keeps things simple and it watches out for scams.</div>
+        <div class="card-cta">Open the app <div class="card-cta-arrow">→</div></div>
+      </div>
+    </a>
+
+    <!-- 9 · MILO -->
+    <a class="product-card c-milo reveal" href="https://3shamrocksstudio.github.io/milo-app/" target="_blank" rel="noopener">
+      <div class="card-visual">
+        <div class="status-badge status-concept">Concept</div>
+        <img src="assets/products/milo.svg" class="card-logo" alt="Milo" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Feelings · Wellbeing</div>
+        <div class="card-name">Milo</div>
+        <div class="card-desc">A little companion you grow alongside. You help Milo through a worry, and you pick up the same skill for yourself. Gentle, private, and safe by design.</div>
+        <div class="card-cta">Open the app <div class="card-cta-arrow">→</div></div>
+      </div>
+    </a>
+
+    <!-- 10 · FAIRENT -->
+    <a class="product-card c-fairent reveal" href="https://3shamrocksstudio.github.io/fairent/" target="_blank" rel="noopener">
+      <div class="card-visual">
+        <div class="status-badge status-concept">Concept</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Renters · Fair rent</div>
+        <div class="card-name">Fairent</div>
+        <div class="card-desc">Type in an address and the rent you were quoted. Get a straight read on whether it is fair, plus a message you can send to push back. Real data, kept anonymous.</div>
+        <div class="card-cta">Open the demo <div class="card-cta-arrow">→</div></div>
+      </div>
+    </a>
+
+    <!-- 11 · MEDIA NETWORK -->
+    <a class="product-card c-media reveal" href="https://www.instagram.com/3shamrocks.studio/" target="_blank" rel="noopener">
+      <div class="card-visual">
+        <div class="status-badge status-live">Live</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Social · Content</div>
+        <div class="card-name">Media Network</div>
+        <div class="card-desc">A set of themed social channels the studio runs as its own media arm. Original characters, a steady posting engine, and a growing audience.</div>
+        <div class="card-cta">See it on Instagram <div class="card-cta-arrow">→</div></div>
       </div>
     </a>
 
@@ -924,7 +988,7 @@ footer{
 <section id="process">
   <div class="section-label">How We Work</div>
   <h2 class="section-title reveal">Senior craft,<br><em>startup speed.</em></h2>
-  <p class="section-sub reveal">AI doesn't replace the thinking — it eliminates the waiting. This is how we deliver executive-quality design in weeks, not quarters.</p>
+  <p class="section-sub reveal">The thinking still takes real time. The waiting is what goes away. This is how I deliver senior level design in weeks instead of quarters.</p>
 
   <div class="process-track">
 
@@ -937,7 +1001,7 @@ footer{
         </svg>
       </div>
       <h3 class="process-title">Discover & Strategy</h3>
-      <p class="process-desc">Deep-dive into your product, users, and competitive landscape. We emerge with a sharp brief and a clear creative direction — usually within days, not weeks.</p>
+      <p class="process-desc">I dig into your product, your users, and who you are up against. You get a sharp brief and a clear direction, usually in days, not weeks.</p>
       <div class="process-tags">
         <span class="process-tag">Brand Audit</span>
         <span class="process-tag">ICP Research</span>
@@ -962,7 +1026,7 @@ footer{
         </svg>
       </div>
       <h3 class="process-title">Design & Build</h3>
-      <p class="process-desc">AI-augmented design sprints where brand systems, interfaces, and prototypes take shape simultaneously. 6× the velocity. Same creative standard — or higher.</p>
+      <p class="process-desc">Design sprints where the brand, the interfaces, and the prototype all take shape at once. Six times the speed. The same quality bar, or higher.</p>
       <div class="process-tags">
         <span class="process-tag">Design System</span>
         <span class="process-tag">UI/UX</span>
@@ -984,7 +1048,7 @@ footer{
         </svg>
       </div>
       <h3 class="process-title">Ship & Scale</h3>
-      <p class="process-desc">Production-ready assets, working software, and documented systems — handed off clean so your team hits the ground running. No black boxes. No orphaned files.</p>
+      <p class="process-desc">Production-ready assets, working software, and documented systems, handed off clean so your team hits the ground running. No black boxes. No orphaned files.</p>
       <div class="process-tags">
         <span class="process-tag">Handoff</span>
         <span class="process-tag">Live Code</span>
@@ -998,7 +1062,7 @@ footer{
 <!-- BOLD STATEMENT -->
 <div class="statement reveal">
   <p class="statement-text">
-    "The work has to be <strong>beautiful</strong>. The product has to <em>work</em>. The timeline has to be <strong>real</strong>. That's not a compromise — that's the whole point."
+    "The work has to be <strong>beautiful</strong>. The product has to <em>work</em>. The timeline has to be <strong>real</strong>. That is not a compromise. That is the whole point."
   </p>
 </div>
 
@@ -1025,7 +1089,7 @@ footer{
       <div class="work-item-body">
         <div class="work-item-role">Brand + UX Design</div>
         <div class="work-item-name">VIBRANT.</div>
-        <div class="work-item-desc">Full visual identity and interface design for an ingestible-tech gastro platform — TIME Magazine's Best Invention 2023. Turning complex medical technology into a warm, approachable patient experience.</div>
+        <div class="work-item-desc">Full visual identity and interface design for an ingestible gastro platform, a TIME Magazine Best Invention for 2023. I turned complex medical technology into a warm, approachable patient experience.</div>
         <div class="work-item-stat">+68% user retention vs benchmark</div>
       </div>
     </div>
@@ -1058,8 +1122,8 @@ footer{
         </div>
       </div>
 
-      <p class="section-sub" style="margin-bottom:8px">3Shamrocks Studio is a boutique AI-augmented product and design studio out of Tel Aviv, founded in 2007. I combine product strategy with creative direction, using custom AI workflows to deliver executive-level design at team-level speed.</p>
-      <p style="font-size:15px;line-height:1.72;color:var(--muted);margin-bottom:36px">Every product starts with a story worth telling. Then I obsess over the craft until the experience feels inevitable. From concept to launch — fast, deep, and built to last.</p>
+      <p class="section-sub" style="margin-bottom:8px">3Shamrocks Studio is a small product and design studio I founded in 2007. I pair product strategy with creative direction, and I use my own fast workflow to deliver senior level design at the speed a small team needs.</p>
+      <p style="font-size:15px;line-height:1.72;color:var(--muted);margin-bottom:36px">Every product starts with a story worth telling. Then I work the craft until it feels right. From the first idea to launch, fast, deep, and built to last.</p>
 
       <div class="services-list reveal">
         <div class="service-item">
@@ -1096,8 +1160,8 @@ footer{
             <line x1="8" y1="12" x2="13" y2="15"/><line x1="23" y1="21" x2="28" y2="24"/>
             <line x1="8" y1="24" x2="13" y2="21"/><line x1="23" y1="15" x2="28" y2="12"/>
           </svg>
-          <div class="service-name">AI-Augmented Delivery</div>
-          <div class="service-desc">Custom AI workflows that deliver design-to-production at market speed</div>
+          <div class="service-name">Fast Delivery</div>
+          <div class="service-desc">A workflow tuned to move from idea to production at the speed the market needs</div>
         </div>
       </div>
     </div>
@@ -1107,10 +1171,17 @@ footer{
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-inner">
-    <img src="assets/studio/dave-studio.jpg" alt="Dave Markovich at 3Shamrocks Studio" class="contact-photo reveal">
-    <div class="contact-avail reveal">Open for new projects</div>
+    <div class="contact-carousel reveal" id="contact-carousel">
+      <div class="cslide on"><img src="assets/work/trashure/screen-map.png" alt="Trashure-Hunters screen" loading="lazy"></div>
+      <div class="cslide"><img src="assets/work/vibrant/screen-1.png" alt="Vibrant Gastro screen" loading="lazy"></div>
+      <div class="cslide"><img src="assets/mockups/milo-companion.png" alt="Milo screen" loading="lazy"></div>
+      <div class="cslide"><img src="assets/work/trashure/hero-group.png" alt="Trashure-Hunters creatures" loading="lazy"></div>
+      <div class="cslide"><img src="assets/work/vibrant/screen-3.png" alt="Vibrant Gastro screen" loading="lazy"></div>
+      <div class="contact-dots"></div>
+    </div>
+    <div class="contact-avail reveal">Taking on a few new projects</div>
     <h2 class="contact-title reveal">Got something<br><em>worth building?</em></h2>
-    <p class="contact-sub reveal">Pitch your idea and get a straight answer on feasibility and timing. No fluff, just craft.</p>
+    <p class="contact-sub reveal">Tell me what you have in mind. I will give you a straight, honest read on whether it can work, roughly how long it would take, and how I would build it.</p>
     <div class="contact-actions reveal">
       <a href="mailto:markodave@gmail.com" class="btn-primary">Start the conversation</a>
       <a href="https://www.3shamrocks.com" target="_blank" class="btn-ghost">3shamrocks.com ↗</a>
@@ -1124,7 +1195,7 @@ footer{
   <div class="footer-top">
     <div>
       <div class="footer-brand-name">3Shamrocks Studio™</div>
-      <p class="footer-tagline">Boutique AI-augmented product and design studio. Tel Aviv · Est. 2007. Senior design at startup speed.</p>
+      <p class="footer-tagline">Boutique product and design studio. Est. 2007. Senior design at startup speed.</p>
     </div>
     <div class="footer-cols">
       <div class="footer-col">
@@ -1292,6 +1363,9 @@ document.querySelectorAll('.about-stats').forEach(el=>cntIO.observe(el));
     pR.style.transform='translate(-50%,-50%)';
   });
 })();
+/* XP bar fill + contact carousel */
+window.addEventListener('load',()=>{const xf=document.getElementById('xp-fill');if(xf)requestAnimationFrame(()=>xf.style.width='88%');});
+(function(){const c=document.getElementById('contact-carousel');if(!c)return;const sl=[...c.querySelectorAll('.cslide')];const d=c.querySelector('.contact-dots');if(!sl.length||!d)return;sl.forEach((_,i)=>{const b=document.createElement('i');if(i===0)b.className='on';d.appendChild(b);});let i=0;setInterval(()=>{sl[i].classList.remove('on');d.children[i].classList.remove('on');i=(i+1)%sl.length;sl[i].classList.add('on');d.children[i].classList.add('on');},3200);})();
 </script>
 </body>
 </html>
