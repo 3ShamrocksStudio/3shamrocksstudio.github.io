@@ -279,6 +279,13 @@ textarea:focus{border-color:var(--cyan);outline:none}
 .feats div{display:flex;align-items:center;gap:10px;background:var(--raise);border:2px solid var(--line);border-radius:12px;padding:10px;font-weight:800;font-size:13.5px}
 .feats svg.i{color:var(--volt)}
 .keyrow{display:flex;gap:8px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.prosoon{margin:10px 0 4px;padding:14px;border-radius:16px;border:2px dashed var(--f-save,#FF9F1C);background:var(--raise);display:flex;flex-direction:column;gap:8px}
+.prosoon>b{font:400 18px/1.15 var(--display);color:var(--text)} .prosoon p{margin:0;color:var(--dim);font-size:14px}
+.notify{display:flex;gap:10px;align-items:flex-start;font-weight:700;font-size:14px;line-height:1.35;min-height:44px;padding:6px 0} .notify input,.sg-news input{width:22px;height:22px;flex:none;accent-color:var(--volt);margin:0}
+.restore{margin:14px 0 6px;font-size:13.5px;color:var(--dim)} .restore b{color:var(--text)} .restore a{color:var(--cyan)}
+.prostate{display:inline-flex;align-items:center;gap:8px;margin:4px 0 2px;padding:8px 14px;border-radius:999px;background:var(--volt);color:var(--ink);border:2px solid var(--ink);font-weight:900;box-shadow:3px 3px 0 var(--hot)} .prostate svg.i{width:18px;height:18px;--ic2:transparent} .prostate span{font-size:12px;opacity:.75}
+.sg-news{display:flex;gap:10px;align-items:center;max-width:300px;text-align:left;font-size:13.5px;color:var(--dim);min-height:44px}
 .keyrow input{flex:1;min-width:0;border-radius:12px;border:2px solid var(--line);background:var(--panel);color:var(--text);font:600 14px var(--body);padding:10px 12px}
 .keyrow input:focus{border-color:var(--cyan);outline:none}
 #proBody{display:flex;flex-direction:column;gap:12px}
@@ -549,7 +556,7 @@ details summary{cursor:pointer;color:var(--cyan);font-weight:800}
 .searchbox input{flex:1;border:0;background:none;color:var(--text);font:600 15px var(--body);padding:11px 0;outline:none;min-height:44px}
 .plans{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .plan{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 10px;border-radius:14px;border:2px solid var(--line);background:var(--raise);text-align:left;color:var(--text);position:relative}
-.plan b{font:400 18px var(--display)} .plan span{font-size:12px;color:var(--dim);font-weight:700}
+.plan b{font:400 18px var(--display)} .plan b small,.pcp small{font:800 12px var(--body);opacity:.75;margin-left:2px} .plan span{font-size:12px;color:var(--dim);font-weight:700}
 .plan i{position:absolute;top:-10px;right:8px;font:400 10px/1 var(--display);font-style:normal;background:var(--hot);color:var(--ink);border:2px solid var(--ink);border-radius:6px;padding:4px 5px 3px;transform:rotate(-5deg)}
 .plan[aria-checked=true]{border-color:var(--ink);background:var(--volt);color:var(--ink);box-shadow:3px 3px 0 var(--hot)} .plan[aria-checked=true] span{color:rgba(7,6,11,.75)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -1293,7 +1300,7 @@ input[type=range]{min-height:44px}
 .top .hbtns{display:flex;align-items:center;gap:6px;flex:none}
 .top .hbtns .icon-btn{width:42px;min-width:42px}
 @media (max-width:430px){.top .hbtns [data-act=tour]{display:none}}
-.pc{min-width:0;overflow-wrap:anywhere}.plancards{width:100%;min-width:0}
+.pc{min-width:0;overflow-wrap:anywhere}.pc .pcp{white-space:nowrap;overflow-wrap:normal;font-size:clamp(22px,7vw,30px)}.plancards{width:100%;min-width:0}
 /* My licks cards: actions on their own full-width row, icon over label, so nothing is squeezed */
 .made{grid-template-columns:84px minmax(0,1fr)!important;grid-template-areas:"t i" "b b"}
 .made .mthumb{grid-area:t}.made .minfo{grid-area:i;justify-content:center}
@@ -1676,7 +1683,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
 .mtap.hit{animation:mtaphit .2s ease-out} @keyframes mtaphit{from{transform:scale(1.04);background:var(--volt)}to{transform:none}}
 .tapdots{display:inline-flex;gap:6px} .tapdots i{width:12px;height:12px;border-radius:50%;border:2px solid var(--ink)} .tapdots i.on{background:var(--ink)}
 .mtr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.mtr.mmeter{grid-template-columns:repeat(3,minmax(0,.8fr)) minmax(0,1.3fr)}
+.mtr.mmeter{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,1.35fr)}
 .metro .mchip[aria-pressed=true]{background:var(--f-band);color:var(--ink)}
 .metro .mstrict{margin:0}
 .metro .mst{margin:0;min-height:1.3em;font-weight:800;font-size:13.5px;color:var(--text);text-align:center}
@@ -1762,9 +1769,10 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
 <div id="signgate" hidden role="dialog" aria-modal="true" aria-labelledby="sgTitle" aria-describedby="sgSub">
   <div class="sg-logo"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></div>
   <span class="sg-tag">Beta</span>
-  <h2 id="sgTitle">Join the beta</h2>
+  <h2 id="sgTitle">Create your free account</h2>
   <p class="sg-sub" id="sgSub">Signing in is optional. With Google, your profile, streak and taste follow you to every phone. Your videos stay on this one.</p>
   <button class="btn wide" type="button" data-act="acct-in"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg>Sign in with Google</button>
+  <label class="sg-news"><input type="checkbox" id="sgNews"> Email me LickPick news and when Pro checkout opens</label>
   <p class="sg-st" id="sgStatus" role="status" aria-live="polite"></p>
   <button type="button" data-act="acct-skip" style="background:none;border:0;color:var(--dim);font:600 14px var(--body);text-decoration:underline;cursor:pointer;padding:12px 16px;min-height:44px">Continue without an account</button>
 </div>
@@ -2036,7 +2044,8 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-22a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = {"apiKey":"AIzaSyCVM2YJykeEVGa4FB3uoHRHijnP2elvcX0","authDomain":"lickpick-app.firebaseapp.com","projectId":"lickpick-app","storageBucket":"lickpick-app.firebasestorage.app","messagingSenderId":"881593704089","appId":"1:881593704089:web:528c399bb5f7d82c7b2208"}; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
+<script src="pay.js"></script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = window.LP_PAY || null; window.LP_VER = "lp-2026-10-22b"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = {"apiKey":"AIzaSyCVM2YJykeEVGa4FB3uoHRHijnP2elvcX0","authDomain":"lickpick-app.firebaseapp.com","projectId":"lickpick-app","storageBucket":"lickpick-app.firebasestorage.app","messagingSenderId":"881593704089","appId":"1:881593704089:web:528c399bb5f7d82c7b2208"}; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -5360,7 +5369,7 @@ Return only JSON: {"style": string, "drums": boolean, "bass": boolean, "keys": b
    build from Dave's Firebase project); without it, the account card says so and nothing is loaded. */
 (function (root) {
   const CFG = root.LP_FIREBASE || null;
-  const KEYS = ["lp:profile", "lp:taste", "lp:jams", "lp:made", "lp:myeq", "lp:myband", "lp:remind", "lp:phones", "ck:settings"];
+  const KEYS = ["lp:profile", "lp:taste", "lp:jams", "lp:made", "lp:myeq", "lp:myband", "lp:remind", "lp:phones", "ck:settings", "lp:news"];
   const S = { ready: false, user: null, busy: false, err: "", last: 0, listeners: new Set(), fb: null };
   const emit = () => { for (const f of S.listeners) { try { f(S); } catch { } } };
   const store = { get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { } } };
@@ -5766,6 +5775,10 @@ const PRO_URL = window.LP_PRO_URL || "";
 const SELL = window.LP_SELL || "";
 const SUPPORT = window.LP_SUPPORT || "lickpick.app@gmail.com";
 const LIC_PUB = {"kty": "EC", "x": "wZVUGy_SYFx4TY7lyHMPF5C_837vFPbB9eBEbApunYc", "y": "ZtpOqjQhxztds2nv7uWA0dglpCuYVzodX6l-Hb-ERsI", "crv": "P-256"};
+// TESTER keys (founder QA of the paid path, no money): signed with a separate key, each one ends on its date and can be
+// turned off by id in pay.js (revoked). The signing half is never in this repo, so nobody can make one.
+const TEST_PUB = {"kty": "EC", "x": "kJgXp6KVB7r9g3c_dVi34662t10XCkje5j8FDJWmjAU", "y": "tw20FEy1-KNF7o6iEeNuHHl-NjmVpX6iAINczJcK_0Y", "crv": "P-256"};
+const PAYCFG = window.LP_PAY || {};
 const lic = { tier: window.LP_OWNER ? "owner" : "free", trial: 10, exp: "", plan: "" };
 { const t = store.get("lp:trial"); if (typeof t === "number") lic.trial = t; if (!store.get("lp:trial10")) { lic.trial = Math.max(lic.trial, 10); store.set("lp:trial", lic.trial); store.set("lp:trial10", 1); } }   // free Pro uses went 3 → 10
 // Beta: everything is free while real players test it. Flip to false when Pro goes on sale.
@@ -5781,19 +5794,27 @@ async function verifyKey(k) {
   try {
     const [v, pl, sig] = String(k).trim().split(".");
     if (v !== "LP1" || !pl || !sig || !crypto.subtle) return null;
-    const key = await crypto.subtle.importKey("jwk", LIC_PUB, { name: "ECDSA", namedCurve: "P-256" }, false, ["verify"]);
-    if (!await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, key, b64u(sig), new TextEncoder().encode(pl))) return null;
+    const ok = async J => crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, await crypto.subtle.importKey("jwk", J, { name: "ECDSA", namedCurve: "P-256" }, false, ["verify"]), b64u(sig), new TextEncoder().encode(pl));
+    const main = await ok(LIC_PUB), test = !main && await ok(TEST_PUB); if (!main && !test) return null;
     const P = JSON.parse(new TextDecoder().decode(b64u(pl)));
+    if (test && (P.t !== "tester" || !P.x)) return null;   // the tester key signs only dated TESTER keys
+    if (P.i && (PAYCFG.revoked || []).includes(P.i)) return null;
     if (P.x && new Date().toISOString().slice(0, 10) > P.x) return { tier: null, expired: P.x };
-    return { tier: P.t === "owner" ? "owner" : "pro", exp: P.x || "", plan: P.p || "", id: P.i || "", since: P.s ? Date.parse(P.s) : 0 };
+    return { tier: P.t === "owner" ? "owner" : "pro", tester: P.t === "tester", exp: P.x || "", plan: P.p || "", id: P.i || "", since: P.s ? Date.parse(P.s) : 0 };
   } catch { return null; }
 }
 // ---------- paid licences. A merchant of record (Lemon Squeezy, or Polar as backup) sells Pro worldwide,
 // handles tax and refunds, and emails a licence key. The phone checks that key with the seller's public
 // licence API (no secret, no server of ours). Offline the phone keeps Pro; only a "refunded/disabled" answer removes it.
-const PAY = window.LP_PAY || null;
+const PAY = (P => { if (!P || !P.checkout) return null; const provider = P.provider || "polar"; if (provider === "polar" && !P.org) return null;
+  const co = typeof P.checkout === "string" ? { yearly: P.checkout } : P.checkout; if (!co.monthly && !co.yearly) return null;
+  return { provider, org: P.org || "", store: P.store || "", checkout: co, products: P.products || { pro: P.benefits || [] }, portal: P.portal || "" }; })(window.LP_PAY);
+// Pro is a subscription: monthly or yearly (prices from pay.js). Cancel anytime; Pro stays on to the end of the paid period.
+const PLAN_INFO = { monthly: { price: "$3.99", per: "month" }, yearly: { price: "$29.99", per: "year", note: "Best value · save 37%" }, ...(PAYCFG.plans || {}) };
+const PRICE = `${PLAN_INFO.monthly.price}/mo`, PRICE_FROM = `from ${PLAN_INFO.monthly.price} a month`;
 const devLabel = () => `LickPick · ${/Android/i.test(navigator.userAgent) ? "Android" : /iPhone|iPad/i.test(navigator.userAgent) ? "iPhone" : "browser"} · ${new Date().toISOString().slice(0, 10)}`;
-const planOfProduct = id => { for (const [k, ids] of Object.entries(PAY?.products || {})) if ((ids || []).map(String).includes(String(id))) return k; return null; };
+const planOfProduct = id => { const all = Object.entries(PAY?.products || {}); if (!all.some(([, ids]) => (ids || []).length)) return "pro";   // no ids set: any key of this org/store
+  for (const [k, ids] of all) if ((ids || []).map(String).includes(String(id))) return k; return null; };
 async function payCall(url, body, json) {
   const r = await fetch(url, { method: "POST", headers: json ? { "Content-Type": "application/json", Accept: "application/json" } : { "Content-Type": "application/x-www-form-urlencoded", Accept: "application/json" }, body: json ? JSON.stringify(body) : new URLSearchParams(body) });
   let d = {}; try { d = await r.json(); } catch { } return { status: r.status, d };
@@ -5802,11 +5823,18 @@ async function payCall(url, body, json) {
 async function activateOnline(k) {
   if (!PAY) return { err: "That key isn't valid." };
   if (PAY.provider === "polar") {
-    const { status, d } = await payCall("https://api.polar.sh/v1/customer-portal/license-keys/validate", { key: k, organization_id: PAY.org }, true);
-    if (status === 404 || status === 422) return { err: "That key isn't valid." };
+    const API = "https://api.polar.sh/v1/customer-portal/license-keys/";
+    const ac = await payCall(API + "activate", { key: k, organization_id: PAY.org, label: devLabel() }, true);
+    if (ac.status === 404 || ac.status === 422) return { err: "That key isn't valid. Copy it from your receipt email." };
+    if (ac.status === 403 && /limit/i.test(JSON.stringify(ac.d))) return { err: "This key is already on its maximum number of phones. Reply to your receipt email and we'll free it up." };
+    const inst = ac.status < 300 ? ac.d.id || "" : "", L = ac.status < 300 ? ac.d.license_key || {} : null;
+    const { status, d } = L ? { status: 200, d: L } : await payCall(API + "validate", { key: k, organization_id: PAY.org }, true);   // a key without activations
+    if (status === 404 || status === 422) return { err: "That key isn't valid. Copy it from your receipt email." };
+    if (status >= 300) return { err: "Couldn't check that key right now. Try again in a minute." };
     if (d.status !== "granted") return { err: "That key has been turned off. If you think that's wrong, reply to your receipt email." };
+    if (d.expires_at && Date.parse(d.expires_at) < Date.now()) return { err: "That key has ended." };
     const plan = planOfProduct(d.benefit_id); if (!plan) return { err: "That key is for a different product." };
-    return { ok: 1, plan, inst: "" };
+    return { ok: 1, plan, inst };
   }
   const { status, d } = await payCall("https://api.lemonsqueezy.com/v1/licenses/activate", { license_key: k, instance_name: devLabel() });
   if (d.activated) {
@@ -5823,17 +5851,32 @@ async function activateOnline(k) {
 // weekly re-check; true = still good, null = couldn't tell, false = the seller says it's off (refund, chargeback)
 async function recheckOnline(L) {
   try {
-    if (L.p === "polar") { const { status, d } = await payCall("https://api.polar.sh/v1/customer-portal/license-keys/validate", { key: L.k, organization_id: PAY?.org || L.org }, true); return !(status === 404 || (d.status && d.status !== "granted")); }
+    if (L.p === "polar") { const b = { key: L.k, organization_id: PAY?.org || L.org }; if (L.i) b.activation_id = L.i; const { status, d } = await payCall("https://api.polar.sh/v1/customer-portal/license-keys/validate", b, true); if (status >= 500 || status === 429) return null;
+      return !(status === 404 || (d.status && d.status !== "granted") || (d.expires_at && Date.parse(d.expires_at) < Date.now())); }
     const b = { license_key: L.k }; if (L.i) b.instance_id = L.i;
     const { status, d } = await payCall("https://api.lemonsqueezy.com/v1/licenses/validate", b);
     if (d.valid) return true;
     return !(status === 404 || ["disabled", "expired"].includes(d.license_key?.status) || /not found|disabled/i.test(String(d.error || "")));
   } catch { return null; }   // no network: decide nothing, try again next start
 }
-{ const L = store.get("lp:lic"); if (L?.k && !window.LP_OWNER) { lic.tier = "pro"; lic.plan = L.plan || "pro"; lic.paid = 1; lic.since = L.since || L.chk || Date.now();
-  const due = !L.chk || Date.now() - L.chk > 7 * 864e5;
-  if (due && navigator.onLine !== false) setTimeout(async () => { const ok = await recheckOnline(L); if (ok === null) return; if (ok) { L.chk = Date.now(); store.set("lp:lic", L); } else { store.set("lp:lic", null); lic.tier = "free"; lic.paid = 0; renderBrand(); renderBoxes(); toast("Your Pro key was turned off (refund or payment issue).", { icon: "i-bolt", label: "Pro", run: () => openPro() }); } }, 4000); } }
-(async () => { const k = store.get("lp:key"); if (k && !window.LP_OWNER && !lic.paid) { const r = await verifyKey(k); if (r?.tier) { lic.tier = r.tier; lic.exp = r.exp; lic.plan = r.plan; lic.id = r.id; lic.since = r.since || store.get("lp:keyAt") || 0; renderBrand(); renderTop(); if (state.openId) renderStudio(); renderBoxes(); } else if (r?.expired) setTimeout(() => toast("Your Pro has ended. Renew to keep it.", { icon: "i-bolt", label: "Renew", run: () => openPro() }), 1500); } })();
+const SUB_CHECK = 864e5, SUB_GRACE = 7 * 864e5;   // re-check a subscription key daily; offline, Pro keeps working 7 days
+function subApply(on) { const was = isPro(); lic.tier = on ? "pro" : (lic.tier === "pro" && lic.paid ? "free" : lic.tier); lic.lapsed = !on; if (was !== isPro()) { renderBrand(); renderBoxes(); renderTop(); if (state.openId) renderStudio(); if (!$("#proSheet").hidden) openPro(); } }
+async function subCheck(force) {   // → true (active), false (ended), null (couldn't tell)
+  const L = store.get("lp:lic"); if (!L?.k || window.LP_OWNER) return null;
+  if (!force && L.chk && Date.now() - L.chk < SUB_CHECK) return true;
+  if (navigator.onLine === false) { if (Date.now() - (L.chk || 0) > SUB_GRACE) { subApply(false); lic.offline = 1; } return null; }
+  const ok = await recheckOnline(L); if (ok === null) { if (Date.now() - (L.chk || 0) > SUB_GRACE) { subApply(false); lic.offline = 1; } return null; }
+  lic.offline = 0;
+  if (ok) { L.chk = Date.now(); L.off = 0; store.set("lp:lic", L); subApply(true); return true; }
+  L.off = 1; store.set("lp:lic", L); const was = isPro(); subApply(false);   // the key stays here: Restore re-checks it after a renewal
+  if (was) toast("Your Pro subscription has ended. Your projects stay; Pro features are off until you renew.", { icon: "i-bolt", label: "Pro", run: () => openPro() });
+  return false;
+}
+{ const L = store.get("lp:lic"); if (L?.k && !window.LP_OWNER) { lic.paid = 1; lic.plan = L.plan || "pro"; lic.since = L.since || L.chk || Date.now();
+  const fresh = !L.off && L.chk && Date.now() - L.chk <= SUB_GRACE; lic.tier = fresh ? "pro" : "free"; lic.lapsed = !fresh;
+  setTimeout(() => subCheck(false).catch(() => { }), 4000); addEventListener("online", () => subCheck(!isPro()).catch(() => { }));
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) subCheck(false).catch(() => { }); }); } }
+(async () => { const k = store.get("lp:key"); if (k && !window.LP_OWNER && !lic.paid) { const r = await verifyKey(k); if (r?.tier) { lic.tier = r.tier; lic.exp = r.exp; lic.plan = r.plan; lic.id = r.id; lic.tester = !!r.tester; lic.since = r.since || store.get("lp:keyAt") || 0; renderBrand(); renderTop(); if (state.openId) renderStudio(); renderBoxes(); } else if (r?.expired) setTimeout(() => toast("Your Pro has ended. Renew to keep it.", { icon: "i-bolt", label: "Renew", run: () => openPro() }), 1500); } })();
 // true when the action may run. Free users spend a trial save only when a Pro file is actually saved.
 // free band: the Auto, Ballad and Rock bands with their own sounds save free (with the LickPick mark); every other
 // style, extra instrument and sound choice is Pro
@@ -5842,81 +5885,85 @@ function freeBand(c) { if (isPro() || !bandOn(c)) return false; const b = c.band
 function proOK(what) { if (isPro() || lic.trial > 0) return true; openPro(what); return false; }
 function spendTrial() { if (isPro()) return; lic.trial = Math.max(0, lic.trial - 1); store.set("lp:trial", lic.trial); setTimeout(() => toast(lic.trial ? `${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left` : "That was your last free Pro save", { icon: "i-bolt", label: "Pro", run: () => openPro() }), 2800); }
 const proTag = () => isPro() ? "" : `<i class="protag">PRO</i>`;
-// Free core + one Pro unlock, paid once. No subscription (no server to renew it). Free saves carry a small LickPick mark; Pro is clean.
-// Free = find, hear, practise and post one clip at a time. Pro (paid once) = save more, faster, with the band.
+// Free core + Pro, a monthly or yearly subscription (the seller renews it; the phone re-checks the key). Free saves carry a small
+// LickPick mark; Pro is clean. Free = find, hear, practise and post one clip at a time. Pro = save more, faster, with the band.
 const BACKSTAGE_PRICE = "$9.99", BACKSTAGE_DAYS = 365;
 const TIER_TABLE = [
   ["Find", [["Scan every take, unlimited", 1], ["Grades: best, good, worth a look, useless", 1], ["Pick A, B, C + Why this part", 1], ["Suggestions from your own playing", 1]]],
   ["Play & practise", [["Play my picks, back to back", 1], ["Loop and slow down to ¾ or ½", 1], ["Hear the band, every style", 1], ["Line up layers of you, and hear them", 1], ["Hear tightening, fixes and loops", 1], ["Hear every studio sound", 1]]],
-  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Vertical shorts, with a small LickPick mark", 1], ["Studio sound: Clean", 1], ["Captions, hashtags, share", 1], ["Studio sound: Warm, Bright, Live room", 0], ["Pro EQ: 5-band EQ, compressor, room, A/B", 0], ["Save with the Ballad or Rock band (with the mark)", 1], ["Save with every band style, extra and your mix", 0], ["Arrangements: Build free; Full on, Drop & lift", 0], ["Another take: the band plays it differently", 0], ["Save layers, split screen", 0], ["Save tightened, fixed and looped videos", 0], ["All 8 Looks (2 are free)", 0], ["Save everything in one tap", 0], ["Each part as its own file", 0], ["No LickPick mark on your videos", 0], ["Backstage: new band drops every month (a year with Pro)", 0]]],
+  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Vertical shorts, with a small LickPick mark", 1], ["Studio sound: Clean", 1], ["Captions, hashtags, share", 1], ["Studio sound: Warm, Bright, Live room", 0], ["Pro EQ: 5-band EQ, compressor, room, A/B", 0], ["Save with the Ballad or Rock band (with the mark)", 1], ["Save with every band style, extra and your mix", 0], ["Arrangements: Build free; Full on, Drop & lift", 0], ["Another take: the band plays it differently", 0], ["Save layers, split screen", 0], ["Save tightened, fixed and looped videos", 0], ["All 8 Looks (2 are free)", 0], ["Save everything in one tap", 0], ["Each part as its own file", 0], ["No LickPick mark on your videos", 0]]],
 ];
 const tierTableHTML = () => `<table class="cmp"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead>${TIER_TABLE.map(([g, rows]) => `<tbody><tr class="grp"><th colspan="3">${g}</th></tr>${rows.map(([l, free]) => `<tr${free > 0 ? "" : ' class="pro"'}><td>${l}</td><td>${free > 0 ? icon("i-check") : `<span class="try">${lic.trial && free === 0 ? "try" : "–"}</span>`}</td><td>${icon("i-check")}</td></tr>`).join("")}</tbody>`).join("")}</table>`;
 // What Pro adds, in a player's words
-const PRO_FEATS = [["i-star", "No LickPick mark", "Your videos, clean. Free saves carry a small LickPick signature."], ["i-drum", "The band, saved", "Eight styles, three arrangements, extras and Another take, on your beat, with your take locked to it."], ["i-loop", "Fixes, loops and layers", "Tightened timing, patched mistakes, loops and longer videos, you side by side."], ["i-text", "All 8 Looks + chords on screen", "Every Look and title font, plus chords, key and tab on the video."], ["i-bolt", "The full studio sound", "Warm, Bright, Live room and Pro EQ: your own 5-band EQ, compressor and room."], ["i-stack", "Everything in one tap", "Save every pick or clean cut at once, or each part as its own file."], ["i-note", "Backstage, a year of it", "New styles, kits, sounds and Looks drop monthly. Keep what drops. " + BACKSTAGE_PRICE + " a year after that, if you want more."]];
+const PRO_FEATS = [["i-star", "No LickPick mark", "Your videos, clean. Free saves carry a small LickPick signature."], ["i-drum", "The band, saved", "Eight styles, three arrangements, extras and Another take, on your beat, with your take locked to it."], ["i-loop", "Fixes, loops and layers", "Tightened timing, patched mistakes, loops and longer videos, you side by side."], ["i-text", "All 8 Looks + chords on screen", "Every Look and title font, plus chords, key and tab on the video."], ["i-bolt", "The full studio sound", "Warm, Bright, Live room and Pro EQ: your own 5-band EQ, compressor and room."], ["i-stack", "Everything in one tap", "Save every pick or clean cut at once, or each part as its own file."]];
 // Free and Pro side by side, the same six lines everywhere (app and website)
 const PLAN_FREE = ["Scan every take, unlimited", "Pick A, B, C and why", "Hear the band: every style, its chart", "Save with the Ballad or Rock band", "Rec room: first video + every jam with a friend, free", "A small LickPick mark on saves"];
-const PLAN_PRO = ["The band saves with you, every style", "Arrangements, extras, Another take", "No LickPick mark, ever", "Rec room, fixes, loops and layers, saved", "All 8 Looks, chords on screen, Pro EQ", "A year Backstage: new band drops monthly"];
+const PLAN_PRO = ["The band saves with you, every style", "Arrangements, extras, Another take", "No LickPick mark, ever", "Rec room, fixes, loops and layers, saved", "All 8 Looks, chords on screen, Pro EQ", "Save everything in one tap"];
 // Backstage: the band keeps growing after you've paid. New styles, kits, sounds and Looks drop monthly; Pro includes
 // the first year, then BACKSTAGE_PRICE a year keeps the drops coming. Whatever has already dropped for you stays yours.
 const BACKSTAGE_NEXT = ["Brushes & upright: a jazz trio kit", "Tape room: a lo-fi hall and a 70s plate", "Latin: bossa and son grooves", "A 90s Look: VHS titles and tracking"];   // the first drops, in order, after the beta
 const backstageUntil = () => lic.bs || (lic.since ? lic.since + BACKSTAGE_DAYS * 864e5 : 0);
 const backstageOK = () => lic.tier === "owner" || (isPro() && Date.now() < backstageUntil());
 const planCards = (cur) => `<div class="plancards"><div class="pc free${cur === "free" ? " here" : ""}"><span class="pcn">Free</span><b class="pcp">$0</b><em>Forever</em><ul>${PLAN_FREE.map(x => `<li>${icon("i-check")}${x}</li>`).join("")}</ul>${cur === "free" ? `<span class="pchere">You're here</span>` : ""}</div>
-  <div class="pc pro${cur === "pro" ? " here" : ""}"><span class="pcn">Pro</span><b class="pcp">$4.99</b><em>Once. Yours for good.</em><ul>${PLAN_PRO.map(x => `<li>${icon("i-bolt")}${x}</li>`).join("")}</ul>${cur === "pro" ? `<span class="pchere">You're Pro</span>` : ""}</div></div>`;
-// One honest launch price: the regular price really applies after LAUNCH_ENDS. No subscription.
-const LAUNCH_ENDS = "31 Jan 2027";
-const PLANS = [["pro", "$4.99", "$7.99", "Pro", "Just you"]];   // one product, one price (Duo dropped 2026-10-12)
-const PRICE_LATER = "$7.99";
-let planSel = "pro";
+  <div class="pc pro${cur === "pro" ? " here" : ""}"><span class="pcn">Pro</span><b class="pcp">${PLAN_INFO.monthly.price}<small>/mo</small></b><em>or ${PLAN_INFO.yearly.price}/yr. Cancel anytime.</em><ul>${PLAN_PRO.map(x => `<li>${icon("i-bolt")}${x}</li>`).join("")}</ul>${cur === "pro" ? `<span class="pchere">You're Pro</span>` : ""}</div></div>`;
+// two plans of one Pro: yearly first (the better deal), monthly
+const PLANS = [["yearly", PLAN_INFO.yearly.price, "/year", "Yearly", PLAN_INFO.yearly.note || ""], ["monthly", PLAN_INFO.monthly.price, "/month", "Monthly", "Cancel anytime"]];
+let planSel = "yearly";
 const planURL = k => PRO_URL ? PRO_URL + (PRO_URL.includes("?") ? "&" : "?") + "plan=" + k : "";
 function reqCode() { let r = store.get("lp:req"); if (!r) { r = "LP-" + Math.random().toString(36).slice(2, 8).toUpperCase(); store.set("lp:req", r); } return r; }
 function requestURL(k) {
   const [, price, , name] = PLANS.find(p => p[0] === k), code = reqCode();
   const subj = `LickPick ${name} (${price}) ${code}`;
-  const body = `Hi,\n\nI'd like LickPick ${name} at the launch price (${price}, one payment).\nRequest code: ${code}\nName: \n\nHow do I pay (Bit / PayBox / PayPal)?\n\nThanks!`;
+  const body = `Hi,\n\nI'd like LickPick Pro ${name} (${price}).\nRequest code: ${code}\nName: \n\nHow do I pay (Bit / PayBox / PayPal)?\n\nThanks!`;
   return `mailto:${SELL}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
 }
 function openPro(what) {
   const sh = $("#proSheet"); sh.querySelector("h2").innerHTML = `<span class="lockup" aria-label="LickPick"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></span><span class="proword">Pro</span>`; sh.querySelector("h2").className = "prohead";
-  $("#proBody").innerHTML = BETA && lic.tier === "free" ? `<p class="hint"><b>Free during the beta.</b> Every feature is on: backing band, captions, shorts without the mark, saving everything at once. Thanks for testing.</p><p class="hint">After the beta, Pro will be ${PLANS.map(p => `${p[1]} ${p[2].split(" ·")[0]}`).join(", ")}. The core stays free.</p>`
-    : isPro() ? `<p class="hint"><b>${lic.tier === "owner" ? "Owner" : "Pro"} unlocked.</b> Everything is on.${lic.exp ? ` Active until ${esc(lic.exp)}.` : lic.tier === "pro" ? " Yours for good." : ""}${backstageOK() ? ` Backstage until ${new Date(backstageUntil() || Date.now() + 36e8 * 24 * 365).toLocaleDateString(undefined, { month: "short", year: "numeric" })}.` : ""}${lic.paid ? ` New phone? Paste the same key from your receipt email.` : ""}</p>${lic.exp ? `<div class="keyrow"><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste a renewal key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div><div class="status" id="proStatus"></div>` : ""}`
+  $("#proBody").innerHTML = BETA && lic.tier === "free" ? `<p class="hint"><b>Free during the beta.</b> Every feature is on: backing band, captions, shorts without the mark, saving everything at once. Thanks for testing.</p><p class="hint">After the beta, Pro will be ${PLANS.map(p => `${p[1]}${p[2]}`).join(" or ")}. The core stays free.</p>`
+    : isPro() ? `<p class="prostate">${icon("i-bolt")}<b>${lic.tier === "owner" ? "Owner" : lic.tester ? "Tester Pro" : "Pro"}</b>${lic.tester && lic.id ? ` <span>${esc(lic.id)}</span>` : ""}</p><p class="hint"><b>${lic.tier === "owner" ? "Owner" : lic.tester ? "Tester Pro" : "Pro"} unlocked.</b> Everything is on.${lic.tester ? " A test key: no payment was made." : ""}${lic.exp ? ` Active until ${esc(lic.exp)}.` : lic.paid ? " Your subscription renews by itself; cancel anytime." : ""}${lic.paid ? ` New phone? Paste the same key from your receipt email.` : ""}</p>${lic.paid && PAY?.portal ? `<a class="btn ghost wide" href="${esc(PAY.portal)}" target="_blank" rel="noopener">${icon("i-sliders")}Manage subscription</a>` : ""}${lic.exp ? `<div class="keyrow"><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste a renewal key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div><div class="status" id="proStatus"></div>` : ""}`
     : `${what ? `<p class="gate"><b>${esc(what)}</b> is a Pro move. ${lic.trial ? `You've got ${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left to try it.` : "Your free Pro saves are used up."}</p>` : ""}
     <p class="pro-lead">Free is the jam. Pro is the record.</p>
-    <p class="lore">Finding your best playing is free, forever. Pro is a one-time session fee: the band saves with you, in every style and arrangement, clean, no mark. Pay once; the band is yours.</p>
+    ${lic.paid && lic.lapsed ? `<div class="prosoon"><b>${lic.offline ? "Pro is waiting for a connection." : "Your Pro subscription has ended."}</b><p>${lic.offline ? "LickPick couldn't check your subscription for over a week. Go online once and Pro comes back by itself." : "Your projects and saves are all here. Renew below, or if you already renewed, tap Restore."}</p><button class="btn ghost wide" type="button" data-act="pro-restore">${icon("i-loop")}Restore my subscription</button></div>` : ""}
+    <p class="lore">Finding your best playing is free, forever. Pro is the studio: the band saves with you, in every style and arrangement, clean, no mark. Monthly or yearly, cancel anytime.</p>
     ${planCards("free")}
-    <div class="backstage"><b>${icon("i-note")}Backstage</b><p>Pro opens a year Backstage: a new band drop every month. Styles, kits, rooms, Looks. After the year, ${BACKSTAGE_PRICE} a year keeps the drops coming. Everything that already dropped stays yours.</p><p class="hint">Up next: ${BACKSTAGE_NEXT.slice(0, 3).join(" · ")}.</p></div>
-    <p class="hint">Launch price ${PLANS[0][1]} until ${LAUNCH_ENDS}, then ${PRICE_LATER}. One payment. Backstage after year one is optional.</p>
-    ${PLANS.length < 2 ? "" : `<div class="plans" role="radiogroup" aria-label="Plan">${PLANS.map(([k, p, was, name, sub]) => `<button type="button" class="plan" role="radio" aria-checked="${planSel === k}" data-plan="${k}">${k === "duo" ? "<i>Gift one</i>" : ""}<span class="pn">${name}</span><b>${p}</b><s>${was}</s><span>${sub}</span></button>`).join("")}</div>`}
-    ${PAY?.checkout?.[planSel] ? `<a class="btn wide" id="proGo" href="${esc(PAY.checkout[planSel])}" target="_blank" rel="noopener">${icon("i-bolt")}Unlock ${PLANS.find(p => p[0] === planSel)[3]} · ${PLANS.find(p => p[0] === planSel)[1]}</a><p class="hint">Secure checkout by ${PAY.provider === "polar" ? "Polar" : "Lemon Squeezy"}: card, Apple Pay, Google Pay${PAY.provider === "polar" ? "" : " or PayPal"}, any country, local tax included. Your key arrives by email; paste it below. 14-day refund, no questions.</p>`
+    ${PLANS.length < 2 ? "" : `<div class="plans" role="radiogroup" aria-label="Plan">${PLANS.map(([k, p, was, name, sub]) => `<button type="button" class="plan" role="radio" aria-checked="${planSel === k}" data-plan="${k}">${k === "yearly" ? "<i>Save 37%</i>" : ""}<span class="pn">${name}</span><b>${p}<small>${was}</small></b><span>${sub}</span></button>`).join("")}</div>`}
+    ${PAY?.checkout?.[planSel] ? `<a class="btn wide" id="proGo" href="${esc(PAY.checkout[planSel])}" target="_blank" rel="noopener">${icon("i-bolt")}Go Pro ${PLANS.find(p => p[0] === planSel)[3]} · ${PLANS.find(p => p[0] === planSel)[1]}${PLANS.find(p => p[0] === planSel)[2]}</a><p class="hint">Secure checkout: card, Apple Pay or Google Pay, any country, local tax included. Renews by itself; cancel anytime. Your Pro key arrives by email; paste it below.</p>`
       : PRO_URL ? `<a class="btn wide" id="proGo" href="${esc(planURL(planSel))}" target="_blank" rel="noopener">${icon("i-bolt")}Unlock ${PLANS.find(p => p[0] === planSel)[3]} · ${PLANS.find(p => p[0] === planSel)[1]}</a>`
       : SELL ? `<a class="btn wide" id="proGo" href="${esc(requestURL(planSel))}">${icon("i-bolt")}Unlock ${PLANS.find(p => p[0] === planSel)[3]} · ${PLANS.find(p => p[0] === planSel)[1]}</a><p class="hint">Sends a short email to LickPick. You pay by Bit, PayBox or PayPal, and your Pro key arrives by email, usually the same day.</p>`
-      : `<p class="hint">Checkout opens soon. Have a key? Paste it below.</p>`}
-    <p class="hint trust">${icon("i-lock")}Pay once. No account needed. Your clips never leave your phone.${lic.trial ? ` Try first: ${lic.trial} free Pro saves.` : ""}</p>
+      : `<button class="btn wide" type="button" id="proGo" data-act="pro-buy" aria-expanded="${!!openPro.soon}" aria-controls="proSoon">${icon("i-bolt")}Go Pro ${PLANS.find(p => p[0] === planSel)[3]} · ${PLANS.find(p => p[0] === planSel)[1]}${PLANS.find(p => p[0] === planSel)[2]}</button>
+      <div class="prosoon" id="proSoon"${openPro.soon ? "" : " hidden"}><b>Checkout opens soon.</b><p>We're setting up payments now. Nothing is charged here, and no card is asked for.</p>${notifyHTML()}<p>Have a Pro key? Paste it below.</p></div>`}
+    <p class="hint trust">${icon("i-lock")}Cancel anytime. No account needed. Your clips never leave your phone.${lic.trial ? ` Try first: ${lic.trial} free Pro saves.` : ""}</p>
     <details class="cmpd"><summary>Compare Free and Pro</summary>${tierTableHTML()}</details>
-    <div class="keyrow"><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your Pro key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div>
-    <div class="status" id="proStatus"></div>`;
+    <p class="restore" id="proRestore"><b>Subscribed already, or new phone?</b> Paste the key from your receipt email to restore Pro.${PAY?.portal ? ` Lost it? <a href="${esc(PAY.portal)}" target="_blank" rel="noopener">Find my key</a> · <a href="${esc(PAY.portal)}" target="_blank" rel="noopener">Manage subscription</a>.` : ""} Or write to <a href="mailto:${SUPPORT}">${SUPPORT}</a>.</p>
+    <div class="keyrow"><label class="vh" for="proKey">Pro key</label><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your Pro key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div>
+    <div class="status" id="proStatus" role="status" aria-live="polite"></div>`;
   sh.hidden = false;
 }
-async function unlock() {
-  const k = ($("#proKey")?.value || "").trim(), st = $("#proStatus");
+// "get notified": signed in = a flag on your account (users/{uid}, the existing sync); otherwise sign in first, or email us
+function notifyHTML() { const u = window.LickSync?.enabled && window.LickSync.state?.user, on = !!store.get("lp:news")?.on;
+  return u ? `<label class="notify"><input type="checkbox" data-act="news-toggle" ${on ? "checked" : ""}> Email me at ${esc(u.email || "my Google address")} when checkout opens</label>`
+    : window.LickSync?.enabled ? `<button class="btn ghost wide" type="button" data-act="news-in">${icon("i-lock")}Sign in with Google to get notified</button>`
+    : `<a class="btn ghost wide" href="mailto:${SUPPORT}?subject=${encodeURIComponent("Tell me when LickPick Pro opens")}">Email me when it opens</a>`; }
+async function unlock(key) {
+  const k = (key ?? ($("#proKey")?.value || "")).trim(), st = $("#proStatus") || { set textContent(v) { if (v) toast(v); } };
   if (!k) { st.textContent = "Paste a key first."; $("#proKey")?.focus(); return; }
   if (k && !k.startsWith("LP1.") && PAY) {   // a key bought through the store
     st.textContent = "Checking your key…"; let a;
     try { a = await activateOnline(k); } catch { st.textContent = "No internet. Connect once to unlock, then Pro works offline."; return; }
     if (!a.ok) { st.textContent = a.err; return; }
     store.set("lp:lic", { p: PAY.provider, k, i: a.inst, plan: a.plan, chk: Date.now(), org: PAY.org || "", since: Date.now() });
-    lic.since = Date.now();
+    lic.since = Date.now(); lic.lapsed = 0; lic.offline = 0;
     lic.tier = "pro"; lic.plan = a.plan; lic.paid = 1; lic.exp = ""; renderBrand(); openPro(); toast("Pro unlocked. Thanks for backing LickPick. Rock on.");
     if (state.openId) renderStudio(); renderBoxes(); return;
   }
   const r = await verifyKey(k);
   if (r?.expired) { st.textContent = `That key ended on ${r.expired}. Ask for a renewal key.`; return; }
   if (!r?.tier) { st.textContent = crypto.subtle ? "That key isn't valid." : "Open LickPick from its web address to unlock."; return; }
-  const t = r.tier; store.set("lp:key", k.trim()); if (!store.get("lp:keyAt")) store.set("lp:keyAt", Date.now()); lic.since = r.since || store.get("lp:keyAt"); lic.tier = t; lic.exp = r.exp; lic.plan = r.plan; renderBrand(); openPro(); toast(t === "owner" ? "Owner unlocked. Everything is on." : "Pro unlocked. Rock on.");
+  const t = r.tier; store.set("lp:key", k.trim()); if (!store.get("lp:keyAt")) store.set("lp:keyAt", Date.now()); lic.since = r.since || store.get("lp:keyAt"); lic.tier = t; lic.exp = r.exp; lic.plan = r.plan; lic.id = r.id; lic.tester = !!r.tester; renderBrand(); openPro(); toast(t === "owner" ? "Owner unlocked. Everything is on." : r.tester ? "Tester Pro unlocked. Everything is on." : "Pro unlocked. Rock on.");
   if (state.openId) renderStudio(); renderBoxes();
 }
 // ---------- beta feedback: 3 questions + a short report, sent with the phone's share sheet (WhatsApp, email…)
-const FBQ = [["pick", "Did Pick A find your best part?", ["Yes", "Mostly", "No"]], ["pay", "Would you pay $4.99 once for Pro?", ["Yes", "Maybe", "No"]], ["again", "Will you use it for your next jam?", ["Yes", "Maybe", "No"]]];
+const FBQ = [["pick", "Did Pick A find your best part?", ["Yes", "Mostly", "No"]], ["pay", "Would you pay $3.99 a month (or $29.99 a year) for Pro?", ["Yes", "Maybe", "No"]], ["again", "Will you use it for your next jam?", ["Yes", "Maybe", "No"]]];
 const fb = { a: {}, text: "" };
 function openFeedback() {
   $("#fbBody").innerHTML = FBQ.map(([k, q, opts]) => `<p class="fbq">${q}</p><div class="fbopts">${opts.map(o => `<button type="button" data-fbq="${k}" data-fbv="${o}" aria-pressed="${fb.a[k] === o}">${o}</button>`).join("")}</div>`).join("")
@@ -5969,7 +6016,7 @@ function renderBrand() {
   // your plan, always visible: FREE or PRO in the header, one tap to compare
   const b = $("#proBadge"); b.hidden = false; b.className = "planchip" + (isPro() ? " pro" : ""); b.innerHTML = `<span>${isPro() ? `${icon("i-bolt")}PRO` : "FREE"}</span>`;
   document.querySelector(".mrow.pro")?.toggleAttribute("hidden", BETA && lic.tier === "free");
-  const ps = $("#menuProSub"); if (ps) ps.textContent = isPro() ? (backstageOK() ? "Everything on · Backstage" : "Everything is on") : lic.trial ? `$4.99 once · ${lic.trial} free saves left` : "$4.99 once. The band is yours"; b.classList.toggle("on", isPro()); b.setAttribute("aria-label", isPro() ? (lic.tier === "owner" ? "Owner: everything unlocked" : "Pro unlocked") : "LickPick Pro");
+  const ps = $("#menuProSub"); if (ps) ps.textContent = isPro() ? "Everything is on" : lic.trial ? `${PRICE_FROM[0].toUpperCase() + PRICE_FROM.slice(1)} · ${lic.trial} free saves left` : `${PRICE_FROM[0].toUpperCase() + PRICE_FROM.slice(1)}. Cancel anytime`; b.classList.toggle("on", isPro()); b.setAttribute("aria-label", isPro() ? (lic.tier === "owner" ? "Owner: everything unlocked" : "Pro unlocked") : "LickPick Pro");
   const m = $("#menuPro"); if (m) m.textContent = isPro() ? (lic.tier === "owner" ? "Owner" : "Pro on") : "Go Pro";
 }
 
@@ -6575,7 +6622,7 @@ const SLIDES = [
   { bg: "var(--cyan)", art: `<svg class="i" style="color:var(--ink);--ic2:var(--hot)"><use href="#i-rec"/></svg>`, h: "Record for the best Pick",
     grid: [[icon("i-phone"), "Steady, 1 to 2 m away"], [icon("i-ear"), "Quiet room"], [icon("i-star"), "20 s clean in a row"]], tips: true },
   { bg: "var(--hot)", art: `<svg class="i" style="color:var(--ink);--ic2:rgba(255,255,255,.6)"><use href="#i-save"/></svg>`, h: "Export and post",
-    grid: [[icon("i-cut"), "Clean cut: free"], [icon("i-phone"), "Vertical short: free"], [icon("i-bolt"), "Pro, once: band, save all"]] },
+    grid: [[icon("i-cut"), "Clean cut: free"], [icon("i-phone"), "Vertical short: free"], [icon("i-bolt"), "Pro: band, save all"]] },
 ];
 let slide = 0;
 function renderIntro() {
@@ -6733,7 +6780,9 @@ async function deleteAcct(btn) {
   try { await window.LickSync.deleteAccount(); store.set("lp:guest", 1); $("#proSheet").hidden = true; renderMenuAcct(); toast("Account deleted. Your videos are still on this phone."); }
   catch (e) { btn.disabled = false; btn.dataset.sure = ""; btn.lastChild.textContent = "Delete my account"; if (st) st.textContent = /network/i.test(String(e?.code || e)) ? "No connection. Try again when you're online." : /popup|cancel/i.test(String(e?.code || e)) ? "Google needs you to sign in again first. Try once more." : "Couldn't delete it here. Use \"ask us by email\" below and we'll do it."; }
 }
-if (window.LickSync) { LickSync.on(() => { renderMenuAcct(); const _gate = document.getElementById("signgate"); if (_gate && !_gate.hidden && LickSync.state.user) { _gate.hidden = true; if (!profile.done && !store.get("ck:intro")) openOnboard(0); } if (!$("#onboard")?.hidden) renderOnboard(); const p = store.get("lp:profile"); if (p && !!p.signedIn !== !!LickSync.state.user) { p.signedIn = !!LickSync.state.user; store.set("lp:profile", p); } });
+document.addEventListener("change", e => { if (e.target?.dataset?.act === "news-toggle") { store.set("lp:news", { on: e.target.checked, at: Date.now() }); toast(e.target.checked ? "Done. We'll email you when checkout opens." : "Okay, no email."); } });
+if (window.LickSync) { LickSync.on(S => { if (S.user && store.get("lp:newsWant")) { store.set("lp:newsWant", 0); store.set("lp:news", { on: true, at: Date.now() }); toast("Signed in. We'll email you when Pro checkout opens."); if (!$("#proSheet").hidden && $("#proSoon")) openPro(); } });
+  LickSync.on(() => { renderMenuAcct(); const _gate = document.getElementById("signgate"); if (_gate && !_gate.hidden && LickSync.state.user) { _gate.hidden = true; if (!profile.done && !store.get("ck:intro")) openOnboard(0); } if (!$("#onboard")?.hidden) renderOnboard(); const p = store.get("lp:profile"); if (p && !!p.signedIn !== !!LickSync.state.user) { p.signedIn = !!LickSync.state.user; store.set("lp:profile", p); } });
   window.addEventListener("lp:synced", e => { if (e.detail.includes("lp:profile")) Object.assign(profile, store.get("lp:profile") || {}); if (e.detail.includes("lp:taste")) Object.assign(taste, store.get("lp:taste") || {}); renderTop(); renderMade?.(); renderNavBadge?.(); if (!$("#onboard")?.hidden) renderOnboard(); toast("Updated from your account."); }); }
 function renderOnboard() {
   const step = OB[ob], B = $("#obBody"), next = $("#obNext"), ctas = $("#obCtas");
@@ -7453,7 +7502,7 @@ function exportSheetHTML(c) {
     ${c.file && !downloads ? `<p class="hint">Saving isn't available in this view.</p>` : ""}
     <div class="status" id="exStatus" aria-live="polite">${esc(c.exStatus || "")}</div>
     ${c.lastShare && !busy && !done ? `<button class="btn wide sharebtn" type="button" data-act="share-last">${icon("i-share")}<span><b>Share ${esc(c.lastShare.name.length > 26 ? c.lastShare.name.slice(0, 24) + "…" : c.lastShare.name)}</b><em>Instagram, TikTok, YouTube, WhatsApp, Drive…${c.captions?.length ? " Caption included." : ""}</em></span></button>` : ""}
-    ${!isPro() && c.file && !busy ? `<p class="hint" style="margin-top:2px;text-align:center;line-height:1.6"><button type="button" class="linkbtn" data-act="pro-open">${icon("i-bolt")} Remove the mark · Go Pro</button><br><span style="font-size:11px;opacity:.7">Free videos carry a small LickPick signature. $4.99 once removes it forever.</span></p>` : ""}`;
+    ${!isPro() && c.file && !busy ? `<p class="hint" style="margin-top:2px;text-align:center;line-height:1.6"><button type="button" class="linkbtn" data-act="pro-open">${icon("i-bolt")} Remove the mark · Go Pro</button><br><span style="font-size:11px;opacity:.7">Free videos carry a small LickPick signature. Pro saves them clean.</span></p>` : ""}`;
 }
 // a name on the video: free for everyone, styled like LickPick
 function titleGroup(c, o, opt) {
@@ -7960,12 +8009,12 @@ function metroCard(c) {
   const M = state.metro, d = M.d, w = bandWindow(c), bpm = lockBpm(c, d), mt = METERS[d.meter] || METERS["4/4"], drift = lockDrift(c, d), playing = bandPlaying && metroOn(c), ch = metroChanged(), open = M.open || M.edit || ch;
   const fr = d.mode === "grid" ? (gridOf(c)?.free || []).filter(([u, v]) => v > w.s && u < w.e) : [];
   return `<section class="metro" id="metro" aria-labelledby="metroH">
-    <div class="mhead">${icon("i-metro")}<span class="grow"><h3 id="metroH">Set the beat</h3><p>${playing ? "Listen: does the click land where you strum or pick?" : "Press play: a click plays on the beat LickPick heard."}</p></span></div>
-    <div class="mlight" aria-hidden="true">${metroDotsHTML(mt.bpb)}</div>
-    <details class="mhelp"><summary>What's “the beat” and “the 1”?</summary><p><span class="mfoot" aria-hidden="true"></span>The <b>beat</b> is the steady pulse you'd tap your foot to. The <b>1</b> is the first beat of each bar (the big dot), where chords usually change.</p></details>
+    <div class="mhead">${icon("i-metro")}<span class="grow"><h3 id="metroH">Set the beat</h3><p>${playing ? "A click plays on the beat LickPick heard." : "Press play: a click plays on the beat LickPick heard."}</p></span></div>
     <div class="mq" role="group" aria-labelledby="mqQ"><p class="mqq" id="mqQ">${ch ? "Does the click land on your strums now?" : "Does the click land on your strums?"}</p>
       <div class="mqa"><button type="button" class="btn mlock${M.ready ? "" : " soft"}" data-metro="lock">${icon("i-lock")}Yes, lock it</button>${open ? "" : `<button type="button" class="btn ghost mfixb" data-metro="fix" aria-expanded="false">${icon("i-edit")}Fix it</button>`}</div>
       <p class="mqh">${M.ready ? "" : "Listen for two bars first."}</p></div>
+    <div class="mlight" aria-hidden="true">${metroDotsHTML(mt.bpb)}</div>
+    <details class="mhelp"><summary>What's “the beat” and “the 1”?</summary><p><span class="mfoot" aria-hidden="true"></span>The <b>beat</b> is the steady pulse you'd tap your foot to. The <b>1</b> is the first beat of each bar (the big dot), where chords usually change.</p></details>
     <div class="mfix"${open ? "" : " hidden"}>
     <div class="mbpm" role="group" aria-label="Tempo">
       <button type="button" class="mb" data-metro="half" aria-label="Half time">÷2</button>
@@ -8003,8 +8052,12 @@ function metroAct(c, a) {
   // − / +: one BPM a press. On LickPick's tempo curve it scales the whole curve (speed-ups and slow-downs are still followed,
   // the beat you hear now stays put); only a free reading is one straight tempo
   if (a === "bpm+" || a === "bpm-") { const st = a === "bpm+" ? 1 : -1;
-    if (d.mode === "grid" && G) { const bpm = lockBpm(c, d) || 100, want = Math.max(30, Math.min(260, Math.round(bpm) + st)), k = nearestK(B, now ?? w.s);
-      d.u0 = +G.toU((B[k] ?? w.s) - (d.off || 0)).toFixed(6); d.mult = +(d.mult * want / bpm).toFixed(6); if (d.down != null) { const B2 = lockBeats(c, d, w.s - 2, w.e + 2); if (B2.length) d.down = B2[nearestK(B2, d.down)]; } say = `${fmtBpm(lockBpm(c, d))} BPM`; }
+    if (d.mode === "grid" && G) { const k = nearestK(B, now ?? w.s);
+      // steps count from where the presses began (+ then − is exactly where you were)
+      if (!M.pm || M.pm.mult !== d.mult || M.pm.u0 !== d.u0) M.pm = { mult0: d.mult, bpm0: lockBpm(c, d) || 100, n: 0, at: +G.toU((B[k] ?? w.s) - (d.off || 0)).toFixed(6) };
+      const n = Math.max(30 - M.pm.bpm0, Math.min(260 - M.pm.bpm0, M.pm.n + st)); M.pm.n = n;
+      // the beat under your finger when the presses began stays put
+      d.u0 = M.pm.at; d.mult = n ? M.pm.mult0 * (M.pm.bpm0 + n) / M.pm.bpm0 : M.pm.mult0; M.pm.mult = d.mult; M.pm.u0 = d.u0; if (d.down != null) { const B2 = lockBeats(c, d, w.s - 2, w.e + 2); if (B2.length) d.down = B2[nearestK(B2, d.down)]; } say = `${fmtBpm(lockBpm(c, d))} BPM`; }
     else { toFree(); d.bpm = Math.max(30, Math.min(260, Math.round(d.bpm) + st)); say = `${d.bpm} BPM`; } }
   else if (a === "x2" || a === "half") { const f = a === "x2" ? 2 : 0.5;
     if (d.mode === "grid") { const dn = B.length ? B[nearestK(B, d.down ?? w.s)] : (d.down ?? w.s); d.mult = d.mult * f; if (f < 1 && G) d.u0 = +G.toU(dn - (d.off || 0)).toFixed(6); } else { d.bpm = Math.round(d.bpm * f * 10) / 10; if (f < 1) d.t0 = d.down ?? d.t0; }
@@ -9384,8 +9437,11 @@ document.addEventListener("click", e => {
   if (d.act === "fb-mail") { fb.text = $("#fbText")?.value || ""; const body = [...FBQ.map(([k, q]) => `${q} ${fb.a[k] || "-"}`), `Notes: ${fb.text.trim() || "-"}`, ``, testReport()].join("\n").slice(0, 1800); store.set("lp:fbsent", Date.now()); setTimeout(renderTop, 500); location.href = `mailto:${SUPPORT}?subject=${encodeURIComponent("LickPick feedback " + (window.LP_VER || ""))}&body=${encodeURIComponent(body)}`; toast("Thanks! That helps a lot."); return; }
   if (d.act === "report-open") { $("#rules").hidden = true; openReport(); return; }
   if (d.act === "report-copy") { copyText(t, $("#reportTxt").value); return; }
-  if (d.plan) { planSel = d.plan; document.querySelectorAll("[data-plan]").forEach(b => b.setAttribute("aria-checked", String(b.dataset.plan === planSel))); const g = $("#proGo"); if (g) { g.href = PAY?.checkout?.[planSel] || (PRO_URL ? planURL(planSel) : requestURL(planSel)); const P = PLANS.find(p => p[0] === planSel); g.innerHTML = `${icon("i-bolt")}Unlock ${P[3]} · ${P[1]}`; } return; }
+  if (d.plan) { planSel = d.plan; document.querySelectorAll("[data-plan]").forEach(b => b.setAttribute("aria-checked", String(b.dataset.plan === planSel))); const g = $("#proGo"); if (g) { if (g.tagName === "A") g.href = PAY?.checkout?.[planSel] || (PRO_URL ? planURL(planSel) : requestURL(planSel)); const P = PLANS.find(p => p[0] === planSel); g.innerHTML = `${icon("i-bolt")}Go Pro ${P[3]} · ${P[1]}${P[2]}`; } return; }
   if (d.act === "pro-unlock") { unlock(); return; }
+  if (d.act === "pro-restore") { const st = $("#proStatus"); if (st) st.textContent = "Checking your subscription…"; subCheck(true).then(r => { const s2 = $("#proStatus"); if (r === true) { toast("Pro is back. Thanks for staying."); } else if (s2) s2.textContent = r === false ? "That subscription isn't active. Renew it, then tap Restore again." : "Couldn't reach the subscription check. Connect and try again."; }); return; }
+  if (d.act === "pro-buy") { openPro.soon = true; const p = $("#proSoon"); if (p) { p.hidden = false; t.setAttribute("aria-expanded", "true"); p.scrollIntoView({ block: "nearest", behavior: "smooth" }); } diagLog("pro: checkout not open yet"); return; }
+  if (d.act === "news-in") { store.set("lp:newsWant", 1); window.LickSync?.signIn(); return; }
   if (d.act === "toast-act") { const a = toastAct; $("#toast").hidden = true; toastAct = null; clearTimeout(toastT); a?.run(); return; }
   if (d.act === "install") { $("#rules").hidden = true; $("#winSheet").hidden = true; installPrompt?.prompt(); installPrompt?.userChoice.finally(() => { installPrompt = null; $("#installBtn").hidden = true; $("#installBar").hidden = true; }); return; }
   if (d.act === "help-close") { $("#pickHelp").hidden = true; return; }
@@ -9446,7 +9502,7 @@ document.addEventListener("click", e => {
   if (d.act === "min-" || d.act === "min+") { state.minKeep = Math.min(300, Math.max(15, state.minKeep + (d.act === "min+" ? 5 : -5))); syncRules(); render(); if (state.openId) renderStudio(); return; }
   if (d.picky) { state.strictness = +d.picky; syncRules(); state.clips.forEach(c => { redecide(c); persist(c); }); render(); return; }
   // global actions (account, Rec room, closing sheets) work with or without a take open: keep them above the take guard
-  if (d.act === "acct-in") { window.LickSync?.signIn(); return; }
+  if (d.act === "acct-in") { if ($("#sgNews")?.checked) store.set("lp:newsWant", 1); window.LickSync?.signIn(); return; }
   if (d.act === "acct-out") { window.LickSync?.signOut(); return; }
   if (d.act === "acct-del") { openDeleteAcct(); return; }
   if (d.act === "acct-del-go") { deleteAcct(t); return; }
@@ -9727,12 +9783,24 @@ renderBrand();
 setView("clips");
 render();
 // an invite link (app/#key=LP1...) unlocks Pro in one tap, then the key leaves the address bar
-if (location.hash.startsWith("#key=")) {
-  const k = decodeURIComponent(location.hash.slice(5)); history.replaceState(null, "", location.pathname);
-  verifyKey(k).then(r => { if (r?.tier && !r.expired) { store.set("lp:key", k.trim()); lic.tier = r.tier; lic.exp = r.exp; lic.plan = r.plan; lic.id = r.id; renderBrand(); renderTop(); toast("Welcome, founding tester! Pro is on. Thanks for helping."); } else toast("That invite key didn't work. Ask the person who invited you for a new one."); });
+// (the thanks page sends buyers here too: a store key is activated the same way as pasting it)
+const KEYLINK = location.hash.startsWith("#key=");
+if (KEYLINK) {
+  const k = decodeURIComponent(location.hash.slice(5)).trim(); history.replaceState(null, "", location.pathname + location.search);
+  if (!profile.done) { profile.done = true; store.set("lp:profile", profile); store.set("ck:intro", 1); } store.set("lp:guest", 1);
+  if (k.startsWith("LP1.") || !PAY) verifyKey(k).then(r => { if (r?.tier && !r.expired) { store.set("lp:key", k); if (!store.get("lp:keyAt")) store.set("lp:keyAt", Date.now()); lic.tier = r.tier; lic.exp = r.exp; lic.plan = r.plan; lic.id = r.id; lic.tester = !!r.tester; renderBrand(); renderTop(); openPro(); toast(r.tester ? "Tester Pro is on. Everything is unlocked." : "Pro is on. Thanks for backing LickPick."); } else { openPro(); toast(r?.expired ? `That key ended on ${r.expired}.` : "That key didn't work. Paste it again, or write to us."); } });
+  else { openPro(); const i = $("#proKey"); if (i) i.value = k; unlock(k); }
 }
+const SIGNIN = location.hash === "#signin"; if (SIGNIN) history.replaceState(null, "", location.pathname + location.search);
+// the same links while LickPick is already open (an installed app, a second tap on the website)
+addEventListener("hashchange", () => { const h = location.hash; if (h !== "#signin" && h !== "#pro" && !h.startsWith("#key=")) return;
+  if (h.startsWith("#key=")) { location.reload(); return; } history.replaceState(null, "", location.pathname + location.search);
+  if (h === "#pro") { openPro(); return; }
+  if (window.LickSync?.state?.user) toast(`You're signed in as ${window.LickSync.state.user.email || window.LickSync.state.user.name}.`); else if (window.LickSync?.enabled) document.getElementById("signgate").hidden = false; });
 // arriving from the website's pricing (app/#pro): show Pro straight away, skipping the intro
 if (location.hash === "#pro") { if (!profile.done) { profile.done = true; store.set("lp:profile", profile); store.set("ck:intro", 1); } openPro(); history.replaceState(null, "", location.pathname); }
+else if (KEYLINK) { }
+else if (SIGNIN && window.LickSync?.enabled) { if (window.LickSync.state.user) toast(`You're signed in as ${window.LickSync.state.user.email || window.LickSync.state.user.name}.`); else document.getElementById("signgate").hidden = false; }
 else if (window.LickSync?.enabled && !window.LickSync.state.user && !store.get("lp:guest")) { document.getElementById("signgate").hidden = false; }
 else if (!profile.done && !store.get("ck:intro")) openOnboard(0);
 else if (store.get("lp:tour") !== TOUR_V && !navigator.webdriver) setTimeout(() => {   // automated test runs skip the one-time tour

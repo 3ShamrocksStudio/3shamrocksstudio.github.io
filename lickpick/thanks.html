@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LickPick Pro: activate</title>
+<meta name="description" content="Activate LickPick Pro with the key from your receipt.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0B0912">
+<link rel="icon" href="app/icon-192-v5.png">
+<style>
+:root{--stage:#0B0912;--panel:#15111F;--raise:#1E1830;--line:#332A4A;--text:#FFF7F0;--dim:#C9BEDB;--ink:#07060B;--volt:#FFE600;--hot:#FF2E88;--cyan:#2BE7FF;--save:#FF9F1C;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--stage);color:var(--text);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:600px;margin:0 auto;padding:28px 16px 64px}
+a{color:var(--cyan)}
+.brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font:900 22px/1 system-ui,sans-serif}
+.brand svg{width:36px;height:36px;transform:rotate(-8deg)} .brand b{color:var(--volt)}
+h1{font:900 clamp(30px,7vw,42px)/1.08 system-ui,sans-serif;margin:26px 0 10px;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--volt)}
+.lede{color:var(--dim);margin:0 0 24px}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:18px;margin:0 0 16px}
+.card h2{margin:0 0 8px;font-size:18px}
+ol{margin:0;padding-left:22px;color:var(--dim)} li{margin:6px 0}
+label{display:block;font-weight:800;margin:0 0 8px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+input{flex:1 1 220px;min-height:50px;border-radius:12px;border:2px solid var(--line);background:var(--raise);color:var(--text);font:600 16px/1.2 ui-monospace,monospace;padding:0 12px}
+input:focus-visible,.btn:focus-visible,a:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border:3px solid var(--ink);border-radius:14px;background:var(--volt);color:var(--ink);font:900 17px/1 system-ui,sans-serif;text-decoration:none;box-shadow:4px 4px 0 var(--hot);cursor:pointer}
+.btn.ghost{background:var(--raise);color:var(--text);border-color:var(--line);box-shadow:3px 3px 0 var(--ink)}
+.st{min-height:1.4em;margin:10px 0 0;color:var(--dim);font-size:15px}
+.fine{color:var(--dim);font-size:14px}
+</style></head><body><main>
+<a class="brand" href="./" aria-label="LickPick home"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M57 102C52 102 48 98 43 91C31 75 13 53 13 35C13 17 31 9 57 9S101 17 101 35C101 53 83 75 71 91C66 98 62 102 57 102Z" fill="#FF2E88"/><path d="M50 97C45 97 41 93 36 86C24 70 6 48 6 30C6 12 24 4 50 4S94 12 94 30C94 48 76 70 64 86C59 93 55 97 50 97Z" fill="#FFE600" stroke="#07060B" stroke-width="4"/><path d="M40 30.5v27c0 3 3.2 4.8 5.8 3.2l21.5-13.5c2.4-1.5 2.4-5 0-6.4L45.8 27.3C43.2 25.7 40 27.5 40 30.5Z" fill="#07060B"/></svg><span>Lick<b>Pick</b></span></a>
+<h1 id="h">Thanks for backing <em>LickPick</em>.</h1>
+<p class="lede" id="lede">One step left: put your Pro key into LickPick. It works on every phone you use while your subscription is active, and keeps working offline for up to 7 days between checks.</p>
+<div class="card">
+  <h2>Where's my key?</h2>
+  <ol><li>In the receipt email from our checkout (check spam), and on the order page you just saw.</li><li id="portalLi" hidden>Lost it? <a id="portal" href="#" target="_blank" rel="noopener">Find my key</a> with the email you paid with. The same page manages or cancels your subscription.</li><li>Tester? Use the key you were sent.</li></ol>
+</div>
+<form class="card" id="f" novalidate>
+  <label for="k">Your Pro key</label>
+  <div class="row"><input id="k" name="k" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your key" required><button class="btn" type="submit">Activate in LickPick</button></div>
+  <p class="st" id="st" role="status" aria-live="polite"></p>
+</form>
+<p class="fine">LickPick opens with your key filled in and checks it. On Android with the app installed, open the app and paste the key in Menu → Pro instead. Trouble? <a href="mailto:lickpick.app@gmail.com?subject=LickPick%20Pro%20key">lickpick.app@gmail.com</a></p>
+<p class="fine">Pro renews by itself, monthly or yearly. Cancel anytime: Pro stays on to the end of the period you paid for.</p>
+<p class="fine"><a href="./">← Back to LickPick</a></p>
+</main>
+<script src="app/pay.js"></script>
+<script>
+(function () {
+  var P = window.LP_PAY || {}, q = function (s) { return document.getElementById(s); };
+  if (P.portal) { q("portal").href = P.portal; q("portalLi").hidden = false; }
+  var co = typeof P.checkout === "string" ? { yearly: P.checkout } : (P.checkout || {});
+  if (!co.monthly && !co.yearly) { q("lede").textContent = "Checkout isn't open yet, so no payment was taken. Have a Pro or tester key? Put it into LickPick here."; q("h").innerHTML = "Activate <em>LickPick Pro</em>."; }
+  q("f").addEventListener("submit", function (e) {
+    e.preventDefault(); var k = q("k").value.trim();
+    if (k.length < 8) { q("st").textContent = "Paste the whole key first."; q("k").focus(); return; }
+    q("st").textContent = "Opening LickPick…"; location.href = "app/#key=" + encodeURIComponent(k);
+  });
+})();
+</script>
+</body></html>
