@@ -676,6 +676,46 @@ footer{
 .contact-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:3}
 .contact-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.4);transition:width 0.3s,background 0.3s}
 .contact-dots i.on{width:20px;border-radius:100px;background:var(--green)}
+
+/* ===== REVISIONS 2 ===== */
+.ds-grid{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block;pointer-events:none}
+.hero-content,.hero-character{position:relative;z-index:2}
+.hero-plant{display:none!important}
+.chip-logo{width:62px;height:62px}
+.chip-a{left:-15%!important;top:14%!important;right:auto!important;bottom:auto!important;width:78px!important;height:78px!important}
+.chip-b{left:9%!important;top:3%!important;right:auto!important;bottom:auto!important;width:60px!important;height:60px!important}
+.chip-c{left:-19%!important;top:40%!important;right:auto!important;bottom:auto!important;width:66px!important;height:66px!important}
+.chip-d{left:15%!important;top:30%!important;right:auto!important;bottom:auto!important;width:64px!important;height:64px!important}
+.chip-e{left:-12%!important;top:64%!important;right:auto!important;bottom:auto!important;width:58px!important;height:58px!important}
+.chip-f{left:23%!important;top:56%!important;right:auto!important;bottom:auto!important;width:58px!important;height:58px!important}
+.stat-val span{color:var(--off-white)!important}
+.title-built{background:linear-gradient(120deg,var(--purple-3),var(--green-2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+/* idea-to-ship workflow */
+.flow{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:start;background:var(--black-2);border:1px solid var(--line);border-radius:20px;padding:34px 24px 28px;margin-bottom:52px;overflow:hidden}
+.flow-line{position:absolute;top:60px;left:14%;right:14%;height:2px;background:linear-gradient(90deg,var(--purple),var(--green));opacity:0.3}
+.flow-dot{position:absolute;top:55px;left:14%;width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 16px var(--green);animation:flowMove 6s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes flowMove{0%{left:14%}45%{left:86%}50%{left:86%}95%{left:14%}100%{left:14%}}
+.flow-step{text-align:center;padding:0 10px;position:relative;z-index:2}
+.flow-ic{width:46px;height:46px;margin:0 auto 14px;border-radius:14px;background:var(--black-3);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--purple-3)}
+.flow-step h4{font-family:var(--font-head);font-size:15px;font-weight:800;color:var(--white);margin-bottom:6px}
+.flow-step p{font-size:12px;line-height:1.55;color:var(--muted)}
+@media(max-width:700px){.flow{grid-template-columns:1fr 1fr;gap:22px 0}.flow-line,.flow-dot{display:none}}
+/* ticker brand glyph */
+.ticker-track span:not(.ticker-sep)::before{content:'';display:inline-block;width:7px;height:7px;margin-right:9px;transform:rotate(45deg);background:linear-gradient(135deg,var(--purple),var(--green));border-radius:2px;vertical-align:middle}
+/* corrected banner backgrounds */
+.c-trashure .card-visual{background:url(assets/brand/th-hero-team.png) center/cover no-repeat,linear-gradient(150deg,#1a0f00,#2a1600)}
+.c-shomer .card-visual{background:linear-gradient(150deg,#0c1b39 0%,#1e315f 60%,#0c1b39 100%)}
+.c-nature .card-visual{background:linear-gradient(150deg,#06281a 0%,#0f5238 55%,#0c1b39 100%)}
+.c-j8nix .card-visual{background:url(assets/brand/j8nix-wireframe.jpg) center/cover no-repeat,#0d1c2b}
+.c-ezra .card-visual{background:url(assets/brand/ezra-situational.jpg) center/cover no-repeat,#120d02}
+.c-ezra .card-visual::after,.c-j8nix .card-visual::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,0.25),rgba(0,0,0,0.7));pointer-events:none}
+.c-fairent .card-visual{background:linear-gradient(150deg,#1b1340 0%,#2a1d6b 55%,#101a0e 100%)}
+.c-fairent .card-logo{width:150px;height:auto}
+/* media network visual */
+.media-viz{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:8px;padding:22px;z-index:1}
+.media-viz i{border-radius:10px;background:linear-gradient(135deg,rgba(224,168,40,0.28),rgba(130,57,234,0.2));border:1px solid rgba(255,255,255,0.08);animation:mediaPulse 3s ease-in-out infinite}
+.media-viz i:nth-child(2){animation-delay:.4s}.media-viz i:nth-child(3){animation-delay:.8s}.media-viz i:nth-child(4){animation-delay:1.2s}.media-viz i:nth-child(5){animation-delay:1.6s}.media-viz i:nth-child(6){animation-delay:2s}
+@keyframes mediaPulse{0%,100%{opacity:0.45}50%{opacity:1}}
 </style>
 </head>
 <body>
@@ -704,12 +744,13 @@ footer{
     <div class="orb orb-3"></div>
   </div>
   <div class="hero-grid-bg"></div>
+  <canvas class="ds-grid" id="ds-grid"></canvas>
 
   <div class="hero-content">
     <div class="hero-eyebrow">Est. 2007</div>
     <h1>
-      <span class="word" style="--d:0.15s">Senior</span>&nbsp;<span class="word" style="--d:0.25s">product</span>&nbsp;<span class="word" style="--d:0.35s">design,</span><br>
-      <span class="word" style="--d:0.45s">at</span>&nbsp;<em><span class="word" style="--d:0.55s">startup</span>&nbsp;<span class="word" style="--d:0.65s">speed.</span></em>
+      <span class="word" style="--d:0.12s">From</span>&nbsp;<span class="word" style="--d:0.2s">a</span>&nbsp;<span class="word" style="--d:0.28s">rough</span>&nbsp;<span class="word" style="--d:0.36s">idea</span><br>
+      <span class="word" style="--d:0.44s">to</span>&nbsp;<em><span class="word" style="--d:0.52s">a</span>&nbsp;<span class="word" style="--d:0.6s">product</span>&nbsp;<span class="word" style="--d:0.68s">people</span>&nbsp;<span class="word" style="--d:0.76s">love.</span></em>
     </h1>
     <p class="hero-sub">I am Dave Markovich. I have been designing products for more than 20 years. I take an idea and turn it into a real, finished product. The brand, the interface, and the working app, built in weeks.</p>
     <div class="hero-actions">
@@ -733,15 +774,14 @@ footer{
     <div class="hero-chips">
       <img class="chip chip-logo chip-a" src="assets/products/trashure.png" alt="Trashure-Hunters" loading="lazy">
       <img class="chip chip-logo chip-b" src="assets/products/shomergency.png" alt="SH✡MER" loading="lazy">
-      <img class="chip chip-logo chip-c" src="assets/products/chore-wars.svg" alt="Chore Wars" loading="lazy">
-      <img class="chip chip-logo chip-d" src="assets/products/j8nix.png" alt="J8N.IX" loading="lazy">
-      <img class="chip chip-logo chip-e" src="assets/products/milo.svg" alt="Milo" loading="lazy">
+      <img class="chip chip-logo chip-c" src="assets/brand/chore-logo.png" alt="Chore Royale" loading="lazy">
+      <img class="chip chip-logo chip-d" src="assets/brand/j8nix-logo.png" alt="J8N.IX" loading="lazy">
+      <img class="chip chip-logo chip-e" src="assets/brand/fairent-icon.svg" alt="Fairent" loading="lazy">
       <img class="chip chip-logo chip-f" src="assets/products/design-system.png" alt="3SDS" loading="lazy">
     </div>
     <div class="minime-stand">
-      <img class="hero-plant" src="assets/studio/plant.jpg" alt="" aria-hidden="true">
       <div class="hero-xp">
-        <div class="hero-xp-top"><span>Studio</span><span>Level 20</span></div>
+        <div class="hero-xp-top"><span>Experience</span><span>20+ years</span></div>
         <div class="hero-xp-bar"><div class="hero-xp-fill" id="xp-fill"></div></div>
       </div>
       <div class="minime-eye-wrap" id="minime-eye-wrap">
@@ -799,12 +839,31 @@ footer{
 <!-- PRODUCTS -->
 <section id="work">
   <div class="section-label">Studio Work</div>
-  <h2 class="section-title reveal">Things I <em>built.</em></h2>
+  <h2 class="section-title reveal"><span style="color:var(--white)">Things I</span> <em class="title-built">built.</em></h2>
   <p class="section-sub reveal">Each product has its own brand, interface, and working software. Real products, real code, real craft. Click any to dig in.</p>
 
-  <div class="minime-guide reveal">
-    <img src="assets/studio/dave-portrait.png" alt="Dave Markovich" class="minime-guide-img">
-    <p class="minime-guide-text">"Every product here started as a <strong>problem worth solving</strong>. I keep working the craft until the thing feels obvious and right, from the first idea to a finished app you can actually use."</p>
+  <div class="flow reveal">
+    <div class="flow-line"></div><div class="flow-dot"></div>
+    <div class="flow-step">
+      <div class="flow-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.3 1 2.5h6c0-1.2.2-1.7 1-2.5A6 6 0 0 0 12 3Z"/></svg></div>
+      <h4>Idea</h4>
+      <p>Find the real problem and the story worth telling.</p>
+    </div>
+    <div class="flow-step">
+      <div class="flow-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4Z"/><path d="M14 6l3 3"/></svg></div>
+      <h4>Design</h4>
+      <p>Shape the brand, the look, and how it should feel.</p>
+    </div>
+    <div class="flow-step">
+      <div class="flow-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></div>
+      <h4>Build</h4>
+      <p>Turn the design into a real, working app.</p>
+    </div>
+    <div class="flow-step">
+      <div class="flow-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15c0-5 3-10 7-12 4 2 7 7 7 12l-3 2-2-2h-4l-2 2-3-2Z"/><circle cx="12" cy="9" r="1.6"/></svg></div>
+      <h4>Ship</h4>
+      <p>Launch it, polish it, and keep making it better.</p>
+    </div>
   </div>
 
   <div class="products-grid">
@@ -820,7 +879,7 @@ footer{
         <div class="featured-badge">★ Flagship</div>
         <div class="card-tag">Eco game · AR</div>
         <div class="card-name">Trashure-Hunters</div>
-        <div class="card-desc">Pick up real trash, prove it with a photo, and grow your own creatures. Cleaning the world turns into a game, with its own monster cast and a map you take over block by block.</div>
+        <div class="card-desc">Pick up real trash, prove it with a photo, and grow your own creatures. A full game world with its own cast led by Sproutz, real realms to explore, and a map you take over block by block.</div>
         <div class="card-cta">See the case study <div class="card-cta-arrow">→</div></div>
       </div>
     </a>
@@ -872,15 +931,15 @@ footer{
       </div>
     </a>
 
-    <!-- 5 · CHORE WARS -->
+    <!-- 5 · CHORE ROYALE -->
     <a class="product-card c-chore reveal" href="https://3shamrocksstudio.github.io/chore-wars/landing.html" target="_blank" rel="noopener">
       <div class="card-visual">
         <div class="status-badge status-dev">In dev</div>
-        <img src="assets/products/chore-wars.svg" class="card-logo" alt="Chore Wars" loading="lazy">
+        <img src="assets/brand/chore-logo.png" class="card-logo" alt="Chore Royale" loading="lazy">
       </div>
       <div class="card-body">
         <div class="card-tag">Family · Game</div>
-        <div class="card-name">Chore Wars</div>
+        <div class="card-name">Chore Royale</div>
         <div class="card-desc">The family chore game show. Spin for your chores, battle your siblings, keep a streak, and trade your stars for real rewards. Cleaning your room finally counts for something.</div>
         <div class="card-cta">See the landing page <div class="card-cta-arrow">→</div></div>
       </div>
@@ -945,7 +1004,7 @@ footer{
     <a class="product-card c-milo reveal" href="https://3shamrocksstudio.github.io/milo-app/" target="_blank" rel="noopener">
       <div class="card-visual">
         <div class="status-badge status-concept">Concept</div>
-        <img src="assets/products/milo.svg" class="card-logo" alt="Milo" loading="lazy">
+        <img src="assets/brand/milo-mascot.svg" class="card-logo" alt="Milo" loading="lazy" style="width:112px;height:112px">
       </div>
       <div class="card-body">
         <div class="card-tag">Feelings · Wellbeing</div>
@@ -959,6 +1018,7 @@ footer{
     <a class="product-card c-fairent reveal" href="https://3shamrocksstudio.github.io/fairent/" target="_blank" rel="noopener">
       <div class="card-visual">
         <div class="status-badge status-concept">Concept</div>
+        <img src="assets/brand/fairent-wordmark-white.png" class="card-logo" alt="Fairent" loading="lazy">
       </div>
       <div class="card-body">
         <div class="card-tag">Renters · Fair rent</div>
@@ -972,6 +1032,7 @@ footer{
     <a class="product-card c-media reveal" href="https://www.instagram.com/3shamrocks.studio/" target="_blank" rel="noopener">
       <div class="card-visual">
         <div class="status-badge status-live">Live</div>
+        <div class="media-viz"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
       <div class="card-body">
         <div class="card-tag">Social · Content</div>
@@ -1205,7 +1266,7 @@ footer{
           <a href="https://3shamrocksstudio.github.io/lickpick/app/" target="_blank">LickPick</a>
           <a href="https://3shamrocksstudio.github.io/ezra/" target="_blank">Ezra</a>
           <a href="shomer-case.html">SH✡MER</a>
-          <a href="https://3shamrocksstudio.github.io/chore-wars/landing.html" target="_blank">Chore Wars</a>
+          <a href="https://3shamrocksstudio.github.io/chore-wars/landing.html" target="_blank">Chore Royale</a>
           <a href="https://3shamrocksstudio.github.io/gambit-app/" target="_blank">Rookie & King</a>
         </div>
       </div>
@@ -1366,6 +1427,31 @@ document.querySelectorAll('.about-stats').forEach(el=>cntIO.observe(el));
 /* XP bar fill + contact carousel */
 window.addEventListener('load',()=>{const xf=document.getElementById('xp-fill');if(xf)requestAnimationFrame(()=>xf.style.width='88%');});
 (function(){const c=document.getElementById('contact-carousel');if(!c)return;const sl=[...c.querySelectorAll('.cslide')];const d=c.querySelector('.contact-dots');if(!sl.length||!d)return;sl.forEach((_,i)=>{const b=document.createElement('i');if(i===0)b.className='on';d.appendChild(b);});let i=0;setInterval(()=>{sl[i].classList.remove('on');d.children[i].classList.remove('on');i=(i+1)%sl.length;sl[i].classList.add('on');d.children[i].classList.add('on');},3200);})();
+/* ===== DESIGN-SYSTEM INFRASTRUCTURE WIREFRAME BACKGROUND ===== */
+(function(){
+  const cv=document.getElementById('ds-grid'); if(!cv) return;
+  const ctx=cv.getContext('2d'); let w,h,dpr=1,t=0,mx=0.5,my=0.5,tmx=0.5,tmy=0.5;
+  const COLS=14, ROWS=9;
+  function size(){dpr=Math.min(window.devicePixelRatio||1,2);const r=cv.getBoundingClientRect();w=cv.width=Math.max(1,r.width*dpr);h=cv.height=Math.max(1,r.height*dpr);}
+  size(); window.addEventListener('resize',size);
+  window.addEventListener('pointermove',e=>{tmx=e.clientX/window.innerWidth;tmy=e.clientY/window.innerHeight;});
+  function iso(x,y,z){
+    const ox=(mx-0.5)*70*dpr, oy=(my-0.5)*46*dpr;
+    const px=w*0.5 + (x-y)*(w/(COLS*1.7)) + ox;
+    const py=h*0.30 + (x+y)*(h/(ROWS*2.3)) - z + oy;
+    return [px,py];
+  }
+  function line(a,b){const g=ctx.createLinearGradient(a[0],a[1],b[0],b[1]);g.addColorStop(0,'rgba(130,57,234,0.20)');g.addColorStop(1,'rgba(61,204,110,0.14)');ctx.strokeStyle=g;ctx.lineWidth=1*dpr;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  function draw(){
+    t+=0.012; mx+=(tmx-mx)*0.05; my+=(tmy-my)*0.05; ctx.clearRect(0,0,w,h);
+    const pts=[];
+    for(let i=0;i<=COLS;i++){pts[i]=[];for(let j=0;j<=ROWS;j++){const z=Math.sin(i*0.6+t)*12*dpr+Math.cos(j*0.7+t*0.8)*12*dpr;pts[i][j]=iso(i,j,z);}}
+    for(let i=0;i<=COLS;i++)for(let j=0;j<=ROWS;j++){const p=pts[i][j];if(i<COLS)line(p,pts[i+1][j]);if(j<ROWS)line(p,pts[i][j+1]);}
+    for(let i=0;i<=COLS;i++)for(let j=0;j<=ROWS;j++){const p=pts[i][j];const pulse=(Math.sin(i+j+t*2)+1)/2;ctx.beginPath();ctx.arc(p[0],p[1],(1.1+pulse*1.9)*dpr,0,6.283);ctx.fillStyle='rgba('+(pulse>0.62?'82,232,125':'155,89,247')+','+(0.3+pulse*0.5)+')';ctx.fill();}
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 </script>
 </body>
 </html>
