@@ -19,6 +19,8 @@ python3 gen_drums.py media/qa/t3_rock128.wav media/qa/truth.json media/z_drums12
 python3 -c "import json; a = sum((json.load(open(f'media/{d}/truth.json')) for d in ('qa', 'x', 'y')), []); json.dump(a, open('media/truth.json', 'w')); print(len(a), 'takes')"
 # round 4: takes for the tap-4-beats flow (tools/tap4.mjs): a reggae one-drop and a cumbia (beat gate) and a rock take (no gate)
 python3 gen_v4.py media/r4 tune4 1 reggae,cumbia,rock && for f in media/r4/*.wav; do enc "$f" "media/r4/$(basename "$f" .wav).webm"; done
+# 2026-10-22: Set the beat (tools/metro.mjs, tools/metrosim.mjs): 2 held-out takes per style (test4 seeds, never tuned on)
+python3 gen_v4.py media/r5 test4 2 reggae,cumbia,funk,bossa,ballad68,waltz,rock,rubato && for f in media/r5/*.wav; do enc "$f" "media/r5/$(basename "$f" .wav).webm"; done && cp media/r5/truth_part.json media/r5/truth.json
 # edge cases: no sound, sound only, empty, cut short, not a video, portrait, h264/aac, a big 720p file
 E=media/edge
 ffmpeg -v error -y -f lavfi -i "color=c=0x334455:s=320x180:r=12" -t 30 -c:v libvpx -b:v 60k "$E/no_audio.webm"

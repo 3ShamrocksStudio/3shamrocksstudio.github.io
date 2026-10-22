@@ -1,7 +1,7 @@
 // Round-3 band check in a real browser: per take, the band's first-sound latency (tap -> first band sound scheduled to
 // play), what the band plays (tempo, meter, 3/4 or 6/8, sections, style, swing) and how its beats sit on the true beats.
 // usage: LPMEDIA=dir-with-truth.json+webm LPURL=... node band3.mjs name [name...]
-import { boot, addAndScan, openTake, M, L, HOOK } from "./h.mjs";
+import { boot, addAndScan, openTake, M, L, HOOK, lockIfAsked } from "./h.mjs";
 import fs from "fs";
 const truth = JSON.parse(fs.readFileSync(M + "/truth.json")), names = process.argv.slice(2), out = [];
 const near = (arr, t) => arr.reduce((b, x) => Math.abs(x - t) < Math.abs(b - t) ? x : b, arr[0]);
@@ -14,7 +14,7 @@ for (const T of truth.filter(t => !names.length || names.includes(t.name))) {
     // stretch the Pick to the whole take so the band covers every section, then tap the band on
     await pg.evaluate(() => { const c = __lp.t.cur(), p = __lp.t.pickOf(c), k = `${c._picks?.key}|${c.pickSel || 0}`; c.pickAdj = c.pickAdj || {}; c.pickAdj[k] = { s: -p.s, e: c.raw.duration - p.e }; __lp.t.renderStudio(); });
     const n0 = await pg.evaluate(() => window.__srcLog.length), tTap = Date.now();
-    await pg.locator("#sStage .pb-band").click();
+    await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg);
     await pg.waitForFunction(n0 => window.__srcLog.length > n0 + 1 && __lp.q().bandPlaying, n0, { timeout: 300000 });
     const tFirst = Date.now();
     const lat = await pg.evaluate(n0 => { const S = window.__srcLog.slice(n0), band = S.filter(x => x.len && x.len < 1e4); const f = band[0]; return f ? Math.max(0, f.when - f.now) : null; }, n0);

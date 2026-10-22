@@ -1,12 +1,12 @@
 // Save with the band (take muted in the mixer) and keep the file: the band as EXPORTED. usage: node export.mjs name [full]
-import { boot, addAndScan, openTake, M, L } from "./h.mjs";
+import { boot, addAndScan, openTake, M, L, lockIfAsked } from "./h.mjs";
 import fs from "fs";
 const [name, full] = process.argv.slice(2); fs.mkdirSync(`${L}/export`, { recursive: true });
 const { b, pg, log } = await boot({ width: 412 });
 await addAndScan(pg, [`${M}/${name}.webm`]); await pg.waitForTimeout(1000); await openTake(pg);
 if (full) await pg.evaluate(() => { const c = __lp.t.cur(), p = __lp.t.pickOf(c), k = `${c._picks?.key}|${c.pickSel || 0}`; c.pickAdj = c.pickAdj || {}; c.pickAdj[k] = { s: -p.s, e: c.raw.duration - p.e }; __lp.t.renderStudio(); });
-await pg.locator("#sStage .pb-band").click(); await pg.waitForTimeout(3000);
-await pg.locator("#sStage .pb-band").click(); await pg.waitForTimeout(300); await pg.locator("#sStage .pb-band").click(); await pg.waitForTimeout(1500);
+await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForTimeout(3000);
+await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForTimeout(300); await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForTimeout(1500);
 // rock is a free style: saving with it needs no Pro. Take muted (the mixer's take switch), band at 100%.
 // env STYLE picks another style (e.g. blues = Shuffle); PRO=1 unlocks Pro in this test page only, to save a Pro style
 const STYLE = process.env.STYLE || "rock"; if (process.env.PRO) await pg.evaluate(() => { __lp.lic.tier = "pro"; });

@@ -1,4 +1,4 @@
-import { boot, M, L, openTake } from "./h.mjs";
+import { boot, M, L, openTake, lockIfAsked } from "./h.mjs";
 import fs from "fs";
 const { b, ctx, pg, log } = await boot({ width: 390 });
 const cdp = await ctx.newCDPSession(pg); await cdp.send("Performance.enable");
@@ -19,14 +19,14 @@ const long = { wallMs: Date.now() - t0, appMs: await pg.evaluate(() => Math.roun
 await pg.waitForTimeout(1500);
 const k = await pg.evaluate(() => [...document.querySelectorAll("#list .card")].findIndex(c => /long6min/.test(c.innerText)));
 await pg.locator("#list .card").nth(k).click(); await pg.waitForTimeout(2000);
-await pg.locator("#sStage .pb-band").click(); await pg.waitForFunction(() => __lp.q().bandPlaying && __lp.q().player.ext, null, { timeout: 120000 }); await pg.waitForTimeout(2000);
+await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForFunction(() => __lp.q().bandPlaying && __lp.q().player.ext, null, { timeout: 120000 }); await pg.waitForTimeout(2000);
 long.bandPick = await mem();
 await pg.evaluate(() => { const c = __lp.t.cur(), p = __lp.t.pickOf(c), k = `${c._picks?.key}|${c.pickSel || 0}`; c.pickAdj = c.pickAdj || {}; c.pickAdj[k] = { s: -p.s, e: c.raw.duration - p.e }; __lp.t.renderStudio(); });
-await pg.locator("#sStage .pb-band").click(); await pg.waitForTimeout(300); const tR = Date.now(); await pg.locator("#sStage .pb-band").click();
+await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForTimeout(300); const tR = Date.now(); await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg);
 await pg.waitForFunction(() => __lp.q().bandPlaying && __lp.q().player.ext, null, { timeout: 300000 }); long.fullBandMs = Date.now() - tR; await pg.waitForTimeout(2000);
 long.bandFull = await mem();
 // close the studio and see what is released
-await pg.locator("#sStage .pb-band").click(); await pg.goBack(); await pg.waitForTimeout(1500); long.afterClose = await mem();
+await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.goBack(); await pg.waitForTimeout(1500); long.afterClose = await mem();
 const proc = await pg.evaluate(() => performance.memory ? { used: Math.round(performance.memory.usedJSHeapSize / 1e6), total: Math.round(performance.memory.totalJSHeapSize / 1e6), limit: Math.round(performance.memory.jsHeapSizeLimit / 1e6) } : null);
 fs.writeFileSync(`${L}/perf.json`, JSON.stringify({ rows, long, proc, log }, null, 1)); console.log(JSON.stringify({ long, proc }, null, 1));
 await b.close();

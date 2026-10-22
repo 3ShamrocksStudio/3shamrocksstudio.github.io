@@ -1,11 +1,11 @@
-import { boot, addAndScan, openTake, M, L } from "./h.mjs";
+import { boot, addAndScan, openTake, M, L, lockIfAsked } from "./h.mjs";
 import fs from "fs";
 const name = process.argv[2] || "t5_drift100to105";
 const { b, pg } = await boot({ width: 412 });
 await addAndScan(pg, [`${M}/${name}.webm`]); await pg.waitForTimeout(800); await openTake(pg);
 await pg.evaluate(() => { const c = __lp.t.cur(), p = __lp.t.pickOf(c), k = `${c._picks?.key}|${c.pickSel || 0}`; c.pickAdj = c.pickAdj || {}; c.pickAdj[k] = { s: -p.s, e: c.raw.duration - p.e }; __lp.t.renderStudio(); });
-await pg.locator("#sStage .pb-band").click(); await pg.waitForTimeout(4000); await pg.locator("#sStage .pb-band").click(); await pg.waitForTimeout(500);
-await pg.locator("#sStage .pb-band").click(); await pg.waitForTimeout(500);
+await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForTimeout(4000); await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForTimeout(500);
+await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForTimeout(500);
 await pg.evaluate(() => { const c = __lp.t.cur(); c.band.style = "rock"; c.band.gain = 1; c.snd = { ...(c.snd || {}), takeOn: false }; });
 // the stems mix exactly as bandMix builds it, at the stems' rate → 16-bit wav
 const wav = await pg.evaluate(async () => { const c = __lp.t.cur(), r = await __lp.t.bandRender(c); const ks = Object.keys(r.stems); const n = r.stems.drums.length, sr = r.stems.drums.sampleRate, out = new Int16Array(n);

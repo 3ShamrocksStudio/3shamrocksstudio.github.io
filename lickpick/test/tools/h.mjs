@@ -41,3 +41,8 @@ export async function addAndScan(pg, files, timeout = 600000) {
 }
 export const shot = (pg, n) => pg.screenshot({ path: `${L}/${n}.png` });
 export function save(n, o) { fs.writeFileSync(`${L}/${n}`, JSON.stringify(o, null, 1)); }
+// 2026-10-22: the band waits for Set the beat. Tools that just need the band playing accept LickPick's guess ("Sounds right · Lock it").
+export async function lockIfAsked(pg, wait = 1500) {
+  await pg.waitForTimeout(wait);
+  if (await pg.locator('#metro [data-metro="lock"]').count()) { await pg.locator('#metro [data-metro="lock"]').first().click(); await pg.waitForTimeout(800); }
+}

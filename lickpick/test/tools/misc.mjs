@@ -1,5 +1,5 @@
 // reload mid-scan, offline, signed-out gate, guest delete row
-import { boot, addAndScan, M, L, vis, skipGates } from "./h.mjs";
+import { boot, addAndScan, M, L, vis, skipGates, lockIfAsked } from "./h.mjs";
 import fs from "fs"; const D = `${L}/misc`; fs.mkdirSync(D, { recursive: true });
 const out = {};
 const { b, ctx, pg, log } = await boot({ width: 390, guest: false });
@@ -31,7 +31,7 @@ if (out.offlineBoot?.hasApp) {
   const t0 = Date.now(); try { await pg.setInputFiles("#pick", [`${M}/t6_break110.webm`]); await pg.waitForFunction(() => __ck.clips.some(c => /break110/.test(c.name) && ["done", "error"].includes(c.status)), null, { timeout: 120000 }); out.offlineScan = await pg.evaluate(() => { const c = __ck.clips.find(c => /break110/.test(c.name)); return [c.status, c.raw?.info?.tempo, !!__lp.t.pickOf(c)]; }); } catch (e) { out.offlineScan = "fail " + e.message.slice(0, 100); }
   out.offlineScanMs = Date.now() - t0;
   // band offline
-  try { await pg.locator("#list .card").filter({ hasText: "break110" }).first().click(); await pg.waitForTimeout(1500); await pg.locator("#sStage .pb-band").click(); await pg.waitForFunction(() => __lp.q().bandPlaying && __lp.q().player.ext, null, { timeout: 60000 }); out.offlineBand = "plays"; } catch (e) { out.offlineBand = "fail " + e.message.slice(0, 100); }
+  try { await pg.locator("#list .card").filter({ hasText: "break110" }).first().click(); await pg.waitForTimeout(1500); await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForFunction(() => __lp.q().bandPlaying && __lp.q().player.ext, null, { timeout: 60000 }); out.offlineBand = "plays"; } catch (e) { out.offlineBand = "fail " + e.message.slice(0, 100); }
   await pg.screenshot({ path: `${D}/offline-band.png` });
 }
 await ctx.setOffline(false);

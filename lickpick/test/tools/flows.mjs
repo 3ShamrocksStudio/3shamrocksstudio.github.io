@@ -103,12 +103,17 @@ await step("fullscreen", async () => {
 // ---------- 3. band from the player
 await step("band on", async () => {
   if (!R.studioOpenAfterFsEsc) { await pg.locator("#list .card").nth(Math.max(0, idx)).click(); await pg.waitForTimeout(1500); }
+  // 2026-10-22: the drum opens Set the beat (your take + the click on LickPick's guess); "Sounds right · Lock it" = the band
   taps = 0; await tap("#sStage .pb-band", { wait: 0 });
-  const tB = Date.now(); await pg.waitForFunction(() => __lp.q().bandPlaying && __lp.q().player.ext && !__lp.q().video.paused, null, { timeout: 60000 }); R.bandStartMs = Date.now() - tB;
-  R.taps.bandOn = 1 + 1; await pg.waitForTimeout(1500); await audit("05-band-playing");
-  ok("band: one tap on the player = band plays", true, `${R.bandStartMs} ms to sound`);
+  await pg.waitForFunction(() => __ck.metro && __lp.q().bandPlaying && document.querySelector("#metro"), null, { timeout: 60000 }); await pg.waitForTimeout(1200); await audit("05a-set-the-beat");
+  ok("band: the drum opens Set the beat with your take playing", await q(() => !!document.querySelector("#metro") && __lp.t.beatPending(__lp.t.cur())));
+  await tap('#metro [data-metro="lock"]', { wait: 0 });
+  const tB = Date.now(); await pg.waitForFunction(() => __lp.q().bandPlaying && !__ck.metro && __lp.q().player.ext && !__lp.q().video.paused, null, { timeout: 60000 }); R.bandStartMs = Date.now() - tB;
+  R.taps.bandOn = 1 + taps; await pg.waitForTimeout(1500); await audit("05-band-playing");
+  ok("band: drum + Lock it = band plays on the locked beat", await q(() => !!__lp.t.cur().band.lock), `${R.bandStartMs} ms to sound`);
 });
 await step("speed during band", async () => {
+  await q(() => document.getElementById("studio").scrollTo(0, 0)); await pg.waitForTimeout(500);   // Set the beat scrolled the card in: the full player (with speed) is at the top
   const before = await pv(); await tap("#sStage .pb-speed", { wait: 600 }); const after = await pv(); const toast = await q(() => document.querySelector(".toast, #toast")?.innerText || "");
   ok("speed during band: band keeps 1× and tells you why", after.band && Math.abs(after.rate - 1) < 0.05 && /Speed/.test(toast), { before: before.rate, after: after.rate, toast });
 });
@@ -140,22 +145,24 @@ await step("loop during band", async () => {
 await step("band panel", async () => {
   taps = 0; await tap('.stepbar [data-sc="band"]', { wait: 1200 }); await audit("06-band-panel");
   ok("band panel: no horizontal scroll", hsOk("06-band-panel"), R.hs["06-band-panel"]);
-  // nudge while playing: band restarts from the same spot, grid moves 10 ms
+  // nudge (Set the beat, Later = 10 ms) while playing: the band comes back from the same spot, its grid 10 ms later
   const g0 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.beats[2]); const p0 = await q(() => __lp.q().player.ext?.());
-  await tap('[data-bnudge="10"]', { wait: 1500 }); const g1 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.beats[2]); const s = await pv(); const p1 = await q(() => __lp.q().player.ext?.());
-  ok("nudge +10 ms shifts the band grid by 10 ms and keeps playing from the same spot", Math.abs((g1 - g0) - 0.01) < 1e-4 && s.band && p1 >= p0 - 0.5, { d: g1 - g0, band: s.band, p0, p1 });
-  await tap('[data-bnudge="0"]', { wait: 1200 });
-  // ½ beat
-  const h0 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.beats.slice(0, 3)); const hb = await pg.locator('[data-bfix="shift"]').filter({ visible: true }).count();
-  if (hb) { await tap('[data-bfix="shift"]', { wait: 1500 }); const h1 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.beats.slice(0, 3)); const s2 = await pv();
-    ok("½ beat moves the band half a beat and keeps playing", s2.band && Math.abs((h1[0] - h0[0]) - (h0[1] - h0[0]) / 2) < 0.03, { h0, h1, band: s2.band }); await tap('[data-bfix="shift"]', { wait: 1200 }); }
-  else ok("½ beat button present", false, "not visible");
-  // tap tempo while playing: 6 taps on a deliberately different tempo (100 BPM) → band should follow it audibly
-  const n0 = await q(() => __srcLog.length); const bpm0 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.bpm);
-  for (let i = 0; i < 6; i++) { await pg.locator('[data-bpm="tap"]').filter({ visible: true }).first().click(); await pg.waitForTimeout(600); }
-  await pg.waitForTimeout(1500); const bpm1 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.bpm); const restarted = await q(n0 => __srcLog.slice(n0).length, n0); const toast = await q(() => document.querySelector(".toast, #toast")?.innerText || "");
-  ok("tap tempo while playing: band changes AND the playing band is re-rendered", bpm1 !== bpm0 && restarted > 0, { bpm0, bpm1, newSources: restarted, toast });
-  await q(() => { const c = __lp.t.cur(); delete c.band.grid; c._bandA = null; });
+  await tap('.bandhead [data-metro="open"]', { wait: 900 }); await tap('#metro [data-metro="late"]', { wait: 300 }); await tap('#metro [data-metro="lock"]', { wait: 2000 });
+  const g1 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.beats[2]); const s = await pv(); const p1 = await q(() => __lp.q().player.ext?.());
+  ok("Later +10 ms shifts the band grid by 10 ms and keeps playing from the same spot", Math.abs((g1 - g0) - 0.01) < 2e-3 && s.band && p1 >= p0 - 0.5, { d: g1 - g0, band: s.band, p0, p1 });
+  await tap('.bandhead [data-metro="open"]', { wait: 900 }); await tap('#metro [data-metro="early"]', { wait: 300 }); await tap('#metro [data-metro="lock"]', { wait: 1500 });
+  // the beat: the edit chip reopens Set the beat; Flip ½ + Lock it moves the band half a beat and it plays again
+  const h0 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.beats.slice(0, 3));
+  await tap('.bandhead [data-metro="open"]', { wait: 1200 }); ok("the beat chip reopens Set the beat", await q(() => !!document.querySelector("#metro")));
+  await tap('#metro [data-metro="flip"]', { wait: 300 }); await tap('#metro [data-metro="lock"]', { wait: 2500 });
+  const h1 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.beats.slice(0, 3)); const s2 = await pv(), dh = ((h1[0] - h0[0]) % (h0[1] - h0[0]) + (h0[1] - h0[0])) % (h0[1] - h0[0]);
+  ok("Flip ½ + Lock it moves the band half a beat and keeps playing", s2.band && Math.abs(dh - (h0[1] - h0[0]) / 2) < 0.03, { h0, h1, band: s2.band });
+  // BPM + while it plays: the click follows at once, Lock it re-renders the band at the new tempo
+  await tap('.bandhead [data-metro="open"]', { wait: 1200 }); const n0 = await q(() => __srcLog.length); const bpm0 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.bpm);
+  for (let i = 0; i < 3; i++) await tap('#metro [data-metro="bpm+"]', { wait: 250 });
+  await tap('#metro [data-metro="lock"]', { wait: 2500 }); const bpm1 = await q(() => __lp.t.bandKey(__lp.t.cur()).A.bpm); const restarted = await q(n0 => __srcLog.slice(n0).length, n0);
+  ok("BPM + ×3 then Lock it: the band changes tempo AND is re-rendered", bpm1 === bpm0 + 3 && restarted > 0, { bpm0, bpm1, newSources: restarted });
+  await q(() => { const c = __lp.t.cur(); c.band.lock = { ...__lp.t.guessLock(c), at: 1 }; c._bandL = null; });
   // style change: one tap
   taps = 0; const st = await q(() => [...document.querySelectorAll("[data-bstyle]")].map(b => b.dataset.bstyle)); R.styles = st;
   const pick = st.find(s => s !== "auto" && s !== "rock") || st[1];
@@ -205,7 +212,7 @@ await step("save plain", async () => { await q(() => { __lp.t.bandToggle && __lp
 await step("save with band", async () => {
   if (!(await q(() => !document.getElementById("studio").hidden))) { await pg.locator("#list .card").nth(Math.max(0, idx)).click(); await pg.waitForTimeout(1500); }
   await q(() => { const c = __lp.t.cur(); c.band && (c.band.style = "rock", c.band.gain = 0.8); });
-  if (!(await q(() => __lp.t.exOpts(__lp.t.cur()).band))) { await tap("#sStage .pb-band", { wait: 2500 }); }
+  if (!(await q(() => __lp.t.exOpts(__lp.t.cur()).band))) { await tap("#sStage .pb-band", { wait: 2500 }); if (await vis(pg, '#metro [data-metro="lock"]')) await tap('#metro [data-metro="lock"]', { wait: 2500 }); }
   R.savedBand = await saveOnce("band");
 });
 // ---------- 5. My licks

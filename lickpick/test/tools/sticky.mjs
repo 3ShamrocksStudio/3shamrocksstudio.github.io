@@ -1,11 +1,11 @@
-import { boot, addAndScan, openTake, M, L } from "./h.mjs";
+import { boot, addAndScan, openTake, M, L, lockIfAsked } from "./h.mjs";
 import fs from "fs"; fs.mkdirSync(L + "/sticky", { recursive: true });
 for (const [w, h] of [[360, 640], [390, 800], [412, 915]]) {
   const { b, pg } = await boot({ width: w, ctxOpts: { viewport: { width: w, height: h } } });
   await addAndScan(pg, [M + "/t3_rock128.webm"]); await pg.waitForTimeout(800); await openTake(pg); await pg.waitForTimeout(1200);
   for (const tab of ["choose", "band"]) {
     await pg.locator(`.stepbar [data-sc="${tab}"]`).click(); await pg.waitForTimeout(900);
-    if (tab === "band") { await pg.locator("#sStage .pb-band").click(); await pg.waitForTimeout(2500); }
+    if (tab === "band") { await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForTimeout(2500); }
     const info = await pg.evaluate(() => { const st = document.getElementById("studio"); const sc = [st, ...st.querySelectorAll("*")].find(e => e.scrollHeight > e.clientHeight + 5 && /auto|scroll/.test(getComputedStyle(e).overflowY)); const fixed = [...st.querySelectorAll("*"), document.getElementById("sBar")].filter(e => e && /sticky|fixed/.test(getComputedStyle(e).position) && e.offsetParent !== undefined).map(e => ({ id: e.id || e.className.toString().slice(0, 20), pos: getComputedStyle(e).position, top: Math.round(e.getBoundingClientRect().top), h: Math.round(e.getBoundingClientRect().height) }));
       return { scroller: sc ? (sc.id || sc.className) : null, sh: sc?.scrollHeight, ch: sc?.clientHeight, fixed }; });
     console.log(w, h, tab, JSON.stringify(info));

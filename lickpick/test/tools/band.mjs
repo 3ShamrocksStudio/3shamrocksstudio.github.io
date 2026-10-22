@@ -1,5 +1,5 @@
 // Band timing vs ground truth, on the LIVE app. usage: node band.mjs name [name...]
-import { boot, addAndScan, openTake, M, L, shot, HOOK } from "./h.mjs";
+import { boot, addAndScan, openTake, M, L, shot, HOOK, lockIfAsked } from "./h.mjs";
 import fs from "fs";
 const truth = JSON.parse(fs.readFileSync(M + "/truth.json"));
 const names = process.argv.slice(2);
@@ -13,7 +13,7 @@ for (const T of truth.filter(t => !names.length || names.includes(t.name))) {
     Object.assign(row, await pg.evaluate(() => { const c = __ck.clips[0], p = __lp.t.pickOf(c); return { appKey: c.raw.info.key, appTempo: c.raw.info.tempo, pick: [+p.s.toFixed(2), +p.e.toFixed(2)], scanMsApp: c.scanMs }; }));
     await openTake(pg);
     // 1) band ON from the player (the real button), Pick window
-    await pg.locator("#sStage .pb-band").click();
+    await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg);
     await pg.waitForFunction(() => window.__srcLog.length >= 2 && __lp.q().bandPlaying, null, { timeout: 120000 });
     await pg.waitForTimeout(1500);
     // A/V sync: picture vs the heard sound, while the band plays (ms, + = picture ahead)
@@ -23,10 +23,10 @@ for (const T of truth.filter(t => !names.length || names.includes(t.name))) {
     await shot(pg, `band-${T.name}-playing`);
     // 2) stretch the Pick to the whole take (what many "+1 bar" taps do) and restart the band: band covers the whole take
     await pg.evaluate(() => { const c = __lp.t.cur(), p = __lp.t.pickOf(c), k = `${c._picks?.key}|${c.pickSel || 0}`; c.pickAdj = c.pickAdj || {}; c.pickAdj[k] = { s: -p.s, e: c.raw.duration - p.e }; __lp.t.renderStudio(); });
-    await pg.locator("#sStage .pb-band").click(); await pg.waitForTimeout(300);   // off
+    await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg); await pg.waitForTimeout(300);   // off
     const n0 = await pg.evaluate(() => window.__srcLog.length);
     const tR = Date.now();
-    await pg.locator("#sStage .pb-band").click();                                 // on, full take
+    await pg.locator("#sStage .pb-band").click(); await lockIfAsked(pg);                                 // on, full take
     await pg.waitForFunction(n0 => window.__srcLog.length > n0 + 1 && __lp.q().bandPlaying, n0, { timeout: 300000 });
     row.renderFullMs = Date.now() - tR;
     await pg.waitForTimeout(800);
