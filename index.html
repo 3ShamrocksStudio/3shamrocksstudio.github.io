@@ -701,7 +701,8 @@ footer{
 .flow-step p{font-size:12px;line-height:1.55;color:var(--muted)}
 @media(max-width:700px){.flow{grid-template-columns:1fr 1fr;gap:22px 0}.flow-line,.flow-dot{display:none}}
 /* ticker brand glyph */
-.ticker-track span:not(.ticker-sep)::before{content:'';display:inline-block;width:7px;height:7px;margin-right:9px;transform:rotate(45deg);background:linear-gradient(135deg,var(--purple),var(--green));border-radius:2px;vertical-align:middle}
+.ticker-track span:not(.ticker-sep){display:inline-flex;align-items:center;gap:8px}
+.tk-ic{width:15px;height:15px;color:var(--purple-3);flex-shrink:0}
 /* corrected banner backgrounds */
 .c-trashure .card-visual{background:url(assets/brand/th-hero-team.png) center/cover no-repeat,linear-gradient(150deg,#1a0f00,#2a1600)}
 .c-shomer .card-visual{background:linear-gradient(150deg,#0c1b39 0%,#1e315f 60%,#0c1b39 100%)}
@@ -716,6 +717,46 @@ footer{
 .media-viz i{border-radius:10px;background:linear-gradient(135deg,rgba(224,168,40,0.28),rgba(130,57,234,0.2));border:1px solid rgba(255,255,255,0.08);animation:mediaPulse 3s ease-in-out infinite}
 .media-viz i:nth-child(2){animation-delay:.4s}.media-viz i:nth-child(3){animation-delay:.8s}.media-viz i:nth-child(4){animation-delay:1.2s}.media-viz i:nth-child(5){animation-delay:1.6s}.media-viz i:nth-child(6){animation-delay:2s}
 @keyframes mediaPulse{0%,100%{opacity:0.45}50%{opacity:1}}
+
+/* ===== REVISIONS 3 ===== */
+/* device-screen carousels */
+.phone{position:relative;width:var(--pw,210px);aspect-ratio:9/19;border-radius:32px;background:#05050c;border:6px solid #15151f;box-shadow:0 30px 70px rgba(0,0,0,0.55),0 0 0 1px rgba(255,255,255,0.06),0 0 70px -12px var(--purple-glow);overflow:hidden}
+.phone-notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:32%;height:18px;background:#05050c;border-radius:0 0 12px 12px;z-index:3}
+.phone-screens{position:absolute;inset:0;border-radius:26px;overflow:hidden}
+.pscreen{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .55s ease}
+.pscreen.on{opacity:1}
+.hero-phone{position:absolute;left:-3%;top:50%;transform:translateY(-50%) rotate(-7deg);--pw:188px;z-index:3;animation:phoneFloat 6s ease-in-out infinite alternate}
+@keyframes phoneFloat{from{transform:translateY(-50%) rotate(-7deg)}to{transform:translateY(-57%) rotate(-4deg)}}
+@media(max-width:900px){.hero-phone{position:relative;left:0;top:0;transform:none;margin:20px auto 0;animation:none}}
+.contact-carousel{width:auto!important;aspect-ratio:auto!important;border:0!important;background:none!important;box-shadow:none!important;overflow:visible!important;display:flex;justify-content:center;margin:0 auto 30px}
+.contact-carousel .phone{--pw:244px}
+/* About photo much larger, full height, aligned with text */
+#about .about-grid{grid-template-columns:1.05fr 1fr;align-items:stretch}
+.about-visual{align-items:flex-end;justify-content:center;min-height:580px}
+.about-minime{width:clamp(380px,46vw,660px)!important;max-width:none}
+@media(max-width:800px){.about-visual{min-height:380px}.about-minime{width:min(82vw,440px)!important}}
+/* media network = real content feed */
+.media-viz{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:6px;padding:14px}
+.media-viz img{width:100%;height:100%;object-fit:cover;border-radius:8px;opacity:0.9;animation:mediaPulse 3.4s ease-in-out infinite;border:0}
+.media-viz img:nth-child(2){animation-delay:.5s}.media-viz img:nth-child(3){animation-delay:1s}.media-viz img:nth-child(4){animation-delay:1.5s}.media-viz img:nth-child(5){animation-delay:2s}.media-viz img:nth-child(6){animation-delay:2.5s}
+/* workflow: open, forward-flowing, branded */
+.flow{background:none!important;border:0!important;padding:14px 0 0!important;margin-bottom:52px!important}
+.flow-line{top:36px;left:8%;right:8%;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--purple),var(--purple-3),var(--green),var(--purple));background-size:200% 100%;opacity:0.95;animation:flowShift 3s linear infinite}
+@keyframes flowShift{to{background-position:-200% 0}}
+.flow-dot{display:none}
+.flow-ic{width:64px;height:64px;border-radius:50%;background:linear-gradient(145deg,#15121f,#1d1636);border:1px solid var(--purple);color:var(--purple-3);box-shadow:0 0 0 7px var(--black),0 0 26px -4px var(--purple-glow);transition:transform .3s,box-shadow .3s,color .3s}
+.flow-step{padding-top:4px}
+.flow-step:hover .flow-ic{transform:translateY(-6px) scale(1.07);color:var(--green-2);box-shadow:0 0 0 7px var(--black),0 0 34px -2px var(--green-glow)}
+.flow-ic svg{width:27px;height:27px}
+.flow-num{position:absolute;top:-4px;left:calc(50% + 20px);width:22px;height:22px;border-radius:50%;background:var(--green);color:#04120a;font-family:var(--font-head);font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 0 14px var(--green-glow)}
+/* banner corrections */
+.c-trashure .card-visual{background:url(assets/brand/th-kid-photo.jpg) center/cover no-repeat,#1a0f00}
+.c-fairent .card-visual{background:url(assets/art/new/fairent.jpg) center/cover no-repeat,#1b1340}
+.c-lickpick .card-visual{background:url(assets/brand/lickpick/m_home.jpg) center top/cover no-repeat,#0B0912}
+.c-lickpick .card-visual::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(11,9,18,0.08),rgba(11,9,18,0.72));pointer-events:none}
+.lickpick-word{position:absolute;left:0;right:0;bottom:16px;text-align:center;z-index:2;font-family:var(--font-head);font-weight:800;font-size:27px;color:#fff;text-shadow:0 3px 14px rgba(0,0,0,0.75)}
+.lickpick-word b{color:var(--green-2)}
+.rk-wordmark{position:relative;z-index:2;margin-top:12px;font-family:var(--font-head);font-weight:800;font-size:18px;letter-spacing:-0.01em;color:#FFD700;text-shadow:0 2px 10px rgba(0,0,0,0.6)}
 </style>
 </head>
 <body>
@@ -767,17 +808,29 @@ footer{
         <div class="stat-val">10<span>+</span></div>
         <div class="stat-lbl">Years in HealthTech</div>
       </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-val">11</div>
+        <div class="stat-lbl">Products in the studio</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-val">+68<span>%</span></div>
+        <div class="stat-lbl">Retention at Vibrant</div>
+      </div>
     </div>
   </div>
 
   <div class="hero-character">
-    <div class="hero-chips">
-      <img class="chip chip-logo chip-a" src="assets/products/trashure.png" alt="Trashure-Hunters" loading="lazy">
-      <img class="chip chip-logo chip-b" src="assets/products/shomergency.png" alt="SH✡MER" loading="lazy">
-      <img class="chip chip-logo chip-c" src="assets/brand/chore-logo.png" alt="Chore Royale" loading="lazy">
-      <img class="chip chip-logo chip-d" src="assets/brand/j8nix-logo.png" alt="J8N.IX" loading="lazy">
-      <img class="chip chip-logo chip-e" src="assets/brand/fairent-icon.svg" alt="Fairent" loading="lazy">
-      <img class="chip chip-logo chip-f" src="assets/products/design-system.png" alt="3SDS" loading="lazy">
+    <div class="hero-phone" data-carousel data-interval="1200">
+      <div class="phone"><div class="phone-notch"></div><div class="phone-screens">
+        <img class="pscreen on" src="assets/brand/lickpick/m_home.jpg" alt="LickPick app">
+        <img class="pscreen" src="assets/screens/th-splash.png" alt="Trashure-Hunters app">
+        <img class="pscreen" src="assets/brand/lickpick/m_pick.jpg" alt="LickPick app">
+        <img class="pscreen" src="assets/screens/milo.png" alt="Milo app">
+        <img class="pscreen" src="assets/brand/lickpick/m_band.jpg" alt="LickPick app">
+        <img class="pscreen" src="assets/screens/th-map.png" alt="Trashure-Hunters app">
+      </div></div>
     </div>
     <div class="minime-stand">
       <div class="hero-xp">
@@ -794,73 +847,41 @@ footer{
 </section>
 
 <!-- CLIENT STRIP -->
-<div class="clients">
-  <div class="clients-label">Still building with</div>
-  <div class="clients-strip">
-    <img src="assets/work/vibrant/logo-new.png" alt="Vibrant Gastro">
-  </div>
-  <div class="clients-note">Ongoing product and brand work with Vibrant Gastro, a TIME Best Invention team.</div>
-</div>
-
 <!-- MARQUEE TICKER -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="tk-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 10-10-3-3L5 16z"/><path d="M14 6l3 3"/></symbol><symbol id="tk-gem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l3 6-9 12L3 9z"/><path d="M3 9h18"/></symbol><symbol id="tk-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></symbol><symbol id="tk-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L5 13h5l-1 8 8-11h-5z"/></symbol><symbol id="tk-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="tk-browser" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></symbol><symbol id="tk-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></symbol><symbol id="tk-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 6 6.4.5-4.9 4.2 1.6 6.3L12 17l-5.7 3 1.6-6.3L3 9.5 9.4 9z"/></symbol><symbol id="tk-wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6.5a3.5 3.5 0 0 0-4.6 4.6l-6 6 2 2 6-6a3.5 3.5 0 0 0 4.6-4.6l-2 2-2-2z"/></symbol><symbol id="tk-cursor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l6 16 2-6 6-2z"/></symbol><symbol id="tk-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5l11 7-11 7z"/></symbol><symbol id="tk-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></symbol><symbol id="tk-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l4 4 4-7 4 7 4-4-1 10H5z"/></symbol><symbol id="tk-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15c0-5 3-10 7-12 4 2 7 7 7 12l-3 2-2-2h-4l-2 2z"/><circle cx="12" cy="9" r="1.6"/></symbol></defs></svg>
 <div class="ticker" aria-hidden="true">
-  <div class="ticker-track">
-    <span>Product Design</span><span class="ticker-sep">·</span>
-    <span>Brand Identity</span><span class="ticker-sep">·</span>
-    <span>Design Systems</span><span class="ticker-sep">·</span>
-    <span>Rapid Delivery</span><span class="ticker-sep">·</span>
-    <span>UX Strategy</span><span class="ticker-sep">·</span>
-    <span>Web Applications</span><span class="ticker-sep">·</span>
-    <span>Mobile PWAs</span><span class="ticker-sep">·</span>
-    <span>Creative Direction</span><span class="ticker-sep">·</span>
-    <span>Product Build</span><span class="ticker-sep">·</span>
-    <span>Interaction Design</span><span class="ticker-sep">·</span>
-    <span>Motion Design</span><span class="ticker-sep">·</span>
-    <span>IP Development</span><span class="ticker-sep">·</span>
-    <span>Fractional CDO</span><span class="ticker-sep">·</span>
-    <span>Prototype to Production</span><span class="ticker-sep">·</span>
-    <span>Product Design</span><span class="ticker-sep">·</span>
-    <span>Brand Identity</span><span class="ticker-sep">·</span>
-    <span>Design Systems</span><span class="ticker-sep">·</span>
-    <span>Rapid Delivery</span><span class="ticker-sep">·</span>
-    <span>UX Strategy</span><span class="ticker-sep">·</span>
-    <span>Web Applications</span><span class="ticker-sep">·</span>
-    <span>Mobile PWAs</span><span class="ticker-sep">·</span>
-    <span>Creative Direction</span><span class="ticker-sep">·</span>
-    <span>Product Build</span><span class="ticker-sep">·</span>
-    <span>Interaction Design</span><span class="ticker-sep">·</span>
-    <span>Motion Design</span><span class="ticker-sep">·</span>
-    <span>IP Development</span><span class="ticker-sep">·</span>
-    <span>Fractional CDO</span><span class="ticker-sep">·</span>
-    <span>Prototype to Production</span><span class="ticker-sep">·</span>
-  </div>
+<div class="ticker-track"><span><svg class="tk-ic"><use href="#tk-pen"/></svg>Product Design</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-gem"/></svg>Brand Identity</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-grid"/></svg>Design Systems</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-bolt"/></svg>Rapid Delivery</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-target"/></svg>UX Strategy</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-browser"/></svg>Web Applications</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-phone"/></svg>Mobile PWAs</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-star"/></svg>Creative Direction</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-wrench"/></svg>Product Build</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-cursor"/></svg>Interaction Design</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-play"/></svg>Motion Design</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-shield"/></svg>IP Development</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-crown"/></svg>Fractional CDO</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-rocket"/></svg>Prototype to Production</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-pen"/></svg>Product Design</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-gem"/></svg>Brand Identity</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-grid"/></svg>Design Systems</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-bolt"/></svg>Rapid Delivery</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-target"/></svg>UX Strategy</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-browser"/></svg>Web Applications</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-phone"/></svg>Mobile PWAs</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-star"/></svg>Creative Direction</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-wrench"/></svg>Product Build</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-cursor"/></svg>Interaction Design</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-play"/></svg>Motion Design</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-shield"/></svg>IP Development</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-crown"/></svg>Fractional CDO</span><span class="ticker-sep">·</span><span><svg class="tk-ic"><use href="#tk-rocket"/></svg>Prototype to Production</span><span class="ticker-sep">·</span></div>
 </div>
 
 <!-- PRODUCTS -->
 <section id="work">
   <div class="section-label">Studio Work</div>
-  <h2 class="section-title reveal"><span style="color:var(--white)">Things I</span> <em class="title-built">built.</em></h2>
+  <h2 class="section-title reveal"><span style="color:var(--white)">Things I</span> <em style="font-style:normal;color:var(--green-2)">build.</em></h2>
   <p class="section-sub reveal">Each product has its own brand, interface, and working software. Real products, real code, real craft. Click any to dig in.</p>
 
   <div class="flow reveal">
-    <div class="flow-line"></div><div class="flow-dot"></div>
+    <div class="flow-line"></div>
     <div class="flow-step">
-      <div class="flow-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.3 1 2.5h6c0-1.2.2-1.7 1-2.5A6 6 0 0 0 12 3Z"/></svg></div>
+      <span class="flow-num">1</span>
+      <div class="flow-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.3 1 2.5h6c0-1.2.2-1.7 1-2.5A6 6 0 0 0 12 3Z"/></svg></div>
       <h4>Idea</h4>
       <p>Find the real problem and the story worth telling.</p>
     </div>
     <div class="flow-step">
-      <div class="flow-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4Z"/><path d="M14 6l3 3"/></svg></div>
+      <span class="flow-num">2</span>
+      <div class="flow-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4Z"/><path d="M14 6l3 3"/></svg></div>
       <h4>Design</h4>
       <p>Shape the brand, the look, and how it should feel.</p>
     </div>
     <div class="flow-step">
-      <div class="flow-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></div>
+      <span class="flow-num">3</span>
+      <div class="flow-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></div>
       <h4>Build</h4>
       <p>Turn the design into a real, working app.</p>
     </div>
     <div class="flow-step">
-      <div class="flow-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15c0-5 3-10 7-12 4 2 7 7 7 12l-3 2-2-2h-4l-2 2-3-2Z"/><circle cx="12" cy="9" r="1.6"/></svg></div>
+      <span class="flow-num">4</span>
+      <div class="flow-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15c0-5 3-10 7-12 4 2 7 7 7 12l-3 2-2-2h-4l-2 2-3-2Z"/><circle cx="12" cy="9" r="1.6"/></svg></div>
       <h4>Ship</h4>
       <p>Launch it, polish it, and keep making it better.</p>
     </div>
@@ -872,8 +893,7 @@ footer{
     <a class="product-card c-trashure featured reveal" href="th.html">
       <div class="card-visual">
         <div class="status-badge status-flagship">Flagship</div>
-        <img src="assets/products/trashure.png" class="th-logo" alt="Trashure-Hunters" loading="lazy">
-        <img src="assets/work/trashure/hero-group.png" class="th-monsters" alt="" loading="lazy" aria-hidden="true">
+        <img src="assets/brand/th-wordmark.png" class="th-logo" alt="Trashure-Hunters" loading="lazy">
       </div>
       <div class="card-body">
         <div class="featured-badge">★ Flagship</div>
@@ -888,12 +908,7 @@ footer{
     <a class="product-card c-lickpick reveal" href="https://3shamrocksstudio.github.io/lickpick/app/" target="_blank" rel="noopener">
       <div class="card-visual">
         <div class="status-badge status-live">Live app</div>
-        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width="72" height="72" style="position:relative;z-index:2;filter:drop-shadow(0 0 24px rgba(61,204,110,0.5))">
-          <path d="M40 6 C24 6 11 19 11 35 C11 52 25 66 37 73 C38.5 73.8 41.5 73.8 43 73 C55 66 69 52 69 35 C69 19 56 6 40 6Z" fill="url(#lp-g)"/>
-          <circle cx="40" cy="38" r="7" fill="rgba(255,255,255,0.15)"/>
-          <circle cx="40" cy="38" r="3" fill="rgba(255,255,255,0.3)"/>
-          <defs><linearGradient id="lp-g" x1="40" y1="6" x2="40" y2="74" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#52e87d"/><stop offset="100%" stop-color="#1a8c42"/></linearGradient></defs>
-        </svg>
+        <div class="lickpick-word">Lick<b>Pick</b></div>
       </div>
       <div class="card-body">
         <div class="card-tag">Music · PWA</div>
@@ -958,6 +973,7 @@ footer{
           <rect x="26" y="72" width="48" height="8" rx="3" fill="url(#kingGold)"/>
           <rect x="22" y="80" width="56" height="8" rx="3" fill="url(#kingGold)"/>
         </svg>
+        <div class="rk-wordmark">Rookie &amp; King</div>
       </div>
       <div class="card-body">
         <div class="card-tag">Chess · Networking</div>
@@ -1032,7 +1048,7 @@ footer{
     <a class="product-card c-media reveal" href="https://www.instagram.com/3shamrocks.studio/" target="_blank" rel="noopener">
       <div class="card-visual">
         <div class="status-badge status-live">Live</div>
-        <div class="media-viz"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="media-viz"><img src="assets/art/new/trashure.jpg" alt=""><img src="assets/art/new/milo.jpg" alt=""><img src="assets/art/new/shomer.jpg" alt=""><img src="assets/art/new/chore.jpg" alt=""><img src="assets/art/new/ezra.jpg" alt=""><img src="assets/art/new/j8nix.jpg" alt=""></div>
       </div>
       <div class="card-body">
         <div class="card-tag">Social · Content</div>
@@ -1123,7 +1139,7 @@ footer{
 <!-- BOLD STATEMENT -->
 <div class="statement reveal">
   <p class="statement-text">
-    "The work has to be <strong>beautiful</strong>. The product has to <em>work</em>. The timeline has to be <strong>real</strong>. That is not a compromise. That is the whole point."
+    "Design is not just what it looks like and feels like. <em>Design is how it works.</em>"<span style="display:block;margin-top:20px;font-family:var(--font-mono);font-size:0.42em;letter-spacing:0.16em;color:var(--muted)">STEVE JOBS</span>
   </p>
 </div>
 
@@ -1232,13 +1248,14 @@ footer{
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-inner">
-    <div class="contact-carousel reveal" id="contact-carousel">
-      <div class="cslide on"><img src="assets/work/trashure/screen-map.png" alt="Trashure-Hunters screen" loading="lazy"></div>
-      <div class="cslide"><img src="assets/work/vibrant/screen-1.png" alt="Vibrant Gastro screen" loading="lazy"></div>
-      <div class="cslide"><img src="assets/mockups/milo-companion.png" alt="Milo screen" loading="lazy"></div>
-      <div class="cslide"><img src="assets/work/trashure/hero-group.png" alt="Trashure-Hunters creatures" loading="lazy"></div>
-      <div class="cslide"><img src="assets/work/vibrant/screen-3.png" alt="Vibrant Gastro screen" loading="lazy"></div>
-      <div class="contact-dots"></div>
+    <div class="contact-carousel reveal" data-carousel data-interval="1400">
+      <div class="phone"><div class="phone-notch"></div><div class="phone-screens">
+        <img class="pscreen on" src="assets/brand/lickpick/m_home.jpg" alt="LickPick app screen">
+        <img class="pscreen" src="assets/screens/th-splash.png" alt="Trashure-Hunters app screen">
+        <img class="pscreen" src="assets/brand/lickpick/m_band.jpg" alt="LickPick app screen">
+        <img class="pscreen" src="assets/screens/milo.png" alt="Milo app screen">
+        <img class="pscreen" src="assets/brand/lickpick/m_pick.jpg" alt="LickPick app screen">
+      </div></div>
     </div>
     <div class="contact-avail reveal">Taking on a few new projects</div>
     <h2 class="contact-title reveal">Got something<br><em>worth building?</em></h2>
@@ -1426,28 +1443,38 @@ document.querySelectorAll('.about-stats').forEach(el=>cntIO.observe(el));
 })();
 /* XP bar fill + contact carousel */
 window.addEventListener('load',()=>{const xf=document.getElementById('xp-fill');if(xf)requestAnimationFrame(()=>xf.style.width='88%');});
-(function(){const c=document.getElementById('contact-carousel');if(!c)return;const sl=[...c.querySelectorAll('.cslide')];const d=c.querySelector('.contact-dots');if(!sl.length||!d)return;sl.forEach((_,i)=>{const b=document.createElement('i');if(i===0)b.className='on';d.appendChild(b);});let i=0;setInterval(()=>{sl[i].classList.remove('on');d.children[i].classList.remove('on');i=(i+1)%sl.length;sl[i].classList.add('on');d.children[i].classList.add('on');},3200);})();
-/* ===== DESIGN-SYSTEM INFRASTRUCTURE WIREFRAME BACKGROUND ===== */
+/* generic device-screen carousels (hero + contact) */
+document.querySelectorAll('[data-carousel]').forEach(c=>{
+  const sc=[...c.querySelectorAll('.pscreen')]; if(sc.length<2) return;
+  let i=0; const iv=+(c.dataset.interval||1400);
+  setInterval(()=>{sc[i].classList.remove('on'); i=(i+1)%sc.length; sc[i].classList.add('on');}, iv);
+});
+/* ===== 3S AURORA PARTICLE FIELD (interactive, depth parallax, cursor gravity) ===== */
 (function(){
   const cv=document.getElementById('ds-grid'); if(!cv) return;
-  const ctx=cv.getContext('2d'); let w,h,dpr=1,t=0,mx=0.5,my=0.5,tmx=0.5,tmy=0.5;
-  const COLS=14, ROWS=9;
+  const ctx=cv.getContext('2d'); let w,h,dpr=1; const ps=[]; const mouse={x:-99999,y:-99999};
   function size(){dpr=Math.min(window.devicePixelRatio||1,2);const r=cv.getBoundingClientRect();w=cv.width=Math.max(1,r.width*dpr);h=cv.height=Math.max(1,r.height*dpr);}
   size(); window.addEventListener('resize',size);
-  window.addEventListener('pointermove',e=>{tmx=e.clientX/window.innerWidth;tmy=e.clientY/window.innerHeight;});
-  function iso(x,y,z){
-    const ox=(mx-0.5)*70*dpr, oy=(my-0.5)*46*dpr;
-    const px=w*0.5 + (x-y)*(w/(COLS*1.7)) + ox;
-    const py=h*0.30 + (x+y)*(h/(ROWS*2.3)) - z + oy;
-    return [px,py];
-  }
-  function line(a,b){const g=ctx.createLinearGradient(a[0],a[1],b[0],b[1]);g.addColorStop(0,'rgba(130,57,234,0.20)');g.addColorStop(1,'rgba(61,204,110,0.14)');ctx.strokeStyle=g;ctx.lineWidth=1*dpr;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}
+  window.addEventListener('pointermove',e=>{mouse.x=e.clientX*dpr;mouse.y=e.clientY*dpr;});
+  window.addEventListener('pointerleave',()=>{mouse.x=mouse.y=-99999;});
+  const COL=['#8239ea','#9b59f7','#b07cff','#3dcc6e','#52e87d'];
+  function mk(init){const z=Math.random();return{x:Math.random()*w,y:init?Math.random()*h:h+40,z:z,r:(1+z*3),vy:-(0.12+z*0.5),vx:(Math.random()-0.5)*0.25,c:COL[Math.floor(Math.random()*COL.length)],a:0.18+z*0.5};}
+  for(let i=0;i<120;i++)ps.push(mk(true));
+  const R=240;
   function draw(){
-    t+=0.012; mx+=(tmx-mx)*0.05; my+=(tmy-my)*0.05; ctx.clearRect(0,0,w,h);
-    const pts=[];
-    for(let i=0;i<=COLS;i++){pts[i]=[];for(let j=0;j<=ROWS;j++){const z=Math.sin(i*0.6+t)*12*dpr+Math.cos(j*0.7+t*0.8)*12*dpr;pts[i][j]=iso(i,j,z);}}
-    for(let i=0;i<=COLS;i++)for(let j=0;j<=ROWS;j++){const p=pts[i][j];if(i<COLS)line(p,pts[i+1][j]);if(j<ROWS)line(p,pts[i][j+1]);}
-    for(let i=0;i<=COLS;i++)for(let j=0;j<=ROWS;j++){const p=pts[i][j];const pulse=(Math.sin(i+j+t*2)+1)/2;ctx.beginPath();ctx.arc(p[0],p[1],(1.1+pulse*1.9)*dpr,0,6.283);ctx.fillStyle='rgba('+(pulse>0.62?'82,232,125':'155,89,247')+','+(0.3+pulse*0.5)+')';ctx.fill();}
+    ctx.clearRect(0,0,w,h); ctx.globalCompositeOperation='lighter';
+    for(const p of ps){
+      const dx=mouse.x-p.x, dy=mouse.y-p.y, d2=dx*dx+dy*dy, rr=(R*dpr)*(R*dpr);
+      if(d2<rr){const d=Math.sqrt(d2)||1, f=(1-d/(R*dpr))*0.9; p.x+=(dx/d)*f*2.4; p.y+=(dy/d)*f*2.4;}
+      p.x+=p.vx*dpr; p.y+=p.vy*dpr;
+      if(p.y<-40){Object.assign(p,mk(false));}
+      if(p.x<-40)p.x=w+40; if(p.x>w+40)p.x=-40;
+      const gr=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*6*dpr);
+      gr.addColorStop(0,p.c); gr.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.globalAlpha=p.a; ctx.fillStyle=gr; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*6*dpr,0,6.283); ctx.fill();
+      ctx.globalAlpha=Math.min(1,p.a+0.35); ctx.fillStyle=p.c; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*dpr,0,6.283); ctx.fill();
+    }
+    ctx.globalCompositeOperation='source-over'; ctx.globalAlpha=1;
     requestAnimationFrame(draw);
   }
   draw();
