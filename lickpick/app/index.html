@@ -1681,6 +1681,18 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
 .metro .mstrict{margin:0}
 .metro .mst{margin:0;min-height:1.3em;font-weight:800;font-size:13.5px;color:var(--text);text-align:center}
 .metro .mlock{min-height:50px;background:var(--f-band);font-size:17px}
+.metro .mq{display:flex;flex-direction:column;gap:6px;padding:8px 0 2px}
+.metro .mqq{margin:0;font:800 16px/1.25 var(--body);text-align:center}
+.metro .mqa{display:grid;grid-template-columns:1.3fr 1fr;gap:8px} .metro .mqa .btn{min-height:50px;font-size:16px;padding:0 10px}
+.metro .mqa .btn:only-child{grid-column:1/-1}
+.metro .mlock.soft{background:var(--panel);color:var(--text);border-color:var(--line);box-shadow:2px 2px 0 var(--ink)}
+.metro .mqh{margin:0;min-height:1.1em;color:var(--dim);font-size:12.5px;text-align:center}
+.metro .mfix{display:flex;flex-direction:column;gap:8px} .metro .mfix[hidden]{display:none}
+
+.mhelp{font-size:13px;color:var(--dim)} .mhelp summary{cursor:pointer;min-height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--text)} .mhelp p{margin:4px 0 0;line-height:1.45}
+.mfoot{display:inline-block;width:10px;height:10px;margin-right:6px;border-radius:50%;background:var(--f-band);vertical-align:middle;animation:mfoot .667s ease-in-out infinite}
+@keyframes mfoot{0%,100%{transform:scale(.6);opacity:.5}12%{transform:scale(1.15);opacity:1}}
+#studio:has(#metro) #sBar{display:none}
 .metro .mx{align-self:center;min-height:44px;padding:0 8px}
 #studio .sect,#studio .fold,#studio .chords{scroll-margin-top:calc(var(--dockH,220px) + 10px)}
 .flow{margin:0 0 8px}
@@ -1708,7 +1720,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
 .mbuild b svg.i{width:16px;height:16px;--ic2:rgba(7,6,11,.25)} .mbuild b.in{opacity:1;transform:none}
 .sdock.mini .mov{bottom:4px} .sdock.mini .mov .mdots{padding:4px 7px;gap:5px} .sdock.mini .mov .mdots i{width:11px;height:11px} .sdock.mini .mov .mdots i.one{width:14px;height:14px} .sdock.mini .mbuild b{font-size:10px;padding:2px 6px} .sdock.mini .mbuild b svg.i{display:none}
 @media (max-width:380px){.mbpm{grid-template-columns:44px 46px minmax(0,1fr) 46px 44px;gap:4px}.mval b{font-size:21px}.metro{padding:10px}.mtr{gap:5px}.metro .mb{font-size:15px;padding:0 4px}.metro .mb.mpm{font-size:24px}}
-@media (prefers-reduced-motion:reduce){.mtap.hit{animation:none}.mdots i,.mbuild b{transition:none}.mdots i.on{transform:none}.mbuild b{transform:none}}
+@media (prefers-reduced-motion:reduce){.mfoot{animation:none}.mtap.hit{animation:none}.mdots i,.mbuild b{transition:none}.mdots i.on{transform:none}.mbuild b{transform:none}}
 .timing .tlbl{font-weight:900;font-size:13px;color:#FF4A97;margin-right:2px}
 .timing .nudge{display:inline-flex;border:2px solid var(--ink);border-radius:12px;overflow:hidden;box-shadow:2px 2px 0 var(--ink)}
 .timing .nudge button{min-width:44px;min-height:44px;border:0;background:var(--panel);color:var(--text);font:900 18px var(--body)}
@@ -5505,11 +5517,36 @@ let saveT = 0;
 function autosave(c) { if (!c || c.example) return; clearTimeout(saveT); saveT = setTimeout(() => persist(c), 600); }
 const PROJ = ["rates", "rateWhy", "pickAdj", "band", "ex", "captions", "note", "vibe", "src", "sugOff", "snd", "patches", "tune", "mix", "layers"];
 function projOf(c) { const o = {}; for (const k of PROJ) if (c[k] != null) { try { o[k] = JSON.parse(JSON.stringify(c[k], (kk, v) => kk === "aiBusy" || kk === "_res" || kk === "busy" ? undefined : v)); } catch { } } return o; }
+// Two tabs (or windows) on one take: every save reads the stored record first. A field this tab hasn't touched since it
+// loaded it takes the stored value (another tab changed it); the band's beat lock goes to the newest lock (its "at").
+const recJ = v => v == null ? null : JSON.stringify(v);
+function recBase(c, rec) { c._base = Object.fromEntries(PROJ.map(k => [k, recJ(rec?.[k])])); }
+function recMerge(c, nu, old) {
+  if (!old) return false; const base = c._base || {}; let got = false;
+  for (const k of PROJ) { const mine = recJ(nu[k]), theirs = recJ(old[k]), b0 = base[k] ?? null;
+    if (mine === b0 && theirs !== b0) { if (old[k] == null) { delete nu[k]; delete c[k]; } else { nu[k] = old[k]; c[k] = JSON.parse(theirs); } got = true; } }
+  const oL = old.band?.lock, nL = nu.band?.lock;
+  if (oL?.at && (!nL?.at || oL.at > nL.at)) { nu.band = { ...(nu.band || {}), lock: oL }; delete nu.band.fix; delete nu.band.guessOK; delete nu.band.grid; if (c.band) { c.band.lock = JSON.parse(JSON.stringify(oL)); delete c.band.fix; delete c.band.guessOK; delete c.band.grid; } got = true; }
+  if (got) { c._bandA = null; c._bandL = null; c._tight = null; c._cb = null; c._lb = null; try { bandCache.key = ""; } catch { } }
+  return got;
+}
+const recBus = (() => { try { return new BroadcastChannel("lp-recs"); } catch { return null; } })();
+function recChanged(key) { try { recBus?.postMessage(key); } catch { } try { localStorage.setItem("lp:recPing", JSON.stringify([key, Date.now()])); } catch { } }
+async function recPull(key) {   // another tab saved this take: take what it changed (fields untouched here), redraw
+  const c = state.clips.find(x => x.key === key); if (!c || c.status !== "done") return;
+  const old = await recs.get(key); if (!old) return; const nu = projOf(c), got = recMerge(c, nu, old); recBase(c, { ...nu, band: c.band });
+  if (got) { if (state.metro?.id === c.id && c.band?.lock) state.metro = null; renderCard(c); if (cur() === c) { stopBand(); renderStudio(); } }
+}
+recBus?.addEventListener("message", e => { recPull(e.data).catch(() => { }); });
+addEventListener("storage", e => { if (e.key === "lp:recPing" && e.newValue && !recBus) { try { recPull(JSON.parse(e.newValue)[0]).catch(() => { }); } catch { } } });
 function persist(c) {
   if (c.status !== "done" || !c.key) return;
   const r2 = a => Array.isArray(a) ? a.map(v => Math.round(v * 100) / 100) : a;
   const raw = { ...c.raw, penalty: Object.fromEntries(Object.entries(c.raw.penalty || {}).map(([k, v]) => [k, r2(v)])), highlight: r2(c.raw.highlight) };
-  recs.set(c.key, { v: 4, pickSel: c.pickSel || 0, name: c.name, size: c.size, raw, parts: c.parts, edited: !!c.edited, override: c.override, saved: !!c.saved, thumb: c.thumb || null, inLib: !!c.inLib, pickSaved: !!c.pickSaved, ...projOf(c) });
+  const rec = { v: 4, pickSel: c.pickSel || 0, name: c.name, size: c.size, raw, parts: c.parts, edited: !!c.edited, override: c.override, saved: !!c.saved, thumb: c.thumb || null, inLib: !!c.inLib, pickSaved: !!c.pickSaved, ...projOf(c) };
+  c._pq = (c._pq || Promise.resolve()).then(async () => { let old = null; try { old = await recs.get(c.key); } catch { }
+    const got = recMerge(c, rec, old); recBase(c, rec); await recs.set(c.key, rec); recChanged(c.key);
+    if (got) { renderCard(c); if (cur() === c && !bandPlaying) renderStudio(); } }).catch(() => { });
   const lib = store.get("lp:lib") || []; if (!lib.includes(c.key)) { lib.push(c.key); store.set("lp:lib", lib); }
 }
 function forget(c) {
@@ -5524,7 +5561,7 @@ async function restoreLibrary() {
     if (state.clips.some(c => c.key === key)) continue;
     if ((prev?.v !== 3 && prev?.v !== 4) || !prev.raw?.penalty) continue;
     const c = { id: ++uid, key, pickSel: prev.pickSel || 0, file: null, name: prev.name || key.slice(8).split("|")[0], size: prev.size || 0, status: "done", raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb, inLib: !!prev.inLib, pickSaved: prev.pickSaved, ...Object.fromEntries(PROJ.filter(k => prev[k] != null).map(k => [k, prev[k]])), proxy: unpackBlob(snd[i]), vproxy: unpackBlob(vid[i]) };
-    c.result = ClipEngine.decide(c.raw, { strictness: state.strictness, minKeep: state.minKeep, weights: taste.rw });
+    c.result = ClipEngine.decide(c.raw, { strictness: state.strictness, minKeep: state.minKeep, weights: taste.rw }); recBase(c, prev);
     state.clips.push(c);
   }
   render();
@@ -6937,7 +6974,8 @@ function openStudio(c, keep) {
 function showPick(c) { if (!player) return; const S = srcOf(c); if (S) player.set(S.ranges, S.label, `${fmt(S.len)} · tap for full take`); else player.set(null, "Full take", fmt(c.raw?.duration || 0)); }
 function closeStudio() {
   stopShed(false);
-  { const c0 = cur(); if (c0) { c0._tv = null; c0._tFrozen = null; } if (c0?._retaste) { c0._retaste = false; redecide(c0); persist(c0); } }   // new cut rules apply once you leave, so nothing moves under your finger
+  { const c0 = cur(); if (c0) { c0._tv = null; c0._tFrozen = null; } if (c0?._retaste) { c0._retaste = false; redecide(c0); persist(c0); } if (c0 && beatPending(c0) && c0.ex) { c0.ex.band = false; persist(c0); } }
+  state.metro = null;   // new cut rules apply once you leave, so nothing moves under your finger
   stopBand(); stopAudio(); stopAt = null; queue = []; unfloat(); playMark = null;
   player?.destroy(); player = null; video = null;
   // release the studio's DOM (the stage, timeline legend, step panels): it is rebuilt on the next open
@@ -7851,7 +7889,7 @@ const rhythmOnly = c => { if (c.band?.keyForce) return false; const A = bandA(c)
 // LickPick tracked over the whole take, so gentle drift is followed ("Keep strict tempo" = one straight tempo fitted
 // through the same beats); "free" = your own BPM and phase (after − / +, or taps that fit no reading of the take).
 // The band never plays before a lock (or an older take's taps / "use the guess").
-const METERS = { "4/4": { m: 4, cp: false, bpb: 4 }, "3/4": { m: 3, cp: false, bpb: 3 }, "6/8": { m: 4, cp: true, bpb: 2 } };
+const METERS = { "4/4": { m: 4, cp: false, bpb: 4 }, "3/4": { m: 3, cp: false, bpb: 3 }, "6/8": { m: 4, cp: true, bpb: 2 }, "12/8": { m: 4, cp: true, bpb: 4 } };
 const hasLock = c => { const b = c.band || {}, G = b.grid || {}, fx = b.fix || {}; return !!b.lock || !!b.guessOK || G.taps?.length >= 4 || !!G.bpm || !!G.beats?.length || !!fx.shift || !!(fx.mult && fx.mult !== 1); };
 function beatPending(c) { return bandOn(c) && !hasLock(c); }
 // time <-> beat units on a tracked grid (linear between its beats, its edge tempo outside)
@@ -7917,12 +7955,18 @@ function metroOpen(c, at) {
   if (!metroOn(c)) metroInit(c); state.step = "band"; persist(c); renderStudio(); renderExport(c); bandPreview(c, at); metroScroll();
 }
 function metroScroll() { setTimeout(() => { const el = $("#metro"); if (el) el.scrollIntoView({ block: "start", behavior: "smooth" }); }, 120); }
+const STRICT_MAX = 3;   // % drift above which one steady tempo would run off your playing
 function metroCard(c) {
-  const M = state.metro, d = M.d, w = bandWindow(c), bpm = lockBpm(c, d), mt = METERS[d.meter] || METERS["4/4"], drift = lockDrift(c, d), playing = bandPlaying && metroOn(c), ch = metroChanged();
+  const M = state.metro, d = M.d, w = bandWindow(c), bpm = lockBpm(c, d), mt = METERS[d.meter] || METERS["4/4"], drift = lockDrift(c, d), playing = bandPlaying && metroOn(c), ch = metroChanged(), open = M.open || M.edit || ch;
   const fr = d.mode === "grid" ? (gridOf(c)?.free || []).filter(([u, v]) => v > w.s && u < w.e) : [];
   return `<section class="metro" id="metro" aria-labelledby="metroH">
-    <div class="mhead">${icon("i-metro")}<span class="grow"><h3 id="metroH">Set the beat</h3><p>${playing ? "Fix the click until it sits on your playing." : "Press play: a click plays on LickPick's beat."}</p></span></div>
+    <div class="mhead">${icon("i-metro")}<span class="grow"><h3 id="metroH">Set the beat</h3><p>${playing ? "Listen: does the click land where you strum or pick?" : "Press play: a click plays on the beat LickPick heard."}</p></span></div>
     <div class="mlight" aria-hidden="true">${metroDotsHTML(mt.bpb)}</div>
+    <details class="mhelp"><summary>What's “the beat” and “the 1”?</summary><p><span class="mfoot" aria-hidden="true"></span>The <b>beat</b> is the steady pulse you'd tap your foot to. The <b>1</b> is the first beat of each bar (the big dot), where chords usually change.</p></details>
+    <div class="mq" role="group" aria-labelledby="mqQ"><p class="mqq" id="mqQ">${ch ? "Does the click land on your strums now?" : "Does the click land on your strums?"}</p>
+      <div class="mqa"><button type="button" class="btn mlock${M.ready ? "" : " soft"}" data-metro="lock">${icon("i-lock")}Yes, lock it</button>${open ? "" : `<button type="button" class="btn ghost mfixb" data-metro="fix" aria-expanded="false">${icon("i-edit")}Fix it</button>`}</div>
+      <p class="mqh">${M.ready ? "" : "Listen for two bars first."}</p></div>
+    <div class="mfix"${open ? "" : " hidden"}>
     <div class="mbpm" role="group" aria-label="Tempo">
       <button type="button" class="mb" data-metro="half" aria-label="Half time">÷2</button>
       <button type="button" class="mb mpm" data-metro="bpm-" aria-label="1 BPM slower. Hold to keep going">−</button>
@@ -7936,16 +7980,17 @@ function metroCard(c) {
       <button type="button" class="mb" data-metro="flip" aria-label="Flip: move the click half a beat">Flip ½</button>
       <button type="button" class="mb mpm2" data-metro="late" aria-label="Click 10 ms later. Hold to keep going">Later ›</button>
     </div>
-    <div class="mtr mmeter" role="group" aria-label="Meter and bar">${Object.keys(METERS).map(m => `<button type="button" class="mb mchip" data-metro="m:${m}" aria-pressed="${d.meter === m}">${m}</button>`).join("")}<button type="button" class="mb mone" data-metro="one">Tap on 1</button></div>
-    ${drift >= 1.5 ? `<button type="button" class="opt mstrict" role="switch" aria-checked="${!!d.strict}" data-metro="strict">${icon("i-clock")}<span class="grow"><strong>Keep strict tempo</strong><em>${d.strict ? `One steady ${fmtBpm(bpm)} BPM all through.` : `Your take moves up to ${drift}%. The click follows it.`}</em></span><span class="tgl"></span></button>` : ""}
+    <div class="mtr mmeter" role="group" aria-label="Beats in a bar">${Object.keys(METERS).map(m => `<button type="button" class="mb mchip" data-metro="m:${m}" aria-pressed="${d.meter === m}">${m}</button>`).join("")}<button type="button" class="mb mone" data-metro="one">Tap on 1</button></div>
+    ${M.hint3 ? `<button type="button" class="linkbtn mx" data-metro="${M.hint3}">${M.hint3 === "third" ? "Click on every small pulse? Count the big beats: ÷3" : "Click only once a bar? ×3"}</button>` : ""}
+    ${drift >= 1.5 ? `<button type="button" class="opt mstrict" role="switch" aria-checked="${!!d.strict}" data-metro="strict">${icon("i-clock")}<span class="grow"><strong>Keep strict tempo</strong><em>${d.strict ? `One steady ${fmtBpm(bpm)} BPM all through.${drift > STRICT_MAX ? ` Careful: your take moves ${drift}%, so the band will drift off you.` : ""}` : drift > STRICT_MAX ? `Off: your take moves up to ${drift}%, too much for one steady tempo. The click follows it.` : `Your take moves up to ${drift}%. The click follows it.`}</em></span><span class="tgl"></span></button>` : ""}
+    </div>
     ${fr.length ? `<p class="hint">Free time ${fr.map(([u, v]) => `${fmtP(Math.max(u, w.s))}–${fmtP(Math.min(v, w.e))}`).join(", ")}: no click there. The band waits, then comes in on the beat.</p>` : ""}
     <p class="mst" id="metroSt" aria-live="polite">${esc(M.msg || "")}</p>
-    <button type="button" class="btn wide mlock" data-metro="lock">${icon("i-lock")}${ch || M.edit ? "Lock it" : "Sounds right · Lock it"}</button>
     ${M.edit ? `<button type="button" class="linkbtn mx" data-metro="cancel">Keep the beat as it was</button>` : ch ? `<button type="button" class="linkbtn mx" data-metro="reset">Start over from LickPick's guess</button>` : ""}
   </section>`;
 }
 // redraw just the card (keeps the take playing, keeps focus on the button you pressed)
-function metroRefresh(c) { const el = $("#metro"); if (!el || !state.metro) return; const f = document.activeElement?.dataset?.metro; el.outerHTML = metroCard(c); if (f) $(`#metro [data-metro="${CSS.escape(f)}"]`)?.focus({ preventScroll: true }); metroDots(true); }
+function metroRefresh(c) { const el = $("#metro"); if (!el || !state.metro) return; const f = state.metro.fk || document.activeElement?.dataset?.metro; state.metro.fk = null; el.outerHTML = metroCard(c); const fe = f && ($(`#metro [data-metro="${CSS.escape(f)}"]`) || (f === "fix" ? $("#metro .mtap") : null)); if (fe) fe.focus({ preventScroll: true }); metroDots(true); }
 const metroSay = (c, t) => { if (state.metro) state.metro.msg = t; const el = $("#metroSt"); if (el) el.textContent = t; };
 // the beat you hear right now (take time) and the beat nearest it on a reading
 const heardNow = () => bandPreview.clock ? bandPreview.clock() : null;
@@ -7955,34 +8000,41 @@ function metroAct(c, a) {
   const d = M.d, w = bandWindow(c), g = lockGrid(c), G = g ? gridMap(g.beats) : null, B = lockBeats(c, d, w.s, w.e), p = B.length > 1 ? (B[B.length - 1] - B[0]) / (B.length - 1) : 60 / (d.bpm || 100), now = heardNow();
   const toFree = () => { if (d.mode === "free") return; const t = now ?? w.s, k = nearestK(B, t), bpm = lockBpm(c, d); d.mode = "free"; d.bpm = bpm; d.t0 = B[k] ?? w.s; d.off = 0; delete d.mult; delete d.u0; d.strict = false; };
   let say = "";
-  if (a === "bpm+" || a === "bpm-") { toFree(); d.bpm = Math.max(30, Math.min(260, Math.round(d.bpm) + (a === "bpm+" ? 1 : -1))); say = `${d.bpm} BPM`; }
+  // − / +: one BPM a press. On LickPick's tempo curve it scales the whole curve (speed-ups and slow-downs are still followed,
+  // the beat you hear now stays put); only a free reading is one straight tempo
+  if (a === "bpm+" || a === "bpm-") { const st = a === "bpm+" ? 1 : -1;
+    if (d.mode === "grid" && G) { const bpm = lockBpm(c, d) || 100, want = Math.max(30, Math.min(260, Math.round(bpm) + st)), k = nearestK(B, now ?? w.s);
+      d.u0 = +G.toU((B[k] ?? w.s) - (d.off || 0)).toFixed(6); d.mult = +(d.mult * want / bpm).toFixed(6); if (d.down != null) { const B2 = lockBeats(c, d, w.s - 2, w.e + 2); if (B2.length) d.down = B2[nearestK(B2, d.down)]; } say = `${fmtBpm(lockBpm(c, d))} BPM`; }
+    else { toFree(); d.bpm = Math.max(30, Math.min(260, Math.round(d.bpm) + st)); say = `${d.bpm} BPM`; } }
   else if (a === "x2" || a === "half") { const f = a === "x2" ? 2 : 0.5;
-    if (d.mode === "grid") { d.mult = d.mult * f; if (f < 1 && G) d.u0 = +G.toU((d.down ?? w.s) - (d.off || 0)).toFixed(6); } else { d.bpm = Math.round(d.bpm * f * 10) / 10; if (f < 1) d.t0 = d.down ?? d.t0; }
+    if (d.mode === "grid") { const dn = B.length ? B[nearestK(B, d.down ?? w.s)] : (d.down ?? w.s); d.mult = d.mult * f; if (f < 1 && G) d.u0 = +G.toU(dn - (d.off || 0)).toFixed(6); } else { d.bpm = Math.round(d.bpm * f * 10) / 10; if (f < 1) d.t0 = d.down ?? d.t0; }
     say = `${a === "x2" ? "Double" : "Half"} time: ${fmtBpm(lockBpm(c, d))} BPM`; }
   // Earlier / Later: 10 ms a tap (hold to keep going), for a click that's close but not quite on your notes
   else if (a === "early" || a === "late") { d.off = +Math.max(-0.25, Math.min(0.25, (d.off || 0) + (a === "early" ? -0.01 : 0.01))).toFixed(3); say = d.off ? `Click ${Math.abs(Math.round(d.off * 1000))} ms ${d.off < 0 ? "earlier" : "later"}` : "Click back on LickPick's spot"; }
   else if (a === "flip") { if (d.mode === "grid") d.u0 = +(d.u0 + 0.5 / d.mult).toFixed(6); else d.t0 = +((d.t0 ?? w.s) + p / 2).toFixed(4); d.down = +((d.down ?? w.s) + p / 2).toFixed(4); say = "Flipped half a beat"; }
-  else if (a.startsWith("m:")) { const m = a.slice(2), was = d.meter; if (!METERS[m] || m === was) return; const bpm = lockBpm(c, d);
-    // 6/8 counts the dotted quarter: a fast 3-pulse becomes one beat every three (and back)
-    const f = m === "6/8" && bpm >= 90 ? 1 / 3 : was === "6/8" && m === "3/4" && bpm < 70 ? 3 : 1;
-    if (f !== 1) { const pOld = p, d1 = d.down ?? w.s;
-      if (d.mode === "grid") { const u1 = G ? G.toU(d1 - (d.off || 0)) : d.u0, st = 1 / d.mult; d.mult *= f; d.u0 = +u1.toFixed(6);
-        // into 6/8: which of the three pulses is the dotted-quarter beat? the one your playing accents most (then you can still fix it)
-        if (f < 1 && G) { let best = -1; for (let j = 0; j < 3; j++) { const u = +(u1 + j * st).toFixed(6), sc = accentOf(c, lockBeats(c, { ...d, u0: u }, w.s, w.e)); if (sc > best) { best = sc; d.u0 = u; } } } }
-      else { d.bpm = Math.round(d.bpm * f * 10) / 10; d.t0 = d1;
-        if (f < 1) { let best = -1; for (let j = 0; j < 3; j++) { const t0 = +(d1 + j * pOld).toFixed(4), sc = accentOf(c, lockBeats(c, { ...d, t0 }, w.s, w.e)); if (sc > best) { best = sc; d.t0 = t0; } } } }
-      // and "1": the stronger of the two beats in a 6/8 bar (or the beat nearest the old "1" going back)
-      const B2 = lockBeats(c, d, w.s, w.e); if (B2.length >= 4) { if (f < 1) { const ev = B2.filter((_, i) => i % 2 === 0), od = B2.filter((_, i) => i % 2 === 1); d.down = accentOf(c, ev) >= accentOf(c, od) ? ev[0] : od[0]; } else d.down = B2[nearestK(B2, d1)]; } }
-    d.meter = m; say = `${m}${f !== 1 ? ` · ${fmtBpm(lockBpm(c, d))} BPM` : ""}`; }
+  // the meter is only how the beats group into bars: the click keeps its tempo and its place (4/4 → 6/8 → 4/4 is exact)
+  else if (a.startsWith("m:")) { const m = a.slice(2), was = d.meter; if (!METERS[m] || m === was) return;
+    d.meter = m; const B2 = lockBeats(c, d, w.s, w.e); if (B2.length && d.down != null) d.down = B2[nearestK(B2, d.down)];
+    const bpm = lockBpm(c, d); M.hint3 = METERS[m].cp && !METERS[was]?.cp && bpm >= 100 ? "third" : !METERS[m].cp && METERS[was]?.cp && bpm < 70 ? "x3" : "";
+    say = `${m}: ${METERS[m].bpb} beats a bar`; }
+  // ÷3 / ×3 (offered after a meter change): a click on every small pulse becomes one on the big beat, or back
+  else if (a === "third" || a === "x3") { const f = a === "third" ? 1 / 3 : 3, pOld = p, d1 = d.down ?? w.s; M.hint3 = "";
+    if (d.mode === "grid" && G) { const u1 = G.toU(d1 - (d.off || 0)), st = 1 / d.mult; d.mult *= f; d.u0 = +u1.toFixed(6);
+      if (f < 1) { let best = -1; for (let j = 0; j < 3; j++) { const u = +(u1 + j * st).toFixed(6), sc = accentOf(c, lockBeats(c, { ...d, u0: u }, w.s, w.e)); if (sc > best) { best = sc; d.u0 = u; } } } }
+    else { d.bpm = Math.round((d.bpm || 60 / pOld) * f * 10) / 10; d.t0 = d1;
+      if (f < 1) { let best = -1; for (let j = 0; j < 3; j++) { const t0 = +(d1 + j * pOld).toFixed(4), sc = accentOf(c, lockBeats(c, { ...d, t0 }, w.s, w.e)); if (sc > best) { best = sc; d.t0 = t0; } } } }
+    const B2 = lockBeats(c, d, w.s, w.e); if (B2.length) d.down = B2[nearestK(B2, d1)];
+    say = `${fmtBpm(lockBpm(c, d))} BPM`; }
   else if (a === "one") { if (now == null) { metroSay(c, "Press play, then tap on the first beat of a bar."); return; } d.down = B[nearestK(B, now)] ?? now; say = "Bar start set"; }
-  else if (a === "strict") { d.strict = !d.strict; say = d.strict ? "Strict tempo" : "Follows your take"; }
+  else if (a === "strict") { if (!d.strict && lockDrift(c, d) > STRICT_MAX) { metroSay(c, "Your take speeds up or slows down too much for one steady tempo. The click follows it."); return; } d.strict = !d.strict; say = d.strict ? "Strict tempo" : "Follows your take"; }
+  else if (a === "fix") { M.open = true; say = "Tap along on every beat, or use the buttons."; }
   else if (a === "tap") { metroTap(c); return; }
-  else if (a === "reset") { const g0 = guessLock(c); if (!g0) return; M.d = g0; M.taps = []; say = "Back to LickPick's guess"; }
+  else if (a === "reset") { const g0 = guessLock(c); if (!g0) return; M.d = g0; M.taps = []; M.hint3 = ""; say = "Back to LickPick's guess"; }
   else if (a === "cancel") { state.metro = null; const was = bandPlaying, at = was && player ? player.virt() : 0; stopBand(); renderStudio(); if (was) bandPreview(c, at); return; }
   else if (a === "lock") { metroLock(c); return; }
   else if (a === "open") { metroOpen(c); return; }
   if (!bandPlaying && a !== "strict") say += ". Press play to hear it.";
-  M.msg = say; metroResched(); metroRefresh(c);
+  if (a !== "fix") { M.open = true; M.ready = false; } M.heard0 = heardNow(); M.msg = say; metroResched(); metroRefresh(c);
 }
 // how strongly your playing lands on these beats (the take's fine attack curve, best within 25 ms of each)
 function accentOf(c, B) { const F = c.raw?.fluxA, fr = c.raw?.fluxRate, o = c.raw?.fluxOff || 0; if (!F || !fr || !B.length) return 0; const r = Math.max(1, Math.round(0.025 * fr)); let s = 0;
@@ -7992,9 +8044,10 @@ function accentOf(c, B) { const F = c.raw?.fluxA, fr = c.raw?.fluxRate, o = c.ra
 function metroTap(c) {
   const M = state.metro, d = M.d, w = bandWindow(c);
   const btn = $("#metro .mtap"); if (btn) { btn.classList.remove("hit"); void btn.offsetWidth; btn.classList.add("hit"); }
-  if (!bandPlaying) { M.taps = []; bandPreview(c, player ? player.virt() : 0); metroSay(c, "Now tap on every beat."); return; }
+  if (!bandPlaying) { M.taps = []; bandPreview(c, metroFrom(c)); metroSay(c, "Now tap on every beat."); return; }
   const now = heardNow(); if (now == null) { metroSay(c, "Getting your take ready…"); return; }
   const last = M.taps[M.taps.length - 1]; if (last != null && (now - last > 2.5 || now <= last)) M.taps = [];
+  if (last != null && now - last < 0.15 && now > last) { M.taps = []; $("#metro .tapdots")?.querySelectorAll("i").forEach(x => x.classList.remove("on")); metroSay(c, "Uneven taps. Try again: one tap on every beat."); return; }
   M.taps.push(+now.toFixed(4)); M.taps = M.taps.slice(-8); try { navigator.vibrate?.(12); } catch { }
   $("#metro .tapdots")?.querySelectorAll("i").forEach((x, i) => x.classList.toggle("on", i < Math.min(4, M.taps.length)));
   if (M.taps.length < 4) { metroSay(c, `${4 - M.taps.length} more`); return; }
@@ -8004,19 +8057,24 @@ function metroTap(c) {
   if (!ts && g) { const G = gridMap(g.beats), U = T.map(G.toU), du = U.slice(1).map((u, i) => u - U[i]).sort((x, y) => x - y), r = 1 / du[du.length >> 1];
     const m = [1 / 3, 1 / 2, 2 / 3, 1, 3 / 2, 2, 3].reduce((x, y) => Math.abs(Math.log(r / y)) < Math.abs(Math.log(r / x)) ? y : x);
     if (Math.abs(Math.log(r / m)) < 0.08) { let sx = 0, sy = 0; for (const u of U) { const a = 2 * Math.PI * ((u * m) % 1); sx += Math.cos(a); sy += Math.sin(a); } let f = Math.atan2(sy, sx) / (2 * Math.PI); if (f < 0) f += 1; ts = { mult: m, off: +(f / m).toFixed(6) }; } }
-  if (ts) { d.mode = "grid"; d.mult = ts.mult; d.u0 = ts.off; d.off = 0; delete d.bpm; delete d.t0; if (ts.mult === 1 / 3 || ts.mult === 2 / 3) d.meter = "6/8"; else if (d.meter === "6/8" && (ts.mult === 3 || ts.mult === 1.5)) d.meter = "3/4"; }
+  if (ts) { d.mode = "grid"; d.mult = ts.mult; d.u0 = ts.off; d.off = 0; delete d.bpm; delete d.t0; if ((ts.mult === 1 / 3 || ts.mult === 2 / 3) && !METERS[d.meter]?.cp) d.meter = "6/8"; else if (METERS[d.meter]?.cp && (ts.mult === 3 || ts.mult === 1.5)) d.meter = "3/4"; }
   else { const iv = T.slice(1).map((t, i) => t - T[i]).sort((x, y) => x - y), pp = iv[iv.length >> 1]; if (!(pp > 0.22 && pp < 2.2)) { M.taps = [now]; metroSay(c, "Those taps were uneven. Tap on every beat."); return; }
     let ph = 0; for (const t of T) { const r = ((t - T[0]) / pp) % 1; ph += r > 0.5 ? r - 1 : r; } d.mode = "free"; d.bpm = Math.round(600 / pp) / 10; d.t0 = +(T[0] + (ph / T.length) * pp).toFixed(4); d.off = 0; d.strict = false; delete d.mult; delete d.u0; }
   // the bar keeps its place: "1" stays on the beat nearest where it was
   const B = lockBeats(c, d, w.s, w.e); if (B.length && d.down != null) d.down = B[nearestK(B, d.down)];
-  M.msg = `From your taps: ${fmtBpm(lockBpm(c, d))} BPM. Keep tapping or lock it.`; metroResched(); metroRefresh(c);
+  M.open = true; M.ready = false; M.heard0 = now; M.msg = `From your taps: ${fmtBpm(lockBpm(c, d))} BPM. Keep tapping or lock it.`; metroResched(); metroRefresh(c);
 }
+// where Play & tap starts: where you are, or the Pick's start once you're at (or near) its end
+function metroFrom(c) { const w = bandWindow(c), at = player ? player.virt() : 0; return !w || at > w.e - w.s - 1.5 ? 0 : at; }
 // Lock it: the reading becomes the band's beat (kept with the take), the click stops, and the band layers up
 function metroLock(c) {
   const M = state.metro; if (!M) return; const b = newBand(c), was = bandPlaying, at = player && (was || isPlaying()) ? player.virt() : 0;
   b.lock = { ...M.d, at: Date.now() }; delete b.fix; delete b.guessOK; delete b.grid; b.click = false; b.nudge = 0;
   c._bandA = null; c._bandL = null; c._tight = null; c._cb = null; bandCache.key = ""; state.metro = null; state.build = c.id;
   persist(c); stopBand(); renderStudio(); renderExport(c); bandPreview(c, at);   // the band panel takes the card's place: no scroll
+  try { const w = bandWindow(c), L = b.lock, B = lockBeats(c, L, w.s, w.e), bpm = lockBpm(c, L);
+    if (B.length >= 8 && bpm < 92) { const mid = B.slice(1).map((t, i) => (t + B[i]) / 2), on = accentOf(c, B), off = accentOf(c, mid);
+      if (on > 0 && off >= 0.8 * on) setTimeout(() => toast("Band feels slow? Try ×2.", { icon: "i-drum", label: "×2", run: () => { const cc = cur(); if (cc !== c) return; metroOpen(c); metroAct(c, "x2"); } }), 2500); } } catch { }
 }
 // ---------- the click: scheduled a little ahead on the audio clock, from the reading you're shaping (a change is heard
 // at once: clicks not yet sounded are dropped and laid again). Same clock as your take, so it sits exactly where it says.
@@ -8032,7 +8090,7 @@ function metroStop() { clearInterval(MET.iv); MET.iv = 0; for (const n of MET.no
 function metroResched() { const m = bandPreview.map; if (!m || !MET.iv) return; const now = m.ctx.currentTime + 0.01; MET.nodes = MET.nodes.filter(n => { if (n.t > now) { try { n.node.stop(); } catch { } return false; } return true; }); MET.upto = now; }
 // the reading's beats in the Pick, which of them is "1", and the free-time stretches (no click there)
 function metroPlan(c) { const d = state.metro?.d, w = bandWindow(c); if (!d || !w) return null; const B = lockBeats(c, d, w.s, w.e), mt = METERS[d.meter] || METERS["4/4"], dn = lockDown(c, d, w.s, w.e);
-  return { B, bpb: mt.bpb, sub: d.meter === "6/8", kd: dn == null ? 0 : nearestK(B, dn), free: d.mode === "grid" ? (gridOf(c)?.free || []) : [] }; }
+  return { B, bpb: mt.bpb, sub: !!mt.cp, kd: dn == null ? 0 : nearestK(B, dn), free: d.mode === "grid" ? (gridOf(c)?.free || []) : [] }; }
 function metroTick(c) {
   const m = bandPreview.map; if (!m || !bandPlaying || !metroOn(c)) return;
   const ctx = m.ctx, hz = ctx.currentTime + 0.16; if (hz <= MET.upto) return;
@@ -8049,7 +8107,8 @@ function metroLight(c) {
   cancelAnimationFrame(MET.raf);
   const tick = () => { if (!bandPlaying || !metroOn(c)) return; const P = metroPlan(c), t = heardNow();
     if (P && t != null && P.B.length) { let k = -1; for (let i = 0; i < P.B.length && P.B[i] <= t; i++) k = i; const on = k >= 0 && t - P.B[k] < 0.11 && !P.free.some(([u, v]) => t > u && t < v), pos = k >= 0 ? ((k - P.kd) % P.bpb + P.bpb) % P.bpb : -1, sig = `${on ? pos : -1}|${P.bpb}`;
-      if (sig !== MET.last) { MET.last = sig; for (const host of document.querySelectorAll(".mdots")) { const L = host.children; for (let i = 0; i < L.length; i++) L[i].classList.toggle("on", on && i === pos); } } }
+      if (sig !== MET.last) { MET.last = sig; for (const host of document.querySelectorAll(".mdots")) { const L = host.children; for (let i = 0; i < L.length; i++) L[i].classList.toggle("on", on && i === pos); } }
+      const M = state.metro; if (M && !M.ready) { const h0 = M.heard0 ?? (M.heard0 = t); if (P.B.filter(x => x > h0 && x <= t).length >= 2 * P.bpb || (t < h0 - 0.5)) { M.ready = true; $("#metro .mlock")?.classList.remove("soft"); const q = $("#metro .mqh"); if (q) q.textContent = ""; } } }
     MET.raf = requestAnimationFrame(tick); };
   MET.raf = requestAnimationFrame(tick);
 }
@@ -8848,7 +8907,7 @@ function bandPreview(c, from = 0) {
         const sN = ctx.createBufferSource(); sN.buffer = F.stems[k]; sN.connect(fg); sN.start(T, Math.min(sw, F.stems[k].duration - 0.01)); srcs.push(sN); }
       if (sw > hEnd) diagLog("band head ran out before the full render");
     }).catch(() => { });
-    a.onended = () => { if (bandPreview.token === token && bandPlaying) { stopBand(); if (player?.loop) bandPreview(c); else renderDock(c); } };
+    a.onended = () => { if (bandPreview.token === token && bandPlaying) { stopBand(); if (player?.loop || metroOn(c)) bandPreview(c); else { renderDock(c); metroRefresh(c); } } };
     const srcAt = el => simple ? w.s + el : planSrcT(P, el), elNow = () => Math.max(0, Math.min(total, heardAt(ctx) - t0 + at0));
     bandPreview.clock = () => srcAt(elNow());   // what you hear now, in the take's own time (the 4 taps use it)
     // the beat light: the band's own beats, in the result's time
@@ -8884,6 +8943,7 @@ async function bandAi(c) {
 async function bandSave(c, shape, say0) {
   const fmtK = typeof shape === "string" ? shape : shape ? "vertical" : "original", A = ASPECT[fmtK] || null, vertical = !!A, o0 = c.ex || {};
   if (!c.file) { toast("Re-add this video first."); return; }
+  if (beatPending(c)) { $("#exportSheet").hidden = true; toast("Set the beat first, then save with the band."); metroOpen(c); return; }
   if (!downloads || (!freeBand(c) && !proOK("Exporting with the band"))) return;
   stopBand();
   const say = say0 || (t => { c.bandStatus = t; const el = $("#bandStatus"); if (el) el.textContent = t; });
@@ -8895,7 +8955,7 @@ async function bandSave(c, shape, say0) {
     const mix = bandMix(c, r);
     const out = await ClipExporter.exportShort(M, c.file, [r.w.s, r.w.e], p => say(`Mixing… ${Math.round(p * 100)}%`), { tags: jamTags(c), gainDb, mix, aspect: A, pos: o0.pos ?? 0.5, fx: fxOf(c), take: takeGain(c), watermark: !isPro(), fade: fadeFor(c, srcOf(c)), overlay: ovOn(o0) ? (() => { const I = ovInfo(c, r.w.s, r.w.e); return (g, W, H, t) => drawOverlay(g, W, H, t, I, o0); })() : null });
     const name = `${c.name.replace(/\.[^.]+$/, "")}_${r.style}${A ? `_${A[0]}x${A[1]}` : ""}.mp4`;
-    try { await offerFile(name, out.blob, say); if (!freeBand(c)) spendTrial(); diagLog(`export band ${vertical ? "vertical" : "original"}: saved`); const extra = o0.alsoParts ? await saveOriginals(c, srcOf(c), o0, say) : 0; say(`${savedWhere()} ${mix ? "Band mixed in." : "Saved."}${sndOf(c).fx ? ` Studio sound: ${fxLabel(c)}.` : ""}${extra ? " Plus the original without the band." : ""}`); }
+    try { await offerFile(name, out.blob, say); if (!freeBand(c)) spendTrial(); c.pickSaved = true; persist(c); renderCard(c); diagLog(`export band ${vertical ? "vertical" : "original"}: saved`); const extra = o0.alsoParts ? await saveOriginals(c, srcOf(c), o0, say) : 0; say(`${savedWhere()} ${mix ? "Band mixed in." : "Saved."}${sndOf(c).fx ? ` Studio sound: ${fxLabel(c)}.` : ""}${extra ? " Plus the original without the band." : ""}`); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
   } catch (err) { diagLog(`export band FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "no_encoder" || err?.code === "no_audio_encoder" ? "This browser can't make videos. Open LickPick in Chrome." : "Couldn't make the video. The original is untouched."); }
   c.exporting = false; renderStudio(); renderExport(c);
@@ -9276,7 +9336,7 @@ document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === 
 // Set the beat: BPM − / + step on press and keep going while held (the click that follows the press is not a second step)
 const metroHold = { t: 0, down: false, until: 0 };
 document.addEventListener("pointerdown", e => { const b = e.target.closest?.('[data-metro="bpm+"],[data-metro="bpm-"],[data-metro="early"],[data-metro="late"]'), c = cur(); if (!b || !c || !state.metro || (e.button ?? 0) !== 0) return;
-  const a = b.dataset.metro; metroHold.down = true; clearTimeout(metroHold.t); metroAct(c, a); let n = 0; const go = () => { metroHold.t = setTimeout(() => { if (!metroHold.down || !state.metro) return; metroAct(c, a); n++; go(); }, n ? 110 : 450); }; go(); });
+  const a = b.dataset.metro; metroHold.down = true; clearTimeout(metroHold.t); state.metro.fk = a; metroAct(c, a); requestAnimationFrame(() => $(`#metro [data-metro="${CSS.escape(a)}"]`)?.focus({ preventScroll: true })); let n = 0; const go = () => { metroHold.t = setTimeout(() => { if (!metroHold.down || !state.metro) return; metroAct(c, a); n++; go(); }, n ? 110 : 450); }; go(); });
 for (const ev of ["pointerup", "pointercancel", "blur"]) window.addEventListener(ev, () => { if (!metroHold.down) return; metroHold.down = false; clearTimeout(metroHold.t); metroHold.until = performance.now() + 600; });
 document.addEventListener("click", e => {
   { const c0 = cur(); if (c0 && !$("#studio").hidden) { if (mon.ctx?.state === "suspended") mon.ctx.resume().catch(() => { }); if (video && sndOf(c0).fx) hookVideo(); } }
@@ -9423,7 +9483,7 @@ document.addEventListener("click", e => {
     if (k === "drums" && A && !A.pulse) { b.grid = { bpm: LickMusic.guessTempo(c.raw, bandWindow(c).s, bandWindow(c).e) }; b.parts.drums = true; b.touched = { ...(b.touched || {}), drums: true }; c._bandA = null; persist(c); renderStudio(); toast(`No steady beat in your playing, so the drums keep a steady ${b.grid.bpm} BPM. Set it under Beat.`); return; }
     if (k === "extra" && bandSet(c, A).extra === "none") { b.set = { ...(b.set || {}), extra: "strings" }; b.parts.extra = true; b.touched = { ...(b.touched || {}), extra: true }; persist(c); renderStudio(); toast("Strings added. Pick another colour below: horns, guitars, choir, vibes, synth."); return; }
     const on = !!b.parts[k] && !(b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k]); b.touched = { ...(b.touched || {}), [k]: true }; b.parts[k] = !on; persist(c); renderStudio(); return; }
-  if (d.metro) { if (/^(bpm[+-]|early|late)$/.test(d.metro) && (metroHold.down || performance.now() < metroHold.until)) return; metroAct(c, d.metro); return; }
+  if (d.metro) { if (/^(bpm[+-]|early|late)$/.test(d.metro) && (metroHold.down || performance.now() < metroHold.until)) return; if (state.metro) state.metro.fk = d.metro; metroAct(c, d.metro); return; }
   if (d.act === "countin") { const b = newBand(c), was = bandPlaying, at = was && player ? player.virt() : 0; stopBand(); b.countin = !b.countin; persist(c); renderStudio(); if (was) bandPreview(c, at); return; }
   if (d.look) { const o = exOpts(c), l = LOOKS.find(x => x[0] === d.look); if (!l) return; o.look = d.look; persist(c); lookFont(l).then(() => { ovPreview(); }); lookLive(c); renderStudio(); renderExport(c); return; }
   if (d.play != null) { const p = c.parts[+d.play]; c.sel = +d.play; renderStudio(); playRanges(c, [[p.start, p.end]], `Part ${+d.play + 1}`); return; }
