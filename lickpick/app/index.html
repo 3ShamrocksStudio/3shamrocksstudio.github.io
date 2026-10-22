@@ -1651,14 +1651,64 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
 .bandhead.on{border-style:solid;border-color:var(--f-band);box-shadow:3px 3px 0 var(--ink)}
 .bandhead strong{display:block;font:400 17px/1.15 var(--display)} .bandhead em{display:block;font-style:normal;color:var(--dim);font-size:13px;margin-top:3px}
 .timing{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 12px;border-radius:14px;background:var(--raise);border:2px solid var(--line)}
-.tap4{display:flex;flex-direction:column;gap:10px;margin:12px 0;padding:14px;border-radius:16px;border:2px solid var(--volt);background:var(--raise);box-shadow:3px 3px 0 var(--ink)}
-.tap4 strong{font:400 18px/1.15 var(--display)} .tap4 p{margin:0;color:var(--dim);font-size:13.5px} .tap4 .tap4st{color:var(--text);font-weight:800;min-height:1.5em}
-.tap4btn{min-height:76px;border-radius:16px;border:2px solid var(--ink);background:var(--volt);color:var(--ink);font:400 21px var(--display);display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:3px 3px 0 var(--ink);touch-action:manipulation;user-select:none;-webkit-user-select:none;cursor:pointer}
-.tap4btn svg.i{width:28px;height:28px;--ic2:rgba(7,6,11,.25)} .tap4btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)} .tap4btn:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
-.tap4btn.hit{animation:tap4hit .2s ease-out} @keyframes tap4hit{from{transform:scale(1.05);background:var(--hot)}to{transform:none}}
-.tap4dots{display:inline-flex;gap:7px} .tap4dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);background:transparent} .tap4dots i.on{background:var(--hot)}
 .chchip.rest b{opacity:.6;font-style:italic}
-@media (prefers-reduced-motion:reduce){.tap4btn.hit{animation:none}}
+/* Set the beat (2026-10-22): the metronome lock. Band family = pink; the edit entry = cyan */
+.metro{display:flex;flex-direction:column;gap:8px;margin:0 0 12px;padding:12px 12px 10px;border-radius:18px;border:2px solid var(--f-band);background:var(--raise);box-shadow:3px 3px 0 var(--ink);scroll-margin-top:calc(var(--dockH,220px) + 10px)}
+.metro .mhead{display:flex;align-items:flex-start;gap:12px}
+.metro .mhead>svg.i{width:30px;height:30px;flex:none;color:var(--f-band);--ic2:transparent;margin-top:2px}
+.metro h3{margin:0;font:400 21px/1.1 var(--display)} .metro .mhead p{margin:3px 0 0;color:var(--dim);font-size:13px;line-height:1.3}
+.mlight{display:flex;justify-content:center;padding:2px 0}
+.mdots{display:inline-flex;align-items:center;gap:12px}
+.mdots i{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--panel);transition:background .06s,transform .06s,box-shadow .06s}
+.mdots i b{font:900 13px var(--body);color:var(--dim)}
+.mdots i.one{width:38px;height:38px;border-color:var(--f-band)}
+.mdots i.on{background:#FF7AB6;border-color:var(--ink);transform:scale(1.1)} .mdots i.on b{color:var(--ink)}
+.mdots i.one.on{background:var(--f-band);box-shadow:0 0 0 7px rgba(255,46,136,.3)}
+.metro .mb{min-height:48px;min-width:44px;padding:0 6px;border:2px solid var(--ink);border-radius:12px;background:var(--panel);color:var(--text);font:900 16px var(--body);box-shadow:2px 2px 0 var(--ink);touch-action:manipulation;user-select:none;-webkit-user-select:none;cursor:pointer}
+.metro .mb:active{transform:translate(2px,2px);box-shadow:none}
+.metro .mb:focus-visible,.mtap:focus-visible,.bedit:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.mbpm{display:grid;grid-template-columns:44px 50px minmax(0,1fr) 50px 44px;gap:5px;align-items:stretch}
+.mbpm .mpm{font-size:26px;line-height:1}
+.mval{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;border-radius:12px;background:var(--panel);border:2px solid var(--line)}
+.mval b{font:400 24px/1 var(--display);color:var(--text);letter-spacing:-.02em} .mval em{font-style:normal;font-size:11.5px;font-weight:800;color:var(--dim);margin-top:3px;white-space:nowrap}
+.mtap{min-height:56px;border-radius:16px;border:2px solid var(--ink);background:var(--f-band);color:var(--ink);font:400 20px var(--display);display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:3px 3px 0 var(--ink);touch-action:manipulation;user-select:none;-webkit-user-select:none;cursor:pointer}
+.mtap svg.i{width:26px;height:26px;--ic2:rgba(7,6,11,.25)} .mtap:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.mtap.hit{animation:mtaphit .2s ease-out} @keyframes mtaphit{from{transform:scale(1.04);background:var(--volt)}to{transform:none}}
+.tapdots{display:inline-flex;gap:6px} .tapdots i{width:12px;height:12px;border-radius:50%;border:2px solid var(--ink)} .tapdots i.on{background:var(--ink)}
+.mtr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.mtr.mmeter{grid-template-columns:repeat(3,minmax(0,.8fr)) minmax(0,1.3fr)}
+.metro .mchip[aria-pressed=true]{background:var(--f-band);color:var(--ink)}
+.metro .mstrict{margin:0}
+.metro .mst{margin:0;min-height:1.3em;font-weight:800;font-size:13.5px;color:var(--text);text-align:center}
+.metro .mlock{min-height:50px;background:var(--f-band);font-size:17px}
+.metro .mx{align-self:center;min-height:44px;padding:0 8px}
+#studio .sect,#studio .fold,#studio .chords{scroll-margin-top:calc(var(--dockH,220px) + 10px)}
+.flow{margin:0 0 8px}
+.flow ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:relative}
+.flow ol::before{content:"";position:absolute;left:10%;right:10%;top:13px;height:2px;background:var(--line)}
+.flow li{min-width:0} .flow button{position:relative;width:100%;min-height:46px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:2px 0;border:0;background:none;color:var(--dim);cursor:pointer}
+.flow button:disabled{cursor:default} .flow button:focus-visible{outline:3px solid var(--cyan);outline-offset:1px;border-radius:10px}
+.flow i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);background:var(--stage);font:900 11.5px var(--body);font-style:normal;color:var(--dim);--fc:var(--f-take)}
+.flow i svg.i{width:13px;height:13px;color:var(--ink);--ic2:transparent}
+.flow li.fl-beat i,.flow li.fl-band i{--fc:var(--f-band)} .flow li.fl-save i{--fc:var(--f-save)}
+.flow li.done i{background:var(--fc);border-color:var(--ink)}
+.flow li.now i{border-color:var(--fc);color:var(--text);box-shadow:0 0 0 4px color-mix(in srgb,var(--fc) 30%,transparent)}
+.flow span{font-size:11px;line-height:1.1;text-align:center;white-space:nowrap} .flow b{font-weight:800} .flow li.now b,.flow li.done b{color:var(--text)}
+.flow .fl-s{display:none}
+@media (max-width:460px){.flow .fl-l{display:none}.flow .fl-s{display:inline}.flow span{font-size:10.5px;letter-spacing:-.01em}}
+.bedit{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:4px 10px 4px 8px;border-radius:12px;border:2px solid var(--f-edit);background:var(--panel);color:var(--text);cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.bedit svg.i{width:18px;height:18px;color:var(--f-edit);--ic2:transparent} .bedit span{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+.bedit b{font:400 18px/1 var(--display)} .bedit em{font-style:normal;font-size:10.5px;font-weight:800;color:var(--dim);margin-top:2px;white-space:nowrap}
+/* on the player: the beat light while you set the beat, then the band layering up */
+.mov{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;pointer-events:none;z-index:3}
+.mov .mdots{gap:8px;padding:7px 12px;border-radius:24px;background:rgba(7,6,11,.62)}
+.mov .mdots i{width:18px;height:18px;border-width:2px} .mov .mdots i.one{width:24px;height:24px} .mov .mdots i b{display:none}
+.mbuild{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:0 8px}
+.mbuild b{display:inline-flex;align-items:center;gap:5px;padding:5px 11px 5px 8px;border-radius:20px;border:2px solid var(--ink);background:var(--f-band);color:var(--ink);font:800 13px var(--body);box-shadow:2px 2px 0 var(--ink);opacity:0;transform:translateY(10px) scale(.6);transition:opacity .2s,transform .32s cubic-bezier(.3,1.7,.5,1)}
+.mbuild b svg.i{width:16px;height:16px;--ic2:rgba(7,6,11,.25)} .mbuild b.in{opacity:1;transform:none}
+.sdock.mini .mov{bottom:4px} .sdock.mini .mov .mdots{padding:4px 7px;gap:5px} .sdock.mini .mov .mdots i{width:11px;height:11px} .sdock.mini .mov .mdots i.one{width:14px;height:14px} .sdock.mini .mbuild b{font-size:10px;padding:2px 6px} .sdock.mini .mbuild b svg.i{display:none}
+@media (max-width:380px){.mbpm{grid-template-columns:44px 46px minmax(0,1fr) 46px 44px;gap:4px}.mval b{font-size:21px}.metro{padding:10px}.mtr{gap:5px}.metro .mb{font-size:15px;padding:0 4px}.metro .mb.mpm{font-size:24px}}
+@media (prefers-reduced-motion:reduce){.mtap.hit{animation:none}.mdots i,.mbuild b{transition:none}.mdots i.on{transform:none}.mbuild b{transform:none}}
 .timing .tlbl{font-weight:900;font-size:13px;color:#FF4A97;margin-right:2px}
 .timing .nudge{display:inline-flex;border:2px solid var(--ink);border-radius:12px;overflow:hidden;box-shadow:2px 2px 0 var(--ink)}
 .timing .nudge button{min-width:44px;min-height:44px;border:0;background:var(--panel);color:var(--text);font:900 18px var(--body)}
@@ -1750,6 +1800,8 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
     <symbol id="i-keys" viewBox="0 0 24 24"><rect class="d" x="2.5" y="5" width="19" height="14" rx="2.5"/><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M8.5 5v14M15.5 5v14M12 5v14"/><rect x="7.2" y="5" width="2.6" height="7.5" fill="currentColor" stroke="none"/><rect x="14.2" y="5" width="2.6" height="7.5" fill="currentColor" stroke="none"/></symbol>
     <symbol id="i-next" viewBox="0 0 24 24"><path d="M5 5l9 7-9 7z" fill="currentColor"/><path d="M18 5v14" stroke-width="3"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20l1-5L15.5 4.5a2.1 2.1 0 0 1 3 0l1 1a2.1 2.1 0 0 1 0 3L9 19z"/><path d="M13.5 6.5l4 4"/></symbol>
+    <symbol id="i-metro" viewBox="0 0 24 24"><path d="M8 3h8l4 18H4z"/><path d="M12 16l5-10" stroke-width="2.6"/><circle cx="12" cy="16" r="1.6" fill="currentColor"/></symbol>
     <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></symbol>
     <symbol id="i-stack" viewBox="0 0 24 24"><rect class="d" x="5" y="9" width="14" height="12" rx="2.5"/><rect x="5" y="9" width="14" height="12" rx="2.5"/><path d="M7 5.5h10M9 2.5h6"/><path d="M12 12v5M9.8 14.8L12 17l2.2-2.2" stroke-width="2.2"/></symbol>
     <symbol id="i-install" viewBox="0 0 24 24"><rect class="d" x="6" y="2" width="12" height="20" rx="3"/><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 6.5v8M9 11.5l3 3 3-3" stroke-width="2.4"/></symbol>
@@ -1904,6 +1956,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
       <button class="icon-btn" type="button" data-act="close" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button>
       <h2 id="sName"></h2><button class="icon-btn tipsbtn" type="button" data-act="tips" aria-pressed="false" aria-label="Show tips"><svg class="i"><use href="#i-help"/></svg></button><span id="sPill" hidden></span>
     </div>
+    <nav class="flow" id="sFlow" aria-label="Your steps" hidden></nav>
     <div class="sdock" id="sDock">
       <div class="stage" id="sStage"></div>
       <div class="dockbar" id="sDockBar"></div>
@@ -1971,7 +2024,7 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-20c"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = {"apiKey":"AIzaSyCVM2YJykeEVGa4FB3uoHRHijnP2elvcX0","authDomain":"lickpick-app.firebaseapp.com","projectId":"lickpick-app","storageBucket":"lickpick-app.firebasestorage.app","messagingSenderId":"881593704089","appId":"1:881593704089:web:528c399bb5f7d82c7b2208"}; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-22a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = {"apiKey":"AIzaSyCVM2YJykeEVGa4FB3uoHRHijnP2elvcX0","authDomain":"lickpick-app.firebaseapp.com","projectId":"lickpick-app","storageBucket":"lickpick-app.firebasestorage.app","messagingSenderId":"881593704089","appId":"1:881593704089:web:528c399bb5f7d82c7b2208"}; window.LP_SND = "snd/"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -3520,8 +3573,10 @@ body{background:radial-gradient(900px 520px at 115% -8%,rgba(255,46,136,.13),tra
         for (let p = 0; p < NS; p++) if (cur[p] > -1e9) cur[p] += p === M ? -d[k] / (M - 1) : ob(k, p);
         bk.push(b); prev = cur; }
       let p = 0; for (let q = 1; q < NS; q++) if (prev[q] > prev[p]) p = q; const pos = new Array(n); pos[n - 1] = p; for (let k = n - 1; k > 0; k--) { p = bk[k - 1][p]; pos[k - 1] = p; }
-      const starts = []; pos.forEach((q, k) => { if (q === 0) starts.push(k); });
+      let starts = []; pos.forEach((q, k) => { if (q === 0) starts.push(k); });
       if (!starts.length) starts.push(best);
+      // Set the beat: the player said where 1 is ("tap on 1"): regular bars from that beat, no guessing
+      if (forced?.down != null && n) { let kd = 0; for (let k = 1; k < n; k++) if (Math.abs(beats[k] - forced.down) < Math.abs(beats[kd] - forced.down)) kd = k; starts = []; for (let k = ((kd % M) + M) % M; k < n; k += M) starts.push(k); }
       starts.forEach((k, i) => { const k1 = i + 1 < starts.length ? starts[i + 1] : k + M, t0 = beats[k], t1 = k1 < n ? beats[k1] : t0 + (k1 - k) * (beats[n - 1] - beats[n - 2]); bars.push({ t0, t1, k, n: k1 - k }); }); }
     // chords: one decision per 2 beats in 4/4 (per bar in 3/4); Viterbi keeps a held chord as one chord
     const segs = [], bpos = [];
@@ -6954,7 +7009,8 @@ function stepBody(c, k) {
     case "choose": return sect("choose", "a", "Your best take", choosePanel(c))
       + sect("fix", "b", "Fix", fixPanel(c), esc(stepInfo(c, "fix")[0]))
       + sect("arrange", "c", "Loop & tempo", arrangePanel(c), esc(stepInfo(c, "arrange")[0]));
-    case "band": return sect("band", "a", "The band", bandPanel(c))
+    case "band": if (metroOn(c) || beatPending(c)) return sect("band", "a", "Set the beat", bandPanel(c));
+      return sect("band", "a", "The band", bandPanel(c))
       + (bandOn(c) ? sect("sound", "b", "Mix & studio sound", soundPanel(c), esc(fxLabel(c) || "Levels")) : "")
       + sect("layers", "c", "Rec room", pk ? `${layersCard(c)}${srcOf(c)?.plan && !srcOf(c).plan.simple ? `<p class="hint">Layers play with the Pick as recorded. Tightening, fixes and loops are left out when you save layers.</p>` : ""}` : `<p class="hint keep">Layers line up with your Pick. Choose a Pick first.</p>`, esc(stepInfo(c, "layers")[0]));
     case "look": return lookPanel(c);
@@ -6991,14 +7047,26 @@ function renderStudio() {
     if (lg && k === "choose") box.querySelector("#sPanel .panel")?.prepend(lg);
     setTimeout(() => { const on = sbar.querySelector(".sb.on"); if (on) { const bar = on.parentElement; bar.scrollTo({ left: on.offsetLeft - bar.clientWidth / 2 + on.clientWidth / 2, behavior: "smooth" }); } }, 0); }
   if (c.status === "done" && state.step === "band") { bandPrefetch(c); eqStartLoop(); }
-  syncBandBtn(c); renderEditBar(c);
+  syncBandBtn(c); renderEditBar(c); renderFlow(c);
   if (state.sect && c.status === "done") { const id = state.sect; state.sect = null; setTimeout(() => { const el = document.getElementById("sec-" + id); if (el) { if (el.tagName === "DETAILS") { el.open = true; (state.folds ||= new Set()).add(id); } el.scrollIntoView({ block: "start", behavior: "smooth" }); } }, 60); }
   renderSrc(c);
+}
+// the path through a take, small and always in the same place: Import → AI picks → Set the beat → Band → Save.
+// Done steps are ticked, the next one is ringed; each one takes you there.
+function renderFlow(c) {
+  const el = $("#sFlow"); if (!el) return; const ok = c?.status === "done" && !c.example; el.hidden = !ok; if (!ok) { el.innerHTML = ""; return; }
+  const pk = !!pickOf(c), can = pk && !!c.raw?.chromaQ, lock = can && hasLock(c);
+  const F = [["import", "Import", "Import", true, ""], ["pick", "AI picks", "AI pick", pk, `data-step="choose"`], ["beat", "Set the beat", "Set beat", lock, can ? `data-metro="open"` : `data-step="choose"`],
+    ["band", "Band", "Band", lock && bandOn(c), can ? `data-step="band"` : `data-step="choose"`], ["save", "Save", "Save", !!c.pickSaved, `data-act="export-open"`]];
+  const nx = F.findIndex(f => !f[3]);
+  el.innerHTML = `<ol>${F.map(([k, l, sh, done, act], i) => `<li class="fl-${k}${done ? " done" : ""}${i === nx ? " now" : ""}"><button type="button" ${act || "disabled"} ${i === nx ? `aria-current="step"` : ""} aria-label="${l}${done ? ", done" : i === nx ? ", next" : ""}"><i>${done ? icon("i-check") : i + 1}</i><span><b class="fl-l">${l}</b><b class="fl-s">${sh}</b></span></button></li>`).join("")}</ol>`;
 }
 // folds remember being open while you work
 document.addEventListener("toggle", e => { const d = e.target; if (!(d instanceof HTMLElement) || !d.matches?.("details.fold")) return; const f = (state.folds ||= new Set()); d.open ? f.add(d.dataset.fold) : f.delete(d.dataset.fold); }, true);
 // the video tucks into a thumbnail as you scroll into the steps, and comes back at the top
 let dockAuto = false;
+// cards scrolled into view stop below the sticky player, never under it (scroll-margin uses the player's real height)
+try { new ResizeObserver(() => { const h = $("#sDock")?.offsetHeight; if (h) document.documentElement.style.setProperty("--dockH", h + "px"); }).observe($("#sDock")); } catch { }
 $("#studio").addEventListener("scroll", () => { const st = $("#studio"), want = dockAuto ? st.scrollTop > 8 : st.scrollTop > 60; if (want !== dockAuto) { dockAuto = want; $("#sDock")?.classList.toggle("mini", want || !!store.get("lp:dockmini")); setTimeout(drawWave, 20); } }, { passive: true });
 function openStep(c, k) {
   if (!k) return; const a = STEPS.findIndex(x => x[0] === state.step), b = STEPS.findIndex(x => x[0] === k); state.stepDir = b > a ? 1 : b < a ? -1 : 0;
@@ -7337,12 +7405,12 @@ function exportSheetHTML(c) {
     <div class="exgroup"><span>On the video</span><button type="button" class="opt" data-act="look-open" ${busy ? "disabled" : ""}>${icon("i-text")}<span class="grow"><strong>${esc(stepInfo(c, "look")[0])}</strong><em>Look, title, chords and tab. Tap to change.</em></span><span class="chev">›</span></button></div>
     ${o.canBand || o.canSep || S.kind === "mix" || o.canLayers ? `<div class="exgroup"><span>Extras</span>
       ${o.canLayers ? opt("layers", !!o.layers, "i-stack", "Layers, split screen", `You and ${layersOn(c).length} more take${layersOn(c).length > 1 ? "s" : ""}, side by side, on one beat.`, false, proTag()) : ""}
-      ${o.canBand ? opt("band", o.band, "i-drum", "Backing band", beatPending(c) ? "Waiting for your 4 taps on the beat: open Band and tap along." : "Drums, bass and keys on your beat.", false, freeBand(c) || !o.band ? "" : proTag()) : ""}
+      ${o.canBand ? opt("band", o.band, "i-drum", "Backing band", beatPending(c) ? "Set the beat first: open Band, listen to the click, lock it." : "Drums, bass and keys on the beat you locked.", false, freeBand(c) || !o.band ? "" : proTag()) : ""}
       ${o.canSep ? opt("sep", o.sep, "i-stack", "One file per part", `${S.n} files instead of one.`, false, proTag()) : ""}
       ${S.kind === "mix" || o.band ? opt("alsoParts", !!o.alsoParts, "i-film", S.kind === "mix" ? "Also save each part on its own" : "Also save it without the band", S.kind === "mix" ? `Plus ${S.ranges.length} separate files of your original playing.` : "Plus a file with just your original playing.") : ""}
     </div>` : ""}
     <div class="exgroup"><span>Sound</span><button type="button" class="opt" data-act="sound-open" ${busy ? "disabled" : ""}>${icon("i-sliders")}<span class="grow"><strong>${sndOf(c).fx ? `Studio sound · ${fxLabel(c)}` : "As recorded"}</strong><em>${S.ranges.length > 1 && !o.sep && sndOf(c).fx ? "Polish works on a Pick or a single part." : "Tap to change polish and mixer levels."}</em></span><span class="chev">›</span></button></div>
-    ${c.file ? `<button class="btn wide" type="button" data-act="export-go" ${busy || !downloads ? "disabled" : ""}>${icon("i-save")}Save ${files > 1 ? files + " files" : S.kind === "clean" ? "clean cut" : S.label}${o.canLayers && o.layers ? " + layers" : ""}${o.band ? " + band" : ""}${ASPECT[o.fmt] ? " · " + FMTS.find(f => f[0] === o.fmt)[1] : ""} · ${fmt(S.len)}</button>`
+    ${c.file ? `<button class="btn wide" type="button" data-act="export-go" ${busy || !downloads ? "disabled" : ""}>${icon("i-save")}Save ${files > 1 ? files + " files" : S.kind === "clean" ? "clean cut" : S.label}${o.canLayers && o.layers ? " + layers" : ""}${o.band && !beatPending(c) ? " + band" : ""}${ASPECT[o.fmt] ? " · " + FMTS.find(f => f[0] === o.fmt)[1] : ""} · ${fmt(S.len)}</button>`
       : `<button class="btn wide" type="button" data-act="gallery">${icon("i-film")}Re-add the video to save in HD</button><p class="hint">Saving uses your original video for full quality. Pick it from the gallery and you're back here.</p>`}
     ${c.file && !downloads ? `<p class="hint">Saving isn't available in this view.</p>` : ""}
     <div class="status" id="exStatus" aria-live="polite">${esc(c.exStatus || "")}</div>
@@ -7712,8 +7780,10 @@ function shortWindow(c) { const p = pickOf(c); return p ? { s: p.s, e: p.e, endA
 const pickRef = (c, w) => `<div class="pickref"><span>${icon("i-star")}Pick ${"ABC"[c.pickSel || 0]} · ${fmt(w.s)} → ${fmt(w.e)} · ${fmt(w.e - w.s)}</span><button class="btn sm ghost" type="button" data-tab="pick">Change</button></div>`;
 // ---------- band: drums, bass and keys locked to the clip's beat and key
 function bandWindow(c) { return shortWindow(c); }
-// the beat of the Pick: heard by LickPick, then corrected by you (tap along, half a beat later, double or half time)
-function bandA(c) {
+// the beat of the Pick: the player's metronome lock (Set the beat) when there is one; else what LickPick heard (the guess
+// Set the beat starts from), or an older take's taps and fixes
+function bandA(c) { const L = c.band?.lock; return L && !L.legacy ? bandLocked(c, L) : bandAuto(c); }
+function bandAuto(c) {
   const w = bandWindow(c); if (!w) return null;
   const G = c.band?.grid || {}, fx = c.band?.fix || {}, key = `${w.s}|${w.e}|${c.raw.v}|${G.bpm || 0}|${(G.taps || []).length}|${G.taps?.[0] || 0}|${G.beats?.[0] || 0}|${(G.beats || []).length}|${fx.shift ? 1 : 0}|${fx.mult || 1}`;
   if (c._bandA?.key !== key) { let A = null; try {
@@ -7774,10 +7844,233 @@ const keySure = c => { const k = takeKeyOf(c); return !!k && k.key != null && k.
 // round 4: chord-follow. Sure key or not, the band plays the chords it hears bar by bar and rests where it isn't sure; drums
 // only when there's no bar it's sure of
 const rhythmOnly = c => { if (c.band?.keyForce) return false; const A = bandA(c); if (!A?.pulse) { const k = takeKeyOf(c); return !!k && !keySure(c); } const H = chordBase(c, A); return !H.some(h => !h.rest); };
-// round 4: the beat gate. When the beat's phase, tempo level or 3/4-vs-6/8 reading isn't clearly ahead of its rival
-// (gridOf(c).gate), the band never plays a guess: it waits for 4 taps on the beat (or a Flip / x2 / /2 fix, or "use the guess")
-function beatPending(c) { if (!bandOn(c)) return false; const b = c.band || {}, G = b.grid || {}, fx = b.fix || {};
-  if (b.guessOK || G.taps?.length >= 4 || G.bpm || G.beats?.length || fx.shift || (fx.mult && fx.mult !== 1)) return false; const g = gridOf(c); return !!(g?.pulse && g.gate); }
+// ---------- Set the beat (2026-10-22): the metronome lock. After the Pick, a click plays over your take on LickPick's
+// best guess (tempo + phase from the scan, 3/4 / 4/4 / 6/8, the bar line). You fix it with BPM − / +, ×2 / ÷2, Tap
+// tempo, Earlier / Later / Flip ½, the meter and "Tap on 1", then lock it. The lock (c.band.lock) is the ONE source of
+// the band's beat: preview, save, Rec room, Tighten. Two kinds: "grid" = a level (mult) and phase (u0) on the tempo curve
+// LickPick tracked over the whole take, so gentle drift is followed ("Keep strict tempo" = one straight tempo fitted
+// through the same beats); "free" = your own BPM and phase (after − / +, or taps that fit no reading of the take).
+// The band never plays before a lock (or an older take's taps / "use the guess").
+const METERS = { "4/4": { m: 4, cp: false, bpb: 4 }, "3/4": { m: 3, cp: false, bpb: 3 }, "6/8": { m: 4, cp: true, bpb: 2 } };
+const hasLock = c => { const b = c.band || {}, G = b.grid || {}, fx = b.fix || {}; return !!b.lock || !!b.guessOK || G.taps?.length >= 4 || !!G.bpm || !!G.beats?.length || !!fx.shift || !!(fx.mult && fx.mult !== 1); };
+function beatPending(c) { return bandOn(c) && !hasLock(c); }
+// time <-> beat units on a tracked grid (linear between its beats, its edge tempo outside)
+function gridMap(B) { const n = B.length, p0 = B[1] - B[0], p1 = B[n - 1] - B[n - 2];
+  return { toU: t => { if (t <= B[0]) return (t - B[0]) / p0; if (t >= B[n - 1]) return n - 1 + (t - B[n - 1]) / p1; let lo = 0, hi = n - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (B[m] <= t) lo = m; else hi = m; } return lo + (t - B[lo]) / (B[hi] - B[lo]); },
+    toT: u => { if (u <= 0) return B[0] + u * p0; if (u >= n - 1) return B[n - 1] + (u - n + 1) * p1; const i = Math.floor(u); return B[i] + (u - i) * (B[i + 1] - B[i]); } }; }
+const lockGrid = c => { const g = gridOf(c); return g?.pulse && g.beats?.length >= 8 ? g : null; };
+// the lock's beats over [s, e] (take time)
+function lockBeats(c, L, s, e) {
+  if (!L) return [];
+  const key = JSON.stringify([L.mode, L.mult, L.u0, L.bpm, L.t0, L.off || 0, !!L.strict, +s.toFixed(3), +e.toFixed(3), c.raw?.v]);
+  const C = c._lb || (c._lb = new Map()); if (C.has(key)) return C.get(key);
+  let B = []; const a = s - 0.6, b = e + 0.6, g = L.mode === "grid" ? lockGrid(c) : null;
+  if (g) { const G = gridMap(g.beats), st = 1 / L.mult, ua = G.toU(a), ub = G.toU(b);
+    for (let j = Math.ceil((ua - L.u0) / st - 1e-9); L.u0 + j * st <= ub + 1e-9; j++) B.push(G.toT(L.u0 + j * st));
+    // strict: one straight tempo through the same beats (least squares over the stretch you hear)
+    if (L.strict && B.length >= 4) { const n = B.length, mi = (n - 1) / 2, mt = B.reduce((x, y) => x + y, 0) / n; let sxy = 0, sxx = 0; B.forEach((t, i) => { sxy += (i - mi) * (t - mt); sxx += (i - mi) ** 2; }); const k = sxy / sxx; B = B.map((_, i) => mt + (i - mi) * k); } }
+  if (!B.length) { const p = 60 / Math.max(30, Math.min(260, L.bpm || 100)), t0 = L.t0 ?? s; for (let t = t0 - p * Math.ceil((t0 - a) / p); t <= b + 1e-9; t += p) B.push(t); }
+  B = B.map(t => +(t + (L.off || 0)).toFixed(4)).filter(t => t >= s - 0.02 && t <= e + 0.02);
+  if (C.size > 40) C.clear(); C.set(key, B); return B;
+}
+// the tempo you hear (BPM, one decimal): the median beat in the Pick
+function lockBpm(c, L) { const w = bandWindow(c); if (!w || !L) return 0; if (L.mode !== "grid" || !lockGrid(c)) return Math.round((L.bpm || 0) * 10) / 10; const B = lockBeats(c, L, w.s, w.e), d = B.slice(1).map((t, i) => t - B[i]).sort((x, y) => x - y); return d.length ? Math.round(600 / d[d.length >> 1]) / 10 : 0; }
+const fmtBpm = v => (Math.abs(v - Math.round(v)) < 0.05 ? String(Math.round(v)) : v.toFixed(1));
+// the "1" inside [s, e]: the beat nearest the bar start you set, carried bar by bar
+function lockDown(c, L, s, e) { const bpb = METERS[L.meter]?.bpb || 4, d0 = L.down ?? s, E = lockBeats(c, L, Math.min(s, d0) - 1, Math.max(e, d0) + 1); if (!E.length) return null;
+  let kd = 0; for (let k = 1; k < E.length; k++) if (Math.abs(E[k] - d0) < Math.abs(E[kd] - d0)) kd = k;
+  const i0 = E.findIndex(t => t >= s - 0.02); if (i0 < 0) return null; return E[i0 + (((kd - i0) % bpb) + bpb) % bpb] ?? E[i0]; }
+// does the take speed up or slow down (worth a "Keep strict tempo" switch)? the largest 8-beat tempo vs the median, in %
+function lockDrift(c, L) { const w = bandWindow(c); if (!w || L?.mode !== "grid" || !lockGrid(c)) return 0; const B = lockBeats(c, { ...L, strict: false }, w.s, w.e); if (B.length < 12) return 0;
+  const T = []; for (let i = 0; i + 8 < B.length; i += 4) T.push(8 / (B[i + 8] - B[i])); const m = T.slice().sort((x, y) => x - y)[T.length >> 1]; return Math.round(Math.max(...T.map(x => Math.abs(x / m - 1))) * 1000) / 10; }
+function bandLocked(c, L) {
+  const w = bandWindow(c); if (!w) return null;
+  const key = JSON.stringify([w.s, w.e, c.raw.v, L]); if (c._bandL?.key === key) return c._bandL.A;
+  let A = null; try { const B = lockBeats(c, L, w.s, w.e), M = METERS[L.meter] || METERS["4/4"];
+    if (B.length >= 4) { A = LickMusic.analyze(c.raw, w.s, w.e, { beats: B, meter: M.m, compound: M.cp, down: lockDown(c, L, w.s, w.e) });
+      if (A?.pulse) { A.locked = true; A.given = false; A.grid = L.mode === "grid"; A.bpm = Math.round(lockBpm(c, L)) || A.bpm; A.played = LickMusic.snapBeats(c.raw, A.beats);
+        // free time inside the Pick (a rubato intro, a fermata): the band waits there when the lock follows LickPick's grid
+        const g2 = gridOf(c); A.free = L.mode === "grid" ? (g2?.free || []).filter(([u, v]) => v > w.s && u < w.e).map(([u, v]) => [Math.max(w.s, u), Math.min(w.e, v)]) : []; } }
+  } catch (err) { console.warn("beat", err); }
+  c._bandL = { key, A }; return A;
+}
+// where Set the beat starts: LickPick's own reading (bandAuto: tempo curve, felt tempo, meter, bar line), as a lock
+function guessLock(c) {
+  const w = bandWindow(c); if (!w) return null; const A = bandAuto(c), g = lockGrid(c), meter = A?.compound ? "6/8" : A?.meter === 3 ? "3/4" : "4/4";
+  let L = null;
+  if (A?.pulse && g) { const ts = LickMusic.tapSnap(g.beats, A.beats.slice(0, 24), w.s - 1, w.e + 1); if (ts) L = { mode: "grid", mult: ts.mult, u0: ts.off }; }
+  if (!L && A?.pulse) { const d = A.beats.slice(1).map((t, i) => t - A.beats[i]).sort((x, y) => x - y); L = { mode: "free", bpm: Math.round(600 / d[d.length >> 1]) / 10, t0: A.beats[0] }; }
+  if (!L) { let t = c.raw?.info?.tempo || 0; if (!t) try { t = LickMusic.guessTempo(c.raw, w.s, w.e); } catch { } L = { mode: "free", bpm: Math.round(t || 90), t0: w.s }; }
+  return { ...L, off: 0, strict: false, meter, down: A?.bars?.[0]?.t0 ?? A?.beats?.[0] ?? w.s };
+}
+// ---------- the Set-the-beat step: state.metro = { id, d (the reading being shaped), d0 (where it started), taps, edit }
+const metroOn = c => !!c && state.metro?.id === c.id && bandOn(c);
+function metroInit(c) { const b = newBand(c), cur0 = b.lock && !b.lock.legacy ? { ...b.lock } : guessLock(c); if (!cur0) return null; delete cur0.at;
+  if (b.nudge) cur0.off = +((cur0.off || 0) + b.nudge / 1000).toFixed(3);   // an older band nudge becomes part of the beat
+  return (state.metro = { id: c.id, d: cur0, d0: JSON.stringify(cur0), taps: [], edit: !!(b.lock && !b.lock.legacy), msg: "" }); }
+const metroChanged = () => !!state.metro && JSON.stringify(state.metro.d) !== state.metro.d0;
+// open it (band on, the Band step, your take playing with the click) and bring the card into view under the player
+function metroOpen(c, at) {
+  const o = exOpts(c); if (!o.canBand) { toast("The band plays with a Pick. Choose one first."); return; }
+  const was = bandPlaying || isPlaying(); at = at ?? (player && was ? player.virt() : 0); stopBand();
+  if (!o.band) { o.band = true; o.sep = false; newBand(c).beatOK = true; c.src = c.src === "mix" ? "pick" : c.src; }
+  if (!metroOn(c)) metroInit(c); state.step = "band"; persist(c); renderStudio(); renderExport(c); bandPreview(c, at); metroScroll();
+}
+function metroScroll() { setTimeout(() => { const el = $("#metro"); if (el) el.scrollIntoView({ block: "start", behavior: "smooth" }); }, 120); }
+function metroCard(c) {
+  const M = state.metro, d = M.d, w = bandWindow(c), bpm = lockBpm(c, d), mt = METERS[d.meter] || METERS["4/4"], drift = lockDrift(c, d), playing = bandPlaying && metroOn(c), ch = metroChanged();
+  const fr = d.mode === "grid" ? (gridOf(c)?.free || []).filter(([u, v]) => v > w.s && u < w.e) : [];
+  return `<section class="metro" id="metro" aria-labelledby="metroH">
+    <div class="mhead">${icon("i-metro")}<span class="grow"><h3 id="metroH">Set the beat</h3><p>${playing ? "Fix the click until it sits on your playing." : "Press play: a click plays on LickPick's beat."}</p></span></div>
+    <div class="mlight" aria-hidden="true">${metroDotsHTML(mt.bpb)}</div>
+    <div class="mbpm" role="group" aria-label="Tempo">
+      <button type="button" class="mb" data-metro="half" aria-label="Half time">÷2</button>
+      <button type="button" class="mb mpm" data-metro="bpm-" aria-label="1 BPM slower. Hold to keep going">−</button>
+      <output class="mval" id="metroBpm"><b>${fmtBpm(bpm)}</b><em>BPM · ${d.meter}${d.off ? ` · ${d.off > 0 ? "+" : "−"}${Math.abs(Math.round(d.off * 1000))}ms` : ""}</em></output>
+      <button type="button" class="mb mpm" data-metro="bpm+" aria-label="1 BPM faster. Hold to keep going">+</button>
+      <button type="button" class="mb" data-metro="x2" aria-label="Double time">×2</button>
+    </div>
+    <button type="button" class="mtap" data-metro="tap">${icon("i-drum")}<span class="mtapl">${playing ? "Tap tempo" : "Play & tap"}</span><span class="tapdots" aria-hidden="true">${[0, 1, 2, 3].map(i => `<i class="${i < Math.min(4, M.taps.length) ? "on" : ""}"></i>`).join("")}</span></button>
+    <div class="mtr" role="group" aria-label="Move the click">
+      <button type="button" class="mb mpm2" data-metro="early" aria-label="Click 10 ms earlier. Hold to keep going">‹ Earlier</button>
+      <button type="button" class="mb" data-metro="flip" aria-label="Flip: move the click half a beat">Flip ½</button>
+      <button type="button" class="mb mpm2" data-metro="late" aria-label="Click 10 ms later. Hold to keep going">Later ›</button>
+    </div>
+    <div class="mtr mmeter" role="group" aria-label="Meter and bar">${Object.keys(METERS).map(m => `<button type="button" class="mb mchip" data-metro="m:${m}" aria-pressed="${d.meter === m}">${m}</button>`).join("")}<button type="button" class="mb mone" data-metro="one">Tap on 1</button></div>
+    ${drift >= 1.5 ? `<button type="button" class="opt mstrict" role="switch" aria-checked="${!!d.strict}" data-metro="strict">${icon("i-clock")}<span class="grow"><strong>Keep strict tempo</strong><em>${d.strict ? `One steady ${fmtBpm(bpm)} BPM all through.` : `Your take moves up to ${drift}%. The click follows it.`}</em></span><span class="tgl"></span></button>` : ""}
+    ${fr.length ? `<p class="hint">Free time ${fr.map(([u, v]) => `${fmtP(Math.max(u, w.s))}–${fmtP(Math.min(v, w.e))}`).join(", ")}: no click there. The band waits, then comes in on the beat.</p>` : ""}
+    <p class="mst" id="metroSt" aria-live="polite">${esc(M.msg || "")}</p>
+    <button type="button" class="btn wide mlock" data-metro="lock">${icon("i-lock")}${ch || M.edit ? "Lock it" : "Sounds right · Lock it"}</button>
+    ${M.edit ? `<button type="button" class="linkbtn mx" data-metro="cancel">Keep the beat as it was</button>` : ch ? `<button type="button" class="linkbtn mx" data-metro="reset">Start over from LickPick's guess</button>` : ""}
+  </section>`;
+}
+// redraw just the card (keeps the take playing, keeps focus on the button you pressed)
+function metroRefresh(c) { const el = $("#metro"); if (!el || !state.metro) return; const f = document.activeElement?.dataset?.metro; el.outerHTML = metroCard(c); if (f) $(`#metro [data-metro="${CSS.escape(f)}"]`)?.focus({ preventScroll: true }); metroDots(true); }
+const metroSay = (c, t) => { if (state.metro) state.metro.msg = t; const el = $("#metroSt"); if (el) el.textContent = t; };
+// the beat you hear right now (take time) and the beat nearest it on a reading
+const heardNow = () => bandPreview.clock ? bandPreview.clock() : null;
+function nearestK(B, t) { let k = 0; for (let i = 1; i < B.length; i++) if (Math.abs(B[i] - t) < Math.abs(B[k] - t)) k = i; return k; }
+function metroAct(c, a) {
+  const M = state.metro; if (!M || M.id !== c.id) { metroOpen(c); return; }
+  const d = M.d, w = bandWindow(c), g = lockGrid(c), G = g ? gridMap(g.beats) : null, B = lockBeats(c, d, w.s, w.e), p = B.length > 1 ? (B[B.length - 1] - B[0]) / (B.length - 1) : 60 / (d.bpm || 100), now = heardNow();
+  const toFree = () => { if (d.mode === "free") return; const t = now ?? w.s, k = nearestK(B, t), bpm = lockBpm(c, d); d.mode = "free"; d.bpm = bpm; d.t0 = B[k] ?? w.s; d.off = 0; delete d.mult; delete d.u0; d.strict = false; };
+  let say = "";
+  if (a === "bpm+" || a === "bpm-") { toFree(); d.bpm = Math.max(30, Math.min(260, Math.round(d.bpm) + (a === "bpm+" ? 1 : -1))); say = `${d.bpm} BPM`; }
+  else if (a === "x2" || a === "half") { const f = a === "x2" ? 2 : 0.5;
+    if (d.mode === "grid") { d.mult = d.mult * f; if (f < 1 && G) d.u0 = +G.toU((d.down ?? w.s) - (d.off || 0)).toFixed(6); } else { d.bpm = Math.round(d.bpm * f * 10) / 10; if (f < 1) d.t0 = d.down ?? d.t0; }
+    say = `${a === "x2" ? "Double" : "Half"} time: ${fmtBpm(lockBpm(c, d))} BPM`; }
+  // Earlier / Later: 10 ms a tap (hold to keep going), for a click that's close but not quite on your notes
+  else if (a === "early" || a === "late") { d.off = +Math.max(-0.25, Math.min(0.25, (d.off || 0) + (a === "early" ? -0.01 : 0.01))).toFixed(3); say = d.off ? `Click ${Math.abs(Math.round(d.off * 1000))} ms ${d.off < 0 ? "earlier" : "later"}` : "Click back on LickPick's spot"; }
+  else if (a === "flip") { if (d.mode === "grid") d.u0 = +(d.u0 + 0.5 / d.mult).toFixed(6); else d.t0 = +((d.t0 ?? w.s) + p / 2).toFixed(4); d.down = +((d.down ?? w.s) + p / 2).toFixed(4); say = "Flipped half a beat"; }
+  else if (a.startsWith("m:")) { const m = a.slice(2), was = d.meter; if (!METERS[m] || m === was) return; const bpm = lockBpm(c, d);
+    // 6/8 counts the dotted quarter: a fast 3-pulse becomes one beat every three (and back)
+    const f = m === "6/8" && bpm >= 90 ? 1 / 3 : was === "6/8" && m === "3/4" && bpm < 70 ? 3 : 1;
+    if (f !== 1) { const pOld = p, d1 = d.down ?? w.s;
+      if (d.mode === "grid") { const u1 = G ? G.toU(d1 - (d.off || 0)) : d.u0, st = 1 / d.mult; d.mult *= f; d.u0 = +u1.toFixed(6);
+        // into 6/8: which of the three pulses is the dotted-quarter beat? the one your playing accents most (then you can still fix it)
+        if (f < 1 && G) { let best = -1; for (let j = 0; j < 3; j++) { const u = +(u1 + j * st).toFixed(6), sc = accentOf(c, lockBeats(c, { ...d, u0: u }, w.s, w.e)); if (sc > best) { best = sc; d.u0 = u; } } } }
+      else { d.bpm = Math.round(d.bpm * f * 10) / 10; d.t0 = d1;
+        if (f < 1) { let best = -1; for (let j = 0; j < 3; j++) { const t0 = +(d1 + j * pOld).toFixed(4), sc = accentOf(c, lockBeats(c, { ...d, t0 }, w.s, w.e)); if (sc > best) { best = sc; d.t0 = t0; } } } }
+      // and "1": the stronger of the two beats in a 6/8 bar (or the beat nearest the old "1" going back)
+      const B2 = lockBeats(c, d, w.s, w.e); if (B2.length >= 4) { if (f < 1) { const ev = B2.filter((_, i) => i % 2 === 0), od = B2.filter((_, i) => i % 2 === 1); d.down = accentOf(c, ev) >= accentOf(c, od) ? ev[0] : od[0]; } else d.down = B2[nearestK(B2, d1)]; } }
+    d.meter = m; say = `${m}${f !== 1 ? ` · ${fmtBpm(lockBpm(c, d))} BPM` : ""}`; }
+  else if (a === "one") { if (now == null) { metroSay(c, "Press play, then tap on the first beat of a bar."); return; } d.down = B[nearestK(B, now)] ?? now; say = "Bar start set"; }
+  else if (a === "strict") { d.strict = !d.strict; say = d.strict ? "Strict tempo" : "Follows your take"; }
+  else if (a === "tap") { metroTap(c); return; }
+  else if (a === "reset") { const g0 = guessLock(c); if (!g0) return; M.d = g0; M.taps = []; say = "Back to LickPick's guess"; }
+  else if (a === "cancel") { state.metro = null; const was = bandPlaying, at = was && player ? player.virt() : 0; stopBand(); renderStudio(); if (was) bandPreview(c, at); return; }
+  else if (a === "lock") { metroLock(c); return; }
+  else if (a === "open") { metroOpen(c); return; }
+  if (!bandPlaying && a !== "strict") say += ". Press play to hear it.";
+  M.msg = say; metroResched(); metroRefresh(c);
+}
+// how strongly your playing lands on these beats (the take's fine attack curve, best within 25 ms of each)
+function accentOf(c, B) { const F = c.raw?.fluxA, fr = c.raw?.fluxRate, o = c.raw?.fluxOff || 0; if (!F || !fr || !B.length) return 0; const r = Math.max(1, Math.round(0.025 * fr)); let s = 0;
+  for (const t of B) { const f = Math.round((t - o) * fr); let m = 0; for (let j = f - r; j <= f + r; j++) m = Math.max(m, F[j] || 0); s += m; } return s / B.length; }
+// Tap tempo: your taps (on the clock you hear) set the tempo AND the phase. They snap to LickPick's tempo curve when
+// they fit a reading of it (so drift is followed and a slightly early tap doesn't matter); else your taps alone.
+function metroTap(c) {
+  const M = state.metro, d = M.d, w = bandWindow(c);
+  const btn = $("#metro .mtap"); if (btn) { btn.classList.remove("hit"); void btn.offsetWidth; btn.classList.add("hit"); }
+  if (!bandPlaying) { M.taps = []; bandPreview(c, player ? player.virt() : 0); metroSay(c, "Now tap on every beat."); return; }
+  const now = heardNow(); if (now == null) { metroSay(c, "Getting your take ready…"); return; }
+  const last = M.taps[M.taps.length - 1]; if (last != null && (now - last > 2.5 || now <= last)) M.taps = [];
+  M.taps.push(+now.toFixed(4)); M.taps = M.taps.slice(-8); try { navigator.vibrate?.(12); } catch { }
+  $("#metro .tapdots")?.querySelectorAll("i").forEach((x, i) => x.classList.toggle("on", i < Math.min(4, M.taps.length)));
+  if (M.taps.length < 4) { metroSay(c, `${4 - M.taps.length} more`); return; }
+  const T = M.taps, g = lockGrid(c); let ts = g ? LickMusic.tapSnap(g.beats, T, w.s - 1, w.e + 1) : null;
+  // taps at a level of LickPick's tempo curve but at a spot it has no reading for (a funk "e", a lazy feel): keep the curve's
+  // tempo (taps alone are a few % off), and put the beat exactly where you tapped (the circular mean of your taps)
+  if (!ts && g) { const G = gridMap(g.beats), U = T.map(G.toU), du = U.slice(1).map((u, i) => u - U[i]).sort((x, y) => x - y), r = 1 / du[du.length >> 1];
+    const m = [1 / 3, 1 / 2, 2 / 3, 1, 3 / 2, 2, 3].reduce((x, y) => Math.abs(Math.log(r / y)) < Math.abs(Math.log(r / x)) ? y : x);
+    if (Math.abs(Math.log(r / m)) < 0.08) { let sx = 0, sy = 0; for (const u of U) { const a = 2 * Math.PI * ((u * m) % 1); sx += Math.cos(a); sy += Math.sin(a); } let f = Math.atan2(sy, sx) / (2 * Math.PI); if (f < 0) f += 1; ts = { mult: m, off: +(f / m).toFixed(6) }; } }
+  if (ts) { d.mode = "grid"; d.mult = ts.mult; d.u0 = ts.off; d.off = 0; delete d.bpm; delete d.t0; if (ts.mult === 1 / 3 || ts.mult === 2 / 3) d.meter = "6/8"; else if (d.meter === "6/8" && (ts.mult === 3 || ts.mult === 1.5)) d.meter = "3/4"; }
+  else { const iv = T.slice(1).map((t, i) => t - T[i]).sort((x, y) => x - y), pp = iv[iv.length >> 1]; if (!(pp > 0.22 && pp < 2.2)) { M.taps = [now]; metroSay(c, "Those taps were uneven. Tap on every beat."); return; }
+    let ph = 0; for (const t of T) { const r = ((t - T[0]) / pp) % 1; ph += r > 0.5 ? r - 1 : r; } d.mode = "free"; d.bpm = Math.round(600 / pp) / 10; d.t0 = +(T[0] + (ph / T.length) * pp).toFixed(4); d.off = 0; d.strict = false; delete d.mult; delete d.u0; }
+  // the bar keeps its place: "1" stays on the beat nearest where it was
+  const B = lockBeats(c, d, w.s, w.e); if (B.length && d.down != null) d.down = B[nearestK(B, d.down)];
+  M.msg = `From your taps: ${fmtBpm(lockBpm(c, d))} BPM. Keep tapping or lock it.`; metroResched(); metroRefresh(c);
+}
+// Lock it: the reading becomes the band's beat (kept with the take), the click stops, and the band layers up
+function metroLock(c) {
+  const M = state.metro; if (!M) return; const b = newBand(c), was = bandPlaying, at = player && (was || isPlaying()) ? player.virt() : 0;
+  b.lock = { ...M.d, at: Date.now() }; delete b.fix; delete b.guessOK; delete b.grid; b.click = false; b.nudge = 0;
+  c._bandA = null; c._bandL = null; c._tight = null; c._cb = null; bandCache.key = ""; state.metro = null; state.build = c.id;
+  persist(c); stopBand(); renderStudio(); renderExport(c); bandPreview(c, at);   // the band panel takes the card's place: no scroll
+}
+// ---------- the click: scheduled a little ahead on the audio clock, from the reading you're shaping (a change is heard
+// at once: clicks not yet sounded are dropped and laid again). Same clock as your take, so it sits exactly where it says.
+const MET = { iv: 0, upto: 0, nodes: [], bufs: null, raf: 0, last: "" };
+function metroBufs(ctx) {
+  if (MET.bufs?.ctx === ctx) return MET.bufs;
+  const mk = (f, dur, amp) => { const sr = ctx.sampleRate, n = Math.round(sr * dur), b = ctx.createBuffer(1, n, sr), x = b.getChannelData(0); for (let i = 0; i < n; i++) { const t = i / sr; x[i] = amp * Math.min(1, i / 24) * Math.exp(-t / (dur / 5)) * (Math.sin(2 * Math.PI * f * t) + 0.35 * Math.sin(4 * Math.PI * f * t)); } return b; };
+  const out = ctx.createGain(); out.gain.value = 0.55; out.connect(masterOut(ctx));
+  return (MET.bufs = { ctx, out, one: mk(1760, 0.07, 0.9), beat: mk(1320, 0.05, 0.62), sub: mk(990, 0.03, 0.22) });
+}
+function metroStart(c) { metroStop(); const m = bandPreview.map; if (!m || !metroOn(c)) return; MET.upto = m.ctx.currentTime; MET.iv = setInterval(() => metroTick(c), 25); metroTick(c); metroLight(c); metroRefresh(c); stageOv(metroDotsHTML(METERS[state.metro.d.meter]?.bpb || 4)); }
+function metroStop() { clearInterval(MET.iv); MET.iv = 0; for (const n of MET.nodes) { try { n.node.stop(); } catch { } } MET.nodes = []; cancelAnimationFrame(MET.raf); MET.raf = 0; MET.last = ""; document.querySelectorAll(".mdots i.on").forEach(x => x.classList.remove("on")); }
+function metroResched() { const m = bandPreview.map; if (!m || !MET.iv) return; const now = m.ctx.currentTime + 0.01; MET.nodes = MET.nodes.filter(n => { if (n.t > now) { try { n.node.stop(); } catch { } return false; } return true; }); MET.upto = now; }
+// the reading's beats in the Pick, which of them is "1", and the free-time stretches (no click there)
+function metroPlan(c) { const d = state.metro?.d, w = bandWindow(c); if (!d || !w) return null; const B = lockBeats(c, d, w.s, w.e), mt = METERS[d.meter] || METERS["4/4"], dn = lockDown(c, d, w.s, w.e);
+  return { B, bpb: mt.bpb, sub: d.meter === "6/8", kd: dn == null ? 0 : nearestK(B, dn), free: d.mode === "grid" ? (gridOf(c)?.free || []) : [] }; }
+function metroTick(c) {
+  const m = bandPreview.map; if (!m || !bandPlaying || !metroOn(c)) return;
+  const ctx = m.ctx, hz = ctx.currentTime + 0.16; if (hz <= MET.upto) return;
+  const P = metroPlan(c); if (!P) return; const bf = metroBufs(ctx), toC = tb => m.t0 + (tb - m.ws) - m.at0, inFree = t => P.free.some(([u, v]) => t > u + 0.05 && t < v - 0.05);
+  const put = (t, buf) => { const ct = toC(t); if (ct <= MET.upto || ct > hz || ct < ctx.currentTime || inFree(t)) return; const s = ctx.createBufferSource(); s.buffer = buf; s.connect(bf.out); s.start(ct); MET.nodes.push({ t: ct, node: s }); };
+  for (let k = 0; k < P.B.length; k++) { const t = P.B[k]; if (toC(t) > hz + 1) break; put(t, ((k - P.kd) % P.bpb + P.bpb) % P.bpb === 0 ? bf.one : bf.beat);
+    if (P.sub && k + 1 < P.B.length) { const q = (P.B[k + 1] - t) / 3; put(t + q, bf.sub); put(t + 2 * q, bf.sub); } }
+  MET.upto = hz; MET.nodes = MET.nodes.filter(n => n.t > ctx.currentTime - 0.5);
+}
+// the beat light: the dot of the beat you hear lights up (1 is the big one), in the card and on the player
+function metroDots(force) { if (force) MET.last = ""; }
+const metroDotsHTML = bpb => `<span class="mdots" data-bpb="${bpb}">${Array.from({ length: bpb }, (_, i) => `<i class="${i === 0 ? "one" : ""}"><b>${i + 1}</b></i>`).join("")}</span>`;
+function metroLight(c) {
+  cancelAnimationFrame(MET.raf);
+  const tick = () => { if (!bandPlaying || !metroOn(c)) return; const P = metroPlan(c), t = heardNow();
+    if (P && t != null && P.B.length) { let k = -1; for (let i = 0; i < P.B.length && P.B[i] <= t; i++) k = i; const on = k >= 0 && t - P.B[k] < 0.11 && !P.free.some(([u, v]) => t > u && t < v), pos = k >= 0 ? ((k - P.kd) % P.bpb + P.bpb) % P.bpb : -1, sig = `${on ? pos : -1}|${P.bpb}`;
+      if (sig !== MET.last) { MET.last = sig; for (const host of document.querySelectorAll(".mdots")) { const L = host.children; for (let i = 0; i < L.length; i++) L[i].classList.toggle("on", on && i === pos); } } }
+    MET.raf = requestAnimationFrame(tick); };
+  MET.raf = requestAnimationFrame(tick);
+}
+// on top of the player: the beat light while you set the beat, then the band layering up (drums, bass, keys)
+// after Lock it the band layers up on the 1: drums, then bass a bar later, then keys (and the extra) a bar after that.
+// Gain steps on the audio clock (sample-accurate, the take's own clock); the pills on the player pop in as you hear them.
+function bandBuild(c, ctx, t0, at0, w, K) {
+  state.build = null; const A = K?.A; if (!A?.pulse || !A.bars?.length) return;
+  const bpb = METERS[c.band?.lock?.meter]?.bpb || (A.meter === 3 ? 3 : 4), B = A.beats, kd = nearestK(B, A.bars[0].t0), start = w.s + at0 + 0.08, free = A.free || [];
+  const O = B.filter((t, k) => ((k - kd) % bpb + bpb) % bpb === 0 && t >= start && !free.some(([u, v]) => t > u - 0.05 && t < v)); if (!O.length) return;
+  const toC = t => t0 + (t - w.s) - at0, groups = [["drums"], ["bass"], ["keys", "extra"]].map(g => g.filter(k => mixNodes[k] && stemGain(c, k) > 0)).filter(g => g.length); if (!groups.length) return;
+  const at = groups.map((_, i) => O[Math.min(i, O.length - 1)]), set = bandSet(c, bandA(c));
+  groups.forEach((g, i) => { for (const k of g) { const n = mixNodes[k].gain, v = n.value; n.cancelScheduledValues(0); n.setValueAtTime(0, ctx.currentTime); n.setValueAtTime(v, Math.max(ctx.currentTime, toC(at[i]) - 0.004)); } });
+  const NM = { drums: ["i-drum", "Drums"], bass: ["i-bass", "Bass"], keys: ["i-keys", "Keys"], extra: ["i-note", EXTRA_NAME[set.extra] || "Extra"] };
+  stageOv(`<span class="mbuild">${groups.map((g, i) => `<b data-i="${i}">${icon(NM[g[0]][0])}${g.map(k => NM[k][1]).join(" + ")}</b>`).join("")}</span>`);
+  const tick = () => { if (!bandPlaying) return; const t = heardNow(); let all = t != null;
+    groups.forEach((_, i) => { const on = t != null && t >= at[i] - 0.01; document.querySelector(`.mov .mbuild b[data-i="${i}"]`)?.classList.toggle("in", on); if (!on) all = false; });
+    if (all && t > at[at.length - 1] + 2.4) { stageOv(""); return; } bandBuild.raf = requestAnimationFrame(tick); };
+  bandBuild.raf = requestAnimationFrame(tick);
+}
+function stageOv(html) { const pv = $("#sStage .pv"); if (!pv) return; let el = pv.querySelector(".mov"); if (!html) { el?.remove(); return; } if (!el) { el = document.createElement("div"); el.className = "mov"; el.setAttribute("aria-hidden", "true"); pv.appendChild(el); } el.innerHTML = html; }
 // write the take's tempo and key into raw.info (the card and everything else read them from there)
 function unifyKey(c) { const i = c?.raw?.info; if (!i) return; const g = gridOf(c), k = takeKeyOf(c);
   if (g?.pulse) i.tempo = Math.round(g.bpm);
@@ -8037,67 +8330,21 @@ function followCard(c, A) {
     ${lock ? `<button type="button" class="opt" role="switch" aria-checked="${c.feel !== "mine"}" data-act="feel-toggle">${icon("i-loop")}<span class="grow"><strong>Play my off-beats in the ${esc(st?.name || "band")} feel</strong><em>${c.feel === "mine" ? "Off: your 8ths stay where you played them." : feel > 0.58 ? `Swung like the band${T?.feelMoved ? ` (${T.feelMoved} off-beats moved)` : ""}.` : `Straight like the band${T?.feelMoved ? ` (${T.feelMoved} off-beats moved)` : ""}.`}</em></span><span class="tgl"></span></button>` : ""}
     <p class="hint">Only notes you really played are moved. Nothing is added. Change the style and the feel follows.</p></div>`;
 }
-// before anything else: is the band on YOUR beat? A click plays on the beat LickPick heard; you confirm or fix it in one tap.
-function tempoAlts(c) {
-  const w = bandWindow(c), A = bandA(c); if (!w || !c.raw?.fluxA) return [];
-  const key = `${w.s}|${w.e}`; if (c._alts?.key !== key) { let H = []; try { H = LickMusic.beatHyps(c.raw, w.s, w.e) || []; } catch { }
-    const W = LickMusic._getHypW?.(); H.forEach(h => { h.sc = W ? W[0] + h.feat.reduce((a, v, i) => a + W[i + 1] * v, 0) : 0; }); H.sort((a, b) => b.sc - a.sc);
-    const out = []; for (const h of H) { if (h.sh) continue; const bpm = Math.round(h.bpm); if (out.some(o => Math.abs(o.bpm / bpm - 1) < 0.04)) continue; out.push({ bpm, beats: h.beats }); if (out.length >= 5) break; }
-    c._alts = { key, out }; }
-  return c._alts.out.filter(o => !A || Math.abs(o.bpm / A.bpm - 1) >= 0.04).slice(0, 4);
-}
-function beatCheck(c, A) {
-  const mode = state.beatChk || "ask", b = newBand(c), two = !!b.fix?.shift;
-  if (mode === "speed") return `<div class="beatcheck"><h4>${icon("i-clock")}Set the speed</h4><p class="hint">Pick the speed that feels right, or tap along on every beat while it plays.</p><div class="chipset">${tempoAlts(c).map(o => `<button type="button" data-balt="${o.bpm}">${o.bpm} BPM</button>`).join("")}<button type="button" data-bfix="x2">×2 (${A.bpm * 2})</button><button type="button" data-bfix="half">÷2 (${Math.round(A.bpm / 2)})</button></div><div class="bcbtns"><button class="btn" type="button" data-bpm="tap">${icon("i-clock")}Tap along</button><button class="btn ghost" type="button" data-bchk="yes">Done</button></div></div>`;
-  // two grooves, half a beat apart: the player hears both and keeps the one that sits on their notes
-  return `<div class="beatcheck groove"><h4>${icon("i-ear")}Lock the groove</h4>
-    <p>Play both. Keep the one that sits on your notes.</p>
-    <div class="grooves"><button type="button" class="gv" data-groove="1" aria-pressed="${!two}">${icon("i-play")}<b>Groove 1</b><em>${A.bpm} BPM</em></button><button type="button" class="gv" data-groove="2" aria-pressed="${two}">${icon("i-play")}<b>Groove 2</b><em>½ beat later</em></button></div>
-    <button class="btn wide" type="button" data-bchk="yes">${icon("i-check")}Use Groove ${two ? 2 : 1}</button>
-    <p class="hint">Neither? <button class="linkbtn" type="button" data-bchk="speed">Speed</button> · <button class="linkbtn" type="button" data-bpm="tap">Tap the beat</button></p></div>`;
-}
-// where LickPick hears the beat, and one-tap fixes when it's wrong. Click lets you hear it.
+// the beat the band plays on (set in Set the beat), and the count-in after free time
 function beatCard(c, A) {
-  const b = newBand(c), fx = b.fix || {}, G = b.grid || {}, free = A && (!A.pulse || A.forced), fixed = fx.shift || (fx.mult && fx.mult !== 1) || G.taps?.length >= 4 || G.bpm;
-  const what = !A?.pulse ? "free time" : `${A.bpm} BPM${A.meter === 3 ? " · 3/4" : ""}${A.swing > 0.58 ? " · swung" : ""}${A.tapped ? " · from your taps" : free ? " (yours to set)" : fixed ? " · corrected by you" : " · heard in your playing"}`;
-  return `<div class="beatcard"><div class="beatrow"><span><b>Beat</b> ${what}</span><button type="button" class="dtg" data-act="beat-click" aria-pressed="${!!b.click}">${icon("i-clock")}Click</button></div>
-    ${A?.free?.length ? `<div class="beatrow"><span>Free time ${A.free.map(([u, v]) => `${fmtP(u)}–${fmtP(v)}`).join(", ")}: the band waits, then comes in on the next bar.</span><button type="button" class="dtg" data-act="countin" aria-pressed="${!!b.countin}">${icon("i-clock")}Count-in</button></div>` : ""}
-    ${A?.pulse && !free ? `<span class="seg wide beatfix" role="group" aria-label="Fix the beat"><button type="button" data-bfix="shift" aria-pressed="${!!fx.shift}">½ beat later</button><button type="button" data-bfix="x2" aria-pressed="${fx.mult === 2}">×2</button><button type="button" data-bfix="half" aria-pressed="${fx.mult === 0.5}">÷2</button><button type="button" data-bpm="tap">Tap along</button></span>`
-      : `<span class="seg wide beatfix"><button type="button" data-bpm="-2" aria-label="Slower">− slower</button><button type="button" data-bpm="tap">Tap along</button><button type="button" data-bpm="+2" aria-label="Faster">+ faster</button></span>`}
-    <p class="hint">${A?.pulse && !free ? "Turn on Click and press play to hear where LickPick puts the beat. If the clicks fall between your strums, tap ½ beat later. Too fast or too slow: ×2 or ÷2. Or tap along while it plays." : "No steady beat in your playing. Set one: tap along while it plays, or use − / +."}${fixed ? ` <button class="linkbtn" type="button" data-bfix="reset">Back to what LickPick heard</button>` : ""}</p></div>`;
-}
-// round 4: one playful step instead of a band on the wrong beat. Your take plays; 4 taps where you'd nod your head set the
-// tempo level and the beat (snapped to what LickPick heard), the band joins at once, and it's kept with the take (and saved).
-function tap4HTML(c) {
-  const n = state.t4?.id === c.id ? state.t4.T.length : 0, playing = isPlaying();
-  return `<div class="tap4" id="tap4" role="group" aria-labelledby="tap4h">
-    <strong id="tap4h">Tap 4 beats along with your take</strong>
-    <p>Your groove can be counted more than one way. Tap where you'd nod your head and the band locks in.</p>
-    <button type="button" class="tap4btn" data-act="tap4" aria-describedby="tap4st">${icon("i-drum")}<span class="tap4l">${playing ? "Tap" : "Play & tap"}</span><span class="tap4dots" aria-hidden="true">${[0, 1, 2, 3].map(i => `<i class="${i < n ? "on" : ""}"></i>`).join("")}</span></button>
-    <p class="tap4st" id="tap4st" aria-live="polite">${n ? `${4 - n} more` : playing ? "Tap on every beat." : "Your take plays; tap on every beat."}</p>
-    <button type="button" class="linkbtn" data-act="tap4-guess">Skip: use LickPick's guess</button>
-  </div>`;
-}
-function tap4Show(c, msg) { const el = $("#tap4"); if (!el) return; const n = state.t4?.id === c.id ? state.t4.T.length : 0; el.querySelectorAll(".tap4dots i").forEach((x, i) => x.classList.toggle("on", i < n)); const st = $("#tap4st"); if (st) st.textContent = msg; const l = el.querySelector(".tap4l"); if (l) l.textContent = isPlaying() ? "Tap" : "Play & tap"; }
-function tap4(c) {
-  const t4 = state.t4?.id === c.id ? state.t4 : (state.t4 = { id: c.id, T: [] });
-  if (!isPlaying()) { t4.T = []; bandPreview(c, player ? player.virt() : 0); tap4Show(c, "Now tap on every beat."); return; }
-  if (!bandPreview.clock) { tap4Show(c, "Getting your take ready…"); return; }
-  const now = bandPreview.clock(), last = t4.T[t4.T.length - 1];
-  if (last != null && (now - last > 2.5 || now <= last)) t4.T = [];   // a pause or a jump starts over
-  t4.T.push(+now.toFixed(4)); try { navigator.vibrate?.(12); } catch { }
-  const btn = $("#tap4 .tap4btn"); if (btn) { btn.classList.remove("hit"); void btn.offsetWidth; btn.classList.add("hit"); }
-  if (t4.T.length < 4) { tap4Show(c, `${4 - t4.T.length} more`); return; }
-  const b = newBand(c), T = t4.T.slice(); b.grid = { ...(b.grid || {}), taps: T }; delete b.fix; c._bandA = null; c._tight = null;
-  const A = bandA(c); if (!A?.tapped) { delete b.grid.taps; c._bandA = null; t4.T = []; tap4Show(c, "Those taps were uneven. Try again, on every beat."); return; }
-  state.t4 = null; persist(c); const at = player ? player.virt() : 0; stopBand(); renderStudio(); bandPreview(c, at);
-  toast(`Locked in: ${A.bpm} BPM. The band is on your beat.`, { icon: "i-undo", label: "Redo", run: () => { const b2 = newBand(c); if (b2.grid) delete b2.grid.taps; c._bandA = null; persist(c); stopBand(); state.t4 = { id: c.id, T: [] }; renderStudio(); } });
+  const L = newBand(c).lock, meter = L?.meter || (A?.compound ? "6/8" : A?.meter === 3 ? "3/4" : "4/4");
+  const what = !A?.pulse ? "free time" : `${A.bpm} BPM · ${meter}${A.swing > 0.58 ? " · swung" : ""}${L && !L.legacy ? (L.mode === "grid" ? (L.strict ? " · strict tempo" : " · follows your take") : " · your tempo") : ""}`;
+  return `<div class="beatcard"><div class="beatrow"><span><b>Beat</b> ${what}</span></div>
+    ${A?.free?.length ? `<div class="beatrow"><span>Free time ${A.free.map(([u, v]) => `${fmtP(u)}–${fmtP(v)}`).join(", ")}: the band waits, then comes in on the next bar.</span><button type="button" class="dtg" data-act="countin" aria-pressed="${!!newBand(c).countin}">${icon("i-clock")}Count-in</button></div>` : ""}
+    <p class="hint">The band, the preview and your saved video all play on this beat. Change it with Beat at the top.</p></div>`;
 }
 function bandPanel(c) {
   const w = bandWindow(c);
   if (!w) return `<p class="hint keep">The band plays with a Pick. Choose one first.</p>`;
   if (!c.raw.chromaQ) return `<p class="hint keep">This clip was scanned by an older LickPick. Remove it from the list and add it again so the band can hear your chords.</p>`;
   const b = newBand(c), o = exOpts(c), on = bandOn(c);
+  // no lock yet (or you reopened it): the Set-the-beat step is the whole panel, nothing else to choose before it
+  if (on && (beatPending(c) || metroOn(c))) { if (!metroOn(c)) metroInit(c); if (state.metro) return `${metroCard(c)}<div class="status" id="bandStatus" aria-live="polite">${esc(c.bandStatus || "")}</div>`; }
   const A = bandA(c), styles = LickBand.STYLES;
   const picked = bandStyleOf(c, A), set = bandSet(c, A);
   if (!b.heard || b.heard.key !== `${c.key}|${w.s.toFixed(2)}|${w.e.toFixed(2)}`) setTimeout(() => bandHear(c), 0);
@@ -8106,19 +8353,14 @@ function bandPanel(c) {
   const aiOff = k => b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k];
   const plays = INSTS.map(([k, ic, l]) => { const has = !!b.parts[k] && !aiOff(k) && !(k === "drums" && A && !A.pulse) && !(k === "extra" && set.extra === "none"); return `<button type="button" data-bpart="${k}" aria-pressed="${has}">${k === "extra" ? (set.extra === "none" ? "Extra" : EXTRA_NAME[set.extra]) : l}</button>`; }).join("");
   const sub = (id, title, sum, body) => `<details class="bsub" data-bsub="${id}"${state.bsub === id ? " open" : ""}><summary><b>${title}</b><em>${sum}</em></summary><div class="bsubin">${body}</div></details>`;
-  const tk = takeKeyOf(c), ro = rhythmOnly(c), nd = +b.nudge || 0, pend = beatPending(c);
+  const tk = takeKeyOf(c), ro = rhythmOnly(c);
   // 3.3: the band switch lives on the player (one control). This panel shapes it: style first, then timing and level.
-  return `<div class="bandhead${on ? " on" : ""}">${icon("i-drum")}<span class="grow"><strong>${on ? `${esc(styles[picked]?.name || "Band")} band is on` : "Pick a style to hear the band"}${freeBand(c) || !on ? "" : proTag()}</strong><em>${on ? (pend ? `Waiting for your 4 taps on the beat${keyText(c) ? ` · ${esc(keyText(c))}` : ""}.` : ro ? "Drums only: no chord in your take is clear enough to follow." : `${A?.pulse ? `${A.bpm} BPM` : "Free time"}${keyText(c) ? ` · ${esc(keyText(c))}` : " · follows your chords"} · plays and saves with you`) : "Or tap the drum on the player. Drums, bass and keys, on your beat."}</em></span></div>
-    ${on && pend ? tap4HTML(c) : ""}
+  const L = b.lock, meter = L?.meter || (A?.compound ? "6/8" : A?.meter === 3 ? "3/4" : "4/4");
+  return `<div class="bandhead${on ? " on" : ""}">${icon("i-drum")}<span class="grow"><strong>${on ? `${esc(styles[picked]?.name || "Band")} band is on` : "Pick a style to hear the band"}${freeBand(c) || !on ? "" : proTag()}</strong><em>${on ? (ro ? "Drums only: no chord in your take is clear enough to follow." : `${keyText(c) ? esc(keyText(c)) : "Follows your chords"} · plays and saves with you`) : "Then set the beat: drums, bass and keys lock to it."}</em></span>
+    ${on ? `<button type="button" class="bedit" data-metro="open" aria-label="Set the beat: ${A?.pulse ? `${A.bpm} BPM, ${meter}` : "free time"}. Tap to change">${icon("i-edit")}<span><b>${A?.pulse ? A.bpm : "—"}</b><em>${A?.pulse ? `BPM · ${meter}` : "Beat"}</em></span></button>` : ""}</div>
     <div class="chipset stylechips" role="group" aria-label="Style"><button type="button" class="ai" data-bstyle="auto" aria-pressed="${on && b.style === "auto"}">${icon("i-bolt")}${sampler ? "AI pick" : "Auto"}</button>${Object.entries(styles).map(([k, v]) => `<button type="button" data-bstyle="${k}" aria-pressed="${on && b.style === k}">${v.name}${FREE_STYLES.includes(k) ? "" : proTag()}</button>`).join("")}</div>
     ${on && b.style === "auto" ? `<div class="ai-why">${b.aiBusy ? "Thinking…" : b.ai ? `<b>${esc(styles[b.ai.style].name)}.</b> ${esc(b.ai.why || "")}` : `<b>${esc(styles[picked].name)}</b> suits ${A?.pulse ? `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}` : "free time"}.${sampler ? " Tap AI pick again for Claude's call." : ""}`}</div>` : ""}
-    ${on ? `<div class="timing" role="group" aria-label="Band timing">
-      <span class="tlbl">Timing</span>
-      <span class="nudge"><button type="button" data-bnudge="-10" aria-label="Band 10 ms earlier">−</button><button type="button" class="nval" data-bnudge="0" aria-label="Reset nudge">${nd ? `${nd > 0 ? "+" : ""}${nd} ms` : "On time"}</button><button type="button" data-bnudge="10" aria-label="Band 10 ms later">+</button></span>
-      ${A?.pulse && !free ? `<button type="button" class="tchip" data-bfix="shift" aria-pressed="${!!b.fix?.shift}" aria-label="Flip beat: move the band half a beat">Flip beat</button><button type="button" class="tchip" data-bfix="x2" aria-pressed="${b.fix?.mult === 2}" aria-label="Double the band's tempo">×2</button><button type="button" class="tchip" data-bfix="half" aria-pressed="${b.fix?.mult === 0.5}" aria-label="Halve the band's tempo">÷2</button>` : ""}
-      <button type="button" class="tchip" data-bpm="tap" aria-label="Tap tempo: tap on every beat while it plays">${icon("i-clock")}Tap</button>
-    </div>
-    <label class="bvol"><span>Band level</span><input type="range" id="bandGain" min="0" max="1.4" step="0.05" value="${b.gain ?? 0.8}" aria-label="Band level"><output id="bandGainV">${Math.round((b.gain ?? 0.8) / 0.8 * 100)}%</output></label>
+    ${on ? `<label class="bvol"><span>Band level</span><input type="range" id="bandGain" min="0" max="1.4" step="0.05" value="${b.gain ?? 0.8}" aria-label="Band level"><output id="bandGainV">${Math.round((b.gain ?? 0.8) / 0.8 * 100)}%</output></label>
     <h4 class="bandh">Plays</h4><div class="chipset" role="group" aria-label="Instruments">${plays}</div>
     ${b.parts.extra && set.extra !== "none" ? `<div class="chipset xtra" role="group" aria-label="Extra instrument"><span class="xl">Extra:</span>${Object.entries(EXTRA_NAME).filter(([v]) => v !== "none").map(([v, l]) => `<button type="button" data-bset="extra:${v}" aria-pressed="${set.extra === v}">${l}</button>`).join("")}</div>` : ""}
     <p class="hint">${heardText(c)}</p>
@@ -8505,7 +8747,7 @@ function bandPrefetch(c) {
   setTimeout(() => { if (cur() === c && bandish()) { if (bandOn(c)) bandRender(c).catch(() => { }); const w = bandWindow(c); windowAudio(c, w.s, w.e).catch(() => { }); } }, 80);
 }
 function stopBand() {
-  for (const n of bandNodes) { try { n.stop(); } catch { } } bandNodes = []; try { layerCams(cur() || {}, null); } catch { } clearInterval(bandSync); bandSync = 0; bandChain = null; bandPreview.clock = null;
+  for (const n of bandNodes) { try { n.stop(); } catch { } } bandNodes = []; try { layerCams(cur() || {}, null); } catch { } clearInterval(bandSync); bandSync = 0; bandChain = null; bandPreview.clock = null; bandPreview.map = null; metroStop(); cancelAnimationFrame(bandBuild.raf || 0); stageOv("");
   if (video) { video.muted = false; try { video.playbackRate = Seg.rate; } catch { } }
   cancelAnimationFrame(bandRaf); bandRaf = 0; $("#sStage .pb-beat")?.classList.remove("on");
   if (player && player.ext) { player.ext = null; player.extTotal = null; player.onToggle = null; player.onSeekExt = null; player.pause(); }
@@ -8546,9 +8788,10 @@ function bandToggle(c, on) {
   o.band = on ?? !o.band;
   if (o.band) { o.sep = false; const b = newBand(c); b.beatOK = true; c.src = c.src === "mix" ? "pick" : c.src; }
   persist(c); renderStudio(); renderExport(c);
-  if (o.band && beatPending(c)) { state.t4 = { id: c.id, T: [] }; if (state.step !== "band") { state.step = "band"; renderStudio(); } bandPreview(c, at); setTimeout(() => $("#tap4")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); return; }   // the card says what to do: no toast over its button
+  if (o.band && beatPending(c)) { metroOpen(c, at); return; }   // no lock yet: Set the beat first (the card says what to do: no toast)
+  if (!o.band && state.metro?.id === c.id) state.metro = null;
   if (o.band || needsEngine(c)) bandPreview(c, at); else if (player) { showPick(c); if (was) { player.seekVirt(at); player.play(); } }
-  if (o.band && !store.get("lp:bandtip")) { store.set("lp:bandtip", 1); toast(rhythmOnly(c) ? "Band on: drums only, since no chord in your take is clear enough." : "Band on. Nudge it or change the style under Band."); }
+  if (o.band && !store.get("lp:bandtip")) { store.set("lp:bandtip", 1); toast(rhythmOnly(c) ? "Band on: drums only, since no chord in your take is clear enough." : "Band on. Change the beat or the style under Band."); }
 }
 // 3.3: what the speakers are playing right now on the AudioContext clock (output latency included), so the picture
 // lines up with what you HEAR, not with what was just handed to the sound card
@@ -8560,7 +8803,9 @@ function bandPreview(c, from = 0) {
   const S = srcOf(c); if (S?.kind !== "pick") { if (player) player.play(); return; }
   const say = t => { c.bandStatus = t; const el = $("#bandStatus"); if (el) el.textContent = t; const b2 = $("#dockStatus"); if (b2) b2.textContent = t; if (!t) renderDock(c); };
   const ctx = ensureCtx(); try { if (ctx.state === "suspended") ctx.resume(); } catch { }   // inside the tap
-  const pend = beatPending(c), P = S.plan, w = bandWindow(c), token = {}, withBand = bandOn(c) && !pend, clickOn = !!c.band?.click && !!c.raw?.chromaQ && !pend, simple = !P || (P.simple && !(c.tune && tuneOff(c)));
+  // no lock yet: Set the beat (your take + the click). Set the beat plays the Pick as recorded, on one clock with the click.
+  if (beatPending(c) && !metroOn(c)) { metroInit(c); if (state.step !== "band") { state.step = "band"; renderStudio(); } else { const sb = $("#sec-band"); if (sb) sb.innerHTML = bandPanel(c); } metroScroll(); }
+  const metro = metroOn(c), pend = beatPending(c), P = S.plan, w = bandWindow(c), token = {}, withBand = bandOn(c) && !pend && !metro, clickOn = !!c.band?.click && !!c.raw?.chromaQ && !pend && !metro, simple = metro || !P || (P.simple && !(c.tune && tuneOff(c)));
   const Ls = P?.simple ? layersOn(c) : [];
   bandPreview.token = token; bandPlaying = true; renderDock(c); syncBandBtn(c);
   say(withBand ? "Lining up the band…" : simple ? "" : "Getting the sound ready…");
@@ -8581,7 +8826,7 @@ function bandPreview(c, from = 0) {
     const chain = LickFX.graph(ctx, mon.ab === "dry" ? null : fxOf(c)); chain.output.connect(og); bandChain = chain;
     const a = ctx.createBufferSource(); a.buffer = orig; a.connect(chain.input);
     mixNodes = { take: og }; const srcs = [a], t0 = ctx.currentTime + 0.15;
-    a.start(t0, at0);
+    a.start(t0, at0); bandPreview.map = simple ? { ctx, t0, at0, ws: w.s } : null;
     // every source on one clock: a stretch [st, st+len) of the result starts at t0 + st, offset by where you started
     const sched = (buf, node, st, len) => { const L = len ?? buf.duration; if (at0 >= st + L - 0.01) return; const sN = ctx.createBufferSource(); sN.buffer = buf; sN.connect(node);
       if (at0 > st) sN.start(t0, at0 - st, L - (at0 - st)); else sN.start(t0 + st - at0, 0, len); srcs.push(sN); };
@@ -8611,6 +8856,7 @@ function bandPreview(c, from = 0) {
     if (player) { player.set([[w.s, w.e]], S.label, fmt(total)); player.ext = elNow; player.extTotal = total; player.onToggle = () => { stopBand(); renderDock(c); };
       player.onSeekExt = x => { const cc = cur(); if (!cc) return; stopBand(); bandPreview(cc, x); }; player.loopTick(); }
     cancelAnimationFrame(bandRaf);
+    if (metro) metroStart(c); else if (r && withBand && simple && state.build === c.id) bandBuild(c, ctx, t0, at0, w, K);
     if (beatsEl?.length) { const led = $("#sStage .pb-beat"); let bi = 0; const tick = () => { if (!bandPlaying || bandPreview.token !== token) { led?.classList.remove("on"); return; } const el = elNow(); while (bi + 1 < beatsEl.length && beatsEl[bi + 1] <= el) bi++; if (beatsEl[bi] > el) bi = 0; led?.classList.toggle("on", el - beatsEl[bi] >= 0 && el - beatsEl[bi] < 0.1); bandRaf = requestAnimationFrame(tick); }; bandRaf = requestAnimationFrame(tick); }
     if (video && !c.audioOnly) {
       queue = []; stopAt = null; video.muted = true;
@@ -9027,6 +9273,11 @@ Return only JSON: [{"caption": string, "hashtags": [string]}]`, { modelTier: "qu
 
 // ---------- events
 document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList?.contains("segrow")) { e.preventDefault(); e.target.click(); } });
+// Set the beat: BPM − / + step on press and keep going while held (the click that follows the press is not a second step)
+const metroHold = { t: 0, down: false, until: 0 };
+document.addEventListener("pointerdown", e => { const b = e.target.closest?.('[data-metro="bpm+"],[data-metro="bpm-"],[data-metro="early"],[data-metro="late"]'), c = cur(); if (!b || !c || !state.metro || (e.button ?? 0) !== 0) return;
+  const a = b.dataset.metro; metroHold.down = true; clearTimeout(metroHold.t); metroAct(c, a); let n = 0; const go = () => { metroHold.t = setTimeout(() => { if (!metroHold.down || !state.metro) return; metroAct(c, a); n++; go(); }, n ? 110 : 450); }; go(); });
+for (const ev of ["pointerup", "pointercancel", "blur"]) window.addEventListener(ev, () => { if (!metroHold.down) return; metroHold.down = false; clearTimeout(metroHold.t); metroHold.until = performance.now() + 600; });
 document.addEventListener("click", e => {
   { const c0 = cur(); if (c0 && !$("#studio").hidden) { if (mon.ctx?.state === "suspended") mon.ctx.resume().catch(() => { }); if (video && sndOf(c0).fx) hookVideo(); } }
   const t0 = e.target.closest("button"), t = t0?.classList.contains("cardhit") ? null : t0;   // the card's own tap target opens the card
@@ -9157,7 +9408,7 @@ document.addEventListener("click", e => {
   if (d.step) { openStep(c, d.step); return; }
   if (d.act === "step-next" || d.act === "step-back") { const i = STEPS.findIndex(x => x[0] === state.step) + (d.act === "step-next" ? 1 : -1); if (i >= 0 && i < STEPS.length) openStep(c, STEPS[i][0]); return; }
   if (d.zoom) { const v = viewOf(c), D = c.raw?.duration || 1, now = nowT(c), span = v.b - v.a; if (d.zoom === "fit") { c._view = null; drawWave(); return; } const ns = d.zoom === "in" ? span / 2 : span * 2, ctr = now >= v.a && now <= v.b ? now : (v.a + v.b) / 2; setZoom(c, ctr - ns / 2, ns); return; }
-  if (d.act === "dock-band" || d.act === "band-use") { const o = exOpts(c); if (!o.canBand) { toast("The band plays with a Pick."); return; } const was = bandPlaying; stopBand(); o.band = !o.band; if (o.band) { o.sep = false; const b = newBand(c); c.src = c.src === "mix" ? "pick" : c.src; if (!b.beatOK) { b.click = false; state.beatChk = null; if (state.step !== "band") state.step = "band"; } if (beatPending(c)) { state.t4 = { id: c.id, T: [] }; state.step = "band"; setTimeout(() => $("#tap4")?.scrollIntoView({ block: "center", behavior: "smooth" }), 120); } } persist(c); renderStudio(); renderExport(c); if (was || (o.band && d.act === "dock-band")) bandPreview(c); return; }
+  if (d.act === "dock-band" || d.act === "band-use") { const o = exOpts(c); if (!o.canBand) { toast("The band plays with a Pick."); return; } const was = bandPlaying; stopBand(); o.band = !o.band; if (o.band) { o.sep = false; const b = newBand(c); c.src = c.src === "mix" ? "pick" : c.src; if (!b.beatOK) { b.click = false; state.beatChk = null; if (state.step !== "band") state.step = "band"; } if (beatPending(c)) { metroOpen(c); return; } } else if (state.metro?.id === c.id) state.metro = null; persist(c); renderStudio(); renderExport(c); if (was || (o.band && d.act === "dock-band")) bandPreview(c); return; }
   if (d.act === "dock-layers") { const o = exOpts(c), was = bandPlaying; stopBand(); o.layers = o.layers === false; persist(c); renderStudio(); if (was) bandPreview(c); return; }
   if (d.act === "dock-size") { store.set("lp:dockmini", store.get("lp:dockmini") ? 0 : 1); renderDock(c); setTimeout(drawWave, 30); return; }
   if (d.act === "feel-toggle") { const was = bandPlaying; stopBand(); c.feel = c.feel === "mine" ? "band" : "mine"; c._tight = null; persist(c); renderStudio(); if (was) bandPreview(c); return; }
@@ -9172,29 +9423,8 @@ document.addEventListener("click", e => {
     if (k === "drums" && A && !A.pulse) { b.grid = { bpm: LickMusic.guessTempo(c.raw, bandWindow(c).s, bandWindow(c).e) }; b.parts.drums = true; b.touched = { ...(b.touched || {}), drums: true }; c._bandA = null; persist(c); renderStudio(); toast(`No steady beat in your playing, so the drums keep a steady ${b.grid.bpm} BPM. Set it under Beat.`); return; }
     if (k === "extra" && bandSet(c, A).extra === "none") { b.set = { ...(b.set || {}), extra: "strings" }; b.parts.extra = true; b.touched = { ...(b.touched || {}), extra: true }; persist(c); renderStudio(); toast("Strings added. Pick another colour below: horns, guitars, choir, vibes, synth."); return; }
     const on = !!b.parts[k] && !(b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k]); b.touched = { ...(b.touched || {}), [k]: true }; b.parts[k] = !on; persist(c); renderStudio(); return; }
-  if (d.groove) { const b = newBand(c), want = d.groove === "2"; stopBand(); if (!!b.fix?.shift !== want) { b.fix = { ...(b.fix || {}), shift: want }; c._bandA = null; c._tight = null; } b.click = false; persist(c); renderStudio(); bandPreview(c); return; }
-  if (d.bchk) { const b = newBand(c), was = bandPlaying;
-    if (d.bchk === "yes") { b.beatOK = true; b.click = false; state.beatChk = null; stopBand(); persist(c); renderStudio(); toast("Groove locked. The band follows your playing."); if (was) bandPreview(c); return; }
-    if (d.bchk === "half") { stopBand(); b.fix = { ...(b.fix || {}), shift: !(b.fix?.shift) }; c._bandA = null; c._tight = null; b.click = true; persist(c); renderStudio(); bandPreview(c); toast("Moved half a beat. Listen again."); return; }
-    if (d.bchk === "speed") { state.beatChk = "speed"; b.click = true; persist(c); renderStudio(); if (!was) bandPreview(c); return; } }
-  if (d.balt) { const b = newBand(c), o = (c._alts?.out || []).find(x => x.bpm === +d.balt); if (!o) return; stopBand(); b.grid = { beats: o.beats }; delete b.fix; c._bandA = null; c._tight = null; b.click = true; persist(c); renderStudio(); bandPreview(c); return; }
-  if (d.act === "tap4") { tap4(c); return; }
-  if (d.act === "tap4-guess") { const b = newBand(c), was = bandPlaying, at = was && player ? player.virt() : 0; b.guessOK = true; state.t4 = null; c._bandA = null; persist(c); stopBand(); renderStudio(); bandPreview(c, at); toast("The band plays LickPick's guess. Off? Flip beat, ×2 or ÷2 under Timing."); return; }
+  if (d.metro) { if (/^(bpm[+-]|early|late)$/.test(d.metro) && (metroHold.down || performance.now() < metroHold.until)) return; metroAct(c, d.metro); return; }
   if (d.act === "countin") { const b = newBand(c), was = bandPlaying, at = was && player ? player.virt() : 0; stopBand(); b.countin = !b.countin; persist(c); renderStudio(); if (was) bandPreview(c, at); return; }
-  if (d.act === "beat-click") { const b = newBand(c), was = bandPlaying; stopBand(); b.click = !b.click; persist(c); renderStudio(); if (was || b.click) bandPreview(c); return; }
-  if (d.bfix) { const b = newBand(c), fx = b.fix = b.fix || {}, was = bandPlaying; stopBand();
-    if (d.bfix === "reset") { delete b.fix; if (b.grid) { delete b.grid.taps; if (!b.grid.bpm) delete b.grid; } }
-    else if (d.bfix === "shift") fx.shift = !fx.shift; else if (d.bfix === "x2") fx.mult = fx.mult === 2 ? 1 : 2; else if (d.bfix === "half") fx.mult = fx.mult === 0.5 ? 1 : 0.5;
-    c._bandA = null; c._tight = null; persist(c); renderStudio(); if (was) bandPreview(c); return; }
-  if (d.bpm === "tap" && isPlaying()) { const b = newBand(c), now = nowT(c), T = (state.vtaps = (state.vtaps || []).filter(x => Math.abs(now - x) < 8).concat([now]));
-    if (T.length < 4) { toast(`Keep tapping on the beat (${4 - T.length} more)`); return; }
-    b.grid = { ...(b.grid || {}), taps: T.slice(-12) }; delete b.fix; c._bandA = null; c._tight = null; persist(c); const A = bandA(c); renderStudio(); toast(A?.tapped ? `Beat set from your taps: ${A.bpm} BPM` : "Taps too uneven. Try again on every beat."); return; }
-  if (d.bpm) { const b = newBand(c), w = bandWindow(c); if (!w) return; stopBand();
-    if (d.bpm === "auto") { delete b.grid; c._bandA = null; persist(c); renderStudio(); return; }
-    if (d.bpm === "tap") { const now = performance.now(), T = state.taps = (state.taps || []).filter(x => now - x < 2500 * 4).concat([now]); if (T.length > 1 && now - T[T.length - 2] > 2500) state.taps = [now];
-      const iv = []; for (let i = 1; i < state.taps.length; i++) iv.push(state.taps[i] - state.taps[i - 1]); if (iv.length < 3) { toast(`Tap ${3 - iv.length} more on the beat`); return; }
-      iv.sort((x, y) => x - y); const bpm = Math.round(60000 / iv[iv.length >> 1]); b.grid = { bpm: Math.max(50, Math.min(200, bpm)), user: true }; c._bandA = null; persist(c); renderStudio(); toast(`Beat set to ${b.grid.bpm} BPM`); return; }
-    const A = bandA(c), base = b.grid?.bpm || A?.bpm || LickMusic.guessTempo(c.raw, w.s, w.e); b.grid = { bpm: Math.max(50, Math.min(200, base + +d.bpm)), user: true }; c._bandA = null; persist(c); renderStudio(); return; }
   if (d.look) { const o = exOpts(c), l = LOOKS.find(x => x[0] === d.look); if (!l) return; o.look = d.look; persist(c); lookFont(l).then(() => { ovPreview(); }); lookLive(c); renderStudio(); renderExport(c); return; }
   if (d.play != null) { const p = c.parts[+d.play]; c.sel = +d.play; renderStudio(); playRanges(c, [[p.start, p.end]], `Part ${+d.play + 1}`); return; }
   if (d.rate != null) { const v = +d.rate, a = +d.rs, b = +d.re, k = rateKey(c, a, b); c.rates = c.rates || {}; const was = c.rates[k];
@@ -9452,7 +9682,7 @@ window.__lpStep = (k, sub) => { const c = cur(); if (!c) return; if (sub) state.
 window.__lpBand = on => { const c = cur(); if (!c) return; const o = exOpts(c); o.band = !!on && o.canBand; if (o.band) newBand(c); renderStudio(); };
 window.__lpDockBand = () => { const c = cur(); if (!c) return; const o = exOpts(c); if (!o.canBand) return; stopBand(); o.band = !o.band; if (o.band) { o.sep = false; const b = newBand(c); c.src = c.src === "mix" ? "pick" : c.src; if (!b.beatOK) { b.click = false; state.beatChk = null; state.step = "band"; } } persist(c); renderStudio(); renderExport(c); bandPreview(c); };   // test hook: the old Band switch under the video
 window.__lpExport = () => { const c = cur(); if (c && $("#exportSheet").hidden) openExport(c); };
-window.__ck = state; window.__lp = { BUILD, IN_CLAUDE, lic, verifyKey, q: () => ({ state, player, video, bandPlaying }), t: { pickOf, pausePlay, bandKey, bandWindow, bandToggle, takeKeyOf, gridOf, beatPending, bandChords, openStudio, closeStudio, setView, render, renderStudio, cur, openPro, bandRender, bandA, tightFor, pickPlan, REC, jamCredits, shareText, mb, srcOf, exOpts, doExport } };
+window.__ck = state; window.__lp = { BUILD, IN_CLAUDE, lic, verifyKey, q: () => ({ state, player, video, bandPlaying }), t: { pickOf, pausePlay, bandKey, bandWindow, bandToggle, takeKeyOf, gridOf, beatPending, bandChords, openStudio, closeStudio, setView, render, renderStudio, cur, openPro, bandRender, bandA, tightFor, pickPlan, REC, jamCredits, shareText, mb, srcOf, exOpts, doExport, bandPreview, stopBand, metroPlan, lockBeats, lockBpm, lockDown, guessLock, hasLock, metroOn, metroOpen, bandLocked } };
 })();
 
 </script>
