@@ -1,4 +1,0 @@
-import { chromium } from "./h.mjs";
-const b = await chromium.launch(); const p = await b.newPage(); await p.goto("https://3shamrocksstudio.github.io/lickpick/app/");
-console.log(await p.evaluate(async () => ({ avcEnc: (await VideoEncoder.isConfigSupported({ codec: "avc1.42001f", width: 640, height: 360 })).supported, vp9Enc: (await VideoEncoder.isConfigSupported({ codec: "vp09.00.10.08", width: 640, height: 360 })).supported, aacEnc: (await AudioEncoder.isConfigSupported({ codec: "mp4a.40.2", sampleRate: 48000, numberOfChannels: 2 })).supported, opusEnc: (await AudioEncoder.isConfigSupported({ codec: "opus", sampleRate: 48000, numberOfChannels: 2 })).supported, avcDec: (await VideoDecoder.isConfigSupported({ codec: "avc1.42001f" })).supported, mp4play: document.createElement("video").canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"'), ua: navigator.userAgent })));
-await b.close();

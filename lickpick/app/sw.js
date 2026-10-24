@@ -1,6 +1,6 @@
 // LickPick service worker: works offline, and receives videos shared from the gallery.
-const CACHE = "lp-2026-10-22b";
-const SHELL = ["./", "./index.html", "./mediabunny.min.mjs", "./manifest.webmanifest", "./icon-192-v3.png", "./icon-192-v5.png", "./icon-512-v5.png", "./icon-maskable-512-v5.png", "./studio-line.png", "./pay.js"];
+const CACHE = "lp-2026-10-24a";
+const SHELL = ["./", "./index.html", "./mediabunny.min.mjs", "./manifest.webmanifest", "./icon-192-v3.png", "./icon-192-v5.png", "./icon-512-v5.png", "./icon-maskable-512-v5.png"];
 
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
@@ -34,8 +34,6 @@ self.addEventListener("fetch", e => {
       .catch(() => caches.match("./index.html")));
     return;
   }
-  // the checkout settings: fresh when online (switching payments on needs no new version), cached when not
-  if (url.pathname.endsWith("/pay.js")) { e.respondWith(fetch(e.request).then(r => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put("./pay.js", copy)); } return r; }).catch(() => caches.match("./pay.js"))); return; }
   // band sounds and the listening model: fetched on first use, then kept for offline
   if (url.pathname.includes("/snd/")) { e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request).then(r => { if (r.ok) { const copy = r.clone(); caches.open("lp-snd-1").then(c => c.put(e.request, copy)); } return r; }))); return; }
   e.respondWith(caches.match(e.request, { ignoreSearch: true }).then(hit => hit || fetch(e.request)));
