@@ -1787,7 +1787,7 @@ details.fold>summary b{color:var(--text)}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-24a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "https://3shamrocksstudio.github.io/lickpick/app/snd/"; window.LP_BUILD = "file";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-24b"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "https://3shamrocksstudio.github.io/lickpick/app/snd/"; window.LP_KIND = "file"; window.LP_BUILD = "file";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -5053,6 +5053,25 @@ function renderBrand() {
 }
 
 // Saves a finished file, then offers to share it straight to Instagram, TikTok, WhatsApp...
+const LIVE_APP = "https://3shamrocksstudio.github.io/lickpick/";
+async function fileUpdateCheck() {
+  try {
+    const r = await fetch(LIVE_APP + "app/sw.js?t=" + Date.now(), { cache: "no-store" }); if (!r.ok) return;
+    const m = (await r.text()).match(/lp-\d{4}-\d{2}-\d{2}[a-z]?/); const live = m?.[0]; if (!live || !window.LP_VER || live <= window.LP_VER) return;
+    if (store.get("lp:skipver") === live) return;
+    toast(`LickPick ${live.replace("lp-", "")} is out (you have ${String(window.LP_VER).replace("lp-", "")}).`, { icon: "i-bolt", label: "Update", run: () => fileUpdateGet(live), sticky: true });
+  } catch { }
+}
+async function fileUpdateGet(live) {
+  toast("Getting the new LickPick…");
+  try {
+    const r = await fetch(LIVE_APP + "download/LickPick.html?t=" + Date.now(), { cache: "no-store" }); if (!r.ok) throw new Error("http " + r.status);
+    const html = await r.text(); if (!html.includes(live)) throw new Error("not the new one yet");
+    await downloads.save({ filename: `LickPick ${live.replace("lp-", "")}.html`, data: new Blob([html], { type: "text/html" }) });
+    store.set("lp:skipver", live);
+    toast(`Saved to Downloads: LickPick ${live.replace("lp-", "")}.html. Open that one from now on; your takes and settings carry over. This file can go.`, { icon: "i-check", label: "OK", run: () => { }, sticky: true });
+  } catch (e) { toast("Couldn't get the update. Try again when you're online, or download it from the LickPick site.", { icon: "i-x", label: "Site", run: () => open(LIVE_APP, "_blank") }); }
+}
 async function offerFile(name, blob, say) {
   if (IN_CLAUDE) say?.(`Ready: ${name}, ${fmtSize(blob.size)}. Confirm to save.`);
   await downloads.save({ filename: name, data: blob });
@@ -5607,7 +5626,7 @@ let toastT = 0, toastAct = null;
 function toast(msg, act) {
   const t = $("#toast"); toastAct = act || null;
   t.innerHTML = `<span>${esc(msg)}</span>${act ? `<button type="button" data-act="toast-act">${icon(act.icon)}${esc(act.label)}</button>` : ""}`;
-  t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; toastAct = null; }, act ? 7000 : 2600);
+  t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; toastAct = null; }, act?.sticky ? 20000 : act ? 7000 : 2600);
 }
 
 // ---------- intro / tutorial
@@ -8232,6 +8251,9 @@ async function takeShared() {
     if (vids.length) addFiles(vids, false);
   } catch { toast("Couldn't open the shared videos."); }
 }
+// the single-file app (opened from Downloads) can't be served an update: when online it looks at the live
+// version once per open and, if newer, fetches the new file and saves it to Downloads in one tap
+if (window.LP_KIND === "file" && navigator.onLine !== false && !IN_CLAUDE) setTimeout(fileUpdateCheck, 2500);
 if (BUILD === "pwa") {
   // updates: check whenever the app comes back; a new version takes over at once, and the page reloads by itself
   // when you're not in the middle of something (otherwise one tap on the toast)
