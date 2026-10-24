@@ -1798,7 +1798,7 @@ details.fold>summary b{color:var(--text)}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-24c"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-24d"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -5940,6 +5940,7 @@ function stepBody(c, k) {
 }
 function renderStudio() {
   const c = cur(); if (!c) return; autosave(c);
+  navStep();
   const v = verdict(c);
   $("#sName").textContent = c.name;
   $("#sPill").innerHTML = stamp(v);
@@ -6176,7 +6177,8 @@ const speedOf = c => c.speed && Math.abs(c.speed - 1) > 0.001 ? c.speed : 1;
 // Big moves (sloppy timing, or a metronome set far from how you played) stay off until you ask.
 const LOCK_MAX = 0.12, LOCK_STRETCH = 0.5;
 const metroManual = A => !!(A && (A.forced || A.given || A.tapped || A.picked || A.fixed || A.nudged));
-function tightAuto(c) { const T = tightCalc(c); if (!T) return false; if (metroManual(bandA(c))) return true; return T.maxShift <= LOCK_MAX && T.maxStretch <= LOCK_STRETCH; }
+// layers play as recorded, so no automatic lock while a layer is on
+function tightAuto(c) { if (layersOn(c).length && c.ex?.layers !== false) return false; const T = tightCalc(c); if (!T) return false; if (metroManual(bandA(c))) return true; return T.maxShift <= LOCK_MAX && T.maxStretch <= LOCK_STRETCH; }
 function tightOn(c) { const t = c.tight; if (t?.user) return !!t.on || speedOf(c) !== 1; return tightAuto(c) || speedOf(c) !== 1; }
 function feelFor(c, A) { if (!bandOn(c) || c.feel === "mine" || !A) return null; const st = LickBand.STYLES[bandStyleOf(c, A)]; return st?.swing || (A.swing > 0.58 ? A.swing : 0.5); }
 // the time map onto the metronome, whether or not it's switched on. A metronome the player set (tapped, typed, nudged,
@@ -8253,6 +8255,42 @@ window.__lpStep = (k, sub) => { const c = cur(); if (!c) return; if (sub) state.
 window.__lpBand = on => { const c = cur(); if (!c) return; const o = exOpts(c); o.band = !!on && o.canBand; if (o.band) newBand(c); renderStudio(); };
 window.__lpDockBand = () => { const c = cur(); if (!c) return; const o = exOpts(c); if (!o.canBand) return; stopBand(); o.band = !o.band; if (o.band) { o.sep = false; const b = newBand(c); c.src = c.src === "mix" ? "pick" : c.src; if (!b.beatOK) { b.click = false; state.beatChk = null; state.step = "band"; } } persist(c); renderStudio(); renderExport(c); bandPreview(c); };   // test hook: the old Band switch under the video
 window.__lpExport = () => { const c = cur(); if (c && $("#exportSheet").hidden) openExport(c); };
+// ---------- the phone's Back button. Every screen or sheet that opens is one history entry, and so is each step
+// change inside the studio, so Back closes the sheet / goes back a step / leaves the studio, and only leaves the app
+// from the home screen. In-app closes (X, Done, Save) step the history back too, so the two never drift apart.
+// History moves are asynchronous, so pushes wait while a back-step is in flight (NAV.busy) and are flushed on popstate.
+const NAV = { stack: [], popping: false, skip: 0, busy: false, queue: [], lastStep: null, justPopped: new Set() };
+const NAV_IDS = ["studio", "sorter", "onboard", "intro", "pickHelp", "proSheet", "exportSheet", "recSheet", "winSheet", "madeSheet", "tasteSheet", "fbSheet", "rowSheet", "addSheet", "rules"];
+function navPush(k) { NAV.stack.push(k); if (NAV.busy) { NAV.queue.push(k); return; } try { history.pushState({ lp: NAV.stack.length }, ""); } catch { } }
+function navBack(n) { NAV.busy = true; NAV.skip++; try { history.go(-n); } catch { NAV.skip--; NAV.busy = false; } }
+function navDrop(i) {
+  const gone = NAV.stack.splice(i); if (!gone.length) return;
+  // anything that was open on top of the closed screen goes with it (a sheet over a studio that just closed)
+  NAV.popping = true; for (const k of gone.slice(1)) { if (k.startsWith("step:")) continue; NAV.justPopped.add(k); try { navClose(k); } catch { } } NAV.popping = false; setTimeout(() => NAV.justPopped.clear(), 0);
+  navBack(gone.length);
+}
+function navStep() {
+  if ($("#studio").hidden) { NAV.lastStep = null; return; }
+  if (NAV.lastStep && NAV.lastStep !== state.step && !NAV.popping) navPush("step:" + NAV.lastStep);
+  NAV.lastStep = state.step;
+}
+function navClose(k) {
+  if (k.startsWith("step:")) { if (!$("#studio").hidden) { state.step = k.slice(5); renderStudio(); $("#studio").scrollTop = 0; } return; }
+  const el = document.getElementById(k); if (!el || el.hidden) return;
+  const btn = el.querySelector('[data-act$="-close"], [data-act="close"]'); if (btn) btn.click(); else el.hidden = true;
+}
+addEventListener("popstate", () => {
+  NAV.busy = false;
+  if (NAV.skip > 0) { NAV.skip--; const q = NAV.queue.splice(0); for (const k of q) { try { history.pushState({ lp: NAV.stack.indexOf(k) + 1 }, ""); } catch { } } return; }   // history caught up with a close the app already did; now add what opened meanwhile
+  const top = NAV.stack.pop(); if (!top) return;
+  NAV.popping = true; try { navClose(top); } catch { } NAV.popping = false; NAV.justPopped.add(top); setTimeout(() => NAV.justPopped.clear(), 0);   // the hidden-attribute observer runs after this, as a microtask
+});
+new MutationObserver(muts => {
+  for (const m of muts) { const el = m.target, id = el.id; if (!NAV_IDS.includes(id)) continue;
+    if (!el.hidden) { if (id === "studio") NAV.lastStep = state.step; if (!NAV.stack.includes(id)) navPush(id); }
+    else if (NAV.justPopped.has(id)) NAV.justPopped.delete(id);
+    else { const i = NAV.stack.indexOf(id); if (i >= 0) navDrop(i); } }
+}).observe(document.body, { attributes: true, attributeFilter: ["hidden"], subtree: true });
 window.__ck = state; window.__lp = { BUILD, IN_CLAUDE, lic, verifyKey, t: { openStudio, closeStudio, setView, render, renderStudio, cur, openPro, bandRender, bandA, tightFor, pickPlan, REC, jamCredits, shareText, mb, srcOf, exOpts, doExport, tightCalc, tightAuto } };
 })();
 
