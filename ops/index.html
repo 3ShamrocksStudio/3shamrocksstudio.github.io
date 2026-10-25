@@ -75,6 +75,11 @@ body{background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--ink);fo
 .mile .mdate{margin-left:auto;font-size:10.5px;color:var(--dim)}
 .wait{margin-top:9px;background:#fff6e6;border:1px solid #ffe4b0;border-radius:10px;padding:8px 11px;font-size:12px;color:#a76a08}
 .wait b{color:#8a5406}
+.today{background:var(--card);border-radius:16px;padding:16px 18px;margin:14px 0 4px;box-shadow:var(--shadow);border-left:5px solid var(--coral)}
+.today .th{font-size:10px;color:var(--coral);margin-bottom:9px}
+.today ol{padding-left:20px;display:grid;gap:7px;font-size:13px;color:var(--mut)}
+.today b{color:var(--ink)}
+.today a{color:var(--blu);font-weight:700}
 .foot{margin-top:30px;text-align:center;color:var(--dim);font-size:11.5px;line-height:1.7}
 .foot b{color:var(--mut)}
 @media(max-width:720px){.eng{grid-template-columns:1fr 1fr}.hero h1{font-size:13px}.trail .flag{font-size:8px;width:54px}}
@@ -92,11 +97,28 @@ body{background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--ink);fo
 
 <div class="eng" id="eng"></div>
 
+<div class="today">
+ <div class="th pix">TODAY · YOUR 3 MOVES</div>
+ <ol>
+  <li><b>Send the 4 SH✡MER WhatsApps</b> — Ohad, Natan, Dennis, Mishel. Drafted 22 Oct, still unsent.</li>
+  <li><b>Open the offer page, reply OK</b> — <a href="../work-with-me.html" target="_blank" rel="noopener">work-with-me</a>. New prices need your yes.</li>
+  <li><b>Send the top 10 LinkedIn messages</b> — the startup list in our chat. Nothing goes out without you.</li>
+ </ol>
+ <div class="th pix" style="margin-top:14px">QUESTIONS FOR YOU</div>
+ <ol>
+  <li><b>Fairent:</b> my notes say both “finished” and “stuck on data”. Which is it?</li>
+  <li><b>WH33LZ and AXIS:</b> alive or retire?</li>
+  <li><b>Chabad pilot:</b> still on, or did it go quiet?</li>
+  <li><b>Vibrant Gastro:</b> any reply since you wrote in October?</li>
+ </ol>
+</div>
+
+
 <div id="board"></div>
 
 <div class="foot">
  <b>How to read it:</b> each bar is a product's journey — Concept → Build → Live → Validate → Monetize → 💰 Paying. Tap any product for its milestones + what's blocking it.<br>
- <b>The plan:</b> Services + SH✡MER carry 82% of the first $1M. Products are 5% — frozen until the horse pays. Focus is the strategy.<br>
+ <b>The plan:</b> Services + SH✡MER carry 82% of the first $1M. Everything else is parked until one of them pays. Focus is the strategy.<br>
  <span id="foot2"></span>
 </div>
 
@@ -123,35 +145,46 @@ var ENG=[
 ];
 // products: st=current stage index, pin=% within next stage(0-100), ac/acbg accent, chip, rev, next, eta, miles[], wait
 var G=[
-{g:'🔥 ACTIVE · MAKING MONEY NEXT',cls:'sg-money',sub:'The two engines that carry the first $1M. All focus here.',items:[
- {ic:'🧭',nm:'Design Leadership (role + fractional)',ac:'var(--blu)',acbg:'#e7efff',chip:'LAUNCH-READY',cc:'c-live',rev:'Fastest cash · $600k engine — full-time/embedded Head of Design + light fractional',st:4,pin:25,next:'Post the right-sized LinkedIn piece + apply/outreach to funded Israeli startups',eta:'First engagement: 1–4 wks',
-  miles:[['done','Recalibrated: Head of Design, right-sized (₪32–45k/mo)','✓'],['done','Offer page + CV + LinkedIn retuned','✓'],['now','Post + apply/outbound to funded startups','now'],['todo','First role or retainer signed','$']],
-  wait:'Post the Head-of-Design LinkedIn piece (written, ready).'},
- {ic:'🛡️',nm:'SH✡MER',ac:'var(--grn)',acbg:'#e2f8f0',chip:'VALIDATING',cc:'c-live',rev:'B2G pilots · $220k engine',st:3,pin:30,next:'Warm pilot outreach — ravshatz / Chabad → regional council',eta:'First paid pilot: 2–6 wks',
-  miles:[['done','App live, 12 testers authorized','✓'],['done','Pilot pack + pricing ready','✓'],['now','Warm outreach to first 5 names','now'],['todo','First ₪2,500 pilot signed','$']],
-  wait:'3–5 warm SH✡MER names (ravshatz / Chabad / council).'}
+{g:'🔥 FOCUS · THE ONLY TWO THAT MATTER NOW',cls:'sg-money',sub:'These two carry the first $1M. Everything else waits until one of them pays.',items:[
+ {ic:'🧭',nm:'Design Services (fractional + sprints)',ac:'var(--blu)',acbg:'#e7efff',chip:'READY TO SELL',cc:'c-live',rev:'$600k engine · ₪18k/mo · ₪24k sprint · from ₪45k system (new prices, need your OK)',st:3,pin:60,next:'Approve offer page + send first 10 LinkedIn messages',eta:'First call: this week',
+  miles:[['done','31 funded Israeli startups listed, messages drafted','25 Oct'],['done','Offer page staged on your site design (EN/HE)','25 Oct'],['now','You OK prices → I link page; you send 10 messages','now'],['todo','First call booked','by 1 Nov'],['todo','First deal signed ($25k M1)','by 21 Nov']],
+  wait:'Reply OK on the offer page prices · send the top 10 LinkedIn messages (in your files).'},
+ {ic:'🛡️',nm:'SH✡MER',ac:'var(--grn)',acbg:'#e2f8f0',chip:'CLOSED TEST',cc:'c-live',rev:'$220k engine · ₪2.5k 90-day pilot → ₪25k/yr per community',st:3,pin:40,next:'Send the 4 pilot WhatsApps (Ohad, Natan, Dennis, Mishel)',eta:'First pilot: 2–4 wks',
+  miles:[['done','App v280 on Google Play closed test; web updates reach testers automatically','25 Oct'],['done','Play listing renamed “SHOMER app · שומר” + SEO','25 Oct'],['done','Pilot messages drafted','22 Oct'],['now','You send the 4 messages','waiting 3 days'],['todo','First ₪2,500 pilot signed','by 21 Nov']],
+  wait:'Send the 4 WhatsApps. Later: Firebase login token (closes a live security hole) + Twilio Fraud Guard before public launch.'}
 ]},
-{g:'🚧 IN BUILD',cls:'sg-build',sub:'Alive and progressing — but frozen from the money push until the horse pays.',items:[
- {ic:'🌿',nm:'SH✡MER Nature',ac:'var(--teal)',acbg:'#e2f7f3',chip:'IN BUILD',cc:'c-build',rev:'Rides the SH✡MER model',st:2,pin:40,next:'Google Play listing + data-safety declarations',eta:'—',miles:[['done','Shared backend wired','✓'],['done','Native build done','✓'],['now','Play listing','now'],['todo','Testers','']]},
- {ic:'🗑️',nm:'Trashure-Hunters MVP',ac:'var(--lime)',acbg:'#eef7e0',chip:'IN BUILD · 55%',cc:'c-build',rev:'B2B2C flagship (long game)',st:1,pin:70,next:'Finish screens + Firebase/COPPA + TestFlight',eta:'Blocked on creds',miles:[['done','Core gameplay + AI camera','✓'],['now','Remaining screens + auth','now'],['todo','TestFlight build','']],wait:'Supabase keys · Apple Dev $99 · Expo token · Firebase creds.'},
- {ic:'⚔️',nm:'Chore Wars',ac:'var(--coral)',acbg:'#ffe9eb',chip:'IN BUILD',cc:'c-build',rev:'Family subscription',st:1,pin:35,next:'Rebuild on the spin-the-wheel pivot',eta:'—',miles:[['done','6-screen flow','✓'],['now','Wheel pivot rebuild','now'],['todo','Family playtest','']]},
- {ic:'🤝',nm:'Ezra',ac:'var(--cyan)',acbg:'#e2f5f9',chip:'AWAITING REVIEW',cc:'c-build',rev:'Senior-care / B2B',st:1,pin:50,next:'Approve the 3 concept mockups → greenlight build',eta:'Blocked on review',miles:[['done','3 concept screens rendered','✓'],['now','Your review','now'],['todo','Build','']],wait:'Review the 3 Ezra mockups + Anthropic API key.'},
- {ic:'💜',nm:'Milo',ac:'var(--pink)',acbg:'#ffe6f1',chip:'CONCEPT',cc:'c-build',rev:'NGO/B2B + parent sub',st:0,pin:70,next:'Finish concept/design pass — sensitive, handled with care',eta:'—',miles:[['done','Pet arc + brand','✓'],['now','Design pass','now'],['todo','Build','']]},
- {ic:'🏠',nm:'Fairent',ac:'var(--vio)',acbg:'#efeaff',chip:'R&D',cc:'c-build',rev:'Freemium / lead-gen',st:0,pin:35,next:'Crack the data-sourcing strategy (make-or-break)',eta:'Blocked on data',miles:[['done','Concept + value prop','✓'],['now','Data strategy','now'],['todo','PoC','']]},
- {ic:'🧩',nm:'3S Design System',ac:'var(--gold)',acbg:'#fff2d8',chip:'IN BUILD · 55%',cc:'c-build',rev:'Internal multiplier (+ sellable)',st:1,pin:60,next:'Finish tokens/components — speeds every product',eta:'—',miles:[['done','Tokens + Grok pipeline','✓'],['now','Components','now'],['todo','Publish kit','']]},
- {ic:'🌐',nm:'3Shamrocks.com Site',ac:'var(--blu)',acbg:'#e7efff',chip:'IN BUILD',cc:'c-build',rev:'Portfolio + lead funnel',st:2,pin:30,next:'Map domain + per-product tiles',eta:'—',miles:[['done','Portfolio + flagship case study','✓'],['now','Domain + tiles','now'],['todo','Go live','']]}
+{g:'🚧 BUILT · PARKED UNTIL MONEY COMES IN',cls:'sg-build',sub:'Real work exists. Nothing new gets built here until Services or SH✡MER signs.',items:[
+ {ic:'🗑️',nm:'Trashure Hunters MVP',ac:'var(--lime)',acbg:'#eef7e0',chip:'BUILT · NOT LIVE',cc:'c-build',rev:'Flagship, long game',st:1,pin:90,next:'Connect a hosted Supabase account → live backend + Android test build',eta:'Blocked on you',
+  miles:[['done','All 8 MVP features built; 430 unit + 122 security tests pass','23 Oct'],['done','Security hole closed (fake XP exploit)','23 Oct'],['now','Never run on a live backend — sign-in dead on the web build','now'],['todo','Android test build','']],
+  wait:'Hosted Supabase account (free tier is fine) · Apple Developer $99 when ready for iPhone.'},
+ {ic:'🌿',nm:'SH✡MER Nature',ac:'var(--teal)',acbg:'#e2f7f3',chip:'STAGING',cc:'c-build',rev:'Add-on to SH✡MER pilots (Group ₪249/mo · Trip ₪149)',st:2,pin:40,next:'Sell only as an add-on inside SH✡MER pilots',eta:'After SH✡MER pilot',
+  miles:[['done','v277: flood/heat/lost guides, SOS grid coords, trip board, waitlist','22 Oct'],['done','2 outreach emails drafted (Eilot, Arava) — unsent','22 Oct'],['todo','Hero + badge images','']],
+  wait:'Two brand images (nature-hero, nature-badge) — or tell me to design them.'},
+ {ic:'⚔️',nm:'Chore Wars',ac:'var(--coral)',acbg:'#ffe9eb',chip:'PARKED',cc:'c-build',rev:'Family subscription',st:1,pin:40,next:'Redesign around your spoon-guy logo; no photo proof; every family member gets the app',eta:'Parked',
+  miles:[['done','6-screen flow live','Aug'],['done','Your direction set (logo, no photos, per-player app)','17 Oct'],['todo','Trademark check on the name','']]},
+ {ic:'🤝',nm:'Ezra',ac:'var(--cyan)',acbg:'#e2f5f9',chip:'PARKED',cc:'c-build',rev:'Elder care · B2B to health funds',st:1,pin:50,next:'Fix real-use UX; Hebrew voice end to end',eta:'Blocked on you',
+  miles:[['done','Hebrew-first app live on staging','Oct'],['now','UX broken in real use (your call)','now'],['todo','AI answers working','']],
+  wait:'Anthropic API key (90 seconds at console.anthropic.com).'},
+ {ic:'💜',nm:'Milo',ac:'var(--pink)',acbg:'#ffe6f1',chip:'PARKED',cc:'c-build',rev:'Kids 6–14 · clinics',st:1,pin:30,next:'Needs your brand + character direction before any rebuild',eta:'Blocked on you',
+  miles:[['done','Full app with 5 stages on staging','Oct'],['todo','Your brand/character direction','']],
+  wait:'What Milo looks like and feels like — one paragraph is enough.'},
+ {ic:'🏠',nm:'Fairent',ac:'var(--vio)',acbg:'#efeaff',chip:'UNCLEAR',cc:'c-build',rev:'Civic rent transparency · grants/PR',st:1,pin:60,next:'Status conflicts in my notes — see questions above',eta:'?',
+  miles:[['done','App on staging, checks pass','21 Oct'],['todo','Launch by posting the link to housing journalists','']]},
+ {ic:'🌐',nm:'3S Studio site',ac:'var(--blu)',acbg:'#e7efff',chip:'STAGING',cc:'c-build',rev:'Sales funnel for Design Services',st:2,pin:60,next:'Link the offer page from home once you OK it',eta:'Same day as your OK',
+  miles:[['done','Portfolio + 10 product cards; nightly checks pass','25 Oct'],['done','Offer page staged, hidden from Google','25 Oct'],['todo','Domain 3shamrocks.com moved off Wix','']]}
 ]},
-{g:'⏸️ PAUSED / BACKLOG',cls:'sg-pause',sub:'Intentionally parked. Not touched until Tier-1 pays — parking is a decision, not neglect.',items:[
- {ic:'🎸',nm:'LickPick',ac:'var(--coral)',acbg:'#ffe9eb',chip:'PAUSED',cc:'c-pause',rev:'Consumer subscription',st:1,pin:45,next:'Overhaul: steady band timing, one player, deeper playful brand',eta:'Parked',miles:[['done','Core take-picker','✓'],['todo','Overhaul','']]},
- {ic:'♟️',nm:'Rookie & King',ac:'var(--vio)',acbg:'#efeaff',chip:'PAUSED',cc:'c-pause',rev:'LinkedIn-viral → TBD',st:1,pin:40,next:'Lock a monetization angle',eta:'Parked',miles:[['done','Prototype hardened','✓'],['todo','Monetization','']]},
- {ic:'⚡',nm:'J8NIX',ac:'var(--gold)',acbg:'#fff2d8',chip:'PAUSED · 70%',cc:'c-pause',rev:'Studio showpiece',st:2,pin:20,next:'Reframe as capability demo',eta:'Parked',miles:[['done','Dashboard built','✓'],['todo','Reframe','']]},
- {ic:'🌍',nm:'TH Website',ac:'var(--lime)',acbg:'#eef7e0',chip:'PAUSED · 90%',cc:'c-pause',rev:'Funnel to TH app',st:2,pin:80,next:'Needs domain + email backend',eta:'Parked',miles:[['done','Site ~90%','✓'],['todo','Domain + backend','']]},
- {ic:'🎬',nm:'TH Feature Movie',ac:'var(--pink)',acbg:'#ffe6f1',chip:'BACKLOG',cc:'c-pause',rev:'IP / long game',st:1,pin:80,next:'Script ~80% — resume later',eta:'Backlog',miles:[['done','Concept + beats','✓'],['now','Script 80%','now'],['todo','Finish','']]},
- {ic:'📊',nm:'TH Pitch Deck 2026',ac:'var(--blu)',acbg:'#e7efff',chip:'BACKLOG',cc:'c-pause',rev:'Investor raise',st:0,pin:20,next:'Rebrand when fundraising',eta:'Backlog',miles:[['todo','Rebuild deck','']]},
- {ic:'📈',nm:'Binance / Leumi Agents',ac:'var(--teal)',acbg:'#e2f7f3',chip:'PLANNED',cc:'c-pause',rev:'Personal tools (read-only)',st:0,pin:10,next:'Needs read-only API keys',eta:'Planned',miles:[['todo','Read-only keys','']]}
+{g:'⏸️ PAUSED',cls:'sg-pause',sub:'Deliberately on ice. Not touched until money comes in.',items:[
+ {ic:'🎸',nm:'LickPick',ac:'var(--coral)',acbg:'#ffe9eb',chip:'PAUSED',cc:'c-pause',rev:'Paid music app',st:2,pin:30,next:'Last week went here — frozen now so focus goes to money',eta:'Parked',miles:[['done','Live PWA + band sync direction set','22 Oct'],['todo','Overhaul + paid funnel','']]},
+ {ic:'♟️',nm:'Rookie & King',ac:'var(--vio)',acbg:'#efeaff',chip:'PAUSED',cc:'c-pause',rev:'LinkedIn chess ice-breaker',st:1,pin:40,next:'Pick a way it makes money',eta:'Parked',miles:[['done','Prototype on staging','22 Oct'],['todo','Monetization','']]},
+ {ic:'⚡',nm:'J8N.IX',ac:'var(--gold)',acbg:'#fff2d8',chip:'PAUSED',cc:'c-pause',rev:'Internal tool or product? Undecided',st:2,pin:20,next:'Decide: public product or studio-only tool',eta:'Parked',miles:[['done','Built, live on staging','10 Oct'],['todo','Your decision','']]},
+ {ic:'🧩',nm:'3S Design System',ac:'var(--gold)',acbg:'#fff2d8',chip:'PAUSED',cc:'c-pause',rev:'Becomes the ₪45k install offer',st:1,pin:60,next:'Resume when the first install is sold',eta:'Parked',miles:[['done','Tokens + components started','Jun'],['todo','Publish kit','']]},
+ {ic:'🌍',nm:'TH website + movie + deck',ac:'var(--lime)',acbg:'#eef7e0',chip:'PAUSED',cc:'c-pause',rev:'Trashure Hunters extras',st:1,pin:50,next:'Resume after the TH app runs live',eta:'Parked',miles:[['done','Site pushed; script ~80%','22 Oct'],['todo','Domain + launch','']]},
+ {ic:'🧠',nm:'Alzheimer AI',ac:'var(--cyan)',acbg:'#e2f5f9',chip:'RESEARCH',cc:'c-pause',rev:'Idea only — publish, don\'t build',st:0,pin:60,next:'3 research sessions done; parked',eta:'Parked',miles:[['done','Field map + thesis test done','Sep'],['todo','Publish a point of view','']]}
 ]},
-{g:'🅿️ RETIRED',cls:'sg-dead',sub:'Deliberately killed — kept here so the decision stays visible.',items:[
- {ic:'📱',nm:'IG / Media Network',ac:'var(--dim)',acbg:'#eef0f4',chip:'CANCELED',cc:'c-dead',rev:'Decided: not part of 3SDS',st:0,pin:0,next:'Canceled — faceless-IG network dropped from the studio',eta:'—',miles:[['done','Decision: out of scope','✓']]}
+{g:'🅿️ RETIRED / UNKNOWN',cls:'sg-dead',sub:'Killed, or no recent sign of life. Tell me if any of these is still alive.',items:[
+ {ic:'📱',nm:'IG / Media Network',ac:'var(--dim)',acbg:'#eef0f4',chip:'CANCELED',cc:'c-dead',rev:'Decided: not part of the studio',st:0,pin:0,next:'Canceled',eta:'—',miles:[['done','Decision: out of scope','✓']]},
+ {ic:'🏍️',nm:'WH33LZ · AXIS',ac:'var(--dim)',acbg:'#eef0f4',chip:'UNKNOWN',cc:'c-dead',rev:'No work since summer',st:0,pin:0,next:'Alive or retire? See questions above',eta:'—',miles:[['todo','Your call','']]},
+ {ic:'💼',nm:'Old clients (Elpida, AposHealth, Winplant, Insuranks)',ac:'var(--dim)',acbg:'#eef0f4',chip:'CLOSED',cc:'c-dead',rev:'Do not pursue',st:0,pin:0,next:'Closed',eta:'—',miles:[['done','Closed','✓']]}
 ]}
 ];
 
@@ -187,7 +220,8 @@ G.forEach(function(sec){
  board.innerHTML+=h;
 });
 
-document.getElementById('stamp').textContent='LIVE · UPDATED '+new Date().toISOString().slice(0,10);
+document.getElementById('stamp').textContent='CHECKED 2026-10-25';
+fetch('data.json?v='+Date.now()).then(function(r){return r.json()}).then(function(d){document.getElementById('stamp').textContent='CHECKED '+d.updated;}).catch(function(){});
 document.getElementById('foot2').innerHTML='<b>Booked to date:</b> $0 of $1M — pre-revenue. The expedition starts the moment Services or SH✡MER signs. This board refreshes as real deals land.';
 
 // animate on load
