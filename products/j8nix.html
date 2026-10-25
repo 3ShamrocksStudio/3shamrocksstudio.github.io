@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>J8N.IX · The studio command center</title>
+<meta name="description" content="Every project, its status, and the next action, in one place. J8N.IX is the 3Shamrocks Studio command center that keeps the whole portfolio moving.">
+<meta name="theme-color" content="#0d1c2b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1c2b;
+    --bg-2:#11283c;
+    --header:#0a1622;
+    --gold:#f2c194;
+    --gold-deep:#e0a878;
+    --tx0:#eaf1f8;
+    --tx1:rgba(234,241,248,.72);
+    --tx2:rgba(234,241,248,.44);
+    --bd:rgba(242,193,148,.16);
+    --bd-soft:rgba(255,255,255,.08);
+    --live:#43c585;
+    --prog:#4f9bea;
+    --wait:#e8a94a;
+    --back:#8294a8;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --sans:'Plus Jakarta Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--tx0);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(1100px 560px at 82% -8%,#163452 0%,transparent 60%),
+      linear-gradient(rgba(242,193,148,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(242,193,148,.035) 1px,transparent 1px);
+    background-size:auto,42px 42px,42px 42px;}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-weight:800;line-height:1.08;letter-spacing:-.015em}
+  .mono{font-family:var(--mono)}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(10,22,34,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .nav-logo{height:28px;width:auto}
+  .nav-back{font-family:var(--mono);font-size:13px;color:var(--tx1);display:inline-flex;align-items:center;gap:7px;padding:8px 15px;border:1px solid var(--bd);border-radius:999px;transition:.2s}
+  .nav-back:hover{color:var(--gold);border-color:var(--gold);background:rgba(242,193,148,.08)}
+
+  /* HERO */
+  .hero{position:relative;padding:72px 0 56px}
+  .hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:54px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--gold);background:rgba(242,193,148,.1);border:1px solid var(--bd);padding:7px 14px;border-radius:999px;margin-bottom:24px}
+  .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 0 rgba(67,197,133,.6);animation:pulse 2.2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(67,197,133,.5)}70%{box-shadow:0 0 0 9px rgba(67,197,133,0)}100%{box-shadow:0 0 0 0 rgba(67,197,133,0)}}
+  .hero-logo{height:52px;width:auto;margin-bottom:22px;filter:drop-shadow(0 6px 20px rgba(0,0,0,.4))}
+  .hero h1{font-size:clamp(36px,5.6vw,60px);margin-bottom:20px}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .hero p.lead{font-size:clamp(17px,2.1vw,20px);color:var(--tx1);max-width:38ch;margin-bottom:32px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px}
+  .btn{font-family:var(--sans);font-size:15px;font-weight:700;padding:15px 25px;border-radius:12px;cursor:pointer;border:1px solid transparent;transition:transform .18s ease,box-shadow .2s ease,background .2s;display:inline-flex;align-items:center;gap:9px}
+  .btn-primary{background:var(--gold);color:#3a2612;box-shadow:0 12px 30px rgba(242,193,148,.26)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 44px rgba(242,193,148,.4)}
+  .btn-ghost{background:rgba(255,255,255,.04);color:var(--tx0);border-color:var(--bd)}
+  .btn-ghost:hover{border-color:var(--gold);background:rgba(242,193,148,.08);transform:translateY(-3px)}
+
+  /* HERO VISUAL - dashboard image framed */
+  .shot{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--bd);background:var(--header);box-shadow:0 30px 70px rgba(0,0,0,.5)}
+  .shot-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:var(--header);border-bottom:1px solid var(--bd-soft)}
+  .shot-bar i{width:11px;height:11px;border-radius:50%;background:#2c4258;display:block}
+  .shot-bar .addr{margin-left:10px;font-family:var(--mono);font-size:11px;color:var(--tx2)}
+  .shot img{width:100%;display:block}
+
+  /* TERMINAL STRIP */
+  .term{margin-top:28px;font-family:var(--mono);font-size:13px;color:var(--tx1);background:var(--header);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;min-height:56px}
+  .term .pr{color:var(--gold)}
+  .cursor{display:inline-block;width:8px;height:15px;background:var(--gold);margin-left:2px;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* SECTIONS */
+  section.band{padding:84px 0;position:relative}
+  .sec-eye{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .sec-h{font-size:clamp(28px,3.8vw,42px);margin-bottom:16px}
+  .sec-sub{color:var(--tx1);font-size:18px;max-width:58ch}
+
+  /* PROBLEM */
+  .prob-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;margin-top:40px}
+  .prob-list{list-style:none;display:flex;flex-direction:column;gap:14px}
+  .prob-list li{display:flex;gap:13px;align-items:flex-start;font-size:16px;color:var(--tx1);background:var(--bg-2);border:1px solid var(--bd-soft);border-radius:12px;padding:16px 18px}
+  .prob-list .x{color:#e8766f;font-family:var(--mono);font-weight:700;flex:0 0 auto}
+  .prob-ans{background:linear-gradient(150deg,var(--bg-2),var(--header));border:1px solid var(--bd);border-radius:16px;padding:30px}
+  .prob-ans h3{font-size:22px;color:var(--gold);margin-bottom:12px}
+  .prob-ans p{color:var(--tx1)}
+
+  /* HOW - 3 points */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:46px}
+  .card{background:var(--bg-2);border:1px solid var(--bd-soft);border-radius:16px;padding:28px;transition:transform .25s ease,border-color .25s ease}
+  .card:hover{transform:translateY(-6px);border-color:var(--gold)}
+  .card .ic{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(242,193,148,.12);border:1px solid var(--bd);margin-bottom:18px}
+  .card h3{font-size:19px;margin-bottom:9px}
+  .card p{color:var(--tx1);font-size:15px}
+
+  /* SHOWCASE - interactive board (signature) */
+  .board{margin-top:44px;background:var(--header);border:1px solid var(--bd);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .board-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid var(--bd-soft);flex-wrap:wrap}
+  .board-top .ttl{font-family:var(--mono);font-size:13px;color:var(--tx1);display:flex;align-items:center;gap:9px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-family:var(--mono);font-size:12px;padding:7px 13px;border-radius:999px;border:1px solid var(--bd-soft);background:rgba(255,255,255,.03);color:var(--tx1);cursor:pointer;transition:.18s}
+  .chip:hover{border-color:var(--gold)}
+  .chip.on{background:var(--gold);color:#3a2612;border-color:transparent;font-weight:700}
+  .rows{padding:10px 14px 18px}
+  .row{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:15px 12px;border-bottom:1px solid var(--bd-soft);transition:.18s}
+  .row:last-child{border-bottom:none}
+  .row:hover{background:rgba(242,193,148,.05)}
+  .row .nm{font-weight:700}
+  .row .na{font-family:var(--mono);font-size:12.5px;color:var(--tx2)}
+  .st{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;padding:5px 11px;border-radius:999px;white-space:nowrap}
+  .st.live{color:var(--live);background:rgba(67,197,133,.12)}
+  .st.prog{color:var(--prog);background:rgba(79,155,234,.12)}
+  .st.wait{color:var(--wait);background:rgba(232,169,74,.12)}
+  .st.back{color:var(--back);background:rgba(130,148,168,.12)}
+  .row.hide{display:none}
+  .board-note{font-family:var(--mono);font-size:11px;color:var(--tx2);padding:0 22px 18px}
+
+  /* CTA */
+  .cta{text-align:center;background:linear-gradient(150deg,var(--bg-2),var(--header));border:1px solid var(--bd);border-radius:22px;padding:66px 32px;margin:40px 0}
+  .cta h2{font-size:clamp(28px,4vw,44px);margin-bottom:16px}
+  .cta p{color:var(--tx1);font-size:18px;max-width:46ch;margin:0 auto 30px}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--bd);padding:40px 0;margin-top:40px}
+  .foot-in{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+  .foot-in a.studio{color:var(--tx0);font-size:15px;font-weight:600}
+  .foot-in a.studio:hover{color:var(--gold)}
+  .foot-in .copy{color:var(--tx2);font-size:13px;font-family:var(--mono)}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:880px){
+    .hero-grid,.prob-grid{grid-template-columns:1fr;gap:40px}
+    .cards{grid-template-columns:1fr}
+    section.band{padding:60px 0}
+    .row{grid-template-columns:1fr auto}
+    .row .st{grid-column:2;justify-self:end}
+    .row .na{grid-column:1}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a href="#top"><img class="nav-logo" src="https://3shamrocksstudio.github.io/assets/brand/j8nix-logo.png" alt="J8N.IX"></a>
+    <a class="nav-back" href="../index.html">&larr; All products</a>
+  </div>
+</nav>
+
+<header id="top" class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow"><span class="dot"></span> STUDIO COMMAND CENTER</span>
+      <img class="hero-logo" src="https://3shamrocksstudio.github.io/assets/brand/j8nix-logo.png" alt="J8N.IX">
+      <h1>Every project, its status, and the <em>next action</em>. In one place.</h1>
+      <p class="lead">J8N.IX is where 3Shamrocks Studio runs. One screen shows what is live, what is moving, and the single thing that is waiting on you right now.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/j8nix/" target="_blank" rel="noopener">Open the command center &rarr;</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <div class="term" id="term"><span class="pr">j8nix &gt;</span> <span id="termtxt"></span><span class="cursor"></span></div>
+    </div>
+    <div class="reveal">
+      <div class="shot">
+        <div class="shot-bar"><i></i><i></i><i></i><span class="addr mono">j8nix / command-center</span></div>
+        <img src="https://3shamrocksstudio.github.io/assets/brand/j8nix-wireframe.jpg" alt="J8N.IX dashboard, showing the waiting-on-you rail, the project board, and the message panel">
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="band">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eye">The problem</div>
+      <h2 class="sec-h">Running many projects at once is a memory game you lose.</h2>
+      <p class="sec-sub">Status lives in your head, in six tabs, and in a notebook you cannot find. The thing that is actually blocking a launch gets buried under everything that is not.</p>
+    </div>
+    <div class="prob-grid">
+      <ul class="prob-list reveal">
+        <li><span class="x">x</span> You reopen five tools just to remember where one project stands.</li>
+        <li><span class="x">x</span> The task that unblocks everything is lost in a pile of small ones.</li>
+        <li><span class="x">x</span> "What was I about to do?" costs you the first twenty minutes of every day.</li>
+        <li><span class="x">x</span> Progress is real, but there is no single place that shows it.</li>
+      </ul>
+      <div class="prob-ans reveal">
+        <h3>J8N.IX fixes the view.</h3>
+        <p>It pulls every project into one board, sorts by what is live and what is stalled, and surfaces the one next action per project so you always know where to start. No digging, no guessing, no cold-start mornings.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="how" style="background:var(--header)">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eye">How it works</div>
+      <h2 class="sec-h">Three panels. The whole studio.</h2>
+    </div>
+    <div class="cards">
+      <div class="card reveal">
+        <div class="ic">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f2c194" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <h3>Waiting on you</h3>
+        <p>The one item per project that only you can unblock sits at the top. Clear it and the work keeps moving without you.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f2c194" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+        </div>
+        <h3>Live project board</h3>
+        <p>Every project with its real status: live, in progress, waiting, or parked. Filter it in one click and see the whole portfolio at a glance.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f2c194" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.6-.8L3 21l1.8-5.9A8.5 8.5 0 1 1 21 11.5z"/></svg>
+        </div>
+        <h3>Message panel</h3>
+        <p>Hand a task straight to Claude with the project already in context. Launch copy, a debug pass, a plan. It comes back ready to use.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eye">The board, live</div>
+      <h2 class="sec-h">Tap a status. Watch the portfolio sort itself.</h2>
+      <p class="sec-sub">This is the real sorting behavior from the command center. Filter the board the way you would on any busy morning.</p>
+    </div>
+    <div class="board reveal">
+      <div class="board-top">
+        <span class="ttl"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f2c194" stroke-width="2.4"><path d="M3 6h18M3 12h18M3 18h18"/></svg> PROJECT BOARD</span>
+        <div class="chips" id="chips">
+          <button class="chip on" data-f="all">All</button>
+          <button class="chip" data-f="live">Live</button>
+          <button class="chip" data-f="prog">In progress</button>
+          <button class="chip" data-f="wait">Waiting</button>
+          <button class="chip" data-f="back">Parked</button>
+        </div>
+      </div>
+      <div class="rows" id="rows">
+        <div class="row" data-s="live"><div><div class="nm">Fairent</div><div class="na">next: ship the comparables fix</div></div><span class="st live">LIVE</span></div>
+        <div class="row" data-s="prog"><div><div class="nm">Media Network</div><div class="na">next: book this week's reels</div></div><span class="st prog">IN PROGRESS</span></div>
+        <div class="row" data-s="live"><div><div class="nm">J8N.IX</div><div class="na">next: tidy the waiting rail</div></div><span class="st live">LIVE</span></div>
+        <div class="row" data-s="wait"><div><div class="nm">Trashure Hunters</div><div class="na">next: approve the hero art</div></div><span class="st wait">WAITING ON YOU</span></div>
+        <div class="row" data-s="prog"><div><div class="nm">Portfolio site</div><div class="na">next: wire the product pages</div></div><span class="st prog">IN PROGRESS</span></div>
+        <div class="row" data-s="back"><div><div class="nm">ClanForge</div><div class="na">next: revisit after launch</div></div><span class="st back">PARKED</span></div>
+      </div>
+      <div class="board-note mono" id="bnote">6 of 6 projects shown</div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="cta reveal">
+      <h2>Stop holding the whole studio in your head.</h2>
+      <p>Open J8N.IX and see every project, every status, and the next action, on one screen.</p>
+      <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/j8nix/" target="_blank" rel="noopener">Open the command center &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <a class="studio" href="../index.html">A 3Shamrocks Studio product</a>
+    <span class="copy">&copy; 2026 to 2027 3Shamrocks Studio. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveals
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.14});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  // Terminal typing (signature touch in hero)
+  var lines = [
+    'status --all',
+    'next --project fairent',
+    'waiting-on-you --count',
+    'open command-center'
+  ];
+  var tx = document.getElementById('termtxt');
+  var li = 0, ci = 0, del = false;
+  function tick(){
+    var cur = lines[li];
+    if(!del){
+      ci++;
+      tx.textContent = cur.slice(0,ci);
+      if(ci === cur.length){ del = true; return setTimeout(tick, 1400); }
+    } else {
+      ci--;
+      tx.textContent = cur.slice(0,ci);
+      if(ci === 0){ del = false; li = (li+1) % lines.length; }
+    }
+    setTimeout(tick, del ? 34 : 68);
+  }
+  tick();
+
+  // Interactive board filter (signature touch)
+  var chips = document.getElementById('chips');
+  var rows = Array.prototype.slice.call(document.querySelectorAll('#rows .row'));
+  var bnote = document.getElementById('bnote');
+  chips.addEventListener('click', function(e){
+    var b = e.target.closest('.chip'); if(!b) return;
+    chips.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
+    b.classList.add('on');
+    var f = b.getAttribute('data-f');
+    var shown = 0;
+    rows.forEach(function(r){
+      var ok = (f === 'all' || r.getAttribute('data-s') === f);
+      r.classList.toggle('hide', !ok);
+      if(ok) shown++;
+    });
+    bnote.textContent = shown + ' of ' + rows.length + ' projects shown';
+  });
+</script>
+</body>
+</html>
