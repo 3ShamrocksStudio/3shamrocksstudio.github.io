@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rookie &amp; King: earn the intro, win the room</title>
+<meta name="description" content="Rookie & King is the chess-based LinkedIn ice-breaker for founders and professionals. Make three moves, earn the meeting. Stop cold DMing.">
+<meta name="theme-color" content="#0A1026">
+<style>
+  :root{
+    --navy:#0A1026;
+    --navy-2:#0E1631;
+    --panel:#121C3D;
+    --ink:#F5F1E4;
+    --muted:#A7AEC6;
+    --faint:#6B7295;
+    --gold:#FFD700;
+    --gold-2:#E6B33C;
+    --gold-deep:#B8860B;
+    --line:#1E2A4F;
+    --radius:20px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--navy);color:var(--ink);font-family:var(--font);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  .goldtext{background:linear-gradient(100deg,#FFE38A,var(--gold) 35%,var(--gold-deep));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* WORDMARK */
+  .wordmark{display:inline-flex;align-items:center;gap:10px}
+  .crown{width:26px;height:26px;flex:none}
+  .wm-text{font-family:var(--serif);font-weight:700;font-size:20px;letter-spacing:.01em;white-space:nowrap}
+  .wm-text .amp{font-style:italic;font-weight:400;opacity:.9;margin:0 2px}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:50;background:rgba(10,16,38,.78);backdrop-filter:saturate(160%) blur(14px);-webkit-backdrop-filter:saturate(160%) blur(14px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .nav-right{display:flex;align-items:center;gap:22px;font-size:14px;color:var(--muted);font-weight:500}
+  .nav-right a:hover{color:var(--gold)}
+  .nav-right .allp{color:var(--ink)}
+
+  /* BUTTONS */
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:650;font-size:15px;padding:13px 24px;border-radius:12px;transition:transform .18s ease,box-shadow .25s ease,background .2s;cursor:pointer;border:none}
+  .btn-primary{background:linear-gradient(100deg,var(--gold),var(--gold-deep));color:#231a04;box-shadow:0 8px 30px -8px rgba(255,215,0,.45)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px -8px rgba(255,215,0,.6)}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+  /* HERO */
+  header{position:relative;padding:76px 0 48px;overflow:hidden}
+  .glow{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .glow:before{content:"";position:absolute;top:-160px;left:50%;transform:translateX(-50%);width:760px;height:620px;background:radial-gradient(ellipse at center,rgba(255,215,0,.14),transparent 62%)}
+  .hero{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);background:var(--navy-2);padding:7px 13px;border-radius:999px;margin-bottom:22px}
+  h1{font-family:var(--serif);font-size:clamp(40px,6vw,64px);line-height:1.04;letter-spacing:-.01em;font-weight:700}
+  .hero p.lede{font-size:18.5px;color:var(--muted);margin:22px 0 30px;max-width:30em}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+  .fineprint{font-size:13.5px;color:var(--faint);max-width:30em}
+
+  /* CHESS BOARD VISUAL */
+  .board-wrap{display:flex;justify-content:center;perspective:1200px}
+  .board-card{position:relative;padding:22px;border-radius:26px;background:linear-gradient(160deg,#16213f,#0b122b);border:1px solid var(--line);box-shadow:0 40px 90px -36px rgba(0,0,0,.75), inset 0 0 0 1px rgba(255,215,0,.08);transform:rotateX(6deg) rotateY(-6deg);transition:transform .4s ease}
+  .board-card:hover{transform:rotateX(2deg) rotateY(-2deg)}
+  .board{width:300px;height:300px;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);border-radius:10px;overflow:hidden;box-shadow:0 0 0 2px var(--gold-deep)}
+  .sq{position:relative}
+  .sq.l{background:#20305a}
+  .sq.d{background:#0e1833}
+  .sq.hl{box-shadow:inset 0 0 0 3px var(--gold)}
+  .sq .pc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:24px}
+  .sq .pc.w{color:#FFE9A8;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+  .sq .pc.b{color:#8d97b8}
+  .board-cap{margin-top:16px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted)}
+  .board-cap .stake{color:var(--gold);font-weight:650}
+
+  /* SECTIONS */
+  section{padding:86px 0;position:relative}
+  .sec-tag{font-size:12.5px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  h2{font-family:var(--serif);font-size:clamp(30px,4.4vw,46px);line-height:1.08;letter-spacing:-.01em;font-weight:700;max-width:15em}
+  .sec-lede{font-size:17.5px;color:var(--muted);margin-top:16px;max-width:34em}
+
+  /* PROBLEM */
+  .problem{background:var(--navy-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px}
+  .prob-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+  .prob-card h3{font-size:19px;font-weight:720;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+  .prob-card .dot{width:9px;height:9px;border-radius:50%;background:var(--gold)}
+  .prob-card p{color:var(--muted);font-size:15px}
+
+  /* STEPS */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:30px;position:relative;overflow:hidden}
+  .step:hover{border-color:rgba(255,215,0,.35)}
+  .step .num{position:absolute;top:-6px;right:16px;font-family:var(--serif);font-size:78px;font-weight:700;color:#15203f;line-height:1}
+  .step .ic{width:48px;height:48px;border-radius:13px;background:rgba(255,215,0,.12);display:flex;align-items:center;justify-content:center;margin-bottom:18px;position:relative;z-index:1}
+  .step svg{width:25px;height:25px;stroke:var(--gold);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .step h3{font-size:19px;font-weight:720;margin-bottom:8px;position:relative;z-index:1}
+  .step p{color:var(--muted);font-size:15px;position:relative;z-index:1}
+
+  /* SHOWCASE */
+  .showcase{background:var(--navy-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .sc-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-top:48px}
+  .sc-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+  .sc-card.scenario{display:flex;flex-direction:column}
+  .scn-head{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--faint);letter-spacing:.04em;margin-bottom:14px}
+  .scn-head .timer{color:var(--gold);font-weight:700}
+  .scn-q{font-size:17px;font-weight:600;line-height:1.5;margin-bottom:20px}
+  .opt{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .2s,background .2s}
+  .opt:hover{border-color:var(--gold);background:rgba(255,215,0,.05)}
+  .opt.sel{border-color:var(--gold);background:rgba(255,215,0,.08)}
+  .opt b{display:block;font-size:14.5px;margin-bottom:3px}
+  .opt span{font-size:13px;color:var(--muted)}
+  .deal{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column}
+  .lockrow{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--faint);margin-bottom:16px}
+  .profile{border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+  .profile .nm{font-weight:700;font-size:16px}
+  .profile .rl{color:var(--gold);font-size:13.5px;margin:2px 0 10px}
+  .profile .bio{font-size:13.5px;color:var(--muted)}
+  .blur{filter:blur(5px);user-select:none;transition:filter .5s ease}
+  .deal.unlocked .blur{filter:none}
+  .progress{height:7px;background:var(--navy);border-radius:999px;overflow:hidden;margin:8px 0 18px}
+  .progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-deep));border-radius:999px;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+  .mv-label{font-size:12.5px;color:var(--faint);display:flex;justify-content:space-between;margin-bottom:4px}
+
+  /* COINS STRIP */
+  .coins{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
+  .coin-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px;text-align:center}
+  .coin-card .ico{font-size:28px;margin-bottom:10px}
+  .coin-card h3{font-size:17px;font-weight:720;margin-bottom:6px}
+  .coin-card p{font-size:14px;color:var(--muted)}
+
+  /* CLOSING */
+  .closing{text-align:center;position:relative;overflow:hidden}
+  .closing .glow2{position:absolute;bottom:-220px;left:50%;transform:translateX(-50%);width:780px;height:520px;background:radial-gradient(ellipse at center,rgba(255,215,0,.13),transparent 65%);z-index:0}
+  .closing .inner{position:relative;z-index:1}
+  .closing h2{margin:0 auto;max-width:13em}
+  .closing .cta-row{justify-content:center;margin-top:30px}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--line);padding:40px 0 60px;background:var(--navy-2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-size:13.5px;color:var(--faint)}
+  .foot a{color:var(--muted)}
+  .foot a:hover{color:var(--gold)}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr;gap:38px;text-align:center}
+    .hero p.lede,.fineprint{margin-left:auto;margin-right:auto}
+    .cta-row{justify-content:center}
+    .prob-grid,.steps,.sc-grid,.coins{grid-template-columns:1fr}
+    h2{max-width:none}
+    .board-card{transform:none}
+    .nav-right a:not(.allp){display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#top">
+      <svg class="crown" viewBox="0 0 32 32" aria-hidden="true">
+        <defs><linearGradient id="gc" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#FFE38A"/><stop offset=".5" stop-color="#FFD700"/><stop offset="1" stop-color="#B8860B"/>
+        </linearGradient></defs>
+        <path d="M4 11l5 5 7-10 7 10 5-5-2 15H6L4 11z" fill="url(#gc)" stroke="#8a650a" stroke-width="1" stroke-linejoin="round"/>
+        <circle cx="4" cy="11" r="2.2" fill="url(#gc)"/><circle cx="28" cy="11" r="2.2" fill="url(#gc)"/><circle cx="16" cy="6" r="2.2" fill="url(#gc)"/>
+        <rect x="6" y="26" width="20" height="2.6" rx="1" fill="#8a650a"/>
+      </svg>
+      <span class="wm-text goldtext">Rookie<span class="amp">&amp;</span>King</span>
+    </a>
+    <div class="nav-right">
+      <a href="#how">How it works</a>
+      <a href="#scenarios">Duels</a>
+      <a class="allp" href="../index.html">All products</a>
+    </div>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="glow"></div>
+  <div class="wrap hero">
+    <div>
+      <span class="eyebrow">For founders and professionals</span>
+      <h1>Earn the intro.<br><span class="goldtext">Win the room.</span></h1>
+      <p class="lede">Stop cold DMing. Rookie &amp; King turns networking into strategy, one move at a time. Make three meaningful moves in a duel and you unlock a real intro request.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/gambit-app/">Play Rookie &amp; King</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <p class="fineprint">Sign in with LinkedIn to verify your profile. No posting on your behalf. Intro requests are free during beta.</p>
+    </div>
+    <div class="board-wrap">
+      <div class="board-card reveal">
+        <div class="board" id="board" aria-hidden="true"></div>
+        <div class="board-cap">
+          <span>White to move</span>
+          <span class="stake">50 &#129689; at stake</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="problem">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-tag">The problem</div>
+      <h2>The cold DM is dead. Everyone knows it.</h2>
+      <p class="sec-lede">Inboxes are a wall of pitches that open with flattery and end with a calendar link. The right people stopped reading. You need a reason to earn their attention, not borrow it.</p>
+    </div>
+    <div class="prob-grid">
+      <div class="prob-card reveal">
+        <h3><span class="dot"></span>A pitch with no proof</h3>
+        <p>A cold message asks for time before you have shown anything. There is no signal that you are worth the reply, so you get silence.</p>
+      </div>
+      <div class="prob-card reveal">
+        <h3><span class="dot"></span>No skin in the game</h3>
+        <p>When outreach costs nothing to send, it is worth nothing to receive. Both sides need something at stake before the conversation matters.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-tag">How it works</div>
+      <h2>Three moves. Full profile. <span class="goldtext">Real intro.</span></h2>
+      <p class="sec-lede">Each move you make reveals a little more of your match: their goals, their pitch, their contact. Play it well and the Deal Room opens.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="num">1</div>
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M6 21h12M9 21V9m6 12V9M8 9h8l-1-4H9L8 9zM10 5V3h4v2"/></svg></div>
+        <h3>Set your intent</h3>
+        <p>Tell us who you are and who you want to meet. Founder, investor, operator, recruiter. We match you with the right people.</p>
+      </div>
+      <div class="step reveal">
+        <div class="num">2</div>
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 12h18M12 3v18M7 7l10 10M17 7L7 17"/></svg></div>
+        <h3>Make your moves</h3>
+        <p>Play a chess duel or a business scenario. Three meaningful moves, each one peeling back more of your match and the deal.</p>
+      </div>
+      <div class="step reveal">
+        <div class="num">3</div>
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M5 11V7a7 7 0 0 1 14 0v4M4 11h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9zM12 15v3"/></svg></div>
+        <h3>Open the Deal Room</h3>
+        <p>Unlock their goals, their brief and a free intro request. You earned the meeting instead of begging for it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="showcase" id="scenarios">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-tag">Inside a duel</div>
+      <h2>Chess, or the boardroom. <span class="goldtext">Your call.</span></h2>
+      <p class="sec-lede">Not a chess player? Run a scenario duel instead: real founder decisions under a clock. Make a move on the left, watch the Deal Room unlock on the right.</p>
+    </div>
+    <div class="sc-grid">
+      <div class="sc-card scenario reveal">
+        <div class="scn-head"><span>SCENARIO #849</span><span class="timer" id="timer">0:15</span></div>
+        <div class="scn-q">Your lead Series A investor pulls out 24 hours before payroll. $120k liability, $15k in reserves. You have one call to make. What is your immediate move?</div>
+        <div class="opt" data-opt><b>A &middot; Emergency bridge</b><span>2x warrants to existing angels for a 48h wire. Fast but dilutive.</span></div>
+        <div class="opt" data-opt><b>B &middot; Transparent deferral</b><span>All-hands, defer 50% of exec pay, protect junior staff. Builds trust.</span></div>
+        <div class="opt" data-opt><b>C &middot; Strategic signal</b><span>Accelerate a competitor partnership into an acqui-hire. Drastic.</span></div>
+      </div>
+      <div class="deal reveal" id="deal">
+        <div class="lockrow"><span id="locklabel">&#128274; Locked</span></div>
+        <div class="mv-label"><span>Moves to unlock</span><span id="mvcount">0 / 3</span></div>
+        <div class="progress"><i id="bar"></i></div>
+        <div class="profile">
+          <div class="nm blur" id="nm">Elena Rostova</div>
+          <div class="rl blur" id="rl">Managing Partner, Apex Cyber Ventures</div>
+          <div class="bio blur" id="bio">Looking for pre-seed to Series A founders in B2B infrastructure, cybersecurity and enterprise AI. Prefers a technical co-founder and real MRR signal.</div>
+        </div>
+        <a class="btn btn-primary" id="introbtn" href="https://3shamrocksstudio.github.io/gambit-app/" style="justify-content:center;pointer-events:none;opacity:.5;transition:opacity .4s">&#129309; Request intro &middot; free in beta</a>
+        <p style="font-size:12.5px;color:var(--faint);margin-top:12px;text-align:center">Make a move on the left to reveal who Elena is.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-tag">Skin in the game</div>
+      <h2>Both sides stake something. <span class="goldtext">That is the point.</span></h2>
+      <p class="sec-lede">Coins keep duels honest. Win a ranked match and you double your stake. A free daily puzzle keeps your edge sharp.</p>
+    </div>
+    <div class="coins">
+      <div class="coin-card reveal"><div class="ico">&#9876;&#65039;</div><h3>Stake and double</h3><p>Put coins on a ranked duel. Beat your match and you walk away with twice what you risked.</p></div>
+      <div class="coin-card reveal"><div class="ico">&#128276;</div><h3>Opening Bell</h3><p>One puzzle a day, the same for everyone. Solve it for coins and a share-worthy result.</p></div>
+      <div class="coin-card reveal"><div class="ico">&#129689;</div><h3>Free where it counts</h3><p>Intro requests cost nothing during beta. Coins are for play and streak freezes, not for access.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="glow2"></div>
+  <div class="wrap inner reveal">
+    <h2>Make your first move <span class="goldtext">today.</span></h2>
+    <p class="sec-lede" style="margin:16px auto 0">Verify with LinkedIn, set your intent and earn an intro that actually lands. No cold DMs required.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/gambit-app/">Play Rookie &amp; King</a>
+      <a class="btn btn-ghost" href="#how">See how it works</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div><a href="../index.html">A 3Shamrocks Studio product</a></div>
+    <div>&copy; 2026 to 2027 3Shamrocks Studio. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+  // Build an 8x8 board with a mid-game position and a highlighted move
+  (function(){
+    var board = document.getElementById('board');
+    // rows top(8) to bottom(1); w = white pieces, b = black
+    var pos = [
+      "r...k..r","pp..bppp",".......",".....n..","...wp...","..wh....","pppp.ppp","r..qkb.r"
+    ];
+    // Use unicode chess glyphs mapped simply for a decorative look
+    var glyphs = {K:"♔",Q:"♕",R:"♖",B:"♗",N:"♘",P:"♙"};
+    var layout = [
+      ["R","","","Q","K","","","R"],
+      ["P","P","P","","","P","P","P"],
+      ["","","N","","","N","",""],
+      ["","","","","P","","",""],
+      ["","","","B","p","","",""],
+      ["","","n","","","","",""],
+      ["p","p","p","p","","p","p","p"],
+      ["r","","b","q","k","b","n","r"]
+    ];
+    for(var r=0;r<8;r++){
+      for(var c=0;c<8;c++){
+        var sq=document.createElement('div');
+        sq.className='sq '+(((r+c)%2===0)?'l':'d');
+        if((r===4&&c===3)||(r===2&&c===2)) sq.className+=' hl';
+        var p=layout[r][c];
+        if(p){
+          var isWhite = p===p.toUpperCase();
+          var g=glyphs[p.toUpperCase()];
+          sq.innerHTML='<span class="pc '+(isWhite?'w':'b')+'">'+g+'</span>';
+        }
+        board.appendChild(sq);
+      }
+    }
+  })();
+
+  // Scroll reveal
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  }, {threshold:0.14, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el,i){ el.style.transitionDelay=(i%3*0.07)+'s'; io.observe(el); });
+
+  // Signature interactive: pick scenario options, each move reveals the Deal Room
+  (function(){
+    var opts = document.querySelectorAll('#scenarios [data-opt]');
+    var deal = document.getElementById('deal');
+    var bar = document.getElementById('bar');
+    var mvcount = document.getElementById('mvcount');
+    var locklabel = document.getElementById('locklabel');
+    var introbtn = document.getElementById('introbtn');
+    var moves = 0;
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if(moves>=3) return;
+        if(opt.classList.contains('sel')) return;
+        opts.forEach(function(o){o.classList.remove('sel');});
+        opt.classList.add('sel');
+        moves++;
+        var pct = Math.min(moves/3,1)*100;
+        bar.style.width = pct+'%';
+        mvcount.textContent = Math.min(moves,3)+' / 3';
+        if(moves===1){ document.getElementById('nm').classList.remove('blur'); }
+        if(moves===2){ document.getElementById('rl').classList.remove('blur'); }
+        if(moves>=3){
+          document.getElementById('bio').classList.remove('blur');
+          deal.classList.add('unlocked');
+          locklabel.innerHTML = '&#128275; Deal Room unlocked';
+          locklabel.style.color = 'var(--gold)';
+          introbtn.style.pointerEvents='auto';
+          introbtn.style.opacity='1';
+        }
+      });
+    });
+  })();
+
+  // Light scenario timer loop (decorative)
+  (function(){
+    var t = document.getElementById('timer'); var s=15;
+    setInterval(function(){ s = s>0 ? s-1 : 15; t.textContent='0:'+(s<10?'0':'')+s; }, 1000);
+  })();
+</script>
+</body>
+</html>
