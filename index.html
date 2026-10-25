@@ -757,6 +757,37 @@ footer{
 .lickpick-word{position:absolute;left:0;right:0;bottom:16px;text-align:center;z-index:2;font-family:var(--font-head);font-weight:800;font-size:27px;color:#fff;text-shadow:0 3px 14px rgba(0,0,0,0.75)}
 .lickpick-word b{color:var(--green-2)}
 .rk-wordmark{position:relative;z-index:2;margin-top:12px;font-family:var(--font-head);font-weight:800;font-size:18px;letter-spacing:-0.01em;color:#FFD700;text-shadow:0 2px 10px rgba(0,0,0,0.6)}
+
+/* ===== REVISIONS 4 (eyes-on fixes) ===== */
+/* header line 2 was invisible (transparent gradient on animated spans) -> solid green */
+.hero-content h1 em,.hero-content h1 em .word{background:none!important;-webkit-text-fill-color:#52e87d!important;color:#52e87d!important}
+h1{font-size:clamp(34px,4.8vw,62px)!important}
+/* carousel swipe transition */
+.pscreen{transform:translateX(55%);opacity:0;transition:transform .6s cubic-bezier(.5,0,.2,1),opacity .5s ease}
+.pscreen.on{transform:translateX(0);opacity:1}
+.pscreen.prev{transform:translateX(-55%);opacity:0}
+/* phone cursor glow */
+.phone{--gx:50%;--gy:30%}
+.phone::after{content:'';position:absolute;inset:0;z-index:4;pointer-events:none;background:radial-gradient(220px circle at var(--gx) var(--gy),rgba(255,255,255,0.16),transparent 60%);mix-blend-mode:screen;opacity:0;transition:opacity .3s}
+.hero-phone:hover .phone::after,.contact-carousel:hover .phone::after{opacity:1}
+/* ticker: green accent, interactive, purple dividers */
+.ticker{background:linear-gradient(90deg,rgba(61,204,110,0.06),rgba(130,57,234,0.06))!important}
+.ticker-track span:not(.ticker-sep){color:var(--green-2);transition:color .2s,transform .2s;cursor:default}
+.ticker-track span:not(.ticker-sep):hover{color:#fff;transform:translateY(-2px)}
+.tk-ic{color:var(--green-2)}
+.ticker-sep{color:var(--purple-3)!important;opacity:.6}
+/* contrast bands to break the all-dark */
+.statement{background:linear-gradient(120deg,#1b1140,#0d0d1a)!important}
+#about{background:linear-gradient(180deg,#140b2a,#0d0d1a)!important}
+/* workflow: centered number, filled gradient icon, livelier hover */
+.flow-num{left:50%!important;transform:translateX(-50%)!important;top:-8px!important}
+.flow-ic{background:linear-gradient(145deg,var(--purple),#2a1b4d)!important;color:#fff!important}
+.flow-step:hover .flow-ic{color:#04120a!important;background:linear-gradient(145deg,var(--green-2),var(--green))!important;border-color:var(--green-2)!important}
+/* uniform banner treatment: logo bottom-left over a scrim */
+.product-card:not(.featured) .card-visual{justify-content:flex-start;align-items:flex-end}
+.product-card:not(.featured) .card-visual::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(5,5,12,0) 38%,rgba(5,5,12,0.8));pointer-events:none}
+.product-card:not(.featured) .card-logo{position:absolute;left:20px;bottom:16px;top:auto;z-index:3;width:auto!important;height:44px!important;max-width:62%}
+.c-milo .card-logo{height:88px!important;left:50%!important;transform:translateX(-50%);bottom:12px}
 </style>
 </head>
 <body>
@@ -771,7 +802,6 @@ footer{
   </a>
   <div class="nav-links">
     <a href="#work" class="hide-mobile">Work</a>
-    <a href="#process" class="hide-mobile">Process</a>
     <a href="#about" class="hide-mobile">Studio</a>
     <a href="mailto:markodave@gmail.com" class="nav-cta">Let's talk</a>
   </div>
@@ -827,9 +857,8 @@ footer{
         <img class="pscreen on" src="assets/brand/lickpick/m_home.jpg" alt="LickPick app">
         <img class="pscreen" src="assets/screens/th-splash.png" alt="Trashure-Hunters app">
         <img class="pscreen" src="assets/brand/lickpick/m_pick.jpg" alt="LickPick app">
-        <img class="pscreen" src="assets/screens/milo.png" alt="Milo app">
         <img class="pscreen" src="assets/brand/lickpick/m_band.jpg" alt="LickPick app">
-        <img class="pscreen" src="assets/screens/th-map.png" alt="Trashure-Hunters app">
+        <img class="pscreen" src="assets/brand/lickpick/m_export.jpg" alt="LickPick app">
       </div></div>
     </div>
     <div class="minime-stand">
@@ -1061,81 +1090,6 @@ footer{
   </div>
 </section>
 
-<!-- PROCESS -->
-<section id="process">
-  <div class="section-label">How We Work</div>
-  <h2 class="section-title reveal">Senior craft,<br><em>startup speed.</em></h2>
-  <p class="section-sub reveal">The thinking still takes real time. The waiting is what goes away. This is how I deliver senior level design in weeks instead of quarters.</p>
-
-  <div class="process-track">
-
-    <div class="process-step reveal">
-      <span class="process-num">01</span>
-      <div class="process-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="10" cy="10" r="7"/>
-          <path d="M10 6v4l2.5 2.5"/>
-        </svg>
-      </div>
-      <h3 class="process-title">Discover & Strategy</h3>
-      <p class="process-desc">I dig into your product, your users, and who you are up against. You get a sharp brief and a clear direction, usually in days, not weeks.</p>
-      <div class="process-tags">
-        <span class="process-tag">Brand Audit</span>
-        <span class="process-tag">ICP Research</span>
-        <span class="process-tag">Design Brief</span>
-      </div>
-    </div>
-
-    <div class="process-connector">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-        <path d="M5 12h14M13 6l6 6-6 6"/>
-      </svg>
-    </div>
-
-    <div class="process-step reveal">
-      <span class="process-num">02</span>
-      <div class="process-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="6" height="6" rx="1.5"/>
-          <rect x="11" y="3" width="6" height="6" rx="1.5"/>
-          <rect x="3" y="11" width="6" height="6" rx="1.5"/>
-          <rect x="11" y="11" width="6" height="6" rx="1.5"/>
-        </svg>
-      </div>
-      <h3 class="process-title">Design & Build</h3>
-      <p class="process-desc">Design sprints where the brand, the interfaces, and the prototype all take shape at once. Six times the speed. The same quality bar, or higher.</p>
-      <div class="process-tags">
-        <span class="process-tag">Design System</span>
-        <span class="process-tag">UI/UX</span>
-        <span class="process-tag">Prototype</span>
-      </div>
-    </div>
-
-    <div class="process-connector">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-        <path d="M5 12h14M13 6l6 6-6 6"/>
-      </svg>
-    </div>
-
-    <div class="process-step reveal">
-      <span class="process-num">03</span>
-      <div class="process-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="4,10 8,14 16,6"/>
-        </svg>
-      </div>
-      <h3 class="process-title">Ship & Scale</h3>
-      <p class="process-desc">Production-ready assets, working software, and documented systems, handed off clean so your team hits the ground running. No black boxes. No orphaned files.</p>
-      <div class="process-tags">
-        <span class="process-tag">Handoff</span>
-        <span class="process-tag">Live Code</span>
-        <span class="process-tag">Documentation</span>
-      </div>
-    </div>
-
-  </div>
-</section>
-
 <!-- BOLD STATEMENT -->
 <div class="statement reveal">
   <p class="statement-text">
@@ -1253,7 +1207,7 @@ footer{
         <img class="pscreen on" src="assets/brand/lickpick/m_home.jpg" alt="LickPick app screen">
         <img class="pscreen" src="assets/screens/th-splash.png" alt="Trashure-Hunters app screen">
         <img class="pscreen" src="assets/brand/lickpick/m_band.jpg" alt="LickPick app screen">
-        <img class="pscreen" src="assets/screens/milo.png" alt="Milo app screen">
+        <img class="pscreen" src="assets/brand/lickpick/m_export.jpg" alt="LickPick app screen">
         <img class="pscreen" src="assets/brand/lickpick/m_pick.jpg" alt="LickPick app screen">
       </div></div>
     </div>
@@ -1443,12 +1397,13 @@ document.querySelectorAll('.about-stats').forEach(el=>cntIO.observe(el));
 })();
 /* XP bar fill + contact carousel */
 window.addEventListener('load',()=>{const xf=document.getElementById('xp-fill');if(xf)requestAnimationFrame(()=>xf.style.width='88%');});
-/* generic device-screen carousels (hero + contact) */
+/* device-screen carousels: swipe-left + cursor glow */
 document.querySelectorAll('[data-carousel]').forEach(c=>{
   const sc=[...c.querySelectorAll('.pscreen')]; if(sc.length<2) return;
-  let i=0; const iv=+(c.dataset.interval||1400);
-  setInterval(()=>{sc[i].classList.remove('on'); i=(i+1)%sc.length; sc[i].classList.add('on');}, iv);
+  let i=0; const iv=+(c.dataset.interval||1600);
+  setInterval(()=>{const cur=sc[i];cur.classList.remove('on');cur.classList.add('prev');setTimeout(()=>cur.classList.remove('prev'),700);i=(i+1)%sc.length;sc[i].classList.add('on');}, iv);
 });
+document.querySelectorAll('.phone').forEach(ph=>{ph.addEventListener('pointermove',e=>{const r=ph.getBoundingClientRect();ph.style.setProperty('--gx',((e.clientX-r.left)/r.width*100)+'%');ph.style.setProperty('--gy',((e.clientY-r.top)/r.height*100)+'%');});});
 /* ===== 3S AURORA PARTICLE FIELD (interactive, depth parallax, cursor gravity) ===== */
 (function(){
   const cv=document.getElementById('ds-grid'); if(!cv) return;
