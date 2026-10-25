@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chore Royale - The family chore game show</title>
+<meta name="description" content="Spin the wheel, do the chore, prove it with a photo, earn stars. The family chore game show that gives you your evenings back. Free to play.">
+<meta name="theme-color" content="#160A2E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#160A2E;
+    --violet-2:#241046;
+    --violet-3:#331862;
+    --gold:#FFC53D;
+    --gold-deep:#FFA81E;
+    --magenta:#E64BA8;
+    --tx0:#FBF6FF;
+    --tx1:rgba(251,246,255,.74);
+    --tx2:rgba(251,246,255,.46);
+    --bd:rgba(255,255,255,.1);
+    --display:'Fredoka',system-ui,sans-serif;
+    --body:'Nunito',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--violet);color:var(--tx0);font-family:var(--body);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+  h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.05;letter-spacing:-.01em}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(22,10,46,.8);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:58px}
+  .nav-logo{height:30px;width:auto}
+  .nav-back{font-family:var(--display);font-size:14px;color:var(--tx1);display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid var(--bd);border-radius:999px;transition:.2s}
+  .nav-back:hover{color:var(--tx0);border-color:var(--gold);background:rgba(255,197,61,.1)}
+
+  /* HERO */
+  .hero{position:relative;padding:60px 0 46px;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(55% 55% at 20% 15%,rgba(255,197,61,.18),transparent 60%),radial-gradient(55% 55% at 85% 90%,rgba(230,75,168,.18),transparent 60%);pointer-events:none}
+  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-size:13px;letter-spacing:.02em;color:var(--violet);background:var(--gold);padding:6px 15px;border-radius:999px;margin-bottom:22px;box-shadow:0 8px 22px rgba(255,197,61,.3)}
+  .hero-logo{height:58px;width:auto;margin-bottom:20px}
+  .hero h1{font-size:clamp(38px,6.2vw,64px);margin-bottom:18px}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .hero p.lead{font-size:clamp(17px,2.2vw,20px);color:var(--tx1);max-width:32ch;margin-bottom:30px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px}
+  .btn{font-family:var(--display);font-size:16px;font-weight:600;padding:15px 26px;border-radius:14px;cursor:pointer;border:1px solid transparent;transition:transform .18s ease,box-shadow .2s ease,background .2s;display:inline-flex;align-items:center;gap:9px}
+  .btn-primary{background:var(--gold);color:#2a1500;box-shadow:0 10px 30px rgba(255,197,61,.38)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 42px rgba(255,197,61,.55)}
+  .btn-ghost{background:transparent;color:var(--tx0);border-color:var(--bd)}
+  .btn-ghost:hover{border-color:var(--gold);background:rgba(255,197,61,.1);transform:translateY(-3px)}
+
+  /* WHEEL (signature) */
+  .wheel-stage{display:flex;flex-direction:column;align-items:center;gap:20px}
+  .wheel-wrap{position:relative;width:320px;max-width:84vw}
+  .wheel-pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);z-index:5;width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:28px solid var(--gold);filter:drop-shadow(0 3px 5px rgba(0,0,0,.5))}
+  svg.wheel{width:100%;height:auto;display:block;transition:transform 4.2s cubic-bezier(.17,.67,.2,1);transform:rotate(0deg);filter:drop-shadow(0 20px 50px rgba(0,0,0,.5))}
+  .wheel-hub{position:absolute;top:50%;left:50%;width:62px;height:62px;transform:translate(-50%,-50%);background:var(--gold);border-radius:50%;z-index:4;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:13px;color:var(--violet);font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.4);border:3px solid #fff2d0;transition:transform .15s}
+  .wheel-hub:hover{transform:translate(-50%,-50%) scale(1.07)}
+  .wheel-hub:active{transform:translate(-50%,-50%) scale(.94)}
+  .wheel-result{font-family:var(--display);font-size:18px;text-align:center;min-height:26px;color:var(--gold)}
+  .wheel-result span{color:var(--tx2);font-family:var(--body);font-size:14px;display:block;margin-top:2px}
+
+  /* STATS */
+  .stats{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+  .stat{flex:1;min-width:110px;border:1px solid var(--bd);border-radius:16px;padding:16px 18px;background:rgba(255,255,255,.03)}
+  .stat b{font-family:var(--display);font-size:24px;color:var(--gold);display:block}
+  .stat span{font-size:13px;color:var(--tx2)}
+
+  section.band{padding:88px 0}
+  .kicker{font-family:var(--display);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .band h2{font-size:clamp(28px,4.4vw,46px);margin-bottom:18px}
+  .band h2 em{font-style:normal;color:var(--gold)}
+  .section-lead{color:var(--tx1);font-size:18px;max-width:58ch}
+
+  /* PROBLEM */
+  .problem{background:linear-gradient(180deg,var(--violet),var(--violet-2))}
+  .problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .problem-photo{border-radius:22px;overflow:hidden;border:1px solid var(--bd);box-shadow:0 30px 60px rgba(0,0,0,.4)}
+  .problem-photo img{width:100%;height:100%;object-fit:cover}
+  .problem p{color:var(--tx1);font-size:18px;margin-bottom:16px}
+  .problem .pull{font-family:var(--display);font-size:22px;color:var(--tx0);border-left:3px solid var(--gold);padding-left:18px;margin:26px 0}
+
+  /* STEPS */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:46px}
+  .step{border:1px solid var(--bd);border-radius:20px;padding:28px 22px;background:linear-gradient(170deg,rgba(255,255,255,.05),rgba(255,255,255,.01));transition:transform .25s ease,border-color .25s}
+  .step:hover{transform:translateY(-6px);border-color:rgba(255,197,61,.45)}
+  .step .num{font-family:var(--display);font-size:13px;color:var(--gold);letter-spacing:.1em}
+  .step .ico{font-size:38px;margin:12px 0 14px;line-height:1}
+  .step h3{font-size:20px;margin-bottom:10px}
+  .step p{color:var(--tx1);font-size:15px}
+
+  /* SHOWCASE */
+  .showcase{background:linear-gradient(180deg,var(--violet-2),var(--violet))}
+  .show-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;margin-top:44px;align-items:stretch}
+  .show-photo{border-radius:22px;overflow:hidden;border:1px solid var(--bd);box-shadow:0 30px 60px rgba(0,0,0,.45);position:relative}
+  .show-photo img{width:100%;height:100%;object-fit:cover;min-height:360px}
+  .show-photo .cap{position:absolute;left:0;right:0;bottom:0;padding:20px;font-family:var(--display);font-size:16px;background:linear-gradient(to top,rgba(22,10,46,.92),transparent)}
+  /* Leaderboard mock */
+  .board{border:1px solid var(--bd);border-radius:22px;padding:24px;background:linear-gradient(170deg,var(--violet-3),var(--violet-2))}
+  .board .bhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+  .board .bhead b{font-family:var(--display);font-size:18px}
+  .board .bhead .wk{font-size:12px;color:var(--tx2);border:1px solid var(--bd);border-radius:999px;padding:4px 10px}
+  .row{display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:14px;margin-bottom:10px;background:rgba(255,255,255,.04);transition:transform .2s}
+  .row:hover{transform:translateX(4px)}
+  .row .rk{font-family:var(--display);font-size:16px;color:var(--gold);width:20px}
+  .row .av{font-size:22px}
+  .row .nm{font-family:var(--display);flex:1}
+  .row .xp{font-family:var(--display);color:var(--gold);font-size:15px}
+  .row.lead-row{background:linear-gradient(90deg,rgba(255,197,61,.18),rgba(255,197,61,.03));border:1px solid rgba(255,197,61,.3)}
+  .boss-bar{margin-top:16px;padding:14px 16px;border-radius:14px;background:rgba(230,75,168,.12);border:1px solid rgba(230,75,168,.3);font-family:var(--display);font-size:14px;display:flex;align-items:center;gap:10px}
+
+  /* CLOSING */
+  .closing{position:relative;text-align:center;padding:110px 0;overflow:hidden}
+  .closing::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 70% at 50% 30%,rgba(255,197,61,.2),transparent 65%)}
+  .closing-in{position:relative;z-index:1}
+  .closing h2{font-size:clamp(32px,5.5vw,58px);margin-bottom:18px}
+  .closing h2 em{font-style:normal;color:var(--gold)}
+  .closing p{color:var(--tx1);font-size:19px;max-width:48ch;margin:0 auto 32px}
+
+  footer{border-top:1px solid var(--bd);padding:40px 0;background:var(--violet)}
+  .foot-in{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+  .foot-in a.studio{font-family:var(--display);color:var(--tx0);font-size:15px}
+  .foot-in a.studio:hover{color:var(--gold)}
+  .foot-in .copy{color:var(--tx2);font-size:13px}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:860px){
+    .hero-grid,.problem-grid,.show-grid{grid-template-columns:1fr;gap:34px}
+    .wheel-stage{order:-1}
+    .steps{grid-template-columns:1fr 1fr}
+    section.band{padding:62px 0}
+  }
+  @media(max-width:460px){ .steps{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a href="https://3shamrocksstudio.github.io/chore-wars/landing.html"><img class="nav-logo" src="https://3shamrocksstudio.github.io/assets/brand/chore-logo.png" alt="Chore Royale"></a>
+    <a class="nav-back" href="../index.html">&larr; All products</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">The family chore game show</span>
+      <img class="hero-logo" src="https://3shamrocksstudio.github.io/assets/brand/chore-logo.png" alt="Chore Royale">
+      <h1>Nobody argues with <em>the wheel.</em></h1>
+      <p class="lead">Spin it, do the chore, snap a photo, earn stars. The kids get a mission they cannot talk their way out of. You get your evening back.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/chore-wars/landing.html">Play Chore Royale</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>Free</b><span>forever, no card</span></div>
+        <div class="stat"><b>Any phone</b><span>no App Store</span></div>
+        <div class="stat"><b>No signup</b><span>just play</span></div>
+      </div>
+    </div>
+    <div class="wheel-stage">
+      <div class="wheel-wrap">
+        <div class="wheel-pointer"></div>
+        <svg class="wheel" id="wheel" viewBox="0 0 200 200" aria-label="Chore wheel"></svg>
+        <button class="wheel-hub" id="hub" type="button">SPIN</button>
+      </div>
+      <div class="wheel-result" id="result">Give it a spin &darr;</div>
+    </div>
+  </div>
+</header>
+
+<!-- PROBLEM -->
+<section class="band problem reveal">
+  <div class="wrap problem-grid">
+    <div class="problem-photo">
+      <img src="https://3shamrocksstudio.github.io/assets/art/new/chore.jpg" alt="Family chore game show vibe">
+    </div>
+    <div>
+      <div class="kicker">The problem</div>
+      <h2>"In a minute" means <em>never.</em></h2>
+      <p>You ask them to clean their room. They say in a minute. A minute turns into twenty. You ask again. Now it is a fight, and by the time it is done nobody feels good about it.</p>
+      <p class="pull">The problem was never the chore. It was that the chore felt like your idea.</p>
+      <p>Chore Royale takes you out of it. The wheel picks the chore, the game keeps score, and suddenly doing the dishes is something they want to win at.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="band" id="how">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">How it works</div>
+      <h2>Four steps. <em>No argument.</em></h2>
+      <p class="section-lead">The whole loop takes a tap to start and a photo to finish. The stars pile up from there.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="num">01</div><div class="ico">🎡</div><h3>Spin</h3><p>One tap lands a random chore from the family list. Nobody picked it. The wheel did.</p></div>
+      <div class="step reveal"><div class="num">02</div><div class="ico">🧹</div><h3>Do it</h3><p>Clean the bathroom, take out the trash, fold the laundry. The chore is real and so is the work.</p></div>
+      <div class="step reveal"><div class="num">03</div><div class="ico">📸</div><h3>Prove it</h3><p>Snap a photo of the finished job. A parent gives it a look and adds a bonus for being honest.</p></div>
+      <div class="step reveal"><div class="num">04</div><div class="ico">⭐</div><h3>Earn stars</h3><p>Stars build your warrior, streaks multiply them, and once a week the whole family raids a boss.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE -->
+<section class="band showcase">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">Game night, every night</div>
+      <h2>Three warriors. <em>One leaderboard.</em></h2>
+      <p class="section-lead">Everyone builds their own character and climbs the same board. Stars you earn this week can be traded for real rewards.</p>
+    </div>
+    <div class="show-grid">
+      <div class="show-photo reveal">
+        <img src="https://3shamrocksstudio.github.io/assets/art/new/chore.jpg" alt="Chore Royale family game show scene">
+        <div class="cap">The family chore game show</div>
+      </div>
+      <div class="board reveal">
+        <div class="bhead"><b>🏆 Rivers Clan</b><span class="wk">Week 12</span></div>
+        <div class="row lead-row"><span class="rk">1</span><span class="av">⚔️</span><span class="nm">Maya</span><span class="xp">1,240 ★</span></div>
+        <div class="row"><span class="rk">2</span><span class="av">👑</span><span class="nm">Dad</span><span class="xp">980 ★</span></div>
+        <div class="row"><span class="rk">3</span><span class="av">🛡️</span><span class="nm">Leo</span><span class="xp">720 ★</span></div>
+        <div class="boss-bar">👾 Boss Raid Sunday · King Grime at 34% HP</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="wrap closing-in reveal">
+    <h2>Tonight. <em>No argument.</em></h2>
+    <p>Set up the family in a couple of minutes and let the wheel take it from here. The free game is fully playable today.</p>
+    <div class="cta-row" style="justify-content:center">
+      <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/chore-wars/landing.html">Play Chore Royale</a>
+      <a class="btn btn-ghost" href="#how">How it works</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <a class="studio" href="../index.html">A 3Shamrocks Studio product</a>
+    <span class="copy">© 2026 to 2027 3Shamrocks Studio. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+  // ---- Signature touch: a real spin wheel ----
+  var chores = [
+    {label:"Take out\nthe trash", emoji:"🗑️"},
+    {label:"Clean your\nroom", emoji:"🧸"},
+    {label:"Fold the\nlaundry", emoji:"👕"},
+    {label:"Do the\ndishes", emoji:"🍽️"},
+    {label:"Vacuum the\nliving room", emoji:"🧹"},
+    {label:"Wipe the\ncounters", emoji:"🧽"},
+    {label:"Feed the\ndog", emoji:"🐶"},
+    {label:"Water the\nplants", emoji:"🪴"}
+  ];
+  var colors = ["#331862","#E64BA8","#241046","#FFA81E","#331862","#E64BA8","#241046","#FFA81E"];
+  var seg = 360 / chores.length;
+  var svg = document.getElementById('wheel');
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var cx=100, cy=100, r=100;
+
+  function pt(angle, radius){
+    var a = (angle-90) * Math.PI/180;
+    return [cx + radius*Math.cos(a), cy + radius*Math.sin(a)];
+  }
+  chores.forEach(function(c,i){
+    var start = i*seg, end = start+seg;
+    var p1 = pt(start,r), p2 = pt(end,r);
+    var large = seg>180?1:0;
+    var path = document.createElementNS(SVGNS,'path');
+    path.setAttribute('d','M'+cx+','+cy+' L'+p1[0]+','+p1[1]+' A'+r+','+r+' 0 '+large+' 1 '+p2[0]+','+p2[1]+' Z');
+    path.setAttribute('fill', colors[i % colors.length]);
+    path.setAttribute('stroke','rgba(255,255,255,.14)');
+    path.setAttribute('stroke-width','0.6');
+    svg.appendChild(path);
+    // emoji label
+    var mid = start + seg/2;
+    var lp = pt(mid, r*0.68);
+    var t = document.createElementNS(SVGNS,'text');
+    t.setAttribute('x', lp[0]); t.setAttribute('y', lp[1]+6);
+    t.setAttribute('text-anchor','middle');
+    t.setAttribute('font-size','17');
+    t.textContent = c.emoji;
+    svg.appendChild(t);
+  });
+
+  var wheelRot = 0, spinning = false;
+  var hub = document.getElementById('hub');
+  var result = document.getElementById('result');
+
+  function spin(){
+    if(spinning) return;
+    spinning = true;
+    result.textContent = "Spinning...";
+    var idx = Math.floor(Math.random()*chores.length);
+    // land the chosen segment under the top pointer
+    var target = 360*5 + (360 - (idx*seg + seg/2));
+    wheelRot += (target - (wheelRot % 360));
+    svg.style.transform = 'rotate('+wheelRot+'deg)';
+    setTimeout(function(){
+      var c = chores[idx];
+      result.innerHTML = c.emoji + " " + c.label.replace("\n"," ") + "<span>Your mission. +30 ★ when you prove it.</span>";
+      spinning = false;
+    }, 4300);
+  }
+  hub.addEventListener('click', spin);
+
+  // ---- Scroll reveals ----
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.14});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+</script>
+</body>
+</html>
