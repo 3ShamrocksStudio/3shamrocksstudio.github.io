@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#08080f">
+<title>Work with 3Shamrocks</title>
+<meta name="description" content="Three ways to bring senior product design into your startup: fractional Head of Design, AI Design Sprint, Design System install.">
+<link rel="icon" type="image/png" href="assets/studio/3shamrocks.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080f;--bg-2:#0d0d1a;--bg-3:#111120;
+  --text:#f4f4fc;--muted:rgba(200,200,225,.62);--muted-2:rgba(200,200,225,.4);
+  --purple:#8239ea;--purple-2:#9b59f7;--purple-3:#b07cff;--purple-soft:rgba(130,57,234,.12);
+  --line:rgba(130,57,234,.2);
+  --head:'Syne',sans-serif;--body:'Inter',sans-serif;--mono:'Space Grotesk',sans-serif;
+}
+@media(prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f4f4fc;--bg-2:#eaeaf6;--bg-3:#ffffff;--text:#0d0d1a;
+    --muted:rgba(40,40,80,.7);--muted-2:rgba(40,40,80,.45);--line:rgba(130,57,234,.18);
+    color-scheme:light;
+  }
+}
+:root[data-theme="dark"]{--bg:#08080f;--bg-2:#0d0d1a;--bg-3:#111120;--text:#f4f4fc;--muted:rgba(200,200,225,.62);--muted-2:rgba(200,200,225,.4);color-scheme:dark}
+html[lang="he"]{--head:'Heebo',sans-serif;--body:'Heebo',sans-serif;--mono:'Heebo',sans-serif}
+body{background:var(--bg);color:var(--text);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left))}
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:700;font-size:16px}
+.logo img{width:28px;height:28px;object-fit:contain}
+.lang{border:1px solid var(--line);background:transparent;color:var(--text);font:600 13px var(--mono);padding:8px 14px;border-radius:999px;cursor:pointer}
+.lang:hover{border-color:var(--purple-2)}
+header{padding:56px 0 40px}
+.label{font:600 12px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--purple-3);margin-bottom:16px}
+html[lang="he"] .label{letter-spacing:0}
+h1{font-family:var(--head);font-weight:800;font-size:clamp(34px,6vw,60px);line-height:1.05;letter-spacing:-.02em;max-width:820px}
+h1 em{font-style:normal;color:var(--purple-2)}
+.lede{color:var(--muted);font-size:18px;max-width:640px;margin-top:20px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:24px 0 56px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--bg-3);border:1px solid var(--line);border-radius:18px;padding:28px;display:flex;flex-direction:column}
+.card.pick{border-color:var(--purple);box-shadow:0 0 0 1px var(--purple) inset}
+.tag{align-self:flex-start;font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;background:var(--purple-soft);color:var(--purple-3);padding:5px 10px;border-radius:999px;margin-bottom:16px}
+html[lang="he"] .tag{letter-spacing:0}
+.card h2{font-family:var(--head);font-size:22px;font-weight:700;line-height:1.2}
+.price{font:700 28px var(--head);margin:14px 0 4px}
+.price small{font:500 14px var(--body);color:var(--muted)}
+.for{color:var(--muted);font-size:15px;margin-bottom:18px}
+.card ul{list-style:none;display:grid;gap:10px;margin-bottom:24px;flex:1}
+.card li{font-size:15px;padding-inline-start:22px;position:relative}
+.card li::before{content:"";position:absolute;inset-inline-start:0;top:.62em;width:10px;height:2px;background:var(--purple-2);border-radius:2px}
+.btn{display:block;text-align:center;font:600 15px var(--body);padding:13px 18px;border-radius:12px;border:1px solid var(--line);transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--purple-2)}
+.btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}
+.btn.primary:hover{background:var(--purple-2)}
+.proof{border-top:1px solid var(--line);padding:48px 0}
+.proof h3{font-family:var(--head);font-size:24px;margin-bottom:22px}
+.proof-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:760px){.proof-row{grid-template-columns:1fr}}
+.proof-item{background:var(--bg-2);border-radius:14px;padding:22px}
+.proof-item b{display:block;font-family:var(--head);font-size:17px;margin-bottom:6px}
+.proof-item span{color:var(--muted);font-size:14px}
+.how{border-top:1px solid var(--line);padding:48px 0}
+.how ol{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+@media(max-width:760px){.how ol{grid-template-columns:1fr}}
+.how li{counter-increment:s;padding:20px;border:1px solid var(--line);border-radius:14px;font-size:15px;color:var(--muted)}
+.how li::before{content:"0" counter(s);display:block;font:600 13px var(--mono);color:var(--purple-3);margin-bottom:8px}
+.how li b{color:var(--text);display:block;margin-bottom:4px;font-size:16px}
+.how li span{display:block}
+footer{border-top:1px solid var(--line);padding:32px 0 48px;display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;color:var(--muted-2);font-size:14px}
+footer a:hover{color:var(--text)}
+html:not([lang="he"]) [data-he]{display:none!important}
+html[lang="he"] [data-en]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="logo" href="./"><img src="assets/studio/3shamrocks.png" alt="">3Shamrocks Studio</a>
+    <button class="lang" id="lang" type="button">עברית</button>
+  </nav>
+
+  <header>
+    <div class="label"><span data-en>Work with me</span><span data-he>לעבוד איתי</span></div>
+    <h1 data-en>Senior product design, <em>without hiring a design team.</em></h1>
+    <h1 data-he>עיצוב מוצר ברמה בכירה, <em>בלי לגייס צוות עיצוב.</em></h1>
+    <p class="lede" data-en>You just raised. The product has to look and work like the company you're pitching. Three ways I can get you there, starting this month.</p>
+    <p class="lede" data-he>גייסתם. עכשיו המוצר צריך להיראות ולעבוד כמו החברה שאתם מציגים למשקיעים. שלוש דרכים שבהן אני מביא אתכם לשם, כבר החודש.</p>
+  </header>
+
+  <section class="grid">
+    <article class="card pick">
+      <span class="tag"><span data-en>Most asked</span><span data-he>הכי מבוקש</span></span>
+      <h2 data-en>Fractional Head of Design</h2>
+      <h2 data-he>ראש תחום עיצוב במשרה חלקית</h2>
+      <div class="price"><bdi dir="ltr">₪35–40k</bdi> <small data-en>/ month</small><small data-he>/ לחודש</small></div>
+      <p class="for" data-en>For teams that need design leadership now, before a full-time hire.</p>
+      <p class="for" data-he>לצוותים שצריכים הובלת עיצוב עכשיו, לפני גיוס במשרה מלאה.</p>
+      <ul data-en>
+        <li>Own product design end to end</li>
+        <li>Sit in product and roadmap decisions</li>
+        <li>Set the design process and quality bar</li>
+        <li>Help you hire your first designers</li>
+      </ul>
+      <ul data-he>
+        <li>אחריות מלאה על עיצוב המוצר</li>
+        <li>שותפות בהחלטות מוצר ומפת דרכים</li>
+        <li>הגדרת תהליך העבודה ורף האיכות</li>
+        <li>עזרה בגיוס המעצבים הראשונים</li>
+      </ul>
+      <a class="btn primary" href="mailto:markodave@gmail.com?subject=Fractional%20Head%20of%20Design"><span data-en>Book a 20-min call</span><span data-he>לקביעת שיחה של 20 דקות</span></a>
+    </article>
+
+    <article class="card">
+      <span class="tag"><span data-en>Fixed scope</span><span data-he>היקף קבוע</span></span>
+      <h2 data-en>AI Design Sprint</h2>
+      <h2 data-he>ספרינט עיצוב AI</h2>
+      <div class="price"><bdi dir="ltr">₪55k</bdi></div>
+      <p class="for" data-en>For one high-stakes flow: onboarding, a new product, a demo for the next round.</p>
+      <p class="for" data-he>לזרימה אחת קריטית: אונבורדינג, מוצר חדש, דמו לסבב הבא.</p>
+      <ul data-en>
+        <li>Research and a sharp brief</li>
+        <li>Designed flows and screens</li>
+        <li>Clickable prototype tested with users</li>
+        <li>Dev-ready handoff</li>
+      </ul>
+      <ul data-he>
+        <li>מחקר ובריף חד</li>
+        <li>זרימות ומסכים מעוצבים</li>
+        <li>אב-טיפוס לחיץ שנבדק עם משתמשים</li>
+        <li>מסירה מוכנה לפיתוח</li>
+      </ul>
+      <a class="btn" href="mailto:markodave@gmail.com?subject=AI%20Design%20Sprint"><span data-en>Ask about a sprint</span><span data-he>לפרטים על ספרינט</span></a>
+    </article>
+
+    <article class="card">
+      <span class="tag"><span data-en>Scale</span><span data-he>צמיחה</span></span>
+      <h2 data-en>Design System install</h2>
+      <h2 data-he>הטמעת מערכת עיצוב</h2>
+      <div class="price"><bdi dir="ltr">₪110k</bdi></div>
+      <p class="for" data-en>For teams shipping fast across web and mobile where the UI is starting to drift.</p>
+      <p class="for" data-he>לצוותים שמשחררים מהר לווב ולמובייל, והממשק מתחיל לאבד אחידות.</p>
+      <ul data-en>
+        <li>Audit of the current product</li>
+        <li>Tokens, components and patterns</li>
+        <li>Matching code components</li>
+        <li>Docs and team onboarding</li>
+      </ul>
+      <ul data-he>
+        <li>בדיקה של המוצר הקיים</li>
+        <li>טוקנים, קומפוננטות ותבניות</li>
+        <li>קומפוננטות קוד תואמות</li>
+        <li>תיעוד והדרכת הצוות</li>
+      </ul>
+      <a class="btn" href="mailto:markodave@gmail.com?subject=Design%20System%20install"><span data-en>Ask about a system</span><span data-he>לפרטים על מערכת עיצוב</span></a>
+    </article>
+  </section>
+
+  <section class="proof">
+    <h3 data-en>Who you'd be working with</h3>
+    <h3 data-he>עם מי תעבדו</h3>
+    <div class="proof-row">
+      <div class="proof-item">
+        <b data-en>20+ years</b><b data-he>20+ שנים</b>
+        <span data-en>Product design across HealthTech, SaaS and gaming. Studio founded 2007.</span>
+        <span data-he>עיצוב מוצר ב-HealthTech, SaaS ומשחקים. הסטודיו נוסד ב-2007.</span>
+      </div>
+      <div class="proof-item">
+        <b>AposHealth</b>
+        <span data-en>Product Design Director. Brand system and product UX, from patient onboarding to clinical dashboards.</span>
+        <span data-he>Product Design Director. מערכת מותג וחוויית מוצר, מאונבורדינג של מטופלים ועד דשבורדים קליניים.</span>
+      </div>
+      <div class="proof-item">
+        <b>VIBRANT</b>
+        <span data-en>Identity and interface for a TIME Best Invention of 2023. +68% user retention vs benchmark.</span>
+        <span data-he>זהות וממשק למוצר שנבחר ל-TIME Best Inventions 2023. שימור משתמשים גבוה ב-68% מהבנצ'מרק.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="how">
+    <ol>
+      <li><b data-en>20-min call</b><b data-he>שיחה של 20 דקות</b><span data-en>You show me the product and where it hurts.</span><span data-he>אתם מראים לי את המוצר ואיפה כואב.</span></li>
+      <li><b data-en>Straight answer</b><b data-he>תשובה ישירה</b><span data-en>Which option fits, what it costs, when it starts. Or that it isn't a fit.</span><span data-he>איזו אפשרות מתאימה, כמה זה עולה ומתי מתחילים. או שזה לא מתאים.</span></li>
+      <li><b data-en>Start this month</b><b data-he>מתחילים החודש</b><span data-en>Kickoff within days, not quarters.</span><span data-he>התחלה תוך ימים, לא רבעונים.</span></li>
+    </ol>
+  </section>
+
+  <footer>
+    <span>© 3Shamrocks Studio · Dave Markovich</span>
+    <span>
+      <a href="mailto:markodave@gmail.com">markodave@gmail.com</a> ·
+      <a href="https://www.linkedin.com/in/davemark/" target="_blank" rel="noopener">LinkedIn</a> ·
+      <a href="./">3shamrocksstudio.github.io</a>
+    </span>
+  </footer>
+</div>
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('lang');
+  function set(l){
+    root.lang=l;root.dir=l==='he'?'rtl':'ltr';
+    btn.textContent=l==='he'?'English':'עברית';
+    try{localStorage.setItem('3s-lang',l)}catch(e){}
+  }
+  var saved=null;try{saved=localStorage.getItem('3s-lang')}catch(e){}
+  var q=new URLSearchParams(location.search).get('lang');
+  set(q==='he'||q==='en'?q:(saved||'en'));
+  btn.addEventListener('click',function(){set(root.lang==='he'?'en':'he')});
+})();
+</script>
+</body>
+</html>
