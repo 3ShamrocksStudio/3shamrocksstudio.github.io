@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trashure-Hunters - Pick up real trash. Spawn Sproutz.</title>
+<meta name="description" content="A rebellion against indifference. Clean real trash, prove it, and watch the world turn into a game. Free to play.">
+<meta name="theme-color" content="#0A0A2E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --orange:#FF6C00;
+    --orange-soft:#ff8a33;
+    --navy:#0A0A2E;
+    --navy-2:#111140;
+    --navy-3:#191955;
+    --tx0:#F4F4FF;
+    --tx1:rgba(244,244,255,.72);
+    --tx2:rgba(244,244,255,.45);
+    --bd:rgba(255,255,255,.09);
+    --display:'Fredoka',system-ui,sans-serif;
+    --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--navy);
+    color:var(--tx0);
+    font-family:var(--body);
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+  h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.05;letter-spacing:-.01em}
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:100;
+    background:rgba(10,10,46,.78);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--bd);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:58px}
+  .nav-logo{height:26px;width:auto}
+  .nav-back{
+    font-family:var(--display);font-size:14px;color:var(--tx1);
+    display:inline-flex;align-items:center;gap:7px;
+    padding:8px 14px;border:1px solid var(--bd);border-radius:999px;
+    transition:.2s;
+  }
+  .nav-back:hover{color:var(--tx0);border-color:var(--orange);background:rgba(255,108,0,.08)}
+
+  /* HERO */
+  .hero{position:relative;padding:64px 0 40px;overflow:hidden}
+  .hero::before{
+    content:"";position:absolute;inset:0;z-index:0;
+    background:
+      radial-gradient(60% 55% at 78% 18%,rgba(255,108,0,.22),transparent 60%),
+      radial-gradient(50% 50% at 10% 85%,rgba(25,25,85,.9),transparent 70%);
+    pointer-events:none;
+  }
+  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--display);font-size:13px;letter-spacing:.02em;
+    color:var(--orange-soft);
+    background:rgba(255,108,0,.1);border:1px solid rgba(255,108,0,.25);
+    padding:6px 14px;border-radius:999px;margin-bottom:22px;
+  }
+  .hero-logo{height:54px;width:auto;margin-bottom:20px}
+  .hero h1{font-size:clamp(38px,6.4vw,66px);margin-bottom:18px}
+  .hero h1 em{font-style:normal;color:var(--orange)}
+  .hero p.lead{font-size:clamp(17px,2.2vw,20px);color:var(--tx1);max-width:30ch;margin-bottom:30px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px}
+  .btn{
+    font-family:var(--display);font-size:16px;font-weight:600;
+    padding:15px 26px;border-radius:14px;cursor:pointer;border:1px solid transparent;
+    transition:transform .18s ease,box-shadow .2s ease,background .2s;
+    display:inline-flex;align-items:center;gap:9px;
+  }
+  .btn-primary{background:var(--orange);color:#1a0a00;box-shadow:0 10px 30px rgba(255,108,0,.35)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(255,108,0,.5)}
+  .btn-ghost{background:transparent;color:var(--tx0);border-color:var(--bd)}
+  .btn-ghost:hover{border-color:var(--orange);background:rgba(255,108,0,.08);transform:translateY(-3px)}
+
+  /* PHONE */
+  .phone-stage{position:relative;display:flex;justify-content:center}
+  .phone{
+    position:relative;width:260px;border-radius:38px;padding:11px;
+    background:linear-gradient(160deg,#20205f,#0c0c33);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 40px 80px rgba(0,0,0,.55),0 0 0 2px rgba(255,108,0,.1);
+    animation:float 6s ease-in-out infinite;
+  }
+  .phone img{border-radius:28px;width:100%}
+  .phone .notch{position:absolute;top:18px;left:50%;transform:translateX(-50%);width:84px;height:6px;border-radius:999px;background:rgba(255,255,255,.18);z-index:2}
+  .creature-float{
+    position:absolute;width:118px;height:auto;right:-34px;bottom:-14px;z-index:3;
+    filter:drop-shadow(0 14px 22px rgba(0,0,0,.5));
+    animation:float 5s ease-in-out infinite .6s;
+  }
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+  /* STAT STRIP */
+  .stats{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap}
+  .stat{flex:1;min-width:120px;border:1px solid var(--bd);border-radius:16px;padding:16px 18px;background:rgba(255,255,255,.02)}
+  .stat b{font-family:var(--display);font-size:26px;color:var(--orange);display:block}
+  .stat span{font-size:13px;color:var(--tx2)}
+
+  /* SECTION SHELL */
+  section.band{padding:88px 0}
+  .kicker{font-family:var(--display);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:14px}
+  .band h2{font-size:clamp(28px,4.4vw,46px);margin-bottom:18px}
+  .band h2 em{font-style:normal;color:var(--orange)}
+  .section-lead{color:var(--tx1);font-size:18px;max-width:58ch}
+
+  /* PROBLEM */
+  .problem{background:linear-gradient(180deg,var(--navy),var(--navy-2))}
+  .problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .problem-photo{border-radius:22px;overflow:hidden;border:1px solid var(--bd);box-shadow:0 30px 60px rgba(0,0,0,.4)}
+  .problem-photo img{width:100%;height:100%;object-fit:cover}
+  .problem p{color:var(--tx1);font-size:18px;margin-bottom:16px}
+  .problem .pull{font-family:var(--display);font-size:22px;color:var(--tx0);border-left:3px solid var(--orange);padding-left:18px;margin:26px 0}
+
+  /* STEPS */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:46px}
+  .step{
+    border:1px solid var(--bd);border-radius:20px;padding:30px 26px;
+    background:linear-gradient(170deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+    position:relative;transition:transform .25s ease,border-color .25s;
+  }
+  .step:hover{transform:translateY(-6px);border-color:rgba(255,108,0,.4)}
+  .step .num{font-family:var(--display);font-size:13px;color:var(--orange);letter-spacing:.1em}
+  .step .ico{font-size:40px;margin:14px 0 16px;line-height:1}
+  .step h3{font-size:21px;margin-bottom:10px}
+  .step p{color:var(--tx1);font-size:15px}
+
+  /* GALLERY */
+  .gallery{background:linear-gradient(180deg,var(--navy-2),var(--navy))}
+  .gal-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:44px}
+  .gal{
+    border:1px solid var(--bd);border-radius:18px;overflow:hidden;position:relative;
+    background:var(--navy-3);transition:transform .3s ease,box-shadow .3s;
+  }
+  .gal:hover{transform:translateY(-6px) scale(1.012);box-shadow:0 24px 50px rgba(0,0,0,.5)}
+  .gal img{width:100%;height:100%;object-fit:cover}
+  .gal .cap{position:absolute;left:0;right:0;bottom:0;padding:16px;font-family:var(--display);font-size:15px;background:linear-gradient(to top,rgba(10,10,46,.92),transparent)}
+  .g-map{grid-column:span 5;grid-row:span 2}
+  .g-map img{height:100%;min-height:340px}
+  .g-boss{grid-column:span 7}
+  .g-boss img{height:260px;object-fit:contain;background:radial-gradient(circle at 50% 40%,rgba(255,108,0,.14),transparent 70%)}
+  .g-kid{grid-column:span 4}
+  .g-kid img{height:220px}
+  .g-crew{grid-column:span 3}
+  .g-crew img{height:220px;object-fit:contain;padding:16px}
+
+  /* ELEMONSTERS */
+  .mon-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:44px}
+  .mon{
+    border:1px solid var(--bd);border-radius:18px;padding:18px 14px;text-align:center;
+    background:linear-gradient(170deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+    cursor:pointer;transition:transform .2s ease,border-color .2s;
+  }
+  .mon:hover{border-color:rgba(255,108,0,.45);transform:translateY(-5px)}
+  .mon.pop{animation:pop .45s ease}
+  @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.14) rotate(-4deg)}100%{transform:scale(1)}}
+  .mon img{height:92px;margin:0 auto 12px;object-fit:contain}
+  .mon b{font-family:var(--display);font-size:15px;display:block}
+  .mon span{font-size:12px;color:var(--tx2)}
+
+  /* CLOSING */
+  .closing{position:relative;text-align:center;padding:110px 0;overflow:hidden}
+  .closing::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 70% at 50% 30%,rgba(255,108,0,.22),transparent 65%)}
+  .closing-in{position:relative;z-index:1}
+  .closing h2{font-size:clamp(32px,5.5vw,58px);margin-bottom:18px}
+  .closing h2 em{font-style:normal;color:var(--orange)}
+  .closing p{color:var(--tx1);font-size:19px;max-width:48ch;margin:0 auto 32px}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--bd);padding:40px 0;background:var(--navy)}
+  .foot-in{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+  .foot-in a.studio{font-family:var(--display);color:var(--tx0);font-size:15px}
+  .foot-in a.studio:hover{color:var(--orange)}
+  .foot-in .copy{color:var(--tx2);font-size:13px}
+
+  /* REVEAL */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:860px){
+    .hero-grid,.problem-grid{grid-template-columns:1fr;gap:34px}
+    .phone-stage{order:-1}
+    .steps{grid-template-columns:1fr}
+    .gal-grid{grid-template-columns:1fr 1fr}
+    .g-map,.g-boss,.g-kid,.g-crew{grid-column:span 1}
+    .g-map img{min-height:280px}
+    .mon-grid{grid-template-columns:repeat(2,1fr)}
+    section.band{padding:62px 0}
+  }
+  @media(max-width:460px){
+    .gal-grid{grid-template-columns:1fr}
+    .creature-float{width:92px;right:-10px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a href="https://3shamrocksstudio.github.io/th-mvp-web/marketing.html"><img class="nav-logo" src="https://3shamrocksstudio.github.io/assets/brand/th-wordmark.png" alt="Trashure-Hunters"></a>
+    <a class="nav-back" href="../index.html">&larr; All products</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">A rebellion against indifference</span>
+      <img class="hero-logo" src="https://3shamrocksstudio.github.io/assets/brand/th-wordmark.png" alt="Trashure-Hunters">
+      <h1>Pick up real trash. <em>Spawn Sproutz.</em></h1>
+      <p class="lead">The world is full of mess nobody wants to touch. We turned cleaning it up into a game you actually want to play.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/th-mvp-web/marketing.html">Play Trashure-Hunters</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>Real</b><span>trash, cleaned for keeps</span></div>
+        <div class="stat"><b>XP</b><span>every time you show up</span></div>
+        <div class="stat"><b>Free</b><span>to play, forever</span></div>
+      </div>
+    </div>
+    <div class="phone-stage">
+      <div class="phone">
+        <span class="notch"></span>
+        <img src="https://3shamrocksstudio.github.io/assets/work/trashure/screen-map.png" alt="Trashure-Hunters map screen showing nearby cleanup zones">
+      </div>
+      <img class="creature-float" src="https://3shamrocksstudio.github.io/assets/work/trashure/earth_lvl1.png" alt="Sproutz, the earth Elemonster">
+    </div>
+  </div>
+</header>
+
+<!-- PROBLEM -->
+<section class="band problem reveal">
+  <div class="wrap problem-grid">
+    <div class="problem-photo">
+      <img src="https://3shamrocksstudio.github.io/assets/brand/th-kid-photo.jpg" alt="A kid holding a phone, ready to clean up">
+    </div>
+    <div>
+      <div class="kicker">The problem</div>
+      <h2>Everyone walks <em>past it.</em></h2>
+      <p>You see the bottle on the beach. The wrapper in the park. The pile at the corner. You think someone should do something, and then you keep walking. We all do.</p>
+      <p class="pull">Not because people are bad. Because nothing about picking it up feels like it counts.</p>
+      <p>Trashure-Hunters makes it count. Every piece of real trash you clean becomes XP, a new Sproutz, and a step your whole clan can see.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="band" id="how">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">How it works</div>
+      <h2>Three steps. <em>Then the planet is cleaner.</em></h2>
+      <p class="section-lead">No points for pretending. The game is built so the only way to win is to actually clean something real.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="num">01</div><div class="ico">🗺️</div><h3>Find a Grime Zone</h3><p>Open the map and spot where trash has piled up near you. A park, a beach, a street corner. Every zone has its own threat level.</p></div>
+      <div class="step reveal"><div class="num">02</div><div class="ico">🗑️</div><h3>Clean it up</h3><p>Go there and pick up the real trash. One bag or twenty, it does not matter. What matters is you showed up and left it cleaner.</p></div>
+      <div class="step reveal"><div class="num">03</div><div class="ico">📸</div><h3>Prove it, earn Sproutz</h3><p>Snap a photo. AI checks the cleanup is real, then hands you XP and a shot at spawning an Elemonster born from the mess you cleared.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="band gallery">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">Inside the game</div>
+      <h2>Real screens. <em>Real creatures.</em></h2>
+      <p class="section-lead">The map you hunt on, the crew you build, and the boss that only shows up when a zone gets truly filthy.</p>
+    </div>
+    <div class="gal-grid">
+      <div class="gal g-map reveal"><img src="https://3shamrocksstudio.github.io/assets/work/trashure/screen-map.png" alt="Live map of nearby Grime Zones"><div class="cap">The hunt map</div></div>
+      <div class="gal g-boss reveal"><img src="https://3shamrocksstudio.github.io/assets/work/trashure/kingGrime.png" alt="King Grime, the boss"><div class="cap">King Grime, the clan-raid boss</div></div>
+      <div class="gal g-kid reveal"><img src="https://3shamrocksstudio.github.io/assets/brand/th-kid-photo.jpg" alt="A player out in the field"><div class="cap">Out in the field</div></div>
+      <div class="gal g-crew reveal"><img src="https://3shamrocksstudio.github.io/assets/work/trashure/hero-group.png" alt="The full Elemonster crew"><div class="cap">Your crew</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ELEMONSTERS -->
+<section class="band">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">The collection</div>
+      <h2>Meet the <em>Elemonsters.</em></h2>
+      <p class="section-lead">Every creature is tied to a kind of cleanup. Tap one to say hello.</p>
+    </div>
+    <div class="mon-grid">
+      <div class="mon reveal"><img src="https://3shamrocksstudio.github.io/assets/work/trashure/earth_lvl1.png" alt="Earth Elemonster"><b>Sproutz</b><span>Earth · parks</span></div>
+      <div class="mon reveal"><img src="https://3shamrocksstudio.github.io/assets/work/trashure/water_lvl1.png" alt="Water Elemonster"><b>Tidepool</b><span>Water · beaches</span></div>
+      <div class="mon reveal"><img src="https://3shamrocksstudio.github.io/assets/work/trashure/fire_lvl1.png" alt="Fire Elemonster"><b>Cindr</b><span>Fire · industrial</span></div>
+      <div class="mon reveal"><img src="https://3shamrocksstudio.github.io/assets/work/trashure/air_lvl1.png" alt="Air Elemonster"><b>Gusto</b><span>Air · streets</span></div>
+      <div class="mon reveal"><img src="https://3shamrocksstudio.github.io/assets/work/trashure/space_lvl1.png" alt="Space Elemonster"><b>Nova</b><span>Space · rare</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="wrap closing-in reveal">
+    <h2>Your block <em>needs you.</em></h2>
+    <p>Grab your phone, find a Grime Zone, and go clean something real. The first Sproutz is waiting.</p>
+    <div class="cta-row" style="justify-content:center">
+      <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/th-mvp-web/marketing.html">Play Trashure-Hunters</a>
+      <a class="btn btn-ghost" href="#how">How it works</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <a class="studio" href="../index.html">A 3Shamrocks Studio product</a>
+    <span class="copy">© 2026 to 2027 3Shamrocks Studio. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveals
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.14});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  // Signature touch: tap an Elemonster to make it pop
+  document.querySelectorAll('.mon').forEach(function(m){
+    m.addEventListener('click', function(){
+      m.classList.remove('pop');
+      void m.offsetWidth;
+      m.classList.add('pop');
+    });
+  });
+</script>
+</body>
+</html>
