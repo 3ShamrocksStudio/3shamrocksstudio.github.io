@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Media Network · The 3Shamrocks Studio media arm</title>
+<meta name="description" content="A network of themed Instagram channels built and run by 3Shamrocks Studio. One content engine, four voices, a steady feed that builds audience and tests ideas in public.">
+<meta name="theme-color" content="#1e315f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0f1a33;
+    --navy-2:#1e315f;
+    --navy-3:#152748;
+    --gold:#E0A828;
+    --gold-deep:#c9941a;
+    --tx0:#eef2fb;
+    --tx1:rgba(238,242,251,.72);
+    --tx2:rgba(238,242,251,.44);
+    --bd:rgba(255,255,255,.1);
+    --bd-g:rgba(224,168,40,.35);
+    --c-deal:#39c6a6;
+    --c-fetch:#e0a828;
+    --c-meet:#6b8cff;
+    --c-echo:#ff6ba8;
+    --display:'Space Grotesk',system-ui,sans-serif;
+    --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--navy);color:var(--tx0);font-family:var(--body);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(60% 50% at 82% -8%,rgba(30,49,95,.9),transparent 60%),radial-gradient(45% 45% at 2% 8%,rgba(224,168,40,.12),transparent 55%);}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.07;letter-spacing:-.02em}
+
+  /* WORDMARK (typographic, no invented logo) */
+  .wordmark{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;letter-spacing:-.01em}
+  .wordmark .mk{width:26px;height:26px;border-radius:8px;background:var(--gold);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .wordmark .nm{font-size:17px}
+  .wordmark .nm b{color:var(--gold)}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(15,26,51,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .nav-back{font-size:14px;font-weight:600;color:var(--tx1);display:inline-flex;align-items:center;gap:7px;padding:8px 15px;border:1px solid var(--bd);border-radius:999px;transition:.2s}
+  .nav-back:hover{color:#fff;border-color:var(--gold);background:rgba(224,168,40,.12)}
+
+  /* HERO */
+  .hero{position:relative;padding:70px 0 56px}
+  .hero-grid{display:grid;grid-template-columns:1.02fr 1fr;gap:52px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--gold);background:rgba(224,168,40,.12);border:1px solid var(--bd-g);padding:7px 15px;border-radius:999px;margin-bottom:22px}
+  .hero h1{font-size:clamp(38px,5.8vw,62px);margin-bottom:18px}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .hero p.lead{font-size:clamp(17px,2.1vw,20px);color:var(--tx1);max-width:38ch;margin-bottom:30px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px}
+  .btn{font-family:var(--display);font-size:16px;font-weight:600;padding:15px 26px;border-radius:14px;cursor:pointer;border:1px solid transparent;transition:transform .18s ease,box-shadow .2s ease,background .2s;display:inline-flex;align-items:center;gap:9px}
+  .btn-primary{background:var(--gold);color:var(--navy);box-shadow:0 12px 32px rgba(224,168,40,.28)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 46px rgba(224,168,40,.44)}
+  .btn-ghost{background:rgba(255,255,255,.05);color:var(--tx0);border-color:var(--bd)}
+  .btn-ghost:hover{border-color:var(--gold);background:rgba(224,168,40,.1);transform:translateY(-3px)}
+  .stats{display:flex;gap:28px;margin-top:30px;flex-wrap:wrap}
+  .stats .st b{display:block;font-family:var(--display);font-size:26px;color:var(--gold);line-height:1}
+  .stats .st span{font-size:13px;color:var(--tx1)}
+
+  /* HERO VISUAL - phone feed grid */
+  .phone{position:relative;margin:0 auto;width:300px;max-width:84vw;border-radius:32px;border:1px solid var(--bd-g);background:var(--navy-3);padding:14px;box-shadow:0 34px 80px rgba(0,0,0,.55)}
+  .phone-notch{width:110px;height:7px;border-radius:999px;background:rgba(255,255,255,.14);margin:2px auto 14px}
+  .phone-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .phone-head .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--c-echo));flex:0 0 auto}
+  .phone-head .hn{font-family:var(--display);font-size:14px;font-weight:600}
+  .phone-head .hs{font-size:11px;color:var(--tx2)}
+  .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+  .fg{aspect-ratio:1;border-radius:8px;display:flex;align-items:flex-end;padding:8px;font-size:9px;font-weight:700;color:#fff;position:relative;overflow:hidden}
+  .fg span{position:relative;z-index:1;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+  .fg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.5))}
+
+  /* SECTIONS */
+  section.band{padding:84px 0}
+  .sec-eye{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .sec-h{font-size:clamp(28px,3.8vw,42px);margin-bottom:16px}
+  .sec-sub{color:var(--tx1);font-size:18px;max-width:60ch}
+
+  /* PROBLEM */
+  .prob-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;margin-top:40px}
+  .prob-list{list-style:none;display:flex;flex-direction:column;gap:14px}
+  .prob-list li{display:flex;gap:13px;align-items:flex-start;font-size:16px;color:var(--tx1);background:var(--navy-3);border:1px solid var(--bd);border-radius:12px;padding:16px 18px}
+  .prob-list .x{color:#ff8a7a;font-weight:800;flex:0 0 auto}
+  .prob-ans{background:linear-gradient(150deg,var(--navy-2),var(--navy-3));border:1px solid var(--bd-g);border-radius:16px;padding:30px}
+  .prob-ans h3{font-size:22px;color:var(--gold);margin-bottom:12px}
+  .prob-ans p{color:var(--tx1)}
+
+  /* HOW / engine */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:46px}
+  .card{background:var(--navy-3);border:1px solid var(--bd);border-radius:16px;padding:28px;transition:transform .25s ease,border-color .25s ease}
+  .card:hover{transform:translateY(-6px);border-color:var(--gold)}
+  .card .ic{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(224,168,40,.14);margin-bottom:18px}
+  .card h3{font-size:20px;margin-bottom:9px}
+  .card p{color:var(--tx1);font-size:15px}
+
+  /* SHOWCASE - channel switcher (signature) */
+  .switch{margin-top:44px}
+  .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+  .tab{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:14px 18px;border-radius:14px;border:1px solid var(--bd);background:var(--navy-3);cursor:pointer;transition:.2s;min-width:150px}
+  .tab:hover{border-color:var(--tx1)}
+  .tab.on{border-color:transparent}
+  .tab .h{font-family:var(--display);font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px}
+  .tab .h .d{width:9px;height:9px;border-radius:50%}
+  .tab .s{font-size:12.5px;color:var(--tx2)}
+  .panel{background:var(--navy-3);border:1px solid var(--bd);border-radius:18px;padding:26px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .panel-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+  .panel-head .pav{width:52px;height:52px;border-radius:50%;flex:0 0 auto}
+  .panel-head .pt{font-family:var(--display);font-weight:600;font-size:19px}
+  .panel-head .pd{font-size:14px;color:var(--tx1);margin-top:2px}
+  .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .pcell{aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff;position:relative;overflow:hidden;transition:transform .2s ease}
+  .pcell:hover{transform:scale(1.03)}
+  .pcell::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,.55))}
+  .pcell .cap{position:relative;z-index:1;font-size:12px;font-weight:600;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+  .pcell .tag{position:relative;z-index:1;font-size:10px;color:rgba(255,255,255,.85);margin-top:4px}
+
+  /* CTA */
+  .cta{text-align:center;background:linear-gradient(150deg,var(--navy-2),var(--navy-3));border:1px solid var(--bd-g);border-radius:24px;padding:66px 32px;margin:40px 0}
+  .cta h2{font-size:clamp(28px,4vw,46px);margin-bottom:16px}
+  .cta p{color:var(--tx1);font-size:18px;max-width:48ch;margin:0 auto 30px}
+  .handles{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+  .handles a{font-size:13.5px;color:var(--tx1);border:1px solid var(--bd);border-radius:999px;padding:8px 15px;transition:.2s}
+  .handles a:hover{color:var(--gold);border-color:var(--gold)}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--bd);padding:40px 0;margin-top:30px}
+  .foot-in{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+  .foot-in a.studio{color:var(--tx0);font-size:15px;font-weight:600}
+  .foot-in a.studio:hover{color:var(--gold)}
+  .foot-in .copy{color:var(--tx2);font-size:13px}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:880px){
+    .hero-grid,.prob-grid{grid-template-columns:1fr;gap:40px}
+    .cards{grid-template-columns:1fr}
+    .pgrid{grid-template-columns:repeat(2,1fr)}
+    section.band{padding:60px 0}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a href="#top" class="wordmark"><span class="mk">3S</span><span class="nm">Media <b>Network</b></span></a>
+    <a class="nav-back" href="../index.html">&larr; All products</a>
+  </div>
+</nav>
+
+<header id="top" class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">The 3Shamrocks Studio media arm</span>
+      <h1>One studio. <em>Four voices.</em> A feed that never sleeps.</h1>
+      <p class="lead">Media Network is the set of themed Instagram channels 3Shamrocks Studio builds and runs. One content engine behind all of them, each one with its own audience and its own job.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://www.instagram.com/3shamrocks.studio/" target="_blank" rel="noopener">Follow on Instagram &rarr;</a>
+        <a class="btn btn-ghost" href="#channels">Meet the channels</a>
+      </div>
+      <div class="stats">
+        <div class="st"><b>4</b><span>themed channels</span></div>
+        <div class="st"><b>1</b><span>content engine</span></div>
+        <div class="st"><b>Daily</b><span>new reels and posts</span></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-head">
+          <div class="av"></div>
+          <div><div class="hn">3shamrocks.studio</div><div class="hs">Studio media network</div></div>
+        </div>
+        <div class="fgrid" id="heroGrid"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="band">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eye">Why it exists</div>
+      <h2 class="sec-h">A great product with no audience is a secret.</h2>
+      <p class="sec-sub">Most studios build in silence and hope launch day does the work. Media Network flips that. The audience is already warm before anything ships.</p>
+    </div>
+    <div class="prob-grid">
+      <ul class="prob-list reveal">
+        <li><span class="x">x</span> Posting at random, then wondering why nothing lands.</li>
+        <li><span class="x">x</span> One account trying to speak to four very different crowds.</li>
+        <li><span class="x">x</span> Ideas tested only after launch, when it is expensive to be wrong.</li>
+        <li><span class="x">x</span> A feed that goes quiet the week everyone gets busy.</li>
+      </ul>
+      <div class="prob-ans reveal">
+        <h3>A network, not an afterthought.</h3>
+        <p>Each channel owns a theme and a crowd. The studio engine feeds all four on a steady rhythm, tests ideas in public, and turns followers into the first users of whatever the studio ships next.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="how" style="background:var(--navy-3)">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eye">The content engine</div>
+      <h2 class="sec-h">How one studio keeps four feeds alive.</h2>
+    </div>
+    <div class="cards">
+      <div class="card reveal">
+        <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E0A828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2L12 16.6 5.7 21l2.3-7.2-6-4.4h7.6z"/></svg></div>
+        <h3>One idea, four cuts</h3>
+        <p>A single theme gets rewritten for each channel's voice, so the studio ships four native posts from one piece of thinking.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E0A828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div>
+        <h3>A rhythm, not a scramble</h3>
+        <p>Content is planned and queued on a schedule. The feeds stay live even in the weeks the studio is heads-down building.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E0A828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 2 5-6"/></svg></div>
+        <h3>Watch what works</h3>
+        <p>What a crowd saves and shares tells the studio what to build. The feed is a free focus group running every single day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="channels">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eye">The channels</div>
+      <h2 class="sec-h">Tap a channel. See what it posts.</h2>
+      <p class="sec-sub">Four handles, four crowds, one studio behind the camera. Switch between them to see the feed.</p>
+    </div>
+
+    <div class="switch reveal">
+      <div class="tabs" id="tabs"></div>
+      <div class="panel">
+        <div class="panel-head">
+          <div class="pav" id="pav"></div>
+          <div>
+            <div class="pt" id="pt"></div>
+            <div class="pd" id="pd"></div>
+          </div>
+        </div>
+        <div class="pgrid" id="pgrid"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="cta reveal">
+      <h2>Come see the network in motion.</h2>
+      <p>The channels post every day. Follow the studio and watch the whole network from one place.</p>
+      <a class="btn btn-primary" href="https://www.instagram.com/3shamrocks.studio/" target="_blank" rel="noopener">Follow 3shamrocks.studio &rarr;</a>
+      <div class="handles">
+        <a href="https://www.instagram.com/dealxscout.ai/" target="_blank" rel="noopener">@dealxscout.ai</a>
+        <a href="https://www.instagram.com/getfetch.ai/" target="_blank" rel="noopener">@getfetch.ai</a>
+        <a href="https://www.instagram.com/meetinq.ai/" target="_blank" rel="noopener">@meetinq.ai</a>
+        <a href="https://www.instagram.com/echoxreels/" target="_blank" rel="noopener">@echoxreels</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <a class="studio" href="../index.html">A 3Shamrocks Studio product</a>
+    <span class="copy">&copy; 2026 to 2027 3Shamrocks Studio. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.14});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  var channels = [
+    { key:'deal', handle:'@dealxscout.ai', name:'DealXScout', color:'#39c6a6',
+      desc:'Deal hunting and price drops, scouted so you do not have to.',
+      posts:[['Price drop alert','deal'],['Worth it or skip','review'],['3 deals today','roundup'],['How we found it','behind'],['Cart vs wait','tip'],['Stacking codes','guide'],['Under 50 picks','list'],['Deal of the day','deal']] },
+    { key:'fetch', handle:'@getfetch.ai', name:'GetFetch', color:'#E0A828',
+      desc:'Little AI helpers that fetch the thing you were about to go look for.',
+      posts:[['Try this prompt','tip'],['One task, done','demo'],['Agents 101','guide'],['Before vs after','demo'],['Save an hour','tip'],['Ask it this','prompt'],['Build in public','behind'],['Weekly tool','pick']] },
+    { key:'meet', handle:'@meetinq.ai', name:'MeetInq', color:'#6b8cff',
+      desc:'Smarter meetings and intros, for people who would rather be building.',
+      posts:[['Kill this meeting','hot take'],['Better intros','tip'],['Agenda in 60s','demo'],['Follow up right','guide'],['Async wins','tip'],['Prep like this','how-to'],['Notes that stick','demo'],['Say no nicely','script']] },
+    { key:'echo', handle:'@echoxreels', name:'EchoXReels', color:'#ff6ba8',
+      desc:'The studio reel room, where the best moments get cut and amplified.',
+      posts:[['Best of the week','reel'],['Hook in 3s','breakdown'],['Trend, remixed','reel'],['Edit with me','behind'],['This blew up','reel'],['Sound pick','audio'],['Caption school','tip'],['Loop it right','how-to']] }
+  ];
+
+  // hero grid uses a mix across channels
+  var heroGrid = document.getElementById('heroGrid');
+  var heroSet = [channels[3].posts[0], channels[0].posts[0], channels[1].posts[1],
+                 channels[2].posts[2], channels[3].posts[4], channels[1].posts[0],
+                 channels[0].posts[2], channels[2].posts[0], channels[3].posts[2]];
+  var heroCols = ['#ff6ba8','#39c6a6','#E0A828','#6b8cff','#ff6ba8','#E0A828','#39c6a6','#6b8cff','#ff6ba8'];
+  heroSet.forEach(function(p,i){
+    var d = document.createElement('div'); d.className='fg';
+    d.style.background = 'linear-gradient(145deg,'+heroCols[i]+',rgba(15,26,51,.9))';
+    d.innerHTML = '<span>'+p[0]+'</span>';
+    heroGrid.appendChild(d);
+  });
+
+  // signature: channel switcher
+  var tabs = document.getElementById('tabs');
+  var pav = document.getElementById('pav'), pt = document.getElementById('pt'), pd = document.getElementById('pd'), pgrid = document.getElementById('pgrid');
+
+  function render(ch){
+    pav.style.background = 'linear-gradient(135deg,'+ch.color+','+'rgba(255,255,255,.2))';
+    pt.textContent = ch.handle;
+    pd.textContent = ch.desc;
+    pgrid.innerHTML = '';
+    ch.posts.forEach(function(p){
+      var c = document.createElement('div'); c.className='pcell';
+      c.style.background = 'linear-gradient(160deg,'+ch.color+',rgba(15,26,51,.92))';
+      c.innerHTML = '<div class="cap">'+p[0]+'</div><div class="tag">#'+p[1]+'</div>';
+      pgrid.appendChild(c);
+    });
+  }
+
+  channels.forEach(function(ch,i){
+    var t = document.createElement('button'); t.className='tab'+(i===0?' on':'');
+    t.style.borderColor = i===0 ? ch.color : '';
+    if(i===0) t.style.boxShadow = '0 0 0 1px '+ch.color+' inset';
+    t.innerHTML = '<span class="h"><span class="d" style="background:'+ch.color+'"></span>'+ch.name+'</span><span class="s">'+ch.handle+'</span>';
+    t.addEventListener('click', function(){
+      tabs.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('on'); x.style.boxShadow=''; x.style.borderColor=''; });
+      t.classList.add('on'); t.style.boxShadow = '0 0 0 1px '+ch.color+' inset'; t.style.borderColor = ch.color;
+      render(ch);
+    });
+    tabs.appendChild(t);
+  });
+  render(channels[0]);
+</script>
+</body>
+</html>
