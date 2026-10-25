@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LickPick: keep the licks, kill the flubs</title>
+<meta name="description" content="LickPick scans every jam on your phone, keeps the good parts, cuts the mistakes and turns your best bit into a post. Free. Clips never leave your phone.">
+<meta name="theme-color" content="#0B0912">
+<style>
+  :root{
+    --bg:#0B0912;
+    --bg-2:#120F1C;
+    --panel:#17132499;
+    --ink:#F4F1FA;
+    --muted:#A79FB8;
+    --faint:#6E667F;
+    --green:#3BE07A;
+    --green-deep:#1FA857;
+    --line:#241E33;
+    --radius:20px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  em{font-style:normal;color:var(--green)}
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,9,18,.72);
+    backdrop-filter:saturate(160%) blur(14px);
+    -webkit-backdrop-filter:saturate(160%) blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .logo{font-weight:800;font-size:19px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+  .logo b{color:var(--green)}
+  .logo .beta{font-size:10px;font-weight:700;color:var(--bg);background:var(--green);padding:2px 7px;border-radius:999px;letter-spacing:.04em}
+  .nav-right{display:flex;align-items:center;gap:22px;font-size:14px;color:var(--muted);font-weight:500}
+  .nav-right a:hover{color:var(--ink)}
+  .nav-right .allp{color:var(--ink)}
+
+  /* BUTTONS */
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-weight:650;font-size:15px;
+    padding:13px 22px;border-radius:12px;
+    transition:transform .18s ease, box-shadow .25s ease, background .2s;
+    cursor:pointer;border:none;
+  }
+  .btn-primary{background:var(--green);color:#06130A;box-shadow:0 8px 30px -8px rgba(59,224,122,.5)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px -8px rgba(59,224,122,.65)}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--green);color:var(--green)}
+
+  /* HERO */
+  header{position:relative;padding:72px 0 40px;overflow:hidden}
+  .glow{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .glow:before{content:"";position:absolute;top:-180px;left:50%;transform:translateX(-50%);
+    width:720px;height:620px;background:radial-gradient(ellipse at center,rgba(59,224,122,.16),transparent 62%);filter:blur(10px)}
+  .hero{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;color:var(--green);
+    border:1px solid var(--line);background:#120F1C;padding:7px 13px;border-radius:999px;margin-bottom:22px}
+  h1{font-size:clamp(40px,6vw,66px);line-height:1.02;letter-spacing:-.03em;font-weight:820}
+  .hero p.lede{font-size:18.5px;color:var(--muted);margin:22px 0 30px;max-width:30em}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+  .fineprint{font-size:13.5px;color:var(--faint);max-width:30em}
+
+  /* PHONE FRAME */
+  .phone-wrap{display:flex;justify-content:center}
+  .phone{
+    position:relative;width:272px;border-radius:40px;padding:11px;
+    background:linear-gradient(160deg,#2a2440,#0e0b17);
+    box-shadow:0 40px 90px -30px rgba(0,0,0,.8), 0 0 0 1px #312a46, inset 0 0 0 1px #0a0810;
+    transition:transform .3s ease;
+  }
+  .phone:hover{transform:translateY(-6px) rotate(-1deg)}
+  .phone .notch{position:absolute;top:18px;left:50%;transform:translateX(-50%);width:92px;height:22px;background:#07050d;border-radius:14px;z-index:3}
+  .phone img{width:100%;display:block;border-radius:30px;background:#0b0912}
+
+  /* SECTIONS */
+  section{padding:84px 0;position:relative}
+  .sec-tag{font-size:12.5px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:12px}
+  h2{font-size:clamp(30px,4.4vw,46px);line-height:1.05;letter-spacing:-.025em;font-weight:800;max-width:14em}
+  .sec-lede{font-size:17.5px;color:var(--muted);margin-top:16px;max-width:34em}
+
+  /* PROBLEM */
+  .problem{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .prob-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}
+  .prob-card{background:#140F20;border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+  .prob-card .big{font-size:34px;font-weight:820;color:var(--green);letter-spacing:-.02em}
+  .prob-card p{color:var(--muted);font-size:15px;margin-top:10px}
+
+  /* STEPS */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
+  .step{background:#140F20;border:1px solid var(--line);border-radius:var(--radius);padding:28px;position:relative;overflow:hidden}
+  .step:hover{border-color:#36305099}
+  .step .num{position:absolute;top:-10px;right:14px;font-size:84px;font-weight:850;color:#1c1730;line-height:1}
+  .step .ic{width:46px;height:46px;border-radius:13px;background:rgba(59,224,122,.12);display:flex;align-items:center;justify-content:center;margin-bottom:18px;position:relative;z-index:1}
+  .step h3{font-size:19px;font-weight:720;margin-bottom:8px;position:relative;z-index:1}
+  .step p{color:var(--muted);font-size:15px;position:relative;z-index:1}
+  .step svg{width:24px;height:24px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* GALLERY */
+  .gallery{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .gal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+  .gal{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#0e0b17;transition:transform .3s ease, box-shadow .3s}
+  .gal:hover{transform:translateY(-6px);box-shadow:0 30px 60px -30px rgba(0,0,0,.7)}
+  .gal img{width:100%;display:block}
+  .gal .cap{padding:16px 18px}
+  .gal .cap b{font-size:15px;font-weight:700}
+  .gal .cap span{display:block;color:var(--muted);font-size:13.5px;margin-top:3px}
+
+  /* BAND / SIGNATURE */
+  .band-feature{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .mixer{background:#140F20;border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+  .track{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .track:last-child{border-bottom:none}
+  .track .lbl{width:66px;font-size:13.5px;color:var(--muted);font-weight:600}
+  .track .bars{flex:1;display:flex;gap:3px;align-items:flex-end;height:34px}
+  .track .bars i{flex:1;background:var(--green);border-radius:2px;opacity:.85;transform-origin:bottom;animation:eq 1.1s ease-in-out infinite}
+  @keyframes eq{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+  .track.muted .bars i{background:#2e2842;animation:none;transform:scaleY(.18)}
+  .track .tog{width:40px;height:23px;border-radius:999px;background:var(--green);position:relative;cursor:pointer;flex:none;transition:background .2s}
+  .track .tog:after{content:"";position:absolute;top:2px;left:19px;width:19px;height:19px;border-radius:50%;background:#06130A;transition:left .2s}
+  .track.muted .tog{background:#2e2842}
+  .track.muted .tog:after{left:2px;background:#6E667F}
+
+  /* PRICING */
+  .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px;max-width:860px}
+  .plan{background:#140F20;border:1px solid var(--line);border-radius:var(--radius);padding:32px;position:relative}
+  .plan.pro{border-color:rgba(59,224,122,.45);box-shadow:0 0 0 1px rgba(59,224,122,.25),0 30px 70px -40px rgba(59,224,122,.4)}
+  .plan .tier{font-size:14px;font-weight:700;letter-spacing:.03em;color:var(--muted)}
+  .plan.pro .tier{color:var(--green)}
+  .plan .amt{font-size:46px;font-weight:840;letter-spacing:-.03em;margin:8px 0 2px}
+  .plan .amt s{font-size:22px;color:var(--faint);font-weight:600;margin-left:8px}
+  .plan .sub{color:var(--faint);font-size:14px;margin-bottom:22px}
+  .plan ul{list-style:none;margin-bottom:26px}
+  .plan li{display:flex;gap:11px;font-size:14.5px;color:var(--ink);padding:7px 0;align-items:flex-start}
+  .plan li svg{width:18px;height:18px;stroke:var(--green);fill:none;stroke-width:2.4;flex:none;margin-top:3px}
+  .plan .btn{width:100%;justify-content:center}
+  .badge{position:absolute;top:-12px;right:24px;background:var(--green);color:#06130A;font-size:11.5px;font-weight:750;padding:5px 12px;border-radius:999px;letter-spacing:.03em}
+
+  /* CLOSING */
+  .closing{text-align:center;position:relative;overflow:hidden}
+  .closing .glow2{position:absolute;bottom:-200px;left:50%;transform:translateX(-50%);width:760px;height:500px;background:radial-gradient(ellipse at center,rgba(59,224,122,.14),transparent 65%);z-index:0}
+  .closing .inner{position:relative;z-index:1}
+  .closing h2{margin:0 auto;max-width:12em}
+  .closing .cta-row{justify-content:center;margin-top:30px}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--line);padding:40px 0 60px;background:var(--bg-2)}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-size:13.5px;color:var(--faint)}
+  .foot a{color:var(--muted)}
+  .foot a:hover{color:var(--green)}
+
+  /* REVEAL */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr;gap:36px;text-align:center}
+    .hero p.lede,.fineprint{margin-left:auto;margin-right:auto}
+    .cta-row{justify-content:center}
+    .prob-grid,.steps,.gal-grid,.price-grid{grid-template-columns:1fr}
+    .band-feature{grid-template-columns:1fr;gap:30px}
+    h2{max-width:none}
+    .nav-right a:not(.allp){display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a class="logo" href="#top">Lick<b>Pick</b><span class="beta">BETA</span></a>
+    <div class="nav-right">
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a class="allp" href="../index.html">All products</a>
+    </div>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="glow"></div>
+  <div class="wrap hero">
+    <div>
+      <span class="eyebrow">For players who hit record a lot</span>
+      <h1>Keep the <em>licks.</em><br>Kill the flubs.</h1>
+      <p class="lede">Your best take is buried in your camera roll. LickPick listens to every jam, cuts the flubs and hands you the phrase worth posting.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/lickpick/app/">Open LickPick free</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <p class="fineprint">Free on Android and Chrome. Pro launch price $4.99, once. No sign-up, and your clips never leave your phone.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <img src="https://3shamrocksstudio.github.io/lickpick/assets/m_home.jpg" alt="LickPick home screen with clips sorted into Keep, Review and Trash">
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="problem">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-tag">The problem</div>
+      <h2>You played something great. Good luck finding it.</h2>
+      <p class="sec-lede">The takes pile up. The one good phrase is hiding somewhere in the middle of a twelve bar run you stopped and restarted four times. Scrubbing for it kills the mood.</p>
+    </div>
+    <div class="prob-grid">
+      <div class="prob-card reveal"><div class="big">147</div><p>jam clips sitting in your gallery right now, give or take.</p></div>
+      <div class="prob-card reveal"><div class="big">8 sec</div><p>the part actually worth sharing, buried in a three minute take.</p></div>
+      <div class="prob-card reveal"><div class="big">0</div><p>of them posted, because trimming on your phone is a pain.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-tag">How it works</div>
+      <h2>Raw jam in. <em>Post</em> out.</h2>
+      <p class="sec-lede">Three taps. All of it happens on your phone, in seconds, even offline.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="num">1</div>
+        <div class="ic">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14M3 10h5M3 14h5M16 10h5M16 14h5"/></svg>
+        </div>
+        <h3>Drop in your jams</h3>
+        <p>Record, or add a whole gallery of takes. Each one gets a stamp: Keep, Review or Trash.</p>
+      </div>
+      <div class="step reveal">
+        <div class="num">2</div>
+        <div class="ic">
+          <svg viewBox="0 0 24 24"><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/><circle cx="12" cy="12" r="5"/><path d="M12 9v3l2 2"/></svg>
+        </div>
+        <h3>Get your Pick</h3>
+        <p>Your best complete phrase, starting and ending on the bar, with two runners-up. Nudge it a bar either way.</p>
+      </div>
+      <div class="step reveal">
+        <div class="num">3</div>
+        <div class="ic">
+          <svg viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>
+        </div>
+        <h3>Export and post</h3>
+        <p>Original framing or vertical 9:16, loudness levelled. Straight to Reels, TikTok or Shorts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-tag">A look inside</div>
+      <h2>Real screens, real takes.</h2>
+      <p class="sec-lede">Every screen here is a live LickPick screen. No mockups.</p>
+    </div>
+    <div class="gal-grid">
+      <div class="gal reveal">
+        <img src="https://3shamrocksstudio.github.io/lickpick/assets/m_pick.jpg" alt="The Pick screen showing the best phrase of a take">
+        <div class="cap"><b>Your Pick</b><span>The strongest phrase, plus two runners-up and why.</span></div>
+      </div>
+      <div class="gal reveal">
+        <img src="https://3shamrocksstudio.github.io/lickpick/assets/m_band.jpg" alt="The Sound screen with a mixer for you, drums, bass and keys">
+        <div class="cap"><b>The band</b><span>Drums, bass and keys, mixed to your playing.</span></div>
+      </div>
+      <div class="gal reveal">
+        <img src="https://3shamrocksstudio.github.io/lickpick/assets/m_export.jpg" alt="The Export sheet with Original and Vertical formats">
+        <div class="cap"><b>Export sheet</b><span>Original or vertical, levelled and ready to post.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap band-feature">
+    <div class="reveal">
+      <div class="sec-tag">Backing band</div>
+      <h2>Never jam <em>alone</em> again.</h2>
+      <p class="sec-lede">LickPick hears your tempo, your swing and the chords you actually played, then writes a chart. Drums, bass and keys come in, follow your loud and soft, and land the last hit with you. Eight styles, three arrangements.</p>
+      <div class="cta-row" style="margin-top:26px">
+        <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/lickpick/app/">Try the band</a>
+      </div>
+    </div>
+    <div class="mixer reveal" id="mixer">
+      <div class="track" data-t><div class="lbl">You</div><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tog"></div></div>
+      <div class="track" data-t><div class="lbl">Drums</div><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tog"></div></div>
+      <div class="track" data-t><div class="lbl">Bass</div><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tog"></div></div>
+      <div class="track muted" data-t><div class="lbl">Keys</div><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tog"></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-tag">Pricing</div>
+      <h2>Free is the jam. <em>Pro</em> is the record.</h2>
+      <p class="sec-lede">Finding your best playing is free, forever. Pro is a one-time session fee: the band saves with you, in every style, no mark. Pay once; the band is yours.</p>
+    </div>
+    <div class="price-grid">
+      <div class="plan reveal">
+        <div class="tier">Free</div>
+        <div class="amt">$0</div>
+        <div class="sub">Forever</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Scan every take, unlimited</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Pick A, B, C and why</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Hear the band: every style, its chart</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Save with the Ballad or Rock band</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>A small LickPick mark on saves</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://3shamrocksstudio.github.io/lickpick/app/">Start free</a>
+      </div>
+      <div class="plan pro reveal">
+        <div class="badge">Launch price</div>
+        <div class="tier">Pro</div>
+        <div class="amt">$4.99 <s>$7.99</s></div>
+        <div class="sub">Once. Yours for good. Launch price until 31 Jan 2027.</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>The band saves with you, every style</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Arrangements, extras, Another take</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>No LickPick mark, ever</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>All 8 Looks, chords on screen, Pro EQ</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>A year Backstage: new band drops monthly</li>
+        </ul>
+        <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/lickpick/app/">Try Pro free</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="glow2"></div>
+  <div class="wrap inner reveal">
+    <h2>On your phone in <em>20 seconds.</em></h2>
+    <p class="sec-lede" style="margin:16px auto 0">No app store. LickPick installs straight from Chrome. Your takes stay yours, every clip checked on your phone, nothing uploaded.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://3shamrocksstudio.github.io/lickpick/app/">Open LickPick free</a>
+      <a class="btn btn-ghost" href="#how">See how it works</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div><a href="../index.html">A 3Shamrocks Studio product</a></div>
+    <div>&copy; 2026 to 2027 3Shamrocks Studio. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.14, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el, i){
+    el.style.transitionDelay = (i % 3 * 0.07) + 's';
+    io.observe(el);
+  });
+
+  // Signature touch: tap a mixer track to mute/unmute
+  document.querySelectorAll('#mixer .track').forEach(function(tr){
+    tr.addEventListener('click', function(){ tr.classList.toggle('muted'); });
+  });
+  // Randomize eq bar timing for life
+  document.querySelectorAll('#mixer .bars i').forEach(function(bar){
+    bar.style.animationDelay = (Math.random() * -1.1) + 's';
+    bar.style.animationDuration = (0.8 + Math.random() * 0.7) + 's';
+  });
+</script>
+</body>
+</html>
