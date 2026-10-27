@@ -1813,7 +1813,7 @@ body.bandplay .beatdot{animation:beatdot var(--beat,.7s) linear infinite}
   </div>
 </div>
 
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-27a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_PAY = null; window.LP_VER = "lp-2026-10-27b"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -2455,7 +2455,7 @@ body.bandplay .beatdot{animation:beatdot var(--beat,.7s) linear infinite}
   function hush(chs, sr, floorDb) {
     if (floorDb > HUSH_FLOOR) return 0;
     const n = chs[0].length, att = Math.exp(-1 / (0.005 * sr)), rel = Math.exp(-1 / (0.25 * sr)), lo = Math.pow(10, floorDb / 10), hi = Math.pow(10, (floorDb + HUSH_ABOVE) / 10), gMin = Math.pow(10, -HUSH_MAX / 20);
-    let env = 0, g = 1, used = 0;
+    let env = 0, g = gMin, used = 0;   // starts closed: a recording that opens on silence is hushed from its first sample
     const win = Math.max(1, Math.round(sr * 0.01)); let acc = 0; const q = new Float32Array(win); let qi = 0;
     for (let i = 0; i < n; i++) {
       let x = 0; for (const d of chs) x += d[i] * d[i]; x /= chs.length;
@@ -2468,12 +2468,13 @@ body.bandplay .beatdot{animation:beatdot var(--beat,.7s) linear infinite}
     return used / n;
   }
   // quiet(chs, sr): hush the take alone (before any band is mixed in) and remember its floor for master()
-  function quiet(chs, sr) { const floor = noiseFloor(chs, sr); return { floor, hushed: hush(chs, sr, floor) }; }
+  // the floor is measured again after the hush, so the lift cap works from what is really left, not from a target
+  function quiet(chs, sr) { const floor = noiseFloor(chs, sr), hushed = hush(chs, sr, floor); return { floor, hushed, floorAfter: hushed ? noiseFloor(chs, sr) : floor }; }
   function master(chs, sr, wantDb = 0, opts = {}) {
-    const floor = opts.floor ?? noiseFloor(chs, sr), hushed = opts.hushed ?? (opts.hush === false ? 0 : hush(chs, sr, floor));
+    const floor = opts.floor ?? noiseFloor(chs, sr), hushed = opts.hushed ?? (opts.hush === false ? 0 : hush(chs, sr, floor)), floorAfter = opts.floorAfter ?? (hushed ? noiseFloor(chs, sr) : floor);
     const pk = peakQ(chs), room = pk > 0 ? 20 * Math.log10(CEIL / pk) + LIM_MAX : wantDb;
     // never lift a quiet recording's hiss into the open: after the lift the floor stays under FLOOR_MAX
-    const FLOOR_MAX = -54, floorRoom = floor < HUSH_FLOOR ? Math.max(0, FLOOR_MAX - (floor - (hushed ? HUSH_MAX : 0))) : Infinity;
+    const FLOOR_MAX = -54, floorRoom = floor < HUSH_FLOOR ? Math.max(0, FLOOR_MAX - floorAfter) : Infinity;
     const lift = Math.max(-12, Math.min(wantDb, room, floorRoom));
     if (Math.abs(lift) > 0.01) { const g = Math.pow(10, lift / 20); for (const d of chs) for (let i = 0; i < d.length; i++) d[i] *= g; }
     const gr = limiter(chs, sr);
