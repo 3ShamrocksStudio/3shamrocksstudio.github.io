@@ -170,13 +170,14 @@ footer{padding:40px max(48px,env(safe-area-inset-right,0px)) 40px max(48px,env(s
 .hero-visual{position:relative;width:100%;aspect-ratio:1/0.92}
 .hv{position:absolute;overflow:hidden;background:#111120;box-shadow:0 24px 60px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.06)}
 .hv img{width:100%;height:100%;object-fit:cover}
-.hv-wide{right:0;top:3%;width:74%;aspect-ratio:16/9;border-radius:14px;transform:rotate(3deg)}
-.hv-phone{aspect-ratio:585/1266;border-radius:clamp(16px,3.4vw,26px);border:clamp(3px,0.6vw,5px) solid #1a1a2c}
-.hv-lp{left:10%;top:24%;width:28%;transform:rotate(-6deg);z-index:2}
-.hv-th{left:43%;top:31%;width:26%;transform:rotate(4deg);z-index:3}
-.hv-badge{right:1%;bottom:5%;width:24%;aspect-ratio:1;border-radius:18px;z-index:4;transform:rotate(-3deg)}
-.hero-visual-cap{margin-top:14px;text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--muted)}
-@media(prefers-reduced-motion:no-preference){.hv{animation:hvIn 0.9s cubic-bezier(0.2,0.8,0.2,1) both}.hv-lp{animation-delay:0.1s}.hv-th{animation-delay:0.2s}.hv-badge{animation-delay:0.3s}}
+.hv-wide{left:0;top:0;width:76%;aspect-ratio:16/9;border-radius:14px;transform:rotate(-3deg)}
+.hv-phone{aspect-ratio:600/1298;border-radius:clamp(16px,3.4vw,26px);border:clamp(3px,0.6vw,5px) solid #1a1a2c}
+.hv-lp{left:4%;top:37%;width:26%;transform:rotate(-7deg);z-index:2}
+.hv-sh{left:35%;top:27%;width:30%;z-index:4;box-shadow:0 30px 70px rgba(0,0,0,0.55),0 0 0 1px rgba(255,255,255,0.08)}
+.hv-th{left:69%;top:35%;width:26%;transform:rotate(6deg);z-index:3}
+.hero-visual-cap{margin-top:14px;text-wrap:balance;text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.hero-visual-cap bdi{display:inline-block}
+@media(prefers-reduced-motion:no-preference){.hv{animation:hvIn 0.9s cubic-bezier(0.2,0.8,0.2,1) both}.hv-lp{animation-delay:0.1s}.hv-th{animation-delay:0.2s}.hv-sh{animation-delay:0.3s}}
 @keyframes hvIn{from{opacity:0;translate:0 24px}to{opacity:1;translate:0 0}}
 
 /* color bands that break the dark page (fixed colors, same in both schemes) */
@@ -253,10 +254,10 @@ html[lang="he"] [data-en]{display:none!important}
     <div class="hero-visual" dir="ltr">
       <div class="hv hv-wide"><img src="assets/opt/vibrant.webp" alt="VIBRANT. brand book" width="1600" height="900" decoding="async"></div>
       <div class="hv hv-phone hv-lp"><img src="assets/opt/lickpick.webp" alt="LickPick app home screen" width="585" height="1266" decoding="async"></div>
-      <div class="hv hv-phone hv-th"><img src="assets/opt/th-splash.webp" alt="Trashure Hunters app splash screen" width="600" height="1298" decoding="async"></div>
-      <div class="hv hv-badge"><img src="assets/opt/shomer.webp" alt="SH✡MER app icon" width="512" height="512" decoding="async"></div>
+      <div class="hv hv-phone hv-th"><img src="assets/opt/th-map.webp" alt="Trashure Hunters game map screen" width="600" height="1301" decoding="async"></div>
+      <div class="hv hv-phone hv-sh"><img src="assets/opt/shomer-screen.webp" alt="SH✡MER app onboarding screen" width="600" height="1298" decoding="async"></div>
     </div>
-    <p class="hero-visual-cap"><span data-en>From the studio: </span><span data-he>מתוך העבודות: </span><bdi dir="ltr">VIBRANT. · LickPick · Trashure Hunters · SH✡MER</bdi></p>
+    <p class="hero-visual-cap"><span data-en>From the studio: </span><span data-he>מתוך העבודות: </span><bdi dir="ltr">VIBRANT. brand book · LickPick home · SH✡MER onboarding · Trashure Hunters map</bdi></p>
    </div>
   </div>
 </section>
