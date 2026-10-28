@@ -4,321 +4,563 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>SH✡MER · הצעת פיילוט לקהילה</title>
+<meta name="theme-color" content="#0A1628">
+<title>SH✡MER · פיילוט קהילה שומרת</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="assets/shomer-pilot/shomer-badge.webp">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/shomer-pilot/hero-neighbours-1600.webp" media="(min-width:701px)">
 <link rel="icon" type="image/png" href="assets/shomer-pilot/favicon.png">
 <style>
+/* SH✡MER brand world (BRAND.md / brand.css, 3SDS layer 1) */
 :root{
-  --y:#faac22; --b:#1e315f; --d:#0c1b39;
-  --ink:#0c1b39; --ink2:#3a4560; --muted:#6b7590;
-  --light:#f3f4f8; --hair:rgba(12,27,57,.12);
-  --on-navy:#cdd6ec; --hair-navy:rgba(255,255,255,.14);
-  --wrap:1120px;
+  --n0:#060F1E; --n1:#0A1628; --n2:#101E34; --n3:#162440; --n4:#1C2C4E; --n6:#2E4070;
+  --g1:#9A6C1A; --g2:#C09020; --g3:#E0A828; --g4:#F5C840;
+  --p1:#5C6B82; --p2:#8392AB; --p3:#B6C2D6; --p4:#E6ECF6;
+  --tx0:#F0F4FF; --tx1:#C8D4E8; --tx2:#8898B8;
+  --paper:#F3F5FA; --ink:#0E1D3A; --ink2:#3A4766; --hair:rgba(14,29,58,.12); --hair-n:rgba(182,194,214,.18);
+  --grad-gold:linear-gradient(135deg,#C09020 0%,#E0A828 60%,#F5C840 100%);
+  --font:'Heebo','Inter',system-ui,-apple-system,Arial,sans-serif;
+  --wrap:1180px; --gut:32px;
+  --focus:0 0 0 3px color-mix(in srgb,var(--g3) 60%,transparent);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;overflow-x:hidden}
-body{font-family:'Alef',system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.55;font-size:17px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden;scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--ink);background:var(--paper);line-height:1.6;font-size:18px;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{display:block;max-width:100%;height:auto}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
-.sh{white-space:nowrap;direction:ltr;unicode-bidi:isolate;font-weight:700;letter-spacing:.02em}
-.sh i{font-style:normal;color:var(--y)}
-.kicker{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--y);display:flex;align-items:center;gap:12px}
-.kicker::after{content:"";height:1px;width:48px;background:currentColor;opacity:.5}
+a:focus-visible{outline:none;box-shadow:var(--focus);border-radius:8px}
+ul,ol{list-style:none}
+bdi{unicode-bidi:isolate}
+.wrap{width:100%;max-width:var(--wrap);margin:0 auto;padding:0 var(--gut)}
+.sh{white-space:nowrap;direction:ltr;unicode-bidi:isolate;font-weight:800;letter-spacing:.01em}
+.sh i{font-style:normal;color:var(--g3)}
 .ltr{direction:ltr;unicode-bidi:isolate}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
-/* ── phone frame (matches live landing) ── */
-.phone{border-radius:36px;padding:9px;background:linear-gradient(160deg,#1a2438,#05080f);border:1px solid #3a465f;box-shadow:0 40px 70px -28px rgba(0,0,0,.75)}
-.phone img{border-radius:28px;width:100%;aspect-ratio:540/1168;object-fit:cover;object-position:top}
+/* print-safe colour bands: the ground is an <img>, never a droppable CSS background */
+.band{position:relative;isolation:isolate}
+.band>.ground{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;z-index:-1;pointer-events:none}
+.navy{background:var(--n1);color:var(--tx0)}
+.gold{background:var(--g3);color:var(--ink)}
+
+/* icons: line + gold duo-tone, on a hexagon (✡ geometry) */
+.ic{flex:none;width:52px;height:52px;color:var(--ink);--duo:var(--g3);--hexf:rgba(224,168,40,.14);--hexs:rgba(224,168,40,.55)}
+.navy .ic{color:var(--g4);--duo:rgba(245,200,64,.28);--hexf:rgba(245,200,64,.07);--hexs:rgba(245,200,64,.4)}
+.ic{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 /* ══ HERO ══ */
-.hero{position:relative;z-index:2;background:var(--d);color:#fff}
-.hero-media{position:absolute;inset:0;overflow:hidden}
-.hero-bg{position:absolute;inset:0;max-width:none;width:100%;height:100%;object-fit:cover;object-position:30% 40%;opacity:.55}
-.hero-shade{position:absolute;inset:0;background:
-  linear-gradient(270deg,rgba(12,27,57,.97) 0%,rgba(12,27,57,.88) 48%,rgba(12,27,57,.55) 100%),
-  linear-gradient(180deg,rgba(12,27,57,.2) 0%,rgba(12,27,57,.9) 100%)}
-.hero .wrap{position:relative;z-index:1}
-.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:28px}
-.brandmark{display:block}
-.brandmark img{width:128px;height:128px;filter:drop-shadow(0 10px 22px rgba(0,0,0,.6))}
-.tag{font-size:13px;font-weight:700;color:var(--d);background:var(--y);border-radius:999px;padding:6px 14px;white-space:nowrap}
-.hero-grid{display:grid;grid-template-columns:1fr 260px;gap:64px;align-items:end;padding:36px 0 0}
-.hero h1{font-size:clamp(31px,4.2vw,52px);line-height:1.16;font-weight:700;letter-spacing:-.01em;max-width:19ch}
-.hero h1 em{font-style:normal;color:var(--y);display:block;margin-bottom:6px}
-.hero .sub{margin-top:22px;font-size:clamp(17px,1.5vw,20px);color:var(--on-navy);max-width:38ch}
-.hero-phone{width:260px;margin-bottom:-120px}
-.facts{display:flex;gap:0;margin-top:44px;padding:22px 0 56px;border-top:1px solid var(--hair-navy);max-width:600px}
-.fact{flex:1;padding-inline-end:20px}
-.fact+.fact{padding-inline-start:20px;border-inline-start:1px solid var(--hair-navy)}
-.fact b{display:block;font-size:clamp(24px,2.6vw,32px);line-height:1.1;color:var(--y)}
-.fact span{font-size:14px;color:var(--on-navy)}
+.hero{min-height:min(860px,100svh);display:flex;flex-direction:column;overflow:hidden}
+.hero-art{position:absolute;inset:0;z-index:-1}
+.hero-art img{width:100%;height:100%;max-width:none;object-fit:cover;object-position:28% 62%}
+.scrim{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:30px}
+.wordmark{width:208px;height:auto}
+.chip{font-size:15px;font-weight:500;color:var(--tx0);border:1px solid rgba(245,200,64,.5);border-radius:999px;padding:7px 16px;white-space:nowrap}
+.chip b{color:var(--g4);font-weight:700}
+.hero-body{flex:1;display:flex;align-items:center;padding-block:56px 40px}
+.hero-copy{max-width:600px}
+.hero h1 span{display:inline-block}
+.hero h1{font-size:clamp(46px,5.7vw,86px);line-height:.98;font-weight:900;letter-spacing:-.025em;color:#fff;text-wrap:balance}
+.hero .sub{margin-top:26px;font-size:clamp(18px,1.6vw,22px);line-height:1.55;color:var(--tx1);font-weight:300;max-width:30em}
+.actions{margin-top:34px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 30px;border-radius:999px;background:var(--grad-gold);color:var(--n1);font-weight:800;font-size:17px;box-shadow:0 12px 28px -10px rgba(224,168,40,.6),inset 0 1px 0 rgba(255,255,255,.45);transition:transform .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn:focus-visible{box-shadow:var(--focus);border-radius:999px}
+.link{font-weight:500;color:var(--tx0);border-bottom:1px solid rgba(245,200,64,.6);padding-bottom:2px}
+.stats{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:0;padding-block:22px 34px;margin-top:auto}
+.stat{padding-inline:0 34px}
+.stat+.stat{padding-inline-start:34px;border-inline-start:1px solid var(--hair-n)}
+.stat b{display:block;font-size:clamp(26px,2.4vw,34px);line-height:1.1;font-weight:800;color:var(--g4)}
+.stat span{font-size:15px;color:var(--tx1)}
 
-/* ══ PROBLEM ══ */
-.problem{background:#fff;padding:96px 0 88px}
-.problem .wrap{max-width:var(--wrap)}
-.problem-inner{max-width:720px}
-.problem .lead{margin-top:18px;font-size:clamp(26px,3.2vw,40px);line-height:1.25;font-weight:700;color:var(--d)}
-.problem .lead mark{white-space:nowrap;background:none;color:var(--b);box-shadow:inset 0 -.28em 0 rgba(250,172,34,.45)}
-.problem .second{margin-top:18px;font-size:19px;color:var(--ink2);max-width:52ch}
+/* ══ PAIN ══ */
+.pain{padding:112px 0 96px}
+.pain-grid{display:grid;grid-template-columns:5fr 6fr;gap:80px;align-items:start}
+.h2{font-size:clamp(32px,3.6vw,52px);line-height:1.08;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+.pain .h2{color:var(--ink)}
+.plist li{display:grid;grid-template-columns:22px 1fr;gap:16px;align-items:baseline;padding:20px 0;border-top:1px solid var(--hair);font-size:20px;line-height:1.5;color:var(--ink2)}
+.plist li:last-child{border-bottom:1px solid var(--hair)}
+.plist li::before{content:"";width:10px;height:10px;border-radius:50%;border:2px solid var(--p2);transform:translateY(-2px)}
+.plist li:last-child::before{border-color:var(--g2);background:var(--g3)}
+
+/* ══ ANSWER + WHY ══ */
+.why{padding:104px 0 100px;overflow:hidden}
+.answer{display:grid;grid-template-columns:auto 1fr;gap:44px;align-items:center;max-width:980px}
+.answer-mark{width:132px;height:132px}
+.answer p{font-size:clamp(26px,2.9vw,40px);line-height:1.3;font-weight:300;color:#fff;text-wrap:pretty}
+.answer p strong{font-weight:700}
+.why-head{margin-top:96px;display:flex;align-items:baseline;justify-content:space-between;gap:24px;border-bottom:1px solid var(--hair-n);padding-bottom:22px}
+.why-head .h2{color:#fff}
+.why-head small{font-size:16px;color:var(--tx2)}
+.wlist{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.wlist li{padding:30px 28px 6px 0}
+.wlist li+li{border-inline-start:1px solid var(--hair-n);padding-inline-start:28px}
+.wlist li:first-child{padding-inline-start:0}
+.wlist h3{margin-top:18px;font-size:20px;line-height:1.3;font-weight:700;color:#fff}
+.wlist p{margin-top:10px;font-size:16px;line-height:1.6;color:var(--tx1)}
 
 /* ══ FEATURES ══ */
-.features{background:var(--light);padding:88px 0 96px}
-.features-grid{display:grid;grid-template-columns:1fr 380px;gap:72px;align-items:start}
-.features h2,.needs h2,.pilot h2{font-size:clamp(28px,3vw,38px);line-height:1.15;margin-top:14px}
-.flist{list-style:none;margin-top:34px;display:grid;grid-template-columns:1fr 1fr;column-gap:40px}
-.flist li{padding:18px 0 20px;border-top:1px solid var(--hair);display:grid;grid-template-columns:34px 1fr;gap:6px}
-.flist .n{font-size:13px;font-weight:700;color:var(--y);padding-top:4px;letter-spacing:.06em}
-.flist b{display:block;font-size:18px;color:var(--d);margin-bottom:3px}
-.flist p{font-size:15.5px;color:var(--ink2);line-height:1.5}
-.phones{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-top:20px}
-.phones .phone{border-radius:30px;padding:7px}
-.phones .phone img{border-radius:24px}
-.phones .phone:nth-child(2){margin-top:56px}
-.cap{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+.features{padding:112px 0 112px}
+.feat-grid{display:grid;grid-template-columns:1fr 420px;gap:72px;align-items:center}
+.flist{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;gap:34px 44px}
+.flist li{display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:start}
+.flist h3{font-size:19px;font-weight:700;line-height:1.3;color:var(--ink);padding-top:4px}
+.flist p{margin-top:4px;font-size:16px;line-height:1.55;color:var(--ink2)}
+.phones{position:relative;height:640px}
+.phone{position:absolute;width:236px;border-radius:38px;padding:8px;background:linear-gradient(160deg,#24324F,#060B16);border:1px solid #3A465F;box-shadow:0 44px 70px -30px rgba(6,15,30,.6),0 0 0 1px rgba(255,255,255,.04) inset}
+.phone img{border-radius:30px;width:100%;aspect-ratio:540/1168;object-fit:cover;object-position:top}
+.phone.p1{inset-inline-start:0;top:0;z-index:2}
+.phone.p2{inset-inline-start:150px;top:88px;width:212px;z-index:1;opacity:.98}
+.phones .halo{position:absolute;inset-inline-start:-10px;top:110px;width:420px;height:420px}
+.cap{position:absolute;font-size:14px;color:var(--ink2);font-weight:500}
 
-/* ══ PILOT (gold band) ══ */
-.pilot{background:var(--y);color:var(--d);padding:88px 0}
-.pilot .kicker{color:var(--d)}
-.pilot-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:72px;align-items:start}
-.bignums{display:flex;gap:48px;margin-top:28px}
-.bignum b{display:block;white-space:nowrap;font-size:clamp(52px,7vw,92px);line-height:.95;font-weight:700;letter-spacing:-.02em}
-.bignum span{display:block;margin-top:10px;font-size:15px;font-weight:700;opacity:.8}
-.free{margin-top:34px;font-size:clamp(20px,2vw,24px);font-weight:700;display:inline-block;border-bottom:3px solid var(--d);padding-bottom:4px}
-.plist{list-style:none;margin-top:8px}
-.plist li{padding:16px 0;border-bottom:1px solid rgba(12,27,57,.2);font-size:18px;display:flex;gap:14px;align-items:baseline}
-.plist li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--d);transform:translateY(-2px)}
-.plist li b{font-weight:700}
-.after{margin-top:22px;font-size:15.5px;line-height:1.55;color:rgba(12,27,57,.82)}
+/* ══ PILOT (gold) ══ */
+.pilot{padding:104px 0 100px}
+.pilot-head{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end}
+.pilot .h2{color:var(--n1)}
+.pilot-sub{margin-top:14px;font-size:21px;color:rgba(10,22,40,.82)}
+.timeline{margin-top:64px;display:grid;grid-template-columns:repeat(4,1fr);position:relative}
+.timeline::before{content:"";position:absolute;top:21px;inset-inline:22px 22px;height:2px;background:var(--n1);opacity:.85}
+.tl{position:relative;padding-inline-end:28px}
+.tl-node{width:44px;height:44px;display:block;position:relative}
+.tl h3{margin-top:18px;font-size:22px;font-weight:800;color:var(--n1)}
+.tl p{margin-top:6px;font-size:16.5px;line-height:1.5;color:rgba(10,22,40,.85)}
+.pilot-cols{margin-top:72px;display:grid;grid-template-columns:1fr 1fr;gap:64px}
+.pilot-cols h3{font-size:22px;font-weight:800;color:var(--n1);padding-bottom:14px;border-bottom:2px solid var(--n1)}
+.pilot-cols h3 small{display:block;font-size:15px;font-weight:500;color:rgba(10,22,40,.75);margin-top:2px}
+.clist li{display:grid;grid-template-columns:20px 1fr;gap:12px;padding:13px 0;border-bottom:1px solid rgba(10,22,40,.16);font-size:17px;line-height:1.5;color:var(--n1)}
+.clist svg{width:20px;height:20px;margin-top:3px}
 
-/* ══ NEEDS + CTA (navy) ══ */
-.needs{background:var(--b);color:#fff;padding:88px 0}
-.needs-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
-.nlist{list-style:none;margin-top:28px;counter-reset:n}
-.nlist li{display:grid;grid-template-columns:52px 1fr;align-items:baseline;padding:16px 0;border-top:1px solid var(--hair-navy);font-size:18px;color:var(--on-navy)}
-.nlist li::before{counter-increment:n;content:"0" counter(n);font-size:13px;font-weight:700;color:var(--y);letter-spacing:.08em}
-.nlist b{color:#fff}
-.cta h2{font-size:clamp(36px,4.4vw,56px);line-height:1.05}
-.cta p{margin-top:12px;font-size:20px;color:var(--on-navy)}
-.btn{display:inline-flex;align-items:center;gap:10px;margin-top:28px;background:var(--y);color:var(--d);font-weight:700;font-size:17px;min-height:56px;padding:0 36px;border-radius:999px;box-shadow:0 10px 24px -8px rgba(250,172,34,.55);transition:transform .15s}
-.btn:hover{transform:translateY(-1px)}
-.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.contact{margin-top:26px;display:flex;flex-wrap:wrap;gap:6px 22px;font-size:16px;color:var(--on-navy)}
-.contact strong{color:#fff}
-.contact a{color:#fff;border-bottom:1px solid rgba(250,172,34,.6)}
+/* ══ PRICE (navy) ══ */
+.price{padding:104px 0 96px}
+.price-grid{display:grid;grid-template-columns:5fr 6fr;gap:80px;align-items:start}
+.price-big{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
+.price-big b{font-size:clamp(72px,8vw,120px);line-height:.9;font-weight:900;letter-spacing:-.03em;background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent}
+.price-big span{font-size:20px;color:var(--tx1)}
+.price-lead{margin-top:22px;font-size:22px;font-weight:700;color:#fff}
+.price-lines{margin-top:10px;color:var(--tx1);font-size:17px}
+.price-lines p+p{margin-top:4px}
+.vat{margin-top:10px;font-size:14px;color:var(--tx2)}
+.partners{margin-top:34px;padding:20px 22px;border:1px solid rgba(245,200,64,.45);border-radius:16px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;font-size:16.5px;color:var(--tx1)}
+.partners strong{color:var(--g4)}
+.partners svg{width:36px;height:36px}
+.lic h3,.needs h3{font-size:20px;font-weight:700;color:#fff}
+.lic h3 small{display:block;font-size:15px;font-weight:400;color:var(--tx2)}
+.tiers{margin-top:18px}
+.tiers li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:17px 0;border-top:1px solid var(--hair-n);font-size:17.5px;color:var(--tx1)}
+.tiers li:last-child{border-bottom:1px solid var(--hair-n)}
+.tiers b{font-weight:800;color:#fff;font-size:20px;white-space:nowrap}
+.tiers li:last-child b{font-size:16px;font-weight:500;color:var(--tx1);white-space:normal;text-align:left}
+.needs{margin-top:56px}
+.nlist{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.nlist li{padding:18px 18px 18px 14px;border-radius:14px;border:1px solid var(--hair-n);font-size:16.5px;line-height:1.5;color:var(--tx1)}
+.nlist b{display:block;color:#fff;font-size:18px;margin-bottom:2px}
 
-/* ══ FOOTER ══ */
-footer{background:var(--d);color:var(--on-navy);padding:36px 0 40px;font-size:13px}
-.foot{display:flex;align-items:center;justify-content:space-between;gap:24px}
-.foot p{max-width:70ch;line-height:1.6}
-.foot img{width:170px;height:auto;flex:none;opacity:.95}
+/* ══ TRUST ══ */
+.trust{padding:104px 0 104px}
+.trust-grid{display:grid;grid-template-columns:4fr 8fr;gap:72px;align-items:start}
+.tlist{display:grid;grid-template-columns:1fr 1fr;gap:40px 48px}
+.tlist li{display:grid;grid-template-columns:52px 1fr;gap:18px}
+.tlist h3{font-size:19px;font-weight:700;color:var(--ink);padding-top:4px}
+.tlist p{margin-top:4px;font-size:16px;color:var(--ink2);line-height:1.55}
+
+/* ══ CTA ══ */
+.cta{padding:112px 0 96px;overflow:hidden;text-align:center}
+.cta-badge{width:132px;height:132px;margin:0 auto;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
+.cta h2{margin-top:26px;font-size:clamp(48px,6vw,84px);line-height:1;font-weight:900;letter-spacing:-.025em;color:#fff}
+.cta p{margin:18px auto 0;font-size:21px;color:var(--tx1);max-width:30em}
+.cta .btn{margin-top:34px}
+.contact{margin-top:34px;display:flex;justify-content:center;flex-wrap:wrap;gap:8px 28px;font-size:17px;color:var(--tx1)}
+.contact strong{color:#fff;font-weight:700}
+.contact a{color:#fff;border-bottom:1px solid rgba(245,200,64,.55)}
+.cta-rings{position:absolute;left:50%;top:180px;width:1100px;height:1100px;transform:translateX(-50%);z-index:-1;opacity:.9}
+footer{background:var(--n0);color:var(--tx2);font-size:13.5px}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px 0 30px;border-top:1px solid var(--hair-n)}
+.foot img{width:150px;height:auto;opacity:.9}
 
 /* ══ RESPONSIVE ══ */
-@media screen and (max-width:900px){
-  .hero-grid,.features-grid,.pilot-grid,.needs-grid{grid-template-columns:1fr;gap:44px}
-  .hero-grid{padding-top:40px;gap:8px}
-  .hero-phone{width:230px;margin:0 auto -150px}
-  .facts{margin-top:32px;padding-bottom:40px}
-  .problem{padding-top:200px}
-  .phones{max-width:420px;margin:0 auto}
+@media screen and (max-width:1100px){
+  .feat-grid{grid-template-columns:1fr 340px;gap:48px}
+  .phone{width:200px}.phone.p2{width:180px;inset-inline-start:130px}
+  .phones{height:560px}
+  .wlist{grid-template-columns:1fr 1fr;row-gap:12px}
+  .wlist li:nth-child(3){border-inline-start:0;padding-inline-start:0}
 }
-@media screen and (max-width:600px){
-  body{font-size:16px}
-  .wrap{padding:0 20px}
-  .topline{padding-top:20px}
-  .brandmark img{width:92px;height:92px}
-  .tag{font-size:12px;padding:5px 11px}
-  .facts{flex-wrap:wrap;row-gap:16px}
-  .fact{flex:1 1 30%;padding-inline-end:12px}
-  .fact+.fact{padding-inline-start:12px}
-  .fact span{font-size:12.5px}
-  .problem{padding:200px 0 64px}
-  .hero-phone{width:220px;margin-bottom:-170px}
-  .fact span{font-size:12px}
-  .features,.pilot,.needs{padding:64px 0}
-  .flist{grid-template-columns:1fr}
-  .bignums{gap:32px}
-  .plist li{font-size:17px}
+@media screen and (max-width:900px){
+  .pain-grid,.price-grid,.trust-grid,.feat-grid,.pilot-cols{grid-template-columns:1fr;gap:40px}
+  .phones{height:500px;max-width:380px;margin:0 auto;width:100%}
+  .timeline{grid-template-columns:1fr 1fr;row-gap:36px}
+  .timeline::before{display:none}
+}
+@media screen and (max-width:700px){
+  :root{--gut:20px}
+  body{font-size:17px}
+  .hero{min-height:0}
+  .hero-art{position:relative;inset:auto;z-index:0;order:3;margin-top:-8px}
+  .hero-art img{height:auto;aspect-ratio:1080/582;object-position:center}
+  .scrim{display:none}
+  .hero-art::before{content:"";position:absolute;inset:0 0 auto;height:40%;background:linear-gradient(var(--n1),transparent);z-index:1}
+  .topbar{padding-top:20px}
+  .wordmark{width:150px}
+  .chip{font-size:13px;padding:5px 12px}
+  .hero-body{padding-block:36px 8px}
+  .hero h1{font-size:50px}
+  .hero .sub{margin-top:18px;font-size:18px}
+  .actions{margin-top:26px}
+  .btn{width:100%}
+  .stats{order:4;grid-template-columns:repeat(3,1fr);padding-block:22px 30px;background:var(--n0)}
+  .stat{padding-inline:0 10px}
+  .stat+.stat{padding-inline-start:12px}
+  .stat b{font-size:24px}
+  .stat span{font-size:13px;line-height:1.35;display:block}
+  .pain,.why,.features,.pilot,.price,.trust{padding:72px 0}
+  .plist li{font-size:18px;padding:16px 0}
+  .answer{grid-template-columns:1fr;gap:22px}
+  .answer-mark{width:88px;height:88px}
+  .why-head{margin-top:56px;flex-direction:column;gap:6px}
+  .wlist{grid-template-columns:1fr}
+  .wlist li,.wlist li+li{border:0;padding:24px 0 0;display:grid;grid-template-columns:52px 1fr;column-gap:18px}
+  .wlist li>svg{grid-column:1;grid-row:1/3}
+  .wlist li h3{margin-top:4px;grid-column:2}
+  .wlist li p{grid-column:2}
+  .flist,.tlist{grid-template-columns:1fr;gap:26px}
+  .phones{height:430px;max-width:330px}
+  .phone{width:180px}.phone.p2{width:160px;inset-inline-start:140px;top:70px}
+  .timeline{grid-template-columns:1fr;row-gap:28px;margin-top:44px}
+  .timeline::before{display:block;top:22px;bottom:22px;inset-inline-start:21px;inset-inline-end:auto;width:2px;height:auto}
+  .tl{display:grid;grid-template-columns:44px 1fr;column-gap:18px;padding:0}
+  .tl h3{margin-top:6px}.tl p{grid-column:2}
+  .pilot-head{grid-template-columns:1fr}
+  .nlist{grid-template-columns:1fr}
+  .cta{padding:80px 0 72px}
   .foot{flex-direction:column;align-items:flex-start}
 }
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 
-/* ══ PRINT · single A4 page ══ */
+/* ══ PRINT · two A4 pages ══ */
 @page{size:A4;margin:0}
 @media print{
-  html{width:210mm;background:#0c1b39}
-  body{width:210mm;background:#fff}
-  body{font-size:11.5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .wrap{max-width:none;padding:0 13mm}
-  .kicker{font-size:8pt}
-  .hero-shade{background:linear-gradient(270deg,rgba(12,27,57,.97) 0%,rgba(12,27,57,.9) 55%,rgba(12,27,57,.6) 100%)}
-  .topline{padding-top:8mm;justify-content:flex-start;gap:5mm}
-  .brandmark img{width:22mm;height:22mm;filter:none}
-  .tag{font-size:8.5pt;padding:3px 10px}
-  .hero-grid{grid-template-columns:1fr 28mm;gap:12mm;padding:2mm 0 6mm;align-items:end}
-  .hero h1{font-size:21pt;max-width:none}
-  .hero .sub{font-size:11.5pt;margin-top:3mm;max-width:none}
-  .hero-grid{position:static}
-  .hero .wrap{position:relative}
-  .hero-phone{position:absolute;left:13mm;top:8mm;width:28mm;margin:0}
-  .phone{border-radius:16px;padding:4px;box-shadow:none}
-  .phone img{border-radius:12px}
-  .facts{display:none}
-  .problem{padding:4.5mm 0 4mm}
-  .problem .lead{font-size:14pt;margin-top:1.5mm}
-  .problem .second{font-size:10.5pt;margin-top:2mm;max-width:none}
-  .problem-inner{max-width:none}
-  .features{padding:4.5mm 0 3.5mm}
-  .features-grid{grid-template-columns:1fr;gap:0}
-  .phones{display:none}
-  .features h2,.needs h2,.pilot h2{font-size:14pt;margin-top:1mm}
-  .flist{margin-top:2mm;column-gap:6mm;grid-template-columns:1fr 1fr 1fr}
-  .flist li{padding:1.5mm 0 1.5mm;grid-template-columns:7mm 1fr;break-inside:avoid}
-  .flist .n{font-size:8pt;padding-top:1px}
-  .flist b{font-size:10pt;margin-bottom:0}
-  .flist p{font-size:9.3pt;line-height:1.4}
-  .pilot{padding:4.5mm 0}
-  .pilot-grid{grid-template-columns:1fr 1fr;gap:10mm}
-  .bignums{gap:9mm;margin-top:3mm}
-  .bignum b{font-size:27pt}
-  .bignum span{font-size:8.5pt;margin-top:1.5mm}
-  .free{font-size:11.5pt;margin-top:4mm;border-bottom-width:2px}
-  .plist{margin-top:0}
-  .plist li{padding:1.3mm 0;font-size:10pt}
-  .after{font-size:9pt;margin-top:2.5mm}
-  .needs{padding:4.5mm 0}
-  .needs-grid{grid-template-columns:1fr 1fr;gap:10mm}
-  .nlist{margin-top:2mm}
-  .nlist li{padding:1.4mm 0;font-size:10pt;grid-template-columns:9mm 1fr}
-  .nlist li::before{font-size:8pt}
-  .cta h2{font-size:22pt}
-  .cta p{font-size:11pt;margin-top:1.5mm}
-  .btn{display:none}
-  .contact{margin-top:3mm;font-size:10.5pt}
-  .contact a{border:none}
-  footer{padding:3mm 0 3.5mm;font-size:7.5pt}
-  .foot img{width:30mm}
-  section,header{break-inside:avoid}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  html,body{width:210mm;background:var(--paper)}
+  body{font-size:10pt;line-height:1.45}
+  :root{--gut:12mm}
+  .wrap{max-width:none}
+  .hero{min-height:0;height:96mm}
+  .hero-art img{object-position:10% 72%}
+  .topbar{padding-top:6mm}
+  .wordmark{width:38mm}
+  .chip{font-size:8.5pt;padding:2px 9px}
+  .hero-body{padding-block:5mm 0;align-items:flex-start}
+  .hero-copy{max-width:80mm}
+  .hero h1{font-size:28pt}
+  .hero .sub{font-size:10.5pt;margin-top:3mm}
+  .actions{display:none}
+  .stats{padding-block:0 5mm}
+  .stat{padding-inline:0 6mm}.stat+.stat{padding-inline-start:6mm}
+  .stat b{font-size:15pt}.stat span{font-size:8pt}
+  .h2{font-size:17pt}
+  .pain{padding:5mm 0 4mm}
+  .pain-grid{grid-template-columns:5fr 7fr;gap:10mm}
+  .plist li{font-size:9.6pt;padding:1.3mm 0;grid-template-columns:4mm 1fr;gap:2mm}
+  .plist li::before{width:6px;height:6px;border-width:1.5px}
+  .why{padding:5mm 0 4.5mm}
+  .answer{gap:7mm}
+  .answer-mark{width:16mm;height:16mm}
+  .answer p{font-size:12.5pt}
+  .why-head{margin-top:4mm;padding-bottom:1.5mm}
+  .why-head small{font-size:8.5pt}
+  .wlist{grid-template-columns:repeat(4,1fr)}
+  .wlist li{padding:3mm 4mm 0 0}.wlist li+li{padding-inline-start:4mm}
+  .wlist h3{margin-top:2mm;font-size:10pt}.wlist p{font-size:8.6pt;margin-top:1mm;line-height:1.4}
+  .ic{width:10mm;height:10mm}
+  .features{padding:5mm 0 4mm}
+  .feat-grid{grid-template-columns:1fr 52mm;gap:8mm}
+  .flist{margin-top:3mm;gap:3mm 6mm}
+  .flist li,.tlist li{grid-template-columns:10mm 1fr;gap:3mm}
+  .flist h3,.tlist h3{font-size:10pt;padding-top:0}
+  .flist p,.tlist p{font-size:8.8pt;margin-top:0;line-height:1.4}
+  .phones{height:62mm}
+  .phone{width:27mm;border-radius:14px;padding:3px;box-shadow:none}.phone img{border-radius:11px}
+  .phone.p2{width:24mm;inset-inline-start:19mm;top:8mm}
+  .phones .halo{display:none}
+  .pilot{break-before:page;padding:10mm 0 6mm}
+  .pilot-sub{font-size:11pt;margin-top:1.5mm}
+  .timeline{margin-top:4.5mm}
+  .timeline::before{top:4.5mm;inset-inline:4.5mm 4.5mm}
+  .tl-node{width:9mm;height:9mm}
+  .tl{padding-inline-end:5mm}
+  .tl h3{margin-top:2mm;font-size:11pt}.tl p{font-size:8.8pt;margin-top:.5mm;line-height:1.4}
+  .pilot-cols{margin-top:4.5mm;gap:10mm}
+  .pilot-cols h3{font-size:11pt;padding-bottom:1.5mm;border-bottom-width:1.5px}
+  .pilot-cols h3 small{font-size:8.5pt}
+  .clist li{font-size:8.8pt;padding:.9mm 0;grid-template-columns:3.5mm 1fr;gap:2mm;line-height:1.4}
+  .clist svg{width:3.5mm;height:3.5mm;margin-top:.6mm}
+  .price{padding:6mm 0 5.5mm}
+  .price-grid{grid-template-columns:5fr 6fr;gap:10mm}
+  .price-big b{font-size:38pt}.price-big span{font-size:10pt}
+  .price-lead{font-size:11pt;margin-top:2mm}
+  .price-lines{font-size:9pt;margin-top:1mm}
+  .vat{font-size:7.5pt;margin-top:1mm}
+  .partners{margin-top:3mm;padding:2.5mm 3mm;font-size:8.8pt;border-radius:8px;gap:2.5mm}
+  .partners svg{width:7mm;height:7mm}
+  .lic h3,.needs h3{font-size:10.5pt}.lic h3 small{font-size:8pt}
+  .tiers{margin-top:1.5mm}
+  .tiers li{padding:1.2mm 0;font-size:9pt}
+  .tiers b{font-size:10pt}.tiers li:last-child b{font-size:8.5pt}
+  .needs{margin-top:3mm}
+  .nlist{margin-top:1.5mm;gap:2.5mm}
+  .nlist li{padding:2mm 2.5mm;font-size:8.5pt;border-radius:6px;line-height:1.35}
+  .nlist b{font-size:9.5pt;margin-bottom:0}
+  .trust{padding:4.5mm 0 4mm}
+  .trust-grid{grid-template-columns:3fr 9fr;gap:8mm}
+  .tlist{gap:3mm 6mm}
+  .cta{padding:4.5mm 0 4mm;text-align:start}
+  .cta .wrap{display:grid;grid-template-columns:auto 1fr auto;gap:7mm;align-items:center}
+  .cta-badge{width:16mm;height:16mm;filter:none;margin:0}
+  .cta h2{margin:0;font-size:22pt}
+  .cta p{margin:1mm 0 0;font-size:10pt}
+  .cta .btn{display:none}
+  .contact{margin:0;flex-direction:column;align-items:flex-start;gap:.5mm;font-size:9.5pt}
+  .contact a{border:0}
+  .cta-rings{display:none}
+  .foot{padding:2.5mm 0 3mm;font-size:7.5pt}.foot img{width:26mm}
+  section,header,li,.tl{break-inside:avoid}
 }
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="hero-media" aria-hidden="true">
-    <img class="hero-bg" src="assets/shomer-pilot/hero-alley.webp" alt="" width="1280" height="720">
-    <div class="hero-shade"></div>
-  </div>
-  <div class="wrap">
-    <div class="topline">
-      <div class="brandmark">
-        <img src="assets/shomer-pilot/shomer-badge.webp" alt="SH✡MER" width="480" height="480">
-      </div>
-      <span class="tag">הצעת פיילוט לקהילה · 90 יום</span>
-    </div>
+<!-- icon system: 32px line icons, 1.8 stroke, gold duo-tone fills; framed on a hexagon from the ✡ geometry -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="hex" viewBox="0 0 52 52"><path d="M26 2.5 46.4 14.25v23.5L26 49.5 5.6 37.75v-23.5z" style="fill:var(--hexf);stroke:var(--hexs);stroke-width:1.2"/></symbol>
+    <symbol id="i-sos" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="16" cy="16" r="5.6"/><circle cx="16" cy="16" r="5.6"/><path d="M9.2 10.2a9 9 0 0 0 0 11.6M22.8 10.2a9 9 0 0 1 0 11.6M5.6 6.8a13.6 13.6 0 0 0 0 18.4M26.4 6.8a13.6 13.6 0 0 1 0 18.4"/></symbol>
+    <symbol id="i-circle" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12.5" stroke-dasharray="2.2 3.2"/><circle cx="16" cy="13.4" r="3"/><path d="M10.8 21.8a5.2 5.2 0 0 1 10.4 0"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="3.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="5.2" cy="22.3" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="26.8" cy="22.3" r="2.4"/></symbol>
+    <symbol id="i-shake" viewBox="0 0 32 32"><rect style="fill:var(--duo);stroke:none" x="13" y="8.6" width="6" height="12" rx="1"/><rect x="10.8" y="5.5" width="10.4" height="21" rx="2.6"/><path d="M14.6 23.4h2.8M6.4 10.5 4.2 12.8l2.2 2.3-2.2 2.3 2.2 2.3M25.6 10.5l2.2 2.3-2.2 2.3 2.2 2.3-2.2 2.3"/></symbol>
+    <symbol id="i-arrive" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M16 28.5s-8.6-7.6-8.6-14.1a8.6 8.6 0 0 1 17.2 0c0 6.5-8.6 14.1-8.6 14.1z" opacity=".55"/><path d="M16 28.5s-8.6-7.6-8.6-14.1a8.6 8.6 0 0 1 17.2 0c0 6.5-8.6 14.1-8.6 14.1z"/><path d="m12.4 14.4 2.5 2.5 4.7-5"/></symbol>
+    <symbol id="i-call" viewBox="0 0 32 32"><path d="M8.6 6.5h3.6l1.8 4.9-2.3 1.5a11.5 11.5 0 0 0 6.9 6.9l1.5-2.3 4.9 1.8v3.6a2.4 2.4 0 0 1-2.4 2.4A17 17 0 0 1 6.2 8.9a2.4 2.4 0 0 1 2.4-2.4z"/><path style="fill:var(--duo);stroke:none" d="M24 4.6c-1.1-1.5-3.6-.8-3.6 1.1 0 1.8 3.6 4 3.6 4s3.6-2.2 3.6-4c0-1.9-2.5-2.6-3.6-1.1z"/></symbol>
+    <symbol id="i-dash" viewBox="0 0 32 32"><rect x="3.5" y="5.5" width="25" height="17" rx="2.6"/><path d="M11.5 27h9M16 22.5V27"/><circle cx="16" cy="14" r="5" stroke-dasharray="1.8 2.4"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="14" r="2.3"/><circle style="fill:var(--duo);stroke:none" cx="9" cy="10" r="1.2"/><circle style="fill:var(--duo);stroke:none" cx="23.5" cy="17.5" r="1.2"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 32 32"><path d="M9.5 21.5v-7a6.5 6.5 0 0 1 13 0v7l2.2 2.6H7.3z"/><path d="M13.8 27a2.3 2.3 0 0 0 4.4 0"/><circle style="fill:var(--duo);stroke:none" cx="23.4" cy="7.6" r="3.6"/></symbol>
+    <symbol id="i-choice" viewBox="0 0 32 32"><circle cx="13" cy="11" r="4"/><path d="M5 26a8 8 0 0 1 13.4-5.9"/><circle style="fill:var(--duo);stroke:none" cx="23" cy="21.5" r="5.6"/><path d="m20.4 21.6 1.8 1.8 3.3-3.4"/></symbol>
+    <symbol id="i-map" viewBox="0 0 32 32"><path d="M4 8.5 11 6l10 3 7-2.5v18.5L21 27.5l-10-3L4 27z"/><path d="M11 6v18.5M21 9v18.5" opacity=".6"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="14.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="7.8" cy="19" r="1.4"/><circle style="fill:var(--duo);stroke:none" cx="24.4" cy="12" r="1.4"/></symbol>
+    <symbol id="i-together" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="12" cy="16" r="8" opacity=".55"/><circle cx="12" cy="16" r="8"/><circle cx="20" cy="16" r="8"/></symbol>
+    <symbol id="i-lang" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M15.5 13.5h10.6a2 2 0 0 1 2 2v6.2a2 2 0 0 1-2 2h-1.2v3.6l-3.9-3.6h-5.5a2 2 0 0 1-2-2v-6.2a2 2 0 0 1 2-2z"/><path d="M5.8 5.5h12.6a2 2 0 0 1 2 2v7.2a2 2 0 0 1-2 2h-7.3l-4.2 3.6v-3.6H5.8a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2z"/><path d="M7.6 9.6h7.2M7.6 12.6h4.4"/></symbol>
+    <symbol id="i-toggle" viewBox="0 0 32 32"><rect x="3.5" y="10.5" width="25" height="11" rx="5.5"/><circle style="fill:var(--duo);stroke:none" cx="22.8" cy="16" r="3.6"/><circle cx="22.8" cy="16" r="3.6"/></symbol>
+    <symbol id="i-home" viewBox="0 0 32 32"><path d="M4.5 14.6 16 5.5l11.5 9.1M8 12v14.5h16V12"/><path style="fill:var(--duo);stroke:none" d="M16 23.6s-4.4-2.7-4.4-5.4a2.2 2.2 0 0 1 4.4-.9 2.2 2.2 0 0 1 4.4.9c0 2.7-4.4 5.4-4.4 5.4z"/></symbol>
+    <symbol id="tick" viewBox="0 0 20 20"><path d="M10 1.2 17.6 5.6v8.8L10 18.8 2.4 14.4V5.6z" fill="#0A1628"/><path d="m6.4 10.2 2.4 2.4 4.8-5" fill="none" stroke="#F5C840" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="node" viewBox="0 0 44 44"><circle cx="22" cy="22" r="21" fill="#F5C840" stroke="#0A1628" stroke-width="1.5" opacity=".9"/><circle cx="22" cy="22" r="14" fill="#0A1628"/><path d="M22 14.5 28.5 25.75h-13zM22 29.5 15.5 18.25h13z" fill="none" stroke="#F5C840" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
 
-    <div class="hero-grid">
-      <div>
-        <h1><em>אזרחים למען אזרחים:</em>ברגע של סכנה, מי שהכי קרוב יודע ומגיע ראשון.</h1>
-        <p class="sub">רשת שמירה קהילתית בטלפון של כל תושב, ותמונת מצב חיה לרבש"צ / לקב"ט. חינם לתושבים, תמיד.</p>
-        <div class="facts">
-          <div class="fact"><b>90 יום</b><span>משך הפיילוט</span></div>
-          <div class="fact"><b>₪2,500</b><span>לקהילה, לכל התקופה</span></div>
-          <div class="fact"><b>חינם</b><span>לתושבים, תמיד</span></div>
-        </div>
-      </div>
-      <div class="hero-phone phone">
-        <img src="assets/shomer-pilot/screen-map-sos.webp" alt="מסך המפה וכפתור SOS באפליקציית SH✡MER" width="540" height="1168">
+<header class="hero band navy">
+  <picture class="hero-art">
+    <source media="(max-width:700px)" srcset="assets/shomer-pilot/hero-neighbours-m.webp" width="1080" height="582">
+    <source media="(min-width:1601px)" srcset="assets/shomer-pilot/hero-neighbours.webp">
+    <img src="assets/shomer-pilot/hero-neighbours-1600.webp" width="1600" height="800" alt="איור: ערב בשכונה. תושב מבוגר יושב על ספסל, שכנה כורעת לידו ומחזיקה את ידו, שכנה נוספת מניחה יד על כתפו, ושכנים נוספים מגיעים מכל הכיוונים עם טלפונים דולקים. קווי חיבור זהובים מתכנסים לסיכה עם מגן דוד מעליו.">
+  </picture>
+  <svg class="scrim" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="scr" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#0A1628" stop-opacity=".74"/><stop offset=".36" stop-color="#0A1628" stop-opacity=".46"/><stop offset=".6" stop-color="#0A1628" stop-opacity="0"/></linearGradient></defs><rect width="100" height="100" fill="url(#scr)"/></svg>
+  <div class="wrap topbar">
+    <img class="wordmark" src="assets/shomer-pilot/wordmark-white.svg" alt="SH✡MER.APP" width="1190" height="277">
+    <span class="chip"><b>פיילוט קהילתי</b> · 90 יום</span>
+  </div>
+  <div class="wrap hero-body">
+    <div class="hero-copy">
+      <h1><span>אף אחד בקהילה</span> <span>לא&nbsp;לבד.</span></h1>
+      <p class="sub">בלחיצה אחת, השומרים הקרובים אליך יודעים איפה אתה ובאים. ולרבש"צ יש תמונה ברורה ושקטה של מה שקורה.</p>
+      <div class="actions">
+        <a class="btn" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום שיחה של 15 דקות</a>
+        <a class="link" href="#how">איך זה עובד ↓</a>
       </div>
     </div>
+  </div>
+  <div class="wrap stats">
+    <div class="stat"><b>90 יום</b><span>פיילוט מלא</span></div>
+    <div class="stat"><b><bdi>₪2,500</bdi></b><span>לקהילה, לכל התקופה</span></div>
+    <div class="stat"><b>חינם</b><span>לתושבים, תמיד</span></div>
   </div>
 </header>
 
-<section class="problem">
+<main>
+<section class="pain" aria-labelledby="pain-t">
+  <div class="wrap pain-grid">
+    <h2 class="h2" id="pain-t">ברגע הקשה, הדקות הראשונות הן של הקהילה.</h2>
+    <ul class="plist">
+      <li>תושב שצריך עזרה מתקשר, כותב בקבוצה, ומחכה.</li>
+      <li>השכן שגר במרחק דקה לא יודע שקורה משהו.</li>
+      <li>בקבוצת הוואטסאפ ההודעה נבלעת בין עשרות הודעות.</li>
+      <li>לרבש"צ אין תמונה אחת ברורה: מי צריך עזרה, ואיפה.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="why band navy" aria-labelledby="why-t">
+  <img class="ground" src="assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
   <div class="wrap">
-    <div class="problem-inner">
-      <div class="kicker">הבעיה</div>
-      <p class="lead">באירוע אמת, בדקות הראשונות <mark>התושב לבד</mark>, והאנשים שהכי קרובים אליו לא יודעים שקורה משהו.</p>
-      <p class="second">לרכז הביטחון אין תמונה מרוכזת בזמן אמת של מי צריך עזרה ואיפה.</p>
+    <div class="answer">
+      <svg class="answer-mark" viewBox="0 0 132 132" aria-hidden="true">
+        <circle cx="66" cy="66" r="64" fill="none" stroke="#F5C840" stroke-opacity=".18"/>
+        <circle cx="66" cy="66" r="48" fill="none" stroke="#F5C840" stroke-opacity=".32"/>
+        <circle cx="66" cy="66" r="32" fill="#E0A828"/>
+        <path d="M66 50 79.9 74H52.1zM66 82 52.1 58h27.8z" fill="none" stroke="#0A1628" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="66" cy="2" r="4" fill="#F5C840"/><circle cx="10.6" cy="98" r="4" fill="#F5C840"/><circle cx="121.4" cy="98" r="4" fill="#F5C840"/>
+      </svg>
+      <p><strong><span class="sh">SH<i>✡</i>MER</span> הופך את הקהילה לרשת של שומרים:</strong> מי שצריך עזרה לוחץ, ומי שהכי קרוב יודע מיד, עם מיקום חי.</p>
     </div>
+    <div class="why-head">
+      <h2 class="h2" id="why-t">מה שוואטסאפ לא יכול לתת.</h2>
+      <small>למה <span class="sh">SH<i>✡</i>MER</span> מתאים לכם</small>
+    </div>
+    <ul class="wlist">
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-alert" x="10" y="10" width="32" height="32"/></svg><h3>התראה אחת, ברורה, לאנשים הנכונים.</h3><p>לא עוד הודעה בקבוצה. התראת SOS עם מיקום חי, ישר לשומרים שבחרת.</p></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-choice" x="10" y="10" width="32" height="32"/></svg><h3>המעגל שלך, בבחירה שלך.</h3><p>כל תושב בוחר מי השומרים שלו. אין מעקב, אין שיתוף בלי הסכמה.</p></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-map" x="10" y="10" width="32" height="32"/></svg><h3>תמונת מצב לרבש"צ, בלי לחשוף שמות.</h3><p>מפה חיה של אירועים בקהילה, ששומרת על פרטיות התושבים.</p></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-together" x="10" y="10" width="32" height="32"/></svg><h3>משלים את 100, לא מחליף.</h3><p>המשטרה ומד"א בדרך. <span class="sh">SH<i>✡</i>MER</span> מביא את מי שכבר נמצא דקה ממך.</p></li>
+    </ul>
   </div>
 </section>
 
-<section class="features">
-  <div class="wrap features-grid">
+<section class="features" id="how" aria-labelledby="feat-t">
+  <div class="wrap feat-grid">
     <div>
-      <div class="kicker">מה מקבלים</div>
-      <h2>כל מה שהקהילה צריכה, בטלפון של כל תושב.</h2>
+      <h2 class="h2" id="feat-t">כל מה שהקהילה צריכה, בטלפון של כל תושב.</h2>
       <ul class="flist">
-        <li><span class="n">01</span><div><b>כפתור SOS</b><p>שולח מיקום חי לשומרים שבחרתם במעגל שלכם. בחירום אמיתי מחייגים 100.</p></div></li>
-        <li><span class="n">02</span><div><b>ניעור = SOS</b><p>עובד גם כשהטלפון נעול (אנדרואיד, גרסת Google Play).</p></div></li>
-        <li><span class="n">03</span><div><b>"שיחה מאמא"</b><p>שיחה מדומה לבדיקת מצב. אומרים את מילת הקוד; תשובה שגויה או אי־מענה מפעילים SOS שקט.</p></div></li>
-        <li><span class="n">04</span><div><b>טיימר "תבדקו שהגעתי"</b><p>אם לא אישרתם בזמן, השומרים שלכם מקבלים התראה.</p></div></li>
-        <li><span class="n">05</span><div><b>לוח בקרה קהילתי לרכז הביטחון</b><p>מפה חיה של אירועי SOS, שעון ישראל וספירת מכשירים. שומר על פרטיות, בלי שמות.</p></div></li>
-        <li><span class="n">06</span><div><b>עברית, ערבית ואנגלית</b><p>האפליקציה זמינה בשלוש שפות.</p></div></li>
+        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-sos" x="10" y="10" width="32" height="32"/></svg><div><h3>כפתור SOS</h3><p>מיקום חי נשלח לשומרים שבחרת במעגל שלך.</p></div></li>
+        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-circle" x="10" y="10" width="32" height="32"/></svg><div><h3>השומרים שלי</h3><p>בוחרים מי בא אליך כשצריך. באישור הדדי בלבד.</p></div></li>
+        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-shake" x="10" y="10" width="32" height="32"/></svg><div><h3>ניעור = SOS</h3><p>מפעילים גם כשהטלפון נעול (אנדרואיד).</p></div></li>
+        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-arrive" x="10" y="10" width="32" height="32"/></svg><div><h3>"תבדקו שהגעתי"</h3><p>לא אישרת הגעה בזמן? השומרים שלך מקבלים התראה.</p></div></li>
+        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-call" x="10" y="10" width="32" height="32"/></svg><div><h3>"שיחה מאמא"</h3><p>שיחה מדומה ליציאה ממצב לא נוח. מילת קוד שגויה מפעילה SOS שקט.</p></div></li>
+        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-dash" x="10" y="10" width="32" height="32"/></svg><div><h3>לוח בקרה לרבש"צ / לקב"ט</h3><p>מפה חיה של אירועי SOS בקהילה, בלי שמות.</p></div></li>
       </ul>
     </div>
-    <div>
-      <div class="phones">
-        <figure><div class="phone"><img src="assets/shomer-pilot/screen-my-shomers.webp" alt="מסך השומרים שלי ומעגלי השומרים" width="540" height="1168" loading="lazy"></div><figcaption class="cap">השומרים שלי</figcaption></figure>
-        <figure><div class="phone"><img src="assets/shomer-pilot/screen-emergency-guide.webp" alt="מסך מדריך החירום" width="540" height="1168" loading="lazy"></div><figcaption class="cap">מדריך חירום</figcaption></figure>
+    <div class="phones" aria-label="מסכים אמיתיים מהאפליקציה">
+      <svg class="halo" viewBox="0 0 380 380" aria-hidden="true"><circle cx="190" cy="190" r="188" fill="none" stroke="#C09020" stroke-opacity=".3"/><circle cx="190" cy="190" r="140" fill="none" stroke="#C09020" stroke-opacity=".45"/><circle cx="190" cy="190" r="92" fill="#E0A828" fill-opacity=".16"/></svg>
+      <div class="phone p2"><img src="assets/shomer-pilot/app-circles.webp" alt="מסך השומרים שלי: מעגלי שומרים של משפחה, חברים, שכנים, עבודה, קהילה וספורט" width="540" height="1168" loading="lazy"></div>
+      <div class="phone p1"><img src="assets/shomer-pilot/app-map.webp" alt="מסך המפה של SH✡MER עם כפתור SOS" width="540" height="1168" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section class="pilot band gold" aria-labelledby="pilot-t">
+  <img class="ground" src="assets/shomer-pilot/ground-gold.svg" alt="" aria-hidden="true">
+  <div class="wrap">
+    <div class="pilot-head">
+      <div>
+        <h2 class="h2" id="pilot-t">פיילוט "קהילה שומרת" · 90 יום</h2>
+        <p class="pilot-sub">מתחילים קטן, מודדים יחד, מחליטים לפי מה שרואים.</p>
+      </div>
+    </div>
+    <ol class="timeline" aria-label="ציר הזמן">
+      <li class="tl"><svg class="tl-node" viewBox="0 0 44 44" aria-hidden="true"><use href="#node"/></svg><h3>שבוע 1</h3><p>מגדירים יחד יעדים. הרבש"צ ו־10–20 שומרים ראשונים מותקנים.</p></li>
+      <li class="tl"><svg class="tl-node" viewBox="0 0 44 44" aria-hidden="true"><use href="#node"/></svg><h3>חודש 1</h3><p>מזמינים את התושבים. כל אחד בונה את מעגל השומרים שלו.</p></li>
+      <li class="tl"><svg class="tl-node" viewBox="0 0 44 44" aria-hidden="true"><use href="#node"/></svg><h3>חודש 2</h3><p>תרגיל SOS מתואם. מתקנים לפי מה שלמדנו.</p></li>
+      <li class="tl"><svg class="tl-node" viewBox="0 0 44 44" aria-hidden="true"><use href="#node"/></svg><h3>יום 90</h3><p>פגישת סיכום: מה עבד, מה לא, ומחליטים יחד.</p></li>
+    </ol>
+    <div class="pilot-cols">
+      <div>
+        <h3>מה כלול</h3>
+        <ul class="clist">
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>הטמעה בקהילה: הדרכה קצרה לרבש"צ ולשומרים הראשונים.</span></li>
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>לוח בקרה לרבש"צ / לקב"ט לאורך כל הפיילוט.</span></li>
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>חומרים מוכנים לתושבים: הודעה לקבוצת היישוב, פוסטר ומדריך קצר.</span></li>
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>תרגיל SOS מתואם אחד עם הקהילה.</span></li>
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>דוח קצר כל שבועיים, ופגישת סיכום ביום ה־90.</span></li>
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>איש קשר ישיר: דייב.</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>מה נמדוד<small>יעדים שנקבע איתכם מראש</small></h3>
+        <ul class="clist">
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>כמה תושבים הצטרפו.</span></li>
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>כמה מהם בנו מעגל עם לפחות 2 שומרים.</span></li>
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>בתרגיל: כמה זמן עבר מהלחיצה ועד שהשומר הראשון ענה.</span></li>
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>כמה מהר הרבש"צ ראה את האירוע בלוח הבקרה.</span></li>
+          <li><svg aria-hidden="true"><use href="#tick"/></svg><span>איך הרגישו התושבים: סקר קצר בסוף, האם הם מרגישים פחות לבד.</span></li>
+        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<section class="pilot">
-  <div class="wrap pilot-grid">
+<section class="price band navy" aria-labelledby="price-t">
+  <img class="ground" src="assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
+  <div class="wrap price-grid">
     <div>
-      <div class="kicker">הפיילוט</div>
-      <div class="bignums">
-        <div class="bignum"><b>90 יום</b><span>משך הפיילוט</span></div>
-        <div class="bignum"><b class="ltr">₪2,500</b><span>לקהילה, לכל התקופה</span></div>
+      <h2 class="sr" id="price-t">המחיר</h2>
+      <div class="price-big"><b><bdi>₪2,500</bdi></b><span>לכל 90 הימים</span></div>
+      <p class="price-lead">לקהילה, לא לתושב.</p>
+      <div class="price-lines">
+        <p>חינם לתושבים, תמיד. לא נדרשת התחייבות להמשך.</p>
+        <p>ממשיכים? ה־₪2,500 מקוזזים מהשנה הראשונה.</p>
       </div>
-      <div class="free">חינם לתושבים, תמיד.</div>
+      <p class="vat">המחירים לפני מע"מ.</p>
+      <div class="partners">
+        <svg viewBox="0 0 52 52" class="ic" aria-hidden="true" style="width:36px;height:36px"><use href="#hex"/><use href="#i-home" x="10" y="10" width="32" height="32"/></svg>
+        <p>לשתי הקהילות הראשונות: פיילוט ללא עלות, בתמורה למשוב קבוע ולסיפור הצלחה משותף. <strong>מספר המקומות מוגבל.</strong></p>
+      </div>
     </div>
     <div>
-      <ul class="plist">
-        <li><span><b>הטמעה</b> של השומרים הראשונים בקהילה</span></li>
-        <li><span><b>לוח הבקרה</b> לרכז הביטחון לאורך כל הפיילוט</span></li>
-        <li><span><b>דוח שבועי</b></span></li>
-        <li><span><b>פגישת סיכום</b> ביום ה־90</span></li>
-      </ul>
-      <p class="after">אחרי הפיילוט: רישיון שנתי החל מ־₪25,000 לקהילה. למועצות אזוריות: תמחור לפי מספר תושבים.</p>
-    </div>
-  </div>
-</section>
-
-<section class="needs">
-  <div class="wrap needs-grid">
-    <div>
-      <div class="kicker">מה צריך מכם</div>
-      <ul class="nlist">
-        <li><span><b>איש קשר אחד</b> מטעם הקהילה</span></li>
-        <li><span><b>רשימה</b> של השומרים הראשונים</span></li>
-        <li><span><b>15 דקות</b> להטמעה</span></li>
-      </ul>
-    </div>
-    <div class="cta">
-      <h2>מתחילים?</h2>
-      <p>פגישה של 15 דקות ויוצאים לדרך.</p>
-      <a class="btn" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום פגישה
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
-      <div class="contact">
-        <strong>דייב מרקוביץ'</strong>
-        <a class="ltr" href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a>
-        <a class="ltr" href="https://www.shomer-app.co.il">shomer-app.co.il</a>
+      <div class="lic">
+        <h3>אחרי הפיילוט<small>רישיון שנתי לפי גודל הקהילה</small></h3>
+        <ul class="tiers">
+          <li><span>עד 1,000 תושבים</span><b><bdi>₪9,900</bdi> לשנה</b></li>
+          <li><span>1,000–5,000 תושבים</span><b><bdi>₪18,000</bdi> לשנה</b></li>
+          <li><span>5,000–10,000 תושבים</span><b><bdi>₪25,000</bdi> לשנה</b></li>
+          <li><span>מועצות אזוריות ורשויות</span><b>לפי מספר תושבים, בהצעה מותאמת</b></li>
+        </ul>
+      </div>
+      <div class="needs">
+        <h3>מה צריך מכם</h3>
+        <ul class="nlist">
+          <li><b>איש קשר אחד</b>מטעם הקהילה (בדרך כלל הרבש"צ או המזכיר/ה).</li>
+          <li><b>רשימה</b>של 10–20 שומרים ראשונים.</li>
+          <li><b>15 דקות</b>לשיחת פתיחה.</li>
+        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<footer>
+<section class="trust" aria-labelledby="trust-t">
+  <div class="wrap trust-grid">
+    <h2 class="h2" id="trust-t">בנוי באחריות.</h2>
+    <ul class="tlist">
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-toggle" x="10" y="10" width="32" height="32"/></svg><div><h3>התושב מחליט.</h3><p>מיקום משותף רק עם שומרים שהתושב בחר ואישר.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-map" x="10" y="10" width="32" height="32"/></svg><div><h3>לוח הבקרה בלי שמות.</h3><p>הרבש"צ רואה אירועים, לא מעקב אחרי אנשים.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-lang" x="10" y="10" width="32" height="32"/></svg><div><h3>עברית, ערבית ואנגלית.</h3><p>האפליקציה זמינה בשלוש שפות.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-home" x="10" y="10" width="32" height="32"/></svg><div><h3>כלי קהילתי, לא שירות חירום.</h3><p><span class="sh">SH<i>✡</i>MER</span> לא מחליף את <bdi style="white-space:nowrap">100 · 101 · 102</bdi>. בחירום, חייגו קודם.</p></div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="cta band navy" aria-labelledby="cta-t">
+  <img class="ground" src="assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
+  <svg class="cta-rings" viewBox="0 0 1100 1100" aria-hidden="true">
+    <circle cx="550" cy="550" r="545" fill="none" stroke="#F5C840" stroke-opacity=".06"/>
+    <circle cx="550" cy="550" r="420" fill="none" stroke="#F5C840" stroke-opacity=".09"/>
+    <circle cx="550" cy="550" r="300" fill="none" stroke="#F5C840" stroke-opacity=".12"/>
+    <circle cx="550" cy="550" r="180" fill="none" stroke="#F5C840" stroke-opacity=".16"/>
+  </svg>
+  <div class="wrap">
+    <img class="cta-badge" src="assets/shomer-pilot/shomer-badge.webp" alt="SH✡MER" width="480" height="480">
+    <div>
+      <h2 id="cta-t">מתחילים?</h2>
+      <p>שיחה של 15 דקות, ואתם יודעים אם זה מתאים לקהילה שלכם.</p>
+      <a class="btn" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום שיחה</a>
+    </div>
+    <div class="contact">
+      <strong>דייב מרקוביץ' · 3Shamrocks Studio</strong>
+      <a class="ltr" href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a>
+      <a class="ltr" href="https://www.shomer-app.co.il">shomer-app.co.il</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="band">
   <div class="wrap foot">
-    <p><span class="sh">SH<i>✡</i>MER</span> הוא כלי עזר קהילתי בלבד, לא שירות חירום ולא תחליף לו. בחירום חייגו 100 · 101 · 102. © 3Shamrocks Studio</p>
-    <img src="assets/shomer-pilot/3shamrocks-studio.webp" alt="3Shamrocks Studio" width="452" height="66" loading="lazy">
+    <p><bdi>© 2026 3Shamrocks Studio</bdi> · <span class="sh">SH<i>✡</i>MER</span>™</p>
+    <img src="assets/shomer-pilot/3shamrocks-studio.webp" alt="3Shamrocks Studio" width="452" height="66">
   </div>
 </footer>
 
