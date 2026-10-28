@@ -18,7 +18,7 @@
 .secure svg{width:18px;height:18px}
 .co{padding:48px 0 96px}
 .co-grid{display:grid;grid-template-columns:7fr 4.4fr;gap:40px;align-items:start}
-.back{display:inline-flex;gap:8px;font-size:15px;font-weight:600;color:var(--ink2);margin-bottom:18px}
+.back{display:inline-flex;align-items:center;min-height:44px;gap:8px;font-size:15px;font-weight:600;color:var(--ink2);margin-bottom:6px}
 .back:hover{color:var(--ink)}
 .co h1{font-size:clamp(30px,3vw,40px);line-height:1.15;font-weight:800;letter-spacing:-.02em}
 .co .sub{margin-top:8px;color:var(--ink3);font-size:17px}
@@ -59,7 +59,9 @@
 .nav2{margin-top:26px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .nav2 .sp{flex:1}
 .nav2 .btn-ghost{min-height:50px}
-.altpay{font-size:15px;font-weight:600;color:var(--ink2);border-bottom:1px solid var(--hair2);padding-bottom:1px}
+.altpay{font-size:15px;font-weight:600;color:var(--ink2);border-bottom:1px solid var(--hair2);padding-bottom:1px;min-height:44px}
+.check.full{min-height:44px;align-items:center}
+.check small{font-size:13.5px;color:var(--ink3)}
 
 /* summary */
 .sum{position:sticky;top:24px;padding:28px;border-radius:22px;background:var(--n1);color:var(--tx0);box-shadow:0 40px 70px -40px rgba(10,22,40,.8)}
@@ -200,6 +202,7 @@
             <div class="field"><label for="taxid">ח.פ. / ע.מ. <small>(לא חובה)</small></label><input class="input ltr" id="taxid" name="taxid" inputmode="numeric" maxlength="12"></div>
             <div class="field"><label for="residents">מספר תושבים, בערך <span class="req">*</span></label><input class="input ltr" id="residents" name="residents" inputmode="numeric" required maxlength="7"></div>
             <div class="full" id="tierhint" hidden></div>
+            <label class="check full" id="credit-row" hidden><input type="checkbox" id="c-credit"><span>כבר עשינו פיילוט "קהילה שומרת". לקזז <bdi>₪2,500</bdi> מהשנה הראשונה. <small>(נאמת מול ההזמנה הקודמת)</small></span></label>
             <div class="field"><label for="name">שם איש הקשר <span class="req">*</span></label><input class="input" id="name" name="name" required autocomplete="name"></div>
             <div class="field"><label for="role">תפקיד</label><select class="select" id="role" name="role"><option>רבש"צ</option><option>קב"ט</option><option>מזכיר/ה</option><option>יו"ר ועד</option><option>אחר</option></select></div>
             <div class="field"><label for="email">אימייל <span class="req">*</span></label><input class="input ltr" id="email" name="email" type="email" required autocomplete="email"><small>לכאן תישלח החשבונית וההזמנה ללוח הבקרה.</small></div>
@@ -299,12 +302,13 @@
     council:['לוח בקרה לכל יישוב, ותמונה אחת למועצה','האפליקציה חינם לכל התושבים','הטמעה וחומרים לכל היישובים','תשלום מול הזמנת רכש וחשבונית מס']
   };
   var MAXRES={s:1000,m:5000,l:10000};
+  function mo(k){ return 'לשנה · כ־'+ils(SC.monthly(P[k].price))+' לחודש'; }
   var OPTS=[
-    {k:'pilot',b:'פיילוט "קהילה שומרת" · 90 יום',s:'מקוזז מהשנה הראשונה. ללא התחייבות.',pr:ils(2500),ps:'ל־90 יום',badge:'הכי מתאים להתחלה'},
-    {k:'s',b:'רישיון שנתי · עד 1,000 תושבים',s:'יישוב, קיבוץ, מושב או שכונה',pr:ils(9900),ps:'לשנה'},
-    {k:'m',b:'רישיון שנתי · 1,000–5,000 תושבים',s:'יישוב גדול או ישוב קהילתי',pr:ils(18000),ps:'לשנה'},
-    {k:'l',b:'רישיון שנתי · 5,000–10,000 תושבים',s:'מועצה מקומית או קהילה גדולה',pr:ils(25000),ps:'לשנה'},
-    {k:'council',b:'מועצה אזורית / רשות · הצעת מחיר',s:'₪2 לתושב לשנה, מינימום ₪40,000. מול הזמנת רכש.',pr:'הצעה',ps:'תוך דקה'}
+    {k:'pilot',b:P.pilot.name,s:'תשלום אחד. מקוזז מהשנה הראשונה. ללא התחייבות.',pr:ils(P.pilot.price),ps:'ל־90 יום',badge:'הכי מתאים להתחלה'},
+    {k:'s',b:P.s.name,s:'יישוב, קיבוץ, מושב או שכונה',pr:ils(P.s.price),ps:mo('s')},
+    {k:'m',b:P.m.name,s:'יישוב גדול או יישוב קהילתי',pr:ils(P.m.price),ps:mo('m')},
+    {k:'l',b:P.l.name,s:'מועצה מקומית או קהילה גדולה',pr:ils(P.l.price),ps:mo('l')},
+    {k:'council',b:SC.COUNCIL.name+' · מועצות אזוריות ורשויות',s:'₪2 לתושב לשנה, מינימום ₪40,000. מול הזמנת רכש.',pr:'הצעת מחיר',ps:'מוכנה תוך דקה'}
   ];
   var q=new URLSearchParams(location.search), plan=q.get('plan'); if(!(plan in P)&&plan!=='council') plan='pilot';
   var step=1;
@@ -322,7 +326,7 @@
   function summary(){
     if(plan==='council'){
       var r=+($('q-res').value||'').replace(/\D/g,''), net=SC.councilPrice(r), pil=$('q-pilot').checked;
-      $('sum-name').textContent='רישיון שנתי למועצה';
+      $('sum-name').textContent=SC.COUNCIL.name;
       $('sum-for').textContent=r?(r.toLocaleString('en-US')+' תושבים × ₪2'+(r*2<SC.COUNCIL.min?' · מינימום ₪40,000':'')):'הזינו מספר תושבים';
       $('sum-lines').innerHTML=lines(net+(pil?2500:0), pil?'<div><span>פיילוט ביישוב אחד</span><b><bdi>₪2,500</bdi></b></div><div><span>רישיון שנתי</span><b><bdi>'+ils(net)+'</bdi></b></div>':'');
       $('sum-incl').innerHTML=incl(INCL.council);
@@ -331,7 +335,8 @@
     }
     var p=P[plan];
     $('sum-name').textContent=p.name; $('sum-for').textContent=p.period==='לשנה'?'חיוב שנתי · '+p.residents:'תשלום אחד ל־90 יום';
-    $('sum-lines').innerHTML=lines(p.price);
+    var cr=credit();
+    $('sum-lines').innerHTML=lines(p.price-cr, cr?'<div><span>'+esc(p.short)+'</span><b><bdi>'+ils(p.price)+'</bdi></b></div><div><span>קיזוז הפיילוט</span><b><bdi>'+ils(-cr)+'</bdi></b></div>':'');
     $('sum-incl').innerHTML=incl(plan==='pilot'?INCL.pilot:INCL.lic);
     $('sum-fine').textContent=p.note+' חשבונית מס נשלחת לאימייל שתזינו.';
   }
@@ -345,13 +350,13 @@
     $('h1').innerHTML=council?'הצעת מחיר · <span class="sh">SH<i>✡</i>MER Command</span>':'הזמנת <span class="sh">SH<i>✡</i>MER Command</span>';
     $('sub').textContent=council?'דקה אחת, והצעה מסודרת להדפסה בידיים שלכם.':'שלוש דקות, ואתם בפנים.';
     if(council){ plan='council'; $('sq').hidden=false; summary(); SC.track('checkout_step',{n:'quote'}); return; }
-    step=n; $('s'+n).hidden=false; stepper(n); summary();
+    step=n; $('s'+n).hidden=false; stepper(n); $('credit-row').hidden=(plan==='pilot'); summary();
     if(n===3) $('s3-sub').textContent=P[plan].name+' · '+$('org').value.trim();
     SC.track('checkout_step',{n:n,plan:plan});
     if(window.scrollY>200) window.scrollTo({top:0,behavior:'smooth'});
   }
   document.querySelectorAll('[data-back]').forEach(function(b){ b.addEventListener('click',function(){ go(+b.getAttribute('data-back')); }); });
-  $('to2').addEventListener('click',function(){ go(2); setTimeout(function(){ $('org').focus(); },50); });
+  $('to2').addEventListener('click',function(){ go(2); $('org').focus(); });
 
   /* step 2 validation */
   var EM=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -375,14 +380,16 @@
   $('residents').addEventListener('input',tierHint);
   $('f2').addEventListener('submit',function(e){ e.preventDefault(); if(val('f2',['org','payer','residents','name','email','phone'],'e2')) go(3); });
 
+  function credit(){ return (plan!=='pilot'&&plan!=='council'&&$('c-credit').checked)?SC.PILOT_CREDIT:0; }
+  $('c-credit').addEventListener('change',summary);
   function order(){
-    var v=SC.withVat(P[plan].price);
+    var cr=credit(), v=SC.withVat(P[plan].price-cr);
     return {plan:plan, plan_name:P[plan].name, org:$('org').value.trim(), payer:$('payer').value.trim(), tax_id:$('taxid').value.trim(),
       residents:+$('residents').value.replace(/\D/g,''), contact:$('name').value.trim(), role:$('role').value, email:$('email').value.trim(), phone:$('phone').value.trim(),
-      amount_net:v.net, vat:v.vat, total:v.total, currency:'ILS'};
+      list_price:P[plan].price, credit:cr, amount_net:v.net, vat:v.vat, total:v.total, currency:'ILS'};
   }
   function orderText(o){
-    return 'הזמנת SH✡MER Command\n\nתוכנית: '+o.plan_name+'\nמחיר לפני מע"מ: '+ils(o.amount_net)+'\nמע"מ 18%: '+ils(o.vat)+'\nסה"כ: '+ils(o.total)
+    return 'הזמנת SH✡MER Command\n\nתוכנית: '+o.plan_name+(o.credit?'\nקיזוז פיילוט: '+ils(-o.credit):'')+'\nמחיר לפני מע"מ: '+ils(o.amount_net)+'\nמע"מ 18%: '+ils(o.vat)+'\nסה"כ: '+ils(o.total)
       +'\n\nקהילה: '+o.org+'\nגוף משלם: '+o.payer+(o.tax_id?' ('+o.tax_id+')':'')+'\nמספר תושבים: '+o.residents.toLocaleString('en-US')
       +'\nאיש קשר: '+o.contact+' · '+o.role+'\nאימייל: '+o.email+'\nטלפון: '+o.phone+'\n';
   }
@@ -432,7 +439,7 @@
   $('alt').addEventListener('click',function(){
     var o=order();
     showDoc(doc({title:'סיכום הזמנה',ref:ref('SO'),to:o.payer+' · '+o.org,contact:o.contact+' · '+o.role,email:o.email,phone:o.phone,net:o.amount_net,
-      rows:[[esc(o.plan_name)+'<br><span style="color:var(--ink3);font-size:14px">'+(plan==='pilot'?'90 יום · מקוזז מהשנה הראשונה אם ממשיכים':'חיוב שנתי')+'</span>',o.amount_net]],
+      rows:[[esc(o.plan_name)+'<br><span style="color:var(--ink3);font-size:14px">'+(plan==='pilot'?'90 יום · מקוזז מהשנה הראשונה אם ממשיכים':'חיוב שנתי')+'</span>',o.list_price]].concat(o.credit?[['קיזוז פיילוט "קהילה שומרת"',-o.credit]]:[]),
       terms:['תשלום בהעברה בנקאית או מול הזמנת רכש. פרטי חשבון יישלחו עם אישור ההזמנה.','ההזמנה בתוקף 30 יום.'].concat(baseTerms),
       note:'מסמך זה הוא סיכום הזמנה, ואינו חשבונית מס.'}),
       'סיכום ההזמנה מוכן','הדפיסו או שמרו כ־PDF, ושלחו לנו. נחזור עם פרטי העברה וחשבונית.','סיכום הזמנה SH✡MER Command · '+o.org, orderText(o)+'\nמבקשים לשלם בהעברה בנקאית / מול הזמנת רכש.\n','order');
@@ -446,8 +453,8 @@
   $('fq').addEventListener('submit',function(e){
     e.preventDefault(); if(!val('fq',['q-org','q-res','q-name','q-email','q-phone'],'eq')) return;
     var r=+$('q-res').value.replace(/\D/g,''), net=SC.councilPrice(r), pil=$('q-pilot').checked, com=$('q-com').value.replace(/\D/g,'');
-    var rows=[['רישיון שנתי SH✡MER Command למועצה'+(com?' · '+com+' יישובים':'')+'<br><span style="color:var(--ink3);font-size:14px">'+r.toLocaleString('en-US')+' תושבים × ₪2 לתושב לשנה'+(r*2<SC.COUNCIL.min?' · מינימום ₪40,000':'')+'</span>',net]];
-    if(pil) rows.unshift(['פיילוט "קהילה שומרת" · 90 יום ביישוב אחד<br><span style="color:var(--ink3);font-size:14px">מקוזז מהשנה הראשונה אם ממשיכים</span>',2500]);
+    var rows=[[SC.COUNCIL.name+' · SH✡MER Command'+(com?' · '+com+' יישובים':'')+'<br><span style="color:var(--ink3);font-size:14px">'+r.toLocaleString('en-US')+' תושבים × ₪2 לתושב לשנה'+(r*2<SC.COUNCIL.min?' · מינימום ₪40,000':'')+'</span>',net]];
+    if(pil) rows.unshift([P.pilot.name+' ביישוב אחד<br><span style="color:var(--ink3);font-size:14px">מקוזז מהשנה הראשונה אם ממשיכים</span>',2500]);
     var total=net+(pil?2500:0), o={org:$('q-org').value.trim(),contact:$('q-name').value.trim()+' · '+$('q-role').value,email:$('q-email').value.trim(),phone:$('q-phone').value.trim()};
     var R=ref('Q');
     showDoc(doc({title:'הצעת מחיר',ref:R,to:o.org,contact:o.contact,email:o.email,phone:o.phone,net:total,rows:rows,

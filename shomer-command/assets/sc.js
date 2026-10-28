@@ -18,20 +18,24 @@
 
   /* ═══ Prices (PRICING.md, before VAT) ═══ */
   var VAT = 0.18; /* Israel VAT 18% since 1 Jan 2025 */
+  /* One naming + one price table for every page (PRICING.md, revision 2026-10-28). */
+  var PILOT_CREDIT = 2500; /* paid pilot is credited against the first licence year */
   var PLANS = {
-    pilot: { key: 'pilot', name: 'פיילוט "קהילה שומרת"', short: 'פיילוט · 90 יום', price: 2500, period: 'ל־90 יום', residents: 'כל גודל עד 10,000 תושבים',
+    pilot: { key: 'pilot', name: 'פיילוט "קהילה שומרת" · 90 יום', short: 'פיילוט · 90 יום', price: 2500, period: 'ל־90 יום', residents: 'כל קהילה עד 10,000 תושבים',
       note: 'מקוזז מהשנה הראשונה אם ממשיכים. ללא התחייבות להמשך.' },
-    s: { key: 's', name: 'רישיון שנתי · עד 1,000 תושבים', short: 'עד 1,000 תושבים', price: 9900, period: 'לשנה', residents: 'עד 1,000 תושבים',
+    s: { key: 's', name: 'רישיון שנתי · עד 1,000 תושבים', short: 'עד 1,000 תושבים', price: 9900, period: 'לשנה', residents: 'עד 1,000 תושבים', perResident: 10,
       note: 'שילמתם פיילוט? ה־₪2,500 מקוזזים.' },
-    m: { key: 'm', name: 'רישיון שנתי · 1,000–5,000 תושבים', short: '1,000–5,000 תושבים', price: 18000, period: 'לשנה', residents: '1,000–5,000 תושבים',
+    m: { key: 'm', name: 'רישיון שנתי · עד 5,000 תושבים', short: 'עד 5,000 תושבים', price: 18000, period: 'לשנה', residents: '1,001–5,000 תושבים',
       note: 'שילמתם פיילוט? ה־₪2,500 מקוזזים.' },
-    l: { key: 'l', name: 'רישיון שנתי · 5,000–10,000 תושבים', short: '5,000–10,000 תושבים', price: 25000, period: 'לשנה', residents: '5,000–10,000 תושבים',
+    l: { key: 'l', name: 'רישיון שנתי · עד 10,000 תושבים', short: 'עד 10,000 תושבים', price: 25000, period: 'לשנה', residents: '5,001–10,000 תושבים',
       note: 'שילמתם פיילוט? ה־₪2,500 מקוזזים.' }
   };
-  var COUNCIL = { perResident: 2, min: 40000 };
+  var COUNCIL = { name: 'רישיון מועצה', perResident: 2, min: 40000 };
   var CONTACT = 'dave@3shamrocks.com';
 
-  function ils(n) { return '₪' + Math.round(n).toLocaleString('en-US'); }
+  function ils(n) { n = Math.round(n); return (n < 0 ? '−' : '') + '₪' + Math.abs(n).toLocaleString('en-US'); }
+  /* monthly equivalent of an annual price, rounded to ₪10 (display only; billing stays annual) */
+  function monthly(n) { return Math.round(n / 12 / 10) * 10; }
   function withVat(n) { var v = Math.round(n * VAT); return { net: n, vat: v, total: n + v }; }
   function councilPrice(residents) { return Math.max(COUNCIL.min, Math.round((+residents || 0) * COUNCIL.perResident)); }
 
@@ -94,7 +98,8 @@
   /* ═══ payment hand-off (checkout calls this) ═══ */
   function startPayment(order) {
     track('pay_click', { plan: order.plan, mode: PAY.mode });
-    if (PAY.mode === 'link' && PAY.links[order.plan]) {
+    /* a fixed-price payment link cannot apply the pilot credit: those orders go through the email/quote path */
+    if (PAY.mode === 'link' && PAY.links[order.plan] && !order.credit) {
       W.location.href = PAY.links[order.plan];
       return Promise.resolve('redirect');
     }
@@ -122,7 +127,7 @@
     return 'mailto:' + CONTACT + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   }
 
-  W.SC = { PAY: PAY, PLANS: PLANS, COUNCIL: COUNCIL, VAT: VAT, CONTACT: CONTACT, ils: ils, withVat: withVat,
+  W.SC = { PAY: PAY, PLANS: PLANS, COUNCIL: COUNCIL, PILOT_CREDIT: PILOT_CREDIT, monthly: monthly, VAT: VAT, CONTACT: CONTACT, ils: ils, withVat: withVat,
     councilPrice: councilPrice, track: track, variant: variant, startPayment: startPayment, toast: toast,
     copy: copy, mailto: mailto, sget: sget, sset: sset, _buffer: buffer };
 

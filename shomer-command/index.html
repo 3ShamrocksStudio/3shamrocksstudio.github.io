@@ -98,6 +98,10 @@
 .allin li{display:flex;gap:8px;align-items:center}
 .allin li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--g2)}
 .vatline{margin-top:18px;font-size:14.5px;color:var(--ink3)}
+.credit{margin-top:14px;padding:10px 14px;border-radius:12px;background:rgba(224,168,40,.12);font-size:15px;color:var(--ink2)}
+.credit b{color:var(--ink);font-weight:800}
+.talk{margin-top:22px;font-size:16.5px;color:var(--tx1)}
+.talk .link{color:#fff}
 
 /* ══ TRUST ══ */
 .tlist{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
@@ -120,6 +124,7 @@
 .contact{margin-top:34px;display:flex;justify-content:center;flex-wrap:wrap;gap:8px 28px;font-size:16.5px;color:var(--tx1)}
 .contact strong{color:#fff}
 .contact a{color:#fff;border-bottom:1px solid rgba(245,200,64,.55)}
+.contact{align-items:center}
 .cta-rings{position:absolute;left:50%;top:150px;width:1100px;height:1100px;transform:translateX(-50%);z-index:-1}
 
 /* ══ RESPONSIVE ══ */
@@ -197,7 +202,7 @@
       <a href="#plans" data-track="view_plans" data-track-x="nav">מחירים</a>
       <a href="#faq">שאלות</a>
     </nav>
-    <a class="btn btn-sm" href="demo/" data-track="click_demo" data-track-x="topbar">להדגמה חיה</a>
+    <a class="btn btn-sm" href="demo/" data-track="click_demo" data-track-x="topbar">להדגמה</a>
   </div>
 
   <div class="wrap hero-copy">
@@ -208,10 +213,10 @@
       <div class="actions">
         <a class="btn" href="demo/" data-ab="hero_cta" data-ab-arm="demo" data-track="click_demo" data-track-x="hero">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 8.5v7l5.5-3.5z" fill="currentColor"/></svg>
-          צפו בהדגמה חיה · 2 דקות
+          להדגמה מודרכת · 2 דקות
         </a>
         <a class="btn" href="checkout/?plan=pilot" data-ab="hero_cta" data-ab-arm="pilot" data-track="select_plan" data-track-x="hero-pilot">להתחיל פיילוט · <bdi>₪2,500</bdi></a>
-        <a class="btn-ghost" href="#plans" data-track="view_plans" data-track-x="hero">למחירים</a>
+        <a class="btn-ghost" href="#plans" data-track="view_plans" data-track-x="hero">לתוכניות ומחירים</a>
       </div>
     </div>
     <ul class="facts">
@@ -268,8 +273,7 @@
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <span class="eyebrow">איך זה עובד</span>
-        <h2 class="h2" id="how-t" style="margin-top:14px;color:#fff">מהלחיצה ועד "טופל", על מסך אחד.</h2>
+        <h2 class="h2" id="how-t" style="color:#fff">מהלחיצה ועד "טופל", על מסך אחד.</h2>
       </div>
     </div>
     <div class="how-grid">
@@ -289,7 +293,7 @@
           <li><span class="n">4</span><div><h3>מסמנים "טופל", והכל מתועד</h3><p>יומן תגובה לכל אירוע, ודוח מסודר להנהלת היישוב או למועצה.</p></div></li>
         </ol>
         <div class="actions">
-          <a class="btn" href="demo/" data-track="click_demo" data-track-x="how">לראות את זה קורה · הדגמה מודרכת</a>
+          <a class="btn" href="demo/" data-track="click_demo" data-track-x="how">להדגמה מודרכת · 2 דקות</a>
         </div>
       </div>
     </div>
@@ -300,8 +304,7 @@
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <span class="eyebrow">מה מקבלים</span>
-        <h2 class="h2" id="feat-t" style="margin-top:14px">כל מה שהקהילה צריכה, בטלפון של כל תושב.</h2>
+        <h2 class="h2" id="feat-t">כל מה שהקהילה צריכה, בטלפון של כל תושב.</h2>
       </div>
       <p class="muted">האפליקציה חינם לכל תושב. הקהילה משלמת על לוח הבקרה, ההטמעה והליווי.</p>
     </div>
@@ -320,8 +323,7 @@
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <span class="eyebrow">מחירים</span>
-        <h2 class="h2" id="plans-t" style="margin-top:14px">מתחילים בפיילוט. ממשיכים לפי גודל הקהילה.</h2>
+        <h2 class="h2" id="plans-t">מתחילים בפיילוט. ממשיכים לפי גודל הקהילה.</h2>
       </div>
       <p class="muted">מחיר לקהילה, לא לתושב. התושבים לא משלמים, אף פעם.</p>
     </div>
@@ -332,7 +334,7 @@
         <h3 id="p-pilot">פיילוט "קהילה שומרת"</h3>
         <p class="for">90 יום · מתחילים קטן, מודדים יחד, מחליטים לפי מה שרואים.</p>
         <div class="price"><b><bdi>₪2,500</bdi></b><span>לכל 90 הימים</span></div>
-        <p class="price-sub">ממשיכים? ה־<bdi>₪2,500</bdi> מקוזזים מהשנה הראשונה.</p>
+        <p class="price-sub">תשלום אחד. ממשיכים? ה־<bdi>₪2,500</bdi> מקוזזים מהשנה הראשונה.</p>
         <ul class="incl">
           <li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>הטמעה: הדרכה קצרה לרבש"צ ולשומרים הראשונים</span></li>
           <li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>לוח בקרה לרבש"צ / לקב"ט לכל התקופה</span></li>
@@ -340,15 +342,15 @@
           <li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>תרגיל SOS מתואם, דוח כל שבועיים, פגישת סיכום ביום ה־90</span></li>
         </ul>
         <a class="btn" href="checkout/?plan=pilot" data-track="select_plan" data-track-x="pilot">להתחיל פיילוט</a>
-        <p class="fine">ללא התחייבות להמשך.</p>
+        <p class="fine">ללא התחייבות להמשך. מחליטים יחד ביום ה־90.</p>
       </article>
 
       <article class="plan" aria-labelledby="p-lic">
-        <span class="tag mute">רישיון שנתי</span>
-        <h3 id="p-lic">לפי גודל הקהילה</h3>
+        <span class="tag mute">לפי גודל הקהילה</span>
+        <h3 id="p-lic">רישיון שנתי</h3>
         <p class="for">יישוב, קיבוץ, מושב, שכונה או מועצה מקומית.</p>
         <div class="price"><b id="lic-price"><bdi>₪9,900</bdi></b><span>לשנה</span></div>
-        <p class="price-sub" id="lic-sub">עד 1,000 תושבים · כ־<bdi>₪10</bdi> לתושב לשנה</p>
+        <p class="price-sub" id="lic-sub">כ־<bdi>₪830</bdi> לחודש, בחיוב שנתי · כ־<bdi>₪10</bdi> לתושב</p>
         <div class="seg" role="group" aria-label="גודל הקהילה" id="seg">
           <button type="button" data-tier="s" aria-pressed="true">עד <bdi>1,000</bdi></button>
           <button type="button" data-tier="m" aria-pressed="false">עד <bdi>5,000</bdi></button>
@@ -360,14 +362,15 @@
           <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>חומרי הטמעה ותרגיל SOS מתואם אחד בשנה</span></li>
           <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>תמיכה ישירה מדייב</span></li>
         </ul>
+        <p class="credit" id="lic-credit">אחרי פיילוט: <b><bdi>₪7,400</bdi></b> בשנה הראשונה</p>
         <a class="btn-ghost" id="lic-cta" href="checkout/?plan=s" data-track="select_plan" data-track-x="license">לרכישת רישיון</a>
-        <p class="fine">יותר מ־10,000 תושבים? <a class="link" href="checkout/?plan=council">הצעה מותאמת</a></p>
+        <p class="fine">יותר מ־10,000 תושבים? <a class="link" href="checkout/?plan=council">לרישיון מועצה</a></p>
       </article>
 
       <article class="plan" aria-labelledby="p-council">
         <span class="tag mute">מועצות אזוריות ורשויות</span>
-        <h3 id="p-council">כל היישובים, בעסקה אחת</h3>
-        <p class="for">לפי מספר התושבים, בהצעת מחיר מסודרת.</p>
+        <h3 id="p-council">רישיון מועצה</h3>
+        <p class="for">כל היישובים בעסקה אחת, בהצעת מחיר מסודרת.</p>
         <div class="price"><b><bdi>₪2</bdi></b><span>לתושב לשנה</span></div>
         <p class="price-sub">מינימום <bdi>₪40,000</bdi> לשנה</p>
         <ul class="incl">
@@ -376,15 +379,15 @@
           <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>הצעת מחיר להדפסה תוך דקה</span></li>
           <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>אפשר להתחיל בפיילוט ביישוב אחד</span></li>
         </ul>
-        <a class="btn-ghost" href="checkout/?plan=council" data-track="select_plan" data-track-x="council">בקשת הצעת מחיר</a>
+        <a class="btn-ghost" href="checkout/?plan=council" data-track="select_plan" data-track-x="council">לבקשת הצעת מחיר</a>
         <p class="fine">ללא מכרז ברוב המקרים. <a class="link" href="#faq-tender">פרטים</a></p>
       </article>
     </div>
 
     <div class="partner">
-      <svg viewBox="0 0 52 52" class="ic" aria-hidden="true" style="width:44px;height:44px;--hexf:rgba(10,22,40,.08);--hexs:rgba(10,22,40,.5);--duo:rgba(10,22,40,.25)"><use href="#hex"/><use href="#i-home" x="10" y="10" width="32" height="32"/></svg>
-      <p><strong>שותפי דרך:</strong> לשתי הקהילות הראשונות, פיילוט ללא עלות, בתמורה למשוב קבוע ולסיפור הצלחה משותף. <strong>מספר המקומות מוגבל.</strong></p>
-      <a class="btn-ghost btn-sm" id="partner-cta" href="#" data-track="partner_apply" data-track-x="plans">להגשת מועמדות</a>
+      <svg viewBox="0 0 52 52" class="ic" aria-hidden="true" style="width:44px;height:44px;--hexf:rgba(10,22,40,.08);--hexs:rgba(10,22,40,.5);--duo:rgba(10,22,40,.25)"><use href="#hex"/><use href="#i-together" x="10" y="10" width="32" height="32"/></svg>
+      <p><strong>אין עדיין סעיף תקציבי?</strong> את הפיילוט אפשר לממן גם דרך תורם, קרן או תקציב אחריות חברתית של חברה. נשמח לעזור.</p>
+      <a class="btn-ghost btn-sm" id="partner-cta" href="#" data-track="sponsor_ask" data-track-x="plans">לתיאום שיחה</a>
     </div>
 
     <div class="allin">
@@ -405,8 +408,7 @@
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <span class="eyebrow">אמון ופרטיות</span>
-        <h2 class="h2" id="trust-t" style="margin-top:14px;color:#fff">בנוי באחריות.</h2>
+        <h2 class="h2" id="trust-t" style="color:#fff">בנוי באחריות.</h2>
       </div>
     </div>
     <ul class="tlist">
@@ -421,9 +423,8 @@
 <section class="sec on-paper" id="faq" aria-labelledby="faq-t">
   <div class="wrap faq-grid">
     <aside>
-      <span class="eyebrow">שאלות</span>
-      <h2 class="h2" id="faq-t" style="margin-top:14px">מה שרבש"צים ומזכירויות שואלים.</h2>
-      <p>לא מצאתם תשובה? <a class="link" href="mailto:dave@3shamrocks.com" data-track="contact_click" data-track-x="faq">dave@3shamrocks.com</a></p>
+      <h2 class="h2" id="faq-t">מה שרבש"צים ומזכירויות שואלים.</h2>
+      <p>לא מצאתם תשובה? <a class="link tap" href="mailto:dave@3shamrocks.com" data-track="contact_click" data-track-x="faq">dave@3shamrocks.com</a></p>
     </aside>
     <div class="faq">
       <details>
@@ -448,7 +449,11 @@
       </details>
       <details>
         <summary>מה קורה ביום ה־90?</summary>
-        <div class="a"><p>פגישת סיכום: מה עבד, מה לא, ומחליטים יחד. ממשיכים? ה־<bdi>₪2,500</bdi> מקוזזים מהרישיון של השנה הראשונה. לא ממשיכים? אין התחייבות.</p></div>
+        <div class="a"><p>פגישת סיכום: מה עבד, מה לא, ומחליטים יחד. ממשיכים? ה־<bdi>₪2,500</bdi> מקוזזים מהרישיון של השנה הראשונה. למשל, יישוב של עד 1,000 תושבים משלם <bdi>₪7,400</bdi> על השנה הראשונה במקום <bdi>₪9,900</bdi>. לא ממשיכים? אין התחייבות.</p></div>
+      </details>
+      <details>
+        <summary>אין לנו תקציב. אפשר לממן את הפיילוט אחרת?</summary>
+        <div class="a"><p>כן. את הפיילוט יכול לממן תורם, קרן, או תקציב אחריות חברתית של חברה, במקום הקהילה. החשבונית יוצאת על שם הגוף המממן. <a href="mailto:dave@3shamrocks.com" data-track="contact_click" data-track-x="faq-sponsor">כתבו לדייב</a>, ונבדוק יחד.</p></div>
       </details>
       <details>
         <summary>מה צריך מאיתנו?</summary>
@@ -475,13 +480,14 @@
     <h2 id="cta-t">מתחילים?</h2>
     <p class="lead">שתי דקות בהדגמה, ואתם יודעים אם זה מתאים לקהילה שלכם.</p>
     <div class="actions">
-      <a class="btn" href="demo/" data-track="click_demo" data-track-x="cta">צפו בהדגמה חיה</a>
+      <a class="btn" href="demo/" data-track="click_demo" data-track-x="cta">להדגמה מודרכת · 2 דקות</a>
       <a class="btn-ghost" href="checkout/?plan=pilot" data-track="select_plan" data-track-x="cta-pilot">להתחיל פיילוט · <bdi>₪2,500</bdi></a>
     </div>
+    <p class="talk">מעדיפים לדבר קודם? <a class="link tap" id="call-cta" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER" data-track="contact_click" data-track-x="cta-call">לתיאום שיחה של 15 דקות</a></p>
     <div class="contact">
       <strong>דייב מרקוביץ' · 3Shamrocks Studio</strong>
-      <a class="ltr" href="mailto:dave@3shamrocks.com" data-track="contact_click" data-track-x="cta">dave@3shamrocks.com</a>
-      <a class="ltr" href="https://www.shomer-app.co.il" rel="noopener">shomer-app.co.il</a>
+      <a class="ltr tap" href="mailto:dave@3shamrocks.com" data-track="contact_click" data-track-x="cta">dave@3shamrocks.com</a>
+      <a class="ltr tap" href="https://www.shomer-app.co.il" rel="noopener">shomer-app.co.il</a>
     </div>
   </div>
 </section>
@@ -499,16 +505,20 @@
 (function(){
   SC.track('view_landing');
   var seg=document.getElementById('seg'), price=document.getElementById('lic-price'), sub=document.getElementById('lic-sub'), cta=document.getElementById('lic-cta');
-  var per={s:'עד 1,000 תושבים · כ־₪10 לתושב לשנה', m:'1,000–5,000 תושבים', l:'5,000–10,000 תושבים'};
+  var credit=document.getElementById('lic-credit');
+  function sub_(t){ var p=SC.PLANS[t]; return 'כ־<bdi>'+SC.ils(SC.monthly(p.price))+'</bdi> לחודש, בחיוב שנתי · '+(p.perResident?'כ־<bdi>₪'+p.perResident+'</bdi> לתושב':p.residents); }
   seg.addEventListener('click',function(e){
     var b=e.target.closest('button[data-tier]'); if(!b) return;
     var t=b.getAttribute('data-tier'), p=SC.PLANS[t];
     seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); });
-    price.innerHTML='<bdi>'+SC.ils(p.price)+'</bdi>'; sub.textContent=per[t]; cta.href='checkout/?plan='+t;
+    price.innerHTML='<bdi>'+SC.ils(p.price)+'</bdi>'; sub.innerHTML=sub_(t); cta.href='checkout/?plan='+t;
+    credit.innerHTML='אחרי פיילוט: <b><bdi>'+SC.ils(p.price-SC.PILOT_CREDIT)+'</bdi></b> בשנה הראשונה';
     SC.track('select_tier',{tier:t});
   });
-  document.getElementById('partner-cta').href=SC.mailto('SH✡MER · מועמדות לשותפי דרך',
-    'שלום דייב,\nנשמח להיות שותפי דרך בפיילוט SH✡MER.\n\nשם הקהילה:\nמספר תושבים (בערך):\nשם ותפקיד:\nטלפון:\n');
+  var callBody='שלום דייב,\nנשמח לתאם שיחה של 15 דקות על SH✡MER לקהילה שלנו.\n\nשם הקהילה:\nמספר תושבים (בערך):\nשם ותפקיד:\nטלפון:\n';
+  document.getElementById('partner-cta').href=SC.mailto('פיילוט SH✡MER · מימון הפיילוט', callBody);
+  document.getElementById('call-cta').href=SC.mailto('פיילוט SH✡MER', callBody);
+  sub.innerHTML=sub_('s');
   /* plans section view */
   try{ var seen=false, io=new IntersectionObserver(function(en){ if(!seen&&en[0].isIntersecting){ seen=true; SC.track('view_plans',{x:'scroll'}); io.disconnect(); } },{threshold:.3}); io.observe(document.getElementById('plans')); }catch(e){}
 })();
