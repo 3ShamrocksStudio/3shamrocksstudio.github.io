@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0A1628">
+<title>SH✡MER Command · ברוכים הבאים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="../../assets/shomer-pilot/favicon.png">
+<link rel="stylesheet" href="../assets/sc.css">
+<style>
+.whero{padding-bottom:64px}
+.whero .topbar{height:72px}
+.wh{padding-top:48px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end}
+.wh .h1{font-size:clamp(36px,4.4vw,60px);color:#fff;margin-top:16px}
+.wh .lead{margin-top:16px;max-width:34em}
+.flag{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:var(--n1);background:var(--g3);padding:5px 12px;border-radius:999px}
+.progress{min-width:240px;padding:20px 22px;border-radius:18px;border:1px solid var(--hair-n);background:rgba(255,255,255,.03)}
+.progress b{display:block;font-size:34px;font-weight:900;color:var(--g4);line-height:1}
+.progress span{font-size:15px;color:var(--tx1)}
+.bar{margin-top:12px;height:8px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--grad-gold);border-radius:8px;transition:width .4s ease}
+.tasks{padding:56px 0 96px}
+.tlist2{display:grid;gap:16px;counter-reset:t}
+.task{display:grid;grid-template-columns:56px 1fr auto;gap:22px;align-items:start;padding:26px 28px;border-radius:22px;background:#fff;border:1px solid var(--hair);box-shadow:var(--sh-card)}
+.task .n{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:19px;border:1.5px solid var(--hair2);color:var(--ink2);transition:all .2s ease}
+.task.done .n{background:var(--g3);border-color:var(--g3);color:var(--n1)}
+.task h2{font-size:21px;font-weight:800;line-height:1.3}
+.task p{margin-top:6px;color:var(--ink2);font-size:16.5px;max-width:40em}
+.task .acts{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.task .btn-ghost{color:var(--ink);border-color:var(--hair2);min-height:48px;padding:0 20px;font-size:16px}
+.task .btn{min-height:48px;padding:0 22px;font-size:16px}
+.task .mark{font-size:14px;font-weight:600;color:var(--ink3);display:flex;gap:8px;align-items:center;cursor:pointer;white-space:nowrap}
+.task .mark input{width:18px;height:18px;accent-color:var(--g2)}
+.next-flag{display:inline-flex;gap:6px;align-items:center;font-size:13px;font-weight:800;color:#8A5A00;background:rgba(224,168,40,.18);padding:4px 10px;border-radius:999px}
+.msg{margin-top:14px;padding:16px 18px;border-radius:14px;background:var(--paper);border:1px dashed var(--hair2);font-size:16px;line-height:1.65;color:var(--ink);white-space:pre-line}
+.tl{margin-top:40px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--hair)}
+.tl li{padding:20px 20px 0 0}
+.tl li+li{border-inline-start:1px solid var(--hair);padding-inline-start:20px}
+.tl li:first-child{padding-inline-start:0}
+.tl b{display:block;font-size:17px;font-weight:800}
+.tl span{font-size:15px;color:var(--ink2)}
+@media screen and (max-width:900px){ .wh{grid-template-columns:1fr} .progress{min-width:0} .tl{grid-template-columns:1fr 1fr;row-gap:20px} .tl li:nth-child(3){border:0;padding-inline-start:0} }
+@media screen and (max-width:700px){
+  .task{grid-template-columns:1fr;gap:14px;padding:22px 18px}
+  .task .mark{order:3}
+  .tl{grid-template-columns:1fr}
+  .tl li,.tl li+li{border:0;padding:14px 0 0}
+  .task .btn,.task .btn-ghost{width:100%}
+}
+</style>
+</head>
+<body>
+<!--SPRITE:start--><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+    <symbol id="hex" viewBox="0 0 52 52"><path d="M26 2.5 46.4 14.25v23.5L26 49.5 5.6 37.75v-23.5z" style="fill:var(--hexf);stroke:var(--hexs);stroke-width:1.2"/></symbol>
+    <symbol id="i-sos" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="16" cy="16" r="5.6"/><circle cx="16" cy="16" r="5.6"/><path d="M9.2 10.2a9 9 0 0 0 0 11.6M22.8 10.2a9 9 0 0 1 0 11.6M5.6 6.8a13.6 13.6 0 0 0 0 18.4M26.4 6.8a13.6 13.6 0 0 1 0 18.4"/></symbol>
+    <symbol id="i-circle" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12.5" stroke-dasharray="2.2 3.2"/><circle cx="16" cy="13.4" r="3"/><path d="M10.8 21.8a5.2 5.2 0 0 1 10.4 0"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="3.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="5.2" cy="22.3" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="26.8" cy="22.3" r="2.4"/></symbol>
+    <symbol id="i-shake" viewBox="0 0 32 32"><rect style="fill:var(--duo);stroke:none" x="13" y="8.6" width="6" height="12" rx="1"/><rect x="10.8" y="5.5" width="10.4" height="21" rx="2.6"/><path d="M14.6 23.4h2.8M6.4 10.5 4.2 12.8l2.2 2.3-2.2 2.3 2.2 2.3M25.6 10.5l2.2 2.3-2.2 2.3 2.2 2.3-2.2 2.3"/></symbol>
+    <symbol id="i-arrive" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M16 28.5s-8.6-7.6-8.6-14.1a8.6 8.6 0 0 1 17.2 0c0 6.5-8.6 14.1-8.6 14.1z" opacity=".55"/><path d="M16 28.5s-8.6-7.6-8.6-14.1a8.6 8.6 0 0 1 17.2 0c0 6.5-8.6 14.1-8.6 14.1z"/><path d="m12.4 14.4 2.5 2.5 4.7-5"/></symbol>
+    <symbol id="i-call" viewBox="0 0 32 32"><path d="M8.6 6.5h3.6l1.8 4.9-2.3 1.5a11.5 11.5 0 0 0 6.9 6.9l1.5-2.3 4.9 1.8v3.6a2.4 2.4 0 0 1-2.4 2.4A17 17 0 0 1 6.2 8.9a2.4 2.4 0 0 1 2.4-2.4z"/><path style="fill:var(--duo);stroke:none" d="M24 4.6c-1.1-1.5-3.6-.8-3.6 1.1 0 1.8 3.6 4 3.6 4s3.6-2.2 3.6-4c0-1.9-2.5-2.6-3.6-1.1z"/></symbol>
+    <symbol id="i-dash" viewBox="0 0 32 32"><rect x="3.5" y="5.5" width="25" height="17" rx="2.6"/><path d="M11.5 27h9M16 22.5V27"/><circle cx="16" cy="14" r="5" stroke-dasharray="1.8 2.4"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="14" r="2.3"/><circle style="fill:var(--duo);stroke:none" cx="9" cy="10" r="1.2"/><circle style="fill:var(--duo);stroke:none" cx="23.5" cy="17.5" r="1.2"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 32 32"><path d="M9.5 21.5v-7a6.5 6.5 0 0 1 13 0v7l2.2 2.6H7.3z"/><path d="M13.8 27a2.3 2.3 0 0 0 4.4 0"/><circle style="fill:var(--duo);stroke:none" cx="23.4" cy="7.6" r="3.6"/></symbol>
+    <symbol id="i-choice" viewBox="0 0 32 32"><circle cx="13" cy="11" r="4"/><path d="M5 26a8 8 0 0 1 13.4-5.9"/><circle style="fill:var(--duo);stroke:none" cx="23" cy="21.5" r="5.6"/><path d="m20.4 21.6 1.8 1.8 3.3-3.4"/></symbol>
+    <symbol id="i-map" viewBox="0 0 32 32"><path d="M4 8.5 11 6l10 3 7-2.5v18.5L21 27.5l-10-3L4 27z"/><path d="M11 6v18.5M21 9v18.5" opacity=".6"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="14.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="7.8" cy="19" r="1.4"/><circle style="fill:var(--duo);stroke:none" cx="24.4" cy="12" r="1.4"/></symbol>
+    <symbol id="i-together" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="12" cy="16" r="8" opacity=".55"/><circle cx="12" cy="16" r="8"/><circle cx="20" cy="16" r="8"/></symbol>
+    <symbol id="i-lang" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M15.5 13.5h10.6a2 2 0 0 1 2 2v6.2a2 2 0 0 1-2 2h-1.2v3.6l-3.9-3.6h-5.5a2 2 0 0 1-2-2v-6.2a2 2 0 0 1 2-2z"/><path d="M5.8 5.5h12.6a2 2 0 0 1 2 2v7.2a2 2 0 0 1-2 2h-7.3l-4.2 3.6v-3.6H5.8a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2z"/><path d="M7.6 9.6h7.2M7.6 12.6h4.4"/></symbol>
+    <symbol id="i-toggle" viewBox="0 0 32 32"><rect x="3.5" y="10.5" width="25" height="11" rx="5.5"/><circle style="fill:var(--duo);stroke:none" cx="22.8" cy="16" r="3.6"/><circle cx="22.8" cy="16" r="3.6"/></symbol>
+    <symbol id="i-home" viewBox="0 0 32 32"><path d="M4.5 14.6 16 5.5l11.5 9.1M8 12v14.5h16V12"/><path style="fill:var(--duo);stroke:none" d="M16 23.6s-4.4-2.7-4.4-5.4a2.2 2.2 0 0 1 4.4-.9 2.2 2.2 0 0 1 4.4.9c0 2.7-4.4 5.4-4.4 5.4z"/></symbol>
+    <symbol id="tick-n" viewBox="0 0 20 20"><path d="M10 1.2 17.6 5.6v8.8L10 18.8 2.4 14.4V5.6z" fill="#0A1628"/><path d="m6.4 10.2 2.4 2.4 4.8-5" fill="none" stroke="#F5C840" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  
+    <symbol id="tick-g" viewBox="0 0 20 20"><path d="M10 1.2 17.6 5.6v8.8L10 18.8 2.4 14.4V5.6z" fill="#E0A828"/><path d="m6.4 10.2 2.4 2.4 4.8-5" fill="none" stroke="#0A1628" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs></svg><!--SPRITE:end-->
+<header class="whero band navy">
+  <img class="ground" src="../../assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
+  <div class="wrap topbar">
+    <a class="brand" href="../" aria-label="SH✡MER Command">
+      <img class="wordmark" src="../../assets/shomer-pilot/wordmark-white.svg" alt="SH✡MER" width="1190" height="277">
+      <small>COMMAND</small>
+    </a>
+    <a class="link" style="color:var(--tx1);font-size:15px" href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a>
+  </div>
+  <div class="wrap wh">
+    <div>
+      <span class="flag" id="flag" hidden>תצוגה מקדימה · יופעל אחרי חיבור התשלום</span>
+      <h1 class="h1" id="h1">ברוכים הבאים ל־<span class="sh">SH<i>✡</i>MER</span>.</h1>
+      <p class="lead" id="lead">התשלום התקבל, וחשבונית מס נשלחה לאימייל שלכם. ארבעה צעדים קצרים, והקהילה מוכנה.</p>
+    </div>
+    <div class="progress" aria-live="polite"><b id="pct">0/4</b><span>צעדים הושלמו</span><div class="bar"><i id="barfill"></i></div></div>
+  </div>
+</header>
+
+<main class="tasks on-paper">
+  <div class="wrap">
+    <ol class="tlist2">
+      <li class="task" data-k="login">
+        <span class="n">1</span>
+        <div>
+          <h2>כניסה ללוח הבקרה של הקהילה</h2>
+          <p>שלחנו לאימייל שלכם הזמנה להגדרת סיסמה. אחרי הכניסה, הלוח נפתח על הקהילה שלכם, בלי נתוני הדגמה.</p>
+          <div class="acts">
+            <span class="next-flag">השלב הבא בפיתוח: חיבור התשלום לחשבון הלוח</span>
+            <a class="btn-ghost" href="../demo/" data-track="welcome_demo">בינתיים: הלוח במצב הדגמה</a>
+          </div>
+        </div>
+        <label class="mark"><input type="checkbox"> בוצע</label>
+      </li>
+      <li class="task" data-k="invite">
+        <span class="n">2</span>
+        <div>
+          <h2>הזמינו 10–20 שומרים ראשונים</h2>
+          <p>שלחו את ההודעה הזו לשכנים שאתם סומכים עליהם. כל אחד מוריד את האפליקציה, חינם, ובונה את מעגל השומרים שלו.</p>
+          <div class="msg" id="msg"></div>
+          <div class="acts">
+            <button type="button" class="btn" id="copy" data-track="welcome_copy_invite">העתקת ההודעה</button>
+            <a class="btn-ghost" id="wa" href="#" target="_blank" rel="noopener" data-track="welcome_whatsapp">פתיחה בוואטסאפ</a>
+          </div>
+        </div>
+        <label class="mark"><input type="checkbox"> בוצע</label>
+      </li>
+      <li class="task" data-k="poster">
+        <span class="n">3</span>
+        <div>
+          <h2>הדפיסו את הפוסטר</h2>
+          <p>פוסטר A4 עם קוד QR להורדת האפליקציה. לתלות בצרכנייה, במזכירות, בגן ובבית הכנסת.</p>
+          <div class="acts"><a class="btn-ghost" id="poster" href="poster.html" target="_blank" rel="noopener" data-track="welcome_poster">לפוסטר להדפסה</a></div>
+        </div>
+        <label class="mark"><input type="checkbox"> בוצע</label>
+      </li>
+      <li class="task" data-k="call">
+        <span class="n">4</span>
+        <div>
+          <h2>קבעו שיחת פתיחה של 15 דקות</h2>
+          <p>מגדירים יחד יעדים לפיילוט, ומתאמים את תרגיל ה־SOS הראשון.</p>
+          <div class="acts"><a class="btn-ghost" id="call" href="#" data-track="contact_click" data-track-x="welcome">לתיאום במייל</a></div>
+        </div>
+        <label class="mark"><input type="checkbox"> בוצע</label>
+      </li>
+    </ol>
+
+    <ol class="tl" aria-label="ציר הזמן">
+      <li><b>שבוע 1</b><span>מגדירים יעדים. הרבש"צ ו־10–20 שומרים ראשונים מותקנים.</span></li>
+      <li><b>חודש 1</b><span>מזמינים את התושבים. כל אחד בונה את מעגל השומרים שלו.</span></li>
+      <li><b>חודש 2</b><span>תרגיל SOS מתואם. מתקנים לפי מה שלמדנו.</span></li>
+      <li><b>יום 90</b><span>פגישת סיכום: מה עבד, מה לא, ומחליטים יחד.</span></li>
+    </ol>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><bdi>© 2026 3Shamrocks Studio</bdi> · <span class="sh">SH<i>✡</i>MER</span>™ · לא מחליף את <bdi class="nw">100 · 101 · 102</bdi></p>
+    <img src="../../assets/shomer-pilot/3shamrocks-studio.webp" alt="3Shamrocks Studio" width="452" height="66" loading="lazy">
+  </div>
+</footer>
+
+<script src="../assets/sc.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var q=new URLSearchParams(location.search), preview=q.get('preview')==='1', org=(q.get('org')||'').slice(0,60);
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  if(preview){ $('flag').hidden=false; $('lead').textContent='כך ייראה העמוד מיד אחרי התשלום. החשבונית וההזמנה ללוח יישלחו לאימייל באופן אוטומטי, ברגע שהתשלום יחובר.'; }
+  if(org) $('h1').innerHTML='ברוכים הבאים ל־<span class="sh">SH<i>✡</i>MER</span>, '+esc(org)+'.';
+  var text='שלום! '+(org?('הקהילה שלנו, '+org+', '):'הקהילה שלנו ')+'מצטרפת ל־SH✡MER.\nבלחיצה אחת, השומרים הקרובים אליך יודעים איפה אתה ובאים.\n\nאני מזמין/ה אותך להיות אחד השומרים הראשונים שלנו:\n1. מורידים את האפליקציה (חינם): https://www.shomer-app.co.il\n2. בוחרים את "השומרים שלי" במעגל שלך.\n\nתודה, ושנהיה תמיד בטוחים.';
+  $('msg').textContent=text;
+  $('copy').addEventListener('click',function(){ SC.copy(text); });
+  $('wa').href='https://wa.me/?text='+encodeURIComponent(text);
+  if(org) $('poster').href='poster.html?org='+encodeURIComponent(org);
+  $('call').href=SC.mailto('שיחת פתיחה · SH✡MER'+(org?' · '+org:''),'שלום דייב,\nנשמח לתאם שיחת פתיחה של 15 דקות.\n\nזמנים שנוחים לנו:\n');
+  /* per-viewer checklist (convenience only) */
+  var KEY='sc_welcome_'+(org||'x'), st={}; try{ st=JSON.parse(SC.sget(KEY)||'{}')||{}; }catch(e){ st={}; }
+  var tasks=document.querySelectorAll('.task');
+  function paint(){ var n=0; tasks.forEach(function(t){ var k=t.getAttribute('data-k'), on=!!st[k]; t.classList.toggle('done',on); t.querySelector('.mark input').checked=on; if(on)n++; });
+    $('pct').textContent=n+'/'+tasks.length; $('barfill').style.width=(n/tasks.length*100)+'%'; }
+  tasks.forEach(function(t){ t.querySelector('.mark input').addEventListener('change',function(e){ st[t.getAttribute('data-k')]=e.target.checked; SC.sset(KEY,JSON.stringify(st)); paint(); SC.track('welcome_task',{k:t.getAttribute('data-k'),on:e.target.checked}); }); });
+  paint(); SC.track('view_welcome',{preview:preview});
+})();
+</script>
+</body>
+</html>

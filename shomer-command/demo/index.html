@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#060F1E">
+<title>SH✡MER Command · הדגמה מודרכת</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="../../assets/shomer-pilot/favicon.png">
+<link rel="stylesheet" href="../assets/sc.css">
+<style>
+html,body{height:100%}
+body{background:var(--n0);color:var(--tx0)}
+.dbar{position:relative;z-index:30;height:64px;display:flex;align-items:center;gap:18px;padding:0 20px;background:var(--n0);border-bottom:1px solid rgba(245,200,64,.28)}
+.dbar .brand{display:flex;align-items:center;gap:12px}
+.dbar .wordmark{width:118px}
+.dbar .brand small{font-size:11.5px}
+.dbar .demo-tag{font-size:15px;padding:7px 16px 7px 13px}
+.dbar .sp{flex:1}
+.dbar .prog{font-size:14px;color:var(--tx2);white-space:nowrap}
+.dbar .prog b{color:#fff}
+.dbar .x{font-size:15px;color:var(--tx1);padding:8px 6px;white-space:nowrap}
+.dbar .x:hover{color:#fff}
+.stage{position:relative;height:calc(100% - 64px);overflow:hidden;background:#08142c}
+#dash{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+#spot{position:absolute;z-index:10;pointer-events:none;border:2px solid var(--g4);border-radius:14px;box-shadow:0 0 0 4000px rgba(6,15,30,.58),0 0 0 6px rgba(245,200,64,.18),0 0 34px rgba(245,200,64,.35);transition:all .38s cubic-bezier(.3,.7,.2,1);opacity:0}
+#spot.on{opacity:1}
+#spot.full{border-color:transparent;box-shadow:0 0 0 4000px rgba(6,15,30,.72)}
+#loader{position:absolute;inset:0;z-index:12;display:grid;place-items:center;background:#08142c;color:var(--tx1);font-size:17px;transition:opacity .3s ease}
+#loader.off{opacity:0;pointer-events:none}
+#loader .ring{width:46px;height:46px;border-radius:50%;border:3px solid rgba(245,200,64,.2);border-top-color:var(--g3);animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* tour card */
+.tcard{position:absolute;z-index:20;width:392px;bottom:24px;inset-inline-start:24px;background:#fff;color:var(--ink);border-radius:20px;padding:24px 24px 20px;box-shadow:0 30px 70px -20px rgba(0,0,0,.65),0 0 0 1px rgba(14,29,58,.08);transition:inset .35s ease,transform .35s ease,opacity .25s ease}
+.tcard.left{inset-inline-start:auto;inset-inline-end:24px}
+.tcard.center{bottom:50%;inset-inline-start:50%;transform:translate(50%,50%);width:min(520px,calc(100% - 40px));padding:34px 34px 26px}
+.tcard.hide{opacity:0;pointer-events:none;transform:translateY(12px)}
+.tk{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13.5px;font-weight:700;color:var(--g2)}
+.tk .num{color:var(--ink3);font-weight:600}
+.tcard h2{margin-top:10px;font-size:24px;line-height:1.25;font-weight:800;letter-spacing:-.01em;text-wrap:balance}
+.tcard.center h2{font-size:30px}
+.tcard .body{margin-top:10px;font-size:16.5px;line-height:1.6;color:var(--ink2)}
+.tcard .adv{margin-top:14px;display:grid;grid-template-columns:22px 1fr;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(224,168,40,.12);font-size:15.5px;line-height:1.5;color:var(--ink)}
+.tcard .adv svg{width:22px;height:22px}
+.tcard .adv b{font-weight:800}
+.tcard .note{margin-top:12px;font-size:13.5px;color:var(--ink3)}
+.tnav{margin-top:20px;display:flex;align-items:center;gap:10px}
+.tnav .sp{flex:1}
+.dots{display:flex;gap:6px}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--hair2);transition:all .2s ease}
+.dots i.on{width:20px;border-radius:4px;background:var(--g2)}
+.bprev{min-height:44px;padding:0 14px;border-radius:999px;font-weight:600;font-size:15px;color:var(--ink2)}
+.bprev:hover{background:rgba(14,29,58,.05)}
+.bprev[disabled]{visibility:hidden}
+.tcard .btn{min-height:46px;padding:0 22px;font-size:16px}
+.tnav .btn{width:auto}
+.endcta{margin-top:20px;display:grid;gap:10px}
+.endcta .btn,.endcta .btn-ghost{width:100%}
+.endcta .btn-ghost{color:var(--ink);border-color:var(--hair2)}
+.endcta .plain{font-size:15px;font-weight:600;color:var(--ink2);padding:8px;text-align:center}
+.tshot{display:none}
+#pill{position:absolute;z-index:20;bottom:24px;inset-inline-start:24px;display:none;gap:10px}
+#pill.on{display:flex}
+#pill button{min-height:48px;padding:0 20px;border-radius:999px;background:#fff;color:var(--ink);font-weight:700;font-size:15.5px;box-shadow:0 16px 40px -12px rgba(0,0,0,.6)}
+
+/* ══ phone / tablet: story mode with real screenshots of each step ══ */
+.story-note{display:none}
+@media screen and (max-width:1099px){
+  html,body{height:auto}
+  .dbar{height:auto;min-height:60px;flex-wrap:wrap;padding:10px 16px;gap:10px 14px}
+  .dbar .prog,.dbar .btn{display:none}
+  .stage{height:auto;overflow:visible;background:var(--n0);padding:18px 16px 32px}
+  #dash,#spot,#loader,#pill{display:none!important}
+  .tcard,.tcard.left,.tcard.center{position:relative;inset:auto;transform:none;width:100%;max-width:560px;margin:0 auto;padding:20px 20px 18px}
+  .tcard.center h2,.tcard h2{font-size:24px}
+  .tshot{display:block;position:relative;margin:-2px -2px 18px;border-radius:14px;background:#0B1528;border:1px solid rgba(14,29,58,.15)}
+  .tshot img{width:100%;max-height:440px;object-fit:cover;object-position:top;border-radius:13px}
+  .tshot .demo-tag{position:absolute;top:10px;inset-inline-end:10px;font-size:12.5px;padding:4px 11px 4px 10px}
+  .story-note{display:block;max-width:560px;margin:16px auto 0;font-size:14px;color:var(--tx2);text-align:center}
+  .story-note a{color:var(--tx0);border-bottom:1px solid rgba(245,200,64,.55)}
+}
+@media screen and (max-width:420px){
+  .dbar .wordmark{width:104px}
+  .dbar .brand small{display:none}
+  .dbar .demo-tag{font-size:13.5px;padding:6px 12px 6px 10px}
+}
+</style>
+</head>
+<body>
+<!--SPRITE:start--><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+    <symbol id="hex" viewBox="0 0 52 52"><path d="M26 2.5 46.4 14.25v23.5L26 49.5 5.6 37.75v-23.5z" style="fill:var(--hexf);stroke:var(--hexs);stroke-width:1.2"/></symbol>
+    <symbol id="i-sos" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="16" cy="16" r="5.6"/><circle cx="16" cy="16" r="5.6"/><path d="M9.2 10.2a9 9 0 0 0 0 11.6M22.8 10.2a9 9 0 0 1 0 11.6M5.6 6.8a13.6 13.6 0 0 0 0 18.4M26.4 6.8a13.6 13.6 0 0 1 0 18.4"/></symbol>
+    <symbol id="i-circle" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12.5" stroke-dasharray="2.2 3.2"/><circle cx="16" cy="13.4" r="3"/><path d="M10.8 21.8a5.2 5.2 0 0 1 10.4 0"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="3.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="5.2" cy="22.3" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="26.8" cy="22.3" r="2.4"/></symbol>
+    <symbol id="i-shake" viewBox="0 0 32 32"><rect style="fill:var(--duo);stroke:none" x="13" y="8.6" width="6" height="12" rx="1"/><rect x="10.8" y="5.5" width="10.4" height="21" rx="2.6"/><path d="M14.6 23.4h2.8M6.4 10.5 4.2 12.8l2.2 2.3-2.2 2.3 2.2 2.3M25.6 10.5l2.2 2.3-2.2 2.3 2.2 2.3-2.2 2.3"/></symbol>
+    <symbol id="i-arrive" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M16 28.5s-8.6-7.6-8.6-14.1a8.6 8.6 0 0 1 17.2 0c0 6.5-8.6 14.1-8.6 14.1z" opacity=".55"/><path d="M16 28.5s-8.6-7.6-8.6-14.1a8.6 8.6 0 0 1 17.2 0c0 6.5-8.6 14.1-8.6 14.1z"/><path d="m12.4 14.4 2.5 2.5 4.7-5"/></symbol>
+    <symbol id="i-call" viewBox="0 0 32 32"><path d="M8.6 6.5h3.6l1.8 4.9-2.3 1.5a11.5 11.5 0 0 0 6.9 6.9l1.5-2.3 4.9 1.8v3.6a2.4 2.4 0 0 1-2.4 2.4A17 17 0 0 1 6.2 8.9a2.4 2.4 0 0 1 2.4-2.4z"/><path style="fill:var(--duo);stroke:none" d="M24 4.6c-1.1-1.5-3.6-.8-3.6 1.1 0 1.8 3.6 4 3.6 4s3.6-2.2 3.6-4c0-1.9-2.5-2.6-3.6-1.1z"/></symbol>
+    <symbol id="i-dash" viewBox="0 0 32 32"><rect x="3.5" y="5.5" width="25" height="17" rx="2.6"/><path d="M11.5 27h9M16 22.5V27"/><circle cx="16" cy="14" r="5" stroke-dasharray="1.8 2.4"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="14" r="2.3"/><circle style="fill:var(--duo);stroke:none" cx="9" cy="10" r="1.2"/><circle style="fill:var(--duo);stroke:none" cx="23.5" cy="17.5" r="1.2"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 32 32"><path d="M9.5 21.5v-7a6.5 6.5 0 0 1 13 0v7l2.2 2.6H7.3z"/><path d="M13.8 27a2.3 2.3 0 0 0 4.4 0"/><circle style="fill:var(--duo);stroke:none" cx="23.4" cy="7.6" r="3.6"/></symbol>
+    <symbol id="i-choice" viewBox="0 0 32 32"><circle cx="13" cy="11" r="4"/><path d="M5 26a8 8 0 0 1 13.4-5.9"/><circle style="fill:var(--duo);stroke:none" cx="23" cy="21.5" r="5.6"/><path d="m20.4 21.6 1.8 1.8 3.3-3.4"/></symbol>
+    <symbol id="i-map" viewBox="0 0 32 32"><path d="M4 8.5 11 6l10 3 7-2.5v18.5L21 27.5l-10-3L4 27z"/><path d="M11 6v18.5M21 9v18.5" opacity=".6"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="14.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="7.8" cy="19" r="1.4"/><circle style="fill:var(--duo);stroke:none" cx="24.4" cy="12" r="1.4"/></symbol>
+    <symbol id="i-together" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="12" cy="16" r="8" opacity=".55"/><circle cx="12" cy="16" r="8"/><circle cx="20" cy="16" r="8"/></symbol>
+    <symbol id="i-lang" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M15.5 13.5h10.6a2 2 0 0 1 2 2v6.2a2 2 0 0 1-2 2h-1.2v3.6l-3.9-3.6h-5.5a2 2 0 0 1-2-2v-6.2a2 2 0 0 1 2-2z"/><path d="M5.8 5.5h12.6a2 2 0 0 1 2 2v7.2a2 2 0 0 1-2 2h-7.3l-4.2 3.6v-3.6H5.8a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2z"/><path d="M7.6 9.6h7.2M7.6 12.6h4.4"/></symbol>
+    <symbol id="i-toggle" viewBox="0 0 32 32"><rect x="3.5" y="10.5" width="25" height="11" rx="5.5"/><circle style="fill:var(--duo);stroke:none" cx="22.8" cy="16" r="3.6"/><circle cx="22.8" cy="16" r="3.6"/></symbol>
+    <symbol id="i-home" viewBox="0 0 32 32"><path d="M4.5 14.6 16 5.5l11.5 9.1M8 12v14.5h16V12"/><path style="fill:var(--duo);stroke:none" d="M16 23.6s-4.4-2.7-4.4-5.4a2.2 2.2 0 0 1 4.4-.9 2.2 2.2 0 0 1 4.4.9c0 2.7-4.4 5.4-4.4 5.4z"/></symbol>
+    <symbol id="tick-n" viewBox="0 0 20 20"><path d="M10 1.2 17.6 5.6v8.8L10 18.8 2.4 14.4V5.6z" fill="#0A1628"/><path d="m6.4 10.2 2.4 2.4 4.8-5" fill="none" stroke="#F5C840" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  
+    <symbol id="tick-g" viewBox="0 0 20 20"><path d="M10 1.2 17.6 5.6v8.8L10 18.8 2.4 14.4V5.6z" fill="#E0A828"/><path d="m6.4 10.2 2.4 2.4 4.8-5" fill="none" stroke="#0A1628" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs></svg><!--SPRITE:end-->
+<header class="dbar">
+  <a class="brand" href="../" aria-label="חזרה לעמוד SH✡MER Command">
+    <img class="wordmark" src="../../assets/shomer-pilot/wordmark-white.svg" alt="SH✡MER" width="1190" height="277">
+    <small>COMMAND</small>
+  </a>
+  <span class="demo-tag" role="note">הדגמה · נתונים לדוגמה</span>
+  <span class="sp"></span>
+  <span class="prog" id="prog" aria-live="polite"></span>
+  <a class="btn btn-sm" href="../checkout/?plan=pilot" data-track="select_plan" data-track-x="demo-bar">להתחיל פיילוט</a>
+  <a class="x" href="../" data-track="demo_exit">יציאה ✕</a>
+</header>
+
+<div class="stage" id="stage">
+  <iframe id="dash" title="לוח הבקרה של SH✡MER במצב הדגמה, עם נתונים לדוגמה" tabindex="-1"></iframe>
+  <div id="loader"><div><div class="ring"></div>טוען את לוח הבקרה האמיתי, במצב הדגמה…</div></div>
+  <div id="spot" aria-hidden="true"></div>
+
+  <section class="tcard center" id="tour" role="region" aria-label="סיור מודרך" aria-live="polite">
+    <div class="tshot" id="tshot"><span class="demo-tag">הדגמה · נתונים לדוגמה</span><img id="tshot-img" alt=""></div>
+    <div class="tk"><span id="t-kick"></span><span class="num" id="t-num"></span></div>
+    <h2 id="t-title"></h2>
+    <p class="body" id="t-body"></p>
+    <div class="adv" id="t-adv"><svg aria-hidden="true"><use href="#tick-g"/></svg><span id="t-adv-txt"></span></div>
+    <p class="note" id="t-note"></p>
+    <div class="endcta" id="t-end" hidden>
+      <a class="btn" href="../checkout/?plan=pilot" data-track="select_plan" data-track-x="demo-end">להתחיל פיילוט · <bdi>₪2,500</bdi></a>
+      <a class="btn-ghost" href="../#plans" data-track="view_plans" data-track-x="demo-end">לכל התוכניות והמחירים</a>
+      <button type="button" class="plain" id="t-explore">להמשיך לחקור את הלוח בעצמי</button>
+    </div>
+    <div class="tnav" id="t-nav">
+      <button type="button" class="bprev" id="t-prev">→ הקודם</button>
+      <span class="sp"></span>
+      <span class="dots" id="t-dots" aria-hidden="true"></span>
+      <span class="sp"></span>
+      <button type="button" class="btn" id="t-next">הבא ←</button>
+    </div>
+  </section>
+
+  <div id="pill"><button type="button" id="pill-tour">↺ חזרה לסיור</button><button type="button" id="pill-buy">להתחיל פיילוט</button></div>
+  <p class="story-note">בטלפון מוצגים צילומי מסך אמיתיים מהלוח. <a href="../app/dashboard.html?demo=1" data-track="demo_full">לפתיחת הלוח המלא במצב הדגמה</a> (מומלץ במחשב).</p>
+</div>
+
+<script src="../assets/sc.js"></script>
+<script>
+(function(){
+  'use strict';
+  var STEPS=[
+    {k:'הדגמה מודרכת · 2 דקות', t:'זה לוח הבקרה האמיתי של SH✡MER.', b:'פתחנו אותו במצב הדגמה, עם תל אביב-יפו כדוגמה. האירועים בלוח ובמפה מדומים, כדי שתראו תרחיש מלא מתחילתו ועד סופו. נתוני הפשיעה הם נתוני משטרת ישראל הרשמיים.', a:null, note:'אפשר לדלג בין השלבים בכל רגע, או לסגור את הסיור ולחקור לבד.', next:'מתחילים ←', img:'../assets/shots/dash-overview-900.webp'},
+    {k:'תמונת מצב', sel:'#c-net', t:'תמונת מצב אחת.', b:'כמה מכשירים מחוברים לרשת, כמה אירועים פתוחים עכשיו, ומה קורה בטריטוריה. בלי לגלול בקבוצת וואטסאפ.', a:'רואים בשנייה אם יש משהו לטפל בו.', img:'../assets/shots/step-1.webp', act:'reset'},
+    {k:'1 · קריאת SOS', sel:'#live-strip', alt:'#c-recs', t:'קריאת SOS נכנסת.', b:'תושבת לחצה SOS. השומרים שבחרה במעגל שלה קיבלו התראה עם מיקום חי, ישר לטלפון. באותו רגע האירוע קופץ אצלכם, באדום, בראש הלוח.', a:'אתם יודעים בזמן אמת, לא כשמישהו נזכר להתקשר.', img:'../assets/shots/step-2.webp', act:'reset'},
+    {k:'2 · חלון האירוע', sel:'#resp', t:'כל מה שצריך כדי להחליט.', b:'מיקום האירוע, השעה, וטווח ההתראה סביבו. מכאן מבקשים תגבור, ופרטי האירוע מוכנים להעברה ל־100 / 101.', a:'הכל במקום אחד, בלי לחפש.', img:'../assets/shots/step-3.webp', act:'open'},
+    {k:'3 · המפה', sel:'#c-map', t:'על המפה, בלי שמות.', b:'האירוע מסומן על המפה, ברמת הרחוב. הלוח מציג אירועים, לא אנשים: אין שמות, ואין מעקב אחרי תושבים.', a:'תמונה ברורה ששומרת על פרטיות התושבים.', img:'../assets/shots/step-4.webp', act:'map'},
+    {k:'4 · טופל', sel:'#ev-ov .acct-card', alt:'#c-feed', t:'טופל. מתועד.', b:'השומר הגיע. מסמנים "טופל" ומוסיפים הערה קצרה. האירוע עובר לאירועים קודמים, עם שעה ותיעוד.', a:'תיעוד מסודר לכל אירוע: לתחקיר, להנהלה ולמועצה.', img:'../assets/shots/step-5.webp', act:'resolve'},
+    {k:'דוחות', sel:'#export-btn', pad:10, act:'close', t:'דוח בלחיצה.', b:'כפתור הייצוא מפיק דוח מסודר של האירועים, הטיפול והזמנים, מוכן להדפסה או לשליחה להנהלה.', a:'פחות עבודה ידנית, יותר שקיפות מול הקהילה.', img:'../assets/shots/dash-overview-900.webp'},
+    {k:'סיימתם את הסיור', t:'רוצים את זה בקהילה שלכם?', b:'מתחילים בפיילוט של 90 יום, ₪2,500 לקהילה (לפני מע"מ). ממשיכים? הסכום מקוזז מהשנה הראשונה. האפליקציה חינם לתושבים, תמיד.', a:null, end:true, img:'../../assets/shomer-pilot/shomer-badge.webp'}
+  ];
+  var $=function(id){return document.getElementById(id);};
+  var stage=$('stage'), frame=$('dash'), spot=$('spot'), card=$('tour'), loader=$('loader');
+  var live=window.matchMedia('(min-width:1100px)').matches, W=null, ready=false, cur=0, done={}, follow=null;
+
+  /* dots */
+  STEPS.forEach(function(){ $('t-dots').appendChild(document.createElement('i')); });
+
+  function shCompose(s){ return s.replace(/SH✡MER/g,'<span class="sh">SH<i>✡</i>MER</span>'); }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  /* actions run inside the real dashboard (same origin) */
+  function act(name){
+    if(!W) return;
+    try{
+      var B=W._boardLoad&&W._boardLoad();
+      if(name!=='resolve'&&W.closeEvEdit) W.closeEvEdit();
+      if(name==='reset'||name==='open'||name==='map'){ if(B&&B.reviews&&B.reviews.demo0){ delete B.reviews.demo0; W._boardSave(B); W.boardRefresh(); } }
+      if(name==='reset'){ W.closeResponse(); }
+      if(name==='open'){ if(!W.document.getElementById('resp')) W.openResponse('demo0'); }
+      if(name==='map'){ W.closeResponse(); var e=W._liveEvents.demo0&&W._liveEvents.demo0.e; if(e) W.flyToLive(+e.lat,+e.lng,'demo0'); }
+      if(name==='resolve'){ if(B){ B.reviews.demo0={status:'handled',note:'שומר הגיע תוך 4 דק׳ · הדגמה',at:Date.now()}; W._boardSave(B); } W.closeResponse(); W.boardRefresh(); setTimeout(function(){ try{ W.openEvEdit('demo0'); place(); }catch(e){} },300); }
+    }catch(err){ try{console.warn('tour action',name,err);}catch(e){} }
+  }
+
+  function rectOf(st){
+    if(!W||!st.sel) return null;
+    var d=W.document, el=d.querySelector(st.sel)||(st.alt&&d.querySelector(st.alt));
+    if(!el) return null;
+    var r=el.getBoundingClientRect(); if(!r.width||!r.height) return null;
+    var p=st.pad||6, sw=stage.clientWidth, sh=stage.clientHeight;
+    var x=Math.max(4,r.left-p), y=Math.max(4,r.top-p), w=Math.min(sw-4,r.right+p)-x, h=Math.min(sh-4,r.bottom+p)-y;
+    return {x:x,y:y,w:w,h:h};
+  }
+  function place(){
+    var st=STEPS[cur];
+    if(!live) return;
+    var r=ready&&rectOf(st);
+    if(r){
+      spot.classList.remove('full'); spot.classList.add('on');
+      spot.style.left=r.x+'px'; spot.style.top=r.y+'px'; spot.style.width=r.w+'px'; spot.style.height=r.h+'px';
+      card.classList.remove('center');
+      /* card goes on the physical side away from the target */
+      var cx=r.x+r.w/2;
+      card.classList.toggle('left',cx>stage.clientWidth/2); /* target on the right half → card on the left */
+    } else {
+      spot.classList.add('on','full'); spot.style.left='50%'; spot.style.top='50%'; spot.style.width='0px'; spot.style.height='0px';
+      card.classList.add('center'); card.classList.remove('left');
+    }
+  }
+
+  function show(i){
+    cur=Math.max(0,Math.min(STEPS.length-1,i));
+    var st=STEPS[cur];
+    $('t-kick').textContent=st.k;
+    $('t-num').textContent=(cur>0&&!st.end)?('שלב '+cur+' מתוך '+(STEPS.length-2)):'';
+    $('t-title').innerHTML=shCompose(esc(st.t));
+    $('t-body').innerHTML=shCompose(esc(st.b)).replace('100 / 101','<bdi>100 / 101</bdi>').replace('₪2,500','<bdi>₪2,500</bdi>');
+    $('t-adv').hidden=!st.a; if(st.a) $('t-adv-txt').innerHTML='<b>היתרון:</b> '+esc(st.a);
+    $('t-note').hidden=!st.note; $('t-note').textContent=st.note||'';
+    $('t-end').hidden=!st.end; $('t-nav').hidden=!!st.end;
+    $('t-explore').hidden=!live;
+    $('t-prev').disabled=cur===0;
+    $('t-next').innerHTML=st.next||(cur===STEPS.length-2?'לסיום ←':'הבא ←');
+    var dots=$('t-dots').children; for(var k=0;k<dots.length;k++) dots[k].classList.toggle('on',k===cur);
+    $('prog').innerHTML=(cur>0&&!st.end)?('שלב <b>'+cur+'</b> מתוך '+(STEPS.length-2)):'';
+    var img=$('tshot-img'); if(!live){ img.src=st.img; img.alt=st.end?'':'צילום מסך מהלוח במצב הדגמה: '+st.t; $('tshot').querySelector('.demo-tag').hidden=!!st.end; }
+    if(live&&ready&&st.act) act(st.act);
+    card.classList.remove('hide'); $('pill').classList.remove('on');
+    place(); setTimeout(place,420); setTimeout(place,900);
+    if(!done[cur]){ done[cur]=1; SC.track('demo_step',{n:cur,mode:live?'live':'story'}); }
+    if(st.end) SC.track('demo_complete',{mode:live?'live':'story'});
+    if(!live&&i!==0) card.scrollIntoView({block:'start',behavior:'smooth'});
+  }
+
+  $('t-next').addEventListener('click',function(){ show(cur+1); });
+  $('t-prev').addEventListener('click',function(){ show(cur-1); });
+  function minimize(){ card.classList.add('hide'); spot.classList.remove('on'); $('pill').classList.add('on'); SC.track('demo_explore'); }
+  $('t-explore').addEventListener('click',minimize);
+  $('pill-tour').addEventListener('click',function(){ show(cur===STEPS.length-1?0:cur); });
+  $('pill-buy').addEventListener('click',function(){ SC.track('select_plan',{x:'demo-pill'}); location.href='../checkout/?plan=pilot'; });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowLeft'){ if(!STEPS[cur].end) show(cur+1); }
+    else if(e.key==='ArrowRight'){ show(cur-1); }
+    else if(e.key==='Escape'&&live){ minimize(); }
+  });
+  window.addEventListener('resize',function(){ var l=window.matchMedia('(min-width:1100px)').matches; if(l!==live){ location.reload(); return; } place(); });
+
+  if(live){
+    frame.src='../app/dashboard.html?demo=1&tour=1';
+    var t0=Date.now();
+    (function poll(){
+      try{ W=frame.contentWindow; if(W&&W._liveEvents&&W._liveEvents.demo0&&W.MAP&&W.document.getElementById('c-net')) ready=true; }catch(e){}
+      if(ready){ try{ W._alarmMuted=true; }catch(e){} act('reset'); setTimeout(function(){ loader.classList.add('off'); show(cur); },600); follow=setInterval(place,600);
+        try{ W.document.addEventListener('scroll',place,true); }catch(e){} return; }
+      if(Date.now()-t0>25000){ /* dashboard did not load: fall back to the screenshot story */ loader.innerHTML='<div style="text-align:center;max-width:26em;padding:20px">הלוח לא נטען כרגע. <a class="link" href="./">נסו לרענן</a>, או <a class="link" href="../">חזרו לעמוד הראשי</a>.</div>'; return; }
+      setTimeout(poll,300);
+    })();
+  } else {
+    show(0);
+  }
+})();
+</script>
+</body>
+</html>

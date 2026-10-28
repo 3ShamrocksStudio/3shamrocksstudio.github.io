@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0A1628">
+<title>SH✡MER Command · לוח בקרה לקהילה</title>
+<meta name="description" content="לוח הבקרה של SH✡MER לרבש&quot;צ, לקב&quot;ט ולמזכירות: אירועי SOS בקהילה על מפה אחת, בלי לחשוף שמות.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="../assets/shomer-pilot/favicon.png">
+<link rel="preload" as="image" href="assets/shots/dash-overview.webp" media="(min-width:701px)">
+<link rel="stylesheet" href="assets/sc.css">
+<style>
+/* ══ HERO ══ */
+.hero{padding-bottom:0;z-index:2}
+.hero-copy{padding-block:72px 64px;display:grid;grid-template-columns:7fr 5fr;gap:56px;align-items:end}
+.hero .h1{margin-top:20px;color:#fff}
+.hero .lead{margin-top:22px;max-width:31em}
+.actions{margin-top:34px;display:flex;flex-wrap:wrap;gap:14px 16px;align-items:center}
+.facts{display:grid;gap:0;border-inline-start:1px solid var(--hair-n);padding-inline-start:32px}
+.facts li{padding:16px 0;border-bottom:1px solid var(--hair-n)}
+.facts li:last-child{border-bottom:0}
+.facts b{display:block;font-size:28px;line-height:1.15;font-weight:800;color:var(--g4)}
+.facts span{font-size:15.5px;color:var(--tx1)}
+.hero-shot{position:relative;margin-bottom:-160px;z-index:2}
+.hero-shot a{display:block;transition:transform .25s ease}
+.hero-shot a:hover{transform:translateY(-3px)}
+.hero-shot .play{position:absolute;inset:auto auto 26px 26px;display:inline-flex;align-items:center;gap:10px;background:rgba(10,22,40,.88);border:1px solid rgba(245,200,64,.5);color:#fff;font-weight:700;font-size:16px;padding:10px 18px 10px 14px;border-radius:999px;backdrop-filter:blur(6px)}
+.hero-shot .play svg{width:26px;height:26px}
+.hero-glow{position:absolute;inset:-40px 0 auto;height:520px;z-index:-1;background:radial-gradient(60% 60% at 50% 40%,rgba(224,168,40,.22),transparent 70%)}
+.after-hero{padding-top:228px}
+
+/* ══ PAIN ══ */
+.pain-grid{display:grid;grid-template-columns:5fr 6fr;gap:80px;align-items:start}
+.plist li{display:grid;grid-template-columns:22px 1fr;gap:16px;align-items:baseline;padding:20px 0;border-top:1px solid var(--hair);font-size:20px;line-height:1.5;color:var(--ink2)}
+.plist li:last-child{border-bottom:1px solid var(--hair)}
+.plist li::before{content:"";width:10px;height:10px;border-radius:50%;border:2px solid var(--p2);transform:translateY(-2px)}
+.plist li:last-child::before{border-color:var(--g2);background:var(--g3)}
+.answer{margin-top:72px;display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:center;padding:40px 44px;border-radius:24px;background:var(--n1);color:#fff}
+.answer svg{width:96px;height:96px}
+.answer p{font-size:clamp(22px,2.3vw,30px);line-height:1.38;font-weight:300}
+.answer strong{font-weight:700}
+
+/* ══ HOW (scenario) ══ */
+.how-grid{display:grid;grid-template-columns:6fr 5fr;gap:72px;align-items:center}
+.steps{counter-reset:s;display:grid;gap:0}
+.steps li{position:relative;display:grid;grid-template-columns:52px 1fr;gap:20px;padding:22px 0}
+.steps li+li{border-top:1px solid var(--hair-n)}
+.steps .n{width:52px;height:52px;display:grid;place-items:center;border-radius:50%;border:1.5px solid rgba(245,200,64,.55);color:var(--g4);font-weight:800;font-size:20px}
+.steps li.sos .n{background:var(--r2);border-color:var(--r4);color:#fff}
+.steps h3{font-size:21px;font-weight:700;color:#fff;line-height:1.3;padding-top:3px}
+.steps p{margin-top:4px;font-size:16.5px;color:var(--tx1)}
+.how .actions{margin-top:30px}
+
+/* ══ FEATURES ══ */
+.flist{display:grid;grid-template-columns:repeat(3,1fr);gap:44px 48px}
+.flist li{display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:start}
+.flist h3{font-size:19px;font-weight:700;line-height:1.3;padding-top:4px}
+.flist p{margin-top:4px;font-size:16px;color:var(--ink2)}
+
+/* ══ PLANS ══ */
+.plans{display:grid;grid-template-columns:1.06fr 1fr 1fr;gap:22px;align-items:stretch}
+.plan{display:flex;flex-direction:column;padding:34px 30px 30px;border-radius:24px;background:#fff;border:1px solid var(--hair);box-shadow:var(--sh-card)}
+.plan.feat{background:var(--n1);color:#fff;border:1.5px solid rgba(245,200,64,.6);box-shadow:0 40px 70px -40px rgba(10,22,40,.8)}
+.plan .tag{align-self:flex-start;font-size:13px;font-weight:800;padding:5px 12px;border-radius:999px;background:var(--grad-gold);color:var(--n1);margin-bottom:18px}
+.plan .tag.mute{background:rgba(14,29,58,.06);color:var(--ink2)}
+.plan h3{font-size:23px;font-weight:800;line-height:1.25}
+.plan .for{margin-top:6px;font-size:15.5px;color:var(--ink3)}
+.plan.feat .for{color:var(--tx2)}
+.price{margin-top:26px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;min-height:64px}
+.price b{font-size:52px;line-height:1;font-weight:900;letter-spacing:-.03em}
+.plan.feat .price b{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent}
+.price span{font-size:16px;color:var(--ink3)}
+.plan.feat .price span{color:var(--tx1)}
+.price-sub{font-size:14.5px;color:var(--ink3);min-height:22px}
+.plan.feat .price-sub{color:var(--tx2)}
+.seg{margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:rgba(14,29,58,.06)}
+.seg button{min-height:44px;border-radius:10px;font-size:14.5px;white-space:nowrap;font-weight:600;color:var(--ink2);line-height:1.2;padding:4px}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 2px 8px rgba(14,29,58,.14);font-weight:800}
+.incl{margin-top:24px;display:grid;gap:11px;font-size:16px;color:var(--ink2);flex:1}
+.plan.feat .incl{color:var(--tx1)}
+.incl li{display:grid;grid-template-columns:20px 1fr;gap:10px}
+.incl svg{width:20px;height:20px;margin-top:3px}
+.plan .btn,.plan .btn-ghost{margin-top:28px;width:100%}
+.plan .fine{margin-top:12px;font-size:13.5px;color:var(--ink3);text-align:center}
+.plan.feat .fine{color:var(--tx2)}
+.partner{margin-top:22px;display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:center;padding:24px 28px;border-radius:20px;background:var(--g3);color:var(--n1)}
+.partner p{font-size:17px}
+.partner strong{font-weight:800}
+.partner .btn-ghost{color:var(--n1);border-color:rgba(10,22,40,.5)}
+.partner .btn-ghost:hover{background:rgba(10,22,40,.06)}
+.allin{margin-top:40px;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start;padding-top:28px;border-top:1px solid var(--hair)}
+.allin h3{font-size:17px;font-weight:800;white-space:nowrap}
+.allin ul{display:flex;flex-wrap:wrap;gap:10px 26px;font-size:16px;color:var(--ink2)}
+.allin li{display:flex;gap:8px;align-items:center}
+.allin li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--g2)}
+.vatline{margin-top:18px;font-size:14.5px;color:var(--ink3)}
+
+/* ══ TRUST ══ */
+.tlist{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.tlist li{padding:6px 28px 0 0}
+.tlist li+li{border-inline-start:1px solid var(--hair-n);padding-inline-start:28px}
+.tlist li:first-child{padding-inline-start:0}
+.tlist h3{margin-top:18px;font-size:20px;font-weight:700;color:#fff;line-height:1.3}
+.tlist p{margin-top:8px;font-size:16px;color:var(--tx1)}
+
+/* ══ FAQ ══ */
+.faq-grid{display:grid;grid-template-columns:4fr 8fr;gap:72px;align-items:start}
+.faq-grid aside p{margin-top:16px;color:var(--ink2)}
+
+/* ══ CTA ══ */
+.cta{text-align:center;overflow:hidden}
+.cta-badge{width:120px;height:120px;margin:0 auto;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
+.cta h2{margin-top:24px;font-size:clamp(44px,5.6vw,80px);line-height:1;font-weight:900;letter-spacing:-.025em;color:#fff}
+.cta .lead{margin:18px auto 0;max-width:30em}
+.cta .actions{justify-content:center}
+.contact{margin-top:34px;display:flex;justify-content:center;flex-wrap:wrap;gap:8px 28px;font-size:16.5px;color:var(--tx1)}
+.contact strong{color:#fff}
+.contact a{color:#fff;border-bottom:1px solid rgba(245,200,64,.55)}
+.cta-rings{position:absolute;left:50%;top:150px;width:1100px;height:1100px;transform:translateX(-50%);z-index:-1}
+
+/* ══ RESPONSIVE ══ */
+@media screen and (max-width:1100px){
+  .plans{grid-template-columns:1fr 1fr}
+  .plan.feat{grid-column:1/-1}
+  .tlist{grid-template-columns:1fr 1fr;row-gap:28px}
+  .tlist li:nth-child(3){border-inline-start:0;padding-inline-start:0}
+  .flist{grid-template-columns:1fr 1fr}
+}
+@media screen and (max-width:900px){
+  .hero-copy,.pain-grid,.how-grid,.faq-grid{grid-template-columns:1fr;gap:40px}
+  .facts{border-inline-start:0;padding-inline-start:0;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--hair-n)}
+  .facts li{border-bottom:0;padding-inline-end:12px}
+  .hero-shot{margin-bottom:-90px}
+  .after-hero{padding-top:150px}
+  .partner{grid-template-columns:1fr}
+}
+@media screen and (max-width:700px){
+  .hero-copy{padding-block:40px 36px;gap:28px}
+  .hero .h1{font-size:44px}
+  .facts b{font-size:21px}
+  .facts span{font-size:13px;line-height:1.35;display:block}
+  .hero-shot{margin-bottom:-56px}
+  .hero-shot .play{inset:auto auto 12px 12px;font-size:14px;padding:7px 13px 7px 10px}
+  .hero-shot .play svg{width:20px;height:20px}
+  .after-hero{padding-top:112px}
+  .plist li{font-size:18px;padding:16px 0}
+  .answer{grid-template-columns:1fr;gap:18px;padding:28px 24px;margin-top:48px}
+  .answer svg{width:64px;height:64px}
+  .flist,.plans,.tlist{grid-template-columns:1fr}
+  .flist{gap:28px}
+  .tlist li,.tlist li+li{border:0;padding:0;display:grid;grid-template-columns:52px 1fr;column-gap:18px}
+  .tlist li>svg{grid-row:1/3}
+  .tlist h3{margin-top:2px}
+  .plan{padding:28px 22px 24px}
+  .price b{font-size:46px}
+  .allin{grid-template-columns:1fr;gap:14px}
+  .allin ul{flex-direction:column;gap:8px}
+  .steps h3{font-size:19px}
+}
+</style>
+</head>
+<body>
+<!--SPRITE:start--><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+    <symbol id="hex" viewBox="0 0 52 52"><path d="M26 2.5 46.4 14.25v23.5L26 49.5 5.6 37.75v-23.5z" style="fill:var(--hexf);stroke:var(--hexs);stroke-width:1.2"/></symbol>
+    <symbol id="i-sos" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="16" cy="16" r="5.6"/><circle cx="16" cy="16" r="5.6"/><path d="M9.2 10.2a9 9 0 0 0 0 11.6M22.8 10.2a9 9 0 0 1 0 11.6M5.6 6.8a13.6 13.6 0 0 0 0 18.4M26.4 6.8a13.6 13.6 0 0 1 0 18.4"/></symbol>
+    <symbol id="i-circle" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12.5" stroke-dasharray="2.2 3.2"/><circle cx="16" cy="13.4" r="3"/><path d="M10.8 21.8a5.2 5.2 0 0 1 10.4 0"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="3.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="5.2" cy="22.3" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="26.8" cy="22.3" r="2.4"/></symbol>
+    <symbol id="i-shake" viewBox="0 0 32 32"><rect style="fill:var(--duo);stroke:none" x="13" y="8.6" width="6" height="12" rx="1"/><rect x="10.8" y="5.5" width="10.4" height="21" rx="2.6"/><path d="M14.6 23.4h2.8M6.4 10.5 4.2 12.8l2.2 2.3-2.2 2.3 2.2 2.3M25.6 10.5l2.2 2.3-2.2 2.3 2.2 2.3-2.2 2.3"/></symbol>
+    <symbol id="i-arrive" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M16 28.5s-8.6-7.6-8.6-14.1a8.6 8.6 0 0 1 17.2 0c0 6.5-8.6 14.1-8.6 14.1z" opacity=".55"/><path d="M16 28.5s-8.6-7.6-8.6-14.1a8.6 8.6 0 0 1 17.2 0c0 6.5-8.6 14.1-8.6 14.1z"/><path d="m12.4 14.4 2.5 2.5 4.7-5"/></symbol>
+    <symbol id="i-call" viewBox="0 0 32 32"><path d="M8.6 6.5h3.6l1.8 4.9-2.3 1.5a11.5 11.5 0 0 0 6.9 6.9l1.5-2.3 4.9 1.8v3.6a2.4 2.4 0 0 1-2.4 2.4A17 17 0 0 1 6.2 8.9a2.4 2.4 0 0 1 2.4-2.4z"/><path style="fill:var(--duo);stroke:none" d="M24 4.6c-1.1-1.5-3.6-.8-3.6 1.1 0 1.8 3.6 4 3.6 4s3.6-2.2 3.6-4c0-1.9-2.5-2.6-3.6-1.1z"/></symbol>
+    <symbol id="i-dash" viewBox="0 0 32 32"><rect x="3.5" y="5.5" width="25" height="17" rx="2.6"/><path d="M11.5 27h9M16 22.5V27"/><circle cx="16" cy="14" r="5" stroke-dasharray="1.8 2.4"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="14" r="2.3"/><circle style="fill:var(--duo);stroke:none" cx="9" cy="10" r="1.2"/><circle style="fill:var(--duo);stroke:none" cx="23.5" cy="17.5" r="1.2"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 32 32"><path d="M9.5 21.5v-7a6.5 6.5 0 0 1 13 0v7l2.2 2.6H7.3z"/><path d="M13.8 27a2.3 2.3 0 0 0 4.4 0"/><circle style="fill:var(--duo);stroke:none" cx="23.4" cy="7.6" r="3.6"/></symbol>
+    <symbol id="i-choice" viewBox="0 0 32 32"><circle cx="13" cy="11" r="4"/><path d="M5 26a8 8 0 0 1 13.4-5.9"/><circle style="fill:var(--duo);stroke:none" cx="23" cy="21.5" r="5.6"/><path d="m20.4 21.6 1.8 1.8 3.3-3.4"/></symbol>
+    <symbol id="i-map" viewBox="0 0 32 32"><path d="M4 8.5 11 6l10 3 7-2.5v18.5L21 27.5l-10-3L4 27z"/><path d="M11 6v18.5M21 9v18.5" opacity=".6"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="14.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="7.8" cy="19" r="1.4"/><circle style="fill:var(--duo);stroke:none" cx="24.4" cy="12" r="1.4"/></symbol>
+    <symbol id="i-together" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="12" cy="16" r="8" opacity=".55"/><circle cx="12" cy="16" r="8"/><circle cx="20" cy="16" r="8"/></symbol>
+    <symbol id="i-lang" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M15.5 13.5h10.6a2 2 0 0 1 2 2v6.2a2 2 0 0 1-2 2h-1.2v3.6l-3.9-3.6h-5.5a2 2 0 0 1-2-2v-6.2a2 2 0 0 1 2-2z"/><path d="M5.8 5.5h12.6a2 2 0 0 1 2 2v7.2a2 2 0 0 1-2 2h-7.3l-4.2 3.6v-3.6H5.8a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2z"/><path d="M7.6 9.6h7.2M7.6 12.6h4.4"/></symbol>
+    <symbol id="i-toggle" viewBox="0 0 32 32"><rect x="3.5" y="10.5" width="25" height="11" rx="5.5"/><circle style="fill:var(--duo);stroke:none" cx="22.8" cy="16" r="3.6"/><circle cx="22.8" cy="16" r="3.6"/></symbol>
+    <symbol id="i-home" viewBox="0 0 32 32"><path d="M4.5 14.6 16 5.5l11.5 9.1M8 12v14.5h16V12"/><path style="fill:var(--duo);stroke:none" d="M16 23.6s-4.4-2.7-4.4-5.4a2.2 2.2 0 0 1 4.4-.9 2.2 2.2 0 0 1 4.4.9c0 2.7-4.4 5.4-4.4 5.4z"/></symbol>
+    <symbol id="tick-n" viewBox="0 0 20 20"><path d="M10 1.2 17.6 5.6v8.8L10 18.8 2.4 14.4V5.6z" fill="#0A1628"/><path d="m6.4 10.2 2.4 2.4 4.8-5" fill="none" stroke="#F5C840" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  
+    <symbol id="tick-g" viewBox="0 0 20 20"><path d="M10 1.2 17.6 5.6v8.8L10 18.8 2.4 14.4V5.6z" fill="#E0A828"/><path d="m6.4 10.2 2.4 2.4 4.8-5" fill="none" stroke="#0A1628" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs></svg><!--SPRITE:end-->
+
+<header class="hero band navy">
+  <img class="ground" src="../assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
+  <div class="wrap topbar">
+    <a class="brand" href="./" aria-label="SH✡MER Command">
+      <img class="wordmark" src="../assets/shomer-pilot/wordmark-white.svg" alt="SH✡MER" width="1190" height="277">
+      <small>COMMAND</small>
+    </a>
+    <nav class="nav" aria-label="ניווט">
+      <a href="#how">איך זה עובד</a>
+      <a href="demo/" data-track="click_demo" data-track-x="nav">הדגמה</a>
+      <a href="#plans" data-track="view_plans" data-track-x="nav">מחירים</a>
+      <a href="#faq">שאלות</a>
+    </nav>
+    <a class="btn btn-sm" href="demo/" data-track="click_demo" data-track-x="topbar">להדגמה חיה</a>
+  </div>
+
+  <div class="wrap hero-copy">
+    <div>
+      <span class="eyebrow">לוח בקרה לרבש"צ, לקב"ט ולמזכירות</span>
+      <h1 class="h1">תמונה ברורה ושקטה של מה שקורה בקהילה.</h1>
+      <p class="lead">תושב לוחץ SOS, והשומרים הקרובים אליו יודעים מיד, עם מיקום חי. באותו רגע האירוע מופיע אצלכם על המפה, בלי לחשוף שמות.</p>
+      <div class="actions">
+        <a class="btn" href="demo/" data-ab="hero_cta" data-ab-arm="demo" data-track="click_demo" data-track-x="hero">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 8.5v7l5.5-3.5z" fill="currentColor"/></svg>
+          צפו בהדגמה חיה · 2 דקות
+        </a>
+        <a class="btn" href="checkout/?plan=pilot" data-ab="hero_cta" data-ab-arm="pilot" data-track="select_plan" data-track-x="hero-pilot">להתחיל פיילוט · <bdi>₪2,500</bdi></a>
+        <a class="btn-ghost" href="#plans" data-track="view_plans" data-track-x="hero">למחירים</a>
+      </div>
+    </div>
+    <ul class="facts">
+      <li><b>90 יום</b><span>פיילוט מלא, <bdi>₪2,500</bdi> לקהילה</span></li>
+      <li><b>חינם</b><span>לתושבים, תמיד</span></li>
+      <li><b>בלי שמות</b><span>הלוח מציג אירועים, לא אנשים</span></li>
+    </ul>
+  </div>
+
+  <div class="wrap hero-shot">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <a href="demo/" data-track="click_demo" data-track-x="hero-shot" aria-label="פתיחת ההדגמה המודרכת של לוח הבקרה">
+      <div class="frame">
+        <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span>SH✡MER Command</span></div>
+        <span class="demo-tag">הדגמה · נתונים לדוגמה</span>
+        <picture>
+          <source media="(max-width:700px)" srcset="assets/shots/dash-overview-900.webp">
+          <img src="assets/shots/dash-overview.webp" width="1800" height="1125" alt="צילום מסך של לוח הבקרה של SH✡MER במצב הדגמה: מדדי רשת, לוח אירועים עם קריאת SOS, פילוח עבירות ומפה.">
+        </picture>
+      </div>
+      <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#E0A828"/><path d="M10 8v8l6-4z" fill="#0A1628"/></svg>לסיור מודרך בלוח האמיתי</span>
+    </a>
+  </div>
+</header>
+
+<main>
+<section class="sec after-hero on-paper" aria-labelledby="pain-t">
+  <div class="wrap">
+    <p class="cap" style="color:var(--ink3);margin-top:-36px;margin-bottom:64px">צילום מסך אמיתי של לוח הבקרה במצב הדגמה. האירועים בו מדומים; נתוני הפשיעה הם נתוני משטרת ישראל הרשמיים לשנת 2025.</p>
+    <div class="pain-grid">
+      <h2 class="h2" id="pain-t">ברגע הקשה, הדקות הראשונות הן של הקהילה.</h2>
+      <ul class="plist">
+        <li>תושב שצריך עזרה מתקשר, כותב בקבוצה, ומחכה.</li>
+        <li>השכן שגר במרחק דקה לא יודע שקורה משהו.</li>
+        <li>בקבוצת הוואטסאפ ההודעה נבלעת בין עשרות הודעות.</li>
+        <li>לרבש"צ אין תמונה אחת ברורה: מי צריך עזרה, ואיפה.</li>
+      </ul>
+    </div>
+    <div class="answer">
+      <svg viewBox="0 0 132 132" aria-hidden="true">
+        <circle cx="66" cy="66" r="64" fill="none" stroke="#F5C840" stroke-opacity=".18"/>
+        <circle cx="66" cy="66" r="48" fill="none" stroke="#F5C840" stroke-opacity=".32"/>
+        <circle cx="66" cy="66" r="32" fill="#E0A828"/>
+        <path d="M66 50 79.9 74H52.1zM66 82 52.1 58h27.8z" fill="none" stroke="#0A1628" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="66" cy="2" r="4" fill="#F5C840"/><circle cx="10.6" cy="98" r="4" fill="#F5C840"/><circle cx="121.4" cy="98" r="4" fill="#F5C840"/>
+      </svg>
+      <p><strong><span class="sh">SH<i>✡</i>MER</span> הופך את הקהילה לרשת של שומרים:</strong> מי שצריך עזרה לוחץ, ומי שהכי קרוב יודע מיד, עם מיקום חי.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec how band navy" id="how" aria-labelledby="how-t">
+  <img class="ground" src="../assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">איך זה עובד</span>
+        <h2 class="h2" id="how-t" style="margin-top:14px;color:#fff">מהלחיצה ועד "טופל", על מסך אחד.</h2>
+      </div>
+    </div>
+    <div class="how-grid">
+      <div>
+        <div class="frame">
+          <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span>SH✡MER Command</span></div>
+          <span class="demo-tag">הדגמה · נתונים לדוגמה</span>
+          <img src="assets/shots/dash-sos-900.webp" srcset="assets/shots/dash-sos-900.webp 900w, assets/shots/dash-sos.webp 1800w" sizes="(max-width:900px) 100vw, 640px" width="1800" height="1125" loading="lazy" alt="לוח הבקרה במצב הדגמה: חלון אירוע SOS פתוח עם מיקום, טווח התראה ושיגור, והאירוע מסומן על המפה.">
+        </div>
+        <p class="cap">חלון האירוע בלוח האמיתי, במצב הדגמה.</p>
+      </div>
+      <div>
+        <ol class="steps">
+          <li class="sos"><span class="n">1</span><div><h3>תושב לוחץ SOS</h3><p>בלחיצה אחת באפליקציה, או בניעור הטלפון (אנדרואיד).</p></div></li>
+          <li><span class="n">2</span><div><h3>השומרים שלו יודעים מיד</h3><p>התראה עם מיקום חי, ישר לשומרים שבחר במעגל שלו.</p></div></li>
+          <li><span class="n">3</span><div><h3>אתם רואים את זה על המפה</h3><p>האירוע מופיע בלוח: מיקום, שעה וטווח סביבו. פרטי האירוע מוכנים להעברה ל־<bdi>100 / 101</bdi>.</p></div></li>
+          <li><span class="n">4</span><div><h3>מסמנים "טופל", והכל מתועד</h3><p>יומן תגובה לכל אירוע, ודוח מסודר להנהלת היישוב או למועצה.</p></div></li>
+        </ol>
+        <div class="actions">
+          <a class="btn" href="demo/" data-track="click_demo" data-track-x="how">לראות את זה קורה · הדגמה מודרכת</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec on-paper" aria-labelledby="feat-t">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">מה מקבלים</span>
+        <h2 class="h2" id="feat-t" style="margin-top:14px">כל מה שהקהילה צריכה, בטלפון של כל תושב.</h2>
+      </div>
+      <p class="muted">האפליקציה חינם לכל תושב. הקהילה משלמת על לוח הבקרה, ההטמעה והליווי.</p>
+    </div>
+    <ul class="flist">
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-sos" x="10" y="10" width="32" height="32"/></svg><div><h3>כפתור SOS</h3><p>מיקום חי נשלח לשומרים שבחרת במעגל שלך.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-circle" x="10" y="10" width="32" height="32"/></svg><div><h3>השומרים שלי</h3><p>בוחרים מי בא אליך כשצריך. באישור הדדי בלבד.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-dash" x="10" y="10" width="32" height="32"/></svg><div><h3>לוח בקרה לרבש"צ / לקב"ט</h3><p>מפה חיה של אירועי SOS בקהילה, בלי שמות.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-shake" x="10" y="10" width="32" height="32"/></svg><div><h3>ניעור = SOS</h3><p>מפעילים גם כשהטלפון נעול (אנדרואיד).</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-arrive" x="10" y="10" width="32" height="32"/></svg><div><h3>"תבדקו שהגעתי"</h3><p>לא אישרת הגעה בזמן? השומרים שלך מקבלים התראה.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-call" x="10" y="10" width="32" height="32"/></svg><div><h3>"שיחה מאמא"</h3><p>שיחה מדומה ליציאה ממצב לא נוח. מילת קוד שגויה מפעילה SOS שקט.</p></div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec on-paper" id="plans" aria-labelledby="plans-t" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">מחירים</span>
+        <h2 class="h2" id="plans-t" style="margin-top:14px">מתחילים בפיילוט. ממשיכים לפי גודל הקהילה.</h2>
+      </div>
+      <p class="muted">מחיר לקהילה, לא לתושב. התושבים לא משלמים, אף פעם.</p>
+    </div>
+
+    <div class="plans">
+      <article class="plan feat" aria-labelledby="p-pilot">
+        <span class="tag">הכי מתאים להתחלה</span>
+        <h3 id="p-pilot">פיילוט "קהילה שומרת"</h3>
+        <p class="for">90 יום · מתחילים קטן, מודדים יחד, מחליטים לפי מה שרואים.</p>
+        <div class="price"><b><bdi>₪2,500</bdi></b><span>לכל 90 הימים</span></div>
+        <p class="price-sub">ממשיכים? ה־<bdi>₪2,500</bdi> מקוזזים מהשנה הראשונה.</p>
+        <ul class="incl">
+          <li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>הטמעה: הדרכה קצרה לרבש"צ ולשומרים הראשונים</span></li>
+          <li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>לוח בקרה לרבש"צ / לקב"ט לכל התקופה</span></li>
+          <li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>הודעה לקבוצת היישוב, פוסטר ומדריך קצר</span></li>
+          <li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>תרגיל SOS מתואם, דוח כל שבועיים, פגישת סיכום ביום ה־90</span></li>
+        </ul>
+        <a class="btn" href="checkout/?plan=pilot" data-track="select_plan" data-track-x="pilot">להתחיל פיילוט</a>
+        <p class="fine">ללא התחייבות להמשך.</p>
+      </article>
+
+      <article class="plan" aria-labelledby="p-lic">
+        <span class="tag mute">רישיון שנתי</span>
+        <h3 id="p-lic">לפי גודל הקהילה</h3>
+        <p class="for">יישוב, קיבוץ, מושב, שכונה או מועצה מקומית.</p>
+        <div class="price"><b id="lic-price"><bdi>₪9,900</bdi></b><span>לשנה</span></div>
+        <p class="price-sub" id="lic-sub">עד 1,000 תושבים · כ־<bdi>₪10</bdi> לתושב לשנה</p>
+        <div class="seg" role="group" aria-label="גודל הקהילה" id="seg">
+          <button type="button" data-tier="s" aria-pressed="true">עד <bdi>1,000</bdi></button>
+          <button type="button" data-tier="m" aria-pressed="false">עד <bdi>5,000</bdi></button>
+          <button type="button" data-tier="l" aria-pressed="false">עד <bdi>10,000</bdi></button>
+        </div>
+        <ul class="incl">
+          <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>האפליקציה חינם לכל התושבים</span></li>
+          <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>לוח הבקרה: מפת SOS חיה, בלי שמות</span></li>
+          <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>חומרי הטמעה ותרגיל SOS מתואם אחד בשנה</span></li>
+          <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>תמיכה ישירה מדייב</span></li>
+        </ul>
+        <a class="btn-ghost" id="lic-cta" href="checkout/?plan=s" data-track="select_plan" data-track-x="license">לרכישת רישיון</a>
+        <p class="fine">יותר מ־10,000 תושבים? <a class="link" href="checkout/?plan=council">הצעה מותאמת</a></p>
+      </article>
+
+      <article class="plan" aria-labelledby="p-council">
+        <span class="tag mute">מועצות אזוריות ורשויות</span>
+        <h3 id="p-council">כל היישובים, בעסקה אחת</h3>
+        <p class="for">לפי מספר התושבים, בהצעת מחיר מסודרת.</p>
+        <div class="price"><b><bdi>₪2</bdi></b><span>לתושב לשנה</span></div>
+        <p class="price-sub">מינימום <bdi>₪40,000</bdi> לשנה</p>
+        <ul class="incl">
+          <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>לוח בקרה לכל יישוב, ותמונה אחת למועצה</span></li>
+          <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>תשלום מול הזמנת רכש וחשבונית מס</span></li>
+          <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>הצעת מחיר להדפסה תוך דקה</span></li>
+          <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>אפשר להתחיל בפיילוט ביישוב אחד</span></li>
+        </ul>
+        <a class="btn-ghost" href="checkout/?plan=council" data-track="select_plan" data-track-x="council">בקשת הצעת מחיר</a>
+        <p class="fine">ללא מכרז ברוב המקרים. <a class="link" href="#faq-tender">פרטים</a></p>
+      </article>
+    </div>
+
+    <div class="partner">
+      <svg viewBox="0 0 52 52" class="ic" aria-hidden="true" style="width:44px;height:44px;--hexf:rgba(10,22,40,.08);--hexs:rgba(10,22,40,.5);--duo:rgba(10,22,40,.25)"><use href="#hex"/><use href="#i-home" x="10" y="10" width="32" height="32"/></svg>
+      <p><strong>שותפי דרך:</strong> לשתי הקהילות הראשונות, פיילוט ללא עלות, בתמורה למשוב קבוע ולסיפור הצלחה משותף. <strong>מספר המקומות מוגבל.</strong></p>
+      <a class="btn-ghost btn-sm" id="partner-cta" href="#" data-track="partner_apply" data-track-x="plans">להגשת מועמדות</a>
+    </div>
+
+    <div class="allin">
+      <h3>בכל התוכניות</h3>
+      <ul>
+        <li>האפליקציה חינם לכל תושב</li>
+        <li>עברית, ערבית ואנגלית</li>
+        <li>חשבונית מס לכל תשלום</li>
+        <li>תמיכה ישירה מדייב</li>
+      </ul>
+    </div>
+    <p class="vatline">כל המחירים לפני מע"מ (18%).</p>
+  </div>
+</section>
+
+<section class="sec band navy" aria-labelledby="trust-t">
+  <img class="ground" src="../assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">אמון ופרטיות</span>
+        <h2 class="h2" id="trust-t" style="margin-top:14px;color:#fff">בנוי באחריות.</h2>
+      </div>
+    </div>
+    <ul class="tlist">
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-toggle" x="10" y="10" width="32" height="32"/></svg><div><h3>התושב מחליט.</h3><p>מיקום משותף רק עם שומרים שהתושב בחר ואישר.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-map" x="10" y="10" width="32" height="32"/></svg><div><h3>לוח הבקרה בלי שמות.</h3><p>הרבש"צ רואה אירועים, לא מעקב אחרי אנשים.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-lang" x="10" y="10" width="32" height="32"/></svg><div><h3>עברית, ערבית ואנגלית.</h3><p>האפליקציה זמינה בשלוש שפות.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-together" x="10" y="10" width="32" height="32"/></svg><div><h3>משלים את 100, לא מחליף.</h3><p><span class="sh">SH<i>✡</i>MER</span> לא מחליף את <bdi class="nw">100 · 101 · 102</bdi>. בחירום, חייגו קודם.</p></div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec on-paper" id="faq" aria-labelledby="faq-t">
+  <div class="wrap faq-grid">
+    <aside>
+      <span class="eyebrow">שאלות</span>
+      <h2 class="h2" id="faq-t" style="margin-top:14px">מה שרבש"צים ומזכירויות שואלים.</h2>
+      <p>לא מצאתם תשובה? <a class="link" href="mailto:dave@3shamrocks.com" data-track="contact_click" data-track-x="faq">dave@3shamrocks.com</a></p>
+    </aside>
+    <div class="faq">
+      <details>
+        <summary>זה מחליף את המשטרה, מד"א או 100?</summary>
+        <div class="a"><p>לא. <span class="sh">SH<i>✡</i>MER</span> הוא כלי קהילתי, לא שירות חירום. בחירום מחייגים קודם ל־<bdi>100 · 101 · 102</bdi>. <span class="sh">SH<i>✡</i>MER</span> מביא את מי שכבר נמצא דקה ממך, ונותן לרבש"צ תמונה ברורה. הלוח לא משגר אוטומטית לשירותי החירום; פרטי האירוע מוכנים להעברה ידנית.</p></div>
+      </details>
+      <details>
+        <summary>מה הרבש"צ רואה בלוח, ומה לא?</summary>
+        <div class="a"><p>הלוח מציג אירועים: סוג, שעה ומיקום האירוע. הוא לא מציג שמות, ולא עוקב אחרי תושבים. מיקום משותף רק עם השומרים שהתושב בחר ואישר.</p><p>נוכחות של מכשירים ברשת מוצגת רק בקירוב של כקילומטר ובלי פרטים מזהים, ורשומות נמחקות אוטומטית אחרי 90 יום לכל היותר.</p></div>
+      </details>
+      <details id="faq-tender">
+        <summary>צריך מכרז?</summary>
+        <div class="a"><p>ברוב המקרים לא. לפי מבקר המדינה, התקרות להתקשרות בלי מכרז ברשויות המקומיות עמדו על כ־<bdi>₪71,000</bdi> (מועצות עד 20,000 תושבים) וכ־<bdi>₪143,000</bdi> (מעל 20,000), לפני מע"מ, נכון ליוני 2021 ומוצמדות מאז. הפיילוט והרישיונות נמוכים בהרבה מהתקרות האלה.</p><p>ההחלטה הסופית אצל הגזבר או היועץ המשפטי של הגוף המשלם. נשמח להעביר הצעת מחיר מסודרת.</p><p class="src">מקור: <a href="https://library.mevaker.gov.il/sites/DigitalLibrary/Pages/Reports/7497-4.aspx" rel="noopener" target="_blank">מבקר המדינה, התקשרויות הרשויות המקומיות בפטור ממכרז</a></p></div>
+      </details>
+      <details>
+        <summary>מקבלים חשבונית מס?</summary>
+        <div class="a"><p>כן. כל תשלום מקבל חשבונית מס כחוק מ־3Shamrocks Studio (עוסק מורשה), עם מע"מ בשיעור 18%. המחירים בעמוד לפני מע"מ.</p></div>
+      </details>
+      <details>
+        <summary>איך משלמים?</summary>
+        <div class="a"><p>פיילוט ורישיון שנתי: באשראי, ב־Bit, ב־Apple Pay או ב־Google Pay, בעמוד תשלום מאובטח. אפשר גם בהעברה בנקאית מול הזמנה.</p><p>מועצות ורשויות: מקבלים הצעת מחיר, ומשלמים מול הזמנת רכש וחשבונית מס.</p></div>
+      </details>
+      <details>
+        <summary>מה קורה ביום ה־90?</summary>
+        <div class="a"><p>פגישת סיכום: מה עבד, מה לא, ומחליטים יחד. ממשיכים? ה־<bdi>₪2,500</bdi> מקוזזים מהרישיון של השנה הראשונה. לא ממשיכים? אין התחייבות.</p></div>
+      </details>
+      <details>
+        <summary>מה צריך מאיתנו?</summary>
+        <div class="a"><p>איש קשר אחד מטעם הקהילה (בדרך כלל הרבש"צ או המזכיר/ה), רשימה של 10–20 שומרים ראשונים, ו־15 דקות לשיחת פתיחה.</p></div>
+      </details>
+      <details>
+        <summary>התושבים צריכים לשלם?</summary>
+        <div class="a"><p>לא. האפליקציה חינם לכל תושב, תמיד. הקהילה משלמת על לוח הבקרה, ההטמעה והליווי.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="sec cta band navy" aria-labelledby="cta-t">
+  <img class="ground" src="../assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
+  <svg class="cta-rings" viewBox="0 0 1100 1100" aria-hidden="true">
+    <circle cx="550" cy="550" r="545" fill="none" stroke="#F5C840" stroke-opacity=".06"/>
+    <circle cx="550" cy="550" r="420" fill="none" stroke="#F5C840" stroke-opacity=".09"/>
+    <circle cx="550" cy="550" r="300" fill="none" stroke="#F5C840" stroke-opacity=".12"/>
+    <circle cx="550" cy="550" r="180" fill="none" stroke="#F5C840" stroke-opacity=".16"/>
+  </svg>
+  <div class="wrap">
+    <img class="cta-badge" src="../assets/shomer-pilot/shomer-badge.webp" alt="" width="480" height="480">
+    <h2 id="cta-t">מתחילים?</h2>
+    <p class="lead">שתי דקות בהדגמה, ואתם יודעים אם זה מתאים לקהילה שלכם.</p>
+    <div class="actions">
+      <a class="btn" href="demo/" data-track="click_demo" data-track-x="cta">צפו בהדגמה חיה</a>
+      <a class="btn-ghost" href="checkout/?plan=pilot" data-track="select_plan" data-track-x="cta-pilot">להתחיל פיילוט · <bdi>₪2,500</bdi></a>
+    </div>
+    <div class="contact">
+      <strong>דייב מרקוביץ' · 3Shamrocks Studio</strong>
+      <a class="ltr" href="mailto:dave@3shamrocks.com" data-track="contact_click" data-track-x="cta">dave@3shamrocks.com</a>
+      <a class="ltr" href="https://www.shomer-app.co.il" rel="noopener">shomer-app.co.il</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><bdi>© 2026 3Shamrocks Studio</bdi> · <span class="sh">SH<i>✡</i>MER</span>™ · <a href="https://www.shomer-app.co.il/privacy.html" rel="noopener">פרטיות</a> · <a href="https://www.shomer-app.co.il/terms.html" rel="noopener">תנאי שימוש</a></p>
+    <img src="../assets/shomer-pilot/3shamrocks-studio.webp" alt="3Shamrocks Studio" width="452" height="66" loading="lazy">
+  </div>
+</footer>
+
+<script src="assets/sc.js"></script>
+<script>
+(function(){
+  SC.track('view_landing');
+  var seg=document.getElementById('seg'), price=document.getElementById('lic-price'), sub=document.getElementById('lic-sub'), cta=document.getElementById('lic-cta');
+  var per={s:'עד 1,000 תושבים · כ־₪10 לתושב לשנה', m:'1,000–5,000 תושבים', l:'5,000–10,000 תושבים'};
+  seg.addEventListener('click',function(e){
+    var b=e.target.closest('button[data-tier]'); if(!b) return;
+    var t=b.getAttribute('data-tier'), p=SC.PLANS[t];
+    seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); });
+    price.innerHTML='<bdi>'+SC.ils(p.price)+'</bdi>'; sub.textContent=per[t]; cta.href='checkout/?plan='+t;
+    SC.track('select_tier',{tier:t});
+  });
+  document.getElementById('partner-cta').href=SC.mailto('SH✡MER · מועמדות לשותפי דרך',
+    'שלום דייב,\nנשמח להיות שותפי דרך בפיילוט SH✡MER.\n\nשם הקהילה:\nמספר תושבים (בערך):\nשם ותפקיד:\nטלפון:\n');
+  /* plans section view */
+  try{ var seen=false, io=new IntersectionObserver(function(en){ if(!seen&&en[0].isIntersecting){ seen=true; SC.track('view_plans',{x:'scroll'}); io.disconnect(); } },{threshold:.3}); io.observe(document.getElementById('plans')); }catch(e){}
+})();
+</script>
+</body>
+</html>

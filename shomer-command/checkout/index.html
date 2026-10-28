@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0A1628">
+<title>SH✡MER Command · הזמנה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="../../assets/shomer-pilot/favicon.png">
+<link rel="stylesheet" href="../assets/sc.css">
+<style>
+.cbar{background:var(--n1);color:var(--tx0);border-bottom:1px solid rgba(245,200,64,.25)}
+.cbar .topbar{height:68px}
+.secure{display:flex;align-items:center;gap:8px;font-size:14.5px;color:var(--tx1)}
+.secure svg{width:18px;height:18px}
+.co{padding:48px 0 96px}
+.co-grid{display:grid;grid-template-columns:7fr 4.4fr;gap:40px;align-items:start}
+.back{display:inline-flex;gap:8px;font-size:15px;font-weight:600;color:var(--ink2);margin-bottom:18px}
+.back:hover{color:var(--ink)}
+.co h1{font-size:clamp(30px,3vw,40px);line-height:1.15;font-weight:800;letter-spacing:-.02em}
+.co .sub{margin-top:8px;color:var(--ink3);font-size:17px}
+.stepper{margin-top:26px;display:flex;gap:8px;align-items:center;font-size:14.5px;font-weight:600;color:var(--ink3)}
+.stepper li{display:flex;align-items:center;gap:8px}
+.stepper li+li::before{content:"";width:28px;height:1.5px;background:var(--hair2);margin-inline-end:8px}
+.stepper .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--hair2);font-size:13px}
+.stepper li.on{color:var(--ink)}
+.stepper li.on .n{background:var(--n1);border-color:var(--n1);color:var(--g4)}
+.stepper li.ok .n{background:var(--g3);border-color:var(--g3);color:var(--n1)}
+.panel{margin-top:24px;padding:30px;border-radius:22px;background:#fff;border:1px solid var(--hair);box-shadow:var(--sh-card)}
+.panel h2{font-size:21px;font-weight:800}
+.panel h2 small{display:block;margin-top:2px;font-size:15px;font-weight:400;color:var(--ink3)}
+.opts{margin-top:20px;display:grid;gap:10px}
+.opt{position:relative;display:grid;grid-template-columns:24px 1fr auto;gap:14px;align-items:center;padding:16px 18px;border:1.5px solid var(--hair2);border-radius:16px;cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.opt:hover{border-color:rgba(192,144,32,.6)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt .r{width:22px;height:22px;border-radius:50%;border:2px solid var(--p2);display:grid;place-items:center}
+.opt .r::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--n1);transform:scale(0);transition:transform .15s ease}
+.opt:has(input:checked){border-color:var(--g2);background:rgba(224,168,40,.07);box-shadow:0 0 0 1px var(--g2) inset}
+.opt:has(input:checked) .r{border-color:var(--n1)}
+.opt:has(input:checked) .r::after{transform:scale(1)}
+.opt:has(input:focus-visible){box-shadow:var(--focus)}
+.opt b{display:block;font-size:17px;font-weight:700}
+.opt span{font-size:14.5px;color:var(--ink3)}
+.opt .pr{text-align:left;font-weight:800;font-size:18px;white-space:nowrap}
+.opt .pr small{display:block;font-size:13px;font-weight:500;color:var(--ink3)}
+.opt .badge{position:absolute;top:-10px;inset-inline-start:16px;font-size:12px;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--grad-gold);color:var(--n1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px;margin-top:22px}
+.grid2 .full{grid-column:1/-1}
+.req{color:var(--r3)}
+.hint{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(24,82,192,.07);font-size:15px;color:var(--ink2)}
+.hint a{font-weight:700;border-bottom:1.5px solid var(--g2)}
+.checks{margin-top:22px;display:grid;gap:14px}
+.paybox{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:14.5px;color:var(--ink3)}
+.methods{display:flex;gap:8px;flex-wrap:wrap}
+.methods span{padding:5px 10px;border-radius:8px;border:1px solid var(--hair2);font-weight:700;font-size:13px;color:var(--ink2);direction:ltr}
+.nav2{margin-top:26px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.nav2 .sp{flex:1}
+.nav2 .btn-ghost{min-height:50px}
+.altpay{font-size:15px;font-weight:600;color:var(--ink2);border-bottom:1px solid var(--hair2);padding-bottom:1px}
+
+/* summary */
+.sum{position:sticky;top:24px;padding:28px;border-radius:22px;background:var(--n1);color:var(--tx0);box-shadow:0 40px 70px -40px rgba(10,22,40,.8)}
+.sum h2{font-size:15px;font-weight:700;color:var(--g4);letter-spacing:.02em}
+.sum .pname{margin-top:10px;font-size:22px;font-weight:800;line-height:1.3}
+.sum .pfor{margin-top:2px;font-size:15px;color:var(--tx2)}
+.lines{margin-top:22px;border-top:1px solid var(--hair-n)}
+.lines div{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--hair-n);font-size:16px;color:var(--tx1)}
+.lines div b{color:#fff;font-weight:600;white-space:nowrap}
+.lines .tot{font-size:19px;color:#fff;font-weight:800;border-bottom:0;padding-top:14px}
+.lines .tot b{font-size:26px;font-weight:900;background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sum .incl{margin-top:20px;display:grid;gap:9px;font-size:15px;color:var(--tx1)}
+.sum .incl li{display:grid;grid-template-columns:18px 1fr;gap:10px}
+.sum .incl svg{width:18px;height:18px;margin-top:3px}
+.sum .fine{margin-top:18px;font-size:13.5px;color:var(--tx2)}
+
+/* states */
+.state{margin-top:24px;padding:34px 30px;border-radius:22px;background:#fff;border:1.5px solid var(--g2);box-shadow:var(--sh-card)}
+.state .ico{width:56px;height:56px}
+.state h2{margin-top:16px;font-size:26px;font-weight:800}
+.state p{margin-top:8px;color:var(--ink2);font-size:17px}
+.state .acts{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+.state .acts .btn-ghost{color:var(--ink);border-color:var(--hair2);min-height:50px}
+.state .small{margin-top:16px;font-size:14px;color:var(--ink3)}
+.stage-flag{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:800;color:#8A5A00;background:rgba(224,168,40,.18);padding:4px 10px;border-radius:999px}
+
+/* quote document (printable) */
+.qdoc{margin-top:24px;background:#fff;border:1px solid var(--hair);border-radius:8px;padding:48px 52px;box-shadow:var(--sh-card);font-size:15.5px;color:var(--ink)}
+.qhd{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding-bottom:18px;border-bottom:3px solid var(--g3)}
+.qhd img{width:150px}
+.qhd h2{font-size:26px;font-weight:900}
+.qmeta{font-size:14px;color:var(--ink2);text-align:left;line-height:1.7}
+.qparties{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.qparties h3{font-size:13px;font-weight:800;color:var(--ink3);letter-spacing:.04em}
+.qparties p{margin-top:4px;line-height:1.6}
+.qtable{margin-top:24px;width:100%;border-collapse:collapse}
+.qtable th{font-size:13px;color:var(--ink3);text-align:start;font-weight:700;padding:8px 10px;border-bottom:1.5px solid var(--ink)}
+.qtable td{padding:12px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+.qtable td.num,.qtable th.num{text-align:left;white-space:nowrap}
+.qtable tfoot td{border-bottom:0;padding:7px 10px}
+.qtable tfoot tr.t td{font-size:18px;font-weight:900;border-top:1.5px solid var(--ink);padding-top:12px}
+.qterms{margin-top:24px;font-size:14px;color:var(--ink2);line-height:1.7}
+.qterms h3{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.qterms li{list-style:disc;margin-inline-start:18px}
+.qsign{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:40px;font-size:14px;color:var(--ink3)}
+.qsign div{border-top:1px solid var(--ink3);padding-top:6px}
+.qnote{margin-top:22px;font-size:12.5px;color:var(--ink3)}
+
+@media screen and (max-width:900px){
+  .co-grid{grid-template-columns:1fr}
+  .sum{position:static}
+}
+@media screen and (max-width:700px){
+  .co{padding:28px 0 72px}
+  .panel{padding:22px 18px}
+  .grid2{grid-template-columns:1fr}
+  .opt{grid-template-columns:22px 1fr;gap:12px;padding:14px}
+  .opt .pr{grid-column:2;text-align:start}
+  .stepper{font-size:13px;gap:4px}
+  .stepper li+li::before{width:12px;margin-inline-end:4px}
+  .stepper .lbl{display:none}
+  .stepper li.on .lbl{display:inline}
+  .nav2 .btn{width:100%}
+  .qdoc{padding:24px 18px}
+  .state{padding:26px 20px}
+  .state h2{font-size:22px}
+  .qparties,.qsign{grid-template-columns:1fr;gap:16px}
+  .secure span{display:none}
+}
+@page{size:A4;margin:14mm}
+@media print{
+  body{background:#fff}
+  .cbar,.co-grid>*:not(.main),.main>*:not(#quote-doc),footer{display:none!important}
+  .co{padding:0}.wrap{padding:0;max-width:none}
+  .co-grid{display:block}
+  .qdoc{margin:0;border:0;box-shadow:none;padding:0}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+}
+</style>
+</head>
+<body>
+<!--SPRITE:start--><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+    <symbol id="hex" viewBox="0 0 52 52"><path d="M26 2.5 46.4 14.25v23.5L26 49.5 5.6 37.75v-23.5z" style="fill:var(--hexf);stroke:var(--hexs);stroke-width:1.2"/></symbol>
+    <symbol id="i-sos" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="16" cy="16" r="5.6"/><circle cx="16" cy="16" r="5.6"/><path d="M9.2 10.2a9 9 0 0 0 0 11.6M22.8 10.2a9 9 0 0 1 0 11.6M5.6 6.8a13.6 13.6 0 0 0 0 18.4M26.4 6.8a13.6 13.6 0 0 1 0 18.4"/></symbol>
+    <symbol id="i-circle" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12.5" stroke-dasharray="2.2 3.2"/><circle cx="16" cy="13.4" r="3"/><path d="M10.8 21.8a5.2 5.2 0 0 1 10.4 0"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="3.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="5.2" cy="22.3" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="26.8" cy="22.3" r="2.4"/></symbol>
+    <symbol id="i-shake" viewBox="0 0 32 32"><rect style="fill:var(--duo);stroke:none" x="13" y="8.6" width="6" height="12" rx="1"/><rect x="10.8" y="5.5" width="10.4" height="21" rx="2.6"/><path d="M14.6 23.4h2.8M6.4 10.5 4.2 12.8l2.2 2.3-2.2 2.3 2.2 2.3M25.6 10.5l2.2 2.3-2.2 2.3 2.2 2.3-2.2 2.3"/></symbol>
+    <symbol id="i-arrive" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M16 28.5s-8.6-7.6-8.6-14.1a8.6 8.6 0 0 1 17.2 0c0 6.5-8.6 14.1-8.6 14.1z" opacity=".55"/><path d="M16 28.5s-8.6-7.6-8.6-14.1a8.6 8.6 0 0 1 17.2 0c0 6.5-8.6 14.1-8.6 14.1z"/><path d="m12.4 14.4 2.5 2.5 4.7-5"/></symbol>
+    <symbol id="i-call" viewBox="0 0 32 32"><path d="M8.6 6.5h3.6l1.8 4.9-2.3 1.5a11.5 11.5 0 0 0 6.9 6.9l1.5-2.3 4.9 1.8v3.6a2.4 2.4 0 0 1-2.4 2.4A17 17 0 0 1 6.2 8.9a2.4 2.4 0 0 1 2.4-2.4z"/><path style="fill:var(--duo);stroke:none" d="M24 4.6c-1.1-1.5-3.6-.8-3.6 1.1 0 1.8 3.6 4 3.6 4s3.6-2.2 3.6-4c0-1.9-2.5-2.6-3.6-1.1z"/></symbol>
+    <symbol id="i-dash" viewBox="0 0 32 32"><rect x="3.5" y="5.5" width="25" height="17" rx="2.6"/><path d="M11.5 27h9M16 22.5V27"/><circle cx="16" cy="14" r="5" stroke-dasharray="1.8 2.4"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="14" r="2.3"/><circle style="fill:var(--duo);stroke:none" cx="9" cy="10" r="1.2"/><circle style="fill:var(--duo);stroke:none" cx="23.5" cy="17.5" r="1.2"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 32 32"><path d="M9.5 21.5v-7a6.5 6.5 0 0 1 13 0v7l2.2 2.6H7.3z"/><path d="M13.8 27a2.3 2.3 0 0 0 4.4 0"/><circle style="fill:var(--duo);stroke:none" cx="23.4" cy="7.6" r="3.6"/></symbol>
+    <symbol id="i-choice" viewBox="0 0 32 32"><circle cx="13" cy="11" r="4"/><path d="M5 26a8 8 0 0 1 13.4-5.9"/><circle style="fill:var(--duo);stroke:none" cx="23" cy="21.5" r="5.6"/><path d="m20.4 21.6 1.8 1.8 3.3-3.4"/></symbol>
+    <symbol id="i-map" viewBox="0 0 32 32"><path d="M4 8.5 11 6l10 3 7-2.5v18.5L21 27.5l-10-3L4 27z"/><path d="M11 6v18.5M21 9v18.5" opacity=".6"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="14.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="7.8" cy="19" r="1.4"/><circle style="fill:var(--duo);stroke:none" cx="24.4" cy="12" r="1.4"/></symbol>
+    <symbol id="i-together" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="12" cy="16" r="8" opacity=".55"/><circle cx="12" cy="16" r="8"/><circle cx="20" cy="16" r="8"/></symbol>
+    <symbol id="i-lang" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M15.5 13.5h10.6a2 2 0 0 1 2 2v6.2a2 2 0 0 1-2 2h-1.2v3.6l-3.9-3.6h-5.5a2 2 0 0 1-2-2v-6.2a2 2 0 0 1 2-2z"/><path d="M5.8 5.5h12.6a2 2 0 0 1 2 2v7.2a2 2 0 0 1-2 2h-7.3l-4.2 3.6v-3.6H5.8a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2z"/><path d="M7.6 9.6h7.2M7.6 12.6h4.4"/></symbol>
+    <symbol id="i-toggle" viewBox="0 0 32 32"><rect x="3.5" y="10.5" width="25" height="11" rx="5.5"/><circle style="fill:var(--duo);stroke:none" cx="22.8" cy="16" r="3.6"/><circle cx="22.8" cy="16" r="3.6"/></symbol>
+    <symbol id="i-home" viewBox="0 0 32 32"><path d="M4.5 14.6 16 5.5l11.5 9.1M8 12v14.5h16V12"/><path style="fill:var(--duo);stroke:none" d="M16 23.6s-4.4-2.7-4.4-5.4a2.2 2.2 0 0 1 4.4-.9 2.2 2.2 0 0 1 4.4.9c0 2.7-4.4 5.4-4.4 5.4z"/></symbol>
+    <symbol id="tick-n" viewBox="0 0 20 20"><path d="M10 1.2 17.6 5.6v8.8L10 18.8 2.4 14.4V5.6z" fill="#0A1628"/><path d="m6.4 10.2 2.4 2.4 4.8-5" fill="none" stroke="#F5C840" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  
+    <symbol id="tick-g" viewBox="0 0 20 20"><path d="M10 1.2 17.6 5.6v8.8L10 18.8 2.4 14.4V5.6z" fill="#E0A828"/><path d="m6.4 10.2 2.4 2.4 4.8-5" fill="none" stroke="#0A1628" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs></svg><!--SPRITE:end-->
+<header class="cbar">
+  <div class="wrap topbar">
+    <a class="brand" href="../" aria-label="חזרה לעמוד SH✡MER Command">
+      <img class="wordmark" src="../../assets/shomer-pilot/wordmark-white.svg" alt="SH✡MER" width="1190" height="277">
+      <small>COMMAND</small>
+    </a>
+    <span class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="#F5C840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>הזמנה מאובטחת · חשבונית מס לכל תשלום</span></span>
+  </div>
+</header>
+
+<main class="co on-paper">
+  <div class="wrap co-grid">
+    <div class="main">
+      <a class="back" href="../#plans">→ חזרה לתוכניות</a>
+      <h1 id="h1">הזמנת <span class="sh">SH<i>✡</i>MER Command</span></h1>
+      <p class="sub" id="sub">שלוש דקות, ואתם בפנים.</p>
+
+      <ol class="stepper" id="stepper" aria-label="שלבי ההזמנה">
+        <li data-s="1"><span class="n">1</span><span class="lbl">תוכנית</span></li>
+        <li data-s="2"><span class="n">2</span><span class="lbl">פרטים לחשבונית</span></li>
+        <li data-s="3"><span class="n">3</span><span class="lbl">סיכום ותשלום</span></li>
+      </ol>
+
+      <!-- STEP 1 · plan -->
+      <section class="panel" id="s1" aria-labelledby="s1-t">
+        <h2 id="s1-t">בחרו תוכנית<small>מחיר לקהילה, לא לתושב. המחירים לפני מע"מ.</small></h2>
+        <div class="opts" role="radiogroup" aria-labelledby="s1-t" id="opts"></div>
+        <div class="nav2"><span class="sp"></span><button type="button" class="btn" id="to2">המשך ←</button></div>
+      </section>
+
+      <!-- STEP 2 · details (purchase) -->
+      <section class="panel" id="s2" hidden aria-labelledby="s2-t">
+        <h2 id="s2-t">פרטים לחשבונית ולגישה ללוח<small>הפרטים נשארים בדפדפן שלכם עד שתבחרו לשלוח אותם.</small></h2>
+        <form id="f2" novalidate>
+          <div class="grid2">
+            <div class="field"><label for="org">שם הקהילה / היישוב <span class="req">*</span></label><input class="input" id="org" name="org" required autocomplete="organization"></div>
+            <div class="field"><label for="payer">הגוף המשלם (על שמו החשבונית) <span class="req">*</span></label><input class="input" id="payer" name="payer" required placeholder="למשל: ועד מקומי ..."></div>
+            <div class="field"><label for="taxid">ח.פ. / ע.מ. <small>(לא חובה)</small></label><input class="input ltr" id="taxid" name="taxid" inputmode="numeric" maxlength="12"></div>
+            <div class="field"><label for="residents">מספר תושבים, בערך <span class="req">*</span></label><input class="input ltr" id="residents" name="residents" inputmode="numeric" required maxlength="7"></div>
+            <div class="full" id="tierhint" hidden></div>
+            <div class="field"><label for="name">שם איש הקשר <span class="req">*</span></label><input class="input" id="name" name="name" required autocomplete="name"></div>
+            <div class="field"><label for="role">תפקיד</label><select class="select" id="role" name="role"><option>רבש"צ</option><option>קב"ט</option><option>מזכיר/ה</option><option>יו"ר ועד</option><option>אחר</option></select></div>
+            <div class="field"><label for="email">אימייל <span class="req">*</span></label><input class="input ltr" id="email" name="email" type="email" required autocomplete="email"><small>לכאן תישלח החשבונית וההזמנה ללוח הבקרה.</small></div>
+            <div class="field"><label for="phone">טלפון <span class="req">*</span></label><input class="input ltr" id="phone" name="phone" type="tel" required autocomplete="tel" maxlength="15"></div>
+          </div>
+          <p class="err" id="e2" role="alert"></p>
+          <div class="nav2"><button type="button" class="btn-ghost" data-back="1">→ חזרה</button><span class="sp"></span><button type="submit" class="btn" id="to3">לסיכום ←</button></div>
+        </form>
+      </section>
+
+      <!-- STEP 3 · review + pay -->
+      <section class="panel" id="s3" hidden aria-labelledby="s3-t">
+        <h2 id="s3-t">סיכום ותשלום<small id="s3-sub"></small></h2>
+        <div class="checks">
+          <label class="check"><input type="checkbox" id="c-terms"><span>קראתי ואני מסכים/ה ל<a class="link" href="https://www.shomer-app.co.il/terms.html" target="_blank" rel="noopener">תנאי השימוש</a> ול<a class="link" href="https://www.shomer-app.co.il/privacy.html" target="_blank" rel="noopener">מדיניות הפרטיות</a>.</span></label>
+          <label class="check"><input type="checkbox" id="c-100"><span>ידוע לי ש־<span class="sh">SH<i>✡</i>MER</span> הוא כלי קהילתי ואינו מחליף את <bdi class="nw">100 · 101 · 102</bdi>.</span></label>
+        </div>
+        <div class="paybox"><span>תשלום מאובטח דרך Morning (חשבונית ירוקה):</span><span class="methods"><span>Visa / Mastercard</span><span>Bit</span><span>Apple Pay</span><span>Google Pay</span></span></div>
+        <p class="err" id="e3" role="alert"></p>
+        <div class="nav2"><button type="button" class="btn-ghost" data-back="2">→ חזרה</button><span class="sp"></span><button type="button" class="btn" id="pay">לתשלום מאובטח</button></div>
+        <p style="margin-top:16px;font-size:15px;color:var(--ink3)">מעדיפים העברה בנקאית או הזמנת רכש? <button type="button" class="altpay" id="alt">לסיכום הזמנה להדפסה</button></p>
+      </section>
+
+      <!-- placeholder state: no payment account connected yet -->
+      <section class="state" id="soon" hidden aria-live="polite">
+        <svg class="ico" viewBox="0 0 52 52" aria-hidden="true" style="color:var(--ink);--duo:var(--g3);--hexf:rgba(224,168,40,.14);--hexs:rgba(224,168,40,.55);fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><use href="#hex"/><use href="#i-alert" x="10" y="10" width="32" height="32"/></svg>
+        <span class="stage-flag">בקרוב</span>
+        <h2>התשלום יופעל בקרוב — השאירו פרטים ונחזור תוך יום</h2>
+        <p>התשלום המקוון עוד לא מחובר. שום פרט תשלום לא נאסף, ושום דבר לא נשלח מהעמוד הזה. שלחו לנו את ההזמנה מתיבת המייל שלכם, ודייב יחזור אליכם תוך יום עסקים עם קישור לתשלום וחשבונית.</p>
+        <div class="acts">
+          <a class="btn" id="soon-mail" href="#" data-track="lead_order_email">שליחת ההזמנה במייל</a>
+          <button type="button" class="btn-ghost" id="soon-copy">העתקת סיכום ההזמנה</button>
+        </div>
+        <p class="small">מה קורה אחרי התשלום? <a class="link" id="soon-preview" href="../welcome/?preview=1">תצוגה מקדימה של שלב ההטמעה</a></p>
+      </section>
+
+      <!-- printable order summary (bank transfer / PO) and council quote share this document -->
+      <section id="quote-doc" hidden></section>
+      <div class="state" id="doc-acts" hidden>
+        <h2 id="doc-h">ההצעה מוכנה</h2>
+        <p id="doc-p">אפשר להדפיס או לשמור כ־PDF, ולשלוח לנו לאישור.</p>
+        <div class="acts">
+          <button type="button" class="btn" id="doc-print">הדפסה / שמירה כ־PDF</button>
+          <a class="btn-ghost" id="doc-mail" href="#">שליחה לדייב במייל</a>
+          <button type="button" class="btn-ghost" id="doc-edit">→ חזרה לעריכה</button>
+        </div>
+      </div>
+
+      <!-- COUNCIL · quote request -->
+      <section class="panel" id="sq" hidden aria-labelledby="sq-t">
+        <h2 id="sq-t">הצעת מחיר למועצה או לרשות<small><bdi>₪2</bdi> לתושב לשנה, מינימום <bdi>₪40,000</bdi>. ההצעה מופקת כאן, להדפסה מיידית.</small></h2>
+        <form id="fq" novalidate>
+          <div class="grid2">
+            <div class="field full"><label for="q-org">שם המועצה / הרשות <span class="req">*</span></label><input class="input" id="q-org" required autocomplete="organization" placeholder="למשל: מועצה אזורית ..."></div>
+            <div class="field"><label for="q-res">מספר תושבים <span class="req">*</span></label><input class="input ltr" id="q-res" inputmode="numeric" required maxlength="7"></div>
+            <div class="field"><label for="q-com">מספר יישובים <small>(לא חובה)</small></label><input class="input ltr" id="q-com" inputmode="numeric" maxlength="4"></div>
+            <div class="full" id="q-hint" hidden></div>
+            <div class="field"><label for="q-name">שם איש הקשר <span class="req">*</span></label><input class="input" id="q-name" required autocomplete="name"></div>
+            <div class="field"><label for="q-role">תפקיד</label><select class="select" id="q-role"><option>קב"ט</option><option>רבש"צ</option><option>מנהל/ת ביטחון</option><option>גזבר/ית</option><option>מנכ"ל/ית</option><option>אחר</option></select></div>
+            <div class="field"><label for="q-email">אימייל <span class="req">*</span></label><input class="input ltr" id="q-email" type="email" required autocomplete="email"></div>
+            <div class="field"><label for="q-phone">טלפון <span class="req">*</span></label><input class="input ltr" id="q-phone" type="tel" required autocomplete="tel" maxlength="15"></div>
+            <label class="check full"><input type="checkbox" id="q-pilot"><span>להוסיף להצעה פיילוט של 90 יום ביישוב אחד (<bdi>₪2,500</bdi>, מקוזז מהשנה הראשונה)</span></label>
+          </div>
+          <p class="err" id="eq" role="alert"></p>
+          <div class="nav2"><a class="btn-ghost" href="../#plans">→ חזרה</a><span class="sp"></span><button type="submit" class="btn">הפקת הצעת מחיר</button></div>
+        </form>
+      </section>
+    </div>
+
+    <aside class="sum" aria-labelledby="sum-t">
+      <h2 id="sum-t">סיכום הזמנה</h2>
+      <p class="pname" id="sum-name"></p>
+      <p class="pfor" id="sum-for"></p>
+      <div class="lines" id="sum-lines"></div>
+      <ul class="incl" id="sum-incl"></ul>
+      <p class="fine" id="sum-fine"></p>
+    </aside>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><bdi>© 2026 3Shamrocks Studio</bdi> · <span class="sh">SH<i>✡</i>MER</span>™ · <a href="mailto:dave@3shamrocks.com" class="ltr">dave@3shamrocks.com</a></p>
+    <img src="../../assets/shomer-pilot/3shamrocks-studio.webp" alt="3Shamrocks Studio" width="452" height="66" loading="lazy">
+  </div>
+</footer>
+
+<script src="../assets/sc.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var P=SC.PLANS, ils=SC.ils;
+  var INCL={
+    pilot:['הטמעה: הדרכה לרבש"צ ולשומרים הראשונים','לוח בקרה לכל 90 הימים','הודעה לקבוצת היישוב, פוסטר ומדריך','תרגיל SOS מתואם, דוח כל שבועיים, סיכום ביום ה־90','האפליקציה חינם לכל התושבים'],
+    lic:['לוח בקרה לשנה: מפת SOS חיה, בלי שמות','האפליקציה חינם לכל התושבים','חומרי הטמעה ותרגיל SOS מתואם אחד בשנה','תמיכה ישירה מדייב'],
+    council:['לוח בקרה לכל יישוב, ותמונה אחת למועצה','האפליקציה חינם לכל התושבים','הטמעה וחומרים לכל היישובים','תשלום מול הזמנת רכש וחשבונית מס']
+  };
+  var MAXRES={s:1000,m:5000,l:10000};
+  var OPTS=[
+    {k:'pilot',b:'פיילוט "קהילה שומרת" · 90 יום',s:'מקוזז מהשנה הראשונה. ללא התחייבות.',pr:ils(2500),ps:'ל־90 יום',badge:'הכי מתאים להתחלה'},
+    {k:'s',b:'רישיון שנתי · עד 1,000 תושבים',s:'יישוב, קיבוץ, מושב או שכונה',pr:ils(9900),ps:'לשנה'},
+    {k:'m',b:'רישיון שנתי · 1,000–5,000 תושבים',s:'יישוב גדול או ישוב קהילתי',pr:ils(18000),ps:'לשנה'},
+    {k:'l',b:'רישיון שנתי · 5,000–10,000 תושבים',s:'מועצה מקומית או קהילה גדולה',pr:ils(25000),ps:'לשנה'},
+    {k:'council',b:'מועצה אזורית / רשות · הצעת מחיר',s:'₪2 לתושב לשנה, מינימום ₪40,000. מול הזמנת רכש.',pr:'הצעה',ps:'תוך דקה'}
+  ];
+  var q=new URLSearchParams(location.search), plan=q.get('plan'); if(!(plan in P)&&plan!=='council') plan='pilot';
+  var step=1;
+
+  /* plan options */
+  $('opts').innerHTML=OPTS.map(function(o){
+    return '<label class="opt">'+(o.badge?'<span class="badge">'+o.badge+'</span>':'')+'<input type="radio" name="plan" value="'+o.k+'"'+(o.k===plan?' checked':'')+'><span class="r" aria-hidden="true"></span>'
+      +'<span><b>'+o.b+'</b><span>'+o.s+'</span></span><span class="pr"><bdi>'+o.pr+'</bdi><small>'+o.ps+'</small></span></label>';
+  }).join('');
+  $('opts').addEventListener('change',function(e){ if(e.target.name==='plan'){ plan=e.target.value; SC.track('select_plan',{x:'checkout-'+plan}); if(plan==='council'){ go('q'); } else { summary(); } } });
+
+  function lines(net,extra){ var v=SC.withVat(net);
+    return (extra||'')+'<div><span>מחיר לפני מע"מ</span><b><bdi>'+ils(v.net)+'</bdi></b></div><div><span>מע"מ 18%</span><b><bdi>'+ils(v.vat)+'</bdi></b></div><div class="tot"><span>לתשלום</span><b><bdi>'+ils(v.total)+'</bdi></b></div>'; }
+  function incl(list){ return list.map(function(t){ return '<li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>'+t+'</span></li>'; }).join(''); }
+  function summary(){
+    if(plan==='council'){
+      var r=+($('q-res').value||'').replace(/\D/g,''), net=SC.councilPrice(r), pil=$('q-pilot').checked;
+      $('sum-name').textContent='רישיון שנתי למועצה';
+      $('sum-for').textContent=r?(r.toLocaleString('en-US')+' תושבים × ₪2'+(r*2<SC.COUNCIL.min?' · מינימום ₪40,000':'')):'הזינו מספר תושבים';
+      $('sum-lines').innerHTML=lines(net+(pil?2500:0), pil?'<div><span>פיילוט ביישוב אחד</span><b><bdi>₪2,500</bdi></b></div><div><span>רישיון שנתי</span><b><bdi>'+ils(net)+'</bdi></b></div>':'');
+      $('sum-incl').innerHTML=incl(INCL.council);
+      $('sum-fine').textContent='המחירים לפני מע"מ. תשלום מול הזמנת רכש וחשבונית מס.';
+      return;
+    }
+    var p=P[plan];
+    $('sum-name').textContent=p.name; $('sum-for').textContent=p.period==='לשנה'?'חיוב שנתי · '+p.residents:'תשלום אחד ל־90 יום';
+    $('sum-lines').innerHTML=lines(p.price);
+    $('sum-incl').innerHTML=incl(plan==='pilot'?INCL.pilot:INCL.lic);
+    $('sum-fine').textContent=p.note+' חשבונית מס נשלחת לאימייל שתזינו.';
+  }
+
+  function stepper(n){ var li=$('stepper').children; for(var i=0;i<li.length;i++){ var s=+li[i].getAttribute('data-s'); li[i].className=s===n?'on':(s<n?'ok':''); if(s===n) li[i].setAttribute('aria-current','step'); else li[i].removeAttribute('aria-current'); } }
+  function hideAll(){ ['s1','s2','s3','sq','soon','quote-doc','doc-acts'].forEach(function(id){ $(id).hidden=true; }); }
+  function go(n){
+    hideAll();
+    var council=(n==='q');
+    $('stepper').hidden=council;
+    $('h1').innerHTML=council?'הצעת מחיר · <span class="sh">SH<i>✡</i>MER Command</span>':'הזמנת <span class="sh">SH<i>✡</i>MER Command</span>';
+    $('sub').textContent=council?'דקה אחת, והצעה מסודרת להדפסה בידיים שלכם.':'שלוש דקות, ואתם בפנים.';
+    if(council){ plan='council'; $('sq').hidden=false; summary(); SC.track('checkout_step',{n:'quote'}); return; }
+    step=n; $('s'+n).hidden=false; stepper(n); summary();
+    if(n===3) $('s3-sub').textContent=P[plan].name+' · '+$('org').value.trim();
+    SC.track('checkout_step',{n:n,plan:plan});
+    if(window.scrollY>200) window.scrollTo({top:0,behavior:'smooth'});
+  }
+  document.querySelectorAll('[data-back]').forEach(function(b){ b.addEventListener('click',function(){ go(+b.getAttribute('data-back')); }); });
+  $('to2').addEventListener('click',function(){ go(2); setTimeout(function(){ $('org').focus(); },50); });
+
+  /* step 2 validation */
+  var EM=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  function val(form,ids,err){
+    var bad=null;
+    ids.forEach(function(id){ var el=$(id), v=el.value.trim(), ok=!!v;
+      if(ok&&el.type==='email') ok=EM.test(v);
+      if(ok&&el.type==='tel') ok=v.replace(/\D/g,'').length>=9;
+      if(ok&&el.inputMode==='numeric'&&el.required) ok=/^\d[\d,]*$/.test(v)&&+v.replace(/\D/g,'')>0;
+      el.setAttribute('aria-invalid',ok?'false':'true'); if(!ok&&!bad) bad=el; });
+    $(err).textContent=bad?'נא למלא את השדות המסומנים':''; if(bad) bad.focus(); return !bad;
+  }
+  function tierHint(){
+    var r=+($('residents').value||'').replace(/\D/g,''), h=$('tierhint'); h.hidden=true; if(!r||plan==='pilot') return;
+    var right=r<=1000?'s':r<=5000?'m':r<=10000?'l':'council';
+    if(right!==plan){ h.hidden=false; h.className='full hint';
+      h.innerHTML=right==='council'?'לקהילה של יותר מ־10,000 תושבים מתאימה <a href="?plan=council">הצעת מחיר מותאמת</a>.':'לפי מספר התושבים, מתאים הרישיון <b>'+P[right].short+'</b> (<bdi>'+ils(P[right].price)+'</bdi> לשנה). <a href="#" id="fixtier">להחליף</a>';
+      var fx=$('fixtier'); if(fx) fx.onclick=function(e){ e.preventDefault(); plan=right; document.querySelector('input[name=plan][value='+right+']').checked=true; summary(); tierHint(); };
+    }
+  }
+  $('residents').addEventListener('input',tierHint);
+  $('f2').addEventListener('submit',function(e){ e.preventDefault(); if(val('f2',['org','payer','residents','name','email','phone'],'e2')) go(3); });
+
+  function order(){
+    var v=SC.withVat(P[plan].price);
+    return {plan:plan, plan_name:P[plan].name, org:$('org').value.trim(), payer:$('payer').value.trim(), tax_id:$('taxid').value.trim(),
+      residents:+$('residents').value.replace(/\D/g,''), contact:$('name').value.trim(), role:$('role').value, email:$('email').value.trim(), phone:$('phone').value.trim(),
+      amount_net:v.net, vat:v.vat, total:v.total, currency:'ILS'};
+  }
+  function orderText(o){
+    return 'הזמנת SH✡MER Command\n\nתוכנית: '+o.plan_name+'\nמחיר לפני מע"מ: '+ils(o.amount_net)+'\nמע"מ 18%: '+ils(o.vat)+'\nסה"כ: '+ils(o.total)
+      +'\n\nקהילה: '+o.org+'\nגוף משלם: '+o.payer+(o.tax_id?' ('+o.tax_id+')':'')+'\nמספר תושבים: '+o.residents.toLocaleString('en-US')
+      +'\nאיש קשר: '+o.contact+' · '+o.role+'\nאימייל: '+o.email+'\nטלפון: '+o.phone+'\n';
+  }
+  $('pay').addEventListener('click',function(){
+    var ok=$('c-terms').checked&&$('c-100').checked;
+    $('e3').textContent=ok?'':'נא לאשר את שתי ההצהרות כדי להמשיך'; if(!ok) return;
+    var o=order(), btn=$('pay'); btn.setAttribute('aria-disabled','true');
+    SC.startPayment(o).then(function(r){
+      btn.removeAttribute('aria-disabled');
+      if(r!=='placeholder') return;
+      hideAll(); $('soon').hidden=false; stepper(3);
+      $('soon-mail').href=SC.mailto('הזמנת SH✡MER Command · '+o.org, orderText(o)+'\nנשמח לקישור לתשלום.\n');
+      $('soon-copy').onclick=function(){ SC.copy(orderText(o)); };
+      $('soon-preview').href='../welcome/?preview=1&plan='+encodeURIComponent(o.plan)+'&org='+encodeURIComponent(o.org);
+      $('soon').scrollIntoView({block:'start',behavior:'smooth'});
+    }).catch(function(){ btn.removeAttribute('aria-disabled'); $('e3').textContent='לא הצלחנו לפתוח את עמוד התשלום. נסו שוב, או כתבו ל־'+SC.CONTACT; });
+  });
+
+  /* ── printable documents ── */
+  function today(){ var d=new Date(); return d; }
+  function dstr(d){ return ('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+d.getFullYear(); }
+  function ref(prefix){ var d=today(); return prefix+'-'+d.getFullYear()+('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2)+'-'+('0'+d.getHours()).slice(-2)+('0'+d.getMinutes()).slice(-2); }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function doc(o){
+    var d=today(), until=new Date(d.getTime()+30*864e5), rows=o.rows.map(function(r){ return '<tr><td>'+r[0]+'</td><td class="num"><bdi>'+ils(r[1])+'</bdi></td></tr>'; }).join(''), v=SC.withVat(o.net);
+    return '<article class="qdoc" aria-label="'+esc(o.title)+'">'
+      +'<div class="qhd"><div><h2>'+esc(o.title)+'</h2><p style="margin-top:4px;color:var(--ink3)">SH✡MER Command · לוח בקרה קהילתי</p></div>'
+      +'<div class="qmeta"><div>מספר: <b dir="ltr">'+o.ref+'</b></div><div>תאריך: <bdi>'+dstr(d)+'</bdi></div><div>בתוקף עד: <bdi>'+dstr(until)+'</bdi></div></div></div>'
+      +'<div class="qparties"><div><h3>מאת</h3><p><b>3Shamrocks Studio</b> · עוסק מורשה<br>דייב מרקוביץ\'<br><span dir="ltr">dave@3shamrocks.com</span></p></div>'
+      +'<div><h3>אל</h3><p><b>'+esc(o.to)+'</b><br>'+esc(o.contact)+'<br><span dir="ltr">'+esc(o.email)+'</span> · <span dir="ltr">'+esc(o.phone)+'</span></p></div></div>'
+      +'<table class="qtable"><thead><tr><th>פריט</th><th class="num">סכום</th></tr></thead><tbody>'+rows+'</tbody>'
+      +'<tfoot><tr><td>סה"כ לפני מע"מ</td><td class="num"><bdi>'+ils(v.net)+'</bdi></td></tr><tr><td>מע"מ 18%</td><td class="num"><bdi>'+ils(v.vat)+'</bdi></td></tr><tr class="t"><td>סה"כ לתשלום</td><td class="num"><bdi>'+ils(v.total)+'</bdi></td></tr></tfoot></table>'
+      +'<div class="qterms"><h3>תנאים</h3><ul>'+o.terms.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>'
+      +'<div class="qsign"><div>חתימה וחותמת המזמין</div><div>תאריך</div></div>'
+      +'<p class="qnote">'+o.note+'</p></article>';
+  }
+  var baseTerms=['האפליקציה חינם לכל התושבים. המחיר הוא לקהילה, לא לתושב.','חשבונית מס תונפק עם התשלום.','SH✡MER הוא כלי קהילתי ואינו מחליף את <bdi>100 · 101 · 102</bdi>.'];
+  function showDoc(html,h,p,mailSubj,mailBody,kind){
+    hideAll(); $('quote-doc').innerHTML=html; $('quote-doc').hidden=false; $('doc-acts').hidden=false; $('stepper').hidden=(kind==='quote');
+    $('doc-h').textContent=h; $('doc-p').textContent=p; $('doc-mail').href=SC.mailto(mailSubj,mailBody);
+    $('doc-edit').onclick=function(){ if(kind==='quote') go('q'); else go(3); };
+    $('quote-doc').scrollIntoView({block:'start',behavior:'smooth'});
+  }
+  $('doc-print').addEventListener('click',function(){ SC.track('doc_print'); window.print(); });
+
+  /* bank transfer / PO order summary */
+  $('alt').addEventListener('click',function(){
+    var o=order();
+    showDoc(doc({title:'סיכום הזמנה',ref:ref('SO'),to:o.payer+' · '+o.org,contact:o.contact+' · '+o.role,email:o.email,phone:o.phone,net:o.amount_net,
+      rows:[[esc(o.plan_name)+'<br><span style="color:var(--ink3);font-size:14px">'+(plan==='pilot'?'90 יום · מקוזז מהשנה הראשונה אם ממשיכים':'חיוב שנתי')+'</span>',o.amount_net]],
+      terms:['תשלום בהעברה בנקאית או מול הזמנת רכש. פרטי חשבון יישלחו עם אישור ההזמנה.','ההזמנה בתוקף 30 יום.'].concat(baseTerms),
+      note:'מסמך זה הוא סיכום הזמנה, ואינו חשבונית מס.'}),
+      'סיכום ההזמנה מוכן','הדפיסו או שמרו כ־PDF, ושלחו לנו. נחזור עם פרטי העברה וחשבונית.','סיכום הזמנה SH✡MER Command · '+o.org, orderText(o)+'\nמבקשים לשלם בהעברה בנקאית / מול הזמנת רכש.\n','order');
+    SC.track('order_doc',{plan:plan});
+  });
+
+  /* council quote */
+  function qHint(){ var r=+($('q-res').value||'').replace(/\D/g,''), h=$('q-hint'); h.hidden=!(r&&r<=10000);
+    if(!h.hidden){ h.className='full hint'; h.innerHTML='לקהילה של עד 10,000 תושבים יש <a href="?plan='+(r<=1000?'s':r<=5000?'m':'l')+'">רישיון שנתי במחיר נמוך יותר</a>.'; } summary(); }
+  $('q-res').addEventListener('input',qHint); $('q-pilot').addEventListener('change',summary);
+  $('fq').addEventListener('submit',function(e){
+    e.preventDefault(); if(!val('fq',['q-org','q-res','q-name','q-email','q-phone'],'eq')) return;
+    var r=+$('q-res').value.replace(/\D/g,''), net=SC.councilPrice(r), pil=$('q-pilot').checked, com=$('q-com').value.replace(/\D/g,'');
+    var rows=[['רישיון שנתי SH✡MER Command למועצה'+(com?' · '+com+' יישובים':'')+'<br><span style="color:var(--ink3);font-size:14px">'+r.toLocaleString('en-US')+' תושבים × ₪2 לתושב לשנה'+(r*2<SC.COUNCIL.min?' · מינימום ₪40,000':'')+'</span>',net]];
+    if(pil) rows.unshift(['פיילוט "קהילה שומרת" · 90 יום ביישוב אחד<br><span style="color:var(--ink3);font-size:14px">מקוזז מהשנה הראשונה אם ממשיכים</span>',2500]);
+    var total=net+(pil?2500:0), o={org:$('q-org').value.trim(),contact:$('q-name').value.trim()+' · '+$('q-role').value,email:$('q-email').value.trim(),phone:$('q-phone').value.trim()};
+    var R=ref('Q');
+    showDoc(doc({title:'הצעת מחיר',ref:R,to:o.org,contact:o.contact,email:o.email,phone:o.phone,net:total,rows:rows,
+      terms:['תשלום מול הזמנת רכש וחשבונית מס.','ההצעה בתוקף 30 יום מתאריך ההפקה.','כולל: לוח בקרה לכל יישוב, חומרי הטמעה, תרגיל SOS מתואם אחד בשנה ותמיכה ישירה.'].concat(baseTerms),
+      note:'הצעה זו הופקה באופן עצמאי באתר, ואינה מחייבת עד לאישור בכתב של 3Shamrocks Studio וחתימת המזמין.'}),
+      'הצעת המחיר מוכנה','הדפיסו או שמרו כ־PDF להגשה לגזברות, ושלחו לנו עותק כדי שנתאם שיחת היכרות.',
+      'הצעת מחיר '+R+' · '+o.org,
+      'שלום דייב,\nהפקנו הצעת מחיר '+R+' באתר.\n\nמועצה / רשות: '+o.org+'\nתושבים: '+r.toLocaleString('en-US')+(com?'\nיישובים: '+com:'')+'\nסה"כ לפני מע"מ: '+ils(total)+'\n\nאיש קשר: '+o.contact+'\nאימייל: '+o.email+'\nטלפון: '+o.phone+'\n','quote');
+    SC.track('quote_created',{residents_band:r<20000?'<20k':r<50000?'20-50k':'50k+'});
+  });
+
+  /* boot */
+  if(plan==='council') go('q'); else go(1);
+})();
+</script>
+</body>
+</html>
