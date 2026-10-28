@@ -8,144 +8,319 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/shomer-pilot/shomer-badge.webp">
+<link rel="icon" type="image/png" href="assets/shomer-pilot/favicon.png">
 <style>
 :root{
   --y:#faac22; --b:#1e315f; --d:#0c1b39;
-  --bg:#f6f7fb; --card:#ffffff; --ink:#0c1b39; --muted:#4a5672; --line:#dfe3ee; --ysoft:#fff6e3;
+  --ink:#0c1b39; --ink2:#3a4560; --muted:#6b7590;
+  --light:#f3f4f8; --hair:rgba(12,27,57,.12);
+  --on-navy:#cdd6ec; --hair-navy:rgba(255,255,255,.14);
+  --wrap:1120px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--bg)}
-body{font-family:'Alef',Arial,sans-serif;color:var(--ink);line-height:1.5;font-size:16px;-webkit-text-size-adjust:100%}
-.page{max-width:760px;margin:0 auto;padding:16px}
-.brand{font-weight:700;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
-.brand .s{color:var(--y)}
-header{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--y);border-radius:14px;padding:18px 18px 16px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.logo{font-size:30px;color:var(--b);letter-spacing:.5px}
-.tag{font-size:13px;color:var(--b);background:var(--ysoft);border:1px solid #f6d79a;border-radius:999px;padding:3px 10px}
-h1{font-size:22px;line-height:1.3;margin-top:10px;color:var(--d)}
-.sub{color:var(--muted);margin-top:4px;font-size:15px}
-section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-top:12px}
-h2{font-size:18px;color:var(--b);margin-bottom:6px;display:flex;align-items:center;gap:8px}
-h2::before{content:"";width:6px;height:18px;border-radius:3px;background:var(--y);flex:none}
-p{font-size:15px}
-ul{list-style:none}
-li{position:relative;padding-inline-start:20px;margin-top:6px;font-size:15px}
-li::before{content:"";position:absolute;inset-inline-start:2px;top:.55em;width:8px;height:8px;border-radius:50%;background:var(--y)}
-li b{color:var(--d)}
-.pilot{background:var(--b);color:#fff;border:none}
-.pilot h2{color:#fff}
-.pilot li b{color:#fff}
-.pilot li{color:#e6ebf7}
-.nums{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 10px}
-.num{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:10px 12px}
-.num .v{font-size:26px;font-weight:700;color:var(--y);line-height:1.1}
-.num .k{font-size:13px;color:#cfd7ea}
-.after{font-size:13.5px;color:#cfd7ea;margin-top:10px;border-top:1px solid rgba(255,255,255,.18);padding-top:8px}
-.two{display:grid;grid-template-columns:1fr;gap:0}
-.cta{background:var(--ysoft);border:1px solid #f6d79a}
-.cta p{font-size:16px}
-.contact{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px}
-.contact a{color:var(--b);font-weight:700;text-decoration:none;direction:ltr;unicode-bidi:isolate}
-.btn{display:inline-block;margin-top:10px;background:var(--b);color:#fff !important;padding:10px 18px;border-radius:10px;font-weight:700;text-decoration:none}
-footer{font-size:11.5px;color:var(--muted);margin-top:10px;text-align:center;padding:0 6px}
-@media (min-width:640px){
-  .two{grid-template-columns:1fr 1fr;gap:12px}
-  .two section{margin-top:12px}
-  h1{font-size:25px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{font-family:'Alef',system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.55;font-size:17px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+.sh{white-space:nowrap;direction:ltr;unicode-bidi:isolate;font-weight:700;letter-spacing:.02em}
+.sh i{font-style:normal;color:var(--y)}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--y);display:flex;align-items:center;gap:12px}
+.kicker::after{content:"";height:1px;width:48px;background:currentColor;opacity:.5}
+.ltr{direction:ltr;unicode-bidi:isolate}
+
+/* ── phone frame (matches live landing) ── */
+.phone{border-radius:36px;padding:9px;background:linear-gradient(160deg,#1a2438,#05080f);border:1px solid #3a465f;box-shadow:0 40px 70px -28px rgba(0,0,0,.75)}
+.phone img{border-radius:28px;width:100%;aspect-ratio:540/1168;object-fit:cover;object-position:top}
+
+/* ══ HERO ══ */
+.hero{position:relative;z-index:2;background:var(--d);color:#fff}
+.hero-media{position:absolute;inset:0;overflow:hidden}
+.hero-bg{position:absolute;inset:0;max-width:none;width:100%;height:100%;object-fit:cover;object-position:30% 40%;opacity:.55}
+.hero-shade{position:absolute;inset:0;background:
+  linear-gradient(270deg,rgba(12,27,57,.97) 0%,rgba(12,27,57,.88) 48%,rgba(12,27,57,.55) 100%),
+  linear-gradient(180deg,rgba(12,27,57,.2) 0%,rgba(12,27,57,.9) 100%)}
+.hero .wrap{position:relative;z-index:1}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:28px}
+.brandmark{display:block}
+.brandmark img{width:128px;height:128px;filter:drop-shadow(0 10px 22px rgba(0,0,0,.6))}
+.tag{font-size:13px;font-weight:700;color:var(--d);background:var(--y);border-radius:999px;padding:6px 14px;white-space:nowrap}
+.hero-grid{display:grid;grid-template-columns:1fr 260px;gap:64px;align-items:end;padding:36px 0 0}
+.hero h1{font-size:clamp(31px,4.2vw,52px);line-height:1.16;font-weight:700;letter-spacing:-.01em;max-width:19ch}
+.hero h1 em{font-style:normal;color:var(--y);display:block;margin-bottom:6px}
+.hero .sub{margin-top:22px;font-size:clamp(17px,1.5vw,20px);color:var(--on-navy);max-width:38ch}
+.hero-phone{width:260px;margin-bottom:-120px}
+.facts{display:flex;gap:0;margin-top:44px;padding:22px 0 56px;border-top:1px solid var(--hair-navy);max-width:600px}
+.fact{flex:1;padding-inline-end:20px}
+.fact+.fact{padding-inline-start:20px;border-inline-start:1px solid var(--hair-navy)}
+.fact b{display:block;font-size:clamp(24px,2.6vw,32px);line-height:1.1;color:var(--y)}
+.fact span{font-size:14px;color:var(--on-navy)}
+
+/* ══ PROBLEM ══ */
+.problem{background:#fff;padding:96px 0 88px}
+.problem .wrap{max-width:var(--wrap)}
+.problem-inner{max-width:720px}
+.problem .lead{margin-top:18px;font-size:clamp(26px,3.2vw,40px);line-height:1.25;font-weight:700;color:var(--d)}
+.problem .lead mark{white-space:nowrap;background:none;color:var(--b);box-shadow:inset 0 -.28em 0 rgba(250,172,34,.45)}
+.problem .second{margin-top:18px;font-size:19px;color:var(--ink2);max-width:52ch}
+
+/* ══ FEATURES ══ */
+.features{background:var(--light);padding:88px 0 96px}
+.features-grid{display:grid;grid-template-columns:1fr 380px;gap:72px;align-items:start}
+.features h2,.needs h2,.pilot h2{font-size:clamp(28px,3vw,38px);line-height:1.15;margin-top:14px}
+.flist{list-style:none;margin-top:34px;display:grid;grid-template-columns:1fr 1fr;column-gap:40px}
+.flist li{padding:18px 0 20px;border-top:1px solid var(--hair);display:grid;grid-template-columns:34px 1fr;gap:6px}
+.flist .n{font-size:13px;font-weight:700;color:var(--y);padding-top:4px;letter-spacing:.06em}
+.flist b{display:block;font-size:18px;color:var(--d);margin-bottom:3px}
+.flist p{font-size:15.5px;color:var(--ink2);line-height:1.5}
+.phones{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-top:20px}
+.phones .phone{border-radius:30px;padding:7px}
+.phones .phone img{border-radius:24px}
+.phones .phone:nth-child(2){margin-top:56px}
+.cap{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+
+/* ══ PILOT (gold band) ══ */
+.pilot{background:var(--y);color:var(--d);padding:88px 0}
+.pilot .kicker{color:var(--d)}
+.pilot-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:72px;align-items:start}
+.bignums{display:flex;gap:48px;margin-top:28px}
+.bignum b{display:block;white-space:nowrap;font-size:clamp(52px,7vw,92px);line-height:.95;font-weight:700;letter-spacing:-.02em}
+.bignum span{display:block;margin-top:10px;font-size:15px;font-weight:700;opacity:.8}
+.free{margin-top:34px;font-size:clamp(20px,2vw,24px);font-weight:700;display:inline-block;border-bottom:3px solid var(--d);padding-bottom:4px}
+.plist{list-style:none;margin-top:8px}
+.plist li{padding:16px 0;border-bottom:1px solid rgba(12,27,57,.2);font-size:18px;display:flex;gap:14px;align-items:baseline}
+.plist li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--d);transform:translateY(-2px)}
+.plist li b{font-weight:700}
+.after{margin-top:22px;font-size:15.5px;line-height:1.55;color:rgba(12,27,57,.82)}
+
+/* ══ NEEDS + CTA (navy) ══ */
+.needs{background:var(--b);color:#fff;padding:88px 0}
+.needs-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+.nlist{list-style:none;margin-top:28px;counter-reset:n}
+.nlist li{display:grid;grid-template-columns:52px 1fr;align-items:baseline;padding:16px 0;border-top:1px solid var(--hair-navy);font-size:18px;color:var(--on-navy)}
+.nlist li::before{counter-increment:n;content:"0" counter(n);font-size:13px;font-weight:700;color:var(--y);letter-spacing:.08em}
+.nlist b{color:#fff}
+.cta h2{font-size:clamp(36px,4.4vw,56px);line-height:1.05}
+.cta p{margin-top:12px;font-size:20px;color:var(--on-navy)}
+.btn{display:inline-flex;align-items:center;gap:10px;margin-top:28px;background:var(--y);color:var(--d);font-weight:700;font-size:17px;min-height:56px;padding:0 36px;border-radius:999px;box-shadow:0 10px 24px -8px rgba(250,172,34,.55);transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.contact{margin-top:26px;display:flex;flex-wrap:wrap;gap:6px 22px;font-size:16px;color:var(--on-navy)}
+.contact strong{color:#fff}
+.contact a{color:#fff;border-bottom:1px solid rgba(250,172,34,.6)}
+
+/* ══ FOOTER ══ */
+footer{background:var(--d);color:var(--on-navy);padding:36px 0 40px;font-size:13px}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.foot p{max-width:70ch;line-height:1.6}
+.foot img{width:170px;height:auto;flex:none;opacity:.95}
+
+/* ══ RESPONSIVE ══ */
+@media screen and (max-width:900px){
+  .hero-grid,.features-grid,.pilot-grid,.needs-grid{grid-template-columns:1fr;gap:44px}
+  .hero-grid{padding-top:40px;gap:8px}
+  .hero-phone{width:230px;margin:0 auto -150px}
+  .facts{margin-top:32px;padding-bottom:40px}
+  .problem{padding-top:200px}
+  .phones{max-width:420px;margin:0 auto}
 }
-@page{size:A4;margin:10mm}
+@media screen and (max-width:600px){
+  body{font-size:16px}
+  .wrap{padding:0 20px}
+  .topline{padding-top:20px}
+  .brandmark img{width:92px;height:92px}
+  .tag{font-size:12px;padding:5px 11px}
+  .facts{flex-wrap:wrap;row-gap:16px}
+  .fact{flex:1 1 30%;padding-inline-end:12px}
+  .fact+.fact{padding-inline-start:12px}
+  .fact span{font-size:12.5px}
+  .problem{padding:200px 0 64px}
+  .hero-phone{width:220px;margin-bottom:-170px}
+  .fact span{font-size:12px}
+  .features,.pilot,.needs{padding:64px 0}
+  .flist{grid-template-columns:1fr}
+  .bignums{gap:32px}
+  .plist li{font-size:17px}
+  .foot{flex-direction:column;align-items:flex-start}
+}
+
+/* ══ PRINT · single A4 page ══ */
+@page{size:A4;margin:0}
 @media print{
-  html,body{background:#fff}
-  body{font-size:14.5px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .page{max-width:none;padding:0}
-  header{padding:14px 18px}
-  .logo{font-size:32px}
-  h1{font-size:23px;margin-top:6px}
-  .sub,p,li{font-size:14.5px}
-  li{margin-top:6px}
-  section{padding:13px 18px;margin-top:12px;break-inside:avoid}
-  h2{font-size:18px;margin-bottom:6px}
-  .two{grid-template-columns:1fr 1fr;gap:12px}
-  .two section{margin-top:12px}
-  .num{padding:9px 12px}.num .v{font-size:26px}
-  .nums{margin:6px 0 10px}
-  .after{font-size:13.5px;margin-top:10px;padding-top:8px}
+  html{width:210mm;background:#0c1b39}
+  body{width:210mm;background:#fff}
+  body{font-size:11.5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{max-width:none;padding:0 13mm}
+  .kicker{font-size:8pt}
+  .hero-shade{background:linear-gradient(270deg,rgba(12,27,57,.97) 0%,rgba(12,27,57,.9) 55%,rgba(12,27,57,.6) 100%)}
+  .topline{padding-top:8mm;justify-content:flex-start;gap:5mm}
+  .brandmark img{width:22mm;height:22mm;filter:none}
+  .tag{font-size:8.5pt;padding:3px 10px}
+  .hero-grid{grid-template-columns:1fr 28mm;gap:12mm;padding:2mm 0 6mm;align-items:end}
+  .hero h1{font-size:21pt;max-width:none}
+  .hero .sub{font-size:11.5pt;margin-top:3mm;max-width:none}
+  .hero-grid{position:static}
+  .hero .wrap{position:relative}
+  .hero-phone{position:absolute;left:13mm;top:8mm;width:28mm;margin:0}
+  .phone{border-radius:16px;padding:4px;box-shadow:none}
+  .phone img{border-radius:12px}
+  .facts{display:none}
+  .problem{padding:4.5mm 0 4mm}
+  .problem .lead{font-size:14pt;margin-top:1.5mm}
+  .problem .second{font-size:10.5pt;margin-top:2mm;max-width:none}
+  .problem-inner{max-width:none}
+  .features{padding:4.5mm 0 3.5mm}
+  .features-grid{grid-template-columns:1fr;gap:0}
+  .phones{display:none}
+  .features h2,.needs h2,.pilot h2{font-size:14pt;margin-top:1mm}
+  .flist{margin-top:2mm;column-gap:6mm;grid-template-columns:1fr 1fr 1fr}
+  .flist li{padding:1.5mm 0 1.5mm;grid-template-columns:7mm 1fr;break-inside:avoid}
+  .flist .n{font-size:8pt;padding-top:1px}
+  .flist b{font-size:10pt;margin-bottom:0}
+  .flist p{font-size:9.3pt;line-height:1.4}
+  .pilot{padding:4.5mm 0}
+  .pilot-grid{grid-template-columns:1fr 1fr;gap:10mm}
+  .bignums{gap:9mm;margin-top:3mm}
+  .bignum b{font-size:27pt}
+  .bignum span{font-size:8.5pt;margin-top:1.5mm}
+  .free{font-size:11.5pt;margin-top:4mm;border-bottom-width:2px}
+  .plist{margin-top:0}
+  .plist li{padding:1.3mm 0;font-size:10pt}
+  .after{font-size:9pt;margin-top:2.5mm}
+  .needs{padding:4.5mm 0}
+  .needs-grid{grid-template-columns:1fr 1fr;gap:10mm}
+  .nlist{margin-top:2mm}
+  .nlist li{padding:1.4mm 0;font-size:10pt;grid-template-columns:9mm 1fr}
+  .nlist li::before{font-size:8pt}
+  .cta h2{font-size:22pt}
+  .cta p{font-size:11pt;margin-top:1.5mm}
   .btn{display:none}
-  .cta p{font-size:15px}
-  .contact{font-size:15px;margin-top:6px}
-  footer{font-size:11px;margin-top:10px}
+  .contact{margin-top:3mm;font-size:10.5pt}
+  .contact a{border:none}
+  footer{padding:3mm 0 3.5mm;font-size:7.5pt}
+  .foot img{width:30mm}
+  section,header{break-inside:avoid}
 }
 </style>
 </head>
 <body>
-<div class="page">
 
-<header>
-  <div class="top">
-    <div class="logo brand">SH<span class="s">✡</span>MER</div>
-    <span class="tag">הצעת פיילוט לקהילה · 90 יום</span>
+<header class="hero">
+  <div class="hero-media" aria-hidden="true">
+    <img class="hero-bg" src="assets/shomer-pilot/hero-alley.webp" alt="" width="1280" height="720">
+    <div class="hero-shade"></div>
   </div>
-  <h1>אזרחים למען אזרחים: ברגע של סכנה, מי שהכי קרוב יודע ומגיע ראשון.</h1>
-  <p class="sub">רשת שמירה קהילתית בטלפון של כל תושב, ותמונת מצב חיה לרבש"צ / לקב"ט. חינם לתושבים, תמיד.</p>
+  <div class="wrap">
+    <div class="topline">
+      <div class="brandmark">
+        <img src="assets/shomer-pilot/shomer-badge.webp" alt="SH✡MER" width="480" height="480">
+      </div>
+      <span class="tag">הצעת פיילוט לקהילה · 90 יום</span>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <h1><em>אזרחים למען אזרחים:</em>ברגע של סכנה, מי שהכי קרוב יודע ומגיע ראשון.</h1>
+        <p class="sub">רשת שמירה קהילתית בטלפון של כל תושב, ותמונת מצב חיה לרבש"צ / לקב"ט. חינם לתושבים, תמיד.</p>
+        <div class="facts">
+          <div class="fact"><b>90 יום</b><span>משך הפיילוט</span></div>
+          <div class="fact"><b>₪2,500</b><span>לקהילה, לכל התקופה</span></div>
+          <div class="fact"><b>חינם</b><span>לתושבים, תמיד</span></div>
+        </div>
+      </div>
+      <div class="hero-phone phone">
+        <img src="assets/shomer-pilot/screen-map-sos.webp" alt="מסך המפה וכפתור SOS באפליקציית SH✡MER" width="540" height="1168">
+      </div>
+    </div>
+  </div>
 </header>
 
-<section>
-  <h2>הבעיה</h2>
-  <p>באירוע אמת, בדקות הראשונות התושב לבד, והאנשים שהכי קרובים אליו לא יודעים שקורה משהו.</p>
-  <p>לרכז הביטחון אין תמונה מרוכזת בזמן אמת של מי צריך עזרה ואיפה.</p>
+<section class="problem">
+  <div class="wrap">
+    <div class="problem-inner">
+      <div class="kicker">הבעיה</div>
+      <p class="lead">באירוע אמת, בדקות הראשונות <mark>התושב לבד</mark>, והאנשים שהכי קרובים אליו לא יודעים שקורה משהו.</p>
+      <p class="second">לרכז הביטחון אין תמונה מרוכזת בזמן אמת של מי צריך עזרה ואיפה.</p>
+    </div>
+  </div>
 </section>
 
-<section>
-  <h2>מה מקבלים</h2>
-  <ul>
-    <li><b>כפתור SOS:</b> שולח מיקום חי לשומרים שבחרתם במעגל שלכם. בחירום אמיתי מחייגים 100.</li>
-    <li><b>ניעור = SOS:</b> עובד גם כשהטלפון נעול (אנדרואיד, גרסת Google Play).</li>
-    <li><b>"שיחה מאמא":</b> שיחה מדומה לבדיקת מצב. אומרים את מילת הקוד; תשובה שגויה או אי־מענה מפעילים SOS שקט.</li>
-    <li><b>טיימר "תבדקו שהגעתי":</b> אם לא אישרתם בזמן, השומרים שלכם מקבלים התראה.</li>
-    <li><b>לוח בקרה קהילתי לרכז הביטחון:</b> מפה חיה של אירועי SOS, שעון ישראל וספירת מכשירים. שומר על פרטיות, בלי שמות.</li>
-    <li><b>עברית, ערבית ואנגלית.</b></li>
-  </ul>
+<section class="features">
+  <div class="wrap features-grid">
+    <div>
+      <div class="kicker">מה מקבלים</div>
+      <h2>כל מה שהקהילה צריכה, בטלפון של כל תושב.</h2>
+      <ul class="flist">
+        <li><span class="n">01</span><div><b>כפתור SOS</b><p>שולח מיקום חי לשומרים שבחרתם במעגל שלכם. בחירום אמיתי מחייגים 100.</p></div></li>
+        <li><span class="n">02</span><div><b>ניעור = SOS</b><p>עובד גם כשהטלפון נעול (אנדרואיד, גרסת Google Play).</p></div></li>
+        <li><span class="n">03</span><div><b>"שיחה מאמא"</b><p>שיחה מדומה לבדיקת מצב. אומרים את מילת הקוד; תשובה שגויה או אי־מענה מפעילים SOS שקט.</p></div></li>
+        <li><span class="n">04</span><div><b>טיימר "תבדקו שהגעתי"</b><p>אם לא אישרתם בזמן, השומרים שלכם מקבלים התראה.</p></div></li>
+        <li><span class="n">05</span><div><b>לוח בקרה קהילתי לרכז הביטחון</b><p>מפה חיה של אירועי SOS, שעון ישראל וספירת מכשירים. שומר על פרטיות, בלי שמות.</p></div></li>
+        <li><span class="n">06</span><div><b>עברית, ערבית ואנגלית</b><p>האפליקציה זמינה בשלוש שפות.</p></div></li>
+      </ul>
+    </div>
+    <div>
+      <div class="phones">
+        <figure><div class="phone"><img src="assets/shomer-pilot/screen-my-shomers.webp" alt="מסך השומרים שלי ומעגלי השומרים" width="540" height="1168" loading="lazy"></div><figcaption class="cap">השומרים שלי</figcaption></figure>
+        <figure><div class="phone"><img src="assets/shomer-pilot/screen-emergency-guide.webp" alt="מסך מדריך החירום" width="540" height="1168" loading="lazy"></div><figcaption class="cap">מדריך חירום</figcaption></figure>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="pilot">
-  <h2>הפיילוט</h2>
-  <div class="nums">
-    <div class="num"><div class="v">90 יום</div><div class="k">משך הפיילוט</div></div>
-    <div class="num"><div class="v">₪2,500</div><div class="k">לקהילה, לכל התקופה</div></div>
+  <div class="wrap pilot-grid">
+    <div>
+      <div class="kicker">הפיילוט</div>
+      <div class="bignums">
+        <div class="bignum"><b>90 יום</b><span>משך הפיילוט</span></div>
+        <div class="bignum"><b class="ltr">₪2,500</b><span>לקהילה, לכל התקופה</span></div>
+      </div>
+      <div class="free">חינם לתושבים, תמיד.</div>
+    </div>
+    <div>
+      <ul class="plist">
+        <li><span><b>הטמעה</b> של השומרים הראשונים בקהילה</span></li>
+        <li><span><b>לוח הבקרה</b> לרכז הביטחון לאורך כל הפיילוט</span></li>
+        <li><span><b>דוח שבועי</b></span></li>
+        <li><span><b>פגישת סיכום</b> ביום ה־90</span></li>
+      </ul>
+      <p class="after">אחרי הפיילוט: רישיון שנתי החל מ־₪25,000 לקהילה. למועצות אזוריות: תמחור לפי מספר תושבים.</p>
+    </div>
   </div>
-  <ul>
-    <li><b>הטמעה</b> של השומרים הראשונים בקהילה</li>
-    <li><b>לוח הבקרה</b> לרכז הביטחון לאורך כל הפיילוט</li>
-    <li><b>דוח שבועי</b></li>
-    <li><b>פגישת סיכום</b> ביום ה־90</li>
-  </ul>
-  <p class="after">אחרי הפיילוט: רישיון שנתי החל מ־₪25,000 לקהילה. למועצות אזוריות: תמחור לפי מספר תושבים.</p>
 </section>
 
-<div class="two">
-  <section>
-    <h2>מה צריך מכם</h2>
-    <ul>
-      <li><b>איש קשר אחד</b> מטעם הקהילה</li>
-      <li><b>רשימה</b> של השומרים הראשונים</li>
-      <li><b>15 דקות</b> להטמעה</li>
-    </ul>
-  </section>
-  <section class="cta">
-    <h2>מתחילים?</h2>
-    <p>פגישה של 15 דקות ויוצאים לדרך.</p>
-    <div class="contact">
-      <span>דייב מרקוביץ'</span>
-      <a href="mailto:markodave@gmail.com">markodave@gmail.com</a>
-      <a href="https://www.shomer-app.co.il">shomer-app.co.il</a>
+<section class="needs">
+  <div class="wrap needs-grid">
+    <div>
+      <div class="kicker">מה צריך מכם</div>
+      <ul class="nlist">
+        <li><span><b>איש קשר אחד</b> מטעם הקהילה</span></li>
+        <li><span><b>רשימה</b> של השומרים הראשונים</span></li>
+        <li><span><b>15 דקות</b> להטמעה</span></li>
+      </ul>
     </div>
-    <a class="btn" href="mailto:markodave@gmail.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום פגישה</a>
-  </section>
-</div>
+    <div class="cta">
+      <h2>מתחילים?</h2>
+      <p>פגישה של 15 דקות ויוצאים לדרך.</p>
+      <a class="btn" href="mailto:markodave@gmail.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום פגישה
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
+      <div class="contact">
+        <strong>דייב מרקוביץ'</strong>
+        <a class="ltr" href="mailto:markodave@gmail.com">markodave@gmail.com</a>
+        <a class="ltr" href="https://www.shomer-app.co.il">shomer-app.co.il</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-<footer><span class="brand">SH✡MER</span> הוא כלי עזר קהילתי בלבד, לא שירות חירום ולא תחליף לו. בחירום חייגו 100 · 101 · 102. © 3Shamrocks Studio</footer>
+<footer>
+  <div class="wrap foot">
+    <p><span class="sh">SH<i>✡</i>MER</span> הוא כלי עזר קהילתי בלבד, לא שירות חירום ולא תחליף לו. בחירום חייגו 100 · 101 · 102. © 3Shamrocks Studio</p>
+    <img src="assets/shomer-pilot/3shamrocks-studio.webp" alt="3Shamrocks Studio" width="452" height="66" loading="lazy">
+  </div>
+</footer>
 
-</div>
 </body>
 </html>
