@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Trashure-Hunters: Clean the World. Win the Game.</title>
+<meta name="description" content="Trashure-Hunters is a real-world adventure game in development: kids clean up real trash with a grown-up, and every cleanup heals a magical world of six realms.">
+<meta name="theme-color" content="#0A0A2E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Trashure-Hunters: Clean the World. Win the Game.">
+<meta property="og:description" content="A real-world cleanup adventure for kids and families. Coming soon.">
+<meta property="og:image" content="https://3shamrocksstudio.github.io/th-site/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/img/logo.webp" as="image" type="image/webp">
+<style>
+@font-face{font-family:"Fredoka";src:url(assets/fonts/fredoka.woff2) format("woff2");font-weight:500 700;font-display:swap}
+@font-face{font-family:"Inter";src:url(assets/fonts/inter.woff2) format("woff2");font-weight:400 700;font-display:swap}
+
+:root{
+  --navy:#0A0A2E; --orange:#FF6C00; --orange-l:#FF8A33; --gold:#FCD34D;
+  --cream:#FFF7E8; --ink:#16163A; --ink-2:#4A4A6A;
+  --space:#D94FAA; --air:#A78BFA; --water:#4BA3E3; --earth:#2EBD8A; --fire:#F5961E; --light:#FCD34D;
+  --display:"Fredoka",ui-rounded,system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1); --hud:64px; --max:1160px; --gut:20px;
+  --c:var(--orange);
+}
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hud) + 12px);-webkit-text-size-adjust:100%}
+body{font-family:var(--body);font-size:17px;line-height:1.6;color:#EEF0FF;background:var(--navy);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+@supports(overflow:clip){body{overflow-x:clip}}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:fixed;left:12px;top:12px;transform:translateY(-200%);z-index:999;background:var(--gold);color:var(--ink);padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
+.skip:focus{transform:none}
+.wrap{width:100%;max-width:var(--max);margin:0 auto;padding:0 var(--gut);position:relative;z-index:2}
+
+/* ---------- Header ---------- */
+.hud{position:fixed;inset:0 0 auto;z-index:100;height:var(--hud);display:flex;align-items:center;
+  background:rgba(10,10,46,.78);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07);transition:background .5s,color .5s,border-color .5s}
+.hud .wrap{display:flex;align-items:center;gap:20px;justify-content:space-between}
+.hud-logo img{height:40px;width:auto}
+.hud nav ul{display:flex;gap:4px;list-style:none}
+.hud nav a{display:block;padding:8px 12px;border-radius:999px;text-decoration:none;font-weight:600;font-size:15px;opacity:.82}
+.hud nav a:hover{opacity:1;background:rgba(255,255,255,.08)}
+.hud-depth{display:none;font-family:var(--display);font-weight:600;font-size:14px;color:var(--c);white-space:nowrap}
+.hud-bar{position:absolute;left:0;bottom:-1px;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--c);transition:background .5s}
+.hud.is-light{background:rgba(255,247,232,.9);color:var(--ink);border-bottom-color:rgba(22,22,58,.08)}
+.hud.is-light nav a:hover{background:rgba(22,22,58,.06)}
+.hud.is-light .hud-depth{color:#A15C00}
+@media(max-width:899px){.realm{padding:84px 0}#temple{padding-top:60px}}
+@media(max-width:899px){.hud nav{display:none}.hud-depth{display:block}.hud-logo img{height:34px}}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 26px;border-radius:999px;
+  font-family:var(--display);font-weight:700;font-size:18px;line-height:1.1;text-decoration:none;cursor:pointer;border:0;transition:transform .2s var(--ease),box-shadow .2s}
+.btn-primary{background:var(--orange);color:var(--navy);box-shadow:0 6px 0 #B84D00,0 16px 30px -12px rgba(255,108,0,.7)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 0 #B84D00,0 20px 34px -12px rgba(255,108,0,.75)}
+.btn-primary:active{transform:translateY(4px);box-shadow:0 2px 0 #B84D00}
+.btn-line{background:transparent;color:inherit;box-shadow:inset 0 0 0 2px currentColor}
+.btn-line:hover{background:rgba(255,255,255,.08)}
+.btn-soon{background:rgba(255,255,255,.06);color:rgba(238,240,255,.72);box-shadow:inset 0 0 0 2px rgba(255,255,255,.18);cursor:default}
+.btn-soon small{font-family:var(--body);font-weight:600;font-size:12px;opacity:.75}
+.btn-sm{min-height:44px;padding:10px 18px;font-size:16px}
+.hud .btn-sm{min-height:40px;padding:8px 16px;font-size:15px;white-space:nowrap;box-shadow:0 4px 0 #B84D00}
+@media(max-width:420px){.hud .wrap{gap:10px}.hud .btn-sm{padding:8px 13px;font-size:14px}.hud-depth{font-size:13px}}
+@media(max-width:899px){.cue{display:none}}
+.actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
+
+/* ---------- Type ---------- */
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.01em}
+h1{font-size:clamp(2.7rem,6.4vw,4.7rem);line-height:.98}
+@media(min-width:960px){.hero h1 span,.hero h1 .l1{white-space:nowrap}}
+h2{font-size:clamp(2.1rem,4.6vw,3.4rem);line-height:1.02;margin-bottom:18px}
+h3{font-size:1.3rem;line-height:1.2}
+.lead{font-size:clamp(1.08rem,1.6vw,1.25rem);line-height:1.55;max-width:34em;color:rgba(238,240,255,.86)}
+p+p{margin-top:14px}
+.note{font-size:14px;color:rgba(238,240,255,.62);margin-top:16px;max-width:42em}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;min-height:100svh;padding:calc(var(--hud) + 40px) 0 72px;display:flex;align-items:center;overflow:hidden;
+  background:radial-gradient(60% 55% at 72% 38%,rgba(217,79,170,.30),transparent 70%),radial-gradient(50% 50% at 10% 90%,rgba(75,163,227,.18),transparent 70%),var(--navy)}
+.stars{position:absolute;inset:0;z-index:0;opacity:.7;pointer-events:none;
+  background-image:radial-gradient(1.5px 1.5px at 12% 22%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 32% 68%,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 58% 14%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 82% 58%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 46% 86%,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 92% 12%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 6% 52%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 70% 80%,#fff 50%,transparent 51%);
+  background-size:520px 520px}
+.hero-grid{display:grid;gap:44px;align-items:center}
+@media(min-width:960px){.hero-grid{grid-template-columns:1.15fr .85fr;gap:32px}}
+.status{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:999px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);font-size:14px;font-weight:600;margin-bottom:22px}
+.status i{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(252,211,77,.2)}
+.hero-logo{width:min(380px,86%);margin-bottom:22px;filter:drop-shadow(0 14px 26px rgba(0,0,0,.45))}
+.hero h1{color:#fff;margin-bottom:20px}
+.hero h1 span{display:block;color:var(--orange-l)}
+.hero h1 .l1{color:#fff}
+.hero .lead{max-width:30em}
+.who-line{margin-top:22px;font-size:15px;color:rgba(238,240,255,.7)}
+
+.stage{position:relative;width:min(300px,64vw);margin:0 auto;aspect-ratio:9/16.8}
+.phone{position:relative;border-radius:38px;padding:9px;background:linear-gradient(160deg,#2B2B5C,#0B0B1C);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 40px 80px -24px rgba(0,0,0,.7),0 0 60px -10px var(--c)}
+.phone::after{content:"";position:absolute;top:16px;left:50%;width:30%;height:6px;margin-left:-15%;border-radius:9px;background:#05050f}
+.phone-screen{border-radius:30px;overflow:hidden;aspect-ratio:9/19.5;background:#000}
+.phone-screen img{width:100%;height:100%;object-fit:cover;object-position:top}
+.stage .phone{position:absolute;inset:0;margin:auto;height:100%}
+.stage .phone .phone-screen{height:100%;aspect-ratio:auto}
+.orbit{position:absolute;z-index:3;width:var(--s,110px);filter:drop-shadow(0 14px 18px rgba(0,0,0,.45));animation:pop .9s var(--ease) both,bob 6s ease-in-out infinite;animation-delay:var(--d,0s),calc(var(--d,0s) + .9s)}
+.o1{--s:132px;--d:.15s;top:-4%;left:-34%}
+.o2{--s:120px;--d:.3s;top:6%;right:-36%}
+.o3{--s:104px;--d:.45s;top:44%;left:-40%}
+.o4{--s:112px;--d:.6s;bottom:2%;right:-34%}
+.o5{--s:108px;--d:.75s;bottom:-6%;left:-22%}
+@media(max-width:600px){.o1{--s:92px;left:-28%}.o2{--s:84px;right:-28%}.o3{--s:74px;left:-30%}.o4{--s:80px;right:-27%}.o5{--s:78px;left:-18%}}
+@keyframes pop{from{opacity:0;transform:scale(.4) translateY(30px)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -12px}}
+.cue{position:absolute;left:50%;bottom:20px;z-index:3;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--display);font-weight:600;font-size:14px;color:rgba(238,240,255,.6);text-decoration:none}
+.cue svg{animation:nudge 2.4s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+/* ---------- Depth rail (desktop) ---------- */
+.rail{position:fixed;left:22px;top:50%;z-index:90;transform:translateY(-50%);opacity:0;pointer-events:none;transition:opacity .4s}
+.rail.show{opacity:1;pointer-events:auto}
+.rail ol{list-style:none;position:relative;display:grid;gap:18px}
+.rail ol::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:rgba(255,255,255,.16);border-radius:2px}
+.rail a{position:relative;display:flex;align-items:center;gap:12px;text-decoration:none;font-family:var(--display);font-weight:600;font-size:14px}
+.rail a i{width:18px;height:18px;border-radius:50%;background:var(--navy);box-shadow:inset 0 0 0 2px var(--rc);transition:background .3s,transform .3s}
+.rail a span{opacity:0;transform:translateX(-6px);transition:.3s;color:var(--rc);white-space:nowrap;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.rail a:hover span,.rail a:focus-visible span,.rail a[aria-current="step"] span{opacity:1;transform:none}
+.rail a[aria-current="step"] i{background:var(--rc);transform:scale(1.15)}
+.rail.on-light ol::before{background:rgba(22,22,58,.15)}
+.rail.on-light a span{text-shadow:none;color:var(--ink)}
+.rail.on-light a i{background:var(--cream)}
+.rail.on-light a[aria-current="step"] i{background:var(--rc)}
+@media(max-width:1399px){.rail{display:none}}
+
+/* ---------- Realms ---------- */
+.realm{position:relative;padding:120px 0 120px;overflow:hidden;background:linear-gradient(180deg,var(--top) 0%,var(--top) 30%,var(--bot) 100%)}
+.realm::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(55% 45% at var(--gx,80%) var(--gy,35%),color-mix(in srgb,var(--c) 26%,transparent),transparent 70%)}
+#space{--c:var(--space);--top:#0A0A2E;--bot:#1A0B36;--gx:85%;--gy:30%}
+#sky{--c:var(--air);--top:#1A0B36;--bot:#0F1B48;--gx:12%;--gy:40%}
+#waters{--c:var(--water);--top:#0F1B48;--bot:#06283A;--gx:85%;--gy:45%}
+#lands{--c:var(--earth);--top:#06283A;--bot:#0A2B20;--gx:15%;--gy:40%}
+#embers{--c:var(--fire);--top:#0A2B20;--bot:#2A1307;--gx:80%;--gy:50%}
+#temple{--c:#E8A400;--top:#2A1307;--bot:var(--cream);color:var(--ink);background:linear-gradient(180deg,#2A1307 0,#7A4A12 90px,#F6D98C 240px,var(--cream) 420px,var(--cream) 100%)}
+#temple::before{background:radial-gradient(40% 260px at 50% 220px,rgba(255,255,255,.85),transparent 70%)}
+
+.realm-head{display:flex;align-items:center;gap:16px;margin-bottom:40px}
+.realm-badge{flex:none;display:grid;place-items:center;width:58px;height:58px;border-radius:50%;font-family:var(--display);font-weight:700;font-size:28px;line-height:1;color:var(--navy);background:var(--c);box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 22%,transparent)}
+.realm-head p{font-family:var(--display);font-weight:600;line-height:1.25}
+.realm-head b{display:block;font-size:20px;color:var(--c)}
+.realm-head span{font-size:15px;opacity:.7}
+#temple .realm-head b{color:#A15C00}
+#temple{padding-top:80px}
+
+.split{display:grid;gap:48px;align-items:center}
+@media(min-width:960px){.split{grid-template-columns:1fr 1fr;gap:64px}.split.rev>:first-child{order:2}}
+.guide{position:relative;display:flex;align-items:flex-end;gap:16px;margin-top:34px}
+.guide img{width:112px;flex:none;filter:drop-shadow(0 12px 18px rgba(0,0,0,.4))}
+.guide p{font-size:15px;line-height:1.45;color:rgba(238,240,255,.78);padding-bottom:10px;max-width:24em}
+.guide p b{display:block;font-family:var(--display);font-size:18px;color:var(--c)}
+
+/* floaters */
+.fx{position:absolute;z-index:1;pointer-events:none;width:var(--w,140px);opacity:.9;filter:drop-shadow(0 10px 18px rgba(0,0,0,.35));animation:drift var(--t,26s) ease-in-out infinite alternate;animation-play-state:paused}
+.realm.on .fx{animation-play-state:running}
+@keyframes drift{from{transform:translate3d(0,0,0) rotate(-4deg)}to{transform:translate3d(var(--dx,40px),var(--dy,-30px),0) rotate(5deg)}}
+@media(max-width:899px){.fx{display:none}}
+
+/* Realm 1: story */
+.story-art{position:relative}
+.story-art .team{border-radius:28px;box-shadow:0 30px 60px -24px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.1);width:100%;aspect-ratio:1200/735;object-fit:cover}
+.grime-card{position:relative;margin:-56px 0 0 auto;width:min(330px,86%);display:flex;gap:14px;align-items:center;padding:14px 18px 14px 14px;border-radius:22px;background:rgba(14,10,36,.92);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 20px 40px -18px rgba(0,0,0,.7)}
+.grime-card img{width:76px;height:76px;object-fit:contain;flex:none}
+.grime-card p{font-size:14px;line-height:1.45;color:rgba(238,240,255,.8)}
+.grime-card b{display:block;font-family:var(--display);font-size:16px;color:#fff}
+.descent-map{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px;list-style:none}
+.descent-map li{display:flex;align-items:center;gap:8px;padding:7px 12px 7px 8px;border-radius:999px;font-size:14px;font-weight:600;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.descent-map li i{width:12px;height:12px;border-radius:50%;background:var(--rc)}
+
+/* Realm 2: steps */
+.steps{list-style:none;position:relative;display:grid;gap:26px;counter-reset:s}
+.steps::before{content:"";position:absolute;left:27px;top:30px;bottom:30px;border-left:2px dashed color-mix(in srgb,var(--c) 55%,transparent)}
+.steps li{position:relative;display:grid;grid-template-columns:56px 1fr;gap:18px;align-items:start}
+.steps li::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:56px;height:56px;border-radius:18px;background:#1E1450;box-shadow:inset 0 0 0 2px var(--c);font-family:var(--display);font-weight:700;font-size:24px;color:var(--c)}
+.steps h3{margin:4px 0 4px;color:#fff}
+.steps p{color:rgba(238,240,255,.78);font-size:16px}
+.phone-solo{width:min(290px,70vw);margin:0 auto;position:relative}
+.phone-solo .buddy{position:absolute;width:130px;bottom:-30px;left:-70px;z-index:3;filter:drop-shadow(0 14px 18px rgba(0,0,0,.45))}
+@media(max-width:600px){.phone-solo .buddy{width:96px;left:-36px}}
+
+/* Realm 3: game */
+.ar-frame{position:relative;border-radius:28px;overflow:hidden;box-shadow:0 30px 60px -24px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.12);margin-top:8px}
+.ar-frame img{width:100%;aspect-ratio:1200/540;object-fit:cover}
+.ar-frame figcaption{position:absolute;left:16px;bottom:14px;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.features{display:grid;gap:28px 40px;margin-top:48px}
+@media(min-width:760px){.features{grid-template-columns:1fr 1fr}}
+.feature{display:grid;grid-template-columns:72px 1fr;gap:18px;align-items:start}
+.feature .ico{width:72px;height:72px;border-radius:20px;display:grid;place-items:center;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.feature .ico img{max-width:56px;max-height:52px;width:auto}
+.feature h3{color:#fff;margin:2px 0 4px}
+.feature p{font-size:16px;color:rgba(238,240,255,.76)}
+.skins{display:flex;gap:18px;justify-content:center;margin-top:64px;flex-wrap:nowrap}
+.skins figure{width:min(190px,30vw);text-align:center}
+.skins .phone{padding:6px;border-radius:26px}
+.skins .phone::after{top:11px;height:4px}
+.skins .phone-screen{border-radius:21px}
+.skins figcaption{margin-top:12px;font-family:var(--display);font-weight:600;font-size:15px;color:var(--rc)}
+.skins figure:nth-child(2){transform:translateY(-24px)}
+@media(max-width:600px){.skins{gap:10px}.skins figcaption{font-size:13px}}
+
+/* Realm 4: families & schools */
+.duo{display:grid;gap:22px;margin-top:44px}
+@media(min-width:860px){.duo{grid-template-columns:1fr 1fr}}
+.panel{border-radius:28px;overflow:hidden;background:rgba(5,30,24,.72);box-shadow:inset 0 0 0 1px rgba(46,189,138,.25)}
+.panel img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.panel-body{padding:26px 26px 30px}
+.panel h3{font-size:1.6rem;color:#fff;margin-bottom:10px}
+.ticks{list-style:none;display:grid;gap:10px;margin-top:16px}
+.ticks li{position:relative;padding-left:30px;font-size:16px;color:rgba(238,240,255,.82)}
+.ticks li::before{content:"";position:absolute;left:0;top:5px;width:18px;height:18px;border-radius:50%;background:var(--c) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.5l2.6 2.5L13 6.5' fill='none' stroke='%230A0A2E' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px no-repeat}
+.panel .btn{margin-top:22px}
+
+/* Realm 5: safety */
+.promises{display:grid;gap:0;margin-top:40px;border-radius:28px;overflow:hidden;background:rgba(30,12,4,.6);box-shadow:inset 0 0 0 1px rgba(245,150,30,.28)}
+@media(min-width:760px){.promises{grid-template-columns:1fr 1fr}}
+.promise{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:24px 26px;border-top:1px solid rgba(245,150,30,.16)}
+@media(min-width:760px){.promise:nth-child(-n+2){border-top:0}.promise:nth-child(odd){border-right:1px solid rgba(245,150,30,.16)}}
+@media(max-width:759px){.promise:first-child{border-top:0}}
+.promise svg{width:44px;height:44px;color:var(--fire)}
+.promise h3{font-size:1.15rem;color:#fff;margin-bottom:4px}
+.promise p{font-size:15px;color:rgba(238,240,255,.76)}
+.outdoor{display:grid;gap:28px;align-items:center;margin-top:56px;padding:30px;border-radius:28px;background:linear-gradient(135deg,rgba(245,150,30,.16),rgba(245,150,30,.04));box-shadow:inset 0 0 0 1px rgba(245,150,30,.25)}
+@media(min-width:860px){.outdoor{grid-template-columns:150px 1fr}}
+.outdoor img{width:150px;margin:0 auto}
+.outdoor h3{font-size:1.5rem;color:#fff;margin-bottom:12px}
+.outdoor ul{list-style:none;display:grid;gap:8px 28px}
+@media(min-width:620px){.outdoor ul{grid-template-columns:1fr 1fr}}
+.outdoor li{position:relative;padding-left:22px;font-size:16px;color:rgba(238,240,255,.85)}
+.outdoor li::before{content:"";position:absolute;left:2px;top:9px;width:9px;height:9px;border-radius:3px;background:var(--fire);transform:rotate(45deg)}
+
+/* Realm 6: join + partners */
+#temple .lead{color:var(--ink-2)}
+#temple h2{color:var(--ink)}
+.join-head{text-align:center;max-width:720px;margin:0 auto}
+.join-head .orbo{width:150px;margin:0 auto 18px;filter:drop-shadow(0 16px 30px rgba(232,164,0,.45))}
+.join-head .lead{margin:0 auto}
+.join-card{max-width:760px;margin:44px auto 0;padding:34px;border-radius:32px;background:#fff;box-shadow:0 1px 0 rgba(22,22,58,.05),0 30px 60px -30px rgba(122,74,18,.45);text-align:center}
+.join-card h3{font-size:1.7rem;margin-bottom:8px}
+.join-card p{color:var(--ink-2);font-size:16px;max-width:36em;margin-left:auto;margin-right:auto}
+.join-card .actions{justify-content:center;margin-top:24px}
+.join-card .btn-line{color:var(--ink)}
+.join-card .btn-line:hover{background:rgba(22,22,58,.05)}
+.join-card .fine{font-size:14px;color:var(--ink-2);margin-top:18px}
+.copied{display:inline-block;min-width:5em;font-weight:600;color:#1A8C5B}
+.partners{margin-top:96px}
+.partners>h2{text-align:center}
+.partners>.lead{text-align:center;margin:0 auto}
+.p-list{list-style:none;margin-top:40px;display:grid;gap:16px}
+@media(min-width:860px){.p-list{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.p-item{grid-template-columns:48px 1fr!important;gap:14px!important;padding:20px!important}.p-item .mark{width:48px!important;height:48px!important}.p-item .mark img{width:38px!important;height:38px!important}}
+.p-item{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:26px;border-radius:24px;background:#fff;box-shadow:inset 0 0 0 1px rgba(22,22,58,.07)}
+.p-item .mark{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--pc);}
+.p-item .mark img{width:50px;height:50px;object-fit:contain}
+.p-item h3{color:var(--ink);font-size:1.3rem;margin-bottom:6px}
+.p-item p{color:var(--ink-2);font-size:16px}
+.p-item a.more{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;font-family:var(--display);font-weight:700;font-size:16px;color:#B84D00;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+.honest{max-width:720px;margin:36px auto 0;text-align:center;font-size:14px;color:var(--ink-2)}
+
+/* Footer */
+footer{background:var(--navy);color:rgba(238,240,255,.7);padding:44px 0 52px}
+footer .wrap{display:grid;gap:24px}
+@media(min-width:860px){footer .wrap{grid-template-columns:auto 1fr auto;align-items:center}}
+.f-brand{display:flex;align-items:center;gap:16px}
+.f-brand img:first-child{height:46px;width:auto}
+.f-brand img:last-child{height:26px;width:auto}
+footer nav ul{list-style:none;display:flex;flex-wrap:wrap;gap:4px 20px}
+@media(min-width:860px){footer nav ul{justify-content:center}}
+footer nav a{display:inline-block;padding:10px 0;font-weight:600;font-size:15px;color:#fff;text-decoration:none}
+footer nav a:hover{text-decoration:underline}
+footer small{display:block;font-size:13px;line-height:1.5}
+@media(min-width:860px){footer small{text-align:right}}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="hud" id="hud">
+  <div class="wrap">
+    <a class="hud-logo" href="#top" aria-label="Trashure-Hunters home"><img src="assets/img/logo.webp" width="640" height="294" alt="Trashure-Hunters"></a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#space">Story</a></li>
+        <li><a href="#sky">How it works</a></li>
+        <li><a href="#lands">Families &amp; schools</a></li>
+        <li><a href="#embers">Safety</a></li>
+        <li><a href="#partners">Partners</a></li>
+      </ul>
+    </nav>
+    <span class="hud-depth" id="hudDepth" aria-hidden="true"></span>
+    <a class="btn btn-primary btn-sm" href="#join">Join the hunt</a>
+  </div>
+  <div class="hud-bar" id="hudBar" aria-hidden="true"></div>
+</header>
+
+<nav class="rail" id="rail" aria-label="The six realms">
+  <ol>
+    <li><a href="#space" style="--rc:var(--space)"><i></i><span>Cosmic Void</span></a></li>
+    <li><a href="#sky" style="--rc:var(--air)"><i></i><span>Sky Realm</span></a></li>
+    <li><a href="#waters" style="--rc:var(--water)"><i></i><span>Deep Waters</span></a></li>
+    <li><a href="#lands" style="--rc:var(--earth)"><i></i><span>Green Lands</span></a></li>
+    <li><a href="#embers" style="--rc:var(--fire)"><i></i><span>Ember Fields</span></a></li>
+    <li><a href="#temple" style="--rc:#E8A400"><i></i><span>Temple of Light</span></a></li>
+  </ol>
+</nav>
+
+<main id="main">
+
+<!-- HERO -->
+<section class="hero" id="top" aria-labelledby="h-hero">
+  <div class="stars" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="status"><i aria-hidden="true"></i>In development. Not yet available to download.</p>
+        <img class="hero-logo" src="assets/img/logo.webp" width="640" height="294" alt="Trashure-Hunters">
+        <h1 id="h-hero"><span class="l1">Clean the World.</span> <span>Win the Game.</span></h1>
+        <p class="lead">A real-world adventure game for kids and the grown-ups who play with them. Pick up real litter in your neighbourhood, and every cleanup heals a magical world of six realms.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#join">Join the hunt</a>
+          <span class="btn btn-soon" id="playBtn" role="link" aria-disabled="true">Coming soon</span>
+        </div>
+        <p class="who-line">Planned for iOS and Android. Made by 3Shamrocks Studio.</p>
+      </div>
+      <div class="stage" style="--c:var(--space)">
+        <div class="phone"><div class="phone-screen"><img src="assets/img/splash.webp" width="416" height="900" alt="The Trashure-Hunters app start screen"></div></div>
+        <img class="orbit o1" src="assets/img/cosmix.webp" width="520" height="540" alt="Cosmix, the space Elemonster">
+        <img class="orbit o2" src="assets/img/wispo.webp" width="520" height="505" alt="Wispo, the air Elemonster">
+        <img class="orbit o3" src="assets/img/bloop.webp" width="520" height="715" alt="Bloop, the water Elemonster">
+        <img class="orbit o4" src="assets/img/blazo.webp" width="509" height="736" alt="Blazo, the fire Elemonster">
+        <img class="orbit o5" src="assets/img/sproutz.webp" width="496" height="702" alt="Sproutz, the earth Elemonster">
+      </div>
+    </div>
+  </div>
+  <a class="cue" href="#space">Begin the descent
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</section>
+
+<!-- REALM 1: COSMIC VOID / STORY -->
+<section class="realm" id="space" data-realm="1" data-name="Cosmic Void" aria-labelledby="h-space">
+  <img class="fx" src="assets/img/f-asteroid.webp" alt="" aria-hidden="true" loading="lazy" style="--w:130px;top:8%;right:4%;--t:30s;--dx:-60px;--dy:40px">
+  <img class="fx hide-m" src="assets/img/grime-space.webp" alt="" aria-hidden="true" loading="lazy" style="--w:110px;bottom:8%;left:3%;--t:34s;--dx:50px;--dy:-30px;opacity:.55">
+  <div class="wrap">
+    <div class="realm-head"><span class="realm-badge" aria-hidden="true">1</span><p><b>The Cosmic Void</b><span>Realm 1 of 6</span></p></div>
+    <div class="split">
+      <div>
+        <h2 id="h-space">No villains. Only neglect.</h2>
+        <p class="lead">Five young Elemonsters grew up together across five realms, joined by a living current called the River of Three. When people in our world stopped caring, litter drifted into the river, all the way down to the Temple of Light at the centre.</p>
+        <p class="lead">The light dimmed. The Grime Signal flooded every realm. Now the only thing that can push it back is real care, in the real world.</p>
+        <ul class="descent-map" aria-label="The six realms, from outermost to centre">
+          <li style="--rc:var(--space)"><i></i>Cosmic Void</li>
+          <li style="--rc:var(--air)"><i></i>Sky Realm</li>
+          <li style="--rc:var(--water)"><i></i>Deep Waters</li>
+          <li style="--rc:var(--earth)"><i></i>Green Lands</li>
+          <li style="--rc:var(--fire)"><i></i>Ember Fields</li>
+          <li style="--rc:var(--light)"><i></i>Temple of Light</li>
+        </ul>
+        <div class="guide"><img src="assets/img/cosmix.webp" width="520" height="540" alt="" loading="lazy"><p><b>Cosmix guides this realm</b>The wise one. She mapped the way back to the light before anyone else was brave enough to try.</p></div>
+      </div>
+      <div class="story-art">
+        <img class="team" src="assets/img/team.webp" width="1200" height="735" alt="The five Elemonsters, Wispo, Sproutz, Blazo, Bloop and Cosmix, standing together in a park" loading="lazy">
+        <div class="grime-card">
+          <img src="assets/img/kinggrime.webp" width="460" height="458" alt="" loading="lazy">
+          <p><b>King Grime</b>Not evil, just what forgotten trash becomes. Every cleanup shrinks him.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REALM 2: SKY / HOW IT WORKS -->
+<section class="realm" id="sky" data-realm="2" data-name="Sky Realm" aria-labelledby="h-sky">
+  <img class="fx" src="assets/img/f-cloud.webp" alt="" aria-hidden="true" loading="lazy" style="--w:220px;top:6%;right:-2%;--t:40s;--dx:-90px;--dy:10px">
+  <img class="fx hide-m" src="assets/img/f-balloon.webp" alt="" aria-hidden="true" loading="lazy" style="--w:110px;top:12%;left:42%;--t:22s;--dx:20px;--dy:-40px">
+  <div class="wrap">
+    <div class="realm-head"><span class="realm-badge" aria-hidden="true">2</span><p><b>The Sky Realm</b><span>Realm 2 of 6</span></p></div>
+    <div class="split rev">
+      <div>
+        <h2 id="h-sky">How the hunt works</h2>
+        <p class="lead" style="margin-bottom:34px">The game loop is a real cleanup. The app just makes it a quest.</p>
+        <ol class="steps">
+          <li><div><h3>Spot it</h3><p>Find litter on the live map's Grime Zones, or anywhere you walk with a grown-up.</p></div></li>
+          <li><div><h3>Clean it</h3><p>Pick it up safely, with gloves or a grabber, and put it in the right bin.</p></div></li>
+          <li><div><h3>Prove it</h3><p>Snap a before and after with Trash-Cam. It checks for trash, not people.</p></div></li>
+          <li><div><h3>Heal the realm</h3><p>Earn XP, clear the zone, and watch your Elemonster grow from seed or egg towards Realm Keeper.</p></div></li>
+        </ol>
+        <p class="note" style="margin-top:30px"><b style="color:var(--air);font-family:var(--display);font-size:16px">Wispo guides this realm.</b> The jokester, always on the move. He makes the first cleanup feel like play.</p>
+      </div>
+      <div class="phone-solo" style="--c:var(--air)">
+        <div class="phone"><div class="phone-screen"><img src="assets/img/map-air.webp" width="560" height="1213" alt="The live map in the Sky Realm skin, with Grime Zones and Trashures to find" loading="lazy"></div></div>
+        <img class="buddy" src="assets/img/wispo.webp" width="520" height="505" alt="" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REALM 3: DEEP WATERS / INSIDE THE GAME -->
+<section class="realm" id="waters" data-realm="3" data-name="Deep Waters" aria-labelledby="h-waters">
+  <img class="fx" src="assets/img/f-bubble.webp" alt="" aria-hidden="true" loading="lazy" style="--w:80px;top:14%;left:4%;--t:18s;--dx:20px;--dy:-60px">
+  <img class="fx hide-m" src="assets/img/f-jelly.webp" alt="" aria-hidden="true" loading="lazy" style="--w:130px;bottom:12%;right:3%;--t:28s;--dx:-30px;--dy:-50px">
+  <div class="wrap">
+    <div class="realm-head"><span class="realm-badge" aria-hidden="true">3</span><p><b>The Deep Waters</b><span>Realm 3 of 6</span></p></div>
+    <div class="split">
+      <div>
+        <h2 id="h-waters">A real game, not a chore chart</h2>
+        <p class="lead">A live map of your own streets, a camera that turns litter into progress, and creatures to hunt in augmented reality.</p>
+      </div>
+      <div class="guide" style="margin-top:0"><img src="assets/img/bloop.webp" width="520" height="715" alt="" loading="lazy" style="width:96px"><p><b>Bloop guides this realm</b>The empath. Feels every bit of grime in the water, and every bit you clear.</p></div>
+    </div>
+    <figure class="ar-frame">
+      <img src="assets/img/ar.webp" width="1200" height="540" alt="AR Trashure Hunt: a Trashure creature appears in a real playground, with the water gun ready to capture it" loading="lazy">
+      <figcaption>Screens from the build in development. Details may change.</figcaption>
+    </figure>
+    <div class="features">
+      <div class="feature"><span class="ico"><img src="assets/img/i-home.webp" width="160" height="125" alt="" loading="lazy"></span><div><h3>Live map</h3><p>Your neighbourhood becomes the board. Grime Zones show where help is needed, at zone level only.</p></div></div>
+      <div class="feature"><span class="ico"><img src="assets/img/i-trashcam.webp" width="160" height="57" alt="" loading="lazy"></span><div><h3>Trash-Cam</h3><p>Photo checks confirm the cleanup really happened. No couch farming.</p></div></div>
+      <div class="feature"><span class="ico"><img src="assets/img/watergun.webp" width="360" height="443" alt="" loading="lazy"></span><div><h3>AR Trashure Hunt</h3><p>Real cleanups unlock hidden Trashures. Spray, capture and collect them with your water gun.</p></div></div>
+      <div class="feature"><span class="ico"><img src="assets/img/i-captured.webp" width="160" height="162" alt="" loading="lazy"></span><div><h3>Grow your Elemonster</h3><p>Pick one of five teams. Progress is earned by cleaning, never bought.</p></div></div>
+    </div>
+    <div class="skins" aria-label="Map skins change as you travel inward">
+      <figure style="--rc:var(--water);--c:var(--water)"><div class="phone"><div class="phone-screen"><img src="assets/img/map-water.webp" width="560" height="1213" alt="Map in the Deep Waters skin" loading="lazy"></div></div><figcaption>Deep Waters</figcaption></figure>
+      <figure style="--rc:var(--earth);--c:var(--earth)"><div class="phone"><div class="phone-screen"><img src="assets/img/map-earth.webp" width="560" height="1213" alt="Map in the Green Lands skin" loading="lazy"></div></div><figcaption>Green Lands</figcaption></figure>
+      <figure style="--rc:var(--fire);--c:var(--fire)"><div class="phone"><div class="phone-screen"><img src="assets/img/map-fire.webp" width="560" height="1213" alt="Map in the Ember Fields skin" loading="lazy"></div></div><figcaption>Ember Fields</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- REALM 4: GREEN LANDS / FAMILIES & SCHOOLS -->
+<section class="realm" id="lands" data-realm="4" data-name="Green Lands" aria-labelledby="h-lands">
+  <img class="fx" src="assets/img/f-leaf.webp" alt="" aria-hidden="true" loading="lazy" style="--w:110px;top:6%;right:6%;--t:20s;--dx:-40px;--dy:50px">
+  <div class="wrap">
+    <div class="realm-head"><span class="realm-badge" aria-hidden="true">4</span><p><b>The Green Lands</b><span>Realm 4 of 6</span></p></div>
+    <div class="split">
+      <div>
+        <h2 id="h-lands">Screen time that ends outside</h2>
+        <p class="lead">Trashure-Hunters is built to get families and classes out the door together, and to make looking after a place feel like winning.</p>
+      </div>
+      <div class="guide" style="margin-top:0"><img src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy" style="width:92px"><p><b>Sproutz guides this realm</b>The gentle giant who leads with love. The Green Lands are his home, and the hardest place to see dimmed.</p></div>
+    </div>
+    <div class="duo">
+      <article class="panel">
+        <img src="assets/img/photo-team.webp" width="800" height="800" alt="Two pairs of hands tying up a full rubbish bag" loading="lazy">
+        <div class="panel-body">
+          <h3>For families</h3>
+          <p>Play together on a weekend walk, a beach day or the way to school.</p>
+          <ul class="ticks">
+            <li>Designed for a grown-up and a child to play side by side</li>
+            <li>Rewards for doing, not for buying or endless scrolling</li>
+            <li>Habits that stick: sorting, recycling, leaving places better</li>
+          </ul>
+        </div>
+      </article>
+      <article class="panel">
+        <img src="assets/img/photo-park.webp" width="1000" height="562" alt="A tidy park path in morning light" loading="lazy">
+        <div class="panel-body">
+          <h3>For schools and educators</h3>
+          <p>A hands-on way into sustainability that pupils actually want to do.</p>
+          <ul class="ticks">
+            <li>Class and school team challenges for eco-clubs, Earth Day or service learning</li>
+            <li>No chat and avatar-only teammates, so it fits a supervised setting</li>
+            <li>We're looking for a small number of schools to help shape it</li>
+          </ul>
+          <a class="btn btn-line btn-sm" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20school%20interest&amp;body=Hi%20Dave%2C%0A%0AOur%20school%20is%20interested%20in%20Trashure-Hunters.%0A%0ASchool%3A%0ACity%2Fcountry%3A%0AAge%20group%3A%0A">Email us about your school</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- REALM 5: EMBER FIELDS / SAFETY -->
+<section class="realm" id="embers" data-realm="5" data-name="Ember Fields" aria-labelledby="h-embers">
+  <img class="fx hide-m" src="assets/img/f-flame.webp" alt="" aria-hidden="true" loading="lazy" style="--w:70px;top:10%;right:8%;--t:9s;--dx:6px;--dy:-14px">
+  <div class="wrap">
+    <div class="realm-head"><span class="realm-badge" aria-hidden="true">5</span><p><b>The Ember Fields</b><span>Realm 5 of 6</span></p></div>
+    <div class="split">
+      <div>
+        <h2 id="h-embers">Our safety promises</h2>
+        <p class="lead">These are the rules the game is being built to, for parents and teachers to hold us to.</p>
+      </div>
+      <div class="guide" style="margin-top:0"><img src="assets/img/blazo.webp" width="509" height="736" alt="" loading="lazy" style="width:88px"><p><b>Blazo guards this realm</b>The hothead with a heart. Fiercely loyal to the people he protects.</p></div>
+    </div>
+
+    <div class="promises">
+      <div class="promise">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 5l14 5v10c0 9-6 16-14 19C14 36 8 29 8 20V10z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M16 22l4.5 4.5L29 18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><h3>A parent says yes first</h3><p>Players under 13 need a parent or guardian's consent before the camera or location is switched on.</p></div>
+      </div>
+      <div class="promise">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><rect x="8" y="13" width="28" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="22" cy="23" r="5.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M16 13l2.5-4h7l2.5 4" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></svg>
+        <div><h3>The camera looks for trash</h3><p>Trash-Cam checks the litter in the photo, not faces. Photos are deleted once the cleanup is verified.</p></div>
+      </div>
+      <div class="promise">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 38s12-10.5 12-20a12 12 0 10-24 0c0 9.5 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle cx="22" cy="18" r="4" fill="currentColor"/></svg>
+        <div><h3>No exact locations shared</h3><p>Location places Grime Zones on the map. Other players never see where a child is.</p></div>
+      </div>
+      <div class="promise">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M9 11h26v17H20l-7 6v-6H9z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M8 38L36 8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <div><h3>No chat with strangers</h3><p>There is no in-game chat. Teammates appear as avatars only.</p></div>
+      </div>
+      <div class="promise">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><rect x="7" y="10" width="30" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M15 38h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M9 34L35 8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <div><h3>No ads aimed at kids</h3><p>We won't show advertising to children, and we won't sell or rent anyone's data.</p></div>
+      </div>
+      <div class="promise">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="14" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M22 14v8l5 4" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <div><h3>No tricks to keep them hooked</h3><p>No pay-to-win, no countdown pressure and no loot boxes. Progress comes from cleaning.</p></div>
+      </div>
+    </div>
+    <p class="note">The full privacy policy is being written now and will be published before any family can join the beta. Questions in the meantime: <a href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20privacy%20question">dave@3shamrocks.com</a>.</p>
+
+    <div class="outdoor">
+      <img src="assets/img/watergun.webp" width="360" height="443" alt="" loading="lazy">
+      <div>
+        <h3>Out in the real world, the game teaches these first</h3>
+        <ul>
+          <li>Hunt with a grown-up nearby</li>
+          <li>Wear gloves or use a grabber</li>
+          <li>Never touch glass, needles or anything sharp</li>
+          <li>Stay away from roads, water edges and private property</li>
+          <li>If in doubt, leave it and tell an adult</li>
+          <li>Wash your hands when you're done</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REALM 6: TEMPLE OF LIGHT / JOIN + PARTNERS -->
+<section class="realm" id="temple" data-realm="6" data-name="Temple of Light" data-light aria-labelledby="h-join">
+  <div class="wrap" style="padding-top:150px">
+    <div class="realm-head" style="justify-content:center"><span class="realm-badge" aria-hidden="true">6</span><p><b>The Temple of Light</b><span>Realm 6 of 6</span></p></div>
+    <div class="join-head" id="join">
+      <img class="orbo" src="assets/img/orbo.webp" width="520" height="566" alt="Orbo, the guardian of the Temple of Light" loading="lazy">
+      <h2 id="h-join">Join the hunt</h2>
+      <p class="lead">We'll email you when the beta opens to families, and only for that. Grown-ups only, please: kids, ask a parent to sign up for you.</p>
+    </div>
+    <div class="join-card">
+      <h3>Get on the waitlist</h3>
+      <p>The button opens a ready-to-send email in your own mail app. Nothing is sent until you press send, and we don't collect anything on this page.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="mailto:dave@3shamrocks.com?subject=Join%20the%20hunt%3A%20Trashure-Hunters%20waitlist&amp;body=Hi%2C%0A%0APlease%20add%20me%20to%20the%20Trashure-Hunters%20waitlist.%0A%0AI%27m%20a%20(parent%20%2F%20teacher%20%2F%20other)%3A%0ACity%20and%20country%3A%0A%0AI%20understand%20you%27ll%20only%20use%20this%20address%20to%20tell%20me%20about%20the%20beta.">Email to join the waitlist</a>
+        <button class="btn btn-line" type="button" id="copyBtn" data-email="dave@3shamrocks.com">Copy email address</button>
+      </div>
+      <p class="fine">Prefer to write it yourself? <b>dave@3shamrocks.com</b> <span class="copied" id="copyMsg" role="status" aria-live="polite"></span></p>
+    </div>
+
+    <div class="partners" id="partners">
+      <h2>Bring the hunt to your community</h2>
+      <p class="lead">We're looking for the first partners to help shape where and how the game shows up.</p>
+      <ul class="p-list">
+        <li class="p-item" style="--pc:#E7F8F0">
+          <span class="mark"><img src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy"></span>
+          <div><h3>Schools and youth groups</h3><p>Pilot class challenges, shape the educator tools, and give pupils a reason to look after their grounds.</p>
+          <a class="more" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20school%20or%20youth%20group%20pilot">Talk to us about a pilot</a></div>
+        </li>
+        <li class="p-item" style="--pc:#FFF0DC">
+          <span class="mark"><img src="assets/img/blazo.webp" width="509" height="736" alt="" loading="lazy"></span>
+          <div><h3>Sponsors and CSR teams</h3><p>Rotary and Lions clubs, local businesses and company volunteer days: sponsor a community cleanup or a neighbourhood's Grime Zones.</p>
+          <a class="more" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20sponsorship%20and%20CSR">Ask about sponsoring</a></div>
+        </li>
+        <li class="p-item" style="--pc:#E6F3FC">
+          <span class="mark"><img src="assets/img/bloop.webp" width="520" height="715" alt="" loading="lazy"></span>
+          <div><h3>Cities, parks and NGOs</h3><p>Point young players at the places that need it most, and get a clear picture of verified cleanups in your area.</p>
+          <a class="more" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20city%2C%20park%20or%20NGO%20partnership">Start a conversation</a></div>
+        </li>
+        <li class="p-item" style="--pc:#FBE8F4">
+          <span class="mark"><img src="assets/img/cosmix.webp" width="520" height="540" alt="" loading="lazy"></span>
+          <div><h3>Investors and press</h3><p>A family game and a story world from one studio. We're happy to share the deck and the build.</p>
+          <a class="more" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20investor%20or%20press%20enquiry">Request the deck</a></div>
+        </li>
+      </ul>
+      <p class="honest">Every link here opens an email to Dave Markovich, the game's creator. We'll only show partner names once a partnership is real and agreed.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="f-brand"><img src="assets/img/logo.webp" width="640" height="294" alt="Trashure-Hunters" loading="lazy"><img src="assets/img/studio.webp" width="360" height="53" alt="3Shamrocks Studio" loading="lazy"></div>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="#embers">Safety promises</a></li>
+        <li><a href="#lands">Families &amp; schools</a></li>
+        <li><a href="#partners">Partners</a></li>
+        <li><a href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters">Contact</a></li>
+      </ul>
+    </nav>
+    <small>This site sets no cookies and uses no analytics or trackers.<br>Trashure-Hunters&trade; &copy; 2026 3Shamrocks Studio. Clean the World. Win the Game.</small>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var realms=[].slice.call(document.querySelectorAll('.realm'));
+  var hud=document.getElementById('hud'),bar=document.getElementById('hudBar'),depth=document.getElementById('hudDepth'),rail=document.getElementById('rail');
+  var links=[].slice.call(rail.querySelectorAll('a'));
+  var root=document.documentElement;
+
+  function setActive(sec){
+    var n=sec?+sec.dataset.realm:0;
+    links.forEach(function(a,i){ if(i===n-1){a.setAttribute('aria-current','step');}else{a.removeAttribute('aria-current');} });
+    var c=sec?getComputedStyle(sec).getPropertyValue('--c').trim():'';
+    if(c){hud.style.setProperty('--c',c);}
+    depth.textContent=sec?(n+'/6 '+sec.dataset.name):'';
+    var light=!!(sec&&sec.hasAttribute('data-light'));
+    rail.classList.toggle('show',!!sec);
+    rail.classList.toggle('on-light',light);
+  }
+
+  if('IntersectionObserver' in window){
+    var vis=new IntersectionObserver(function(es){
+      es.forEach(function(e){ e.target.classList.toggle('on',e.isIntersecting); });
+    },{rootMargin:'0px'});
+    realms.forEach(function(r){vis.observe(r);});
+  }
+
+  var ticking=false;
+  function onScroll(){
+    ticking=false;
+    var mid=window.innerHeight*0.45,cur=null;
+    for(var i=0;i<realms.length;i++){ var r=realms[i].getBoundingClientRect(); if(r.top<=mid&&r.bottom>mid){cur=realms[i];break;} }
+    setActive(cur);
+    var max=root.scrollHeight-window.innerHeight;
+    bar.style.transform='scaleX('+(max>0?Math.min(1,window.scrollY/max):0)+')';
+    var t=document.getElementById('temple').getBoundingClientRect().top;
+    hud.classList.toggle('is-light',t<=300);
+  }
+  window.addEventListener('scroll',function(){ if(!ticking){ticking=true;requestAnimationFrame(onScroll);} },{passive:true});
+  window.addEventListener('resize',onScroll,{passive:true});
+  onScroll();
+
+  var copyBtn=document.getElementById('copyBtn'),copyMsg=document.getElementById('copyMsg');
+  copyBtn.addEventListener('click',function(){
+    var email=copyBtn.getAttribute('data-email');
+    function done(ok){copyMsg.textContent=ok?'Copied':'Select the address to copy it';}
+    try{
+      if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(email).then(function(){done(true);},function(){done(false);});}
+      else{done(false);}
+    }catch(err){done(false);}
+  });
+})();
+</script>
+</body>
+</html>
