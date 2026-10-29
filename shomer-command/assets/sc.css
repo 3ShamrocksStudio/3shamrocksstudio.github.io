@@ -1,18 +1,20 @@
 /* SH✡MER Command · buyer funnel (staging)
    Brand world = shomer-pilot.html (BRAND.md / brand.css, 3SDS layer 1). Navy base, gold authority, red = SOS only. */
 :root{
-  --n0:#060F1E; --n1:#0A1628; --n2:#101E34; --n3:#162440; --n4:#1C2C4E; --n5:#243460; --n6:#2E4070;
-  --g1:#9A6C1A; --g2:#C09020; --g3:#E0A828; --g4:#F5C840;
+  /* brand source of truth: www.shomer-app.co.il (index.html). Navy bar #0C1B3A, navy band #1F315F,
+     orange #FC9918 CTA, star #FAAC22, light band #F3F4F8, footer #141C27, Alef + Marion wordmark. */
+  --n0:#08152F; --n1:#0C1B3A; --n2:#13234A; --n3:#1A2B55; --n4:#1F315F; --n5:#283C70; --n6:#33487E;
+  --g1:#B86A08; --g2:#E8850F; --g3:#FC9918; --g4:#FAAC22;
   --p1:#5C6B82; --p2:#8392AB; --p3:#B6C2D6; --p4:#E6ECF6;
   --r2:#B01220; --r3:#CC1426; --r4:#E8182C; --grn:#0E8840;
-  --tx0:#F0F4FF; --tx1:#C8D4E8; --tx2:#8898B8;
-  --paper:#F3F5FA; --card:#FFFFFF; --ink:#0E1D3A; --ink2:#3A4766; --ink3:#66708A;
-  --hair:rgba(14,29,58,.12); --hair2:rgba(14,29,58,.2); --hair-n:rgba(182,194,214,.18);
-  --grad-gold:linear-gradient(135deg,#C09020 0%,#E0A828 60%,#F5C840 100%);
-  --font:'Heebo','Inter',system-ui,-apple-system,Arial,sans-serif;
-  --wrap:1180px; --gut:32px;
-  --focus:0 0 0 3px color-mix(in srgb,var(--g3) 60%,transparent);
-  --sh-card:0 1px 0 rgba(14,29,58,.04),0 18px 40px -24px rgba(14,29,58,.28);
+  --tx0:#FFFFFF; --tx1:#CDD6EC; --tx2:#93A0BD;
+  --paper:#F3F4F8; --card:#FFFFFF; --ink:#16202E; --ink2:#44506A; --ink3:#6B7387;
+  --hair:rgba(22,32,46,.11); --hair2:rgba(22,32,46,.2); --hair-n:rgba(205,214,236,.18);
+  --grad-gold:linear-gradient(135deg,#FC9918 0%,#FC9918 100%);
+  --font:'Alef',system-ui,-apple-system,Arial,sans-serif;
+  --wrap:1240px; --gut:32px;
+  --focus:0 0 0 3px rgba(252,153,24,.6);
+  --sh-card:0 1px 0 rgba(22,32,46,.04),0 18px 40px -24px rgba(22,32,46,.28);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;overflow-x:hidden;scroll-behavior:smooth}
@@ -41,7 +43,7 @@ bdi{unicode-bidi:isolate;direction:ltr} /* numbers, prices, dates: one LTR rende
 .navy .ic,.deep .ic{color:var(--g4);--duo:rgba(245,200,64,.28);--hexf:rgba(245,200,64,.07);--hexs:rgba(245,200,64,.4)}
 
 /* type */
-.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:700;letter-spacing:.02em;color:#8A6410} /* deep gold: 4.9:1 on paper (g2 was 2.6:1) */
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:700;letter-spacing:.02em;color:var(--g3)}
 .navy .eyebrow,.deep .eyebrow{color:var(--g4)}
 .eyebrow::before{content:"";width:22px;height:2px;background:currentColor;border-radius:2px}
 .h1{font-size:clamp(42px,5.4vw,78px);line-height:1.02;font-weight:900;letter-spacing:-.025em;text-wrap:balance}
@@ -77,7 +79,10 @@ bdi{unicode-bidi:isolate;direction:ltr} /* numbers, prices, dates: one LTR rende
 /* top bar */
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;height:76px}
 .topbar .brand,.dbar .brand{display:flex;align-items:center;gap:14px;min-height:44px}
-.wordmark{width:170px;height:auto}
+.wordmark{font-family:'Marion','Alef',serif;font-weight:700;letter-spacing:.04em;white-space:nowrap;direction:ltr;unicode-bidi:isolate;color:#fff;font-size:22px;line-height:1}
+.wordmark .star{color:var(--g4)}
+.wordmark .wm-app{color:var(--g4);font-size:.6em;margin-inline-start:1px;letter-spacing:.02em}
+.brand-badge{width:46px;height:46px;flex:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45))}
 .brand small{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--tx2);padding-inline-start:14px;border-inline-start:1px solid var(--hair-n);direction:ltr}
 .nav{display:flex;align-items:center;gap:30px;font-size:16px;font-weight:500;color:var(--tx1)}
 .nav a{display:inline-flex;align-items:center;min-height:44px}
@@ -140,7 +145,8 @@ footer.foot{background:var(--n0);color:var(--tx2);font-size:14px}
   body{font-size:17px}
   .sec{padding:72px 0}
   .topbar{height:64px}
-  .wordmark{width:132px}
+  .wordmark{font-size:19px}
+  .brand-badge{width:38px;height:38px}
   .brand small{display:none}
   .btn,.btn-ghost{width:100%}
   .faq summary{font-size:18px;padding:20px 0}
@@ -151,3 +157,37 @@ footer.foot{background:var(--n0);color:var(--tx2);font-size:14px}
   .topbar .btn{width:auto}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+
+/* ═══ SH✡MER brand layer (live site parity) ═══ */
+@font-face{font-family:'Marion';src:local('Marion Bold'),local('Marion-Bold'),local('Marion');font-weight:700;font-display:swap}
+body{background:#fff}
+h1,h2,h3,.h1,.h2{font-weight:700;letter-spacing:0}
+.h1{line-height:1.12}
+.lead{font-weight:400}
+.navy{background:var(--n4);background-image:linear-gradient(180deg,rgba(12,27,58,0) 55%,var(--n0) 100%);color:var(--tx0)}
+.deep{background:var(--n1)}
+.band>.ground{display:none}
+.on-paper{background:#fff}
+.on-paper.alt,.paper{background:var(--paper)}
+.ic{--duo:rgba(252,153,24,.22);--hexf:none;--hexs:var(--g3);color:var(--g3)}
+.navy .ic,.deep .ic{color:var(--g3);--duo:rgba(252,153,24,.28);--hexf:none;--hexs:var(--g3)}
+.btn{background:var(--g3);color:#fff;font-weight:700;border-radius:999px;box-shadow:0 6px 18px rgba(252,153,24,.28);transition:background .18s,transform .12s}
+.btn:hover{background:var(--g2)}
+.btn-ghost{border:1.5px solid rgba(255,255,255,.55);color:#fff;font-weight:700}
+.btn-ghost:hover{background:rgba(255,255,255,.08)}
+.on-paper .btn-ghost,.paper .btn-ghost,.card .btn-ghost{color:var(--ink);border-color:var(--hair2)}
+.link{border-bottom-color:var(--g3)}
+.tap{text-decoration-color:var(--g3);text-decoration-thickness:2px;text-underline-offset:6px}
+.sh i{color:var(--g4)}
+.paper .sh i,.on-paper .sh i{color:var(--g3)}
+.stage-chip{color:var(--g4);border-color:rgba(250,172,34,.5)}
+.frame{background:#0a1628;border-color:rgba(205,214,236,.18)}
+.cap::before{background:var(--g3)}
+.faq summary::after{border-color:var(--g3)}
+.input:focus,.select:focus{border-color:var(--g3)}
+.check input{accent-color:var(--g3)}
+footer.foot{background:#141C27;color:#AEB8CF}
+.foot .wrap{border-top:0}
+.foot img{width:auto;height:15px;opacity:.8}
+.toast{background:var(--n1)}
