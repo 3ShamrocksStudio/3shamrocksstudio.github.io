@@ -1,247 +1,259 @@
 <!doctype html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-brand="shomer">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0A1628">
+<meta name="theme-color" content="#0C1B3A">
 <title>SH✡MER · פיילוט קהילה שומרת</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="assets/shomer-pilot/hero-neighbours-1600.webp" media="(min-width:701px)">
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/shomer-pilot/brand-hero-neighbours.webp">
 <link rel="icon" type="image/png" href="assets/shomer-pilot/favicon.png">
 <style>
-/* SH✡MER brand world (BRAND.md / brand.css, 3SDS layer 1) */
+/* SH✡MER brand = the live product site www.shomer-app.co.il (index.html):
+   Alef type, Marion wordmark with the gold ✡, top-bar navy #0C1B3A, band navy #1F315F,
+   orange #FC9918 pill CTAs, white / light #F3F4F8 / navy alternating bands,
+   orange-ring line icons, real photography, metal badge straddling the footer. */
+@font-face{font-family:'Marion';src:local('Marion Bold'),local('Marion-Bold'),local('Marion');font-weight:700;font-display:swap}
 :root{
-  --n0:#060F1E; --n1:#0A1628; --n2:#101E34; --n3:#162440; --n4:#1C2C4E; --n6:#2E4070;
-  --g1:#9A6C1A; --g2:#C09020; --g3:#E0A828; --g4:#F5C840;
-  --p1:#5C6B82; --p2:#8392AB; --p3:#B6C2D6; --p4:#E6ECF6;
-  --tx0:#F0F4FF; --tx1:#C8D4E8; --tx2:#8898B8;
-  --paper:#F3F5FA; --ink:#0E1D3A; --ink2:#3A4766; --hair:rgba(14,29,58,.12); --hair-n:rgba(182,194,214,.18);
-  --grad-gold:linear-gradient(135deg,#C09020 0%,#E0A828 60%,#F5C840 100%);
-  --font:'Heebo','Inter',system-ui,-apple-system,Arial,sans-serif;
-  --wrap:1180px; --gut:32px;
-  --focus:0 0 0 3px color-mix(in srgb,var(--g3) 60%,transparent);
+  --bar:#0C1B3A; --navy:#1F315F; --deep:#08152F; --hero:#0A1630;
+  --orange:#FC9918; --orange-d:#E8850F; --orange-2:#FBB63F; --star:#FAAC22;
+  --light:#F3F4F8; --foot:#141C27; --ink:#16202E; --ink-soft:#44506A; --grey:#7C828F;
+  --navy-text:#B9C6E0; --line:#E3E6EE; --line-n:rgba(205,214,236,.18);
+  --font:'Alef',system-ui,-apple-system,Arial,sans-serif;
+  --wrap:1240px; --gut:clamp(20px,4vw,44px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;overflow-x:hidden;scroll-behavior:smooth}
-body{font-family:var(--font);color:var(--ink);background:var(--paper);line-height:1.6;font-size:18px;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:var(--font);color:var(--ink);background:#fff;line-height:1.55;font-size:18px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{display:block;max-width:100%;height:auto}
 a{color:inherit;text-decoration:none}
-a:focus-visible{outline:none;box-shadow:var(--focus);border-radius:8px}
+:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(252,153,24,.6);border-radius:8px}
 ul,ol{list-style:none}
-bdi{unicode-bidi:isolate;direction:ltr} /* numbers, prices, dates: one LTR rendering everywhere */
+h1,h2,h3{line-height:1.2;font-weight:700}
+bdi{unicode-bidi:isolate;direction:ltr}
 .wrap{width:100%;max-width:var(--wrap);margin:0 auto;padding:0 var(--gut)}
-.sh{white-space:nowrap;direction:ltr;unicode-bidi:isolate;font-weight:800;letter-spacing:.01em}
-.sh i{font-style:normal;color:var(--g3)}
+.wordmark{font-family:'Marion','Alef',serif;font-weight:700;letter-spacing:.01em;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+.star{color:var(--star)}
+.sh{white-space:nowrap;direction:ltr;unicode-bidi:isolate;font-weight:700}
+.sh i{font-style:normal;color:var(--star)}
 .ltr{direction:ltr;unicode-bidi:isolate}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
-/* print-safe colour bands: the ground is an <img>, never a droppable CSS background */
-.band{position:relative;isolation:isolate}
-.band>.ground{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;z-index:-1;pointer-events:none}
-.navy{background:var(--n1);color:var(--tx0)}
-.gold{background:var(--g3);color:var(--ink)}
+/* orange pill CTA (live: .btn-orange) */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--orange);color:#fff;font-weight:700;font-size:17px;min-height:56px;padding:0 40px;border-radius:999px;white-space:nowrap;box-shadow:0 6px 18px rgba(252,153,24,.28);transition:background .18s,transform .12s}
+.btn:hover{background:var(--orange-d);transform:translateY(-1px)}
+.btn:active{transform:scale(.98)}
+.btn-sm{min-height:44px;padding:0 22px;font-size:15px}
+.tap{display:inline-flex;align-items:center;min-height:44px;font-weight:700;text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:2px;text-underline-offset:6px}
 
-/* icons: line + gold duo-tone, on a hexagon (✡ geometry) */
-.ic{flex:none;width:52px;height:52px;color:var(--ink);--duo:var(--g3);--hexf:rgba(224,168,40,.14);--hexs:rgba(224,168,40,.55)}
-.navy .ic{color:var(--g4);--duo:rgba(245,200,64,.28);--hexf:rgba(245,200,64,.07);--hexs:rgba(245,200,64,.4)}
-.ic{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* icons: orange line icon in an orange ring (live advantages pattern) */
+.ic{flex:none;width:64px;height:64px;color:var(--orange);--duo:rgba(252,153,24,.22);--ring:var(--orange);fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-/* ══ HERO ══ */
-.hero{min-height:min(860px,100svh);display:flex;flex-direction:column;overflow:hidden}
-.hero-art{position:absolute;inset:0;z-index:-1}
-.hero-art img{width:100%;height:100%;max-width:none;object-fit:cover;object-position:28% 62%}
-.scrim{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:30px}
-.wordmark{width:208px;height:auto}
-.chip{font-size:15px;font-weight:500;color:var(--tx0);border:1px solid rgba(245,200,64,.5);border-radius:999px;padding:7px 16px;white-space:nowrap}
-.chip b{color:var(--g4);font-weight:700}
-.hero-body{flex:1;display:flex;align-items:center;padding-block:56px 40px}
-.hero-copy{max-width:600px}
+/* ══ TOP BAR ══ */
+header.bar{position:relative;z-index:60;background:var(--bar);border-bottom:1px solid rgba(250,172,34,.14)}
+.bar-inner{position:relative;display:flex;align-items:center;justify-content:space-between;gap:18px;height:72px}
+.bar-wm{font-size:22px;color:#fff;letter-spacing:.04em}
+.wm-app{color:var(--star);font-size:.6em;margin-inline-start:1px;letter-spacing:.02em}
+.bar-badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:112px;width:auto;filter:drop-shadow(0 10px 24px rgba(0,0,0,.6));pointer-events:none;z-index:2}
+.bar-left{display:flex;align-items:center;gap:18px}
+.chip{font-size:15px;font-weight:700;color:#E7ECF7;white-space:nowrap}
+.chip b{color:var(--orange)}
+
+/* ══ HERO: photo band, navy on the text side (live hero) ══ */
+.hero{position:relative;background:var(--hero);overflow:hidden;color:#fff}
+.hero-photo{position:absolute;inset:0 auto 0 0;width:72%;height:100%;max-width:none;object-fit:cover;object-position:40% 60%;
+  -webkit-mask-image:linear-gradient(90deg,#000 55%,transparent 100%);mask-image:linear-gradient(90deg,#000 55%,transparent 100%)}
+.hero-shade{position:absolute;inset:0;pointer-events:none;background:
+  linear-gradient(270deg,rgba(8,16,36,.96) 0%,rgba(9,18,40,.78) 34%,rgba(10,20,44,.12) 66%,rgba(10,20,44,0) 100%),
+  linear-gradient(180deg,rgba(8,16,36,.38) 0%,rgba(8,16,36,0) 40%,rgba(8,16,36,.6) 100%)}
+.hero-inner{position:relative;z-index:2;display:flex;justify-content:flex-start;min-height:clamp(560px,44vw,640px);align-items:center;padding-block:56px}
+.hero-copy{max-width:560px}
+.hero-wm{font-size:clamp(34px,3.4vw,50px);line-height:1;color:#fff;margin-bottom:16px;text-shadow:0 3px 18px rgba(0,0,0,.6)}
+.hero h1{font-size:clamp(34px,3.6vw,54px);line-height:1.18;color:#fff;text-shadow:0 3px 18px rgba(0,0,0,.7)}
 .hero h1 span{display:inline-block}
-.hero h1{font-size:clamp(46px,5.7vw,86px);line-height:.98;font-weight:900;letter-spacing:-.025em;color:#fff;text-wrap:balance}
-.hero .sub{margin-top:26px;font-size:clamp(18px,1.6vw,22px);line-height:1.55;color:var(--tx1);font-weight:300;max-width:30em}
-.actions{margin-top:34px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 30px;border-radius:999px;background:var(--grad-gold);color:var(--n1);font-weight:800;font-size:17px;box-shadow:0 12px 28px -10px rgba(224,168,40,.6),inset 0 1px 0 rgba(255,255,255,.45);transition:transform .15s ease}
-.btn:hover{transform:translateY(-1px)}
-.btn:focus-visible{box-shadow:var(--focus);border-radius:999px}
-.link{font-weight:500;color:var(--tx0);border-bottom:1px solid rgba(245,200,64,.6);padding-bottom:2px}
-.tap{display:inline-flex;align-items:center;min-height:44px;border-bottom:0!important;text-decoration:underline;text-decoration-color:rgba(224,168,40,.7);text-decoration-thickness:1.5px;text-underline-offset:5px}
-.stats{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:0;padding-block:22px 34px;margin-top:auto}
-.stat{padding-inline:0 34px}
-.stat+.stat{padding-inline-start:34px;border-inline-start:1px solid var(--hair-n)}
-.stat b{display:block;font-size:clamp(26px,2.4vw,34px);line-height:1.1;font-weight:800;color:var(--g4)}
-.stat span{font-size:15px;color:var(--tx1)}
+.hero .sub{margin-top:18px;font-size:clamp(17px,1.4vw,21px);color:#EAF0FB;max-width:31em;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.actions{margin-top:30px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px}
+.hero .tap{color:#fff}
+.stats{margin-top:40px;display:flex;flex-wrap:wrap;gap:0}
+.stat{padding-inline:0 28px}
+.stat+.stat{padding-inline-start:28px;border-inline-start:1px solid var(--line-n)}
+.stat b{display:block;font-size:clamp(26px,2.4vw,34px);line-height:1.1;color:var(--orange)}
+.stat span{font-size:15px;color:#CDD6EC}
 
-/* ══ PAIN ══ */
-.pain{padding:112px 0 96px}
-.pain-grid{display:grid;grid-template-columns:5fr 6fr;gap:80px;align-items:start}
-.h2{font-size:clamp(32px,3.6vw,52px);line-height:1.08;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
-.pain .h2{color:var(--ink)}
-.plist li{display:grid;grid-template-columns:22px 1fr;gap:16px;align-items:baseline;padding:20px 0;border-top:1px solid var(--hair);font-size:20px;line-height:1.5;color:var(--ink2)}
-.plist li:last-child{border-bottom:1px solid var(--hair)}
-.plist li::before{content:"";width:10px;height:10px;border-radius:50%;border:2px solid var(--p2);transform:translateY(-2px)}
-.plist li:last-child::before{border-color:var(--g2);background:var(--g3)}
+/* ══ PAIN: white, image with orange blocks (live "arrive") ══ */
+.pain{padding:clamp(66px,8.5vw,120px) 0}
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,5vw,80px);align-items:center}
+.kicker{font-size:14px;color:var(--orange);font-weight:700;letter-spacing:.06em;margin-bottom:14px}
+.h2{font-size:clamp(28px,3.1vw,46px);line-height:1.18;font-weight:700;color:var(--ink);text-wrap:balance}
+.plist{margin-top:28px}
+.plist li{display:grid;grid-template-columns:18px 1fr;gap:14px;align-items:baseline;padding:16px 0;border-top:1px solid var(--line);font-size:19px;line-height:1.5;color:var(--ink-soft)}
+.plist li:last-child{border-bottom:1px solid var(--line);color:var(--ink);font-weight:700}
+.plist li::before{content:"";width:10px;height:10px;border-radius:50%;border:2px solid var(--orange);transform:translateY(-1px)}
+.plist li:last-child::before{background:var(--orange)}
+.figure{position:relative;display:flex;justify-content:center;align-items:center}
+.figure .blk{position:absolute;border-radius:28px;z-index:0}
+.figure .b1{left:-5%;top:9%;width:46%;height:82%;background:var(--orange)}
+.figure .b2{right:-4%;top:24%;width:20%;height:56%;background:var(--orange-2)}
+.figure img{position:relative;z-index:1;border-radius:26px;width:100%;max-width:430px;aspect-ratio:1/1;object-fit:cover;box-shadow:0 30px 64px -18px rgba(20,28,39,.4)}
 
-/* ══ ANSWER + WHY ══ */
-.why{padding:104px 0 100px;overflow:hidden}
-.answer{display:grid;grid-template-columns:auto 1fr;gap:44px;align-items:center;max-width:980px}
-.answer-mark{width:132px;height:132px}
-.answer p{font-size:clamp(26px,2.9vw,40px);line-height:1.3;font-weight:300;color:#fff;text-wrap:pretty}
-.answer p strong{font-weight:700}
-.why-head{margin-top:96px;display:flex;align-items:baseline;justify-content:space-between;gap:24px;border-bottom:1px solid var(--hair-n);padding-bottom:22px}
+/* ══ WHY: navy band, centred (live advantages) ══ */
+.why{background:var(--navy);background-image:linear-gradient(180deg,rgba(12,27,58,0) 55%,var(--deep) 100%);color:#fff;padding:clamp(66px,8.5vw,120px) 0;text-align:center}
+.answer{max-width:900px;margin:0 auto}
+.answer-mark{width:96px;height:96px;margin:0 auto 22px}
+.answer p{font-size:clamp(22px,2.5vw,34px);line-height:1.4;color:#fff}
+.answer p strong{font-weight:700;color:#fff}
+.why-head{margin-top:clamp(56px,6vw,88px)}
 .why-head .h2{color:#fff}
-.why-head small{font-size:16px;color:var(--tx2)}
-.wlist{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
-.wlist li{padding:30px 28px 6px 0}
-.wlist li+li{border-inline-start:1px solid var(--hair-n);padding-inline-start:28px}
-.wlist li:first-child{padding-inline-start:0}
-.wlist h3{margin-top:18px;font-size:20px;line-height:1.3;font-weight:700;color:#fff}
-.wlist p{margin-top:10px;font-size:16px;line-height:1.6;color:var(--tx1)}
+.why-head small{display:block;margin-top:8px;font-size:17px;color:var(--navy-text)}
+.wlist{margin-top:clamp(36px,4vw,60px);display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(24px,3vw,48px)}
+.wlist .ic{width:104px;height:104px;margin:0 auto 22px}
+.wlist h3{font-size:clamp(19px,1.6vw,23px);color:#fff}
+.wlist p{margin:10px auto 0;font-size:16.5px;line-height:1.7;color:var(--navy-text);max-width:28ch}
 
-/* ══ FEATURES ══ */
-.features{padding:112px 0 112px;overflow:hidden}
-.feat-more{margin-top:36px;font-size:16.5px;color:var(--ink2)}
-.feat-more a{font-weight:700;color:var(--ink)}
-.feat-grid{display:grid;grid-template-columns:1fr 420px;gap:72px;align-items:center}
-.flist{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;gap:34px 44px}
-.flist li{display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:start}
-.flist h3{font-size:19px;font-weight:700;line-height:1.3;color:var(--ink);padding-top:4px}
-.flist p{margin-top:4px;font-size:16px;line-height:1.55;color:var(--ink2)}
-.phones{position:relative;height:640px}
-.phone{position:absolute;width:236px;border-radius:38px;padding:8px;background:linear-gradient(160deg,#24324F,#060B16);border:1px solid #3A465F;box-shadow:0 44px 70px -30px rgba(6,15,30,.6),0 0 0 1px rgba(255,255,255,.04) inset}
-.phone img{border-radius:30px;width:100%;aspect-ratio:540/1168;object-fit:cover;object-position:top}
-.phone.p1{inset-inline-start:0;top:0;z-index:2}
-.phone.p2{inset-inline-start:150px;top:88px;width:212px;z-index:1;opacity:.98}
-.phones .halo{position:absolute;inset-inline-start:-10px;top:110px;width:420px;height:420px}
-.cap{position:absolute;font-size:14px;color:var(--ink2);font-weight:500}
+/* ══ FEATURES: light band + real app screens (live "screens") ══ */
+.features{background:var(--light);padding:clamp(60px,8vw,110px) 0}
+.features .h2{text-align:center;max-width:22em;margin:0 auto}
+.flist{margin-top:clamp(40px,4.5vw,64px);display:grid;grid-template-columns:repeat(3,1fr);gap:34px 44px}
+.flist li{display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start}
+.flist h3{font-size:20px;color:var(--ink);padding-top:6px}
+.flist p{margin-top:4px;font-size:16.5px;line-height:1.6;color:var(--ink-soft)}
+.screens{margin:clamp(48px,5vw,72px) auto 0;display:grid;grid-template-columns:repeat(4,1fr);gap:22px;max-width:980px}
+.shot{background:#0a1628;border-radius:22px;padding:7px;box-shadow:0 18px 38px -18px rgba(20,30,60,.5)}
+.shot img{border-radius:16px;width:100%;aspect-ratio:9/19.5;object-fit:cover;object-position:top}
+.feat-more{margin-top:40px;text-align:center;font-size:17px;color:var(--ink-soft)}
+.feat-more a{color:var(--ink)}
 
-/* ══ PILOT (gold) ══ */
-.pilot{padding:104px 0 100px}
-.pilot-head{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end}
-.pilot .h2{color:var(--n1)}
-.pilot-sub{margin-top:14px;font-size:21px;color:rgba(10,22,40,.82)}
-.timeline{margin-top:64px;display:grid;grid-template-columns:repeat(4,1fr);position:relative}
-.timeline::before{content:"";position:absolute;top:21px;inset-inline:22px 22px;height:2px;background:var(--n1);opacity:.85}
-.tl{position:relative;padding-inline-end:28px}
-.tl-node{width:44px;height:44px;display:block;position:relative}
-.tl h3{margin-top:18px;font-size:22px;font-weight:800;color:var(--n1)}
-.tl p{margin-top:6px;font-size:16.5px;line-height:1.5;color:rgba(10,22,40,.85)}
-.pilot-cols{margin-top:72px;display:grid;grid-template-columns:1fr 1fr;gap:64px}
-.pilot-cols h3{font-size:22px;font-weight:800;color:var(--n1);padding-bottom:14px;border-bottom:2px solid var(--n1)}
-.pilot-cols h3 small{display:block;font-size:15px;font-weight:500;color:rgba(10,22,40,.75);margin-top:2px}
-.clist li{display:grid;grid-template-columns:20px 1fr;gap:12px;padding:13px 0;border-bottom:1px solid rgba(10,22,40,.16);font-size:17px;line-height:1.5;color:var(--n1)}
+/* ══ PILOT: white, orange timeline ══ */
+.pilot{padding:clamp(66px,8.5vw,120px) 0}
+.pilot-head{text-align:center}
+.pilot-sub{margin-top:12px;font-size:21px;color:var(--ink-soft)}
+.timeline{margin-top:clamp(44px,5vw,72px);display:grid;grid-template-columns:repeat(4,1fr);position:relative}
+.timeline::before{content:"";position:absolute;top:27px;inset-inline:12.5% 12.5%;height:2px;background:var(--orange)}
+.tl{position:relative;text-align:center;padding-inline:14px}
+.tl-node{width:56px;height:56px;display:block;position:relative;margin:0 auto}
+.tl h3{margin-top:18px;font-size:23px;color:var(--ink)}
+.tl p{margin:6px auto 0;font-size:16.5px;line-height:1.55;color:var(--ink-soft);max-width:24ch}
+.pilot-cols{margin-top:clamp(48px,5vw,72px);display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.pilot-cols>div{background:var(--light);border-radius:24px;padding:34px 36px}
+.pilot-cols h3{font-size:23px;color:var(--ink);padding-bottom:14px;border-bottom:2px solid var(--orange)}
+.pilot-cols h3 small{display:block;font-size:15px;font-weight:400;color:var(--grey);margin-top:2px}
+.clist li{display:grid;grid-template-columns:20px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:17px;line-height:1.5;color:var(--ink)}
+.clist li:last-child{border-bottom:0}
 .clist svg{width:20px;height:20px;margin-top:3px}
 
-/* ══ PRICE (navy) ══ */
-.price{padding:104px 0 96px}
-.price-grid{display:grid;grid-template-columns:5fr 6fr;gap:80px;align-items:start}
+/* ══ PRICE: navy band ══ */
+.price{background:var(--bar);background-image:linear-gradient(180deg,var(--navy) 0%,var(--bar) 100%);color:#fff;padding:clamp(66px,8.5vw,120px) 0}
+.price-grid{display:grid;grid-template-columns:5fr 6fr;gap:clamp(40px,6vw,88px);align-items:start}
 .price-big{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
-.price-big b{font-size:clamp(72px,8vw,120px);line-height:.9;font-weight:900;letter-spacing:-.03em;background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent}
-.price-big span{font-size:20px;color:var(--tx1)}
-.price-lead{margin-top:22px;font-size:22px;font-weight:700;color:#fff}
-.price-lines{margin-top:10px;color:var(--tx1);font-size:17px}
+.price-big b{font-size:clamp(72px,8.5vw,128px);line-height:.92;font-weight:700;letter-spacing:-2px;color:var(--orange)}
+.price-big span{font-size:21px;color:#CDD6EC}
+.price-lead{margin-top:22px;font-size:24px;font-weight:700;color:#fff}
+.price-lines{margin-top:10px;color:#CDD6EC;font-size:17.5px}
 .price-lines p+p{margin-top:4px}
-.vat{margin-top:10px;font-size:14px;color:var(--tx2)}
-.partners{margin-top:34px;padding:20px 22px;border:1px solid rgba(245,200,64,.45);border-radius:16px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;font-size:16.5px;color:var(--tx1)}
-.partners strong{color:var(--g4)}
-.partners svg{width:36px;height:36px}
-.lic h3,.needs h3{font-size:20px;font-weight:700;color:#fff}
-.lic h3 small{display:block;font-size:15px;font-weight:400;color:var(--tx2)}
+.vat{margin-top:12px;font-size:14px;color:#8B96B0}
+.partners{margin-top:34px;padding:22px 24px;border:1.5px solid rgba(252,153,24,.55);border-radius:18px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;font-size:16.5px;color:#CDD6EC}
+.partners strong{color:var(--star)}
+.partners .ic{width:44px;height:44px}
+.lic h3,.needs h3{font-size:22px;color:#fff}
+.lic h3 small{display:block;font-size:15px;font-weight:400;color:#8B96B0}
 .tiers{margin-top:18px}
-.tiers li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:17px 0;border-top:1px solid var(--hair-n);font-size:17.5px;color:var(--tx1)}
-.tiers li:last-child{border-bottom:1px solid var(--hair-n)}
-.tiers b{font-weight:800;color:#fff;font-size:20px;white-space:nowrap}
-.tiers b small{display:block;font-size:14px;font-weight:400;color:var(--tx2);text-align:left;margin-top:2px}
-.tnote{margin-top:14px;font-size:14px;color:var(--tx2)}
-.needs{margin-top:56px}
-.nlist{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.nlist li{padding:18px 18px 18px 14px;border-radius:14px;border:1px solid var(--hair-n);font-size:16.5px;line-height:1.5;color:var(--tx1)}
-.nlist b{display:block;color:#fff;font-size:18px;margin-bottom:2px}
+.tiers li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:17px 0;border-top:1px solid var(--line-n);font-size:17.5px;color:#CDD6EC}
+.tiers li:last-child{border-bottom:1px solid var(--line-n)}
+.tiers b{font-weight:700;color:#fff;font-size:21px;white-space:nowrap}
+.tiers b small{display:block;font-size:14px;font-weight:400;color:#8B96B0;text-align:left;margin-top:2px}
+.tnote{margin-top:14px;font-size:14px;color:#8B96B0;line-height:1.6}
+.needs{margin-top:52px}
+.nlist{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.nlist li{padding:18px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--line-n);font-size:16.5px;line-height:1.5;color:#CDD6EC}
+.nlist b{display:block;color:var(--orange);font-size:19px;margin-bottom:2px}
 
-/* ══ TRUST ══ */
-.trust{padding:104px 0 104px}
-.trust-grid{display:grid;grid-template-columns:4fr 8fr;gap:72px;align-items:start}
-.tlist{display:grid;grid-template-columns:1fr 1fr;gap:40px 48px}
-.tlist li{display:grid;grid-template-columns:52px 1fr;gap:18px}
-.tlist h3{font-size:19px;font-weight:700;color:var(--ink);padding-top:4px}
-.tlist p{margin-top:4px;font-size:16px;color:var(--ink2);line-height:1.55}
+/* ══ TRUST: light band ══ */
+.trust{background:var(--light);padding:clamp(66px,8.5vw,120px) 0}
+.trust .h2{text-align:center}
+.tlist{margin-top:clamp(40px,4.5vw,64px);display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(24px,3vw,44px);text-align:center}
+.tlist .ic{width:88px;height:88px;margin:0 auto 18px}
+.tlist h3{font-size:20px;color:var(--ink)}
+.tlist p{margin:6px auto 0;font-size:16.5px;color:var(--ink-soft);line-height:1.6;max-width:26ch}
 
-/* ══ CTA ══ */
-.cta{padding:112px 0 96px;overflow:hidden;text-align:center}
-.cta-badge{width:132px;height:132px;margin:0 auto;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
-.cta h2{margin-top:26px;font-size:clamp(48px,6vw,84px);line-height:1;font-weight:900;letter-spacing:-.025em;color:#fff}
-.cta p{margin:18px auto 0;font-size:21px;color:var(--tx1);max-width:30em}
-.cta .btn{margin-top:34px}
-.contact{margin-top:34px;display:flex;justify-content:center;flex-wrap:wrap;gap:8px 28px;font-size:17px;color:var(--tx1)}
-.contact strong{color:#fff;font-weight:700}
-.contact a{color:#fff;border-bottom:1px solid rgba(245,200,64,.55)}
-.contact{align-items:center}
-.cta .more{margin-top:18px;font-size:16.5px;color:var(--tx1)}
-.cta .more a{color:#fff;font-weight:700}
-.cta-rings{position:absolute;left:50%;top:180px;width:1100px;height:1100px;transform:translateX(-50%);z-index:-1;opacity:.9}
-footer{background:var(--n0);color:var(--tx2);font-size:13.5px}
-.foot{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px 0 30px;border-top:1px solid var(--hair-n)}
-.foot img{width:150px;height:auto;opacity:.9}
+/* ══ CTA: white, centred (live closing) ══ */
+.cta{padding:clamp(66px,8.5vw,120px) 0 calc(clamp(150px,30vw,200px) / 2 + 40px);text-align:center}
+.cta h2{font-size:clamp(44px,5.4vw,76px);line-height:1;font-weight:700;color:var(--ink)}
+.cta h2::after{content:"";display:block;width:64px;height:4px;border-radius:4px;background:var(--orange);margin:22px auto 0}
+.cta p{margin:20px auto 0;font-size:21px;color:var(--ink);max-width:30em;font-weight:700}
+.cta .btn{margin-top:30px}
+.cta .more{margin-top:16px;font-size:16.5px;font-weight:400;color:var(--ink-soft)}
+.cta .more a{color:var(--ink)}
+.contact{margin-top:30px;display:flex;justify-content:center;flex-wrap:wrap;align-items:center;gap:4px 28px;font-size:17px;color:var(--ink-soft)}
+.contact strong{color:var(--ink)}
+.contact a{color:var(--ink)}
+
+/* ══ FOOTER: badge straddles the boundary (live) ══ */
+.foot-badge-wrap{height:0;text-align:center;line-height:0;overflow:visible;position:relative;z-index:3}
+.foot-badge{height:clamp(150px,30vw,200px);width:auto;margin:0 auto;transform:translateY(-50%);filter:drop-shadow(0 8px 20px rgba(0,0,0,.35))}
+footer.foot{background:var(--foot);color:#AEB8CF;padding:calc(clamp(150px,30vw,200px) / 2 + 26px) 0 34px;text-align:center;font-size:14px}
+.foot-meta{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;color:#8B96B0}
+.foot-meta img{height:14px;width:auto;opacity:.8}
 
 /* ══ RESPONSIVE ══ */
 @media screen and (max-width:1100px){
-  .feat-grid{grid-template-columns:1fr 340px;gap:48px}
-  .phone{width:200px}.phone.p2{width:180px;inset-inline-start:130px}
-  .phones{height:560px}
-  .wlist{grid-template-columns:1fr 1fr;row-gap:12px}
-  .wlist li:nth-child(3){border-inline-start:0;padding-inline-start:0}
+  .wlist,.tlist{grid-template-columns:1fr 1fr;row-gap:44px}
+  .flist{grid-template-columns:1fr 1fr}
 }
 @media screen and (max-width:900px){
-  .pain-grid,.price-grid,.trust-grid,.feat-grid,.pilot-cols{grid-template-columns:1fr;gap:40px}
-  .phones{height:500px;max-width:380px;margin:0 auto;width:100%}
-  .timeline{grid-template-columns:1fr 1fr;row-gap:36px}
+  .pain-grid,.price-grid,.pilot-cols{grid-template-columns:1fr;gap:44px}
+  .pain-grid .figure{order:2}
+  .timeline{grid-template-columns:1fr 1fr;row-gap:40px}
   .timeline::before{display:none}
+  .screens{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;padding-bottom:8px;scrollbar-width:none;direction:ltr}
+  .screens::-webkit-scrollbar{display:none}
+  .shot{flex:0 0 46%;scroll-snap-align:center}
 }
-@media screen and (max-width:700px){
-  :root{--gut:20px}
+@media screen and (max-width:860px){
+  .hero-photo{position:relative;inset:auto;width:100%;height:auto;aspect-ratio:16/10;object-position:50% 60%;
+    -webkit-mask-image:linear-gradient(180deg,#000 62%,transparent 100%);mask-image:linear-gradient(180deg,#000 62%,transparent 100%)}
+  .hero-shade{display:none}
+  .hero-inner{min-height:0;padding-block:0 48px;margin-top:-40px;justify-content:center;text-align:center}
+  .hero-copy{max-width:none}
+  .hero .sub{margin-inline:auto}
+  .actions{justify-content:center}
+  .stats{justify-content:center}
+}
+@media screen and (max-width:620px){
   body{font-size:17px}
-  .hero{min-height:0}
-  .hero-art{position:relative;inset:auto;z-index:0;order:3;margin-top:-8px}
-  .hero-art img{height:auto;aspect-ratio:1080/582;object-position:center}
-  .scrim{display:none}
-  .hero-art::before{content:"";position:absolute;inset:0 0 auto;height:40%;background:linear-gradient(var(--n1),transparent);z-index:1}
-  .topbar{padding-top:20px}
-  .wordmark{width:150px}
-  .chip{font-size:13px;padding:5px 12px}
-  .hero-body{padding-block:36px 8px}
-  .hero h1{font-size:50px}
-  .hero .sub{margin-top:18px;font-size:18px}
-  .actions{margin-top:26px}
-  .btn{width:100%}
-  .stats{order:4;grid-template-columns:repeat(3,1fr);padding-block:22px 30px;background:var(--n0)}
-  .stat{padding-inline:0 10px}
-  .stat+.stat{padding-inline-start:12px}
-  .stat b{font-size:24px}
+  .bar-inner{height:64px}
+  .bar-right{display:none}
+  .bar-badge{left:auto;right:14px;transform:translateY(-50%);height:46px}
+  .bar-left{margin-inline-start:auto}
+  .bar-left .btn{display:none}
+  .chip{font-size:13.5px}
+  .hero-wm{font-size:36px;margin-bottom:10px}
+  .hero h1{font-size:clamp(30px,8.6vw,38px)}
+  .hero .sub{font-size:17px}
+  .actions{margin-top:24px;flex-direction:column;gap:6px}
+  .btn{width:100%;padding:0 24px}
+  .stats{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+  .stat,.stat+.stat{padding-inline:6px}
+  .stat b{font-size:23px}
   .stat span{font-size:13px;line-height:1.35;display:block}
-  .pain,.why,.features,.pilot,.price,.trust{padding:72px 0}
-  .plist li{font-size:18px;padding:16px 0}
-  .answer{grid-template-columns:1fr;gap:22px}
-  .answer-mark{width:88px;height:88px}
-  .why-head{margin-top:56px;flex-direction:column;gap:6px}
-  .wlist{grid-template-columns:1fr}
-  .wlist li,.wlist li+li{border:0;padding:24px 0 0;display:grid;grid-template-columns:52px 1fr;column-gap:18px}
-  .wlist li>svg{grid-column:1;grid-row:1/3}
-  .wlist li h3{margin-top:4px;grid-column:2}
-  .wlist li p{grid-column:2}
-  .flist,.tlist{grid-template-columns:1fr;gap:26px}
-  .phones{height:430px;max-width:330px}
-  .phone{width:180px}.phone.p2{width:160px;inset-inline-start:140px;top:70px}
-  .timeline{grid-template-columns:1fr;row-gap:28px;margin-top:44px}
-  .timeline::before{display:block;top:22px;bottom:22px;inset-inline-start:21px;inset-inline-end:auto;width:2px;height:auto}
-  .tl{display:grid;grid-template-columns:44px 1fr;column-gap:18px;padding:0}
-  .tl h3{margin-top:6px}.tl p{grid-column:2}
-  .pilot-head{grid-template-columns:1fr}
+  .plist li{font-size:17.5px;padding:14px 0}
+  .figure img{max-width:72%}
+  .wlist,.tlist{grid-template-columns:1fr;row-gap:38px}
+  .wlist .ic{width:84px;height:84px}
+  .flist{grid-template-columns:1fr;gap:26px}
+  .shot{flex:0 0 66%}
+  .timeline{grid-template-columns:1fr;row-gap:26px;text-align:start}
+  .timeline::before{display:block;top:28px;bottom:28px;inset-inline:27px auto;width:2px;height:auto}
+  .tl{display:grid;grid-template-columns:56px 1fr;column-gap:18px;text-align:start;padding:0}
+  .tl-node{margin:0}
+  .tl h3{margin-top:12px}.tl p{grid-column:2;margin:0;max-width:none}
+  .pilot-cols>div{padding:26px 22px}
   .nlist{grid-template-columns:1fr}
-  .cta{padding:80px 0 72px}
-  .foot{flex-direction:column;align-items:flex-start}
+  .price-big b{font-size:76px}
+  .tiers li{font-size:16.5px}
+  .cta p{font-size:19px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 
@@ -249,103 +261,104 @@ footer{background:var(--n0);color:var(--tx2);font-size:13.5px}
 @page{size:A4;margin:0}
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  html,body{width:210mm;background:var(--paper)}
+  html,body{width:210mm;background:#fff}
   body{font-size:10pt;line-height:1.45}
   :root{--gut:12mm}
   .wrap{max-width:none}
-  .hero{min-height:0;height:96mm}
-  .hero-art img{object-position:10% 72%}
-  .topbar{padding-top:6mm}
-  .wordmark{width:38mm}
-  .chip{font-size:8.5pt;padding:2px 9px}
-  .hero-body{padding-block:5mm 0;align-items:flex-start}
-  .hero-copy{max-width:80mm}
-  .hero h1{font-size:28pt}
-  .hero .sub{font-size:10.5pt;margin-top:3mm}
+  header.bar{height:auto}
+  .bar-inner{height:13mm}
+  .bar-badge{height:19mm}
+  .bar-wm{font-size:13pt}
+  .bar-left .btn{display:none}
+  .chip{font-size:9pt}
+  .hero-photo{width:64%;-webkit-mask-image:linear-gradient(90deg,#000 50%,transparent 100%);mask-image:linear-gradient(90deg,#000 50%,transparent 100%)}
+  .hero-inner{min-height:0;height:76mm;padding-block:0}
+  .hero-copy{max-width:92mm}
+  .hero-wm{font-size:17pt;margin-bottom:2mm}
+  .hero h1{font-size:23pt}
+  .hero .sub{font-size:10pt;margin-top:2mm}
   .actions{display:none}
-  .stats{padding-block:0 5mm}
-  .stat{padding-inline:0 6mm}.stat+.stat{padding-inline-start:6mm}
-  .stat b{font-size:15pt}.stat span{font-size:8pt}
-  .h2{font-size:17pt}
+  .stats{margin-top:4mm}
+  .stat{padding-inline:0 5mm}.stat+.stat{padding-inline-start:5mm}
+  .stat b{font-size:14pt}.stat span{font-size:8pt}
+  .h2{font-size:16pt}
+  .kicker{display:none}
   .pain{padding:5mm 0 4mm}
-  .pain-grid{grid-template-columns:5fr 7fr;gap:10mm}
-  .plist li{font-size:9.6pt;padding:1.3mm 0;grid-template-columns:4mm 1fr;gap:2mm}
+  .pain-grid{grid-template-columns:7fr 4fr;gap:10mm}
+  .plist{margin-top:2mm}
+  .plist li{font-size:9.4pt;padding:1.1mm 0;grid-template-columns:3mm 1fr;gap:2mm}
   .plist li::before{width:6px;height:6px;border-width:1.5px}
-  .why{padding:5mm 0 4.5mm}
-  .answer{gap:7mm}
-  .answer-mark{width:16mm;height:16mm}
-  .answer p{font-size:12.5pt}
-  .why-head{margin-top:4mm;padding-bottom:1.5mm}
-  .why-head small{font-size:8.5pt}
-  .wlist{grid-template-columns:repeat(4,1fr)}
-  .wlist li{padding:3mm 4mm 0 0}.wlist li+li{padding-inline-start:4mm}
-  .wlist h3{margin-top:2mm;font-size:10pt}.wlist p{font-size:8.6pt;margin-top:1mm;line-height:1.4}
-  .ic{width:10mm;height:10mm}
+  .figure .blk{border-radius:10px}
+  .figure img{max-width:40mm;border-radius:10px;box-shadow:none}
+  .why{padding:5mm 0 5mm}
+  .answer-mark{width:11mm;height:11mm;margin-bottom:1.5mm}
+  .answer p{font-size:12pt}
+  .why-head{margin-top:3mm}
+  .why-head small{font-size:8.5pt;margin-top:.5mm}
+  .wlist{margin-top:3mm;grid-template-columns:repeat(4,1fr);gap:5mm}
+  .wlist .ic{width:12mm;height:12mm;margin-bottom:1.5mm}
+  .wlist h3{font-size:9.6pt}.wlist p{font-size:8.4pt;margin-top:.8mm;line-height:1.4}
   .features{padding:5mm 0 4mm}
-  .feat-grid{grid-template-columns:1fr 52mm;gap:8mm}
-  .flist{margin-top:3mm;gap:3mm 6mm}
-  .flist li,.tlist li{grid-template-columns:10mm 1fr;gap:3mm}
-  .flist h3,.tlist h3{font-size:10pt;padding-top:0}
-  .flist p,.tlist p{font-size:8.8pt;margin-top:0;line-height:1.4}
-  .phones{height:62mm}
-  .phone{width:27mm;border-radius:14px;padding:3px;box-shadow:none}.phone img{border-radius:11px}
-  .phone.p2{width:24mm;inset-inline-start:19mm;top:8mm}
-  .phones .halo{display:none}
-  .pilot{break-before:page;padding:10mm 0 6mm}
-  .pilot-sub{font-size:11pt;margin-top:1.5mm}
-  .timeline{margin-top:4.5mm}
-  .timeline::before{top:4.5mm;inset-inline:4.5mm 4.5mm}
+  .flist{margin-top:3mm;gap:2.5mm 6mm}
+  .flist li{grid-template-columns:9mm 1fr;gap:2.5mm}
+  .flist .ic{width:9mm;height:9mm}
+  .flist h3{font-size:9.8pt;padding-top:0}
+  .flist p{font-size:8.6pt;margin-top:0;line-height:1.4}
+  .screens,.feat-more,.cta .more{display:none}
+  .pilot{break-before:page;padding:9mm 0 5mm}
+  .pilot-sub{font-size:10.5pt;margin-top:1mm}
+  .timeline{margin-top:4mm}
+  .timeline::before{top:4.5mm}
   .tl-node{width:9mm;height:9mm}
-  .tl{padding-inline-end:5mm}
-  .tl h3{margin-top:2mm;font-size:11pt}.tl p{font-size:8.8pt;margin-top:.5mm;line-height:1.4}
-  .pilot-cols{margin-top:4.5mm;gap:10mm}
-  .pilot-cols h3{font-size:11pt;padding-bottom:1.5mm;border-bottom-width:1.5px}
-  .pilot-cols h3 small{font-size:8.5pt}
-  .clist li{font-size:8.8pt;padding:.9mm 0;grid-template-columns:3.5mm 1fr;gap:2mm;line-height:1.4}
+  .tl h3{margin-top:1.5mm;font-size:10.5pt}.tl p{font-size:8.6pt;margin-top:.5mm;line-height:1.4}
+  .pilot-cols{margin-top:4mm;gap:6mm}
+  .pilot-cols>div{padding:3.5mm 4.5mm;border-radius:8px}
+  .pilot-cols h3{font-size:10.5pt;padding-bottom:1.2mm;border-bottom-width:1.5px}
+  .pilot-cols h3 small{font-size:8pt}
+  .clist li{font-size:8.6pt;padding:.8mm 0;grid-template-columns:3.5mm 1fr;gap:2mm;line-height:1.4}
   .clist svg{width:3.5mm;height:3.5mm;margin-top:.6mm}
-  .price{padding:6mm 0 5.5mm}
+  .price{padding:6mm 0 5mm}
   .price-grid{grid-template-columns:5fr 6fr;gap:10mm}
-  .price-big b{font-size:38pt}.price-big span{font-size:10pt}
+  .price-big b{font-size:36pt}.price-big span{font-size:10pt}
   .price-lead{font-size:11pt;margin-top:2mm}
   .price-lines{font-size:9pt;margin-top:1mm}
   .vat{font-size:7.5pt;margin-top:1mm}
-  .partners{margin-top:3mm;padding:2.5mm 3mm;font-size:8.8pt;border-radius:8px;gap:2.5mm}
-  .partners svg{width:7mm;height:7mm}
+  .partners{margin-top:3mm;padding:2.5mm 3mm;font-size:8.6pt;border-radius:8px;gap:2.5mm}
+  .partners .ic{width:8mm;height:8mm}
   .lic h3,.needs h3{font-size:10.5pt}.lic h3 small{font-size:8pt}
   .tiers{margin-top:1.5mm}
-  .tiers li{padding:1.2mm 0;font-size:9pt}
+  .tiers li{padding:1mm 0;font-size:9pt}
   .tiers b{font-size:10pt}.tiers b small{display:inline;font-size:7.5pt;margin:0;margin-inline-start:2mm}.tiers li span br{display:none}.tiers li span small{font-size:7.5pt!important;margin-inline-start:1.5mm}
-  .tiers li{padding:1mm 0}
-  .tap{min-height:0}
   .tnote{font-size:7.5pt;margin-top:1.5mm;line-height:1.35}
-  .feat-more,.cta .more{display:none}
+  .tap{min-height:0}
   .needs{margin-top:3mm}
   .nlist{margin-top:1.5mm;gap:2.5mm}
-  .nlist li{padding:2mm 2.5mm;font-size:8.5pt;border-radius:6px;line-height:1.35}
+  .nlist li{padding:2mm 2.5mm;font-size:8.4pt;border-radius:6px;line-height:1.35}
   .nlist b{font-size:9.5pt;margin-bottom:0}
   .trust{padding:4.5mm 0 4mm}
-  .trust-grid{grid-template-columns:3fr 9fr;gap:8mm}
-  .tlist{gap:3mm 6mm}
+  .tlist{margin-top:3mm;gap:5mm}
+  .tlist .ic{width:10mm;height:10mm;margin-bottom:1.5mm}
+  .tlist h3{font-size:9.8pt}.tlist p{font-size:8.6pt;margin-top:.5mm;line-height:1.4}
   .cta{padding:4.5mm 0 4mm;text-align:start}
-  .cta .wrap{display:grid;grid-template-columns:auto 1fr auto;gap:7mm;align-items:center}
-  .cta-badge{width:16mm;height:16mm;filter:none;margin:0}
-  .cta h2{margin:0;font-size:22pt}
-  .cta p{margin:1mm 0 0;font-size:10pt}
+  .cta .wrap{display:grid;grid-template-columns:1fr auto;gap:8mm;align-items:center}
+  .cta h2{font-size:22pt}
+  .cta h2::after{margin:2mm 0 0;width:12mm;height:2px}
+  .cta p{margin:1.5mm 0 0;font-size:10pt}
   .cta .btn{display:none}
   .contact{margin:0;flex-direction:column;align-items:flex-start;gap:.5mm;font-size:9.5pt}
-  .contact a{border:0}
-  .cta-rings{display:none}
-  .foot{padding:2.5mm 0 3mm;font-size:7.5pt}.foot img{width:26mm}
+  .foot-badge-wrap{display:none}
+  footer.foot{padding:2.5mm 0 3mm;font-size:7.5pt}
+  .foot-meta img{height:2.6mm}
   section,header,li,.tl{break-inside:avoid}
 }
 </style>
 </head>
 <body>
 
-<!-- icon system: 32px line icons, 1.8 stroke, gold duo-tone fills; framed on a hexagon from the ✡ geometry -->
+<!-- icon system: line icons with orange duo-tone fills, in the orange ring of www.shomer-app.co.il -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <symbol id="hex" viewBox="0 0 52 52"><path d="M26 2.5 46.4 14.25v23.5L26 49.5 5.6 37.75v-23.5z" style="fill:var(--hexf);stroke:var(--hexs);stroke-width:1.2"/></symbol>
+    <symbol id="hex" viewBox="0 0 52 52"><circle cx="26" cy="26" r="24.6" style="fill:none;stroke:var(--ring);stroke-width:1.3"/></symbol>
     <symbol id="i-sos" viewBox="0 0 32 32"><circle style="fill:var(--duo);stroke:none" cx="16" cy="16" r="5.6"/><circle cx="16" cy="16" r="5.6"/><path d="M9.2 10.2a9 9 0 0 0 0 11.6M22.8 10.2a9 9 0 0 1 0 11.6M5.6 6.8a13.6 13.6 0 0 0 0 18.4M26.4 6.8a13.6 13.6 0 0 1 0 18.4"/></symbol>
     <symbol id="i-circle" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12.5" stroke-dasharray="2.2 3.2"/><circle cx="16" cy="13.4" r="3"/><path d="M10.8 21.8a5.2 5.2 0 0 1 10.4 0"/><circle style="fill:var(--duo);stroke:none" cx="16" cy="3.5" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="5.2" cy="22.3" r="2.4"/><circle style="fill:var(--duo);stroke:none" cx="26.8" cy="22.3" r="2.4"/></symbol>
     <symbol id="i-shake" viewBox="0 0 32 32"><rect style="fill:var(--duo);stroke:none" x="13" y="8.6" width="6" height="12" rx="1"/><rect x="10.8" y="5.5" width="10.4" height="21" rx="2.6"/><path d="M14.6 23.4h2.8M6.4 10.5 4.2 12.8l2.2 2.3-2.2 2.3 2.2 2.3M25.6 10.5l2.2 2.3-2.2 2.3 2.2 2.3-2.2 2.3"/></symbol>
@@ -359,62 +372,70 @@ footer{background:var(--n0);color:var(--tx2);font-size:13.5px}
     <symbol id="i-lang" viewBox="0 0 32 32"><path style="fill:var(--duo);stroke:none" d="M15.5 13.5h10.6a2 2 0 0 1 2 2v6.2a2 2 0 0 1-2 2h-1.2v3.6l-3.9-3.6h-5.5a2 2 0 0 1-2-2v-6.2a2 2 0 0 1 2-2z"/><path d="M5.8 5.5h12.6a2 2 0 0 1 2 2v7.2a2 2 0 0 1-2 2h-7.3l-4.2 3.6v-3.6H5.8a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2z"/><path d="M7.6 9.6h7.2M7.6 12.6h4.4"/></symbol>
     <symbol id="i-toggle" viewBox="0 0 32 32"><rect x="3.5" y="10.5" width="25" height="11" rx="5.5"/><circle style="fill:var(--duo);stroke:none" cx="22.8" cy="16" r="3.6"/><circle cx="22.8" cy="16" r="3.6"/></symbol>
     <symbol id="i-home" viewBox="0 0 32 32"><path d="M4.5 14.6 16 5.5l11.5 9.1M8 12v14.5h16V12"/><path style="fill:var(--duo);stroke:none" d="M16 23.6s-4.4-2.7-4.4-5.4a2.2 2.2 0 0 1 4.4-.9 2.2 2.2 0 0 1 4.4.9c0 2.7-4.4 5.4-4.4 5.4z"/></symbol>
-    <symbol id="tick" viewBox="0 0 20 20"><path d="M10 1.2 17.6 5.6v8.8L10 18.8 2.4 14.4V5.6z" fill="#0A1628"/><path d="m6.4 10.2 2.4 2.4 4.8-5" fill="none" stroke="#F5C840" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="node" viewBox="0 0 44 44"><circle cx="22" cy="22" r="21" fill="#F5C840" stroke="#0A1628" stroke-width="1.5" opacity=".9"/><circle cx="22" cy="22" r="14" fill="#0A1628"/><path d="M22 14.5 28.5 25.75h-13zM22 29.5 15.5 18.25h13z" fill="none" stroke="#F5C840" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="tick" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#FC9918"/><path d="m6.2 10.2 2.5 2.5 5-5.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="node" viewBox="0 0 56 56"><circle cx="28" cy="28" r="27" fill="#fff" stroke="#FC9918" stroke-width="2"/><circle cx="28" cy="28" r="19" fill="#FC9918"/><path d="M28 19.5 35.4 32.25H20.6zM28 36.5 20.6 23.75h14.8z" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
 
-<header class="hero band navy">
-  <picture class="hero-art">
-    <source media="(max-width:700px)" srcset="assets/shomer-pilot/hero-neighbours-m.webp" width="1080" height="582">
-    <source media="(min-width:1601px)" srcset="assets/shomer-pilot/hero-neighbours.webp">
-    <img src="assets/shomer-pilot/hero-neighbours-1600.webp" width="1600" height="800" alt="איור: ערב בשכונה. תושב מבוגר יושב על ספסל, שכנה כורעת לידו ומחזיקה את ידו, שכנה נוספת מניחה יד על כתפו, ושכנים נוספים מגיעים מכל הכיוונים עם טלפונים דולקים. קווי חיבור זהובים מתכנסים לסיכה עם מגן דוד מעליו.">
-  </picture>
-  <svg class="scrim" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="scr" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#0A1628" stop-opacity=".74"/><stop offset=".36" stop-color="#0A1628" stop-opacity=".46"/><stop offset=".6" stop-color="#0A1628" stop-opacity="0"/></linearGradient></defs><rect width="100" height="100" fill="url(#scr)"/></svg>
-  <div class="wrap topbar">
-    <img class="wordmark" src="assets/shomer-pilot/wordmark-white.svg" alt="SH✡MER.APP" width="1190" height="277">
-    <span class="chip"><b>פיילוט קהילתי</b> · 90 יום</span>
+<header class="bar">
+  <div class="wrap bar-inner">
+    <div class="bar-right"><span class="wordmark bar-wm" aria-label="SH✡MER.app">SH<span class="star">✡</span>MER<span class="wm-app">.app</span></span></div>
+    <img class="bar-badge" src="assets/shomer-pilot/brand-badge.webp" alt="" aria-hidden="true" width="360" height="360">
+    <div class="bar-left">
+      <span class="chip"><b>פיילוט קהילתי</b> · 90 יום</span>
+      <a class="btn btn-sm" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום שיחה של 15 דקות</a>
+    </div>
   </div>
-  <div class="wrap hero-body">
+</header>
+
+<section class="hero" aria-labelledby="hero-t">
+  <img class="hero-photo" src="assets/shomer-pilot/brand-hero-neighbours.webp" width="1024" height="576" alt="שכנים ברחוב בשכונה: צעיר כורע ועוזר לתושב מבוגר שנפל לקום, ותושב נוסף מושיט לו יד.">
+  <div class="hero-shade" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
     <div class="hero-copy">
-      <h1><span>אף אחד בקהילה</span> <span>לא&nbsp;לבד.</span></h1>
+      <div class="hero-wm wordmark" aria-hidden="true">SH<span class="star">✡</span>MER</div>
+      <h1 id="hero-t"><span>אף אחד בקהילה</span> <span>לא&nbsp;לבד.</span></h1>
       <p class="sub">בלחיצה אחת, השומרים הקרובים אליך יודעים איפה אתה ובאים. ולרבש"צ יש תמונה ברורה ושקטה של מה שקורה.</p>
       <div class="actions">
         <a class="btn" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום שיחה של 15 דקות</a>
-        <a class="link tap" href="shomer-command/demo/">להדגמה מודרכת · 2 דקות</a>
+        <a class="tap" href="shomer-command/demo/">להדגמה מודרכת · 90 שניות</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>90 יום</b><span>פיילוט מלא</span></div>
+        <div class="stat"><b><bdi>₪2,500</bdi></b><span>לקהילה, לכל התקופה</span></div>
+        <div class="stat"><b>חינם</b><span>לתושבים, תמיד</span></div>
       </div>
     </div>
   </div>
-  <div class="wrap stats">
-    <div class="stat"><b>90 יום</b><span>פיילוט מלא</span></div>
-    <div class="stat"><b><bdi>₪2,500</bdi></b><span>לקהילה, לכל התקופה</span></div>
-    <div class="stat"><b>חינם</b><span>לתושבים, תמיד</span></div>
-  </div>
-</header>
+</section>
 
 <main>
 <section class="pain" aria-labelledby="pain-t">
   <div class="wrap pain-grid">
-    <h2 class="h2" id="pain-t">ברגע הקשה, הדקות הראשונות הן של הקהילה.</h2>
-    <ul class="plist">
-      <li>תושב שצריך עזרה מתקשר, כותב בקבוצה, ומחכה.</li>
-      <li>השכן שגר במרחק דקה לא יודע שקורה משהו.</li>
-      <li>בקבוצת הוואטסאפ ההודעה נבלעת בין עשרות הודעות.</li>
-      <li>לרבש"צ אין תמונה אחת ברורה: מי צריך עזרה, ואיפה.</li>
-    </ul>
+    <div>
+      <div class="kicker">פיילוט "קהילה שומרת"</div>
+      <h2 class="h2" id="pain-t">ברגע הקשה, הדקות הראשונות הן של הקהילה.</h2>
+      <ul class="plist">
+        <li>תושב שצריך עזרה מתקשר, כותב בקבוצה, ומחכה.</li>
+        <li>השכן שגר במרחק דקה לא יודע שקורה משהו.</li>
+        <li>בקבוצת הוואטסאפ ההודעה נבלעת בין עשרות הודעות.</li>
+        <li>לרבש"צ אין תמונה אחת ברורה: מי צריך עזרה, ואיפה.</li>
+      </ul>
+    </div>
+    <div class="figure">
+      <div class="blk b1"></div><div class="blk b2"></div>
+      <img src="assets/shomer-pilot/brand-sos-phone.webp" width="768" height="768" loading="lazy" alt="אדם ברחוב בלילה מחזיק טלפון עם מסך SOS אדום של SH✡MER.">
+    </div>
   </div>
 </section>
 
-<section class="why band navy" aria-labelledby="why-t">
-  <img class="ground" src="assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
+<section class="why" aria-labelledby="why-t">
   <div class="wrap">
     <div class="answer">
       <svg class="answer-mark" viewBox="0 0 132 132" aria-hidden="true">
-        <circle cx="66" cy="66" r="64" fill="none" stroke="#F5C840" stroke-opacity=".18"/>
-        <circle cx="66" cy="66" r="48" fill="none" stroke="#F5C840" stroke-opacity=".32"/>
-        <circle cx="66" cy="66" r="32" fill="#E0A828"/>
-        <path d="M66 50 79.9 74H52.1zM66 82 52.1 58h27.8z" fill="none" stroke="#0A1628" stroke-width="3" stroke-linejoin="round"/>
-        <circle cx="66" cy="2" r="4" fill="#F5C840"/><circle cx="10.6" cy="98" r="4" fill="#F5C840"/><circle cx="121.4" cy="98" r="4" fill="#F5C840"/>
+        <circle cx="66" cy="66" r="64" fill="none" stroke="#FC9918" stroke-width="2.5"/>
+        <circle cx="66" cy="66" r="44" fill="#FC9918"/>
+        <path d="M66 46 83.3 76H48.7zM66 86 48.7 56h34.6z" fill="none" stroke="#fff" stroke-width="3.4" stroke-linejoin="round"/>
       </svg>
       <p><strong><span class="sh">SH<i>✡</i>MER</span> הופך את הקהילה לרשת של שומרים:</strong> מי שצריך עזרה לוחץ, ומי שהכי קרוב יודע מיד, עם מיקום חי.</p>
     </div>
@@ -423,50 +444,46 @@ footer{background:var(--n0);color:var(--tx2);font-size:13.5px}
       <small>למה <span class="sh">SH<i>✡</i>MER</span> מתאים לכם</small>
     </div>
     <ul class="wlist">
-      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-alert" x="10" y="10" width="32" height="32"/></svg><h3>התראה אחת, ברורה, לאנשים הנכונים.</h3><p>לא עוד הודעה בקבוצה. התראת SOS עם מיקום חי, ישר לשומרים שבחרת.</p></li>
-      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-choice" x="10" y="10" width="32" height="32"/></svg><h3>המעגל שלך, בבחירה שלך.</h3><p>כל תושב בוחר מי השומרים שלו. אין מעקב, אין שיתוף בלי הסכמה.</p></li>
-      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-map" x="10" y="10" width="32" height="32"/></svg><h3>תמונת מצב לרבש"צ, בלי לחשוף שמות.</h3><p>מפה חיה של אירועים בקהילה, ששומרת על פרטיות התושבים.</p></li>
-      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-together" x="10" y="10" width="32" height="32"/></svg><h3>משלים את 100, לא מחליף.</h3><p>המשטרה ומד"א בדרך. <span class="sh">SH<i>✡</i>MER</span> מביא את מי שכבר נמצא דקה ממך.</p></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-alert" x="12" y="12" width="28" height="28"/></svg><h3>התראה אחת, ברורה, לאנשים הנכונים.</h3><p>לא עוד הודעה בקבוצה. התראת SOS עם מיקום חי, ישר לשומרים שבחרת.</p></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-choice" x="12" y="12" width="28" height="28"/></svg><h3>המעגל שלך, בבחירה שלך.</h3><p>כל תושב בוחר מי השומרים שלו. אין מעקב, אין שיתוף בלי הסכמה.</p></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-map" x="12" y="12" width="28" height="28"/></svg><h3>תמונת מצב לרבש"צ, בלי לחשוף שמות.</h3><p>מפה חיה של אירועים בקהילה, ששומרת על פרטיות התושבים.</p></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-together" x="12" y="12" width="28" height="28"/></svg><h3>משלים את 100, לא מחליף.</h3><p>המשטרה ומד"א בדרך. <span class="sh">SH<i>✡</i>MER</span> מביא את מי שכבר נמצא דקה ממך.</p></li>
     </ul>
   </div>
 </section>
 
 <section class="features" id="how" aria-labelledby="feat-t">
-  <div class="wrap feat-grid">
-    <div>
-      <h2 class="h2" id="feat-t">כל מה שהקהילה צריכה, בטלפון של כל תושב.</h2>
-      <ul class="flist">
-        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-sos" x="10" y="10" width="32" height="32"/></svg><div><h3>כפתור SOS</h3><p>מיקום חי נשלח לשומרים שבחרת במעגל שלך.</p></div></li>
-        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-circle" x="10" y="10" width="32" height="32"/></svg><div><h3>השומרים שלי</h3><p>בוחרים מי בא אליך כשצריך. באישור הדדי בלבד.</p></div></li>
-        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-shake" x="10" y="10" width="32" height="32"/></svg><div><h3>ניעור = SOS</h3><p>מפעילים גם כשהטלפון נעול (אנדרואיד).</p></div></li>
-        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-arrive" x="10" y="10" width="32" height="32"/></svg><div><h3>"תבדקו שהגעתי"</h3><p>לא אישרת הגעה בזמן? השומרים שלך מקבלים התראה.</p></div></li>
-        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-call" x="10" y="10" width="32" height="32"/></svg><div><h3>"שיחה מאמא"</h3><p>שיחה מדומה ליציאה ממצב לא נוח. מילת קוד שגויה מפעילה SOS שקט.</p></div></li>
-        <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-dash" x="10" y="10" width="32" height="32"/></svg><div><h3>לוח בקרה לרבש"צ / לקב"ט</h3><p>מפה חיה של אירועי SOS בקהילה, בלי שמות.</p></div></li>
-      </ul>
-      <p class="feat-more">לוח הבקרה נקרא <span class="sh">SH<i>✡</i>MER</span> Command. <a class="tap" href="shomer-command/demo/">לסיור מודרך בלוח האמיתי, במצב הדגמה</a></p>
+  <div class="wrap">
+    <h2 class="h2" id="feat-t">כל מה שהקהילה צריכה, בטלפון של כל תושב.</h2>
+    <ul class="flist">
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-sos" x="11" y="11" width="30" height="30"/></svg><div><h3>כפתור SOS</h3><p>מיקום חי נשלח לשומרים שבחרת במעגל שלך.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-circle" x="11" y="11" width="30" height="30"/></svg><div><h3>השומרים שלי</h3><p>בוחרים מי בא אליך כשצריך. באישור הדדי בלבד.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-shake" x="11" y="11" width="30" height="30"/></svg><div><h3>ניעור = SOS</h3><p>מפעילים גם כשהטלפון נעול (אנדרואיד).</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-arrive" x="11" y="11" width="30" height="30"/></svg><div><h3>"תבדקו שהגעתי"</h3><p>לא אישרת הגעה בזמן? השומרים שלך מקבלים התראה.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-call" x="11" y="11" width="30" height="30"/></svg><div><h3>"שיחה מאמא"</h3><p>שיחה מדומה ליציאה ממצב לא נוח. מילת קוד שגויה מפעילה SOS שקט.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-dash" x="11" y="11" width="30" height="30"/></svg><div><h3>לוח בקרה לרבש"צ / לקב"ט</h3><p>מפה חיה של אירועי SOS בקהילה, בלי שמות.</p></div></li>
+    </ul>
+    <div class="screens" aria-label="מסכים אמיתיים מהאפליקציה">
+      <div class="shot"><img src="assets/shomer-pilot/brand-app-map.webp" width="540" height="1168" loading="lazy" alt="מסך המפה של SH✡MER עם כפתור SOS"></div>
+      <div class="shot"><img src="assets/shomer-pilot/brand-app-circles.webp" width="540" height="1168" loading="lazy" alt="מסך השומרים שלי: מעגלי שומרים"></div>
+      <div class="shot"><img src="assets/shomer-pilot/brand-app-guide.webp" width="540" height="1168" loading="lazy" alt="מסך מדריך החירום באפליקציה"></div>
+      <div class="shot"><img src="assets/shomer-pilot/brand-app-profile.webp" width="540" height="1168" loading="lazy" alt="מסך הפרופיל באפליקציה"></div>
     </div>
-    <div class="phones" aria-label="מסכים אמיתיים מהאפליקציה">
-      <svg class="halo" viewBox="0 0 380 380" aria-hidden="true"><circle cx="190" cy="190" r="188" fill="none" stroke="#C09020" stroke-opacity=".3"/><circle cx="190" cy="190" r="140" fill="none" stroke="#C09020" stroke-opacity=".45"/><circle cx="190" cy="190" r="92" fill="#E0A828" fill-opacity=".16"/></svg>
-      <div class="phone p2"><img src="assets/shomer-pilot/app-circles.webp" alt="מסך השומרים שלי: מעגלי שומרים של משפחה, חברים, שכנים, עבודה, קהילה וספורט" width="540" height="1168" loading="lazy"></div>
-      <div class="phone p1"><img src="assets/shomer-pilot/app-map.webp" alt="מסך המפה של SH✡MER עם כפתור SOS" width="540" height="1168" loading="lazy"></div>
-    </div>
+    <p class="feat-more">לוח הבקרה נקרא <span class="sh">SH<i>✡</i>MER</span> Command. <a class="tap" href="shomer-command/demo/">לסיור מודרך בלוח האמיתי, במצב הדגמה</a></p>
   </div>
 </section>
 
-<section class="pilot band gold" aria-labelledby="pilot-t">
-  <img class="ground" src="assets/shomer-pilot/ground-gold.svg" alt="" aria-hidden="true">
+<section class="pilot" aria-labelledby="pilot-t">
   <div class="wrap">
     <div class="pilot-head">
-      <div>
-        <h2 class="h2" id="pilot-t">פיילוט "קהילה שומרת" · 90 יום</h2>
-        <p class="pilot-sub">מתחילים קטן, מודדים יחד, מחליטים לפי מה שרואים.</p>
-      </div>
+      <h2 class="h2" id="pilot-t">פיילוט "קהילה שומרת" · 90 יום</h2>
+      <p class="pilot-sub">מתחילים קטן, מודדים יחד, מחליטים לפי מה שרואים.</p>
     </div>
     <ol class="timeline" aria-label="ציר הזמן">
-      <li class="tl"><svg class="tl-node" viewBox="0 0 44 44" aria-hidden="true"><use href="#node"/></svg><h3>שבוע 1</h3><p>מגדירים יחד יעדים. הרבש"צ ו־10–20 שומרים ראשונים מותקנים.</p></li>
-      <li class="tl"><svg class="tl-node" viewBox="0 0 44 44" aria-hidden="true"><use href="#node"/></svg><h3>חודש 1</h3><p>מזמינים את התושבים. כל אחד בונה את מעגל השומרים שלו.</p></li>
-      <li class="tl"><svg class="tl-node" viewBox="0 0 44 44" aria-hidden="true"><use href="#node"/></svg><h3>חודש 2</h3><p>תרגיל SOS מתואם. מתקנים לפי מה שלמדנו.</p></li>
-      <li class="tl"><svg class="tl-node" viewBox="0 0 44 44" aria-hidden="true"><use href="#node"/></svg><h3>יום 90</h3><p>פגישת סיכום: מה עבד, מה לא, ומחליטים יחד.</p></li>
+      <li class="tl"><svg class="tl-node" viewBox="0 0 56 56" aria-hidden="true"><use href="#node"/></svg><h3>שבוע 1</h3><p>מגדירים יחד יעדים. הרבש"צ ו־10–20 שומרים ראשונים מותקנים.</p></li>
+      <li class="tl"><svg class="tl-node" viewBox="0 0 56 56" aria-hidden="true"><use href="#node"/></svg><h3>חודש 1</h3><p>מזמינים את התושבים. כל אחד בונה את מעגל השומרים שלו.</p></li>
+      <li class="tl"><svg class="tl-node" viewBox="0 0 56 56" aria-hidden="true"><use href="#node"/></svg><h3>חודש 2</h3><p>תרגיל SOS מתואם. מתקנים לפי מה שלמדנו.</p></li>
+      <li class="tl"><svg class="tl-node" viewBox="0 0 56 56" aria-hidden="true"><use href="#node"/></svg><h3>יום 90</h3><p>פגישת סיכום: מה עבד, מה לא, ומחליטים יחד.</p></li>
     </ol>
     <div class="pilot-cols">
       <div>
@@ -494,8 +511,7 @@ footer{background:var(--n0);color:var(--tx2);font-size:13.5px}
   </div>
 </section>
 
-<section class="price band navy" aria-labelledby="price-t">
-  <img class="ground" src="assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
+<section class="price" aria-labelledby="price-t">
   <div class="wrap price-grid">
     <div>
       <h2 class="sr" id="price-t">המחיר</h2>
@@ -507,7 +523,7 @@ footer{background:var(--n0);color:var(--tx2);font-size:13.5px}
       </div>
       <p class="vat">כל המחירים לפני מע"מ (18%).</p>
       <div class="partners">
-        <svg viewBox="0 0 52 52" class="ic" aria-hidden="true" style="width:36px;height:36px"><use href="#hex"/><use href="#i-together" x="10" y="10" width="32" height="32"/></svg>
+        <svg viewBox="0 0 52 52" class="ic" aria-hidden="true"><use href="#hex"/><use href="#i-together" x="11" y="11" width="30" height="30"/></svg>
         <p><strong>אין עדיין סעיף תקציבי?</strong> את הפיילוט אפשר לממן גם דרך תורם, קרן או תקציב אחריות חברתית של חברה. נשמח לעזור.</p>
       </div>
     </div>
@@ -518,7 +534,7 @@ footer{background:var(--n0);color:var(--tx2);font-size:13.5px}
           <li><span>עד 1,000 תושבים</span><b><bdi>₪9,900</bdi> לשנה<small>כ־<bdi>₪830</bdi> לחודש</small></b></li>
           <li><span>עד 5,000 תושבים</span><b><bdi>₪18,000</bdi> לשנה<small>כ־<bdi>₪1,500</bdi> לחודש</small></b></li>
           <li><span>עד 10,000 תושבים</span><b><bdi>₪25,000</bdi> לשנה<small>כ־<bdi>₪2,080</bdi> לחודש</small></b></li>
-          <li><span>רישיון מועצה<br><small style="font-size:14px;color:var(--tx2)">מועצות אזוריות ורשויות</small></span><b><bdi>₪2</bdi> לתושב לשנה<small>מינימום <bdi>₪40,000</bdi></small></b></li>
+          <li><span>רישיון מועצה<br><small style="font-size:14px;color:#8B96B0">מועצות אזוריות ורשויות</small></span><b><bdi>₪2</bdi> לתושב לשנה<small>מינימום <bdi>₪40,000</bdi></small></b></li>
         </ul>
         <p class="tnote">יישוב של עד 1,000 תושבים שממשיך אחרי הפיילוט משלם <bdi>₪7,400</bdi> על השנה הראשונה. ברוב המקרים לא נדרש מכרז: הסכומים נמוכים מתקרות ההתקשרות בלי מכרז ברשויות המקומיות (מבקר המדינה).</p>
       </div>
@@ -535,32 +551,24 @@ footer{background:var(--n0);color:var(--tx2);font-size:13.5px}
 </section>
 
 <section class="trust" aria-labelledby="trust-t">
-  <div class="wrap trust-grid">
+  <div class="wrap">
     <h2 class="h2" id="trust-t">בנוי באחריות.</h2>
     <ul class="tlist">
-      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-toggle" x="10" y="10" width="32" height="32"/></svg><div><h3>התושב מחליט.</h3><p>מיקום משותף רק עם שומרים שהתושב בחר ואישר.</p></div></li>
-      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-map" x="10" y="10" width="32" height="32"/></svg><div><h3>לוח הבקרה בלי שמות.</h3><p>הרבש"צ רואה אירועים, לא מעקב אחרי אנשים.</p></div></li>
-      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-lang" x="10" y="10" width="32" height="32"/></svg><div><h3>עברית, ערבית ואנגלית.</h3><p>האפליקציה זמינה בשלוש שפות.</p></div></li>
-      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-home" x="10" y="10" width="32" height="32"/></svg><div><h3>כלי קהילתי, לא שירות חירום.</h3><p><span class="sh">SH<i>✡</i>MER</span> לא מחליף את <bdi style="white-space:nowrap">100 · 101 · 102</bdi>. בחירום, חייגו קודם.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-toggle" x="12" y="12" width="28" height="28"/></svg><div><h3>התושב מחליט.</h3><p>מיקום משותף רק עם שומרים שהתושב בחר ואישר.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-map" x="12" y="12" width="28" height="28"/></svg><div><h3>לוח הבקרה בלי שמות.</h3><p>הרבש"צ רואה אירועים, לא מעקב אחרי אנשים.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-lang" x="12" y="12" width="28" height="28"/></svg><div><h3>עברית, ערבית ואנגלית.</h3><p>האפליקציה זמינה בשלוש שפות.</p></div></li>
+      <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-home" x="12" y="12" width="28" height="28"/></svg><div><h3>כלי קהילתי, לא שירות חירום.</h3><p><span class="sh">SH<i>✡</i>MER</span> לא מחליף את <bdi style="white-space:nowrap">100 · 101 · 102</bdi>. בחירום, חייגו קודם.</p></div></li>
     </ul>
   </div>
 </section>
 
-<section class="cta band navy" aria-labelledby="cta-t">
-  <img class="ground" src="assets/shomer-pilot/ground-navy.svg" alt="" aria-hidden="true">
-  <svg class="cta-rings" viewBox="0 0 1100 1100" aria-hidden="true">
-    <circle cx="550" cy="550" r="545" fill="none" stroke="#F5C840" stroke-opacity=".06"/>
-    <circle cx="550" cy="550" r="420" fill="none" stroke="#F5C840" stroke-opacity=".09"/>
-    <circle cx="550" cy="550" r="300" fill="none" stroke="#F5C840" stroke-opacity=".12"/>
-    <circle cx="550" cy="550" r="180" fill="none" stroke="#F5C840" stroke-opacity=".16"/>
-  </svg>
+<section class="cta" aria-labelledby="cta-t">
   <div class="wrap">
-    <img class="cta-badge" src="assets/shomer-pilot/shomer-badge.webp" alt="SH✡MER" width="480" height="480">
     <div>
       <h2 id="cta-t">מתחילים?</h2>
       <p>שיחה של 15 דקות, ואתם יודעים אם זה מתאים לקהילה שלכם.</p>
       <a class="btn" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום שיחה</a>
-      <p class="more">או: <a class="tap" href="shomer-command/demo/">להדגמה מודרכת · 2 דקות</a> · <a class="tap" href="shomer-command/#plans">לכל התוכניות והמחירים</a></p>
+      <p class="more">או: <a class="tap" href="shomer-command/demo/">להדגמה מודרכת · 90 שניות</a> · <a class="tap" href="shomer-command/#plans">לכל התוכניות והמחירים</a></p>
     </div>
     <div class="contact">
       <strong>דייב מרקוביץ' · 3Shamrocks Studio</strong>
@@ -571,10 +579,10 @@ footer{background:var(--n0);color:var(--tx2);font-size:13.5px}
 </section>
 </main>
 
-<footer class="band">
-  <div class="wrap foot">
-    <p><bdi>© 2026 3Shamrocks Studio</bdi> · <span class="sh">SH<i>✡</i>MER</span>™</p>
-    <img src="assets/shomer-pilot/3shamrocks-studio.webp" alt="3Shamrocks Studio" width="452" height="66">
+<div class="foot-badge-wrap"><img class="foot-badge" src="assets/shomer-pilot/brand-badge.webp" alt="SH✡MER" width="360" height="360" loading="lazy"></div>
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-meta"><img src="assets/shomer-pilot/brand-3shamrocks.png" alt="3Shamrocks Studio" width="905" height="133"><bdi>© 2026 3Shamrocks Studio</bdi> · <span class="sh">SH<i>✡</i>MER</span>™</p>
   </div>
 </footer>
 
