@@ -704,7 +704,7 @@ var DEMO_INC=[
 async function demoBoot(){
   await loadData();
   CLIENT={org:'עיריית תל אביב-יפו · דמו', territory:'תל אביב יפו', email:'demo', demo:true};
-  try{ if(!document.getElementById('demo-banner')){ var _db=document.createElement('div'); _db.id='demo-banner'; _db.textContent='מצב הדגמה — נתונים לא אמיתיים'; _db.style.cssText='position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:3000;background:#b3202d;color:#fff;font:800 13px Alef,system-ui,sans-serif;padding:5px 18px;border-radius:0 0 10px 10px;box-shadow:0 4px 14px rgba(0,0,0,.45);pointer-events:none'; document.body.appendChild(_db); } }catch(_e){}
+  try{ if(!document.getElementById('demo-banner')){ var _db=document.createElement('div'); _db.id='demo-banner'; _db.textContent='מצב הדגמה · נתוני דוגמה, לא נתונים חיים'; _db.style.cssText='position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:3000;background:#b3202d;color:#fff;font:800 13px Alef,system-ui,sans-serif;padding:5px 18px;border-radius:0 0 10px 10px;box-shadow:0 4px 14px rgba(0,0,0,.45);pointer-events:none'; document.body.appendChild(_db); } }catch(_e){}
   document.getElementById('gate').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   document.getElementById('terr-name').textContent=CLIENT.territory;
@@ -716,6 +716,17 @@ async function demoBoot(){
   _applyTerrParam();
   if(!/[?&]tour=1/.test(location.search)) setTimeout(function(){ try{ var k=Object.keys(_liveEvents||{}).filter(function(id){return _liveEvents[id].m&&_liveEvents[id].m.sos;})[0]; if(k){ _playAlertTone(); openResponse(k); } }catch(e){} }, 2000);
   /* note removed in console layout */
+}
+/* sample network feed for the demo (same shape as /dashfeed): devices online now plus daily activity
+   markers for the last 14 days, all around the demo territory. Nothing here comes from the real network. */
+function demoFeed(c){
+  var o={}, now=Date.now(), DAY=864e5, seed=7;
+  function rnd(){ seed=(seed*9301+49297)%233280; return seed/233280; }
+  function hex(i){ return ('00000000'+(0x5a3c00+i*2654435761>>>0).toString(16)).slice(-8); }
+  for(var i=0;i<42;i++){ var dev=hex(i);
+    o['demo_hb_'+i]={type:'presence',lat:+(c.lat+(rnd()-.5)*.06).toFixed(2),lng:+(c.lng+(rnd()-.5)*.06).toFixed(2),ts:now-Math.floor(rnd()*80000),status:'v2:'+dev};
+    for(var d=0;d<14;d++){ if(rnd()<.62){ var t=now-d*DAY; o['demo_d1_'+i+'_'+d]={type:'presence',lat:+c.lat.toFixed(2),lng:+c.lng.toFixed(2),ts:t,status:'d1:'+dev+':'+_ilDay(t)}; } } }
+  return o;
 }
 function demoLive(c){
   var now=Date.now();
@@ -950,6 +961,12 @@ async function drawTerritory(c){
   if(c.pending){ window._terrFocus=function(){ MAP.setView([20,0],2,{animate:true}); }; try{ MAP.setView([20,0],2); }catch(e){} return; } /* worldwide territory still being located */
   window._terrFocus=function(){ MAP.setView([c.lat,c.lng],12,{animate:true}); };   /* provisional until the boundary arrives */
   var geo=_boundaryCache[c.city];
+  if(geo===undefined && CLIENT && CLIENT.demo){
+    /* demo: no outside geocoder calls - Tel Aviv-Yafo's boundary ships with the page, other cities get the approximate circle */
+    geo=null; if(c.city==='תל אביב יפו'){ try{ var _dr=await fetch('demo-boundary-tlv.json'); var _dj=await _dr.json(); geo=(_dj&&_dj.geojson)||null; }catch(e){ geo=null; } }
+    _boundaryCache[c.city]=geo;
+    if(_curCity&&_curCity.city!==c.city) return;
+  }
   if(geo===undefined){
     /* dataset cities are Israeli → restrict the lookup to IL; worldwide territories pre-fill the cache in setIntlTerritory */
     try{ var url='https://nominatim.openstreetmap.org/search?format=jsonv2&polygon_geojson=1&limit=1'+(c.noData?'':'&countrycodes=il')+'&city='+encodeURIComponent(c.city.replace(/-/g,' '));
@@ -971,7 +988,7 @@ async function drawTerritory(c){
   } else {
     L.circle([c.lat,c.lng],{radius:4500,color:'#ffffff',weight:1.3,dashArray:'3 6',fillColor:'#ffffff',fillOpacity:.02}).addTo(cityLayer);
     window._terrFocus=function(){ MAP.setView([c.lat,c.lng],12,{animate:true}); };
-    _lgClear('bound'); _lgAdd('bound','#ffffff','אזור משוער (4.5 ק״מ) — גבול לא נמצא'); try{renderLegend();}catch(_l){}
+    _lgClear('bound'); _lgAdd('bound','#ffffff',(CLIENT&&CLIENT.demo)?'אזור משוער (4.5 ק״מ) · הדגמה':'אזור משוער (4.5 ק״מ) — גבול לא נמצא'); try{renderLegend();}catch(_l){}
     try{ MAP.invalidateSize(false); }catch(_s){}
     if(!_sosFocusLock){ MAP.setView([c.lat,c.lng],12,{animate:true}); }
   }
@@ -1051,6 +1068,7 @@ function bigSosAlert(id){
 function closeResponse(){ var p=document.getElementById('resp'); if(p){ p.classList.remove('on'); setTimeout(function(){try{p.remove();}catch(e){}},300); } try{ if(_respCircle){MAP.removeLayer(_respCircle);_respCircle=null;} }catch(e){} try{ var _rc=document.getElementById('rad-chip'); if(_rc)_rc.remove(); }catch(e){} }
 function stripGeocode(lat,lng){
  var box=document.getElementById('ls-addr-txt'); if(!box)return;
+ if(CLIENT&&CLIENT.demo){ box.textContent='כתובת לדוגמה · '+lat.toFixed(3)+', '+lng.toFixed(3); return; }   /* demo: no outside geocoder call */
  try{
   fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+lat+'&lon='+lng+'&zoom=17&addressdetails=1&accept-language=he')
    .then(function(r){return r.ok?r.json():null;})
@@ -1231,6 +1249,7 @@ function respReinforce(id){
 }
 function respGeocode(lat,lng,demo){
  var box=document.getElementById('resp-addr'); if(!box) return;
+ if(demo){ box.innerHTML='<b>📍 כתובת לדוגמה</b><span class="rloc-sub" style="color:#6d7893">בהדגמה לא נשלחת בקשה לשירות כתובות · '+lat.toFixed(3)+', '+lng.toFixed(3)+'</span>'; return; }
  try{
   fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+lat+'&lon='+lng+'&zoom=17&addressdetails=1&accept-language=he',{headers:{'Accept':'application/json'}})
    .then(function(r){ return r.ok?r.json():null; })
@@ -1425,11 +1444,11 @@ function _ilDay(ts){ try{ return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia
 function loadLive(c){
   _curCityObj=c;
   var demo=!!(CLIENT&&CLIENT.demo);
-  /* demo: incidents are simulated (clearly labelled); the network counts below still come from the real feed */
+  /* demo: incidents AND network counts are sample data (clearly labelled); the real feed is read only for an activated account */
   if(demo){ window._revReal=[]; demoLive(c); }
   var DB='https://shomergency-default-rtdb.firebaseio.com';
   var initial=!_liveInitDone, reqC=c;
-  fetch(DB+'/dashfeed.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(obj){
+  (demo?Promise.resolve(demoFeed(c)):fetch(DB+'/dashfeed.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})).then(function(obj){
     if(_curCityObj!==reqC) return; /* territory changed while loading */
     var now=Date.now(), DAY=864e5, ONLINE=15e4; /* 150s = "online": the app beats every 30-40s on screen and its background service every 60s */
     var evList=[], revReal=[], presTerr=[], presAll=[], active24={}, onlineUsers={}, onlineTerrUsers={}, active24Terr={}, reps={};
@@ -1659,7 +1678,7 @@ function buildReportHtml(){
   +'<div class="meta">'+ESC(org)+'<br>הופק: '+gen+(tz?' ('+ESC(tz)+')':'')+'<br>מצב: '+(demo?'דמו':live?'תצוגה חיה':'חשבון לקוח')+'</div></div>'
   +'<h1>דוח ביטחון קהילתי · תמונת מצב</h1>'
   +'<div class="terr">טריטוריה: <b>'+ESC(c.city)+'</b>'+(c.country?' · '+ESC(c.country):'')+(has?'':' · ללא נתוני פשיעה רשמיים')+'</div>'
-  +(demo?'<div class="badge">דוח הדגמה — אירועים המסומנים "הדגמה" הם מדומים. נתוני המשטרה ונתוני הרשת אמיתיים.</div>':'')
+  +(demo?'<div class="badge">דוח הדגמה — אירועים המסומנים "הדגמה" הם מדומים. נתוני הרשת בדוח זה הם נתוני דוגמה; נתוני המשטרה הם הנתונים הציבוריים הרשמיים.</div>':'')
   +'<section><h2>1. תקציר</h2><ul class="sum">'+sum.map(function(s){return '<li>• '+s+'</li>';}).join('')+'</ul></section>'
   +'<section><h2>2. אירועים חיים ואחרונים · מצב וטיפול</h2>'+evTable+(exCount?'<p class="note">'+exCount+' אירועי דוגמה מלוח האירועים לא נכללו בדוח.</p>':'')+'</section>'
   +'<section><h2>3. אזורים חמים</h2>'+hot+'</section>'
@@ -1751,7 +1770,7 @@ function openImprove(){
  var covSub=I.covChg!=null?('לעומת '+(Math.round(I.covPrev*10)/10)+' בשבוע הקודם ('+(I.covChg>0?'+':'')+I.covChg+'%)'):('השוואה שבועית תתחיל אחרי 14 ימי נתונים · עכשיו יום '+Math.min(I.days,14));
  var ov=document.createElement('div'); ov.id='imp-ov'; ov.className='acct-ov';
  ov.innerHTML='<div class="acct-card" style="max-width:480px"><div class="acct-head"><h3>מדד שיפור · '+ESC(c.city)+'</h3><button class="acct-x" onclick="document.getElementById(\'imp-ov\').remove()">✕</button></div>'
-  +'<div class="acct-sub">מה משתנה עכשיו בטריטוריה בזכות הרשת והלוח. נתוני הפשיעה הרשמיים מתפרסמים פעם בשנה, ולכן אינם חלק מהמדד.'+((CLIENT&&CLIENT.demo)?'<br><b style="color:var(--gold)">במצב דמו: המדד מחושב מנתוני הרשת האמיתיים בלבד · אירועי ההדגמה לא נספרים.</b>':'')+'</div>'
+  +'<div class="acct-sub">מה משתנה עכשיו בטריטוריה בזכות הרשת והלוח. נתוני הפשיעה הרשמיים מתפרסמים פעם בשנה, ולכן אינם חלק מהמדד.'+((CLIENT&&CLIENT.demo)?'<br><b style="color:var(--gold)">במצב דמו: המדד מחושב מנתוני דוגמה של הרשת, לא מנתונים חיים.</b>':'')+'</div>'
   +impChart(I)
   +row('כיסוי רשת',cov,'מכשירים פעילים ביום (ממוצע 7 ימים, עד 18 ק״מ ממרכז העיר) · '+covSub)
   +row('אירועים שטופלו',I.rate!=null?I.rate+'%':'—',I.ev?(I.handled+' מתוך '+I.ev+' אירועים ב-30 הימים האחרונים סומנו "טופל" או "נסגר"'):'אין עדיין אירועי רשת בטריטוריה')
@@ -1994,7 +2013,7 @@ function renderUserPanel(){
   +'<div class="up-head"><span class="up-emblem">'+crest+'</span>'
    +'<div class="up-htx"><div class="up-org">'+ESC(org.replace(' · דמו','').replace(' · דמו',''))+'</div>'
    +'<div class="up-terr">'+ESC(terr)+' · <span class="up-plan">גרסת בטא</span>'+'</div></div>'
-   +(_feedLive()?'<div class="up-status"><span class="up-dot"></span>מערכת מקוונת · מתעדכן בזמן אמת</div>':'<div class="up-status" style="color:#a3b1cc"><span class="up-dot" style="background:#7c869c;box-shadow:none;animation:none"></span>אין חיבור לנתונים חיים</div>')
+   +((CLIENT&&CLIENT.demo)?'<div class="up-status" style="color:#F5C840"><span class="up-dot" style="background:#F5C840;box-shadow:none;animation:none"></span>מצב הדגמה · נתוני דוגמה</div>':_feedLive()?'<div class="up-status"><span class="up-dot"></span>מערכת מקוונת · מתעדכן בזמן אמת</div>':'<div class="up-status" style="color:#a3b1cc"><span class="up-dot" style="background:#7c869c;box-shadow:none;animation:none"></span>אין חיבור לנתונים חיים</div>')
    +'<button class="up-set" onclick="openSettings()" title="הגדרות" aria-label="הגדרות">⚙</button></div>'
   +'<div class="up-stats">'
    +st(pop?fmt(pop):'—','תושבים (למ״ס)')
