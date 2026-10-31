@@ -878,7 +878,7 @@ input[type=range]{min-height:44px}
 .minfo em{font-style:normal;font-size:12.5px;color:var(--dim)}
 .mbtns{display:grid;grid-template-columns:1fr 1fr 48px;gap:6px;margin-top:auto}.mbtns .btn{padding:0 8px;justify-content:center}
 .mbtns .btn{min-height:44px}
-.empty-made{text-align:center;padding:40px 20px;color:var(--dim)} .empty-made b{display:block;color:var(--text);font-size:18px;margin:10px 0 4px} .empty-made .stk{margin:0 auto}
+.empty-made{text-align:center;padding:40px 20px;color:var(--dim)} .empty-made b{display:block;color:var(--text);font-size:18px;margin:10px 0 4px} .empty-made .stk{margin:0 auto} .empty-made .btn{margin:16px auto 0}
 .madevid{width:100%;max-height:60vh;border-radius:14px;background:#000;margin-bottom:12px}
 .badge.mb{background:var(--volt)}
 /* 1.8: learning from feedback */
@@ -1862,11 +1862,12 @@ details.fold.more details.fold{margin-top:0}
 
 <!-- PAYMENTS SWITCH (the only place to change). mode "test": the buy button reads "Checkout opens soon"; add ?paytest=1 to the app URL to open the test checkout.
      GOING LIVE: once the Lemon Squeezy store is activated, paste the live-mode checkout links (Products > LickPick Pro > Share, live mode) into LP_PAY.live.yearly / .monthly and set mode: "live".
-     The same line exists in lickpick/download/LickPick.html: change it there too. -->
-<script>window.LP_PAY = { provider: "lemonsqueezy", mode: "test", store: "499938", products: { pro: ["1483622", "2312281", "2312296"] },
+     The same line exists in lickpick/download/LickPick.html: change it there too. Step by step: weekend/GO-LIVE.md.
+     portal = the Lemon Squeezy customer portal (manage, change plan, cancel; sign-in by email link). -->
+<script>window.LP_PAY = { provider: "lemonsqueezy", mode: "test", store: "499938", portal: "https://3sstudio.lemonsqueezy.com/billing", products: { pro: ["1483622", "2312281", "2312296"] },
   test: { yearly: "https://3sstudio.lemonsqueezy.com/checkout/buy/287a3571-4cab-4413-854f-f52f8ae858f0", monthly: "https://3sstudio.lemonsqueezy.com/checkout/buy/c212571a-b04d-4622-b5cb-3d2197966fb2" },
   live: { yearly: "", monthly: "" } };</script>
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-30a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-31a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -4960,12 +4961,12 @@ async function activateOnline(k) {
   if (d.activated) {
     if (PAY.mode === "live" && d.license_key?.test_mode === true) return { err: "That's a test key. Use the key from your receipt email." };
     if (PAY.store && String(d.meta?.store_id) !== String(PAY.store)) return { err: "That key is for a different product." };
-    const plan = planOfProduct(d.meta?.variant_id) || planOfProduct(d.meta?.product_id); if (!plan) return { err: "That key is for a different product." };
+    const plan = planOfProduct(d.meta?.variant_id) || planOfProduct(d.meta?.product_id) || (/lickpick/i.test(String(d.meta?.product_name || "")) ? "pro" : null); if (!plan) return { err: "That key is for a different product." };
     return { ok: 1, plan, inst: d.instance?.id || "", exp: d.license_key?.expires_at ? Date.parse(d.license_key.expires_at) : 0 };
   }
   const e = String(d.error || "");
   if (/limit/i.test(e)) return { err: "This key is already on its maximum number of phones. Reply to your receipt email and we'll free it up." };
-  if (/expired/i.test(e) || d.license_key?.status === "expired") return { err: "That Pro subscription has ended. Subscribe again above to switch Pro back on." };
+  if (/expired/i.test(e) || d.license_key?.status === "expired") return { err: `That Pro subscription ended${d.license_key?.expires_at ? " on " + endDay(d.license_key.expires_at) : ""}. Subscribe again above to switch Pro back on.` };
   if (/disabled|refund/i.test(e) || d.license_key?.status === "disabled") return { err: "That key has been turned off. If you think that's wrong, reply to your receipt email." };
   if (status === 404 || /not found/i.test(e)) return { err: "That key isn't valid. Copy it from your receipt email." };
   return { err: "Couldn't check that key right now. Try again in a minute." };
@@ -4977,7 +4978,7 @@ async function recheckOnline(L) {
     const b = { license_key: L.k }; if (L.i) b.instance_id = L.i;
     const { status, d } = await payCall("https://api.lemonsqueezy.com/v1/licenses/validate", b);
     if (d.valid) return true;
-    if (d.license_key?.status === "expired" || /expired/i.test(String(d.error || ""))) return "expired";
+    if (d.license_key?.status === "expired" || /expired/i.test(String(d.error || ""))) { L.end = d.license_key?.expires_at || ""; return "expired"; }
     if (status === 404 || d.license_key?.status === "disabled" || /not found|disabled/i.test(String(d.error || ""))) return false;
     return status >= 500 ? null : true;
   } catch { return null; }   // no network: decide nothing, try again next start
@@ -4985,22 +4986,23 @@ async function recheckOnline(L) {
 // Pro is a subscription: the key is re-checked when the app opens, at most once a day. Offline, Pro keeps working for
 // PAY_GRACE after the last good check; past that it pauses until one check online confirms it.
 const PAY_GRACE = 14 * 864e5;
+const endDay = x => { const t = typeof x === "number" ? x : Date.parse(x); return isNaN(t) ? String(x) : new Date(t).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }); };
 { const L = store.get("lp:lic"); if (L?.k && !window.LP_OWNER) { const on = () => { lic.tier = "pro"; lic.plan = L.plan || "pro"; lic.paid = 1; lic.since = L.since || L.chk || Date.now(); };
   const stale = !!L.chk && Date.now() - L.chk > PAY_GRACE; if (!stale) on();
   const due = !L.chk || Date.now() - L.chk > 864e5;
   if (due) setTimeout(async () => { const ok = navigator.onLine === false ? null : await recheckOnline(L);
     if (ok === null) { if (stale) toast("Go online once so LickPick can confirm your Pro subscription.", { icon: "i-bolt", label: "Pro", run: () => openPro() }); return; }
     if (ok === true) { L.chk = Date.now(); store.set("lp:lic", L); if (stale) { on(); renderBrand(); renderBoxes(); } return; }
-    store.set("lp:lic", null); lic.tier = "free"; lic.paid = 0; renderBrand(); renderBoxes();
-    toast(ok === "expired" ? "Your Pro subscription has ended. Your saved videos stay yours; subscribe again any time." : "Your Pro key was turned off (refund or payment issue).", { icon: "i-bolt", label: "Pro", run: () => openPro() }); }, 4000); } }
-(async () => { const k = store.get("lp:key"); if (k && !window.LP_OWNER && !lic.paid) { const r = await verifyKey(k); if (r?.tier) { lic.tier = r.tier; lic.exp = r.exp; lic.plan = r.plan; lic.id = r.id; lic.since = r.since || store.get("lp:keyAt") || 0; renderBrand(); renderTop(); if (state.openId) renderStudio(); renderBoxes(); } else if (r?.expired) setTimeout(() => toast("Your Pro has ended. Renew to keep it.", { icon: "i-bolt", label: "Renew", run: () => openPro() }), 1500); } })();
+    store.set("lp:lic", null); lic.tier = "free"; lic.paid = 0; renderBrand(); renderBoxes(); if (ok === "expired") store.set("lp:ended", { at: L.end || Date.now() });
+    toast(ok === "expired" ? `Your Pro ended on ${endDay(L.end || Date.now())}. Your saved videos stay yours; subscribe again any time.` : "Your Pro key was turned off (refund or payment issue).", { icon: "i-bolt", label: "Pro", run: () => openPro() }); }, 4000); } }
+(async () => { const k = store.get("lp:key"); if (k && !window.LP_OWNER && !lic.paid) { const r = await verifyKey(k); if (r?.tier) { lic.tier = r.tier; lic.exp = r.exp; lic.plan = r.plan; lic.id = r.id; lic.since = r.since || store.get("lp:keyAt") || 0; renderBrand(); renderTop(); if (state.openId) renderStudio(); renderBoxes(); } else if (r?.expired) { store.set("lp:ended", { at: r.expired }); setTimeout(() => toast(`Your Pro ended on ${endDay(r.expired)}. Renew to keep it.`, { icon: "i-bolt", label: "Renew", run: () => openPro() }), 1500); } } })();
 // true when the action may run. Free users spend a trial save only when a Pro file is actually saved.
 // free band: the Auto, Ballad and Rock bands with their own sounds save free (with the LickPick mark); every other
 // style, extra instrument and sound choice is Pro
 const FREE_STYLES = ["ballad", "rock"];
 function freeBand(c) { if (isPro() || !bandOn(c)) return false; const b = c.band || {}, A = bandA(c), st = bandStyleOf(c, A); const custom = Object.keys(b.set || {}).filter(k => b.set[k] != null && k !== "fills" && !(k === "arrange" && b.set[k] === "build") && !(k === "take" && !b.set[k])); return FREE_STYLES.includes(st) && !custom.length; }
 function proOK(what) { if (isPro() || lic.trial > 0) return true; openPro(what); return false; }
-function spendTrial() { if (isPro()) return; lic.trial = Math.max(0, lic.trial - 1); store.set("lp:trial", lic.trial); setTimeout(() => toast(lic.trial ? `${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left` : "That was your last free Pro save", { icon: "i-bolt", label: "Pro", run: () => openPro() }), 2800); }
+function spendTrial() { if (isPro()) return; lic.trial = Math.max(0, lic.trial - 1); store.set("lp:trial", lic.trial); setTimeout(() => toast(lic.trial ? `${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left` : "That was your last free Pro save. Pro keeps them coming, from about $1.25 a month.", { icon: "i-bolt", label: "Pro", run: () => openPro() }), 2800); }
 const proTag = () => isPro() ? "" : `<i class="protag">PRO</i>`;
 // Free core + Pro by subscription ($2.99 a month or $14.99 a year, yearly is the best value). Free saves carry a small LickPick mark; Pro is clean.
 // Free = find, hear, practise and post one clip at a time. Pro = save more, faster, with the band, plus Backstage drops while it's on.
@@ -5019,7 +5021,7 @@ const PLAN_PRO = ["The band saves with you, every style", "Arrangements, extras,
 const BACKSTAGE_NEXT = ["Brushes & upright: a jazz trio kit", "Tape room: a lo-fi hall and a 70s plate", "Latin: bossa and son grooves", "A 90s Look: VHS titles and tracking"];   // the first drops, in order, after the beta
 const backstageOK = () => isPro();
 const planCards = (cur) => `<div class="plancards"><div class="pc free${cur === "free" ? " here" : ""}"><span class="pcn">Free</span><b class="pcp">$0</b><em>Always free</em><ul>${PLAN_FREE.map(x => `<li>${icon("i-check")}${x}</li>`).join("")}</ul>${cur === "free" ? `<span class="pchere">You're here</span>` : ""}</div>
-  <div class="pc pro${cur === "pro" ? " here" : ""}"><span class="pcn">Pro</span><b class="pcp">$14.99<small> a year</small></b><em>About $1.25 a month. Or $2.99 a month.</em><ul>${PLAN_PRO.map(x => `<li>${icon("i-bolt")}${x}</li>`).join("")}</ul>${cur === "pro" ? `<span class="pchere">You're Pro</span>` : ""}</div></div>`;
+  <div class="pc pro${cur === "pro" ? " here" : ""}"><span class="pcn">Pro</span><b class="pcp">$14.99<small> a year</small></b><em>About $1.25 a month, billed yearly. Or $2.99 a month.</em><ul>${PLAN_PRO.map(x => `<li>${icon("i-bolt")}${x}</li>`).join("")}</ul>${cur === "pro" ? `<span class="pchere">You're Pro</span>` : ""}</div></div>`;
 // Pro by subscription: [key, price, per, name, note, badge]. The key matches LP_PAY.test / LP_PAY.live checkout links.
 const PLANS = [["yearly", "$14.99", "a year", "Yearly", "About $1.25 a month", "Best value"], ["monthly", "$2.99", "a month", "Monthly", "Cancel anytime"]];
 let planSel = "yearly";
@@ -5035,19 +5037,20 @@ function requestURL(k) {
 function openPro(what) {
   const sh = $("#proSheet"); sh.querySelector("h2").innerHTML = `<span class="lockup" aria-label="LickPick"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></span><span class="proword">Pro</span>`; sh.querySelector("h2").className = "prohead";
   $("#proBody").innerHTML = BETA && lic.tier === "free" ? `<p class="hint"><b>Free during the beta.</b> Every feature is on: backing band, captions, shorts without the mark, saving everything at once. Thanks for testing.</p><p class="hint">After the beta, Pro will be ${PLANS.map(p => `${p[1]} ${p[2].split(" ·")[0]}`).join(", ")}. The core stays free.</p>`
-    : isPro() ? `<p class="hint"><b>${lic.tier === "owner" ? "Owner" : "Pro"} unlocked.</b> Everything is on.${lic.exp ? ` Active until ${esc(lic.exp)}.` : lic.paid ? " Your subscription renews by itself; to cancel or change plan, use the link in your receipt email." : ""}${backstageOK() ? " Backstage drops included." : ""}${lic.paid ? ` New phone? Paste the same key from your receipt email.` : ""}</p>${lic.exp ? `<div class="keyrow"><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste a renewal key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div><div class="status" id="proStatus"></div>` : ""}
+    : isPro() ? `<p class="hint"><b>${lic.tier === "owner" ? "Owner" : "Pro"} unlocked.</b> Everything is on.${lic.exp ? ` Active until ${esc(lic.exp)}.` : lic.paid ? " Your subscription renews by itself. Change plan or cancel any time; Pro stays on to the end of the period you paid for." : ""}${backstageOK() ? " Backstage drops included." : ""}${lic.paid ? ` New phone? Paste the same key from your receipt email.` : ""}</p>${lic.paid && PAY?.portal ? `<a class="btn ghost wide" href="${esc(PAY.portal)}" target="_blank" rel="noopener">${icon("i-sliders")}Manage or cancel subscription</a><p class="hint">Opens Lemon Squeezy, our seller. Sign in with the email on your receipt.</p>` : ""}${lic.exp ? `<div class="keyrow"><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste a renewal key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div><div class="status" id="proStatus"></div>` : ""}
       ${lic.tier === "pro" ? `<div class="backstage"><b>${icon("i-note")}Backstage</b><p>On. A new band drop every month while you're Pro.</p></div>` : ""}`
-    : `${what ? `<p class="gate"><b>${esc(what)}</b> is a Pro move. ${lic.trial ? `You've got ${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left to try it.` : "Your free Pro saves are used up."}</p>` : ""}
+    : `${what ? `<p class="gate"><b>${esc(what)}</b> is a Pro move. ${lic.trial ? `You've got ${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left to try it.` : "Your free Pro saves are used up. Pro keeps it going: $14.99 a year (about $1.25 a month) or $2.99 a month."}</p>` : ""}
+    ${store.get("lp:ended")?.at ? `<p class="gate"><b>Your Pro ended on ${esc(endDay(store.get("lp:ended").at))}.</b> Your saved videos stay yours. Subscribe again below, then paste the new key to switch Pro back on.</p>` : ""}
     <p class="pro-lead">Free is the jam. Pro is the record.</p>
     <p class="lore">Finding your best playing is always free. Pro is your band on call: it saves with you, in every style and arrangement, clean, no mark.</p>
     ${planCards("free")}
-    <div class="backstage"><b>${icon("i-note")}Backstage</b><p>Pro comes with Backstage: a new band drop every month. Styles, kits, rooms, Looks.</p><p class="hint">Up next: ${BACKSTAGE_NEXT.slice(0, 3).join(" · ")}.</p></div>
     ${PLANS.length < 2 ? "" : `<div class="plans" role="radiogroup" aria-label="Plan">${PLANS.map(([k, p, per, name, sub, tag]) => `<button type="button" class="plan" role="radio" aria-checked="${planSel === k}" data-plan="${k}">${tag ? `<i>${tag}</i>` : ""}<span class="pn">${name}</span><b>${p}</b><span>${per}</span><span>${sub}</span></button>`).join("")}</div>`}
-    ${PAY?.checkout?.[planSel] ? `<a class="btn wide" id="proGo" href="${esc(PAY.checkout[planSel])}" target="_blank" rel="noopener">${goLabel(planSel)}</a><p class="hint">Secure checkout by ${PAY.provider === "polar" ? "Polar" : "Lemon Squeezy"}: card, Apple Pay, Google Pay${PAY.provider === "polar" ? "" : " or PayPal"}, any country, local tax included. Renews by itself. Your key arrives by email; paste it below. 14-day refund, no questions.</p>`
+    ${PAY?.checkout?.[planSel] ? `<a class="btn wide" id="proGo" href="${esc(PAY.checkout[planSel])}" target="_blank" rel="noopener">${goLabel(planSel)}</a><p class="hint">Secure checkout by ${PAY.provider === "polar" ? "Polar" : "Lemon Squeezy"}: card, Apple Pay, Google Pay${PAY.provider === "polar" ? "" : " or PayPal"}, any country, local tax handled. Renews by itself until you cancel. Your key arrives by email; paste it below. 14-day refund, no questions.</p>`
       : PRO_URL ? `<a class="btn wide" id="proGo" href="${esc(planURL(planSel))}" target="_blank" rel="noopener">${goLabel(planSel)}</a>`
       : SELL ? `<a class="btn wide" id="proGo" href="${esc(requestURL(planSel))}">${goLabel(planSel)}</a><p class="hint">Sends a short email to LickPick. You pay by Bit, PayBox or PayPal, and your Pro key arrives by email, usually the same day.</p>`
       : `<button class="btn wide" id="proGo" type="button" disabled>${icon("i-bolt")}Checkout opens soon</button><p class="hint">Have a key? Paste it below.</p>`}
     <p class="hint trust">${icon("i-lock")}Cancel anytime. No account needed. Your clips never leave your phone.${lic.trial ? ` Try first: ${lic.trial} free Pro saves.` : ""}</p>
+    <div class="backstage"><b>${icon("i-note")}Backstage</b><p>Pro comes with Backstage: a new band drop every month. Styles, kits, rooms, Looks.</p><p class="hint">Up next: ${BACKSTAGE_NEXT.slice(0, 3).join(" · ")}.</p></div>
     <details class="cmpd"><summary>Compare Free and Pro</summary>${tierTableHTML()}</details>
     <div class="keyrow"><input id="proKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your Pro key"><button class="btn sm" type="button" data-act="pro-unlock">${icon("i-lock")}Unlock</button></div>
     <div class="status" id="proStatus"></div>`;
@@ -5061,7 +5064,7 @@ async function unlock() {
     if (!a.ok) { st.textContent = a.err; return; }
     store.set("lp:lic", { p: PAY.provider, k, i: a.inst, plan: a.plan, chk: Date.now(), org: PAY.org || "", since: Date.now() });
     lic.since = Date.now();
-    lic.tier = "pro"; lic.plan = a.plan; lic.paid = 1; lic.exp = ""; renderBrand(); openPro(); toast("Pro unlocked. Thanks for backing LickPick. Rock on.");
+    lic.tier = "pro"; lic.plan = a.plan; lic.paid = 1; lic.exp = ""; store.set("lp:ended", null); renderBrand(); openPro(); toast("Pro unlocked. Thanks for backing LickPick. Rock on.");
     if (state.openId) renderStudio(); renderBoxes(); return;
   }
   const r = await verifyKey(k);
@@ -5246,7 +5249,7 @@ function renderMade() {
   el.innerHTML = L.length ? L.map(m => `<div class="made"><button type="button" class="mthumb" data-made-play="${m.id}" aria-label="Play ${esc(m.name)}" ${m.thumb ? `style="background-image:url(${m.thumb})"` : ""}>${icon("i-play")}</button>
       <span class="minfo"><b>${esc(m.name)}</b><em>${[m.shape, m.len ? fmt(m.len) : "", fmtSize(m.size), new Date(m.at).toLocaleDateString()].filter(Boolean).join(" · ")}</em>
       </span><span class="mbtns">${m.clip ? `<button class="btn sm ghost" type="button" data-made-edit="${m.id}">${icon("i-sliders")}Edit</button>` : ""}<button class="btn sm" type="button" data-made-share="${m.id}">${icon("i-share")}Share</button><button class="btn sm ghost" type="button" data-made-save="${m.id}">${icon("i-save")}Save</button><button class="btn sm ghost" type="button" data-made-del="${m.id}" aria-label="Remove from LickPick">${icon("i-bin")}Remove</button></span></div>`).join("")
-    : `<div class="empty-made">${stk("i-film", "hot")}<b>Your licks live here</b><p>Every lick you save stays here, ready to share again.</p></div>`;
+    : `<div class="empty-made">${stk("i-film", "hot")}<b>Your licks live here</b><p>Open a take, get your Pick, tap Save. Every lick you save stays here, ready to share again.</p>${state.clips.some(c => !c.example) ? "" : `<button class="btn sm" type="button" data-act="gallery">${icon("i-film")}Add jams</button>`}</div>`;
   libStats();
 }
 async function libStats() {
@@ -5674,7 +5677,7 @@ function renderBoxes() {
     <button class="btn sm ghost" type="button" data-copy="${key}">${icon("i-copy")}Copy list</button></div>` : "";
   $("#boxes").innerHTML = (trash.length || done.length) ? box("t", "No music. Safe to delete.", `${trash.length} clip${trash.length > 1 ? "s" : ""}, frees ${fmtSize(sum(trash))}`, trash, "trash")
     + box("k", "Saved clean. Original can go.", `${done.length} clip${done.length > 1 ? "s" : ""}, frees ${fmtSize(sum(done))}`, done, "done")
-    : keepers ? "" : `<div class="empty-clean">Nothing to delete yet.</div>`;
+    : "";   // the card above already says "Nothing to free yet"
   renderQuickbar(); if (state.sel) renderSelBar();
 }
 function setView(v) {

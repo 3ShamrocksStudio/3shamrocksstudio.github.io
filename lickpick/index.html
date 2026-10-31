@@ -63,6 +63,7 @@ h1 em{font-style:normal;color:var(--volt)} h1 .hot{font-weight:400;color:var(--h
 .float.f3 s{text-decoration-color:var(--red);text-decoration-thickness:3px;color:var(--dim)}
 /* sections */
 section{padding:84px 0;position:relative}
+section[id]{scroll-margin-top:16px}   /* in-page links land below the sticky nav, labels uncovered */
 h2{font:400 clamp(32px,4.8vw,54px)/1.05 var(--display);margin:0 0 14px}
 h2 em{font-style:normal;color:var(--volt)}
 .eyebrow{font:800 13px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--hot);margin:0 0 14px}
@@ -347,12 +348,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <script>
 // Pro checkout lives in the app (LP_PAY in app/index.html, the one payments switch). The "Try Pro" button opens the app;
 // with ?paytest=1 on this page it opens the app's Pro sheet in checkout-test mode.
+// GOING LIVE (with LP_PAY mode "live"): set u = "app/#pro" below. See weekend/GO-LIVE.md.
 (function () {
   var u = "", live = u && u.indexOf("/*") !== 0, bill = "yearly";
   var sell = ""; if (!live && sell && sell.indexOf("/*") !== 0) { live = true; u = "app/#pro"; }
   var q = function (s) { return document.querySelector(s); };
   var link = function (k) { return u.indexOf("#") >= 0 ? u : u + (u.indexOf("?") < 0 ? "?" : "&") + "plan=" + k; };
-  function sync() { if (live) { q("#proCta").href = link("founding"); q("#proCta span").textContent = "Get Pro · from $1.25 a month"; if (u.indexOf("#") >= 0) q("#pfoot").textContent = "Prices in USD. Pay by Bit, PayBox or PayPal; your Pro key arrives by email. Try it first with 10 free Pro saves."; } }
+  function sync() { if (live) { q("#proCta").href = link("founding"); q("#proCta span").textContent = "Get Pro · from $1.25 a month"; if (sell && sell.indexOf("/*") !== 0) q("#pfoot").textContent = "Prices in USD. Pay by Bit, PayBox or PayPal; your Pro key arrives by email. Try it first with 10 free Pro saves.";
+    else q("#pfoot").innerHTML = 'Prices in USD; local tax is worked out at checkout. Secure checkout by Lemon Squeezy. Pro renews by itself, monthly or yearly, until you cancel: one click at <a href="https://3sstudio.lemonsqueezy.com/billing" target="_blank" rel="noopener">3sstudio.lemonsqueezy.com/billing</a> or from your receipt email, and Pro stays on to the end of the period you paid for. 14-day refund, no questions. Try it first with 10 free Pro saves in the app.'; } }
   sync();
   if (/[?&]paytest=1(&|$)/.test(location.search)) q("#proCta").href = "app/?paytest=1#pro";
 })();
