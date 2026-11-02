@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#08090D">
+<title>Brand Starter Kit · @meetinq.ai</title>
+<meta name="description" content="Free brand starter kit: a brand brief worksheet, 10 AI prompt templates for logos, palettes and moodboards, a contrast checker and a restraint checklist.">
+<link rel="icon" type="image/png" href="../avatar.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08090D;--bg1:#0D2226;--accent:#19C3C9;--acc-text:#19C3C9;--ink:#F1F4F5;--muted:#AEB8BC;--on:#04181A;--line:rgba(241,244,245,.13);--hw:700;--kw:700;--hls:-.025em;--rule:solid;--print-acc:#006E73}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{color-scheme:dark;--card:color-mix(in srgb,var(--ink) 5%,var(--bg))}
+html{background:var(--bg);scroll-behavior:smooth}
+body{min-height:100vh;color:var(--ink);font:16px/1.6 'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  background:radial-gradient(110% 55% at 50% 0%,var(--bg1) 0%,var(--bg) 68%) no-repeat,var(--bg)}
+a{color:var(--acc-text)}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 56px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:max(16px,env(safe-area-inset-top)) 0 8px}
+.back{font:700 12px/1 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:12px 0}
+.back:hover{color:var(--ink)}
+.btn{font:700 12px/1 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:100px;
+  padding:12px 16px;border:1px solid var(--accent);background:var(--accent);color:var(--on)}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--acc-text)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hero{padding:22px 0 30px;text-align:center}
+.hero .logo{display:block;margin:0 auto 10px;width:min(240px,62vw);height:auto;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%);mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%)}
+.hero .logo.word{width:min(300px,74vw);-webkit-mask-image:none;mask-image:none;margin:26px auto 26px;
+  filter:drop-shadow(0 0 1.5px rgba(0,188,107,.9)) drop-shadow(0 0 14px rgba(0,188,107,.55))}
+.kicker{font:700 12px/1.4 'Space Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--acc-text)}
+h1{margin-top:12px;font-family:'Space Grotesk',sans-serif;font-weight:var(--hw);font-size:clamp(36px,9vw,60px);line-height:1.02;letter-spacing:var(--hls)}
+h1 .k{color:var(--acc-text);font-weight:var(--kw)}
+.lede{max-width:560px;margin:16px auto 0;font-size:17px;line-height:1.55;color:color-mix(in srgb,var(--ink) 88%,var(--bg))}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px;list-style:none}
+.pills li{font:700 11px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:8px 11px}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:6px 0 8px;list-style:none;counter-reset:t}
+.toc a{display:flex;gap:10px;align-items:baseline;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;line-height:1.35;height:100%}
+.toc a:hover{border-color:var(--accent)}
+.toc a span{font:700 11px/1 'Space Mono',monospace;color:var(--acc-text)}
+section{padding-top:40px;margin-top:40px;border-top:1px var(--rule) var(--line)}
+.sh{display:flex;align-items:baseline;gap:12px}
+.num{font:700 13px/1 'Space Mono',monospace;color:var(--acc-text);letter-spacing:.08em}
+h2{font-family:'Space Grotesk',sans-serif;font-weight:var(--hw);font-size:clamp(26px,6vw,34px);line-height:1.1;letter-spacing:var(--hls)}
+h2 .k{color:var(--acc-text);font-weight:var(--kw)}
+.intro{margin:10px 0 18px;color:var(--muted);max-width:620px}
+.intro strong{color:var(--ink)}
+.grid{display:grid;gap:12px}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 16px 14px}
+.th{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;padding-right:76px}
+h3{font-size:15.5px;font-weight:600;line-height:1.3}
+.ttag{flex:none;font:700 10.5px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:5px 8px}
+.tx{white-space:pre-wrap;word-wrap:break-word;font:14.5px/1.6 'Inter',system-ui,sans-serif;color:var(--ink);
+  background:color-mix(in srgb,var(--bg) 65%,transparent);border:1px solid var(--line);border-radius:10px;padding:12px 13px}
+.copy{position:absolute;top:12px;right:12px;font:700 11px/1 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  color:var(--acc-text);background:transparent;border:1px solid var(--accent);border-radius:100px;padding:9px 12px;min-width:64px}
+.copy:hover{background:var(--accent);color:var(--on)}
+.copy.ok{background:var(--accent);color:var(--on)}
+.check{list-style:none;display:grid;gap:8px}
+.check label{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;cursor:pointer;line-height:1.5}
+.check input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;margin-top:2px;border:1.5px solid var(--muted);border-radius:5px;display:grid;place-content:center;cursor:pointer}
+.check input:checked{background:var(--accent);border-color:var(--accent)}
+.check input:checked::after{content:"";width:10px;height:6px;border:2px solid var(--on);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.check b{font-weight:600}
+.check em{font-style:normal;color:var(--muted)}
+.note{display:block;margin:16px 0;padding:14px 16px;border-left:3px solid var(--accent);background:var(--card);border-radius:0 12px 12px 0;font-size:14.5px;line-height:1.6;color:color-mix(in srgb,var(--ink) 88%,var(--bg))}
+.note b{display:block;font-weight:600;color:var(--ink);margin-bottom:4px}
+.note ul{margin:6px 0 0 18px}
+.steps{list-style:none;display:grid;gap:10px;counter-reset:s}
+.steps li{position:relative;padding:14px 16px 14px 60px;background:var(--card);border:1px solid var(--line);border-radius:14px;line-height:1.55}
+.steps li::before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;left:16px;top:15px;font:700 14px/1 'Space Mono',monospace;color:var(--acc-text)}
+.steps b{display:block;font-weight:600}
+.steps span{color:var(--muted)}
+.when{display:inline-block;font:700 11px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-text);margin-bottom:6px}
+.fields{display:grid;gap:10px}
+.f{display:grid;gap:6px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.f label{font-size:14px;font-weight:600;line-height:1.4}
+.f small{font-weight:400;color:var(--muted)}
+.f input,.f textarea{width:100%;font:16px/1.5 'Inter',system-ui,sans-serif;color:var(--ink);background:color-mix(in srgb,var(--bg) 70%,transparent);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.f textarea{min-height:64px;resize:vertical}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px}
+.out div{padding:14px;border:1px solid var(--accent);border-radius:12px;background:color-mix(in srgb,var(--accent) 8%,var(--bg))}
+.out span{display:block;font:700 11px/1.3 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.out b{display:block;margin-top:6px;font:700 26px/1.1 'Space Grotesk',sans-serif;color:var(--ink)}
+.row2{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.ideas{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.ideas ol{margin:8px 0 0;padding-left:0;list-style:none;display:grid;gap:7px}
+.ideas li{display:flex;gap:10px;line-height:1.45;font-size:14.5px}
+.ideas li i{font:700 12px/1.6 'Space Mono',monospace;font-style:normal;color:var(--acc-text);flex:none;width:26px}
+.small{font-size:13.5px;color:var(--muted)}
+.cc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cc .f input[type=color]{height:44px;padding:4px;cursor:pointer}
+.swatch{margin-top:12px;border-radius:12px;padding:18px 16px;border:1px solid var(--line)}
+.swatch p{font-size:16px}.swatch p.lg{font:700 24px/1.2 'Space Grotesk',sans-serif;margin-top:4px}
+.ft{margin-top:56px;padding-top:24px;border-top:1px var(--rule) var(--line);text-align:center}
+.ft .made{font:700 12px/1.6 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ft .follow{display:inline-flex;margin:16px 0 14px;text-decoration:none}
+.ft p.legal{font-size:12.5px;color:var(--muted);max-width:520px;margin:0 auto;line-height:1.55}
+@media (max-width:420px){.th{padding-right:72px}.steps li{padding-left:52px}.steps li::before{left:14px}.cc{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{
+  @page{margin:14mm}
+  :root{--ink:#111;--muted:#444;--line:#bbb;--card:#fff;--acc-text:var(--print-acc);--accent:var(--print-acc);--bg:#fff}
+  html,body{background:#fff !important;color:#111}
+  .top,.copy,.toc,.no-print,.ft .follow{display:none !important}
+  .wrap{max-width:none;padding:0}
+  .hero{padding:0 0 12px}.hero .logo{width:120px;-webkit-mask-image:none;mask-image:none;border-radius:12px}
+  .hero .logo.word{width:200px;filter:none;background:none;padding:0}
+  h1{font-size:32px}.lede{font-size:13px}
+  section{margin-top:18px;padding-top:16px;break-before:auto}
+  .card,.check label,.steps li,.f,.note,.out div,.ideas>div{break-inside:avoid;background:#fff !important;border-color:#bbb}
+  .tx{background:#fff;border-color:#ccc;font-size:12px}
+  .th{padding-right:0}
+  .check input{border-color:#333}
+  .f input,.f textarea{background:#fff;color:#111;border-color:#999}
+  a{color:#111}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top" aria-label="Page">
+    <a class="back" href="../">&larr; @meetinq.ai</a>
+    <button class="btn" id="pdf" type="button">Save as PDF</button>
+  </nav>
+  <header class="hero">
+    <img class="logo" src="../logo.jpg" width="480" height="480" alt="MeetInq logo: faceted graphite octopus with teal circuitry">
+    <p class="kicker">Brand · Logo · Visual identity · Free</p>
+    <h1>Brand Starter <span class="k">Kit</span></h1>
+    <p class="lede">A brand brief worksheet, ten prompt templates for logos, palettes and moodboards, a contrast checker, and a design director's restraint list. Make a small brand look expensive. Print it or save it as a PDF.</p>
+    <ul class="pills"><li>10 prompts</li><li>Contrast checker</li><li>Printable</li></ul>
+  </header>
+  <main>
+    <ul class="toc" aria-label="Contents"><li><a href="#brief"><span>01</span>Brand brief</a></li><li><a href="#prompts"><span>02</span>Prompt templates</a></li><li><a href="#contrast"><span>03</span>Contrast checklist</a></li><li><a href="#expensive"><span>04</span>Look expensive</a></li></ul>
+    <section id="brief"><div class="sh"><span class="num">01</span><h2>Brand <span class="k">brief</span> worksheet</h2></div><p class="intro">Ten questions a design director asks before drawing anything. Fill it here or print it. <strong>Copy my brief</strong> turns your answers into text you can paste into any AI prompt below. Nothing is saved or sent anywhere.</p><div class="fields"><div class="f"><label for="q1">Brand name</label><input id="q1" type="text"></div><div class="f"><label for="q2">What you do, in one sentence <small>No jargon. A stranger should get it.</small></label><textarea id="q2" rows="2"></textarea></div><div class="f"><label for="q3">Who it's for <small>One specific person, not &ldquo;everyone&rdquo;.</small></label><textarea id="q3" rows="2"></textarea></div><div class="f"><label for="q4">Three words it should feel like <small>e.g. calm, precise, warm</small></label><input id="q4" type="text"></div><div class="f"><label for="q5">Three words it must never feel like <small>e.g. cheap, loud, corporate</small></label><input id="q5" type="text"></div><div class="f"><label for="q6">Three competitors, and how you're different</label><textarea id="q6" rows="2"></textarea></div><div class="f"><label for="q7">Price position <small>budget · mid · premium</small></label><input id="q7" type="text"></div><div class="f"><label for="q8">Where the logo has to work <small>IG avatar, favicon, sign, packaging, uniform…</small></label><textarea id="q8" rows="2"></textarea></div><div class="f"><label for="q9">What must stay <small>an existing color, symbol or name you won't change</small></label><input id="q9" type="text"></div><div class="f"><label for="q10">Brands you admire (any industry), and why</label><textarea id="q10" rows="2"></textarea></div></div><div class="row2 no-print"><button class="btn" type="button" id="mkbrief">Copy my brief</button><span class="small" id="briefmsg" aria-live="polite" style="align-self:center"></span></div><textarea id="brieftext" aria-hidden="true" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px"></textarea></section><section id="prompts"><div class="sh"><span class="num">02</span><h2>Prompt <span class="k">templates</span></h2></div><p class="intro">Text prompts work in ChatGPT, Claude or Gemini. Image prompts work in most image generators; results vary by tool, so run each a few times.</p><aside class="note"><b>Two honest limits</b><ul>
+<li>Image models still struggle with exact lettering. Use them to explore marks and moods, then set the final wordmark in a real typeface in a vector tool.</li>
+<li>Run a trademark search on the name and the mark before you commit.</li></ul></aside><div class="grid"><article class="card tpl"><div class="th"><h3>1 · Brief → positioning</h3><span class="ttag">Text</span></div><pre class="tx" id="t24">Here is my brand brief:
+[paste your brief]
+
+Turn it into:
+- A positioning line, max 12 words.
+- 3 personality traits, each with a &quot;not this&quot; opposite.
+- The audience in one sentence.
+- 3 distinct visual directions, each with a short name, a mood in 5 words, and what it would look like.
+Be specific. No buzzwords.</pre><button class="copy" type="button" data-copy="t24" aria-label="Copy: 1 · Brief → positioning">Copy</button></article><article class="card tpl"><div class="th"><h3>2 · Logo symbol</h3><span class="ttag">Image</span></div><pre class="tx" id="t25">Minimal logo symbol for [brand name], a [what you do] for [audience]. Concept: [one idea, e.g. &quot;a key that is also a leaf&quot;]. Flat vector style, single color [HEX] on a plain white background, bold simple geometry, readable at 16px, no text, no gradient, no shadow, centered with generous padding.</pre><button class="copy" type="button" data-copy="t25" aria-label="Copy: 2 · Logo symbol">Copy</button></article><article class="card tpl"><div class="th"><h3>3 · Monogram</h3><span class="ttag">Image</span></div><pre class="tx" id="t26">Monogram logo using the letters [XY] for [brand name], feeling [3 words]. Geometric, single stroke weight, one color [HEX] on white, flat vector style, no other text, high contrast, centered.</pre><button class="copy" type="button" data-copy="t26" aria-label="Copy: 3 · Monogram">Copy</button></article><article class="card tpl"><div class="th"><h3>4 · Wordmark direction</h3><span class="ttag">Image</span></div><pre class="tx" id="t27">Wordmark style exploration for the name &quot;[brand name]&quot;: [serif / sans / rounded / condensed], feeling [3 words]. Black on white, flat, no symbol. Show 4 variations side by side.
+(Use as a reference only. Rebuild the final in a real font.)</pre><button class="copy" type="button" data-copy="t27" aria-label="Copy: 4 · Wordmark direction">Copy</button></article><article class="card tpl"><div class="th"><h3>5 · Palette from personality</h3><span class="ttag">Text</span></div><pre class="tx" id="t28">Suggest 3 color palettes for a brand that feels [3 words] and never [3 words].
+Each palette: 1 dark neutral, 1 light neutral, 1 primary, 1 accent, with HEX codes.
+For each, name which pairs you&#x27;d use for body text, and explain the palette in one line.
+Keep accents to one per palette.</pre><button class="copy" type="button" data-copy="t28" aria-label="Copy: 5 · Palette from personality">Copy</button></article><article class="card tpl"><div class="th"><h3>6 · Moodboard</h3><span class="ttag">Image</span></div><pre class="tx" id="t29">Moodboard, 3x3 grid, for a [industry] brand that feels [3 words]: textures, materials, lighting, photography style, objects from the customer&#x27;s world. Colors limited to [HEX, HEX, HEX]. Editorial, natural light, no text, no logos.</pre><button class="copy" type="button" data-copy="t29" aria-label="Copy: 6 · Moodboard">Copy</button></article><article class="card tpl"><div class="th"><h3>7 · Type pairing</h3><span class="ttag">Text</span></div><pre class="tx" id="t30">Recommend 3 font pairings (headline + body) that are free on Google Fonts, for a brand that feels [3 words]. For each: why it fits, which weights to use, and one mistake to avoid. Prefer typefaces with good legibility at small sizes.</pre><button class="copy" type="button" data-copy="t30" aria-label="Copy: 7 · Type pairing">Copy</button></article><article class="card tpl"><div class="th"><h3>8 · Brand in the real world</h3><span class="ttag">Image</span></div><pre class="tx" id="t31">Realistic product photo of a [business card / shopping bag / storefront sign / app icon on a phone] for a brand called &quot;[brand name]&quot;. Minimal design using only [HEX, HEX], lots of empty space, soft daylight, real materials, no extra text.</pre><button class="copy" type="button" data-copy="t31" aria-label="Copy: 8 · Brand in the real world">Copy</button></article><article class="card tpl"><div class="th"><h3>9 · Strict critique</h3><span class="ttag">Text + image</span></div><pre class="tx" id="t32">Act as a strict brand design director. Critique the attached logo against these criteria, 1–5 each:
+1) Readable at 16px  2) Works in one color  3) Clear at a glance  4) Different from [competitors]  5) Matches [3 words].
+Then list the 3 changes with the biggest impact, most important first. Be direct.</pre><button class="copy" type="button" data-copy="t32" aria-label="Copy: 9 · Strict critique">Copy</button></article><article class="card tpl"><div class="th"><h3>10 · Voice lines</h3><span class="ttag">Text</span></div><pre class="tx" id="t33">Write 10 tagline options for [brand name], who [what you do] for [audience].
+Rules: under 7 words, plain language, no puns, no &quot;elevate&quot;, &quot;unlock&quot; or &quot;seamless&quot;. Match this personality: [3 words].
+Mark your top 2 and say why.</pre><button class="copy" type="button" data-copy="t33" aria-label="Copy: 10 · Voice lines">Copy</button></article></div></section><section id="contrast"><div class="sh"><span class="num">03</span><h2>Palette <span class="k">contrast</span> checklist</h2></div><p class="intro">Pretty palettes fail when people can't read them. Check your pairs here (the math runs in your browser), then tick the list.</p><div class="card no-print">
+  <div class="cc">
+    <div class="f"><label for="fg">Text color</label><input id="fg" type="color" value="#F1F4F5"></div>
+    <div class="f"><label for="bgc">Background color</label><input id="bgc" type="color" value="#08090D"></div>
+  </div>
+  <div class="swatch" id="sw"><p>Body text sample, 16px.</p><p class="lg">Large heading sample</p></div>
+  <div class="out" aria-live="polite">
+    <div><span>Contrast ratio</span><b id="ratio">–</b></div>
+    <div><span>Body text (needs 4.5:1)</span><b id="aa">–</b></div>
+    <div><span>Large text, icons (3:1)</span><b id="aal">–</b></div>
+  </div>
+</div><div style="margin-top:12px"><ul class="check"><li><label><input type="checkbox"><span><b>Body text is at least 4.5:1</b> against its background <em>(WCAG AA)</em></span></label></li><li><label><input type="checkbox"><span><b>Large text is at least 3:1</b> <em>(about 24px regular, or 19px bold and up)</em></span></label></li><li><label><input type="checkbox"><span><b>Icons, input borders and focus rings are at least 3:1</b> against what's next to them</span></label></li><li><label><input type="checkbox"><span><b>Color never carries meaning alone</b>: errors and states also get an icon or a word</span></label></li><li><label><input type="checkbox"><span><b>Test in grayscale</b>: the hierarchy should still read</span></label></li><li><label><input type="checkbox"><span><b>Avoid red/green as the only difference</b> between two things</span></label></li><li><label><input type="checkbox"><span><b>Text on your accent button passes</b>, not just text on the background</span></label></li><li><label><input type="checkbox"><span><b>The logo works in one color</b>, black and white</span></label></li><li><label><input type="checkbox"><span><b>Check on a phone, outdoors</b>, at low brightness</span></label></li></ul></div><p class="small" style="margin-top:10px">Thresholds from <a href="https://www.w3.org/TR/WCAG21/#contrast-minimum" target="_blank" rel="noopener">WCAG 2.1</a> (success criteria 1.4.3 and 1.4.11).</p></section><section id="expensive"><div class="sh"><span class="num">04</span><h2>Make it look <span class="k">expensive</span></h2></div><p class="intro">A design director's restraint list. Expensive brands mostly win by what they leave out.</p><ul class="check"><li><label><input type="checkbox"><span><b>One typeface family</b>, two at most.</span></label></li><li><label><input type="checkbox"><span><b>One accent color</b>, used for one job at a time.</span></label></li><li><label><input type="checkbox"><span><b>Twice the white space</b> you think you need.</span></label></li><li><label><input type="checkbox"><span><b>Fewer elements.</b> If it doesn't help the message, delete it.</span></label></li><li><label><input type="checkbox"><span><b>A spacing scale</b> (4 · 8 · 16 · 24 · 32 · 48) and nothing off it.</span></label></li><li><label><input type="checkbox"><span><b>Everything on a grid</b>, with the same margins on every layout.</span></label></li><li><label><input type="checkbox"><span><b>A flat, one-color version of the mark</b> for small sizes. Save glow and 3D for hero moments.</span></label></li><li><label><input type="checkbox"><span><b>Sentence case.</b> Letter-spacing only on short labels, never on paragraphs.</span></label></li><li><label><input type="checkbox"><span><b>One photo style</b>: same light, same grade. Never mix stock looks.</span></label></li><li><label><input type="checkbox"><span><b>Same corner radius and stroke weight</b> everywhere.</span></label></li><li><label><input type="checkbox"><span><b>One message per post or page.</b></span></label></li><li><label><input type="checkbox"><span><b>Quiet prices.</b> No starbursts, no stacked exclamation marks.</span></label></li><li><label><input type="checkbox"><span><b>Reuse layouts.</b> Consistency reads as confidence.</span></label></li></ul></section>
+  </main>
+  <footer class="ft">
+    <p class="made">Made by @meetinq.ai · 3Shamrocks Media Network</p>
+    <a class="btn ghost follow" href="https://www.instagram.com/meetinq.ai/" target="_blank" rel="noopener">Follow @meetinq.ai on Instagram &rarr;</a>
+    <p class="legal">Free to use in your own business. General information, not legal advice: rules differ by state, platform and provider, so check the ones that apply to you. © 2026 3Shamrocks Studio.</p>
+  </footer>
+</div>
+<script>
+(function(){
+  document.addEventListener('click', async function(ev){
+    var b = ev.target.closest('[data-copy]'); if(!b) return;
+    var el = document.getElementById(b.getAttribute('data-copy')); if(!el) return;
+    var txt = el.value !== undefined && el.tagName === 'TEXTAREA' ? el.value : el.innerText;
+    var ok = false;
+    try { await navigator.clipboard.writeText(txt); ok = true; }
+    catch(err){
+      try {
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        ok = document.execCommand('copy'); s.removeAllRanges();
+      } catch(e2){ ok = false; }
+    }
+    var orig = b.getAttribute('data-label') || 'Copy';
+    b.textContent = ok ? 'Copied' : 'Select + copy';
+    b.classList.toggle('ok', ok);
+    setTimeout(function(){ b.textContent = orig; b.classList.remove('ok'); }, 1800);
+  });
+  var p = document.getElementById('pdf');
+  if (p) p.addEventListener('click', function(){ window.print(); });
+})();
+(function(){
+  var F = [["q1", "Brand name"], ["q2", "What you do, in one sentence"], ["q3", "Who it's for"], ["q4", "Three words it should feel like"], ["q5", "Three words it must never feel like"], ["q6", "Three competitors, and how you're different"], ["q7", "Price position"], ["q8", "Where the logo has to work"], ["q9", "What must stay"], ["q10", "Brands you admire (any industry), and why"]];
+  var btn=document.getElementById('mkbrief'), msg=document.getElementById('briefmsg'), ta=document.getElementById('brieftext');
+  btn.addEventListener('click', async function(){
+    var lines=['BRAND BRIEF'];
+    F.forEach(function(p){var v=document.getElementById(p[0]).value.trim(); lines.push(p[1]+': '+(v||'[not filled]'));});
+    var txt=lines.join('\n'), ok=false;
+    try{ await navigator.clipboard.writeText(txt); ok=true; }
+    catch(err){ try{ ta.value=txt; ta.select(); ok=document.execCommand('copy'); }catch(e2){ ok=false; } }
+    msg.textContent = ok ? 'Copied. Paste it into prompt 1.' : 'Copy blocked by your browser. Select the fields and copy manually.';
+  });
+  function hex(h){h=h.replace('#','');return [0,2,4].map(function(i){return parseInt(h.substr(i,2),16)/255;});}
+  function lum(c){var a=c.map(function(v){return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);});return 0.2126*a[0]+0.7152*a[1]+0.0722*a[2];}
+  var fg=document.getElementById('fg'), bg=document.getElementById('bgc'), sw=document.getElementById('sw');
+  function run(){
+    var L1=lum(hex(fg.value)), L2=lum(hex(bg.value));
+    var r=(Math.max(L1,L2)+0.05)/(Math.min(L1,L2)+0.05);
+    document.getElementById('ratio').textContent=r.toFixed(2)+':1';
+    document.getElementById('aa').textContent=r>=4.5?'Pass':'Fail';
+    document.getElementById('aal').textContent=r>=3?'Pass':'Fail';
+    sw.style.color=fg.value; sw.style.background=bg.value;
+  }
+  fg.addEventListener('input',run); bg.addEventListener('input',run); run();
+})();
+</script>
+</body>
+</html>
