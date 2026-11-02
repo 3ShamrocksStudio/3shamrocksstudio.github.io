@@ -148,10 +148,10 @@
    "owner": "CDO",
    "next_steps": [
     {
-     "step": "Move 3shamrocks.com to the new site (email untouched)",
+     "step": "When Dave ticks to-do 'site-wix' (4 DNS lines in Wix): add CNAME file 'www.3shamrocks.com' to this repo, set custom domain + enforce HTTPS in Pages, verify 3shamrocks.com and www load the new site and dave@3shamrocks.com mail still works (MX untouched)",
      "seat": "CTO",
-     "due": "after Wix login",
-     "done_when": "domain serves new site"
+     "due": "same hour as Dave's tick",
+     "done_when": "https://www.3shamrocks.com serves the studio site with HTTPS"
     },
     {
      "step": "Lead capture: 'Let's talk' tracking (UTM, no paid tools)",
@@ -161,7 +161,7 @@
     }
    ],
    "dave": [
-    "Open Wix once (login)"
+    "Change 4 DNS lines in Wix (to-do 'site-wix', exact steps there)"
    ],
    "kill_rule": null,
    "revisit": null,
@@ -170,6 +170,11 @@
      "date": "2026-11-02",
      "text": "Homepage +68% retention → 2× (68% vs 34%) in 3 spots + counter double-suffix fix; verifier PASS",
      "link": "https://3shamrocksstudio.github.io/"
+    },
+    {
+     "date": "2026-11-02",
+     "text": "Claude edited 1 of 3 root A records in Wix, then the safety check blocked further DNS edits; record restored to 185.230.63.171 (all 3 Wix IPs back). Baseline in 3s-status? no: container /home/claude/domain/DNS-BEFORE.md. Dave does the 4 lines.",
+     "link": "https://manage.wix.com/account/domains"
     }
    ]
   },
@@ -621,6 +626,15 @@
    ],
    "dropped": "own Command tour rewrite (other run already shipped the same change)",
    "quota": "new qualified contacts today 9 + 11 = 20/10"
+  },
+  {
+   "at": "2026-11-02T18:45+02:00",
+   "seat": "main chat (Dave's evening handover)",
+   "done": [
+    "Wix DNS attempt → blocked after 1 record, restored",
+    "to-do site-wix rewritten with exact steps"
+   ],
+   "note": "Dave offline until tomorrow; LinkedIn typing + DNS edits are blocked by the safety check, so both stay Dave steps"
   }
  ]
 }
