@@ -11,7 +11,7 @@ P = [
   did="Brand, product design and the working app, end to end. Plus SH✡MER Command, a dashboard for communities.",
   cards=[("The problem","In the first minutes of an emergency, the people closest to you can often get there first. There was no simple way to call them."),
          ("What I built","The brand, the Android and web app with real-time SOS and maps, and a community dashboard built privacy-first."),
-         ("Where it is","In closed beta with first testers. Live at shomer-app.co.il.")],
+         ("Where it is","In closed beta with first testers. Site: shomer-app.co.il.")],
   shots=["../assets/real/shomer-screen1.jpg","../assets/screens/shomer-1.jpg"],
   out=("Visit SH✡MER","https://www.shomer-app.co.il/")),
  dict(slug="lickpick", name="LickPick", cat="Music app", status="Free beta",
