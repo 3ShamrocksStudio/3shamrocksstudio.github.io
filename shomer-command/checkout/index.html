@@ -189,6 +189,8 @@
       <section class="panel" id="s1" aria-labelledby="s1-t">
         <h2 id="s1-t">בחרו תוכנית<small>מחיר לקהילה, לא לתושב. המחירים לפני מע"מ.</small></h2>
         <div class="opts" role="radiogroup" aria-labelledby="s1-t" id="opts"></div>
+        <div id="perbox" hidden><h2 id="per-t" style="margin-top:28px">חיוב חודשי או שנתי<small>חודשי בהוראת קבע עם ביטול בכל עת, או שנתי מראש בהנחה.</small></h2>
+        <div class="opts" role="radiogroup" aria-labelledby="per-t" id="pers"></div></div>
         <div class="nav2"><span class="sp"></span><button type="button" class="btn" id="to2">המשך ←</button></div>
       </section>
 
@@ -202,7 +204,7 @@
             <div class="field"><label for="taxid">ח.פ. / ע.מ. <small>(לא חובה)</small></label><input class="input ltr" id="taxid" name="taxid" inputmode="numeric" maxlength="12"></div>
             <div class="field"><label for="residents">מספר תושבים, בערך <span class="req">*</span></label><input class="input ltr" id="residents" name="residents" inputmode="numeric" required maxlength="7"></div>
             <div class="full" id="tierhint" hidden></div>
-            <label class="check full" id="credit-row" hidden><input type="checkbox" id="c-credit"><span>כבר עשינו פיילוט "קהילה שומרת". לקזז <bdi>₪2,500</bdi> מהשנה הראשונה. <small>(נאמת מול ההזמנה הקודמת)</small></span></label>
+            <label class="check full" id="credit-row" hidden><input type="checkbox" id="c-credit"><span>כבר עשינו פיילוט "קהילה שומרת". לקזז <bdi>₪2,500</bdi> מהחיובים הראשונים. <small>(נאמת מול ההזמנה הקודמת)</small></span></label>
             <div class="field"><label for="name">שם איש הקשר <span class="req">*</span></label><input class="input" id="name" name="name" required autocomplete="name"></div>
             <div class="field"><label for="role">תפקיד</label><select class="select" id="role" name="role"><option>רבש"צ</option><option>קב"ט</option><option>מזכיר/ה</option><option>יו"ר ועד</option><option>אחר</option></select></div>
             <div class="field"><label for="email">אימייל <span class="req">*</span></label><input class="input ltr" id="email" name="email" type="email" required autocomplete="email"><small>לכאן תישלח החשבונית וההזמנה ללוח הבקרה.</small></div>
@@ -220,7 +222,7 @@
           <label class="check"><input type="checkbox" id="c-terms"><span>קראתי ואני מסכים/ה ל<a class="link" href="../terms/" target="_blank" rel="noopener">תנאי הרישיון</a> ול<a class="link" href="https://www.shomer-app.co.il/privacy.html" target="_blank" rel="noopener">מדיניות הפרטיות</a>.</span></label>
           <label class="check"><input type="checkbox" id="c-100"><span>ידוע לי ש־<span class="sh">SH<i>✡</i>MER</span> הוא כלי קהילתי ואינו מחליף את <bdi class="nw">100 · 101 · 102</bdi>.</span></label>
         </div>
-        <div class="paybox"><span>תשלום מאובטח דרך Morning (חשבונית ירוקה):</span><span class="methods"><span>Visa / Mastercard</span><span>Bit</span><span>Apple Pay</span><span>Google Pay</span></span></div>
+        <div class="paybox"><span id="pay-l">תשלום מאובטח דרך Morning (חשבונית ירוקה):</span><span class="methods"><span>Visa / Mastercard</span><span data-once>Bit</span><span data-once>Apple Pay</span><span data-once>Google Pay</span></span></div>
         <p class="err" id="e3" role="alert"></p>
         <div class="nav2"><button type="button" class="btn-ghost" data-back="2">→ חזרה</button><span class="sp"></span><button type="button" class="btn" id="pay">לתשלום מאובטח</button></div>
         <p style="margin-top:16px;font-size:15px;color:var(--ink3)">מעדיפים העברה בנקאית או הזמנת רכש? <button type="button" class="altpay" id="alt">לסיכום הזמנה להדפסה</button></p>
@@ -298,30 +300,47 @@
   var P=SC.PLANS, ils=SC.ils;
   var INCL={
     pilot:['הטמעה: הדרכה לרבש"צ ולשומרים הראשונים','לוח בקרה לכל 90 הימים','הודעה לקבוצת היישוב, פוסטר ומדריך','תרגיל SOS מתואם, דוח כל שבועיים, סיכום ביום ה־90','האפליקציה חינם לכל התושבים'],
-    lic:['לוח בקרה לשנה: מפת SOS חיה, בלי שמות','האפליקציה חינם לכל התושבים','חומרי הטמעה ותרגיל SOS מתואם אחד בשנה','תמיכה ישירה מדייב'],
+    lic:['לוח בקרה: מפת SOS חיה, בלי שמות','האפליקציה חינם לכל התושבים','חומרי הטמעה ותרגיל SOS מתואם אחד בשנה','תמיכה ישירה מדייב'],
     council:['לוח בקרה לכל יישוב, ותמונה אחת למועצה','האפליקציה חינם לכל התושבים','הטמעה וחומרים לכל היישובים','תשלום מול הזמנת רכש וחשבונית מס']
   };
   var MAXRES={s:1000,m:5000,l:10000};
-  function mo(k){ return 'לשנה · כ־'+ils(SC.monthly(P[k].price))+' לחודש'; }
+  function mo(k){ return 'לחודש · או '+ils(P[k].price)+' לשנה'; }
   var OPTS=[
-    {k:'pilot',b:P.pilot.name,s:'תשלום אחד. מקוזז מהשנה הראשונה. ללא התחייבות.',pr:ils(P.pilot.price),ps:'ל־90 יום',badge:'הכי מתאים להתחלה'},
-    {k:'s',b:P.s.name,s:'יישוב, קיבוץ, מושב או שכונה',pr:ils(P.s.price),ps:mo('s')},
-    {k:'m',b:P.m.name,s:'יישוב גדול או יישוב קהילתי',pr:ils(P.m.price),ps:mo('m')},
-    {k:'l',b:P.l.name,s:'מועצה מקומית או קהילה גדולה',pr:ils(P.l.price),ps:mo('l')},
+    {k:'pilot',b:P.pilot.name,s:'תשלום אחד. מקוזז מהרישיון. ללא התחייבות.',pr:ils(P.pilot.price),ps:'ל־90 יום',badge:'הכי מתאים להתחלה'},
+    {k:'s',b:P.s.name,s:'יישוב, קיבוץ, מושב או שכונה',pr:ils(P.s.month),ps:mo('s')},
+    {k:'m',b:P.m.name,s:'יישוב גדול או יישוב קהילתי',pr:ils(P.m.month),ps:mo('m')},
+    {k:'l',b:P.l.name,s:'מועצה מקומית או קהילה גדולה',pr:ils(P.l.month),ps:mo('l')},
     {k:'council',b:SC.COUNCIL.name+' · מועצות אזוריות ורשויות',s:'₪2 לתושב לשנה, מינימום ₪40,000. מול הזמנת רכש.',pr:'הצעת מחיר',ps:'מוכנה תוך דקה'}
   ];
   var q=new URLSearchParams(location.search), plan=q.get('plan'); if(!(plan in P)&&plan!=='council') plan='pilot';
+  var period=q.get('period')==='year'?'year':'month'; /* monthly-first; annual prepay is the discount option */
   var step=1;
+  function lic(){ return plan==='s'||plan==='m'||plan==='l'; }
+  function pname(){ return P[plan].name+(lic()?(period==='month'?' · חיוב חודשי':' · שנתי מראש'):''); }
+  function pers(){
+    $('perbox').hidden=!lic(); if(!lic()) return; var p=P[plan];
+    $('pers').innerHTML=[
+      {k:'month',b:'חודשי · הוראת קבע',s:'חיוב כל חודש. ביטול בכל עת.',pr:ils(p.month),ps:'לחודש'},
+      {k:'year',b:'שנתי מראש',s:'חוסכים '+ils(SC.saving(plan))+' בשנה לעומת חודשי ('+ils(p.month*12)+').',pr:ils(p.price),ps:'לשנה'}
+    ].map(function(o){
+      return '<label class="opt"><input type="radio" name="period" value="'+o.k+'"'+(o.k===period?' checked':'')+'><span class="r" aria-hidden="true"></span>'
+        +'<span><b>'+o.b+'</b><span>'+o.s+'</span></span><span class="pr"><bdi>'+o.pr+'</bdi><small>'+o.ps+'</small></span></label>';
+    }).join('');
+  }
+  function payBox(){ var m=lic()&&period==='month';
+    $('pay-l').textContent=m?'הוראת קבע חודשית מאובטחת דרך Morning (חשבונית ירוקה):':'תשלום מאובטח דרך Morning (חשבונית ירוקה):';
+    document.querySelectorAll('[data-once]').forEach(function(x){ x.hidden=m; }); }
 
   /* plan options */
   $('opts').innerHTML=OPTS.map(function(o){
     return '<label class="opt">'+(o.badge?'<span class="badge">'+o.badge+'</span>':'')+'<input type="radio" name="plan" value="'+o.k+'"'+(o.k===plan?' checked':'')+'><span class="r" aria-hidden="true"></span>'
       +'<span><b>'+o.b+'</b><span>'+o.s+'</span></span><span class="pr"><bdi>'+o.pr+'</bdi><small>'+o.ps+'</small></span></label>';
   }).join('');
-  $('opts').addEventListener('change',function(e){ if(e.target.name==='plan'){ plan=e.target.value; SC.track('select_plan',{x:'checkout-'+plan}); if(plan==='council'){ go('q'); } else { summary(); } } });
+  $('opts').addEventListener('change',function(e){ if(e.target.name==='plan'){ plan=e.target.value; SC.track('select_plan',{x:'checkout-'+plan}); if(plan==='council'){ go('q'); } else { pers(); summary(); } } });
+  $('pers').addEventListener('change',function(e){ if(e.target.name==='period'){ period=e.target.value; SC.track('select_period',{period:period}); summary(); } });
 
-  function lines(net,extra){ var v=SC.withVat(net);
-    return (extra||'')+'<div><span>מחיר לפני מע"מ</span><b><bdi>'+ils(v.net)+'</bdi></b></div><div><span>מע"מ 18%</span><b><bdi>'+ils(v.vat)+'</bdi></b></div><div class="tot"><span>לתשלום</span><b><bdi>'+ils(v.total)+'</bdi></b></div>'; }
+  function lines(net,extra,totLabel){ var v=SC.withVat(net);
+    return (extra||'')+'<div><span>מחיר לפני מע"מ</span><b><bdi>'+ils(v.net)+'</bdi></b></div><div><span>מע"מ 18%</span><b><bdi>'+ils(v.vat)+'</bdi></b></div><div class="tot"><span>'+(totLabel||'לתשלום')+'</span><b><bdi>'+ils(v.total)+'</bdi></b></div>'; }
   function incl(list){ return list.map(function(t){ return '<li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>'+t+'</span></li>'; }).join(''); }
   function summary(){
     if(plan==='council'){
@@ -333,10 +352,12 @@
       $('sum-fine').textContent='המחירים לפני מע"מ. תשלום מול הזמנת רכש וחשבונית מס.';
       return;
     }
-    var p=P[plan];
-    $('sum-name').textContent=p.name; $('sum-for').textContent=p.period==='לשנה'?'חיוב שנתי · '+p.residents:'תשלום אחד ל־90 יום';
+    var p=P[plan], monthly=lic()&&period==='month';
+    $('sum-name').textContent=pname(); $('sum-for').textContent=!lic()?'תשלום אחד ל־90 יום':monthly?'חיוב חודשי בהוראת קבע · ביטול בכל עת · '+p.residents:'תשלום שנתי מראש · חוסכים '+ils(SC.saving(plan))+' · '+p.residents;
     var cr=credit();
-    $('sum-lines').innerHTML=lines(p.price-cr, cr?'<div><span>'+esc(p.short)+'</span><b><bdi>'+ils(p.price)+'</bdi></b></div><div><span>קיזוז הפיילוט</span><b><bdi>'+ils(-cr)+'</bdi></b></div>':'');
+    if(monthly) $('sum-lines').innerHTML=lines(p.month, cr?'<div><span>קיזוז הפיילוט מהחיובים הראשונים</span><b><bdi>'+ils(-cr)+'</bdi></b></div>':'', 'לתשלום בכל חודש');
+    else $('sum-lines').innerHTML=lines(p.price-cr, cr?'<div><span>'+esc(p.short)+'</span><b><bdi>'+ils(p.price)+'</bdi></b></div><div><span>קיזוז הפיילוט</span><b><bdi>'+ils(-cr)+'</bdi></b></div>':'');
+    payBox();
     $('sum-incl').innerHTML=incl(plan==='pilot'?INCL.pilot:INCL.lic);
     $('sum-fine').textContent=p.note+' חשבונית מס נשלחת לאימייל שתזינו.';
   }
@@ -351,7 +372,7 @@
     $('sub').textContent=council?'דקה אחת, והצעה מסודרת להדפסה בידיים שלכם.':'שלוש דקות, ואתם בפנים.';
     if(council){ plan='council'; $('sq').hidden=false; summary(); SC.track('checkout_step',{n:'quote'}); return; }
     step=n; $('s'+n).hidden=false; stepper(n); $('credit-row').hidden=(plan==='pilot'); summary();
-    if(n===3) $('s3-sub').textContent=P[plan].name+' · '+$('org').value.trim();
+    if(n===3) $('s3-sub').textContent=pname()+' · '+$('org').value.trim();
     SC.track('checkout_step',{n:n,plan:plan});
     if(window.scrollY>200) window.scrollTo({top:0,behavior:'smooth'});
   }
@@ -373,8 +394,8 @@
     var r=+($('residents').value||'').replace(/\D/g,''), h=$('tierhint'); h.hidden=true; if(!r||plan==='pilot') return;
     var right=r<=1000?'s':r<=5000?'m':r<=10000?'l':'council';
     if(right!==plan){ h.hidden=false; h.className='full hint';
-      h.innerHTML=right==='council'?'לקהילה של יותר מ־10,000 תושבים מתאימה <a href="?plan=council">הצעת מחיר מותאמת</a>.':'לפי מספר התושבים, מתאים הרישיון <b>'+P[right].short+'</b> (<bdi>'+ils(P[right].price)+'</bdi> לשנה). <a href="#" id="fixtier">להחליף</a>';
-      var fx=$('fixtier'); if(fx) fx.onclick=function(e){ e.preventDefault(); plan=right; document.querySelector('input[name=plan][value='+right+']').checked=true; summary(); tierHint(); };
+      h.innerHTML=right==='council'?'לקהילה של יותר מ־10,000 תושבים מתאימה <a href="?plan=council">הצעת מחיר מותאמת</a>.':'לפי מספר התושבים, מתאים הרישיון <b>'+P[right].short+'</b> (<bdi>'+ils(period==='month'?P[right].month:P[right].price)+'</bdi> '+(period==='month'?'לחודש':'לשנה')+'). <a href="#" id="fixtier">להחליף</a>';
+      var fx=$('fixtier'); if(fx) fx.onclick=function(e){ e.preventDefault(); plan=right; document.querySelector('input[name=plan][value='+right+']').checked=true; pers(); summary(); tierHint(); };
     }
   }
   $('residents').addEventListener('input',tierHint);
@@ -383,13 +404,14 @@
   function credit(){ return (plan!=='pilot'&&plan!=='council'&&$('c-credit').checked)?SC.PILOT_CREDIT:0; }
   $('c-credit').addEventListener('change',summary);
   function order(){
-    var cr=credit(), v=SC.withVat(P[plan].price-cr);
-    return {plan:plan, plan_name:P[plan].name, org:$('org').value.trim(), payer:$('payer').value.trim(), tax_id:$('taxid').value.trim(),
+    var cr=credit(), monthly=lic()&&period==='month', list=monthly?P[plan].month:P[plan].price, v=SC.withVat(monthly?list:list-cr);
+    return {plan:plan, period:lic()?period:'once', plan_name:pname(), org:$('org').value.trim(), payer:$('payer').value.trim(), tax_id:$('taxid').value.trim(),
       residents:+$('residents').value.replace(/\D/g,''), contact:$('name').value.trim(), role:$('role').value, email:$('email').value.trim(), phone:$('phone').value.trim(),
-      list_price:P[plan].price, credit:cr, amount_net:v.net, vat:v.vat, total:v.total, currency:'ILS'};
+      list_price:list, credit:cr, amount_net:v.net, vat:v.vat, total:v.total, currency:'ILS'};
   }
   function orderText(o){
-    return 'הזמנת SH✡MER Command\n\nתוכנית: '+o.plan_name+(o.credit?'\nקיזוז פיילוט: '+ils(-o.credit):'')+'\nמחיר לפני מע"מ: '+ils(o.amount_net)+'\nמע"מ 18%: '+ils(o.vat)+'\nסה"כ: '+ils(o.total)
+    var m=o.period==='month';
+    return 'הזמנת SH✡MER Command\n\nתוכנית: '+o.plan_name+(m?'\nחיוב: חודשי בהוראת קבע, ביטול בכל עת':o.period==='year'?'\nחיוב: שנתי מראש':'')+(o.credit?'\nקיזוז פיילוט: '+ils(-o.credit)+(m?' מהחיובים הראשונים':''):'')+'\nמחיר לפני מע"מ'+(m?' לחודש':'')+': '+ils(o.amount_net)+'\nמע"מ 18%: '+ils(o.vat)+'\nסה"כ'+(m?' לחודש':'')+': '+ils(o.total)
       +'\n\nקהילה: '+o.org+'\nגוף משלם: '+o.payer+(o.tax_id?' ('+o.tax_id+')':'')+'\nמספר תושבים: '+o.residents.toLocaleString('en-US')
       +'\nאיש קשר: '+o.contact+' · '+o.role+'\nאימייל: '+o.email+'\nטלפון: '+o.phone+'\n';
   }
@@ -439,8 +461,8 @@
   $('alt').addEventListener('click',function(){
     var o=order();
     showDoc(doc({title:'סיכום הזמנה',ref:ref('SO'),to:o.payer+' · '+o.org,contact:o.contact+' · '+o.role,email:o.email,phone:o.phone,net:o.amount_net,
-      rows:[[esc(o.plan_name)+'<br><span style="color:var(--ink3);font-size:14px">'+(plan==='pilot'?'90 יום · מקוזז מהשנה הראשונה אם ממשיכים':'חיוב שנתי')+'</span>',o.list_price]].concat(o.credit?[['קיזוז פיילוט "קהילה שומרת"',-o.credit]]:[]),
-      terms:['תשלום בהעברה בנקאית או מול הזמנת רכש. פרטי חשבון יישלחו עם אישור ההזמנה.','ההזמנה בתוקף 30 יום.'].concat(baseTerms),
+      rows:[[esc(o.plan_name)+'<br><span style="color:var(--ink3);font-size:14px">'+(plan==='pilot'?'90 יום · מקוזז מהרישיון אם ממשיכים':o.period==='month'?'חיוב חודשי בהוראת קבע · ביטול בכל עת · הסכום לחודש':'שנתי מראש')+'</span>',o.list_price]].concat(o.credit&&o.period!=='month'?[['קיזוז פיילוט "קהילה שומרת"',-o.credit]]:[]),
+      terms:['תשלום בהעברה בנקאית או מול הזמנת רכש. פרטי חשבון יישלחו עם אישור ההזמנה.','ההזמנה בתוקף 30 יום.'].concat(o.credit&&o.period==='month'?['קיזוז פיילוט "קהילה שומרת" ('+ils(o.credit)+') מהחיובים החודשיים הראשונים.']:[],baseTerms),
       note:'מסמך זה הוא סיכום הזמנה, ואינו חשבונית מס.'}),
       'סיכום ההזמנה מוכן','הדפיסו או שמרו כ־PDF, ושלחו לנו. נחזור עם פרטי העברה וחשבונית.','סיכום הזמנה SH✡MER Command · '+o.org, orderText(o)+'\nמבקשים לשלם בהעברה בנקאית / מול הזמנת רכש.\n','order');
     SC.track('order_doc',{plan:plan});
@@ -467,6 +489,7 @@
   });
 
   /* boot */
+  pers();
   if(plan==='council') go('q'); else go(1);
 })();
 </script>

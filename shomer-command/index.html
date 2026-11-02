@@ -346,7 +346,7 @@
         <h3 id="p-pilot">פיילוט "קהילה שומרת"</h3>
         <p class="for">90 יום · מתחילים קטן, מודדים יחד, מחליטים לפי מה שרואים.</p>
         <div class="price"><b><bdi>₪2,500</bdi></b><span>לכל 90 הימים</span></div>
-        <p class="price-sub">תשלום אחד. ממשיכים? ה־<bdi>₪2,500</bdi> מקוזזים מהשנה הראשונה.</p>
+        <p class="price-sub">תשלום אחד. ממשיכים? ה־<bdi>₪2,500</bdi> מקוזזים מהרישיון.</p>
         <ul class="incl">
           <li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>הטמעה: הדרכה קצרה לרבש"צ ולשומרים הראשונים</span></li>
           <li><svg aria-hidden="true"><use href="#tick-g"/></svg><span>לוח בקרה לרבש"צ / לקב"ט לכל התקופה</span></li>
@@ -359,10 +359,14 @@
 
       <article class="plan" aria-labelledby="p-lic">
         <span class="tag mute">לפי גודל הקהילה</span>
-        <h3 id="p-lic">רישיון שנתי</h3>
+        <h3 id="p-lic">רישיון חודשי</h3>
         <p class="for">יישוב, קיבוץ, מושב, שכונה או מועצה מקומית.</p>
-        <div class="price"><b id="lic-price"><bdi>₪9,900</bdi></b><span>לשנה</span></div>
-        <p class="price-sub" id="lic-sub">כ־<bdi>₪830</bdi> לחודש, בחיוב שנתי · כ־<bdi>₪10</bdi> לתושב</p>
+        <div class="seg" role="group" aria-label="תדירות חיוב" id="per" style="grid-template-columns:repeat(2,1fr)">
+          <button type="button" data-per="month" aria-pressed="true">חודשי</button>
+          <button type="button" data-per="year" aria-pressed="false" id="per-y">שנתי · חוסכים <bdi>₪780</bdi></button>
+        </div>
+        <div class="price"><b id="lic-price"><bdi>₪890</bdi></b><span id="lic-per">לחודש</span></div>
+        <p class="price-sub" id="lic-sub">חיוב חודשי בהוראת קבע · ביטול בכל עת</p>
         <div class="seg" role="group" aria-label="גודל הקהילה" id="seg">
           <button type="button" data-tier="s" aria-pressed="true">עד <bdi>1,000</bdi></button>
           <button type="button" data-tier="m" aria-pressed="false">עד <bdi>5,000</bdi></button>
@@ -374,8 +378,8 @@
           <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>חומרי הטמעה ותרגיל SOS מתואם אחד בשנה</span></li>
           <li><svg aria-hidden="true"><use href="#tick-n"/></svg><span>תמיכה ישירה מדייב</span></li>
         </ul>
-        <p class="credit" id="lic-credit">אחרי פיילוט: <b><bdi>₪7,400</bdi></b> בשנה הראשונה</p>
-        <a class="btn-ghost" id="lic-cta" href="checkout/?plan=s" data-track="select_plan" data-track-x="license">לרכישת רישיון</a>
+        <p class="credit" id="lic-credit">אחרי פיילוט: ה־<b><bdi>₪2,500</bdi></b> מקוזזים מהחיובים הראשונים</p>
+        <a class="btn-ghost" id="lic-cta" href="checkout/?plan=s&amp;period=month" data-track="select_plan" data-track-x="license">לרכישת רישיון</a>
         <p class="fine">יותר מ־10,000 תושבים? <a class="link" href="checkout/?plan=council">לרישיון מועצה</a></p>
       </article>
 
@@ -457,11 +461,11 @@
       </details>
       <details>
         <summary>איך משלמים?</summary>
-        <div class="a"><p>פיילוט ורישיון שנתי: באשראי, ב־Bit, ב־Apple Pay או ב־Google Pay, בעמוד תשלום מאובטח. אפשר גם בהעברה בנקאית מול הזמנה.</p><p>מועצות ורשויות: מקבלים הצעת מחיר, ומשלמים מול הזמנת רכש וחשבונית מס.</p></div>
+        <div class="a"><p>רישיון חודשי: הוראת קבע חודשית בכרטיס אשראי, בעמוד תשלום מאובטח. ביטול בכל עת.</p><p>פיילוט ורישיון שנתי: באשראי, ב־Bit, ב־Apple Pay או ב־Google Pay, בעמוד תשלום מאובטח. אפשר גם בהעברה בנקאית מול הזמנה.</p><p>מועצות ורשויות: מקבלים הצעת מחיר, ומשלמים מול הזמנת רכש וחשבונית מס.</p></div>
       </details>
       <details>
         <summary>מה קורה ביום ה־90?</summary>
-        <div class="a"><p>פגישת סיכום: מה עבד, מה לא, ומחליטים יחד. ממשיכים? ה־<bdi>₪2,500</bdi> מקוזזים מהרישיון של השנה הראשונה. למשל, יישוב של עד 1,000 תושבים משלם <bdi>₪7,400</bdi> על השנה הראשונה במקום <bdi>₪9,900</bdi>. לא ממשיכים? אין התחייבות.</p></div>
+        <div class="a"><p>פגישת סיכום: מה עבד, מה לא, ומחליטים יחד. ממשיכים? ה־<bdi>₪2,500</bdi> מקוזזים מהרישיון: בחיוב חודשי, מהחיובים החודשיים הראשונים; בתשלום שנתי מראש, מהשנה הראשונה. למשל, יישוב של עד 1,000 תושבים שמשלם שנתי משלם <bdi>₪7,400</bdi> על השנה הראשונה במקום <bdi>₪9,900</bdi>. לא ממשיכים? אין התחייבות.</p></div>
       </details>
       <details>
         <summary>אין לנו תקציב. אפשר לממן את הפיילוט אחרת?</summary>
@@ -517,20 +521,33 @@
 (function(){
   SC.track('view_landing');
   var seg=document.getElementById('seg'), price=document.getElementById('lic-price'), sub=document.getElementById('lic-sub'), cta=document.getElementById('lic-cta');
-  var credit=document.getElementById('lic-credit');
-  function sub_(t){ var p=SC.PLANS[t]; return 'כ־<bdi>'+SC.ils(SC.monthly(p.price))+'</bdi> לחודש, בחיוב שנתי · '+(p.perResident?'כ־<bdi>₪'+p.perResident+'</bdi> לתושב':p.residents); }
+  var credit=document.getElementById('lic-credit'), per=document.getElementById('per'), tier='s', period='month';
+  function sub_(t){ var p=SC.PLANS[t]; return period==='month'?'חיוב חודשי בהוראת קבע · ביטול בכל עת':'תשלום שנתי מראש · חוסכים <bdi>'+SC.ils(SC.saving(t))+'</bdi> בשנה לעומת חודשי'; }
+  /* monthly-first: the card shows the monthly price; annual prepay is the discount option */
+  function render(){
+    var p=SC.PLANS[tier], m=period==='month';
+    document.getElementById('p-lic').textContent=m?'רישיון חודשי':'רישיון שנתי';
+    price.innerHTML='<bdi>'+SC.ils(m?p.month:p.price)+'</bdi>'; document.getElementById('lic-per').textContent=m?'לחודש':'לשנה';
+    sub.innerHTML=sub_(tier); cta.href='checkout/?plan='+tier+'&period='+period;
+    document.getElementById('per-y').innerHTML='שנתי · חוסכים <bdi>'+SC.ils(SC.saving(tier))+'</bdi>';
+    credit.innerHTML=m?'אחרי פיילוט: ה־<b><bdi>'+SC.ils(SC.PILOT_CREDIT)+'</bdi></b> מקוזזים מהחיובים הראשונים':'אחרי פיילוט: <b><bdi>'+SC.ils(p.price-SC.PILOT_CREDIT)+'</bdi></b> בשנה הראשונה';
+  }
   seg.addEventListener('click',function(e){
     var b=e.target.closest('button[data-tier]'); if(!b) return;
-    var t=b.getAttribute('data-tier'), p=SC.PLANS[t];
+    tier=b.getAttribute('data-tier');
     seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); });
-    price.innerHTML='<bdi>'+SC.ils(p.price)+'</bdi>'; sub.innerHTML=sub_(t); cta.href='checkout/?plan='+t;
-    credit.innerHTML='אחרי פיילוט: <b><bdi>'+SC.ils(p.price-SC.PILOT_CREDIT)+'</bdi></b> בשנה הראשונה';
-    SC.track('select_tier',{tier:t});
+    render(); SC.track('select_tier',{tier:tier});
+  });
+  per.addEventListener('click',function(e){
+    var b=e.target.closest('button[data-per]'); if(!b) return;
+    period=b.getAttribute('data-per');
+    per.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); });
+    render(); SC.track('select_period',{period:period});
   });
   var callBody='שלום דייב,\nנשמח לתאם שיחה של 15 דקות על SH✡MER לקהילה שלנו.\n\nשם הקהילה:\nמספר תושבים (בערך):\nשם ותפקיד:\nטלפון:\n';
   document.getElementById('partner-cta').href=SC.mailto('פיילוט SH✡MER · מימון הפיילוט', callBody);
   document.getElementById('call-cta').href=SC.mailto('פיילוט SH✡MER', callBody);
-  sub.innerHTML=sub_('s');
+  render();
   /* plans section view */
   try{ var seen=false, io=new IntersectionObserver(function(en){ if(!seen&&en[0].isIntersecting){ seen=true; SC.track('view_plans',{x:'scroll'}); io.disconnect(); } },{threshold:.3}); io.observe(document.getElementById('plans')); }catch(e){}
 })();

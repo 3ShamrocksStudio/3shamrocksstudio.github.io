@@ -5,10 +5,11 @@
 
   /* ═══ 1. PAYMENT — the one plug-in point (Morning / Green Invoice) ═══════════════════════════
      mode 'placeholder' : no payment yet — shows "התשלום יופעל בקרוב", sends nothing.
-     mode 'link'        : Morning payment link per plan (paste the 4 links). Fastest; access is matched by payer email.
+     mode 'link'        : Morning payment link per plan + period (paste the 7 links). Fastest; access is matched by payer email.
      mode 'api'         : POST the order to our Supabase function, which creates a Morning payment form
                           (/payments/form) with a notify URL and returns {url}. Most reliable for automatic access. */
-  var PAY = { mode: 'placeholder', links: { pilot: '', s: '', m: '', l: '' }, endpoint: '' };
+  /* PASTE MORNING LINKS HERE ↓ pilot = one-time · s_m/m_m/l_m = monthly "הוראת קבע" links · s_y/m_y/l_y = annual prepay — then set mode: 'link' */
+  var PAY = { mode: 'placeholder', links: { pilot: '', s_m: '', m_m: '', l_m: '', s_y: '', m_y: '', l_y: '' }, endpoint: '' };
 
   /* ═══ 2. ANALYTICS — empty = off. ga4: existing SH✡MER GA4 id (G-…) · clarity: Microsoft Clarity project id ═══ */
   var ANALYTICS = { ga4: '', clarity: '' };
@@ -19,15 +20,16 @@
   /* ═══ Prices (PRICING.md, before VAT) ═══ */
   var VAT = 0.18; /* Israel VAT 18% since 1 Jan 2025 */
   /* One naming + one price table for every page (PRICING.md, revision 2026-10-28). */
-  var PILOT_CREDIT = 2500; /* paid pilot is credited against the first licence year */
+  var PILOT_CREDIT = 2500; /* paid pilot is credited against the first licence charges (first months, or the first prepaid year) */
+  /* month: monthly licence by standing order (default) · price: annual prepay */
   var PLANS = {
     pilot: { key: 'pilot', name: 'פיילוט "קהילה שומרת" · 90 יום', short: 'פיילוט · 90 יום', price: 2500, period: 'ל־90 יום', residents: 'כל קהילה עד 10,000 תושבים',
-      note: 'מקוזז מהשנה הראשונה אם ממשיכים. ללא התחייבות להמשך.' },
-    s: { key: 's', name: 'רישיון שנתי · עד 1,000 תושבים', short: 'עד 1,000 תושבים', price: 9900, period: 'לשנה', residents: 'עד 1,000 תושבים', perResident: 10,
+      note: 'מקוזז מהרישיון אם ממשיכים. ללא התחייבות להמשך.' },
+    s: { key: 's', name: 'רישיון · עד 1,000 תושבים', short: 'עד 1,000 תושבים', month: 890, price: 9900, period: 'לשנה', residents: 'עד 1,000 תושבים', perResident: 10,
       note: 'שילמתם פיילוט? ה־₪2,500 מקוזזים.' },
-    m: { key: 'm', name: 'רישיון שנתי · עד 5,000 תושבים', short: 'עד 5,000 תושבים', price: 18000, period: 'לשנה', residents: '1,001–5,000 תושבים',
+    m: { key: 'm', name: 'רישיון · עד 5,000 תושבים', short: 'עד 5,000 תושבים', month: 1590, price: 18000, period: 'לשנה', residents: '1,001–5,000 תושבים',
       note: 'שילמתם פיילוט? ה־₪2,500 מקוזזים.' },
-    l: { key: 'l', name: 'רישיון שנתי · עד 10,000 תושבים', short: 'עד 10,000 תושבים', price: 25000, period: 'לשנה', residents: '5,001–10,000 תושבים',
+    l: { key: 'l', name: 'רישיון · עד 10,000 תושבים', short: 'עד 10,000 תושבים', month: 2190, price: 25000, period: 'לשנה', residents: '5,001–10,000 תושבים',
       note: 'שילמתם פיילוט? ה־₪2,500 מקוזזים.' }
   };
   var COUNCIL = { name: 'רישיון מועצה', perResident: 2, min: 40000 };
@@ -36,6 +38,8 @@
   function ils(n) { n = Math.round(n); return (n < 0 ? '−' : '') + '₪' + Math.abs(n).toLocaleString('en-US'); }
   /* monthly equivalent of an annual price, rounded to ₪10 (display only; billing stays annual) */
   function monthly(n) { return Math.round(n / 12 / 10) * 10; }
+  /* honest annual-prepay saving vs 12 monthly charges: s 780 · m 1,080 · l 1,280 */
+  function saving(k) { var p = PLANS[k]; return p && p.month ? p.month * 12 - p.price : 0; }
   function withVat(n) { var v = Math.round(n * VAT); return { net: n, vat: v, total: n + v }; }
   function councilPrice(residents) { return Math.max(COUNCIL.min, Math.round((+residents || 0) * COUNCIL.perResident)); }
 
@@ -97,10 +101,11 @@
 
   /* ═══ payment hand-off (checkout calls this) ═══ */
   function startPayment(order) {
-    track('pay_click', { plan: order.plan, mode: PAY.mode });
+    track('pay_click', { plan: order.plan, period: order.period || '', mode: PAY.mode });
+    var linkKey = order.plan === 'pilot' ? 'pilot' : order.plan + (order.period === 'month' ? '_m' : '_y');
     /* a fixed-price payment link cannot apply the pilot credit: those orders go through the email/quote path */
-    if (PAY.mode === 'link' && PAY.links[order.plan] && !order.credit) {
-      W.location.href = PAY.links[order.plan];
+    if (PAY.mode === 'link' && PAY.links[linkKey] && !order.credit) {
+      W.location.href = PAY.links[linkKey];
       return Promise.resolve('redirect');
     }
     if (PAY.mode === 'api' && PAY.endpoint) {
@@ -127,7 +132,7 @@
     return 'mailto:' + CONTACT + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   }
 
-  W.SC = { PAY: PAY, PLANS: PLANS, COUNCIL: COUNCIL, PILOT_CREDIT: PILOT_CREDIT, monthly: monthly, VAT: VAT, CONTACT: CONTACT, ils: ils, withVat: withVat,
+  W.SC = { PAY: PAY, PLANS: PLANS, COUNCIL: COUNCIL, PILOT_CREDIT: PILOT_CREDIT, monthly: monthly, saving: saving, VAT: VAT, CONTACT: CONTACT, ils: ils, withVat: withVat,
     councilPrice: councilPrice, track: track, variant: variant, startPayment: startPayment, toast: toast,
     copy: copy, mailto: mailto, sget: sget, sset: sset, _buffer: buffer };
 
