@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#13171A">
+<title>Listing Kit · @dealxscout.ai</title>
+<meta name="description" content="Free AI listing kit for real-estate agents: listing-copy prompts, open-house posts, seller update emails, speed-to-lead replies and a virtual staging disclosure note.">
+<link rel="icon" type="image/png" href="../avatar.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#13171A;--bg1:#1E2428;--accent:#C08868;--acc-text:#C08868;--ink:#EFE6DA;--muted:#B9B2A8;--on:#13171A;--line:rgba(239,230,218,.13);--hw:300;--kw:500;--hls:-.01em;--rule:solid;--print-acc:#7A4A2E}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{color-scheme:dark;--card:color-mix(in srgb,var(--ink) 5%,var(--bg))}
+html{background:var(--bg);scroll-behavior:smooth}
+body{min-height:100vh;color:var(--ink);font:16px/1.6 'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  background:radial-gradient(110% 55% at 50% 0%,var(--bg1) 0%,var(--bg) 68%) no-repeat,var(--bg)}
+a{color:var(--acc-text)}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 56px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:max(16px,env(safe-area-inset-top)) 0 8px}
+.back{font:700 12px/1 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:12px 0}
+.back:hover{color:var(--ink)}
+.btn{font:700 12px/1 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:100px;
+  padding:12px 16px;border:1px solid var(--accent);background:var(--accent);color:var(--on)}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--acc-text)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hero{padding:22px 0 30px;text-align:center}
+.hero .logo{display:block;margin:0 auto 10px;width:min(240px,62vw);height:auto;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%);mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%)}
+.hero .logo.word{width:min(300px,74vw);-webkit-mask-image:none;mask-image:none;margin:26px auto 26px;
+  filter:drop-shadow(0 0 1.5px rgba(0,188,107,.9)) drop-shadow(0 0 14px rgba(0,188,107,.55))}
+.kicker{font:700 12px/1.4 'Space Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--acc-text)}
+h1{margin-top:12px;font-family:'Space Grotesk',sans-serif;font-weight:var(--hw);font-size:clamp(36px,9vw,60px);line-height:1.02;letter-spacing:var(--hls)}
+h1 .k{color:var(--acc-text);font-weight:var(--kw)}
+.lede{max-width:560px;margin:16px auto 0;font-size:17px;line-height:1.55;color:color-mix(in srgb,var(--ink) 88%,var(--bg))}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px;list-style:none}
+.pills li{font:700 11px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:8px 11px}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:6px 0 8px;list-style:none;counter-reset:t}
+.toc a{display:flex;gap:10px;align-items:baseline;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;line-height:1.35;height:100%}
+.toc a:hover{border-color:var(--accent)}
+.toc a span{font:700 11px/1 'Space Mono',monospace;color:var(--acc-text)}
+section{padding-top:40px;margin-top:40px;border-top:1px var(--rule) var(--line)}
+.sh{display:flex;align-items:baseline;gap:12px}
+.num{font:700 13px/1 'Space Mono',monospace;color:var(--acc-text);letter-spacing:.08em}
+h2{font-family:'Space Grotesk',sans-serif;font-weight:var(--hw);font-size:clamp(26px,6vw,34px);line-height:1.1;letter-spacing:var(--hls)}
+h2 .k{color:var(--acc-text);font-weight:var(--kw)}
+.intro{margin:10px 0 18px;color:var(--muted);max-width:620px}
+.intro strong{color:var(--ink)}
+.grid{display:grid;gap:12px}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 16px 14px}
+.th{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;padding-right:76px}
+h3{font-size:15.5px;font-weight:600;line-height:1.3}
+.ttag{flex:none;font:700 10.5px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:5px 8px}
+.tx{white-space:pre-wrap;word-wrap:break-word;font:14.5px/1.6 'Inter',system-ui,sans-serif;color:var(--ink);
+  background:color-mix(in srgb,var(--bg) 65%,transparent);border:1px solid var(--line);border-radius:10px;padding:12px 13px}
+.copy{position:absolute;top:12px;right:12px;font:700 11px/1 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  color:var(--acc-text);background:transparent;border:1px solid var(--accent);border-radius:100px;padding:9px 12px;min-width:64px}
+.copy:hover{background:var(--accent);color:var(--on)}
+.copy.ok{background:var(--accent);color:var(--on)}
+.check{list-style:none;display:grid;gap:8px}
+.check label{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;cursor:pointer;line-height:1.5}
+.check input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;margin-top:2px;border:1.5px solid var(--muted);border-radius:5px;display:grid;place-content:center;cursor:pointer}
+.check input:checked{background:var(--accent);border-color:var(--accent)}
+.check input:checked::after{content:"";width:10px;height:6px;border:2px solid var(--on);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.check b{font-weight:600}
+.check em{font-style:normal;color:var(--muted)}
+.note{display:block;margin:16px 0;padding:14px 16px;border-left:3px solid var(--accent);background:var(--card);border-radius:0 12px 12px 0;font-size:14.5px;line-height:1.6;color:color-mix(in srgb,var(--ink) 88%,var(--bg))}
+.note b{display:block;font-weight:600;color:var(--ink);margin-bottom:4px}
+.note ul{margin:6px 0 0 18px}
+.steps{list-style:none;display:grid;gap:10px;counter-reset:s}
+.steps li{position:relative;padding:14px 16px 14px 60px;background:var(--card);border:1px solid var(--line);border-radius:14px;line-height:1.55}
+.steps li::before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;left:16px;top:15px;font:700 14px/1 'Space Mono',monospace;color:var(--acc-text)}
+.steps b{display:block;font-weight:600}
+.steps span{color:var(--muted)}
+.when{display:inline-block;font:700 11px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-text);margin-bottom:6px}
+.fields{display:grid;gap:10px}
+.f{display:grid;gap:6px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.f label{font-size:14px;font-weight:600;line-height:1.4}
+.f small{font-weight:400;color:var(--muted)}
+.f input,.f textarea{width:100%;font:16px/1.5 'Inter',system-ui,sans-serif;color:var(--ink);background:color-mix(in srgb,var(--bg) 70%,transparent);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.f textarea{min-height:64px;resize:vertical}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px}
+.out div{padding:14px;border:1px solid var(--accent);border-radius:12px;background:color-mix(in srgb,var(--accent) 8%,var(--bg))}
+.out span{display:block;font:700 11px/1.3 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.out b{display:block;margin-top:6px;font:700 26px/1.1 'Space Grotesk',sans-serif;color:var(--ink)}
+.row2{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.ideas{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.ideas ol{margin:8px 0 0;padding-left:0;list-style:none;display:grid;gap:7px}
+.ideas li{display:flex;gap:10px;line-height:1.45;font-size:14.5px}
+.ideas li i{font:700 12px/1.6 'Space Mono',monospace;font-style:normal;color:var(--acc-text);flex:none;width:26px}
+.small{font-size:13.5px;color:var(--muted)}
+.cc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cc .f input[type=color]{height:44px;padding:4px;cursor:pointer}
+.swatch{margin-top:12px;border-radius:12px;padding:18px 16px;border:1px solid var(--line)}
+.swatch p{font-size:16px}.swatch p.lg{font:700 24px/1.2 'Space Grotesk',sans-serif;margin-top:4px}
+.ft{margin-top:56px;padding-top:24px;border-top:1px var(--rule) var(--line);text-align:center}
+.ft .made{font:700 12px/1.6 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ft .follow{display:inline-flex;margin:16px 0 14px;text-decoration:none}
+.ft p.legal{font-size:12.5px;color:var(--muted);max-width:520px;margin:0 auto;line-height:1.55}
+@media (max-width:420px){.th{padding-right:72px}.steps li{padding-left:52px}.steps li::before{left:14px}.cc{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{
+  @page{margin:14mm}
+  :root{--ink:#111;--muted:#444;--line:#bbb;--card:#fff;--acc-text:var(--print-acc);--accent:var(--print-acc);--bg:#fff}
+  html,body{background:#fff !important;color:#111}
+  .top,.copy,.toc,.no-print,.ft .follow{display:none !important}
+  .wrap{max-width:none;padding:0}
+  .hero{padding:0 0 12px}.hero .logo{width:120px;-webkit-mask-image:none;mask-image:none;border-radius:12px}
+  .hero .logo.word{width:200px;filter:none;background:none;padding:0}
+  h1{font-size:32px}.lede{font-size:13px}
+  section{margin-top:18px;padding-top:16px;break-before:auto}
+  .card,.check label,.steps li,.f,.note,.out div,.ideas>div{break-inside:avoid;background:#fff !important;border-color:#bbb}
+  .tx{background:#fff;border-color:#ccc;font-size:12px}
+  .th{padding-right:0}
+  .check input{border-color:#333}
+  .f input,.f textarea{background:#fff;color:#111;border-color:#999}
+  a{color:#111}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top" aria-label="Page">
+    <a class="back" href="../">&larr; @dealxscout.ai</a>
+    <button class="btn" id="pdf" type="button">Save as PDF</button>
+  </nav>
+  <header class="hero">
+    <img class="logo" src="../logo.jpg" width="480" height="480" alt="DEALXSCOUT.AI logo: copper line-art bloodhound in a circle">
+    <p class="kicker">Deal file · Free listing kit</p>
+    <h1>The Listing <span class="k">Kit</span></h1>
+    <p class="lede">Copy-paste AI prompts for listing copy, open-house posts and seller updates, a speed-to-lead reply set, and a plain note on disclosing virtual staging. One usable move at a time. Print it or save it as a PDF.</p>
+    <ul class="pills"><li>7 prompts</li><li>6 replies</li><li>Printable</li></ul>
+  </header>
+  <main>
+    <ul class="toc" aria-label="Contents"><li><a href="#listing"><span>01</span>Listing copy</a></li><li><a href="#openhouse"><span>02</span>Open house</a></li><li><a href="#seller"><span>03</span>Seller updates</a></li><li><a href="#speed"><span>04</span>Speed-to-lead</a></li><li><a href="#staging"><span>05</span>Staging disclosure</a></li></ul>
+    <section id="listing"><div class="sh"><span class="num">01</span><h2>Listing <span class="k">copy</span> prompts</h2></div><p class="intro">Paste into ChatGPT, Claude, Gemini or whatever you use. Fill the [brackets] with real facts only.</p><aside class="note"><b>Before you paste anything</b><ul>
+<li>Fact-check every line the AI writes against the listing. It will invent details if you let it.</li>
+<li>Describe the property, not the people who &ldquo;should&rdquo; live there. Fair housing rules apply to ad copy.</li>
+<li>Check your MLS's character limits and remarks rules before you publish.</li></ul></aside><div class="grid"><article class="card tpl"><div class="th"><h3>MLS public remarks</h3><span class="ttag">MLS</span></div><pre class="tx" id="t9">You are an experienced listing copywriter. Write MLS public remarks for the property below.
+
+Rules:
+- Use only the facts I give you. Do not invent features, upgrades, views or distances.
+- Describe the property, not the ideal buyer (no &quot;perfect for families&quot;, &quot;great for retirees&quot;). Follow US fair housing advertising guidelines.
+- Lead with the single strongest feature. Plain, specific words. No clichés like &quot;must see&quot;, &quot;won&#x27;t last&quot;, &quot;nestled&quot;.
+- Maximum [character limit] characters including spaces.
+
+Facts:
+- Area / neighborhood: [ ]
+- Beds / baths / sq ft: [ ]
+- Lot and outdoor space: [ ]
+- Updates, with years: [ ]
+- Standout features: [ ]
+- Nearby (only verifiable names, e.g. a park or transit line): [ ]
+
+Give me two versions: one warm, one crisp.</pre><button class="copy" type="button" data-copy="t9" aria-label="Copy: MLS public remarks">Copy</button></article><article class="card tpl"><div class="th"><h3>Headline + feature bullets</h3><span class="ttag">Flyer</span></div><pre class="tx" id="t10">From the facts below, write:
+1) Three headline options, max 8 words each, for a listing flyer and portal.
+2) Six feature bullets, max 10 words each, most important first.
+Use only these facts. No exaggeration, no claims about who the home suits.
+
+Facts: [paste your listing facts]</pre><button class="copy" type="button" data-copy="t10" aria-label="Copy: Headline + feature bullets">Copy</button></article><article class="card tpl"><div class="th"><h3>Just-listed social caption</h3><span class="ttag">Social</span></div><pre class="tx" id="t11">Write an Instagram caption announcing a new listing.
+- First line: the most striking real detail of the home (no &quot;Just listed!&quot; opener).
+- 3 short lines on the best features, from the facts below only.
+- One clear next step: [DM me / link in bio / call].
+- End with the brokerage line: [Brokerage name, license info as required].
+- Max 5 relevant hashtags.
+
+Facts: [ ]</pre><button class="copy" type="button" data-copy="t11" aria-label="Copy: Just-listed social caption">Copy</button></article></div></section><section id="openhouse"><div class="sh"><span class="num">02</span><h2>Open-house <span class="k">posts</span></h2></div><p class="intro">One announcement post and a day-before reminder you can split into Stories.</p><div class="grid"><article class="card tpl"><div class="th"><h3>Open-house announcement</h3><span class="ttag">Post</span></div><pre class="tx" id="t12">Write a short social post for an open house.
+Details: [address or area], [date], [time window], [parking / entry notes].
+Highlight 2 real features: [feature 1], [feature 2].
+Tone: welcoming, calm, no hype. Include &quot;Brokerage: [name]&quot; at the end.
+Give me a version under 60 words and one under 120 words.</pre><button class="copy" type="button" data-copy="t12" aria-label="Copy: Open-house announcement">Copy</button></article><article class="card tpl"><div class="th"><h3>Day-before reminder (3 Stories)</h3><span class="ttag">Stories</span></div><pre class="tx" id="t13">Write text for 3 Instagram Story frames, max 12 words each, for an open house tomorrow.
+Frame 1: the hook (one real feature of the home).
+Frame 2: when and where: [date], [time], [area].
+Frame 3: one action: [tap the link / DM &quot;TOUR&quot; / save this].
+Facts: [ ]</pre><button class="copy" type="button" data-copy="t13" aria-label="Copy: Day-before reminder (3 Stories)">Copy</button></article></div></section><section id="seller"><div class="sh"><span class="num">03</span><h2>Seller <span class="k">update</span> emails</h2></div><p class="intro">Sellers stay calm when they hear from you before they have to ask.</p><div class="grid"><article class="card tpl"><div class="th"><h3>Weekly seller update</h3><span class="ttag">Email</span></div><pre class="tx" id="t14">Write a short weekly update email from me to my sellers.
+Include, in this order:
+- Showings this week: [number]
+- Online activity, if I have it: [views / saves from the portal]
+- Buyer feedback themes: [paste notes]
+- What I did this week: [ ]
+- What I&#x27;ll do next week: [ ]
+Tone: warm, factual, confident. Under 180 words. End by offering a quick call and give two time options: [ ], [ ].</pre><button class="copy" type="button" data-copy="t14" aria-label="Copy: Weekly seller update">Copy</button></article><article class="card tpl"><div class="th"><h3>The price conversation</h3><span class="ttag">Email</span></div><pre class="tx" id="t15">Help me write a calm, respectful email to my sellers about how the market has responded so far.
+Facts:
+- Days on market: [ ]
+- Showings: [ ]  Second showings: [ ]
+- Feedback themes: [ ]
+- Recent comparable sales: [address, price, date] x3
+Lay out three options without pushing: hold as is, refresh (photos, copy, staging), or adjust the price. Explain the trade-off of each in one or two sentences. Ask for a call to decide together. Under 220 words.</pre><button class="copy" type="button" data-copy="t15" aria-label="Copy: The price conversation">Copy</button></article></div></section><section id="speed"><div class="sh"><span class="num">04</span><h2>Speed-to-lead <span class="k">replies</span></h2></div><p class="intro">Reply while they're still looking at the listing. Short, specific, one question.</p><div class="grid"><article class="card tpl"><div class="th"><h3>1 · Inquiry about a listing</h3><span class="ttag">Buyer</span></div><pre class="tx" id="t16">Hi [first name], it&#x27;s [Your name] with [Brokerage]. Got your question about [address]. It&#x27;s [still available / under contract].
+Want to see it? I have [day, time] or [day, time].
+Reply STOP to opt out.</pre><button class="copy" type="button" data-copy="t16" aria-label="Copy: 1 · Inquiry about a listing">Copy</button></article><article class="card tpl"><div class="th"><h3>2 · After hours</h3><span class="ttag">Buyer</span></div><pre class="tx" id="t17">Hi [first name], [Your name] with [Brokerage]. Thanks for your message about [address]. I&#x27;ll reply properly first thing tomorrow. If you&#x27;d like a tour, send me two times that work for you.</pre><button class="copy" type="button" data-copy="t17" aria-label="Copy: 2 · After hours">Copy</button></article><article class="card tpl"><div class="th"><h3>3 · Just browsing</h3><span class="ttag">Buyer</span></div><pre class="tx" id="t18">No pressure at all, [first name]. What would make a home a yes for you: area, price range, must-haves? I&#x27;ll send you matches as they come up, nothing else.</pre><button class="copy" type="button" data-copy="t18" aria-label="Copy: 3 · Just browsing">Copy</button></article><article class="card tpl"><div class="th"><h3>4 · What&#x27;s my home worth?</h3><span class="ttag">Seller</span></div><pre class="tx" id="t19">Thanks for reaching out about [address], [first name]. Online estimates can be off in either direction, so I&#x27;d rather give you a real range.
+Can I ask three quick questions about updates and condition? Or I can stop by for 15 minutes on [day].</pre><button class="copy" type="button" data-copy="t19" aria-label="Copy: 4 · What&#x27;s my home worth?">Copy</button></article><article class="card tpl"><div class="th"><h3>5 · Next-day follow-up</h3><span class="ttag">Follow-up</span></div><pre class="tx" id="t20">Hi [first name], [Your name] again. Still curious about [address / homes in area]? Happy to send similar places or set up a quick tour. Just reply here.</pre><button class="copy" type="button" data-copy="t20" aria-label="Copy: 5 · Next-day follow-up">Copy</button></article><article class="card tpl"><div class="th"><h3>6 · Voicemail</h3><span class="ttag">Call</span></div><pre class="tx" id="t21">Hi [first name], it&#x27;s [Your name] with [Brokerage], getting back to you about [address]. I&#x27;m texting you too so you have my number. Talk soon.</pre><button class="copy" type="button" data-copy="t21" aria-label="Copy: 6 · Voicemail">Copy</button></article></div><aside class="note"><b>Texting leads</b><p>Text people who reached out to you, include your name and brokerage, and stop when anyone asks. Your brokerage and state may have extra rules on texting and calling leads: check them.</p></aside></section><section id="staging"><div class="sh"><span class="num">05</span><h2>Virtual staging <span class="k">disclosure</span></h2></div><p class="intro">Virtual staging helps buyers picture a room. It must never hide what the room really is.</p><ul class="check"><li><label><input type="checkbox"><span><b>Label every virtually staged photo</b> clearly, e.g. &ldquo;Virtually staged&rdquo;, on the image and/or in the remarks, as your MLS requires.</span></label></li><li><label><input type="checkbox"><span><b>Check your MLS and local rules first.</b> Many have specific requirements; some ask you to include the original, unstaged photo too.</span></label></li><li><label><input type="checkbox"><span><b>Stage, don't alter.</b> Adding furniture and decor is staging. Removing defects, changing views, or adding or changing permanent fixtures misrepresents the property.</span></label></li><li><label><input type="checkbox"><span><b>Say it at showings too</b>: furniture in the photos is digital and not included.</span></label></li></ul><div class="grid" style="margin-top:12px"><article class="card tpl"><div class="th"><h3>Disclosure line for remarks</h3><span class="ttag">Remarks</span></div><pre class="tx" id="t22">Some photos are virtually staged. Furniture and decor shown are digital and not included in the sale.</pre><button class="copy" type="button" data-copy="t22" aria-label="Copy: Disclosure line for remarks">Copy</button></article><article class="card tpl"><div class="th"><h3>Photo caption</h3><span class="ttag">Photo</span></div><pre class="tx" id="t23">Virtually staged</pre><button class="copy" type="button" data-copy="t23" aria-label="Copy: Photo caption">Copy</button></article></div></section>
+  </main>
+  <footer class="ft">
+    <p class="made">Made by @dealxscout.ai · 3Shamrocks Media Network</p>
+    <a class="btn ghost follow" href="https://www.instagram.com/dealxscout.ai/" target="_blank" rel="noopener">Follow @dealxscout.ai on Instagram &rarr;</a>
+    <p class="legal">Free to use in your own business. General information, not legal advice: rules differ by state, platform and provider, so check the ones that apply to you. © 2026 3Shamrocks Studio.</p>
+  </footer>
+</div>
+<script>
+(function(){
+  document.addEventListener('click', async function(ev){
+    var b = ev.target.closest('[data-copy]'); if(!b) return;
+    var el = document.getElementById(b.getAttribute('data-copy')); if(!el) return;
+    var txt = el.value !== undefined && el.tagName === 'TEXTAREA' ? el.value : el.innerText;
+    var ok = false;
+    try { await navigator.clipboard.writeText(txt); ok = true; }
+    catch(err){
+      try {
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        ok = document.execCommand('copy'); s.removeAllRanges();
+      } catch(e2){ ok = false; }
+    }
+    var orig = b.getAttribute('data-label') || 'Copy';
+    b.textContent = ok ? 'Copied' : 'Select + copy';
+    b.classList.toggle('ok', ok);
+    setTimeout(function(){ b.textContent = orig; b.classList.remove('ok'); }, 1800);
+  });
+  var p = document.getElementById('pdf');
+  if (p) p.addEventListener('click', function(){ window.print(); });
+})();
+
+</script>
+</body>
+</html>
