@@ -30,7 +30,8 @@ P = [
          ("Where it is","Private test build. Not yet available to download.")],
   shots=["../assets/work/trashure/splashscreen.png","../assets/screens/th-map.png"],
   out=None),
- dict(slug="chore-royale", name="Chore Royale", cat="Family game", status="Free web app",
+ # chore-royale.html and fairent.html are hand-built pages (2 Nov 2026): custom=True keeps them in "More work" links only.
+ dict(slug="chore-royale", custom=True, name="Chore Royale", cat="Family game", status="Free web app",
   line="Spin the wheel, do the chore, snap a photo, earn stars. Nobody argues with the wheel.",
   did="Brand, game loop and a working web app that runs on any phone. No app store, no sign-up.",
   cards=[("The problem","“In a minute” means never. Chores turn into a nightly negotiation."),
@@ -155,6 +156,7 @@ def stub(target):
 if __name__ == "__main__":
     os.makedirs("work", exist_ok=True)
     for p in P:
+        if p.get("custom"): continue
         open(f"work/{p['slug']}.html", "w", encoding="utf-8").write(page(p))
     R = "https://3shamrocksstudio.github.io/"
     redirects = {
@@ -165,7 +167,7 @@ if __name__ == "__main__":
       "studio/index.html": "", "shomernature-case.html": "work/shomer.html",
       # parked: back to the studio home
       "j8nix-case.html": "", "products/j8nix.html": "", "ezra-case.html": "", "products/ezra.html": "",
-      "milo-case.html": "", "products/milo.html": "", "fairent-case.html": "", "products/fairent.html": "",
+      "milo-case.html": "", "products/milo.html": "", "fairent-case.html": "work/fairent.html", "products/fairent.html": "work/fairent.html",
       "products/rookie-king.html": "", "products/media-network.html": "",
     }
     for f, t in redirects.items():
