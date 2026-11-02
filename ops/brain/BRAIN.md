@@ -26,6 +26,7 @@ Kill rules: M2 <2 retainers → outbound at scale, product work to zero. M3 <$12
 9. Dave's emails go from dave@3shamrocks.com (studio) or support@shomer-app.co.il (SH✡MER support), never markodave@gmail.com.
 
 ## 3. The loop (every run executes it)
+0. **Run lock.** `git pull` first. If `brain.json.last_run` is less than 45 minutes old, another firing already ran this slot: log one line in `runs` and stop (no duplicate work).
 1. **Sense.** Read brain.json, Dave's to-do db (artifact slug 9282376f-d9cf-4721-8b12-a2f7fdcae5b0, collection `todo`; every tick/note since `brain.json.last_run`), ops/data.json, Linear team "3Shamrocks Studio", Gmail (replies, receipts), LinkedIn read-only if Chrome is available.
 2. **Update state.** Every Dave tick/note becomes a state change on its product (done step, new fact, his decision). His notes are CEO decisions: log them in `decisions`.
 3. **Score.** For every open step: score = ($ value × probability) ÷ days-to-cash. Steps blocked on Dave don't score; they go to his list.
