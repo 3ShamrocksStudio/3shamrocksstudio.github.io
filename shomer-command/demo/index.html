@@ -73,6 +73,7 @@ body.touring #block{display:block}
 .th-mark{width:30px;height:30px;flex:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
 .th-wm{display:flex;align-items:baseline;gap:7px;font-size:16px;line-height:1}
 .th-wm .sh{font-family:'Marion','Alef',serif;letter-spacing:.04em;font-weight:700}
+.th-wm .sh i{color:var(--g4)}
 .th-wm small{font-size:10.5px;font-weight:700;letter-spacing:.14em;color:var(--tx2);direction:ltr}
 .th-sp{flex:1}
 .th-num{font-size:13px;font-weight:700;color:var(--g4);background:rgba(250,172,34,.12);border:1px solid rgba(250,172,34,.4);border-radius:999px;padding:3px 10px;white-space:nowrap}
@@ -88,6 +89,12 @@ body.touring #block{display:block}
 .tip .body{margin-top:6px;font-size:16px;line-height:1.6;color:var(--ink2)}
 .tip .adv{margin-top:12px;display:grid;grid-template-columns:20px 1fr;gap:10px;padding:10px 12px;border-radius:12px;background:#FFF3E2;font-size:15px;line-height:1.5;color:var(--ink)}
 .tip .adv svg{width:20px;height:20px;margin-top:2px}
+.tmore{margin-top:8px;font-size:14.5px;line-height:1.55;color:var(--ink2)}
+.tmore summary{display:inline-flex;align-items:center;gap:6px;min-height:32px;cursor:pointer;font-weight:700;color:var(--g1);list-style:none}
+.tmore summary::-webkit-details-marker{display:none}
+.tmore summary::after{content:"";width:7px;height:7px;border:solid currentColor;border-width:0 2px 2px 0;transform:translateY(-2px) rotate(45deg);transition:transform .2s ease}
+.tmore[open] summary::after{transform:translateY(1px) rotate(-135deg)}
+.tmore p{margin-top:2px}
 .tdots{display:flex;gap:4px;padding:14px 20px 0;direction:rtl}
 .tdots i{flex:1;height:4px;border-radius:4px;background:#E6E9F0}
 .tdots i.done{background:rgba(252,153,24,.5)}
@@ -157,6 +164,7 @@ body.touring #block{display:block}
   .tip h2{margin-top:8px;font-size:20px}
   .tip .body{font-size:15.5px;line-height:1.55}
   .tip .adv{margin-top:10px;font-size:14.5px;padding:9px 11px}
+  .tmore{font-size:14px;margin-top:6px}
   .tdots{padding:12px 16px 0}
   .tnav{padding:8px 16px 12px}
   .kbd{display:none}
@@ -210,17 +218,17 @@ body.touring #block{display:block}
   <section class="modal" id="intro" role="dialog" aria-modal="true" aria-labelledby="intro-t">
     <div class="mk"><img src="../../assets/shomer-pilot/brand-badge.webp" alt="" width="360" height="360"><span>הדגמה מודרכת · 90 שניות</span></div>
     <h2 id="intro-t">זה לוח הבקרה האמיתי של <span class="sh">SH<i>✡</i>MER</span>.</h2>
-    <p class="body">פתחנו אותו במצב הדגמה, עם תל אביב-יפו כדוגמה. תראו תרחיש אחד מלא, לפי הסדר: מיום רגיל, דרך קריאת SOS, ועד דוח אירוע מתועד.</p>
+    <p class="body">במצב הדגמה, עם תל אביב-יפו כדוגמה. תרחיש אחד, מתחילתו ועד סופו.</p>
     <div class="see">
-      <b>מה תראו ב־90 שניות</b>
+      <b>מה תראו</b>
       <ol>
-        <li>יום רגיל: המפה ותמונת המצב של הקהילה</li>
-        <li class="sos">קריאת SOS נכנסת, והלוח עובר למצב חירום</li>
-        <li>רשימת צעדים: אישור, איתור, קשר וטיפול</li>
-        <li>דוח אירוע מתועד, והיסטוריה מלאה</li>
+        <li>יום רגיל: מפה ותמונת מצב</li>
+        <li class="sos">קריאת SOS ומצב חירום</li>
+        <li>אישור, איתור, קשר וטיפול</li>
+        <li>דוח אירוע והיסטוריה</li>
       </ol>
     </div>
-    <p class="note">האירועים ומספרי הרשת בלוח ובמפה הם נתוני דוגמה. נתוני הפשיעה הם נתוני משטרת ישראל הרשמיים.</p>
+    <p class="note">אירועים ומספרי רשת: נתוני דוגמה. נתוני פשיעה: נתונים רשמיים של משטרת ישראל.</p>
     <div class="acts">
       <button type="button" class="btn" id="go">מתחילים ←</button>
       <a class="plain" href="../#plans" data-track="view_plans" data-track-x="demo-intro">לדלג ישר לתוכניות</a>
@@ -242,6 +250,7 @@ body.touring #block{display:block}
       <h2 id="t-title"></h2>
       <p class="body" id="t-body"></p>
       <div class="adv" id="t-adv"><svg aria-hidden="true"><use href="#tick-g"/></svg><span id="t-adv-txt"></span></div>
+      <details class="tmore" id="t-more"><summary>עוד פרטים</summary><p id="t-more-txt"></p></details>
     </div>
     <div class="tdots" id="t-dots" aria-hidden="true"></div>
     <div class="tnav">
@@ -254,10 +263,10 @@ body.touring #block{display:block}
 
   <!-- closing -->
   <section class="modal" id="end" role="dialog" aria-modal="true" aria-labelledby="end-t">
-    <div class="mk"><img src="../../assets/shomer-pilot/brand-badge.webp" alt="" width="360" height="360"><span>שלב 10 מתוך 10 · סיימתם את הסיור</span></div>
+    <div class="mk"><img src="../../assets/shomer-pilot/brand-badge.webp" alt="" width="360" height="360"><span>שלב 10 מתוך 10 · סיימתם</span></div>
     <h2 id="end-t">רוצים את זה בקהילה שלכם?</h2>
     <div class="recap"><span>SOS בזמן אמת</span><span>מפה בלי שמות</span><span>תיעוד ודוח</span></div>
-    <div class="price-line"><b><bdi>₪2,500</bdi></b><span>פיילוט "קהילה שומרת" · 90 יום, לקהילה, לפני מע"מ. ממשיכים? הסכום מקוזז מהשנה הראשונה. חינם לתושבים, תמיד.</span></div>
+    <div class="price-line"><b><bdi>₪2,500</bdi></b><span>פיילוט "קהילה שומרת" · 90 יום לקהילה, לפני מע"מ. מקוזז מהשנה הראשונה אם ממשיכים. חינם לתושבים, תמיד.</span></div>
     <div class="acts">
       <a class="btn" href="../#plans" id="end-plans" data-track="view_plans" data-track-x="demo-end">לבחירת תוכנית ←</a>
       <a class="plain btnlike" id="end-call" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER" data-track="contact_click" data-track-x="demo-end">לדבר איתנו</a>
@@ -279,15 +288,15 @@ body.touring #block{display:block}
   /* nine steps in the real order of use, then the closing card (step 10: plans). The dashboard runs a
      few seconds of normal operation first; the sample SOS arrives at step 3 and the checklist takes over. */
   var STEPS=[
-    {k:'סקירה · מצב רגיל', ic:'map', sel:'#c-map', act:'normal', t:'כך נראה יום רגיל.', b:'המפה מציגה את גבול השיפוט, את נתוני הפשיעה ואת הדיווחים האחרונים. הפס הירוק בראש הלוח אומר שהכל שקט.', a:'תמונה אחת של כל הטריטוריה, בזמן אמת.'},
-    {k:'הקהילה', ic:'users', sel:'#c-net', act:'normal', t:'הקהילה שלכם, במספרים.', b:'כמה מכשירים מחוברים לרשת, כמה תושבים פעילים היום, וכמה אירועים פתוחים. בלי שמות ובלי מעקב אחרי תושבים.', a:'רואים בשנייה אם יש משהו לטפל בו.'},
-    {k:'התראה נכנסת', ic:'bell', sos:1, sel:'#live-strip', alt:'#c-recs', act:'alarm', t:'קריאת SOS נכנסת.', b:'תושבת לחצה SOS. הלוח עובר מיד למצב חירום: הפס העליון אדום, המסגרות מהבהבות באדום ובכחול, והאירוע קופץ בראש הלוח.', a:'אי אפשר לפספס. אתם יודעים בזמן אמת.'},
-    {k:'אישור קבלה', ic:'check', sos:1, sel:'#sc-guide', alt:'#c-recs', act:'ack', t:'מאשרים שראיתם.', b:'רשימת הצעדים נפתחת לבד. לחיצה על "קיבלתי" משתיקה את האזעקה ורושמת ביומן מתי האירוע התקבל.', a:'כל צעד נפתח רק אחרי הקודם. שום דבר לא נשכח.'},
-    {k:'איתור', ic:'pin', sos:1, sel:'#c-map', act:'locate', t:'מאתרים על המפה.', b:'המפה מתמקדת במיקום האירוע, ברמת הרחוב. הלוח מציג אירועים, לא אנשים: אין שמות ואין מעקב.', a:'תמונה ברורה ששומרת על פרטיות התושבים.'},
-    {k:'קשר ושיגור', ic:'phone', sos:1, sel:'#resp', alt:'#sc-guide', act:'dispatch', t:'יוצרים קשר ומשגרים.', b:'במרכז התגובה בוחרים למי לפנות: שיטור, ביטחון או מגיבים רפואיים. פרטי האירוע מוכנים להעברה ל־100 / 101.', a:'הכל במקום אחד, בלי לחפש.'},
-    {k:'טיפול', ic:'shield', sel:'#sc-guide', alt:'#c-recs', act:'resolve', t:'מסמנים "טופל".', b:'השומר הגיע והמצב בשליטה. מסמנים שהאירוע טופל, והלוח יוצא ממצב חירום.', a:'כולם רואים מיד שהאירוע מאחוריכם.'},
-    {k:'תיעוד', ic:'doc', sel:'#sc-report .acct-card', alt:'#sc-guide', act:'file', t:'ממלאים דוח אירוע.', b:'מועד, מיקום, סוג האירוע, מה נעשה, התוצאה והערות. רוב השדות כבר ממולאים מהיומן.', a:'תיעוד מסודר לכל אירוע: לתחקיר, להנהלה ולמועצה.'},
-    {k:'דוחות והיסטוריה', ic:'history', sel:'#c-feed', act:'history', t:'הכל נשמר בהיסטוריה.', b:'האירוע עבר ל"אירועים קודמים", עם השעות, הטיפול והדוח. כפתור "ייצוא" מפיק דוח מסודר להנהלה.', a:'פחות עבודה ידנית, יותר שקיפות מול הקהילה.'}
+    {k:'מצב רגיל', ic:'map', sel:'#c-map', act:'normal', t:'יום רגיל', b:'המפה מציגה את גבול השיפוט, נתוני פשיעה ודיווחים אחרונים.', a:'כל הטריטוריה בתמונה אחת, בזמן אמת.', m:'הפס הירוק בראש הלוח מסמן שהכל שקט.'},
+    {k:'הקהילה', ic:'users', sel:'#c-net', act:'normal', t:'הקהילה במספרים', b:'מכשירים מחוברים ופעילים היום, ואירועים פתוחים.', a:'רואים בשנייה אם יש במה לטפל.', m:'בלי שמות ובלי מעקב אחרי תושבים.'},
+    {k:'התראה נכנסת', ic:'bell', sos:1, sel:'#live-strip', alt:'#c-recs', act:'alarm', t:'קריאת SOS נכנסת', b:'תושבת לחצה SOS, והלוח עובר מיד למצב חירום.', a:'אי אפשר לפספס. יודעים מיד.', m:'הפס העליון הופך לאדום, המסגרות מהבהבות באדום ובכחול, והאירוע קופץ לראש הלוח.'},
+    {k:'אישור קבלה', ic:'check', sos:1, sel:'#sc-guide', alt:'#c-recs', act:'ack', t:'מאשרים קבלה', b:'לוחצים "קיבלתי": האזעקה משתתקת, ומועד הקבלה נרשם ביומן.', a:'צעד אחר צעד. שום דבר לא נשכח.', m:'רשימת הצעדים נפתחת לבד, וכל צעד נפתח רק אחרי הקודם.'},
+    {k:'איתור', ic:'pin', sos:1, sel:'#c-map', act:'locate', t:'מאתרים על המפה', b:'המפה מתמקדת במיקום האירוע, ברמת הרחוב.', a:'מיקום מדויק, בלי לפגוע בפרטיות.', m:'הלוח מציג אירועים, לא אנשים: אין שמות ואין מעקב.'},
+    {k:'קשר ושיגור', ic:'phone', sos:1, sel:'#resp', alt:'#sc-guide', act:'dispatch', t:'יוצרים קשר ומשגרים', b:'בוחרים למי לפנות: שיטור, ביטחון או מגיבים רפואיים.', a:'הכל במקום אחד, בלי לחפש.', m:'פרטי האירוע מוכנים להעברה ל־100 / 101.'},
+    {k:'טיפול', ic:'shield', sel:'#sc-guide', alt:'#c-recs', act:'resolve', t:'מסמנים "טופל"', b:'המצב בשליטה? מסמנים "טופל", והלוח יוצא ממצב חירום.', a:'כולם רואים מיד שהאירוע הסתיים.'},
+    {k:'תיעוד', ic:'doc', sel:'#sc-report .acct-card', alt:'#sc-guide', act:'file', t:'ממלאים דוח אירוע', b:'רוב השדות כבר ממולאים מהיומן.', a:'תיעוד מסודר לתחקיר, להנהלה ולמועצה.', m:'מועד, מיקום, סוג האירוע, מה נעשה, התוצאה והערות.'},
+    {k:'דוחות והיסטוריה', ic:'history', sel:'#c-feed', act:'history', t:'הכל נשמר בהיסטוריה', b:'האירוע עובר ל"אירועים קודמים", עם השעות, הטיפול והדוח.', a:'פחות עבודה ידנית, יותר שקיפות.', m:'כפתור "ייצוא" מפיק דוח מסודר להנהלה.'}
   ];
   var N=STEPS.length, TOTAL=N+1; /* + the closing card */
   var $=function(id){return document.getElementById(id);};
@@ -446,6 +455,7 @@ body.touring #block{display:block}
     $('t-title').innerHTML=rich(st.t);
     $('t-body').innerHTML=rich(st.b);
     $('t-adv').hidden=!st.a; if(st.a) $('t-adv-txt').innerHTML='<b>היתרון:</b> '+esc(st.a);
+    $('t-more').open=false; $('t-more').hidden=!st.m; $('t-more-txt').innerHTML=st.m?rich(st.m):'';
     $('t-prev').disabled=false;
     $('t-next').innerHTML= cur===N-1? 'לתוכניות ←' : 'הבא ←';
     setMode('step');
@@ -463,6 +473,7 @@ body.touring #block{display:block}
   $('t-next').addEventListener('click',next);
   $('t-prev').addEventListener('click',prev);
   $('t-close').addEventListener('click',explore);
+  $('t-more').addEventListener('toggle',function(){ place(); });
   $('end-explore').addEventListener('click',explore);
   $('end-again').addEventListener('click',function(){ done={}; show(0); });
   $('pill-tour').addEventListener('click',function(){ if(cur>=0&&cur<N) show(cur); else show(0); });
@@ -472,7 +483,7 @@ body.touring #block{display:block}
   document.addEventListener('keydown',function(e){
     if(e.altKey||e.ctrlKey||e.metaKey) return;
     var tag=(e.target&&e.target.tagName)||'';
-    if(e.key==='ArrowLeft'||(e.key==='Enter'&&tag!=='A'&&tag!=='BUTTON')){ if(mode==='intro'||mode==='step'){ e.preventDefault(); next(); } }
+    if(e.key==='ArrowLeft'||(e.key==='Enter'&&tag!=='A'&&tag!=='BUTTON'&&tag!=='SUMMARY')){ if(mode==='intro'||mode==='step'){ e.preventDefault(); next(); } }
     else if(e.key==='ArrowRight'){ if(mode==='step'||mode==='end'){ e.preventDefault(); prev(); } }
     else if(e.key==='Escape'){ if(mode==='step'||mode==='intro'||mode==='end') explore(); }
   });
