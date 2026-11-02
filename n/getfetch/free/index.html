@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0C1611">
+<title>Missed-Call Playbook · @getfetch.ai</title>
+<meta name="description" content="Free missed-call text-back scripts, a 2-minute call-log audit, a follow-up rhythm and a text-back tool checklist for service businesses.">
+<link rel="icon" type="image/png" href="../avatar.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0C1611;--bg1:#12301F;--accent:#00BC6B;--acc-text:#2ED38A;--ink:#F2F7F3;--muted:#9FB8AA;--on:#06110B;--line:rgba(242,247,243,.14);--hw:700;--kw:700;--hls:-.025em;--rule:solid;--print-acc:#007A45}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{color-scheme:dark;--card:color-mix(in srgb,var(--ink) 5%,var(--bg))}
+html{background:var(--bg);scroll-behavior:smooth}
+body{min-height:100vh;color:var(--ink);font:16px/1.6 'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  background:radial-gradient(110% 55% at 50% 0%,var(--bg1) 0%,var(--bg) 68%) no-repeat,var(--bg)}
+a{color:var(--acc-text)}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 56px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:max(16px,env(safe-area-inset-top)) 0 8px}
+.back{font:700 12px/1 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:12px 0}
+.back:hover{color:var(--ink)}
+.btn{font:700 12px/1 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:100px;
+  padding:12px 16px;border:1px solid var(--accent);background:var(--accent);color:var(--on)}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--acc-text)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hero{padding:22px 0 30px;text-align:center}
+.hero .logo{display:block;margin:0 auto 10px;width:min(240px,62vw);height:auto;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%);mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%)}
+.hero .logo.word{width:min(300px,74vw);-webkit-mask-image:none;mask-image:none;margin:26px auto 26px;
+  filter:drop-shadow(0 0 1.5px rgba(0,188,107,.9)) drop-shadow(0 0 14px rgba(0,188,107,.55))}
+.kicker{font:700 12px/1.4 'Space Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--acc-text)}
+h1{margin-top:12px;font-family:'Space Grotesk',sans-serif;font-weight:var(--hw);font-size:clamp(36px,9vw,60px);line-height:1.02;letter-spacing:var(--hls)}
+h1 .k{color:var(--acc-text);font-weight:var(--kw)}
+.lede{max-width:560px;margin:16px auto 0;font-size:17px;line-height:1.55;color:color-mix(in srgb,var(--ink) 88%,var(--bg))}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px;list-style:none}
+.pills li{font:700 11px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:8px 11px}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:6px 0 8px;list-style:none;counter-reset:t}
+.toc a{display:flex;gap:10px;align-items:baseline;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;line-height:1.35;height:100%}
+.toc a:hover{border-color:var(--accent)}
+.toc a span{font:700 11px/1 'Space Mono',monospace;color:var(--acc-text)}
+section{padding-top:40px;margin-top:40px;border-top:1px var(--rule) var(--line)}
+.sh{display:flex;align-items:baseline;gap:12px}
+.num{font:700 13px/1 'Space Mono',monospace;color:var(--acc-text);letter-spacing:.08em}
+h2{font-family:'Space Grotesk',sans-serif;font-weight:var(--hw);font-size:clamp(26px,6vw,34px);line-height:1.1;letter-spacing:var(--hls)}
+h2 .k{color:var(--acc-text);font-weight:var(--kw)}
+.intro{margin:10px 0 18px;color:var(--muted);max-width:620px}
+.intro strong{color:var(--ink)}
+.grid{display:grid;gap:12px}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 16px 14px}
+.th{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;padding-right:76px}
+h3{font-size:15.5px;font-weight:600;line-height:1.3}
+.ttag{flex:none;font:700 10.5px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:5px 8px}
+.tx{white-space:pre-wrap;word-wrap:break-word;font:14.5px/1.6 'Inter',system-ui,sans-serif;color:var(--ink);
+  background:color-mix(in srgb,var(--bg) 65%,transparent);border:1px solid var(--line);border-radius:10px;padding:12px 13px}
+.copy{position:absolute;top:12px;right:12px;font:700 11px/1 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  color:var(--acc-text);background:transparent;border:1px solid var(--accent);border-radius:100px;padding:9px 12px;min-width:64px}
+.copy:hover{background:var(--accent);color:var(--on)}
+.copy.ok{background:var(--accent);color:var(--on)}
+.check{list-style:none;display:grid;gap:8px}
+.check label{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;cursor:pointer;line-height:1.5}
+.check input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;margin-top:2px;border:1.5px solid var(--muted);border-radius:5px;display:grid;place-content:center;cursor:pointer}
+.check input:checked{background:var(--accent);border-color:var(--accent)}
+.check input:checked::after{content:"";width:10px;height:6px;border:2px solid var(--on);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.check b{font-weight:600}
+.check em{font-style:normal;color:var(--muted)}
+.note{display:block;margin:16px 0;padding:14px 16px;border-left:3px solid var(--accent);background:var(--card);border-radius:0 12px 12px 0;font-size:14.5px;line-height:1.6;color:color-mix(in srgb,var(--ink) 88%,var(--bg))}
+.note b{display:block;font-weight:600;color:var(--ink);margin-bottom:4px}
+.note ul{margin:6px 0 0 18px}
+.steps{list-style:none;display:grid;gap:10px;counter-reset:s}
+.steps li{position:relative;padding:14px 16px 14px 60px;background:var(--card);border:1px solid var(--line);border-radius:14px;line-height:1.55}
+.steps li::before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;left:16px;top:15px;font:700 14px/1 'Space Mono',monospace;color:var(--acc-text)}
+.steps b{display:block;font-weight:600}
+.steps span{color:var(--muted)}
+.when{display:inline-block;font:700 11px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-text);margin-bottom:6px}
+.fields{display:grid;gap:10px}
+.f{display:grid;gap:6px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.f label{font-size:14px;font-weight:600;line-height:1.4}
+.f small{font-weight:400;color:var(--muted)}
+.f input,.f textarea{width:100%;font:16px/1.5 'Inter',system-ui,sans-serif;color:var(--ink);background:color-mix(in srgb,var(--bg) 70%,transparent);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.f textarea{min-height:64px;resize:vertical}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px}
+.out div{padding:14px;border:1px solid var(--accent);border-radius:12px;background:color-mix(in srgb,var(--accent) 8%,var(--bg))}
+.out span{display:block;font:700 11px/1.3 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.out b{display:block;margin-top:6px;font:700 26px/1.1 'Space Grotesk',sans-serif;color:var(--ink)}
+.row2{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.ideas{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.ideas ol{margin:8px 0 0;padding-left:0;list-style:none;display:grid;gap:7px}
+.ideas li{display:flex;gap:10px;line-height:1.45;font-size:14.5px}
+.ideas li i{font:700 12px/1.6 'Space Mono',monospace;font-style:normal;color:var(--acc-text);flex:none;width:26px}
+.small{font-size:13.5px;color:var(--muted)}
+.cc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cc .f input[type=color]{height:44px;padding:4px;cursor:pointer}
+.swatch{margin-top:12px;border-radius:12px;padding:18px 16px;border:1px solid var(--line)}
+.swatch p{font-size:16px}.swatch p.lg{font:700 24px/1.2 'Space Grotesk',sans-serif;margin-top:4px}
+.ft{margin-top:56px;padding-top:24px;border-top:1px var(--rule) var(--line);text-align:center}
+.ft .made{font:700 12px/1.6 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ft .follow{display:inline-flex;margin:16px 0 14px;text-decoration:none}
+.ft p.legal{font-size:12.5px;color:var(--muted);max-width:520px;margin:0 auto;line-height:1.55}
+@media (max-width:420px){.th{padding-right:72px}.steps li{padding-left:52px}.steps li::before{left:14px}.cc{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{
+  @page{margin:14mm}
+  :root{--ink:#111;--muted:#444;--line:#bbb;--card:#fff;--acc-text:var(--print-acc);--accent:var(--print-acc);--bg:#fff}
+  html,body{background:#fff !important;color:#111}
+  .top,.copy,.toc,.no-print,.ft .follow{display:none !important}
+  .wrap{max-width:none;padding:0}
+  .hero{padding:0 0 12px}.hero .logo{width:120px;-webkit-mask-image:none;mask-image:none;border-radius:12px}
+  .hero .logo.word{width:200px;filter:none;background:none;padding:0}
+  h1{font-size:32px}.lede{font-size:13px}
+  section{margin-top:18px;padding-top:16px;break-before:auto}
+  .card,.check label,.steps li,.f,.note,.out div,.ideas>div{break-inside:avoid;background:#fff !important;border-color:#bbb}
+  .tx{background:#fff;border-color:#ccc;font-size:12px}
+  .th{padding-right:0}
+  .check input{border-color:#333}
+  .f input,.f textarea{background:#fff;color:#111;border-color:#999}
+  a{color:#111}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top" aria-label="Page">
+    <a class="back" href="../">&larr; @getfetch.ai</a>
+    <button class="btn" id="pdf" type="button">Save as PDF</button>
+  </nav>
+  <header class="hero">
+    <img class="logo word" src="../logo-word.png" width="942" height="183" alt="getfetch.ai">
+    <p class="kicker">Free playbook · No signup</p>
+    <h1>Missed-Call <span class="k">Playbook</span></h1>
+    <p class="lede">Copy-ready text-back scripts for HVAC, plumbing and med spas, a 2-minute audit of your call log, a simple follow-up rhythm and a checklist for picking a text-back tool. Print it or save it as a PDF.</p>
+    <ul class="pills"><li>8 scripts</li><li>2-min audit</li><li>Printable</li></ul>
+  </header>
+  <main>
+    <ul class="toc" aria-label="Contents"><li><a href="#scripts"><span>01</span>Text-back scripts</a></li><li><a href="#audit"><span>02</span>Call-log audit</a></li><li><a href="#cadence"><span>03</span>Follow-up rhythm</a></li><li><a href="#tool"><span>04</span>Tool checklist</a></li></ul>
+    <section id="scripts"><div class="sh"><span class="num">01</span><h2>Text-back <span class="k">scripts</span></h2></div><p class="intro">Swap the [brackets] for your details. Keep each text short: your business name, one question, one next step.</p><div class="grid"><article class="card tpl"><div class="th"><h3>1 · Missed call, any trade</h3><span class="ttag">General</span></div><pre class="tx" id="t1">Hi, this is [Name] at [Business]. Sorry we missed your call, we&#x27;re out on a job. What can we help with? Reply here and we&#x27;ll get back to you by [time].
+Reply STOP to opt out.</pre><button class="copy" type="button" data-copy="t1" aria-label="Copy: 1 · Missed call, any trade">Copy</button></article><article class="card tpl"><div class="th"><h3>2 · HVAC: no heat / no cool</h3><span class="ttag">HVAC</span></div><pre class="tx" id="t2">Hi, it&#x27;s [Name] with [Business]. Sorry we missed you. Is your system not heating or cooling, or is this about maintenance?
+Text your address and a quick description and we&#x27;ll reply with the next open slot.
+If you smell gas, leave the house and call your gas company or 911 from outside.</pre><button class="copy" type="button" data-copy="t2" aria-label="Copy: 2 · HVAC: no heat / no cool">Copy</button></article><article class="card tpl"><div class="th"><h3>3 · HVAC: tune-up or quote</h3><span class="ttag">HVAC</span></div><pre class="tx" id="t3">Thanks for calling [Business]! Looking for a tune-up or a quote on a new system? Reply with your address and the best day for a visit, and we&#x27;ll confirm a time window.</pre><button class="copy" type="button" data-copy="t3" aria-label="Copy: 3 · HVAC: tune-up or quote">Copy</button></article><article class="card tpl"><div class="th"><h3>4 · Plumbing: leak or emergency</h3><span class="ttag">Plumbing</span></div><pre class="tx" id="t4">Hi, [Name] from [Business] here. Sorry we missed your call. If water is leaking right now, turn off the main water valve if you can do it safely.
+Then reply LEAK with your address and we&#x27;ll call you back as soon as we can.</pre><button class="copy" type="button" data-copy="t4" aria-label="Copy: 4 · Plumbing: leak or emergency">Copy</button></article><article class="card tpl"><div class="th"><h3>5 · Med spa: booking</h3><span class="ttag">Med spa</span></div><pre class="tx" id="t5">Hi, it&#x27;s [Name] at [Spa]. Sorry we missed your call! Are you looking to book a treatment or ask a question?
+You can book here: [booking link]. Or reply with a day that works and we&#x27;ll find you a time.</pre><button class="copy" type="button" data-copy="t5" aria-label="Copy: 5 · Med spa: booking">Copy</button></article><article class="card tpl"><div class="th"><h3>6 · After hours</h3><span class="ttag">After hours</span></div><pre class="tx" id="t6">Thanks for calling [Business]. We&#x27;re closed right now and back at [time] on [day].
+Reply with what you need and your address, and we&#x27;ll text you first thing.
+[Emergency line or instruction, if you offer one]</pre><button class="copy" type="button" data-copy="t6" aria-label="Copy: 6 · After hours">Copy</button></article><article class="card tpl"><div class="th"><h3>7 · Next-day follow-up (no reply)</h3><span class="ttag">Follow-up</span></div><pre class="tx" id="t7">Hi, [Name] from [Business] again. Just checking you got sorted. If you still need a hand, reply with a good time to call. No reply needed if you&#x27;re all set.</pre><button class="copy" type="button" data-copy="t7" aria-label="Copy: 7 · Next-day follow-up (no reply)">Copy</button></article><article class="card tpl"><div class="th"><h3>8 · Booked confirmation</h3><span class="ttag">Confirm</span></div><pre class="tx" id="t8">You&#x27;re booked with [Business]: [day], between [time window]. [Tech name] will text when on the way.
+Need to change it? Just reply here.</pre><button class="copy" type="button" data-copy="t8" aria-label="Copy: 8 · Booked confirmation">Copy</button></article></div><aside class="note"><b>Med spas: keep health details off text</b><p>Ask what they want to book, not about medical history. Take health questions on the phone or through a secure intake form.</p></aside></section><section id="audit"><div class="sh"><span class="num">02</span><h2>2-minute <span class="k">call-log audit</span></h2></div><p class="intro">Open your phone or VoIP app's call history and filter to the <strong>last 7 days</strong>. Count the numbers below. The page does the math; nothing you type leaves your browser.</p><div class="fields">
+  <div class="f"><label for="a">A · Inbound calls, last 7 days</label><input id="a" type="number" inputmode="numeric" min="0" placeholder="e.g. your total"></div>
+  <div class="f"><label for="b">B · Missed or unanswered <small>(rang out or went to voicemail)</small></label><input id="b" type="number" inputmode="numeric" min="0"></div>
+  <div class="f"><label for="c">C · Of B, numbers you didn't recognise <small>(likely new customers)</small></label><input id="c" type="number" inputmode="numeric" min="0"></div>
+  <div class="f"><label for="d">D · Of B, how many got a call or text back the same day</label><input id="d" type="number" inputmode="numeric" min="0"></div>
+  <div class="f"><label for="r">E · Your close rate on new-customer calls <small>(%, your best honest guess)</small></label><input id="r" type="number" inputmode="decimal" min="0" max="100"></div>
+  <div class="f"><label for="v">F · Average job value <small>($)</small></label><input id="v" type="number" inputmode="decimal" min="0"></div>
+</div>
+<div class="out" aria-live="polite">
+  <div><span>Missed rate (B ÷ A)</span><b id="o1">–</b></div>
+  <div><span>Missed, never followed up (B − D)</span><b id="o2">–</b></div>
+  <div><span>Est. revenue at risk this week (C × E × F)</span><b id="o3">–</b></div>
+</div>
+<p class="small" style="margin-top:10px">An estimate from your own numbers, not a prediction.</p><aside class="note"><b>What the numbers tell you</b><ul>
+<li>Most misses during working hours? It's a routing problem: a second phone, a call-forward rule, or an instant text-back.</li>
+<li>Most misses after hours? Use the after-hours script (6) on autopilot.</li>
+<li>D far below B? Your fix is follow-up, not more ads.</li>
+<li>Run this again in 30 days with the same steps and compare.</li></ul></aside></section><section id="cadence"><div class="sh"><span class="num">03</span><h2>A simple <span class="k">follow-up</span> rhythm</h2></div><p class="intro">Three touches, then stop. If anyone replies STOP, stop everything.</p><ol class="steps">
+<li><span class="when">Within a minute</span><b>Automatic text-back</b><span>Script 1 in hours, script 6 after hours. The caller knows they reached a real business.</span></li>
+<li><span class="when">Within 15 minutes, in hours</span><b>Call back once</b><span>If they don't pick up, keep the voicemail short. Your text is already in their phone.</span></li>
+<li><span class="when">Next morning</span><b>One follow-up text</b><span>Script 7. Friendly, no pressure.</span></li>
+<li><span class="when">Day 3</span><b>Last check-in, then stop</b><span>&ldquo;Still need help with [issue]? Reply anytime and we'll get you booked.&rdquo;</span></li>
+<li><span class="when">After the job</span><b>Thank-you + review request</b><span>Only to customers you actually served.</span></li>
+</ol><aside class="note"><b>Texting rules (US): the short version</b><p>Put your business name in every text, honor STOP right away, and don't send marketing texts to people who haven't agreed to receive them. If your texting tool sends from a regular 10-digit local number, US carriers require the business to register for A2P 10DLC; most tools walk you through it. More at <a href="https://www.campaignregistry.com/" target="_blank" rel="noopener">The Campaign Registry</a>.</p></aside></section><section id="tool"><div class="sh"><span class="num">04</span><h2>Choosing a <span class="k">text-back tool</span></h2></div><p class="intro">Tick what matters before you start a trial. Ask the vendor to show each one, not just say it.</p><ul class="check"><li><label><input type="checkbox"><span><b>Keeps your current number</b> <em>(works with forwarding or porting, no new number for customers to learn)</em></span></label></li><li><label><input type="checkbox"><span><b>Texts only on missed calls</b>, with separate in-hours and after-hours messages</span></label></li><li><label><input type="checkbox"><span><b>Handles A2P 10DLC registration</b> or guides you through it</span></label></li><li><label><input type="checkbox"><span><b>Replies land where you'll see them</b>: a phone app with notifications, not just a desktop inbox</span></label></li><li><label><input type="checkbox"><span><b>Shared inbox</b> if more than one person answers customers</span></label></li><li><label><input type="checkbox"><span><b>STOP / opt-out handled automatically</b></span></label></li><li><label><input type="checkbox"><span><b>Booking link or calendar</b> you can drop into a text</span></label></li><li><label><input type="checkbox"><span><b>Missed-call report</b> so you can rerun the audit above</span></label></li><li><label><input type="checkbox"><span><b>Export your contacts and messages</b> any time, in a standard format</span></label></li><li><label><input type="checkbox"><span><b>Trial terms</b> <em>(is a card required? does it auto-renew?)</em></span></label></li><li><label><input type="checkbox"><span><b>Full monthly cost</b>: base plan + per-number + per-message fees. Check current pricing on the vendor's own page.</span></label></li><li><label><input type="checkbox"><span><b>Contract and cancellation</b>: month-to-month, or locked in?</span></label></li><li><label><input type="checkbox"><span><b>Support hours</b> that match your working hours</span></label></li></ul></section>
+  </main>
+  <footer class="ft">
+    <p class="made">Made by @getfetch.ai · 3Shamrocks Media Network</p>
+    <a class="btn ghost follow" href="https://www.instagram.com/getfetch.ai/" target="_blank" rel="noopener">Follow @getfetch.ai on Instagram &rarr;</a>
+    <p class="legal">Free to use in your own business. General information, not legal advice: rules differ by state, platform and provider, so check the ones that apply to you. © 2026 3Shamrocks Studio.</p>
+  </footer>
+</div>
+<script>
+(function(){
+  document.addEventListener('click', async function(ev){
+    var b = ev.target.closest('[data-copy]'); if(!b) return;
+    var el = document.getElementById(b.getAttribute('data-copy')); if(!el) return;
+    var txt = el.value !== undefined && el.tagName === 'TEXTAREA' ? el.value : el.innerText;
+    var ok = false;
+    try { await navigator.clipboard.writeText(txt); ok = true; }
+    catch(err){
+      try {
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        ok = document.execCommand('copy'); s.removeAllRanges();
+      } catch(e2){ ok = false; }
+    }
+    var orig = b.getAttribute('data-label') || 'Copy';
+    b.textContent = ok ? 'Copied' : 'Select + copy';
+    b.classList.toggle('ok', ok);
+    setTimeout(function(){ b.textContent = orig; b.classList.remove('ok'); }, 1800);
+  });
+  var p = document.getElementById('pdf');
+  if (p) p.addEventListener('click', function(){ window.print(); });
+})();
+(function(){
+  var ids=['a','b','c','d','r','v'];
+  function n(id){var v=parseFloat(document.getElementById(id).value);return isNaN(v)?null:v;}
+  function calc(){
+    var A=n('a'),B=n('b'),C=n('c'),D=n('d'),E=n('r'),F=n('v');
+    document.getElementById('o1').textContent=(A&&B!==null)?Math.round(B/A*100)+'%':'–';
+    document.getElementById('o2').textContent=(B!==null&&D!==null)?Math.max(0,B-D):'–';
+    document.getElementById('o3').textContent=(C!==null&&E!==null&&F!==null)?'$'+Math.round(C*(E/100)*F).toLocaleString('en-US'):'–';
+  }
+  ids.forEach(function(id){document.getElementById(id).addEventListener('input',calc);});
+})();
+</script>
+</body>
+</html>
