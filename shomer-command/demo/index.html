@@ -295,7 +295,7 @@ body.touring #block{display:block}
     {k:'איתור', ic:'pin', sos:1, sel:'#c-map', act:'locate', t:'מאתרים על המפה', b:'המפה מתמקדת במיקום האירוע, ברמת הרחוב.', a:'מיקום מדויק, בלי לפגוע בפרטיות.', m:'הלוח מציג אירועים, לא אנשים: אין שמות ואין מעקב.'},
     {k:'קשר ושיגור', ic:'phone', sos:1, sel:'#resp', alt:'#sc-guide', act:'dispatch', t:'יוצרים קשר ומשגרים', b:'בוחרים למי לפנות: שיטור, ביטחון או מגיבים רפואיים.', a:'הכל במקום אחד, בלי לחפש.', m:'פרטי האירוע מוכנים להעברה ל־100 / 101.'},
     {k:'טיפול', ic:'shield', sel:'#sc-guide', alt:'#c-recs', act:'resolve', t:'מסמנים "טופל"', b:'המצב בשליטה? מסמנים "טופל", והלוח יוצא ממצב חירום.', a:'כולם רואים מיד שהאירוע הסתיים.'},
-    {k:'תיעוד', ic:'doc', sel:'#sc-report .acct-card', alt:'#sc-guide', act:'file', t:'ממלאים דוח אירוע', b:'רוב השדות כבר ממולאים מהיומן.', a:'תיעוד מסודר לתחקיר, להנהלה ולמועצה.', m:'מועד, מיקום, סוג האירוע, מה נעשה, התוצאה והערות.'},
+    {k:'תיעוד', ic:'doc', sel:'#sc-report .acct-card', alt:'#sc-guide', act:'file', side:'left', t:'ממלאים דוח אירוע', b:'רוב השדות כבר ממולאים מהיומן.', a:'תיעוד מסודר לתחקיר, להנהלה ולמועצה.', m:'מועד, מיקום, סוג האירוע, מה נעשה, התוצאה והערות.'},
     {k:'דוחות והיסטוריה', ic:'history', sel:'#c-feed', act:'history', t:'הכל נשמר בהיסטוריה', b:'האירוע עובר ל"אירועים קודמים", עם השעות, הטיפול והדוח.', a:'פחות עבודה ידנית, יותר שקיפות.', m:'כפתור "ייצוא" מפיק דוח מסודר להנהלה.'}
   ];
   var N=STEPS.length, TOTAL=N+1; /* + the closing card */
@@ -389,6 +389,8 @@ body.touring #block{display:block}
     var side=null;
     var hz=sp.left>=sp.right?['left','right']:['right','left'], vt=sp.bottom>=sp.top?['bottom','top']:['top','bottom'];
     var order=hz.concat(vt);
+    /* per-step side override: beside the target with a tighter gap, when the callout fits there at all */
+    var fs=(STEPS[cur]||{}).side; if(fs&&sp[fs]>=cw+8){ side=fs; g=Math.min(g,sp[fs]-cw-4); }
     for(var i=0;i<order.length&&!side;i++){ var s=order[i]; if((s==='left'||s==='right')?sp[s]>=cw+g+m:sp[s]>=ch+g+m) side=s; }
     var x,y,ax,ay;
     if(!side){ /* target fills the screen: sit inside it, bottom corner, no pointer */
