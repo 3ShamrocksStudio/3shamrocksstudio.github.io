@@ -183,7 +183,7 @@ G.forEach(function(sec){
 });
 
 document.getElementById('stamp').textContent='CHECKED 2026-10-25';
-fetch('data.json?v='+Date.now()).then(function(r){return r.json()}).then(function(d){document.getElementById('stamp').textContent='CHECKED '+d.updated;}).catch(function(){});
+fetch('data.json?v='+Date.now()).then(function(r){return r.json()}).then(function(d){document.getElementById('stamp').textContent='CHECKED '+d.updated;var c=d.score;if(c){var f=document.getElementById('foot2');f.innerHTML='<b>Scorecard '+c.asof+':</b> '+c.sent+' sent · '+c.accepted+' accepted · '+c.replies+' replies · '+c.calls+' calls · '+c.proposals+' proposals · ₪'+c.quoted_ils.toLocaleString()+' quoted · <b>₪'+c.booked_ils.toLocaleString()+' booked</b>';}}).catch(function(){});
 document.getElementById('foot2').innerHTML='<b>Booked to date:</b> $0 of $1M — pre-revenue. The expedition starts the moment Services or SH✡MER signs. This board refreshes as real deals land.';
 
 // animate on load
