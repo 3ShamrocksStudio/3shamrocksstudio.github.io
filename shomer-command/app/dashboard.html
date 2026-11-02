@@ -546,6 +546,70 @@
 .intl-note{display:flex;flex-direction:column;justify-content:center;height:100%;gap:6px;padding:4px 6px;color:var(--tx2);font-size:12.5px;line-height:1.55}
 .intl-note b{color:var(--tx);font-size:14px}
 </style>
+<style id="sc-guide-css">
+/* NORMAL / EMERGENCY state + guided response checklist. Flashing is 1 cycle per second (2 colour changes/s),
+   inside the 3-flashes-per-second photosensitivity limit; prefers-reduced-motion gets a steady red/blue border. */
+.sc-state{flex:0 0 auto;display:flex;align-items:center;gap:10px;min-height:36px;padding:6px 16px;font-size:13.5px;line-height:1.35;color:#eaf7f0;background:linear-gradient(90deg,rgba(43,196,126,.18),rgba(43,196,126,.05));border-bottom:1px solid rgba(43,196,126,.4)}
+.sc-state b{font-weight:800;letter-spacing:.02em;white-space:nowrap}
+.sc-state .sc-msg{color:var(--tx2);min-width:0}
+.sc-dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(43,196,126,.25)}
+.sc-state .sc-tag{flex:none;font-size:11px;font-weight:700;color:var(--gold);border:1px dashed var(--gold-l);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.sc-jump{flex:none;min-height:28px;padding:0 14px;border-radius:999px;border:1.5px solid rgba(255,255,255,.75);background:rgba(0,0,0,.18);color:#fff;font:800 12.5px var(--font);cursor:pointer;white-space:nowrap}
+.sc-state .sc-sp{flex:1}
+.sc-state.sc-emerg{color:#fff;background:#c8102e;border-bottom-color:#fff;animation:scBan 1s steps(1,end) infinite}
+.sc-state.sc-emerg .sc-msg{color:#fff}
+.sc-state.sc-emerg .sc-dot{background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+.sc-state.sc-emerg b{font-size:15px}
+.sc-state.sc-emerg .sc-tag{color:#fff;border-color:rgba(255,255,255,.7)}
+@keyframes scBan{0%{background:#c8102e}50%{background:#1f4fd6}}
+.sc-state.sc-after{color:#fff;background:linear-gradient(90deg,rgba(250,172,34,.26),rgba(250,172,34,.08));border-bottom-color:var(--gold-l)}
+.sc-state.sc-after .sc-dot{background:var(--gold);box-shadow:0 0 0 3px var(--gold-s)}
+.sc-state.sc-after .sc-msg{color:#f6e3bd}
+body.sc-emerg .cmd-grid>.card{animation:scPanel 1s steps(1,end) infinite}
+@keyframes scPanel{0%{border-color:#ff2d3d;box-shadow:0 0 0 2px #ff2d3d,0 0 18px rgba(255,45,61,.45)}50%{border-color:#2f6bff;box-shadow:0 0 0 2px #2f6bff,0 0 18px rgba(47,107,255,.45)}}
+/* checklist (inside the emergency card) */
+#c-recs.sc-on #recspane{display:none}
+.sc-guide{flex:1 1 auto;min-height:0;overflow:auto;padding:6px 10px 10px}
+.scg-h{display:flex;align-items:center;gap:8px;padding:4px 2px 7px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.scg-t{font-weight:800;font-size:14px;color:#fff;white-space:nowrap}
+.scg-ev{flex:1;min-width:0;font-size:12px;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scg-n{flex:none;font:700 12px var(--num);color:var(--gold);background:var(--gold-s);border:1px solid var(--gold-l);border-radius:999px;padding:1px 9px;direction:ltr}
+.scg-list{list-style:none;display:flex;flex-direction:column;gap:3px}
+.scg-s{display:grid;grid-template-columns:26px 1fr;gap:9px;align-items:start;padding:5px 8px;border-radius:10px;border:1px solid transparent}
+.scg-num{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:800 13px var(--num);background:rgba(255,255,255,.05);color:var(--tx3);border:1px solid var(--line-2)}
+.scg-st{display:flex;align-items:center;gap:8px;min-height:26px;font-size:13.5px;font-weight:700;color:var(--tx3)}
+.scg-s.done .scg-num{background:var(--ok);border-color:var(--ok);color:#06210f}
+.scg-s.done .scg-st{color:var(--tx2)}
+.scg-time{margin-inline-start:auto;font:600 11.5px var(--num);color:var(--tx3)}
+.scg-s.on{background:rgba(250,172,34,.08);border-color:var(--gold-l)}
+.scg-s.on .scg-num{background:#FC9918;border-color:#FC9918;color:#fff}
+.scg-s.on .scg-st{color:#fff;font-size:14.5px}
+.scg-s.wait{opacity:.6}
+.scg-d{margin-top:1px;font-size:12.5px;line-height:1.5;color:var(--tx)}
+.scg-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.scg-go{min-height:36px;padding:0 18px;border-radius:999px;border:0;background:#FC9918;color:#fff;font:800 13.5px var(--font);cursor:pointer;box-shadow:0 6px 16px rgba(252,153,24,.28)}
+.scg-go:hover{background:#E8850F}
+.scg-alt{min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--tx);font:700 13px var(--font);cursor:pointer}
+.scg-alt:hover{border-color:var(--gold);color:var(--gold)}
+.scg-go:focus-visible,.scg-alt:focus-visible,.sc-jump:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.scg-done{margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(43,196,126,.1);border:1px solid rgba(43,196,126,.35);font-size:12.5px;color:var(--tx2)}
+.scg-done b{display:block;font-size:14px;color:#5fdca2;margin-bottom:2px}
+.sc-rep-card{max-width:480px!important;max-height:calc(100vh - 32px);overflow:auto}
+.sc-rep-card .acct-sub{margin-bottom:2px}
+.sc-err{min-height:16px;margin-top:6px;font-size:12.5px;color:#ff8f98}
+@media(max-width:700px){#sc-report{align-items:flex-start;padding:12px}.sc-state .sc-tag{display:none}}
+@media(max-width:1100px){
+  .sc-state{position:sticky;top:0;z-index:1100;flex-wrap:wrap;row-gap:4px}
+  body.sc-emerg .cmd-grid,body.sc-after .cmd-grid{grid-template-areas:"recs" "map" "feed" "net" "crime" "prof" "graph" "donut" "rank"}
+  .scg-go,.scg-alt,.sc-jump{min-height:44px}
+}
+@media (prefers-reduced-motion:reduce){
+  .sc-state.sc-emerg{animation:none;background:#c8102e;border-bottom:4px solid #2f6bff}
+  body.sc-emerg .cmd-grid>.card{animation:none;border-color:#ff2d3d;box-shadow:0 0 0 2px #ff2d3d,0 0 0 5px #2f6bff}
+  .live-strip{animation:none!important;background:linear-gradient(90deg,#d61428,#1446d2)}
+  .sos-beacon .core,.sos-beacon .halo,.sos-pop-ring,.resp-live,.feed .item.sos,.live-banner.active{animation:none!important}
+}
+</style>
 </head>
 <body>
 <style>@media(max-width:820px){.topbar{flex-wrap:wrap;height:auto!important;row-gap:8px;padding-block:8px}.topbar .tbtn{min-height:36px}}</style><div id="sc-demo-flag" dir="rtl" style="position:fixed;bottom:14px;left:14px;z-index:99999;background:#c62828;color:#fff;font:700 13px/1 system-ui,sans-serif;padding:9px 14px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none">הדגמה · נתונים לדוגמה</div>
@@ -586,6 +650,7 @@
     <span class="plan-badge" id="plan-badge" title="סטטוס המוצר">גרסת בטא</span><button class="tbtn" id="trends-btn" onclick="openTrends()">📈 מגמות</button><button class="tbtn" id="acct-btn">⚙ חשבון</button><button class="tbtn" id="export-btn">⤓ ייצוא</button>
     <button class="tbtn" id="signout">יציאה</button>
   </div>
+  <div id="sc-state" class="sc-state sc-ok" role="status" aria-live="assertive"><span class="sc-dot"></span><b>מצב רגיל</b><span class="sc-msg">אין אירוע חירום פתוח. הלוח במעקב.</span></div>
   <!-- Physical layout (viewer's left → right), independent of RTL:
        row 1: ranking | stats | profile        rows 2–3: [emergency+feed / graph | donut] | MAP -->
   <main class="cmd-grid" id="cmd-grid">
@@ -610,6 +675,7 @@
       <div class="ch"><span class="t">🚨 חירום · המלצות · פעולות למעקב</span><span class="sp"></span><span class="pill off" id="analysis-pill">לפי הנתונים</span><button class="dd-back" id="recsback" style="display:none" onclick="unfocus()">← הכל</button></div>
       <div id="live-banner" class="live-banner idle">ממתין לאירוע חי…</div>
       <div id="live-strip" class="live-strip" style="display:none"></div>
+      <div id="sc-guide" class="sc-guide" hidden aria-label="רשימת צעדים לטיפול באירוע"></div>
       <div class="cb recs" id="recspane"></div>
     </section>
     <section class="card c-feed ops-feed" id="c-feed">
@@ -712,9 +778,11 @@ async function demoBoot(){
   document.getElementById('terr-static').classList.add('hidden');document.getElementById('terr-sel').classList.remove('hidden');
   if(!MAP) initMap(); renderLegend();
   var idx=DATA._sorted.findIndex(function(c){return c.city===CLIENT.territory;});
+  try{ _scDemoClear(); _scNormalAt=Date.now(); }catch(e){}
   render(idx>=0?idx:0);
   _applyTerrParam();
-  if(!/[?&]tour=1/.test(location.search)) setTimeout(function(){ try{ var k=Object.keys(_liveEvents||{}).filter(function(id){return _liveEvents[id].m&&_liveEvents[id].m.sos;})[0]; if(k){ _playAlertTone(); openResponse(k); } }catch(e){} }, 2000);
+  /* ~5 s of normal operation first, then the sample SOS arrives (the guided tour fires it itself, at its alarm step) */
+  if(!/[?&]tour=1/.test(location.search)) setTimeout(function(){ try{ scDemo.fire(); }catch(e){} }, 5000);
   /* note removed in console layout */
 }
 /* sample network feed for the demo (same shape as /dashfeed): devices online now plus daily activity
@@ -730,7 +798,10 @@ function demoFeed(c){
 }
 function demoLive(c){
   var now=Date.now();
-  var list=DEMO_INC.map(function(w,i){ return {id:'demo'+i, type:(w.kind==='sos'?'sos':(w.kind==='palert'?w.k:'event')), k:w.k, nm:w.nm, t:w.t, lat:c.lat+w.dlat, lng:c.lng+w.dlng, ts:now-w.mins*60000}; });
+  var tour=/[?&]tour=1/.test(location.search);
+  var list=DEMO_INC.map(function(w,i){ return {id:'demo'+i, type:(w.kind==='sos'?'sos':(w.kind==='palert'?w.k:'event')), k:w.k, nm:w.nm, t:w.t, lat:c.lat+w.dlat, lng:c.lng+w.dlng, ts:(w.kind==='sos'&&window._scSosAt)?window._scSosAt:now-w.mins*60000}; })
+   /* normal phase: routine reports only. Alarm phase: the SOS arrives (the tour follows that one event only) */
+   .filter(function(x,i){ var k=DEMO_INC[i].kind; if(k==='sos') return _scPhase==='alarm'; if(k==='palert') return _scPhase==='alarm'&&!tour; return true; });
   renderLive(c,list,{demo:true});
 }
 /* ── LIVE mode: real SH✡MER network data from the sanitized public /dashfeed path ──
@@ -1404,7 +1475,7 @@ function renderLive(c,list,opts){
  try{ renderLegend(); }catch(_l){}
  try{
    var strip=document.getElementById('live-strip');
-   var ss=list.filter(function(e){return _liveMeta(e).sos;});
+   var ss=list.filter(function(e){ if(!_liveMeta(e).sos) return false; var _rv=B.reviews[_evId(e)]; return !(_rv&&(_rv.status==='handled'||_rv.status==='closed')); });   /* a resolved SOS leaves the alarm strip */
    if(strip){
      if(ss.length){
        var e0=ss[0], m0=_liveMeta(e0), id0=_evId(e0), demo=!!opts.demo;
@@ -1431,6 +1502,7 @@ function renderLive(c,list,opts){
  /* the board feeds the KPI "אירועים חיים" (demo) and the open-items line in the recommendations */
  try{ buildKPIs(DATA._idx); }catch(e){}
  try{ if(!_focus) buildAnalysis(DATA._idx,null); }catch(e){}
+ try{ scGuideSync(); }catch(e){}
 }
 /* presence row = a device heartbeat. Only status 'v2' rows are counted/drawn: written by app v279+, one per real
    device, never by automated/test browsers. Older rows ('online'/'seen'/missing) can't be verified and are ignored. */
@@ -2278,6 +2350,139 @@ function render(idx){
  loadLive(c);
 }
 (function(){var ts=document.getElementById('terr-sel');if(ts)ts.onchange=onTerrChange;})();
+/* ===================== GUIDED RESPONSE (state banner + checklist + event report) =====================
+   One checklist for the open SOS: acknowledge → locate → contact/dispatch → resolve → file & document.
+   Wired to the existing event objects only (_liveEvents, _boardRows, board reviews, respLog): it reads
+   events exactly as before and makes no network call. Progress and reports stay in this browser. */
+var SC_STEPS=[
+ {k:'ack',     t:'אישור קבלה',       d:'אשרו שראיתם את הקריאה. האזעקה תושתק, והאישור יירשם ביומן.', b:'קיבלתי ✓', log:'התקבל ואושר ע״י המוקדן'},
+ {k:'locate',  t:'איתור על המפה',    d:'הציגו את מיקום האירוע על המפה, ברמת הרחוב.', b:'הצגה על המפה', log:'אותר על המפה'},
+ {k:'contact', t:'יצירת קשר ושיגור', d:'פנו לכוחות המתאימים: שיטור, ביטחון, מד״א 101 או משטרה 100. כל פרטי האירוע נמצאים במרכז התגובה.', b:'יצרנו קשר ✓', alt:'מרכז התגובה', log:'נוצר קשר עם הכוחות'},
+ {k:'resolve', t:'סגירת האירוע',     d:'כשהמצב בשליטה, סמנו שהאירוע טופל. הלוח יחזור למצב רגיל.', b:'האירוע טופל ✓', log:'סומן כטופל'},
+ {k:'file',    t:'תיעוד ודוח',        d:'מלאו דוח אירוע קצר. רוב השדות כבר ממולאים מהיומן.', b:'מילוי דוח אירוע', log:'דוח אירוע נשמר'}
+];
+var SC_OUT=['טופל במקום','הועבר למשטרה','פונה לטיפול רפואי','אזעקת שווא','אחר'];
+var _scG=null, _scStore={}, _scLoaded=false, _scPhase='normal', _scNormalAt=Date.now();
+function _scDemo(){ return !!(CLIENT&&CLIENT.demo); }
+function _scLoad(){ if(_scDemo()) return; try{ _scStore=JSON.parse(localStorage.getItem('shomer_guide_v1')||'{}')||{}; }catch(e){ _scStore={}; } }
+function _scSave(){ if(_scDemo()) return; try{ localStorage.setItem('shomer_guide_v1',JSON.stringify(_scStore)); }catch(e){} }
+function _scRepKey(){ return _scDemo()?'shomer_demo_reports_v1':'shomer_reports_v1'; }
+function _scReports(){ try{ var r=JSON.parse(localStorage.getItem(_scRepKey())||'{}'); return (r&&typeof r==='object')?r:{}; }catch(e){ return {}; } }
+function _scReportsSave(r){ try{ localStorage.setItem(_scRepKey(),JSON.stringify(r)); }catch(e){} }
+/* same review record saveEvEdit writes (status + note + dated log), so the board, the history and the export all see it */
+function _scReview(id,st,note){ var B=_boardLoad(), pv=B.reviews[id]||{}, lg=(pv.log||[]).slice(-49); lg.push({ts:Date.now(),st:st,note:note});
+ B.reviews[id]={status:st,note:note,at:Date.now(),log:lg,resp:pv.resp}; _boardSave(B); }
+function _scNext(cur){ for(var i=0;i<SC_STEPS.length;i++){ if(!cur.at[SC_STEPS[i].k]) return i; } return -1; }
+function scGuideSync(){
+ if(!_scLoaded){ _scLoaded=true; _scLoad(); }
+ var BR=window._boardRows||{live:[]}, B=_boardLoad(), cur=_scG&&_scStore[_scG];
+ if(cur&&!_liveEvents[_scG]){ _scG=null; cur=null; }
+ var top=(BR.live||[]).filter(function(r){ return r.m&&r.m.sos&&r.id!==_scG&&!(_scStore[r.id]&&_scStore[r.id].closed); })[0];
+ if(!cur||cur.closed||(top&&_scNext(cur)<0)){   /* a finished checklist gives way to a new open SOS */
+  if(top){ _scG=top.id; if(!_scStore[top.id]) _scStore[top.id]={at:{},ts:Date.now()}; cur=_scStore[top.id]; _scSave(); }
+ }
+ if(cur&&!cur.closed){ var rv=B.reviews[_scG]; if(rv&&(rv.status==='handled'||rv.status==='closed')&&!cur.at.resolve){ cur.at.resolve=rv.at||Date.now(); _scSave(); } }
+ var st='ok'; if(cur&&!cur.closed){ st=!cur.at.resolve?'emerg':(!cur.at.file?'after':'done'); }
+ _scBanner(st); _scRender();
+}
+function _scBanner(st){
+ var el=document.getElementById('sc-state'); if(!el) return;
+ var T={ok:['מצב רגיל','אין אירוע חירום פתוח. הלוח במעקב.'],emerg:['מצב חירום','קריאת SOS פתוחה. פעלו לפי רשימת הצעדים.'],after:['האירוע טופל','נותר לתעד אותו בדוח אירוע.'],done:['מצב רגיל','האירוע האחרון טופל ותועד.']};
+ try{ var db=document.getElementById('demo-banner'); el.style.top=(db?db.offsetHeight:0)+'px'; }catch(e){}   /* phones: the sticky banner sits under the fixed demo label */
+ var sig=st+(_scDemo()?':d':''); if(el._sig===sig) return; el._sig=sig;
+ el.className='sc-state sc-'+st;
+ el.innerHTML='<span class="sc-dot"></span><b>'+T[st][0]+'</b><span class="sc-msg">'+T[st][1]+'</span><span class="sc-sp"></span>'
+  +((st==='emerg'||st==='after')?'<button type="button" class="sc-jump" onclick="scGuideFocus()">לרשימת הצעדים</button>':'')
+  +(_scDemo()?'<span class="sc-tag">נתוני דוגמה</span>':'');
+ document.body.classList.toggle('sc-emerg',st==='emerg'); document.body.classList.toggle('sc-after',st==='after');
+}
+function _scRender(){
+ var box=document.getElementById('sc-guide'), card=document.getElementById('c-recs'); if(!box) return;
+ var cur=_scG&&_scStore[_scG], o=_scG&&_liveEvents[_scG];
+ if(!cur||cur.closed||!o){ if(!box.hidden){ box.hidden=true; box.innerHTML=''; box._sig=''; } if(card) card.classList.remove('sc-on'); return; }
+ var nx=_scNext(cur), sig=_scG+'|'+JSON.stringify(cur.at);
+ if(!box.hidden&&box._sig===sig) return; box._sig=sig;
+ var nDone=SC_STEPS.filter(function(s){ return cur.at[s.k]; }).length, idq=_jsq(_scG);
+ var h='<div class="scg-h"><span class="scg-t">מה עושים עכשיו</span><span class="scg-ev">'+ESC(o.m.t)+(o.demo?' · דוגמה':'')+'</span><span class="scg-n">'+nDone+' / '+SC_STEPS.length+'</span></div><ol class="scg-list">';
+ SC_STEPS.forEach(function(s,i){ var done=!!cur.at[s.k], on=(i===nx);
+  h+='<li class="scg-s '+(done?'done':(on?'on':'wait'))+'"'+(on?' aria-current="step"':'')+(!done&&!on?' aria-disabled="true"':'')+'><span class="scg-num" aria-hidden="true">'+(done?'✓':(i+1))+'</span><div><div class="scg-st">'+s.t
+   +(done?'<span class="scg-time" dir="ltr">'+ilHM(cur.at[s.k])+'</span><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"> · בוצע</span>':'')+'</div>'
+   +(on?'<div class="scg-d">'+s.d+'</div><div class="scg-btns"><button type="button" class="scg-go" onclick="scGuideDo(\''+s.k+'\')">'+s.b+'</button>'+(s.alt?'<button type="button" class="scg-alt" onclick="openResponse(\''+idq+'\')">'+s.alt+'</button>':'')+'</div>':'')
+   +'</div></li>'; });
+ h+='</ol>';
+ if(nx<0) h+='<div class="scg-done"><b>✓ האירוע טופל ותועד</b>הדוח נשמר ברשומת האירוע, בהיסטוריה ובדוח המיוצא.<div class="scg-btns"><button type="button" class="scg-alt" onclick="scReportOpen()">צפייה בדוח</button><button type="button" class="scg-go" onclick="scGuideClose()">סגירת הרשימה</button></div></div>';
+ box.innerHTML=h; box.hidden=false; if(card) card.classList.add('sc-on');
+}
+function scGuideDo(k,opt){
+ opt=opt||{}; var id=_scG, cur=id&&_scStore[id], o=id&&_liveEvents[id]; if(!cur||!o) return;
+ var i=-1; SC_STEPS.forEach(function(s,j){ if(s.k===k) i=j; }); if(i<0||cur.at[k]) return;
+ for(var j=0;j<i;j++){ if(!cur.at[SC_STEPS[j].k]) return; }   /* strictly in order */
+ if(k==='file'){ scReportOpen(); return; }                    /* completes when the report is saved */
+ if(k==='ack'){ try{ silenceAlarm(); }catch(e){} }
+ if(k==='locate'){ try{ flyToLive(+o.e.lat,+o.e.lng,id); }catch(e){} }
+ cur.at[k]=Date.now();
+ try{ respLog(id,SC_STEPS[i].log); }catch(e){}
+ if(k==='resolve') _scReview(id,'handled','טופל · ממתין לדוח אירוע');
+ _scSave();
+ if(k==='resolve') boardRefresh(); else scGuideSync();
+ if(!opt.quiet) setTimeout(function(){ try{ var b=document.querySelector('#sc-guide .scg-go'); if(b) b.focus({preventScroll:true}); }catch(e){} },30);
+}
+function scGuideClose(){ var cur=_scG&&_scStore[_scG]; if(cur){ cur.closed=true; _scSave(); } scGuideSync(); }
+function scGuideFocus(){ var g=document.getElementById('sc-guide'); if(!g||g.hidden) return; try{ g.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} try{ var b=g.querySelector('.scg-go'); if(b) b.focus({preventScroll:true}); }catch(e){} }
+function _scLocal(ts){ var q=ilParts(ts); return q.year+'-'+q.month+'-'+q.day+'T'+q.hour+':'+q.minute; }
+function scReportClose(){ var o=document.getElementById('sc-report'); if(o) o.remove(); }
+function scReportOpen(sample){
+ var id=_scG, o=id&&_liveEvents[id]; if(!o) return; scReportClose();
+ var e=o.e, cur=_scStore[id]||{at:{}}, R=_scReports()[id];
+ if(!R){
+  var addr=((document.getElementById('ls-addr-txt')||{}).textContent||'').trim(), ll=(+e.lat).toFixed(4)+', '+(+e.lng).toFixed(4);
+  R={dt:_scLocal(e.ts||Date.now()), loc:o.demo?('כתובת לדוגמה · '+ll):((addr&&!/מאתר/.test(addr))?(addr+' · '+ll):ll), type:o.m.t,
+     acts:SC_STEPS.filter(function(s){ return s.k!=='file'&&cur.at[s.k]; }).map(function(s){ return ilHM(cur.at[s.k])+' · '+s.t; }).join('\n'), out:'', notes:''};
+  if(sample&&o.demo){ R.out='טופל במקום'; R.notes='שומר הגיע תוך 4 דק׳. לא נדרש פינוי. (נתוני דוגמה)'; }
+ }
+ var ov=document.createElement('div'); ov.id='sc-report'; ov.className='acct-ov';
+ ov.innerHTML='<div class="acct-card ev-form sc-rep-card" role="dialog" aria-modal="true" aria-labelledby="scr-h"><div class="acct-head"><h3 id="scr-h">דוח אירוע</h3><button type="button" class="acct-x" aria-label="סגירה" onclick="scReportClose()">✕</button></div>'
+  +'<div class="acct-sub">'+(o.demo?'<span class="ex-tag" style="margin:0 0 0 6px">דוגמה</span>נתוני דוגמה. נשמר בדפדפן זה בלבד ולא נשלח לשום מקום.':'נשמר בדפדפן זה, ברשומת האירוע ובדוח המיוצא.')+'</div>'
+  +'<div class="ev-row2"><div><label for="scr-dt">מועד (שעון ישראל)</label><input id="scr-dt" type="datetime-local" dir="ltr" value="'+ESC(R.dt)+'"></div><div><label for="scr-type">סוג האירוע</label><input id="scr-type" maxlength="80" value="'+ESC(R.type)+'"></div></div>'
+  +'<label for="scr-loc">מיקום</label><input id="scr-loc" maxlength="140" value="'+ESC(R.loc)+'">'
+  +'<label for="scr-acts">מה נעשה</label><textarea id="scr-acts" maxlength="800">'+ESC(R.acts)+'</textarea>'
+  +'<label for="scr-out">תוצאה</label><select id="scr-out" onchange="var r=document.getElementById(\'scr-err\');if(r)r.textContent=\'\'"><option value="">בחרו תוצאה</option>'+SC_OUT.map(function(x){ return '<option'+(x===R.out?' selected':'')+'>'+x+'</option>'; }).join('')+'</select>'
+  +'<label for="scr-notes">הערות</label><textarea id="scr-notes" maxlength="800" placeholder="למשל: שומר הגיע תוך 4 דק׳, לא נדרש פינוי">'+ESC(R.notes)+'</textarea>'
+  +'<div class="sc-err" id="scr-err" role="alert"></div>'
+  +'<div class="ev-btns"><button type="button" class="pri" onclick="scReportSave()">שמירת הדוח</button><button type="button" onclick="scReportClose()">ביטול</button></div></div>';
+ document.body.appendChild(ov); ov.addEventListener('click',function(ev){ if(ev.target===ov) scReportClose(); });
+ setTimeout(function(){ try{ document.getElementById(R.out?'scr-notes':'scr-out').focus({preventScroll:true}); }catch(e){} },30);
+}
+function scReportSave(){
+ var id=_scG, o=id&&_liveEvents[id], cur=id&&_scStore[id]; if(!o||!cur) return false;
+ function v(x){ return String((document.getElementById(x)||{}).value||'').trim(); }
+ var out=v('scr-out'); if(!out){ var er=document.getElementById('scr-err'); if(er) er.textContent='בחרו את תוצאת האירוע.'; try{ document.getElementById('scr-out').focus(); }catch(e){} return false; }
+ var R={dt:v('scr-dt'),loc:v('scr-loc').slice(0,140),type:v('scr-type').slice(0,80),acts:v('scr-acts').slice(0,800),out:out,notes:v('scr-notes').slice(0,800),saved:Date.now(),sample:!!o.demo};
+ var all=_scReports(); all[id]=R; _scReportsSave(all);
+ if(!cur.at.file){ cur.at.file=Date.now(); try{ respLog(id,'דוח אירוע נשמר · '+out); }catch(e){} }
+ _scReview(id,'closed',(out+(R.notes?' · '+R.notes:'')).slice(0,300));
+ _scSave(); scReportClose(); boardRefresh();
+ return true;
+}
+/* demo only (sample data, labelled): the guided tour drives the same checklist */
+function _scDemoClear(){
+ try{ closeResponse(); }catch(e){} scReportClose();
+ try{ var B=_boardLoad(); Object.keys(B.reviews).forEach(function(k){ if(/^demo\d+$/.test(k)) delete B.reviews[k]; }); _boardSave(B); }catch(e){}
+ try{ var r=_scReports(); delete r.demo0; _scReportsSave(r); }catch(e){}
+ _scStore={}; _scG=null;
+}
+window.addEventListener('resize',function(){ try{ var el=document.getElementById('sc-state'), db=document.getElementById('demo-banner'); if(el) el.style.top=(db?db.offsetHeight:0)+'px'; }catch(e){} });
+var scDemo={
+ phase:function(){ return _scPhase; },
+ since:function(){ return Date.now()-_scNormalAt; },
+ normal:function(){ if(!_scDemo()) return; _scDemoClear(); _scPhase='normal'; _scNormalAt=Date.now(); window._scSosAt=null; _sosFocusLock=false; _alarmId=null;
+  if(_curCityObj) demoLive(_curCityObj); try{ if(window._terrFocus) window._terrFocus(); }catch(e){} },
+ fire:function(){ if(!_scDemo()||_scPhase==='alarm') return; _scPhase='alarm'; window._scSosAt=Date.now(); if(_curCityObj) demoLive(_curCityObj); },
+ /* put the sample incident at "n checklist steps done" (0–5), replaying the real step actions */
+ to:function(n){ if(!_scDemo()) return; this.fire(); _scDemoClear(); _alarmId=null; _alarmSilenced=false; boardRefresh();
+  for(var i=0;i<n&&i<SC_STEPS.length;i++){ var k=SC_STEPS[i].k; if(k==='file'){ scReportOpen(true); scReportSave(); } else scGuideDo(k,{quiet:true}); } },
+ report:function(){ scReportOpen(true); }
+};
 /* staging copy: ?demo=1 opens the labelled demo directly */
 if(/[?&]demo=1/.test(location.search)) demoBoot(); else boot();
 </script>
