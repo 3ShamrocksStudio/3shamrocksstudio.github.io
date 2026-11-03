@@ -1668,7 +1668,7 @@ details.fold.more details.fold{margin-top:0}
   <div id="sortCta"></div>
   <div class="quickbar" id="quickbar" role="toolbar" aria-label="Clip actions" hidden></div>
   <div class="busy-line" id="bulkLine" aria-live="polite" hidden></div>
-  <div class="sortbar" id="sortbar" hidden><span>Your takes</span><button class="selbtn sortbtn" type="button" data-act="sort-cycle" id="sortBtn" aria-label="Change sort order">Newest</button><button class="selbtn" type="button" data-act="select" id="selBtn">Select</button></div>
+  <div class="sortbar" id="sortbar" hidden><span>Your jams</span><button class="selbtn sortbtn" type="button" data-act="sort-cycle" id="sortBtn" aria-label="Change sort order">Newest</button><button class="selbtn" type="button" data-act="select" id="selBtn">Select</button></div>
   <div class="filters" id="filters" role="radiogroup" aria-label="Show" hidden></div>
   <label class="searchbox" id="searchBox" hidden><svg class="i"><use href="#i-scope"/></svg><input id="search" type="search" placeholder="Search your clips" autocomplete="off"></label>
   <div id="list" class="list"></div>
@@ -1712,7 +1712,7 @@ details.fold.more details.fold{margin-top:0}
   <button type="button" data-act="sel-done" class="done"><svg class="i"><use href="#i-check"/></svg><span>Done</span></button>
 </div>
 <nav class="nav" aria-label="Main">
-  <button class="nv" type="button" data-view="clips" aria-current="page"><svg class="i"><use href="#i-film"/></svg><span>Takes</span></button>
+  <button class="nv" type="button" data-view="clips" aria-current="page"><svg class="i"><use href="#i-film"/></svg><span>Jams</span></button>
   <button class="nv" type="button" data-view="made"><svg class="i"><use href="#i-star"/></svg><span>My licks</span><b class="badge mb" id="madeBadge" hidden></b></button>
   <button class="fab" type="button" id="fab" aria-label="Add or record a jam">
     <svg class="pk" viewBox="0 0 100 100" aria-hidden="true"><use href="#pk" transform="translate(9 9) scale(.86)" fill="#FF2E88"/><use href="#pk" transform="translate(4 4) scale(.86)" fill="#FFE600" stroke="#07060B" stroke-width="4.5" stroke-linejoin="round"/></svg>
@@ -1800,7 +1800,7 @@ details.fold.more details.fold{margin-top:0}
       <div class="stage" id="sStage"></div>
       <div class="dockbar" id="sDockBar"></div>
       <div class="wave" id="sWave" aria-label="Timeline: drag to scrub, pinch or use − + to zoom. Drag a Pick's edges to trim it, a bar at a time."><canvas id="sCanvas"></canvas><span class="wavetip" id="waveTip" hidden></span></div>
-      <div class="tc"><span id="sNow">0:00</span><span class="zoomer" role="group" aria-label="Zoom the timeline"><button type="button" data-zoom="out" aria-label="Zoom out">−</button><button type="button" data-zoom="fit" aria-label="Show the whole take">Fit</button><button type="button" data-zoom="in" aria-label="Zoom in">+</button></span><span id="sDur">0:00</span></div>
+      <div class="tc"><span id="sNow">0:00</span><span class="zoomer" role="group" aria-label="Zoom the timeline"><button type="button" data-zoom="out" aria-label="Zoom out">−</button><button type="button" data-zoom="fit" aria-label="Show the whole jam">Fit</button><button type="button" data-zoom="in" aria-label="Zoom in">+</button></span><span id="sDur">0:00</span></div>
       <div id="sStepbar"></div>
     </div>
     <div class="wlegend" id="wLeg"></div>
@@ -1867,7 +1867,7 @@ details.fold.more details.fold{margin-top:0}
 <script>window.LP_PAY = { provider: "lemonsqueezy", mode: "test", store: "499938", portal: "https://3sstudio.lemonsqueezy.com/billing", products: { pro: ["1483622", "2312281", "2312296"] },
   test: { yearly: "https://3sstudio.lemonsqueezy.com/checkout/buy/287a3571-4cab-4413-854f-f52f8ae858f0", monthly: "https://3sstudio.lemonsqueezy.com/checkout/buy/c212571a-b04d-4622-b5cb-3d2197966fb2" },
   live: { yearly: "", monthly: "" } };</script>
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-03b"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-03c"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -5034,16 +5034,16 @@ const proTag = () => isPro() ? "" : `<i class="protag">PRO</i>`;
 // Free core + Pro by subscription ($2.99 a month or $14.99 a year, yearly is the best value). Free saves carry a small LickPick mark; Pro is clean.
 // Free = find, hear, practise and post one clip at a time. Pro = save more, faster, with the band, plus Backstage drops while it's on.
 const TIER_TABLE = [
-  ["Find", [["Scan every take, unlimited", 1], ["Grades: best, good, worth a look, useless", 1], ["Pick A, B, C + Why this part", 1], ["Suggestions from your own playing", 1]]],
+  ["Find", [["Scan every jam, unlimited", 1], ["Grades: best, good, worth a look, useless", 1], ["Pick A, B, C + Why this part", 1], ["Suggestions from your own playing", 1]]],
   ["Play & practise", [["Play my picks, back to back", 1], ["Loop and slow down to ¾ or ½", 1], ["Hear the band, every style", 1], ["Line up layers of you, and hear them", 1], ["Hear tightening, fixes and loops", 1], ["Hear every studio sound", 1]]],
-  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Vertical shorts, with a small LickPick mark", 1], ["Studio sound: Clean", 1], ["Captions, hashtags, share", 1], ["Studio sound: Warm, Bright, Live room", 0], ["Pro EQ: 5-band EQ, compressor, room, A/B", 0], ["Save with the Ballad or Rock band (with the mark)", 1], ["Save with every band style, extra and your mix", 0], ["Arrangements: Build free; Full on, Drop & lift", 0], ["Another take: the band plays it differently", 0], ["Save layers, split screen", 0], ["Save tightened, fixed and looped videos", 0], ["All 8 Looks (2 are free)", 0], ["Save everything in one tap", 0], ["Each part as its own file", 0], ["No LickPick mark on your videos", 0], ["Backstage: new band drops every month, with Pro", 0]]],
+  ["Save & post", [["Save a Pick or clean cut, one at a time", 1], ["Vertical shorts, with a small LickPick mark", 1], ["Studio sound: Clean", 1], ["Captions, hashtags, share", 1], ["Studio sound: Warm, Bright, Live room", 0], ["Pro EQ: 5-band EQ, compressor, room, A/B", 0], ["Save with the Ballad or Rock band (with the mark)", 1], ["Save with every band style, extra and your mix", 0], ["Arrangements: Build free; Full on, Drop & lift", 0], ["Another version: the band plays it differently", 0], ["Save layers, split screen", 0], ["Save tightened, fixed and looped videos", 0], ["All 8 Looks (2 are free)", 0], ["Save everything in one tap", 0], ["Each part as its own file", 0], ["No LickPick mark on your videos", 0], ["Backstage: new band drops every month, with Pro", 0]]],
 ];
 const tierTableHTML = () => `<table class="cmp"><thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead>${TIER_TABLE.map(([g, rows]) => `<tbody><tr class="grp"><th colspan="3">${g}</th></tr>${rows.map(([l, free]) => `<tr${free > 0 ? "" : ' class="pro"'}><td>${l}</td><td>${free > 0 ? icon("i-check") : `<span class="try">${lic.trial && free === 0 ? "try" : "–"}</span>`}</td><td>${icon("i-check")}</td></tr>`).join("")}</tbody>`).join("")}</table>`;
 // What Pro adds, in a player's words
-const PRO_FEATS = [["i-star", "No LickPick mark", "Your videos, clean. Free saves carry a small LickPick signature."], ["i-drum", "The band, saved", "Eight styles, three arrangements, extras and Another take, on your beat, with your take locked to it."], ["i-loop", "Fixes, loops and layers", "Tightened timing, patched mistakes, loops and longer videos, you side by side."], ["i-text", "All 8 Looks + chords on screen", "Every Look and title font, plus chords, key and tab on the video."], ["i-bolt", "The full studio sound", "Warm, Bright, Live room and Pro EQ: your own 5-band EQ, compressor and room."], ["i-stack", "Everything in one tap", "Save every pick or clean cut at once, or each part as its own file."], ["i-note", "Backstage, every month", "New styles, kits, sounds and Looks drop monthly, included with Pro."]];
+const PRO_FEATS = [["i-star", "No LickPick mark", "Your videos, clean. Free saves carry a small LickPick signature."], ["i-drum", "The band, saved", "Eight styles, three arrangements, extras and Another version, on your beat, with your playing locked to it."], ["i-loop", "Fixes, loops and layers", "Tightened timing, patched mistakes, loops and longer videos, you side by side."], ["i-text", "All 8 Looks + chords on screen", "Every Look and title font, plus chords, key and tab on the video."], ["i-bolt", "The full studio sound", "Warm, Bright, Live room and Pro EQ: your own 5-band EQ, compressor and room."], ["i-stack", "Everything in one tap", "Save every pick or clean cut at once, or each part as its own file."], ["i-note", "Backstage, every month", "New styles, kits, sounds and Looks drop monthly, included with Pro."]];
 // Free and Pro side by side, the same six lines everywhere (app and website)
-const PLAN_FREE = ["Scan every take, unlimited", "Pick A, B, C and why", "Hear the band: every style, its chart", "Save with the Ballad or Rock band", "Rec room: first video + every jam with a friend, free", "A small LickPick mark on saves"];
-const PLAN_PRO = ["The band saves with you, every style", "Arrangements, extras, Another take", "No LickPick mark, ever", "Rec room, fixes, loops and layers, saved", "All 8 Looks, chords on screen, Pro EQ", "Backstage: new band drops monthly"];
+const PLAN_FREE = ["Scan every jam, unlimited", "Pick A, B, C and why", "Hear the band: every style, its chart", "Save with the Ballad or Rock band", "Rec room: first video + every jam with a friend, free", "A small LickPick mark on saves"];
+const PLAN_PRO = ["The band saves with you, every style", "Arrangements, extras, Another version", "No LickPick mark, ever", "Rec room, fixes, loops and layers, saved", "All 8 Looks, chords on screen, Pro EQ", "Backstage: new band drops monthly"];
 // Backstage: the band keeps growing. New styles, kits, sounds and Looks drop monthly, included with Pro (no separate price).
 const BACKSTAGE_NEXT = ["Brushes & upright: a jazz trio kit", "Tape room: a lo-fi hall and a 70s plate", "Latin: bossa and son grooves", "A 90s Look: VHS titles and tracking"];   // the first drops, in order, after the beta
 const backstageOK = () => isPro();
@@ -5140,7 +5140,7 @@ function tipsHTML() {
   return `<div class="tips">${TIPS.map(([ic, b, d], i) => `<div>${stk(ic, ["volt", "cyan", "hot", "blaze"][i % 4], i % 2 ? "r2" : "")}<span><b>${b}</b><em>${d}</em></span></div>`).join("")}</div>
     <h3 class="tiph">Limits</h3>
     <div class="limits"><span><b>${LIMITS.perAdd}</b>videos per add</span><span><b>5 s–30 min</b>per video</span><span><b>20 s</b>clean for a Pick</span><span><b>∞</b>clips in your list</span></div>
-    <p class="hint">Best under ${LIMITS.bestMaxSec / 60} minutes per video: shorter takes scan faster and keep your phone cool. Same limits on Free and Pro.</p>
+    <p class="hint">Best under ${LIMITS.bestMaxSec / 60} minutes per video: shorter jams scan faster and keep your phone cool. Same limits on Free and Pro.</p>
     <h3 class="tiph">What gets cut</h3>
     <p class="cutwhat">${["Silence", "Talking", "Noise", "Click with no playing", "Stops & restarts", "Wrong notes", "Off pitch", "Timing drift", "Covered lens"].map(t => `<span>${t}</span>`).join("")}</p>`;
 }
@@ -5175,7 +5175,7 @@ async function fileUpdateGet(live) {
     const html = await r.text(); if (!html.includes(live)) throw new Error("not the new one yet");
     await downloads.save({ filename: `LickPick ${live.replace("lp-", "")}.html`, data: new Blob([html], { type: "text/html" }) });
     store.set("lp:skipver", live);
-    toast(`Saved to Downloads: LickPick ${live.replace("lp-", "")}.html. Open that one from now on; your takes and settings carry over. This file can go.`, { icon: "i-check", label: "OK", run: () => { }, sticky: true });
+    toast(`Saved to Downloads: LickPick ${live.replace("lp-", "")}.html. Open that one from now on; your licks and settings carry over. This file can go.`, { icon: "i-check", label: "OK", run: () => { }, sticky: true });
   } catch (e) { toast("Couldn't get the update. Try again when you're online, or download it from the LickPick site.", { icon: "i-x", label: "Site", run: () => open(LIVE_APP, "_blank") }); }
 }
 async function offerFile(name, blob, say) {
@@ -5229,7 +5229,7 @@ function logSave(c) {
 function remindIcs() {
   const d = new Date(); d.setDate(d.getDate() + 7); d.setHours(19, 0, 0, 0);
   const z = n => String(n).padStart(2, "0"), dt = x => `${x.getFullYear()}${z(x.getMonth() + 1)}${z(x.getDate())}T${z(x.getHours())}${z(x.getMinutes())}00`, e = new Date(d.getTime() + 20 * 60000);
-  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//3Shamrocks Studio//LickPick//EN", "BEGIN:VEVENT", `UID:lickpick-weekly-${Date.now()}@lickpick`, `DTSTAMP:${dt(new Date())}`, `DTSTART:${dt(d)}`, `DTEND:${dt(e)}`, "RRULE:FREQ=WEEKLY", "SUMMARY:Jam + LickPick 🎸", "DESCRIPTION:Film a jam\\, then open LickPick for your best take. https://3shamrocksstudio.github.io/lickpick/app/", "BEGIN:VALARM", "TRIGGER:-PT0M", "ACTION:DISPLAY", "DESCRIPTION:Jam time", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//3Shamrocks Studio//LickPick//EN", "BEGIN:VEVENT", `UID:lickpick-weekly-${Date.now()}@lickpick`, `DTSTAMP:${dt(new Date())}`, `DTSTART:${dt(d)}`, `DTEND:${dt(e)}`, "RRULE:FREQ=WEEKLY", "SUMMARY:Jam + LickPick 🎸", "DESCRIPTION:Film a jam\\, then open LickPick for your best lick. https://3shamrocksstudio.github.io/lickpick/app/", "BEGIN:VALARM", "TRIGGER:-PT0M", "ACTION:DISPLAY", "DESCRIPTION:Jam time", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   const blob = new Blob([ics], { type: "text/calendar" });
   (downloads ? downloads.save({ filename: "LickPick-weekly-jam.ics", data: blob }) : Promise.reject()).then(() => { store.set("lp:remind", Date.now()); toast("Open the file to add it to your calendar."); }).catch(() => { });
 }
@@ -5276,7 +5276,7 @@ function renderMade() {
   el.innerHTML = L.length ? L.map(m => `<div class="made"><button type="button" class="mthumb" data-made-play="${m.id}" aria-label="Play ${esc(m.name)}" ${m.thumb ? `style="background-image:url(${m.thumb})"` : ""}>${icon("i-play")}</button>
       <span class="minfo"><b>${esc(m.name)}</b><em>${[m.shape, m.len ? fmt(m.len) : "", fmtSize(m.size), new Date(m.at).toLocaleDateString()].filter(Boolean).join(" · ")}</em>
       </span><span class="mbtns">${m.clip ? `<button class="btn sm ghost" type="button" data-made-edit="${m.id}">${icon("i-sliders")}Edit</button>` : ""}<button class="btn sm" type="button" data-made-share="${m.id}">${icon("i-share")}Share</button><button class="btn sm ghost" type="button" data-made-save="${m.id}">${icon("i-save")}Save</button><button class="btn sm ghost" type="button" data-made-del="${m.id}" aria-label="Remove from LickPick">${icon("i-bin")}Remove</button></span></div>`).join("")
-    : `<div class="empty-made">${stk("i-film", "hot")}<b>Your licks live here</b><p>Open a take, get your Pick, tap Save. Every lick you save stays here, ready to share again.</p>${state.clips.some(c => !c.example) ? "" : `<button class="btn sm" type="button" data-act="gallery">${icon("i-film")}Add jams</button>`}</div>`;
+    : `<div class="empty-made">${stk("i-film", "hot")}<b>Your licks live here</b><p>Open a jam, get your Pick, tap Save. Every lick you save stays here, ready to share again.</p>${state.clips.some(c => !c.example) ? "" : `<button class="btn sm" type="button" data-act="gallery">${icon("i-film")}Add jams</button>`}</div>`;
   libStats();
 }
 async function libStats() {
@@ -5339,7 +5339,7 @@ function addFiles(files, recorded, opts = {}) {
   })).then(() => {
     render(); pump();
     const n = added.length - known;
-    toast(over ? `Scanning the first ${LIMITS.perAdd}. Add the other ${over} when these are done.` : recorded ? "Got the take. Scanning now." : n ? `Scanning ${n} clip${n > 1 ? "s" : ""}. Picks coming up.` : "Already scanned. Ready to play.");
+    toast(over ? `Scanning the first ${LIMITS.perAdd}. Add the other ${over} when these are done.` : recorded ? "Got the jam. Scanning now." : n ? `Scanning ${n} clip${n > 1 ? "s" : ""}. Picks coming up.` : "Already scanned. Ready to play.");
     const oc = cur(); if (oc && oc.file && !player && oc.status === "done") openStudio(oc, true); else if (state.openId) renderStudio();
   });
 }
@@ -5556,7 +5556,7 @@ function renderTop() {
     $("#quickbar").hidden = true; if ($("#filters")) $("#filters").hidden = true;
     $("#top").innerHTML = `${testerCard()}<div class="start">
       <h1>${profile.name ? `Hey ${esc(profile.name)}, add` : "Add"} your first jam</h1>
-      <p>From your gallery or camera. About a minute per take.</p>
+      <p>From your gallery or camera. About a minute per jam.</p>
       <div class="ctas"><button class="btn main" type="button" data-act="gallery">${icon("i-film")}Add jams</button><button class="btn ghost" type="button" data-act="record">${icon("i-rec")}Record</button></div>
       <div class="startlinks"><button class="linkbtn" type="button" data-act="tour">How it works</button><span>·</span><button class="linkbtn" type="button" data-act="tips-open">Recording tips</button></div></div>`;
     $("#sortCta").innerHTML = "";
@@ -5569,9 +5569,9 @@ function renderTop() {
   const done = real.filter(c => c.status === "done"), withPick = done.filter(c => c.file && pickOf(c));
   const ready = done.filter(c => c.file && verdict(c) !== "trash" && !c.pickSaved && pickOf(c)).length, rev = done.filter(c => c.file && verdict(c) === "review").length;
   const L = jamLog(), st = streakOf(L), rk = rankOf(L.saves);
-  const hero = counts.busy && !done.length ? `<div class="hero-act quiet working"><span class="pulse"></span><span><strong>Listening to ${counts.busy} take${counts.busy > 1 ? "s" : ""}…</strong><em>Keep LickPick open. About a minute each.</em></span></div>`
+  const hero = counts.busy && !done.length ? `<div class="hero-act quiet working"><span class="pulse"></span><span><strong>Listening to ${counts.busy} jam${counts.busy > 1 ? "s" : ""}…</strong><em>Keep LickPick open. About a minute each.</em></span></div>`
     : rev ? `<button class="hero-act" type="button" data-act="quicksort"><b class="hnum">${rev}</b><span><strong>need${rev > 1 ? "" : "s"} your ears</strong><em>Listen, then keep or trash. One tap each.</em></span>${icon("i-ear")}</button>`
-    : ready ? `<button class="hero-act" type="button" data-act="wk-ready"><b class="hnum">${ready}</b><span><strong>Pick${ready > 1 ? "s" : ""} ready to save</strong><em>Your best take${ready > 1 ? "s" : ""}, cut on the bar. Tap to hear ${ready > 1 ? "them" : "it"}.</em></span>${icon("i-star")}</button>`
+    : ready ? `<button class="hero-act" type="button" data-act="wk-ready"><b class="hnum">${ready}</b><span><strong>Pick${ready > 1 ? "s" : ""} ready to save</strong><em>Your best lick${ready > 1 ? "s" : ""}, cut on the bar. Tap to hear ${ready > 1 ? "them" : "it"}.</em></span>${icon("i-star")}</button>`
     : withPick.length ? `<button class="hero-act quiet" type="button" data-act="reel">${icon("i-play")}<span><strong>Play my picks</strong><em>${withPick.length} lick${withPick.length === 1 ? "" : "s"}, back to back</em></span></button>`
     : `<button class="hero-act quiet" type="button" data-act="gallery">${icon("i-film")}<span><strong>Add a jam</strong><em>From your gallery or camera.</em></span></button>`;
   $("#top").innerHTML = `${testerCard()}${hero}
@@ -5662,7 +5662,7 @@ function reconnectBar() {
   let el = $("#reconnect"); const n = state.clips.filter(c => !c.example && c.status === "done" && !c.file).length;
   if (!n) { el?.remove(); return; }
   if (!el) { el = document.createElement("div"); el.id = "reconnect"; el.className = "reconnect"; $("#list").before(el); }
-  el.innerHTML = `${stk("i-film", "cyan")}<span><b>Bring ${n > 1 ? `${n} older takes` : "1 older take"} into your library</b>Scanned before LickPick kept videos. Add ${n > 1 ? "them" : "it"} once; from now on every video and project stays in LickPick.</span><button class="btn sm" type="button" data-act="gallery">Add</button>`;
+  el.innerHTML = `${stk("i-film", "cyan")}<span><b>Bring ${n > 1 ? `${n} older jams` : "1 older jam"} into your library</b>Scanned before LickPick kept videos. Add ${n > 1 ? "them" : "it"} once; from now on every video and project stays in LickPick.</span><button class="btn sm" type="button" data-act="gallery">Add</button>`;
 }
 function render() {
   renderTop(); reconnectBar();
@@ -5737,7 +5737,7 @@ function toast(msg, act) {
 
 // ---------- intro / tutorial
 const SLIDES = [
-  { bg: "var(--ink)", art: `<span class="lockup" role="img" aria-label="LickPick"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b><sup class="tm">™</sup></span></span>`, h: "", label: "Welcome to LickPick", p: "Add your jam videos. It finds your best phrase in every take, right here on your phone. No account, no uploads, never deletes a file." },
+  { bg: "var(--ink)", art: `<span class="lockup" role="img" aria-label="LickPick"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b><sup class="tm">™</sup></span></span>`, h: "", label: "Welcome to LickPick", p: "Add your jam videos. It finds your best lick in every jam, right here on your phone. No account, no uploads, never deletes a file." },
   { bg: "var(--cyan)", art: `<svg class="i" style="color:var(--ink);--ic2:rgba(255,255,255,.6)"><use href="#i-cut"/></svg>`, h: "Every part graded", p: "Each clip gets Keep, Review or Trash, and every part inside it a grade. Play any part on its own.", tiers: true },
   { bg: "var(--volt)", art: `<svg class="i" style="color:var(--ink);--ic2:var(--hot)"><use href="#i-star"/></svg>`, h: "Your Pick, explained",
     p: "Pick A is the cleanest strong phrase, on the bar: in time, in key, full of energy. Try B or C, nudge it a bar, and tap \u201CWhy this part?\u201D to see how it won." },
@@ -5880,7 +5880,7 @@ function renderOnboard() {
   if (step === "welcome") {
     // one screen: show, don't tell. Four stickers, one privacy strip, then straight to your jams
     // 2.6: the lockup, one line, the button. Nothing else.
-    B.innerHTML = `<div class="ob-hero"><span class="lockup big" aria-label="LickPick"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></span></div><h1>Your best take, found.</h1>
+    B.innerHTML = `<div class="ob-hero"><span class="lockup big" aria-label="LickPick"><svg aria-hidden="true"><use href="#logo"/></svg><span class="word">Lick<b>Pick</b></span></span></div><h1>Your best lick, found.</h1>
       <p class="obline">Private. On your phone. Free.</p>`;
     next.hidden = true; ctas.hidden = false;
   } else {
@@ -5895,7 +5895,7 @@ function renderOnboard() {
       <div class="field"><label>Your Look <span class="optl">every new video starts with it</span></label><div class="chips">${LOOKS.map(([k, l]) => `<button type="button" data-prof-look="${k}" aria-pressed="${(profile.look || "studio") === k}">${l}${!lookFree(LOOKS.find(x => x[0] === k)) && !isPro() ? " ·PRO" : ""}</button>`).join("")}</div></div>
       <div class="profmeta"><span><b>${isPro() ? "Pro" : "Free"}</b>${isPro() ? " · thank you!" : ` · <button type="button" class="linkbtn" data-act="ob-pro">see Pro</button>`}</span><span>${state.clips.filter(c => !c.example).length} clips · ${madeList().length} licks saved</span><span>No account. All of this stays on this phone.</span><span>Help: <a href="mailto:${SUPPORT}">${SUPPORT}</a></span></div>
       ${(() => { const P = state.clips.filter(x => !x.example && x.status === "done" && (x.ex || x.band || x.patches?.length || x.pickSaved)).slice(0, 8), M = madeList();
-        return `<div class="field"><label>Your projects <span class="optl">saved as you edit · tap to keep going</span></label>${P.length ? `<div class="projlist">${P.map(x => `<button type="button" class="proj" data-prof-open="${esc(x.key)}"><b>${esc(x.name.replace(/\.[^.]+$/, ""))}</b><em>${esc([x.band && x.ex?.band ? "band" : "", x.ex?.look && x.ex.look !== "studio" ? "styled" : "", x.pickSaved ? "saved" : "in progress"].filter(Boolean).join(" · "))}</em></button>`).join("")}</div>` : `<p class="hint">Projects show up here as soon as you edit a take.</p>`}
+        return `<div class="field"><label>Your projects <span class="optl">saved as you edit · tap to keep going</span></label>${P.length ? `<div class="projlist">${P.map(x => `<button type="button" class="proj" data-prof-open="${esc(x.key)}"><b>${esc(x.name.replace(/\.[^.]+$/, ""))}</b><em>${esc([x.band && x.ex?.band ? "band" : "", x.ex?.look && x.ex.look !== "studio" ? "styled" : "", x.pickSaved ? "saved" : "in progress"].filter(Boolean).join(" · "))}</em></button>`).join("")}</div>` : `<p class="hint">Projects show up here as soon as you edit a jam.</p>`}
           <button class="btn ghost wide" type="button" data-act="prof-made">${icon("i-star")}My licks (${M.length})</button><p class="hint" id="profStore"></p></div>`; })()}`;
     setTimeout(async () => { try { const e = await navigator.storage?.estimate?.(); const el = $("#profStore"); if (el && e?.usage != null) el.textContent = `LickPick uses ${fmtSize(e.usage)} on this phone. Your gallery videos are never touched.`; } catch { } }, 0);
     next.hidden = false; next.textContent = "Done"; ctas.hidden = true;
@@ -5983,7 +5983,7 @@ function openStudio(c, keep) {
     player = new Seg(stage, { onTick: () => { drawWave(); markRows(); } }); video = player.v;
     video.addEventListener("pause", markRows); video.addEventListener("play", () => { c._played = true; markRows(); });
     player.onPlay = () => { const c2 = cur(); if (c2 && c2.status === "done" && needsEngine(c2)) { bandPreview(c2); return true; } return false; };
-    player.onChip = () => { const c2 = cur(); if (!c2) return; if (player.ranges) { stopBand(); player.set(null, "Full take", fmt(c2.raw?.duration || 0)); } else showPick(c2); };
+    player.onChip = () => { const c2 = cur(); if (!c2) return; if (player.ranges) { stopBand(); player.set(null, "Full jam", fmt(c2.raw?.duration || 0)); } else showPick(c2); };
     player.load(c.file ? (c.url || (c.url = URL.createObjectURL(c.file))) : (c.vurl || (c.vurl = URL.createObjectURL(c.vproxy))));
     video.addEventListener("loadedmetadata", () => { c.vw = video.videoWidth; c.vh = video.videoHeight; lookLive(c); });
     stage.querySelector(".pv")?.insertAdjacentHTML("beforeend", `<div class="credit" id="sCredit" aria-hidden="true"></div><svg class="bug" aria-hidden="true"><use href="#logo"/></svg><canvas id="ovCv" class="ovcv" hidden></canvas>${c.file ? "" : `<button class="pvbadge" type="button" data-act="gallery">${icon("i-film")}Watch copy · Re-add for HD save</button>`}`);
@@ -6004,7 +6004,7 @@ function openStudio(c, keep) {
   if (!c.file && c.proxy) setTimeout(() => { if (cur() === c) soundBuf(c).catch(() => { }); }, 250);
 }
 // load the current pick into the player (not playing yet), so the first thing on screen is the pick
-function showPick(c) { if (!player) return; const S = srcOf(c); if (S) player.set(S.ranges, S.label, `${fmt(S.len)} · tap for full take`); else player.set(null, "Full take", fmt(c.raw?.duration || 0)); }
+function showPick(c) { if (!player) return; const S = srcOf(c); if (S) player.set(S.ranges, S.label, `${fmt(S.len)} · tap for full jam`); else player.set(null, "Full jam", fmt(c.raw?.duration || 0)); }
 function closeStudio() {
   { const c0 = cur(); if (c0) { c0._tv = null; c0._tFrozen = null; } if (c0?._retaste) { c0._retaste = false; redecide(c0); persist(c0); } }   // new cut rules apply once you leave, so nothing moves under your finger
   stopBand(); stopAudio(); stopAt = null; queue = []; unfloat(); playMark = null;
@@ -6046,7 +6046,7 @@ function lookLive(c) { const l = lookOf(c?.ex), v = video; if (!v) return; v.sty
 const STEPS = [["choose", "Cut", "i-star"], ["band", "Band", "i-drum"], ["look", "Style", "i-text"], ["post", "Share", "i-share"]];
 // the old step names (tests, saved state, deep links) land on the screen that now holds them
 const STEP_OF = { choose: "choose", fix: "choose", arrange: "choose", band: "band", sound: "band", layers: "band", look: "look", post: "post" };
-const STEP_TITLE = { choose: ["Cut your best take", "Pick it. Fix it. Size it."], band: ["Add the band", "Lock the groove. Pick a style."], look: ["Style it", "Look, title, chords."], post: ["Share it", "Captions. Save. Post."] };
+const STEP_TITLE = { choose: ["Pick your best lick", "Pick it. Fix it. Size it."], band: ["Add the band", "Lock the groove. Pick a style."], look: ["Style it", "Look, title, chords."], post: ["Share it", "Captions. Save. Post."] };
 const bandish = () => ["band", "choose"].includes(state.step);
 function stepInfo(c, k) {
   const S = srcOf(c), pk = pickOf(c), o = exOpts(c);
@@ -6057,7 +6057,7 @@ function stepInfo(c, k) {
     case "fix": { if (!pk) return ["Needs a Pick", false]; const n = pinsIn(c, pk.s, pk.e).length, f = (c.patches || []).filter(p => p.bar[0] < pk.e && p.bar[1] > pk.s).length, tt = !!tightFor(c);
       return [[tt && "Tightened", f && `${f} fixed`, c.tune && tuneOff(c) && "Tuned"].filter(Boolean).join(" · ") || (n ? `${n} to check` : "Nothing off"), tt || f > 0 || !!c.tune || !n]; }
     case "arrange": { if (c.src === "mix" && mixSegs(c).length > 1) return [`Mix of ${mixSegs(c).length}`, true]; const n = loopN(c); return n > 1 && pk ? [`Loop ×${n} · ${fmt(S?.len || 0)}`, true] : ["As played", false]; }
-    case "layers": { const n = layersOf(c).length; return [n ? `You + ${n} take${n > 1 ? "s" : ""}` : "Just you", n > 0]; }
+    case "layers": { const n = layersOf(c).length; return [n ? `You + ${n} recording${n > 1 ? "s" : ""}` : "Just you", n > 0]; }
     case "band": { if (!o.canBand) return ["Needs a Pick", false]; const A = bandA(c); return [bandOn(c) ? `${LickBand.STYLES[bandStyleOf(newBand(c) && c, A)]?.name || "Band"} · on` : "Off", bandOn(c)]; }
     case "sound": return [fxLabel(c) || "As recorded", !!sndOf(c).fx];
     case "look": { const l = lookOf(o); return [[l[1], o.ovTitle && (o.title || "").trim() && "title", (o.ovChords || o.ovKey || o.ovNotes) && "chords"].filter(Boolean).join(" · "), l[0] !== "studio" || ovOn(o)]; }
@@ -6075,7 +6075,7 @@ const more = (id, body, sum) => `<details class="fold more" id="sec-more-${id}" 
 function stepBody(c, k) {
   const pk = pickOf(c);
   switch (k) {
-    case "choose": return sect("choose", "a", "Your best take", choosePanel(c))
+    case "choose": return sect("choose", "a", "Your best lick", choosePanel(c))
       + more("cut", sect("fix", "b", "Fix", fixPanel(c), esc(stepInfo(c, "fix")[0])) + sect("arrange", "c", "Loop & tempo", arrangePanel(c), esc(stepInfo(c, "arrange")[0])), [stepInfo(c, "fix")[0], stepInfo(c, "arrange")[0]].filter(Boolean).join(" · "));
     case "band": return sect("band", "a", "The band", bandPanel(c))
       + sect("layers", "c", "Rec room", pk ? `${layersCard(c)}${srcOf(c)?.plan && !srcOf(c).plan.simple ? `<p class="hint">Layers play with the Pick as recorded. Tightening, fixes and loops are left out when you save layers.</p>` : ""}` : `<p class="hint keep">Layers line up with your Pick. Choose a Pick first.</p>`, esc(stepInfo(c, "layers")[0]))
@@ -6174,7 +6174,7 @@ function soundPanel(c) {
   const aiOff = k => b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k];
   return `<div class="sndcard"><div class="sndhead"><h3>${icon("i-bolt")}Studio sound</h3><span class="foldv">${esc(fxLabel(c) || "Off")}</span></div>
       <span class="seg wide fxseg">${[["", "Off"], ...Object.entries(LickFX.PRESETS).map(([k, v]) => [k, v.name]), ["custom", "My sound"]].map(([k, l]) => `<button type="button" data-fx="${k}" aria-pressed="${(n.fx || "") === k}">${l}${k && k !== "clean" && !isPro() ? `<i class="fxpro">PRO</i>` : ""}</button>`).join("")}</span>
-      <p class="hint">${n.fx === "custom" ? "Your own EQ, compressor and room, below. " : n.fx ? "EQ, compression and a touch of room on your take. " : "One tap makes a phone recording sound like a studio take. "}${isPro() ? "" : "Clean saves free. Hear everything free, save Warm, Bright, Live room and My sound with Pro."}</p>
+      <p class="hint">${n.fx === "custom" ? "Your own EQ, compressor and room, below. " : n.fx ? "EQ, compression and a touch of room on your playing. " : "One tap makes a phone recording sound like a studio recording. "}${isPro() ? "" : "Clean saves free. Hear everything free, save Warm, Bright, Live room and My sound with Pro."}</p>
       ${n.fx === "custom" ? "" : `<button class="btn ghost wide" type="button" data-act="eq-open">${icon("i-sliders")}Pro EQ: tune it yourself${proTag()}</button>`}</div>
     ${n.fx === "custom" ? eqPanel(c) : ""}
     <div class="sndcard"><div class="sndhead"><h3>${icon("i-sliders")}Mixer</h3></div>
@@ -6218,7 +6218,7 @@ function suggestions(c) {
   const out = [], dis = c.sugOff || {}, A = c.raw?.chromaQ ? bandA(c) : null, list = c._picks?.list || [], sel = c.pickSel || 0;
   // 1) quiet recording -> polish
   const lift = ClipExporter.levelGain(c.raw.loud, CELL, pk.s, pk.e);
-  if (!sndOf(c).fx && lift >= 6) out.push({ id: "polish", ic: "i-bolt", c: "volt", t: `Your take is quiet: it needs about +${Math.round(lift)} dB for social.`, a: "Studio sound: Clean" });
+  if (!sndOf(c).fx && lift >= 6) out.push({ id: "polish", ic: "i-bolt", c: "volt", t: `Your recording is quiet: it needs about +${Math.round(lift)} dB for social.`, a: "Studio sound: Clean" });
   // 2) a close runner-up
   const other = list.findIndex((p, i) => i !== sel && Math.abs(p.score - list[sel].score) < 0.02);
   if (other >= 0) out.push({ id: "alt" + other, ic: "i-star", c: "cyan", t: `Pick ${"ABC"[other]} scored almost the same as Pick ${"ABC"[sel]}.`, a: `Hear Pick ${"ABC"[other]}` });
@@ -6231,7 +6231,7 @@ function suggestions(c) {
 }
 function suggestHTML(c) {
   const S = suggestions(c); if (!S.length) return "";
-  return `<div class="sugs"><div class="sndhead"><h3>${icon("i-bolt")}Suggested for this take</h3></div>${S.map((x, i) => `<div class="sug">${stk(x.ic, x.c, i % 2 ? "r2" : "")}<span>${esc(x.t)}</span><button class="btn sm" type="button" data-sug="${esc(x.id)}">${esc(x.a)}</button><button class="sugx" type="button" data-sugx="${esc(x.id.split(":")[0])}" aria-label="Dismiss">${icon("i-x")}</button></div>`).join("")}</div>`;
+  return `<div class="sugs"><div class="sndhead"><h3>${icon("i-bolt")}Suggested for this lick</h3></div>${S.map((x, i) => `<div class="sug">${stk(x.ic, x.c, i % 2 ? "r2" : "")}<span>${esc(x.t)}</span><button class="btn sm" type="button" data-sug="${esc(x.id)}">${esc(x.a)}</button><button class="sugx" type="button" data-sugx="${esc(x.id.split(":")[0])}" aria-label="Dismiss">${icon("i-x")}</button></div>`).join("")}</div>`;
 }
 function pickPanel(c) {
   const list = picksOf(c), pk = pickOf(c), v = verdict(c), rep = report(c), k = keptSeconds(c), D = c.raw?.duration || 0;
@@ -6253,7 +6253,7 @@ ${pk ? rateStrip(c, pk.s, pk.e, `Rate Pick ${"ABC"[c.pickSel || 0]}`) : ""}
     <p class="hint">${L === "auto" ? "Auto finds the best complete phrase, 20 to 45 seconds, starting and ending on the bar." : `The best ${L} seconds, rounded to whole bars.`} 15 to 30 seconds plays best on Reels and TikTok.</p>
     <details class="report"><summary><h3>${icon("i-scope")}Scan details</h3><span class="wsum">${esc(verdictLine)}</span></summary>
       <p class="verdict ${v}">${stamp(v)}<span>${verdictLine}</span></p>
-      ${rep.length ? `<div class="cutlist">${rep.map(r => `<div><b>${r.n}×</b><span>${esc(r.why)}</span><em>${fmt(r.t)} cut</em></div>`).join("")}</div>` : `<p class="hint">Clean take. Nothing to cut.</p>`}
+      ${rep.length ? `<div class="cutlist">${rep.map(r => `<div><b>${r.n}×</b><span>${esc(r.why)}</span><em>${fmt(r.t)} cut</em></div>`).join("")}</div>` : `<p class="hint">Clean jam. Nothing to cut.</p>`}
       <div class="facts">${facts.map(([a, b]) => `<span class="fact">${a} <b>${esc(b)}</b></span>`).join("")}</div>
       ${(c.raw?.styleNotes || []).map(n => `<p class="hint">${esc(n.charAt(0).toUpperCase() + n.slice(1))}.</p>`).join("")}
       ${(c.result?.removed || []).length ? `<details><summary>Every cut</summary><div class="cuts">${c.result.removed.map(r => `<button type="button" class="cut" data-seek="${r.start}" data-seek-end="${r.end}"><span class="t">${fmt(r.start)} to ${fmt(r.end)}</span><span>${esc(r.reasons.join(", "))}</span></button>`).join("")}</div></details>` : ""}
@@ -6379,11 +6379,11 @@ function pinsHTML(c, pk) {
   const pins = pinsIn(c, pk.s, pk.e), tn = tuneOff(c), patched = (c.patches || []).filter(p => p.bar[0] < pk.e - 0.05 && p.bar[1] > pk.s + 0.05);
   if (!pins.length && !tn) return `<div class="pins ok">${icon("i-check")}<span><b>Nothing off in this Pick.</b> On the beat, in key and in tune, as far as LickPick can hear.</span></div>`;
   return `<div class="pins"><h4>${icon("i-ear")}${pins.length ? `${pins.length} spot${pins.length > 1 ? "s" : ""} to check` : "Tuning"}</h4>
-    ${tn ? `<div class="pinrow tune"><i class="pdot" style="background:#2BE7FF"></i><span class="grow"><b>Whole take ${Math.abs(tn)} cents ${tn > 0 ? "sharp" : "flat"}</b><em>Your instrument wasn't tuned to A440. LickPick can tune the saved video, keeping the length.</em></span><button type="button" class="btn sm ${c.tune ? "" : "ghost"}" data-act="tune-toggle" aria-pressed="${!!c.tune}">${c.tune ? icon("i-check") + "Tuned" : "Tune it"}</button></div>` : ""}
+    ${tn ? `<div class="pinrow tune"><i class="pdot" style="background:#2BE7FF"></i><span class="grow"><b>Whole recording ${Math.abs(tn)} cents ${tn > 0 ? "sharp" : "flat"}</b><em>Your instrument wasn't tuned to A440. LickPick can tune the saved video, keeping the length.</em></span><button type="button" class="btn sm ${c.tune ? "" : "ghost"}" data-act="tune-toggle" aria-pressed="${!!c.tune}">${c.tune ? icon("i-check") + "Tuned" : "Tune it"}</button></div>` : ""}
     ${pins.map(p => { const fix = (c.patches || []).find(x => p.t >= x.bar[0] && p.t < x.bar[1]); return `<div class="pinrow"><i class="pdot" style="background:${p.col}"></i><span class="grow"><b>${p.label} at ${fmtP(p.t)}</b><em>${fix ? `Patched with the same bar at ${fmtP(fix.with[0])} (${esc(fix.chords || "same chords")}).` : p.kind === "beat" ? "A hit lands off your groove." : p.kind === "key" ? "A note outside the key and chord." : "A note between two pitches."}</em></span>
       <button type="button" class="btn sm ghost" data-pinplay="${p.t}" aria-label="Hear it">${icon("i-play")}</button>
       ${fix ? `<button type="button" class="btn sm ghost" data-unpatch="${fix.bar[0]}">${icon("i-undo")}Undo</button>` : `<button type="button" class="btn sm" data-patch="${p.t}">${icon("i-rescue")}Fix</button>`}</div>`; }).join("")}
-    ${patched.length || c.tune ? `<p class="hint">${patched.length ? `${patched.length} bar${patched.length > 1 ? "s" : ""} patched: the saved video swaps in a clean take of the same bar, blended on the beat. ` : ""}${c.tune ? "Tuning is applied when you save. " : ""}Play the Pick to hear the patches.</p>` : `<p class="hint">Fix swaps the bar for a clean one with the same chords from elsewhere in this take, on the beat.</p>`}</div>`;
+    ${patched.length || c.tune ? `<p class="hint">${patched.length ? `${patched.length} bar${patched.length > 1 ? "s" : ""} patched: the saved video swaps in a clean version of the same bar, blended on the beat. ` : ""}${c.tune ? "Tuning is applied when you save. " : ""}Play the Pick to hear the patches.</p>` : `<p class="hint">Fix swaps the bar for a clean one with the same chords from elsewhere in this jam, on the beat.</p>`}</div>`;
 }
 // ---------- Mix: several parts of the take as one video, joined on the bar
 function mixCands(c) {
@@ -6423,9 +6423,9 @@ function mixHTML(c) {
   const m = c.mix || { ids: [] }, sel = m.ids, segs = mixSegs(c), len = segs.reduce((t, g) => t + g.e - g.s, 0) - XF * Math.max(0, segs.length - 1), warn = mixWarn(c, segs);
   return `<details class="mixbox"${sel.length ? " open" : ""}><summary>${stk("i-stack", "cyan")}<span><b>Mix parts into one video</b><em>${sel.length ? `${sel.length} parts · ${fmt(len)}` : "Join your best moments, cut on the beat"}</em></span></summary>
     <div class="mixlist">${[...C].sort((a, b) => { const ia = sel.indexOf(a.id), ib = sel.indexOf(b.id); return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.s - b.s; }).map(x => { const k = sel.indexOf(x.id); return `<div class="mixrow${k >= 0 ? " on" : ""}"><button type="button" class="mixpick" data-mix="${x.id}" aria-pressed="${k >= 0}">${k >= 0 ? `<i class="mixn">${k + 1}</i>` : `<i class="mixn off"></i>`}<span><b>${esc(x.label)}</b><em>${fmt(x.s)} → ${fmt(x.e)} · ${fmt(x.e - x.s)}</em></span></button>${k > 0 ? `<button type="button" class="mixup" data-mixup="${x.id}" aria-label="Move earlier">↑</button>` : ""}</div>`; }).join("")}</div>
-    <div class="row-btns"><button class="btn sm ghost" type="button" data-act="mix-auto">${icon("i-bolt")}Best of this take</button>${sel.length > 1 ? `<button class="btn sm ink" type="button" data-act="mix-play">${icon("i-play")}Play the mix</button><button class="btn sm" type="button" data-act="mix-save">${icon("i-save")}Save the mix</button>` : ""}</div>
+    <div class="row-btns"><button class="btn sm ghost" type="button" data-act="mix-auto">${icon("i-bolt")}Best of this jam</button>${sel.length > 1 ? `<button class="btn sm ink" type="button" data-act="mix-play">${icon("i-play")}Play the mix</button><button class="btn sm" type="button" data-act="mix-save">${icon("i-save")}Save the mix</button>` : ""}</div>
     ${warn ? `<p class="hint warnline">${esc(warn)}</p>` : ""}
-    <p class="hint">${sel.length > 1 ? "Each part is trimmed to whole bars and joined on the downbeat with a short blend of sound and picture. Preview plays straight cuts; the saved video blends them." : "Tap parts in the order you want them. Best of this take picks your strongest parts, in time order, to fit a Reel."}</p></details>`;
+    <p class="hint">${sel.length > 1 ? "Each part is trimmed to whole bars and joined on the downbeat with a short blend of sound and picture. Preview plays straight cuts; the saved video blends them." : "Tap parts in the order you want them. Best of this jam picks your strongest parts, in time order, to fit a Reel."}</p></details>`;
 }
 // ---------- Export: one sheet for every way out (pick or clean cut, original or vertical, band, parts)
 const SOCIAL = ["reels", "tiktok", "shorts"];
@@ -6487,7 +6487,7 @@ function exportSheetHTML(c) {
     </div>
     <div class="exgroup"><span>On the video</span><button type="button" class="opt" data-act="look-open" ${busy ? "disabled" : ""}>${icon("i-text")}<span class="grow"><strong>${esc(stepInfo(c, "look")[0])}</strong><em>Look, title, chords and tab. Tap to change.</em></span><span class="chev">›</span></button></div>
     ${o.canBand || o.canSep || S.kind === "mix" || o.canLayers ? `<div class="exgroup"><span>Extras</span>
-      ${o.canLayers ? opt("layers", !!o.layers, "i-stack", "Layers, split screen", `You and ${layersOn(c).length} more take${layersOn(c).length > 1 ? "s" : ""}, side by side, on one beat.`, false, proTag()) : ""}
+      ${o.canLayers ? opt("layers", !!o.layers, "i-stack", "Layers, split screen", `You and ${layersOn(c).length} more recording${layersOn(c).length > 1 ? "s" : ""}, side by side, on one beat.`, false, proTag()) : ""}
       ${o.canBand ? opt("band", o.band, "i-drum", "Backing band", "Drums, bass and keys on your beat.", false, freeBand(c) || !o.band ? "" : proTag()) : ""}
       ${o.canSep ? opt("sep", o.sep, "i-stack", "One file per part", `${S.n} files instead of one.`, false, proTag()) : ""}
       ${S.kind === "mix" || o.band ? opt("alsoParts", !!o.alsoParts, "i-film", S.kind === "mix" ? "Also save each part on its own" : "Also save it without the band", S.kind === "mix" ? `Plus ${S.ranges.length} separate files of your original playing.` : "Plus a file with just your original playing.") : ""}
@@ -6746,13 +6746,13 @@ function whyHTML(c) {
   const X = t => (t / D * W).toFixed(1);
   const cuts = (c.result?.removed || []).map(r => `<rect x="${X(r.start)}" y="${H - 6}" width="${Math.max(2, (r.end - r.start) / D * W).toFixed(1)}" height="6" fill="var(--red)"/>`).join("");
   const boxes = list.map((p, i) => { const q = i === sel ? pk : p; return `<rect x="${X(q.s)}" y="2" width="${((q.e - q.s) / D * W).toFixed(1)}" height="${H - 10}" rx="6" fill="${i === sel ? "rgba(255,230,0,.16)" : "none"}" stroke="${i === sel ? "var(--volt)" : "var(--cyan)"}" stroke-width="${i === sel ? 4 : 2.5}" ${i === sel ? "" : 'stroke-dasharray="10 8"'}/><text x="${(+X(q.s) + 10).toFixed(1)}" y="22" class="mlab" fill="${i === sel ? "var(--volt)" : "var(--cyan)"}">${"ABC"[i]}</text>`; }).join("");
-  const map = `<svg class="takemap" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Strength of every moment in the take, with the Pick boxed"><path d="${line}L${W} ${H - 8}L0 ${H - 8}Z" fill="rgba(255,46,136,.18)"/><path d="${line}" fill="none" stroke="var(--hot)" stroke-width="3" vector-effect="non-scaling-stroke"/>${boxes}${cuts}</svg>
+  const map = `<svg class="takemap" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Strength of every moment in the jam, with the Pick boxed"><path d="${line}L${W} ${H - 8}L0 ${H - 8}Z" fill="rgba(255,46,136,.18)"/><path d="${line}" fill="none" stroke="var(--hot)" stroke-width="3" vector-effect="non-scaling-stroke"/>${boxes}${cuts}</svg>
     <div class="maplegend"><span><i style="background:var(--hot)"></i>Strength</span><span><i style="background:var(--volt)"></i>Your Pick</span><span><i style="border:2px dashed var(--cyan);background:none"></i>Runners-up</span><span><i style="background:var(--red)"></i>Cut</span></div>`;
   // how sure: the gap to the next best
   const other = list.find((_, i) => i !== sel), gap = other ? Math.abs(list[sel].score - other.score) : 1;
-  const sure = !other ? "Only one complete phrase in this take." : gap < 0.02 ? `Close call. Pick ${"ABC"[list.indexOf(other)]} is nearly as strong, so give it a listen.` : gap < 0.06 ? "Clear favourite, with a decent runner-up." : "Clear winner. Nothing else comes close.";
+  const sure = !other ? "Only one complete lick in this jam." : gap < 0.02 ? `Close call. Pick ${"ABC"[list.indexOf(other)]} is nearly as strong, so give it a listen.` : gap < 0.06 ? "Clear favourite, with a decent runner-up." : "Clear winner. Nothing else comes close.";
   // the Pick's profile against the rest of this take (50 = this take's average)
-  const f = pk.feat, meters = f ? `<div class="meters">${FEATS.map(([k, l]) => { const v = pct(f[k] ?? 0); return `<div class="meter"><span>${l}</span><b><i style="width:${v}%"></i><u></u></b><em>${v >= 65 ? "high" : v >= 40 ? "average" : "low"}</em></div>`; }).join("")}<p class="hint">Compared with the rest of this take. The middle line is its average.</p></div>` : "";
+  const f = pk.feat, meters = f ? `<div class="meters">${FEATS.map(([k, l]) => { const v = pct(f[k] ?? 0); return `<div class="meter"><span>${l}</span><b><i style="width:${v}%"></i><u></u></b><em>${v >= 65 ? "high" : v >= 40 ? "average" : "low"}</em></div>`; }).join("")}<p class="hint">Compared with the rest of this jam. The middle line is its average.</p></div>` : "";
   // why not the rest: runners-up, kept stretches that lost, and the cuts
   const rows = [];
   list.forEach((p, i) => { if (i === sel) return; const st = strength(p.s, p.e); rows.push({ s: p.s, e: p.e, cls: "alt", tag: `Pick ${"ABC"[i]}`, why: st >= sP - 0.02 ? `Runner-up. Almost a tie with Pick ${"ABC"[sel]}, so give it a listen.` : `Runner-up. ${rel(st)}${p.why?.[0] ? `. ${capFirst(p.why[0])}, but less overall.` : ", a little weaker overall."}` }); });
@@ -6779,12 +6779,12 @@ function whyHTML(c) {
   const fb = (store.get("lp:fb") || {})[c.key];
   return `<div class="why">
     <div class="vote"><span>Is Pick ${"ABC"[sel]} really your best part?</span><span class="vbtns"><button type="button" data-vote="yes" aria-pressed="${fb?.v === "yes"}">${icon("i-check")}Yes</button><button type="button" data-vote="no" aria-pressed="${fb?.v === "no"}">${icon("i-x")}No</button></span></div>
-    ${fb?.v === "no" ? `<p class="hint">Thanks. Play the take, pause on your best part and tap <b>Mark best here</b>. <button class="linkbtn" type="button" data-act="mark-best">Mark best here</button>${fb.at != null ? ` Marked at ${fmt(fb.at)}.` : ""}</p>` : ""}
+    ${fb?.v === "no" ? `<p class="hint">Thanks. Play the jam, pause on your best part and tap <b>Mark best here</b>. <button class="linkbtn" type="button" data-act="mark-best">Mark best here</button>${fb.at != null ? ` Marked at ${fmt(fb.at)}.` : ""}</p>` : ""}
     <details class="whyd"${store.get("lp:whyOpen") ? " open" : ""}><summary><h3>${icon("i-help")}Why this part?</h3><span class="wsum">${esc(sure)}</span></summary>
-    <p class="wlead"><b>Pick ${"ABC"[sel]} is the strongest complete phrase${state.pickLen === "auto" ? "" : ` near ${state.pickLen} seconds`}</b> in this take${pk.bars ? `: ${pk.bars} full bars, start to finish on the beat` : ""}. ${esc(sure)}</p>
+    <p class="wlead"><b>Pick ${"ABC"[sel]} is the strongest complete phrase${state.pickLen === "auto" ? "" : ` near ${state.pickLen} seconds`}</b> in this jam${pk.bars ? `: ${pk.bars} full bars, start to finish on the beat` : ""}. ${esc(sure)}</p>
     ${map}${meters}
-    ${rows.length ? `<div class="wrows"><span class="wcap">The rest of the take. Tap to hear it, or <button class="linkbtn" type="button" data-tab="parts">open Segments</button> to keep or trim any part.</span>${shown.map(rowHTML).join("")}${more.length ? `<details><summary>${more.length} more</summary>${more.map(rowHTML).join("")}</details>` : ""}</div>` : ""}
-    <p class="hint">Strength mixes loudness, how much you play, tone and timing, ranked within this take. Picks start and end on the bar when there's a beat.</p>
+    ${rows.length ? `<div class="wrows"><span class="wcap">The rest of the jam. Tap to hear it, or <button class="linkbtn" type="button" data-tab="parts">open Segments</button> to keep or trim any part.</span>${shown.map(rowHTML).join("")}${more.length ? `<details><summary>${more.length} more</summary>${more.map(rowHTML).join("")}</details>` : ""}</div>` : ""}
+    <p class="hint">Strength mixes loudness, how much you play, tone and timing, ranked within this jam. Picks start and end on the bar when there's a beat.</p>
     </details>
   </div>`;
 }
@@ -7133,7 +7133,7 @@ function followCard(c, A) {
   const lock = tightOn(c), T = tightCalc(c), st = LickBand.STYLES[bandStyleOf(c, A)], feel = feelFor(c, A), auto = !c.tight?.user, ms = T ? Math.round(T.maxShift * 1000) : 0;
   const why = lock ? (T ? `On: every note you played lands on the metronome (${A.bpm} BPM). Biggest move ${ms} ms. Picture and sound move together; nothing is added.` : "On, but there's nothing to move here.")
     : T ? (ms > LOCK_MAX * 1000 || T.maxStretch > LOCK_STRETCH ? `Off: some notes sit ${ms} ms off the metronome, so locking would be audible. Turn it on if you want them moved anyway.` : "Off: the band follows you instead, push and pull included.") : "Off: no attacks found near the metronome to move.";
-  return `<div class="fixcard${lock ? " on" : ""}"><h4>${icon("i-bolt")}Your take on the metronome</h4>
+  return `<div class="fixcard${lock ? " on" : ""}"><h4>${icon("i-bolt")}Your playing on the metronome</h4>
     <button type="button" class="opt" role="switch" aria-checked="${lock}" data-act="tight-toggle">${icon("i-clock")}<span class="grow"><strong>Lock my playing to the metronome${auto && lock ? " · auto" : ""}</strong><em>${why}</em></span><span class="tgl"></span></button>
     ${lock && T ? `<button type="button" class="opt" role="switch" aria-checked="${c.feel !== "mine"}" data-act="feel-toggle">${icon("i-loop")}<span class="grow"><strong>Play my off-beats in the ${esc(st?.name || "band")} feel</strong><em>${c.feel === "mine" ? "Off: your 8ths stay where you played them." : feel > 0.58 ? `Swung like the ${esc(st?.name || "band")}: your 8ths land on the shuffle.` : "Straight: your 8ths land halfway."}</em></span><span class="tgl"></span></button>` : ""}
     <p class="hint">The band always plays on this metronome, so with the lock on, you and the band are on the same beat to the millisecond.</p></div>`;
@@ -7172,7 +7172,7 @@ function beatCard(c, A) {
     <div class="metrorow"><span class="seg" role="group" aria-label="Tempo"><button type="button" data-bpm="-1" aria-label="1 BPM slower">−1</button><button type="button" data-bpm="+1" aria-label="1 BPM faster">+1</button></span><button type="button" class="dtg" data-act="beat-click" aria-pressed="${!!b.click}">${icon("i-clock")}Click</button>
       <button type="button" class="linkbtn" data-act="metro-more" aria-expanded="${more}">${more ? "Less" : "Fine tune"}</button>${fixed ? `<button class="linkbtn" type="button" data-bfix="reset">Back to what LickPick heard</button>` : ""}</div>
     ${more && A?.pulse ? `<span class="seg wide beatfix" role="group" aria-label="Move the beat"><button type="button" data-boff="-0.01">−10 ms</button><button type="button" data-bfix="shift" aria-pressed="${!!fx.shift}">½ beat</button><button type="button" data-bfix="x2" aria-pressed="${fx.mult === 2}">×2</button><button type="button" data-bfix="half" aria-pressed="${fx.mult === 0.5}">÷2</button><button type="button" data-boff="0.01">+10 ms</button></span>
-    <p class="hint keep">Click + play to hear it on your take. Half a beat off: ½ beat. Twice or half as fast: ×2, ÷2. A hair early or late: ±10 ms.</p>` : ""}
+    <p class="hint keep">Click + play to hear it on your playing. Half a beat off: ½ beat. Twice or half as fast: ×2, ÷2. A hair early or late: ±10 ms.</p>` : ""}
     ${A?.pulse ? `<button type="button" class="opt lockrow" role="switch" aria-checked="${lock}" data-act="tight-toggle">${icon("i-bolt")}<span class="grow"><strong>Lock my playing to it${!c.tight?.user && lock ? " · auto" : ""}</strong><em>${esc(lockWhy)}</em></span><span class="tgl"></span></button>` : ""}
     ${more && lock && T ? `<button type="button" class="opt" role="switch" aria-checked="${c.feel !== "mine"}" data-act="feel-toggle">${icon("i-loop")}<span class="grow"><strong>Off-beats in the band's feel</strong><em>${c.feel === "mine" ? "Off: your 8ths stay where you played them." : "Your 8ths land where the style puts them."}</em></span><span class="tgl"></span></button>` : ""}
   </div>`;
@@ -7184,7 +7184,7 @@ function bandMore(c) {
   const sub = (id, title, sum, body) => `<details class="bsub" data-bsub="${id}"${state.bsub === id ? " open" : ""}><summary><b>${title}</b><em>${sum}</em></summary><div class="bsubin">${body}</div></details>`;
   return `${sub("chords", "Chords", esc((bandChords(c, A) || []).slice(0, 4).map(h => sp(c, h.name)).join(" ") || "—"), chordsCard(c, A))}
     ${sub("shape", "Groove & sounds", esc([set.groove, set.feel !== "normal" ? set.feel : "", set.kit].filter(Boolean).join(" · ")), bandOpts(c, set, A))}
-    ${sub("heard", "Already in your take", esc(HEARD.filter(([k]) => heardOn(c, k)).map(x => x[1]).join(", ") || "Just you"), `<div class="heard"><div class="heardchips" role="group" aria-label="Instruments already in your take">${HEARD.filter(([k]) => k !== "vocals" || b.heard?.deep).map(([k, l]) => `<button type="button" data-heard="${k}" aria-pressed="${heardOn(c, k)}">${l}</button>`).join("")}</div><p class="hint">${b.heard?.busy ? "Listening…" : "Tap to correct. The band leaves out what's already playing."}</p></div>`)}`;
+    ${sub("heard", "Already in your jam", esc(HEARD.filter(([k]) => heardOn(c, k)).map(x => x[1]).join(", ") || "Just you"), `<div class="heard"><div class="heardchips" role="group" aria-label="Instruments already in your jam">${HEARD.filter(([k]) => k !== "vocals" || b.heard?.deep).map(([k, l]) => `<button type="button" data-heard="${k}" aria-pressed="${heardOn(c, k)}">${l}</button>`).join("")}</div><p class="hint">${b.heard?.busy ? "Listening…" : "Tap to correct. The band leaves out what's already playing."}</p></div>`)}`;
 }
 function bandPanel(c) {
   const w = bandWindow(c);
@@ -7223,7 +7223,7 @@ function recRender() {
       <button class="btn wide" type="button" data-act="rec-start" ${st === "ready" ? "" : "disabled"}>${icon("i-rec")}${st === "ready" ? "Start" : "Camera…"}</button>`
     : st === "count" || st === "rec" ? `<button class="btn ghost wide" type="button" data-act="rec-stop">${icon("i-x")}Stop</button>`
     : st === "review" ? `<p class="rechow">That's you. Keep it and it joins the Pick as a layer, side by side.</p><div class="row-btns"><button class="btn" type="button" data-act="rec-keep">${icon("i-check")}Keep it</button><button class="btn ghost" type="button" data-act="rec-again">${icon("i-loop")}Again</button></div>`
-    : st === "busy" ? `<p class="rechow working"><span class="pulse"></span>Saving your take…</p>` : `<p class="rechow">${esc(REC.err || "The camera isn't available here.")}</p>`;
+    : st === "busy" ? `<p class="rechow working"><span class="pulse"></span>Saving your recording…</p>` : `<p class="rechow">${esc(REC.err || "The camera isn't available here.")}</p>`;
   el.innerHTML = cam + body;
   if (REC.stream && (st === "idle" || st === "ready" || st === "count" || st === "rec")) { const v = $("#recCam"); if (v && v.srcObject !== REC.stream) v.srcObject = REC.stream; }
 }
@@ -7331,17 +7331,17 @@ function layersCard(c) {
     ${Ls.map((L, i) => { const x = layerClip(L), tc = tempoClash(c, x), src = layerSrc(x); return `<div class="lyrow${L.on === false ? " muted" : ""}">
       ${src && !x.audioOnly ? `<video class="laycam" data-laycam="${i}" muted playsinline preload="metadata" src="${src}#t=${Math.max(0, L.lStart).toFixed(2)}"></video>` : `<span class="laycam none">${icon("i-mic")}</span>`}
       <div class="laymain"><b>${esc(x.name)}</b><em>${esc(layerQ(L))} · ${off(L)}</em>
-        ${tc ? `<p class="hint warn">Tempo is ${tc}% different from this take, so it will drift apart. Best with takes at the same tempo.</p>` : ""}
+        ${tc ? `<p class="hint warn">Tempo is ${tc}% different from this jam, so it will drift apart. Best with recordings at the same tempo.</p>` : ""}
         <div class="laynudge" role="group" aria-label="Move ${esc(x.name)}"><button type="button" data-lnudge="${i}:-b">−1 beat</button><button type="button" data-lnudge="${i}:-0.01">−10ms</button><button type="button" data-lnudge="${i}:0.01">+10ms</button><button type="button" data-lnudge="${i}:b">+1 beat</button>${L.alts?.length ? `<button type="button" data-lalt="${i}">Another spot</button>` : ""}</div>
         <div class="mxrow"><button type="button" class="mute" data-lmute="${i}" aria-pressed="${L.on === false}" aria-label="${L.on === false ? "Unmute" : "Mute"} layer">${L.on === false ? "Off" : "On"}</button>
           <input type="range" min="0" max="1.5" step="0.05" value="${L.gain ?? 1}" data-lgain="${i}" aria-label="${esc(x.name)} level" ${L.on === false ? "disabled" : ""}>
           <button type="button" class="mute" data-ldel="${i}" aria-label="Remove layer">${icon("i-x")}</button></div></div></div>`; }).join("")}
     ${!main ? `<p class="hint">This clip was scanned by an older LickPick. Remove it and add it again to use layers.</p>`
-      : c.layerAdd ? (cands.length ? `<div class="laypick" role="group" aria-label="Pick a take to layer">${cands.map(x => `<button type="button" class="opt" data-ladd="${esc(x.key)}">${icon("i-film")}<span class="grow"><strong>${esc(x.name)}</strong><em>${fmt(x.raw.duration)}${x.raw.info?.tempo ? ` · ${x.raw.info.tempo} BPM` : ""}${tempoClash(c, x) ? " · different tempo" : ""}</em></span></button>`).join("")}</div>
+      : c.layerAdd ? (cands.length ? `<div class="laypick" role="group" aria-label="Pick a recording to layer">${cands.map(x => `<button type="button" class="opt" data-ladd="${esc(x.key)}">${icon("i-film")}<span class="grow"><strong>${esc(x.name)}</strong><em>${fmt(x.raw.duration)}${x.raw.info?.tempo ? ` · ${x.raw.info.tempo} BPM` : ""}${tempoClash(c, x) ? " · different tempo" : ""}</em></span></button>`).join("")}</div>
           <button class="btn ghost sm" type="button" data-act="layer-cancel">Cancel</button>`
-        : `<p class="hint">Add the other takes to LickPick first (they scan like any jam), then come back here.</p><div class="row-btns"><button class="btn ghost sm" type="button" data-act="gallery">${icon("i-plus")}Add videos</button><button class="btn ghost sm" type="button" data-act="layer-cancel">Cancel</button></div>`)
-      : c.layerWait ? `<p class="hint keep working"><span class="pulse"></span>Listening to your new take… it joins here when the scan is done.</p>`
-      : Ls.length < LAYER_MAX ? `<button class="btn wide" type="button" data-act="rec-open">${icon("i-rec")}Record yourself playing along</button><div class="row-btns"><button class="btn ghost sm" type="button" data-act="layer-gallery">${icon("i-film")}Add a take from your gallery</button>${cands.length ? `<button class="btn ghost sm" type="button" data-act="layer-add">${icon("i-stack")}Use a take from your list</button>` : ""}</div><p class="hint">Jam with a friend: add their LickPick video (sent as a file, so their @ rides along), play along here, and the post tags them. Jams with a friend save free.</p>` : ""}
+        : `<p class="hint">Add the other recordings to LickPick first (they scan like any jam), then come back here.</p><div class="row-btns"><button class="btn ghost sm" type="button" data-act="gallery">${icon("i-plus")}Add videos</button><button class="btn ghost sm" type="button" data-act="layer-cancel">Cancel</button></div>`)
+      : c.layerWait ? `<p class="hint keep working"><span class="pulse"></span>Listening to your new recording… it joins here when the scan is done.</p>`
+      : Ls.length < LAYER_MAX ? `<button class="btn wide" type="button" data-act="rec-open">${icon("i-rec")}Record yourself playing along</button><div class="row-btns"><button class="btn ghost sm" type="button" data-act="layer-gallery">${icon("i-film")}Add a recording from your gallery</button>${cands.length ? `<button class="btn ghost sm" type="button" data-act="layer-add">${icon("i-stack")}Use a recording from your list</button>` : ""}</div><p class="hint">Jam with a friend: add their LickPick video (sent as a file, so their @ rides along), play along here, and the post tags them. Jams with a friend save free.</p>` : ""}
   </div>`;
 }
 // sound for a layer: its own decode, cached apart from the main take's
@@ -7369,7 +7369,7 @@ async function layerSave(c, S, o, say, ovFn, recFree = false) {
     const items = [{ file: c.file, s: s0, gain: takeGain(c) }, ...Ls.map(L => ({ file: layerClip(L).file, s: L.lStart + sh, gain: L.gain ?? 1 }))];
     const r = await ClipExporter.exportLayers(M, items, e0 - s0, p => say(`Layering ${items.length} videos… ${Math.round(p * 100)}%`), { tags: jamTags(c), aspect: A, bed, watermark: !isPro(), overlay: ovFn, fx: fxOf(c), gainDb: A ? ClipExporter.levelGain(c.raw.loud, CELL, s0, e0) : 0, fade: fadeFor(c, S) });
     const name = `${c.name.replace(/\.[^.]+$/, "")}_layers${items.length}${bed ? "_band" : ""}${A ? `_${A[0]}x${A[1]}` : ""}${jamSuffix()}.mp4`;
-    try { await offerFile(name, r.blob, say); if (recFree) { if (!isJam(c)) store.set("lp:recSaved", 1); } else spendTrial(); diagLog(`export layers ${items.length}: saved`); const extra = o.alsoParts ? await saveOriginals(c, S, o, say) : 0; c.pickSaved = true; persist(c); say(`${savedWhere()} ${items.length} videos side by side${bed ? " with the band" : ""}.${extra ? " Plus your original take." : ""}`); }
+    try { await offerFile(name, r.blob, say); if (recFree) { if (!isJam(c)) store.set("lp:recSaved", 1); } else spendTrial(); diagLog(`export layers ${items.length}: saved`); const extra = o.alsoParts ? await saveOriginals(c, S, o, say) : 0; c.pickSaved = true; persist(c); say(`${savedWhere()} ${items.length} videos side by side${bed ? " with the band" : ""}.${extra ? " Plus the original lick." : ""}`); }
     catch (err) { if (err?.code === "declined") say("Not saved."); else throw err; }
   } catch (err) { console.warn("layers export failed", err); diagLog(`export layers FAILED: ${err?.code || String(err?.message || err).slice(0, 80)}`); say(err?.code === "no_encoder" || err?.code === "no_audio_encoder" ? "This browser can't make videos. Open LickPick in Chrome." : "Couldn't make the layered video. Your originals are untouched."); }
   c.exporting = false; renderExport(c); renderStudio();
@@ -7387,7 +7387,7 @@ function bandChartHTML(c) {
     if (P.dyn > 0.25) bits.push("follows your loud and soft");
     bits.push(P.ending === "hit" ? "lands the last hit with you" : "lets the last chord ring");
   } else bits.push("writing the chart…");
-  return `<p class="chartl"><b>${icon("i-note")}The chart</b> ${esc(bits.join(" · "))}. <button class="linkbtn" type="button" data-act="band-take">Another take${take ? ` (${take + 1})` : ""}${proTag()}</button>${take ? ` · <button class="linkbtn" type="button" data-act="band-take0">First take</button>` : ""}</p>`;
+  return `<p class="chartl"><b>${icon("i-note")}The chart</b> ${esc(bits.join(" · "))}. <button class="linkbtn" type="button" data-act="band-take">Another version${take ? ` (${take + 1})` : ""}${proTag()}</button>${take ? ` · <button class="linkbtn" type="button" data-act="band-take0">First version</button>` : ""}</p>`;
 }
 function heardText(c) {
   const b = c.band; if (!b.heard?.p) return "LickPick listens for drums, bass and other instruments so the band doesn't double them.";
@@ -7434,7 +7434,7 @@ function eqPanel(c) {
       ${sl("out", "Output", -12, 12, 0.5, e.out || 0, fmtDb(e.out || 0) + " dB")}
     </div>
     <div class="row-btns"><button class="btn ink" type="button" data-act="pick-play">${icon("i-play")}Play the Pick</button><button class="btn ghost" type="button" data-act="eq-flat">${icon("i-undo")}Flat</button></div>
-    <p class="hint">Plays live while you tune. Drag the dots, or pick a band and use the sliders. My sound is saved on this phone for all your takes${isPro() ? "." : "; save clips with it using Pro or a free Pro save."}</p></div>`;
+    <p class="hint">Plays live while you tune. Drag the dots, or pick a band and use the sliders. My sound is saved on this phone for all your licks${isPro() ? "." : "; save clips with it using Pro or a free Pro save."}</p></div>`;
 }
 // draw: spectrum (what's playing), the curve, the band dots
 let eqRaf = 0, eqDrag = -1, eqDirty = true;
@@ -7700,7 +7700,7 @@ function localCaptions(c) {
   const T = {
     Hype: [`Cranked ${what} up and didn't stop${facts ? `. ${facts}` : ""} 🔥`, `No retakes, just ${what}${facts ? ` ${facts}` : ""}.`, `Hit record. Let ${what} rip.`],
     Chill: [`Slow evening, ${what}${facts ? `, ${facts}` : ""}.`, `Just me and ${what}. Nothing to prove.`, `${what.charAt(0).toUpperCase() + what.slice(1)}, taking it easy 🌙`],
-    Pro: [`Session cut: ${what}${facts ? ` (${facts})` : ""}.`, `Working on ${what}. Clean take, no edits to the playing.`, `Practice log: ${what}${facts ? `, ${facts}` : ""}.`],
+    Pro: [`Session cut: ${what}${facts ? ` (${facts})` : ""}.`, `Working on ${what}. Clean lick, no edits to the playing.`, `Practice log: ${what}${facts ? `, ${facts}` : ""}.`],
     Funny: [`Only took me 40 tries to get ${what} this clean 😅`, `The flubs are in the trash folder. This is ${what}.`, `My neighbors have heard ${what} more than I have.`],
   }[v] || [];
   const inst = (profile.plays || []).filter(k => k !== "other").map(k => "#" + (k === "keys" ? "piano" : k === "vocals" ? "singer" : k));
@@ -7807,7 +7807,7 @@ function seekFromWave(ev) {
   const r = $("#sWave").getBoundingClientRect(), x = Math.min(r.width, Math.max(0, ev.clientX - r.left));
   const t = waveGeo(c).T(x);
   const i = (c.parts || []).findIndex(p => t >= p.start && t < p.end);
-  if (player) { const inside = player.ranges && player.ranges.some(([a, b]) => t >= a && t <= b); if (!inside && player.ranges) player.set(null, "Full take", fmt(c.raw?.duration || 0)); const R = player.rs(); let acc = 0; for (const [a, b] of R) { if (t >= a && t <= b) { player.seekVirt(acc + t - a); break; } acc += b - a; } } else { c.playT = t; c._waveT = t; listenUI(); }
+  if (player) { const inside = player.ranges && player.ranges.some(([a, b]) => t >= a && t <= b); if (!inside && player.ranges) player.set(null, "Full jam", fmt(c.raw?.duration || 0)); const R = player.rs(); let acc = 0; for (const [a, b] of R) { if (t >= a && t <= b) { player.seekVirt(acc + t - a); break; } acc += b - a; } } else { c.playT = t; c._waveT = t; listenUI(); }
   if (i >= 0 && i !== c.sel) { c.sel = i; if (state.tab === "parts") renderStudio(); else drawWave(); } else drawWave();
 }
 let dragging = false, waveMode = null;
@@ -7909,7 +7909,7 @@ function listenUI(label, loading) {
   const c = cur(), b = $("#lLabel"); if (!c || !b) return;
   const S = srcOf(c), playing = !!audioPlan, R = playing ? audioRanges : S?.ranges || [], tot = R.reduce((t, [a, e]) => t + e - a, 0);
   let x = 0; if (playing) { const t = c.playT || 0; for (const [a, e] of R) { if (t >= e) x += e - a; else { x += Math.max(0, t - a); break; } } }
-  b.textContent = loading ? "Loading sound…" : playing ? audioLabel : S?.label || "Full take";
+  b.textContent = loading ? "Loading sound…" : playing ? audioLabel : S?.label || "Full jam";
   $("#lTime").textContent = `${fmt(x)} / ${fmt(tot)}`; $("#lFill").style.width = (tot ? Math.min(100, x / tot * 100) : 0) + "%";
   const pb = document.querySelector(".listen .lplay"); if (pb) { pb.innerHTML = icon(playing ? "i-pause" : "i-play"); pb.setAttribute("aria-label", playing ? "Pause" : "Play"); }
 }
@@ -8086,7 +8086,7 @@ document.addEventListener("click", e => {
   if (d.act === "share-last") { const c = cur(); if (c?.lastShare) { const txt = shareText(c); try { if (txt) navigator.clipboard?.writeText(txt).catch(() => { }); } catch { } navigator.share({ files: [c.lastShare], title: c.lastShare.name, text: txt || undefined }).catch(() => { }); } return; }
   if (d.act === "tips-open") { $("#intro").hidden = true; openTips(); return; }
   if (d.act === "tour") { openIntro(); return; }
-  if (d.act === "stage-play") { const c = cur(); if (!c) return; if (audioPlan) { pausePlay(); return; } const S = srcOf(c), R0 = S ? S.ranges : [[0, c.raw?.duration || 0]], lb = S ? S.label : "Full take", r = c._resume; c._resume = null; playRanges(c, r && r.label === lb && fromT(R0, r.t).length ? fromT(R0, r.t) : R0, lb); return; }
+  if (d.act === "stage-play") { const c = cur(); if (!c) return; if (audioPlan) { pausePlay(); return; } const S = srcOf(c), R0 = S ? S.ranges : [[0, c.raw?.duration || 0]], lb = S ? S.label : "Full jam", r = c._resume; c._resume = null; playRanges(c, r && r.label === lb && fromT(R0, r.t).length ? fromT(R0, r.t) : R0, lb); return; }
   if (d.act === "float-close") { const c = cur(); pausePlay(); if (c) c._played = false; unfloat(); return; }
   if (d.act === "fb-open") { openFeedback(); return; }
   if (d.act === "fb-close") { fb.text = $("#fbText")?.value || fb.text; $("#fbSheet").hidden = true; return; }
@@ -8200,7 +8200,7 @@ document.addEventListener("click", e => {
   if (d.play != null) { const p = c.parts[+d.play]; c.sel = +d.play; renderStudio(); playRanges(c, [[p.start, p.end]], `Part ${+d.play + 1}`); return; }
   if (d.rate != null) { const v = +d.rate, a = +d.rs, b = +d.re, k = rateKey(c, a, b); c.rates = c.rates || {}; const was = c.rates[k];
     c.rates[k] = v; c.rateOpen = k; if (was !== v) rateStretch(c, a, b, v, []); persist(c); renderStudio();
-    if (was !== v) toast(v >= 1 ? "Learned. More like this from now on." : v <= -1 ? "Learned. What was off? Picks update when you leave this take." : "Noted."); return; }
+    if (was !== v) toast(v >= 1 ? "Learned. More like this from now on." : v <= -1 ? "Learned. What was off? Picks update when you leave this jam." : "Noted."); return; }
   if (d.rwhy) { const a = +d.rs, b = +d.re, k = rateKey(c, a, b), r = c.rates?.[k]; if (r == null) return; c.rateWhy = c.rateWhy || {}; const L = c.rateWhy[k] = c.rateWhy[k] || [];
     if (L.includes(d.rwhy)) { c.rateWhy[k] = L.filter(x => x !== d.rwhy); } else { L.push(d.rwhy); applyWhy(c, a, b, r, d.rwhy); } persist(c); renderStudio(); return; }
   if (d.segkeep != null) { const g = segsOf(c)[+d.segkeep]; if (!g) return;
@@ -8215,12 +8215,12 @@ document.addEventListener("click", e => {
   if (d.here) { const [i, w] = d.here.split(":"); const p = c.parts[+i]; if (w === "s") p.start = nowT(c); else p.end = nowT(c); clampPart(c, +i); edited(c); return; }
   if (d.act === "pick-play") { const pk = pickOf(c), lb = `Pick ${"ABC"[c.pickSel || 0]}`; if (isPlaying() && (audioPlan ? audioLabel : player?.label) === lb) { pausePlay(); return; } if (pk) playRanges(c, withPatches(c, pk.s, pk.e).map(g => [g.s, g.e]), lb); return; }
   if (d.pinplay != null) { const t0 = +d.pinplay; playRanges(c, [[Math.max(0, t0 - 1.8), Math.min(c.raw.duration, t0 + 1.4)]], "Listen"); return; }
-  if (d.patch != null) { const pin = pinsOf(c).find(p => Math.abs(p.t - +d.patch) < 0.01), fx2 = pin && patchFor(c, pin); if (!fx2) { toast("No clean bar with the same chords in this take. Trim the Pick around it, or leave it: one rough note can sound human."); return; } c.patches = (c.patches || []).filter(x => x.bar[0] !== fx2.bar[0]).concat([fx2]); persist(c); renderStudio(); toast(`Patched with the bar at ${fmtP(fx2.with[0])}. Play the Pick to hear it.`); return; }
+  if (d.patch != null) { const pin = pinsOf(c).find(p => Math.abs(p.t - +d.patch) < 0.01), fx2 = pin && patchFor(c, pin); if (!fx2) { toast("No clean bar with the same chords in this jam. Trim the Pick around it, or leave it: one rough note can sound human."); return; } c.patches = (c.patches || []).filter(x => x.bar[0] !== fx2.bar[0]).concat([fx2]); persist(c); renderStudio(); toast(`Patched with the bar at ${fmtP(fx2.with[0])}. Play the Pick to hear it.`); return; }
   if (d.unpatch != null) { c.patches = (c.patches || []).filter(x => Math.abs(x.bar[0] - +d.unpatch) > 0.01); persist(c); renderStudio(); return; }
   if (d.act === "tune-toggle") { c.tune = !c.tune; persist(c); renderStudio(); if (c.tune) toast(`The saved video will be tuned ${Math.abs(tuneOff(c))} cents ${tuneOff(c) > 0 ? "down" : "up"} to A440.`); return; }
   if (d.mix) { const m = c.mix = c.mix || { ids: [] }; delete m.custom; const k = m.ids.indexOf(d.mix); if (k >= 0) m.ids.splice(k, 1); else m.ids.push(d.mix); persist(c); renderStudio(); return; }
   if (d.mixup) { const m = c.mix, k = m.ids.indexOf(d.mixup); if (k > 0) { [m.ids[k - 1], m.ids[k]] = [m.ids[k], m.ids[k - 1]]; delete m.custom; persist(c); renderStudio(); } return; }
-  if (d.act === "mix-auto") { const r = bestOf(c); if (!r) { toast("Not enough clean parts to mix yet."); return; } c.mix = r; persist(c); renderStudio(); toast(`Best of this take: ${r.custom.length} moments, ${fmt(r.custom.reduce((t, g) => t + g.e - g.s, 0))}, in the order you played them.`); return; }
+  if (d.act === "mix-auto") { const r = bestOf(c); if (!r) { toast("Not enough clean parts to mix yet."); return; } c.mix = r; persist(c); renderStudio(); toast(`Best of this jam: ${r.custom.length} moments, ${fmt(r.custom.reduce((t, g) => t + g.e - g.s, 0))}, in the order you played them.`); return; }
   if (d.act === "mix-play") { const segs = mixSegs(c); if (segs.length > 1) playRanges(c, segs.map(g => [g.s, g.e]), "Mix"); return; }
   if (d.act === "mix-save") { c.src = "mix"; openExport(c); return; }
   if (d.act === "pick-save" || d.act === "export-open") { openExport(c); return; }
@@ -8273,7 +8273,7 @@ document.addEventListener("click", e => {
   if (d.act === "pick-adjust") { state.adjust = true; renderStudio(); return; }
   if (d.act === "metro-more") { state.metroMore = !state.metroMore; renderStudio(); return; }
   if (d.act === "jam-with") { const h = cleanHandle($("#jamWith")?.value); if (!h) { toast("Type their @ first."); return; } c.raw.jam = c.raw.jam || { by: "", with: [], bpm: 0, key: "" }; if (h !== c.raw.jam.by && !c.raw.jam.with.includes(h)) c.raw.jam.with.push(h); c.captions = null; persist(c); renderStudio(); toast(`@${h} gets tagged on this one.`); return; }
-  if (d.act === "band-take" || d.act === "band-take0") { if (d.act === "band-take" && !isPro()) { openPro("Another take"); return; } const was = bandPlaying; stopBand(); const b = newBand(c); const t = d.act === "band-take0" ? 0 : ((+(b.set.take) || 0) + 1) % 6; if (t) b.set.take = t; else delete b.set.take; persist(c); renderStudio(); if (was) bandPreview(c); else toast(t ? `Take ${t + 1}: the drummer and bass play it their own way.` : "Back to the first take."); return; }
+  if (d.act === "band-take" || d.act === "band-take0") { if (d.act === "band-take" && !isPro()) { openPro("Another version"); return; } const was = bandPlaying; stopBand(); const b = newBand(c); const t = d.act === "band-take0" ? 0 : ((+(b.set.take) || 0) + 1) % 6; if (t) b.set.take = t; else delete b.set.take; persist(c); renderStudio(); if (was) bandPreview(c); else toast(t ? `Version ${t + 1}: the drummer and bass play it their own way.` : "Back to the first take."); return; }
   if (d.act === "band-reset") { const b = newBand(c), was = bandPlaying; stopBand(); b.set = {}; b.touched = {}; applyHeard(c); renderStudio(); if (was) bandPreview(c); return; }
   if (d.inst) { stopBand(); c.band.parts[d.inst] = !c.band.parts[d.inst]; renderStudio(); return; }
   if (d.sugx) { (c.sugOff = c.sugOff || {})[d.sugx] = true; renderStudio(); return; }
