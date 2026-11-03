@@ -870,7 +870,7 @@ svg.wheel{display:block;width:100%;height:100%;filter:drop-shadow(var(--shadow-l
 </style>
 </head>
 <body>
-<div class="stagebar">STAGING PROTOTYPE · Chore Royale v2 "Royal Court" · not public · <a href="https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/blob/main/work/chore-royale-concept-v2.md">concept</a></div>
+<div class="stagebar">STAGING · Chore Royale v2 · <a href="https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/blob/main/work/chore-royale-concept-v2.md">concept</a></div>
 <div class="app">
 
   <button id="themeBtn" class="themebtn" onclick="toggleTheme()" aria-label="Switch light or dark mode" title="Light / dark">🌙</button>
@@ -1133,14 +1133,14 @@ function daysUntil(iso){return Math.max(0,Math.ceil((Date.parse(iso)-Date.now())
 /* v2: three tile types only: Chore (most), Bonus Quest (optional chore → a card), Crown Cache */
 const TILES=[
   {key:'quest',  e:'🧹', t:'Chore',       c:'#4d2876', w:3},
-  {key:'bonus',  e:'🂠', t:'Bonus Quest', c:'#b07730', w:2},
+  {key:'bonus',  e:'🂠', t:'Bonus', c:'#b07730', w:2},
   {key:'quest',  e:'🧺', t:'Chore',       c:'#7844a9', w:3},
-  {key:'cache',  e:'👑', t:'Crown Cache', c:'#09ab9e', w:1},
+  {key:'cache',  e:'👑', t:'Cache', c:'#09ab9e', w:1},
   {key:'quest',  e:'🧽', t:'Chore',       c:'#4d2876', w:3},
   {key:'quest',  e:'🍽️', t:'Chore',       c:'#7844a9', w:3},
-  {key:'bonus',  e:'🂠', t:'Bonus Quest', c:'#b07730', w:2},
+  {key:'bonus',  e:'🂠', t:'Bonus', c:'#b07730', w:2},
   {key:'quest',  e:'📚', t:'Chore',       c:'#4d2876', w:3},
-  {key:'cache',  e:'👑', t:'Crown Cache', c:'#09ab9e', w:1},
+  {key:'cache',  e:'👑', t:'Cache', c:'#09ab9e', w:1},
   {key:'quest',  e:'🐕', t:'Chore',       c:'#7844a9', w:3},
 ];
 const N=TILES.length, STEP=360/N;
@@ -2091,7 +2091,7 @@ function obShow(n){obStep=n;document.querySelectorAll('.ob-step').forEach((s,i)=
 function obNext(){if(obStep===1){const cn=$('clanName').value.trim();if(cn)S.clan=cn;readKidEdits();if(!obKids.length){toast('Add at least one royal');return;}}obShow(Math.min(3,obStep+1));}
 function obBack(){obShow(Math.max(0,obStep-1));}
 function renderKidEdits(){
-  $('kidEdits').innerHTML=obKids.map((k,i)=>`<div class="kid-edit"><button type="button" class="av avbtn" style="background:${COLORS[i%COLORS.length]}" onclick="cycleAvatar(${i})" aria-label="tap to change avatar" title="Tap to change avatar">${k.avatar||(k.name[0]||'?').toUpperCase()}</button><input value="${esc(k.name)}" oninput="obKids[${i}].name=this.value" maxlength="16" aria-label="champion name">${obKids.length>1?`<button class="rm" onclick="rmKidEdit(${i})" aria-label="remove">✕</button>`:''}</div>`).join('');
+  $('kidEdits').innerHTML=obKids.map((k,i)=>`<div class="kid-edit"><button type="button" class="av avbtn" style="background:${COLORS[i%COLORS.length]}" onclick="cycleAvatar(${i})" aria-label="tap to change avatar" title="Tap to change avatar">${k.avatar||(k.name[0]||'?').toUpperCase()}</button><input value="${esc(k.name)}" oninput="obKids[${i}].name=this.value" maxlength="16" aria-label="royal name" placeholder="royal name">${obKids.length>1?`<button class="rm" onclick="rmKidEdit(${i})" aria-label="remove">✕</button>`:''}</div>`).join('');
 }
 function cycleAvatar(i){readKidEdits();const idx=AVATARS.indexOf(obKids[i].avatar);obKids[i].avatar=AVATARS[(idx+1)%AVATARS.length];renderKidEdits();}
 function readKidEdits(){[...$('kidEdits').querySelectorAll('input')].forEach((inp,i)=>{if(obKids[i])obKids[i].name=inp.value.trim()||obKids[i].name;});}
