@@ -8,8 +8,8 @@
 <title>SH✡MER · פיילוט קהילה שומרת</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="assets/shomer-pilot/brand-hero-neighbours.webp">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap"></noscript>
+<link rel="preload" as="image" href="assets/studio/shomer-app-circles.webp">
 <link rel="icon" type="image/png" href="assets/shomer-pilot/favicon.png">
 <style>
 /* SH✡MER brand = the live product site www.shomer-app.co.il (index.html):
@@ -351,6 +351,27 @@ footer.foot{background:var(--foot);color:#AEB8CF;padding:calc(clamp(150px,30vw,2
   .foot-meta img{height:2.6mm}
   section,header,li,.tl{break-inside:avoid}
 }
+
+/* ══ 3 Nov: calm hero from real app screens (no stock or AI faces) ══ */
+.hero{background:radial-gradient(70% 90% at 25% 50%,rgba(224,168,40,.16),transparent 60%),linear-gradient(135deg,#0C1B3A,#0A1630 60%,#08152F)}
+.hero-shade{display:none}
+.hero-phones{position:absolute;inset:0 auto 0 0;width:50%;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.hp{width:clamp(170px,15vw,230px);border-radius:32px;padding:7px;background:linear-gradient(140deg,#3a4256,#141a28 40%,#2a3142);box-shadow:0 30px 60px -20px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.14)}
+.hp img{border-radius:26px;width:100%;aspect-ratio:600/1298;object-fit:cover;display:block}
+.hp-back{transform:translate(28%,4%) rotate(6deg);opacity:.9}
+.hp-front{transform:translate(-20%,-3%) rotate(-4deg);position:relative;z-index:2}
+@media(prefers-reduced-motion:no-preference){.hp-front{animation:hpFloat 7s ease-in-out infinite}}
+@keyframes hpFloat{0%,100%{translate:0 0}50%{translate:0 -10px}}
+.figure img.fig-phone{aspect-ratio:600/1298;max-width:250px;border-radius:30px;padding:7px;background:#0a1628;object-fit:cover}
+@media(max-width:860px){
+  .hero-phones{position:relative;inset:auto;width:100%;padding:36px 0 8px}
+  .hp{width:clamp(130px,34vw,180px)}
+  .hero-inner{margin-top:0}
+}
+@media print{.hero-phones{width:46%}}
+.btn{color:#0C1B3A}
+.kicker{color:#A35400}
+.pilot-cols h3 small{color:#555b68}
 </style>
 </head>
 <body>
@@ -380,7 +401,7 @@ footer.foot{background:var(--foot);color:#AEB8CF;padding:calc(clamp(150px,30vw,2
 <header class="bar">
   <div class="wrap bar-inner">
     <div class="bar-right"><span class="wordmark bar-wm" aria-label="SH✡MER.app">SH<span class="star">✡</span>MER<span class="wm-app">.app</span></span></div>
-    <img class="bar-badge" src="assets/shomer-pilot/brand-badge.webp" alt="" aria-hidden="true" width="360" height="360">
+    <img class="bar-badge" src="assets/studio/logos/shomer.png" alt="" aria-hidden="true" width="280" height="294">
     <div class="bar-left">
       <span class="chip"><b>פיילוט קהילתי</b> · 90 יום</span>
       <a class="btn btn-sm" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום שיחה של 15 דקות</a>
@@ -389,7 +410,7 @@ footer.foot{background:var(--foot);color:#AEB8CF;padding:calc(clamp(150px,30vw,2
 </header>
 
 <section class="hero" aria-labelledby="hero-t">
-  <img class="hero-photo" src="assets/shomer-pilot/brand-hero-neighbours.webp" width="1024" height="576" alt="שכנים ברחוב בשכונה: צעיר כורע ועוזר לתושב מבוגר שנפל לקום, ותושב נוסף מושיט לו יד.">
+  <div class="hero-phones" aria-label="מסכים אמיתיים מהאפליקציה"><div class="hp hp-back"><img src="assets/studio/shomer-app-map-clean.webp" width="600" height="1298" alt="מסך המפה של SH✡MER"></div><div class="hp hp-front"><img src="assets/studio/shomer-app-circles.webp" width="600" height="1298" alt="מסך השומרים שלי: משפחה, חברים ושכנים"></div></div>
   <div class="hero-shade" aria-hidden="true"></div>
   <div class="wrap hero-inner">
     <div class="hero-copy">
@@ -398,7 +419,7 @@ footer.foot{background:var(--foot);color:#AEB8CF;padding:calc(clamp(150px,30vw,2
       <p class="sub">בלחיצה אחת, השומרים הקרובים אליך יודעים איפה אתה ובאים. ולרבש"צ יש תמונה ברורה ושקטה של מה שקורה.</p>
       <div class="actions">
         <a class="btn" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום שיחה של 15 דקות</a>
-        <a class="tap" href="shomer-command/demo/">להדגמה מודרכת · 90 שניות</a>
+        <a class="tap" href="shomer-command/demo/">להדגמה מודרכת</a>
       </div>
       <div class="stats">
         <div class="stat"><b>90 יום</b><span>פיילוט מלא</span></div>
@@ -424,7 +445,7 @@ footer.foot{background:var(--foot);color:#AEB8CF;padding:calc(clamp(150px,30vw,2
     </div>
     <div class="figure">
       <div class="blk b1"></div><div class="blk b2"></div>
-      <img src="assets/shomer-pilot/brand-sos-phone.webp" width="768" height="768" loading="lazy" alt="אדם ברחוב בלילה מחזיק טלפון עם מסך SOS אדום של SH✡MER.">
+      <img class="fig-phone" src="assets/studio/shomer-app-call.webp" width="600" height="1298" loading="lazy" alt="מסך מתוך מדריך החירום באפליקציה: מתי ואיך לחייג 100, 101, 102">
     </div>
   </div>
 </section>
@@ -464,10 +485,10 @@ footer.foot{background:var(--foot);color:#AEB8CF;padding:calc(clamp(150px,30vw,2
       <li><svg class="ic" viewBox="0 0 52 52" aria-hidden="true"><use href="#hex"/><use href="#i-dash" x="11" y="11" width="30" height="30"/></svg><div><h3>לוח בקרה לרבש"צ / לקב"ט</h3><p>מפה חיה של אירועי SOS בקהילה, בלי שמות.</p></div></li>
     </ul>
     <div class="screens" aria-label="מסכים אמיתיים מהאפליקציה">
-      <div class="shot"><img src="assets/shomer-pilot/brand-app-map.webp" width="540" height="1168" loading="lazy" alt="מסך המפה של SH✡MER עם כפתור SOS"></div>
-      <div class="shot"><img src="assets/shomer-pilot/brand-app-circles.webp" width="540" height="1168" loading="lazy" alt="מסך השומרים שלי: מעגלי שומרים"></div>
-      <div class="shot"><img src="assets/shomer-pilot/brand-app-guide.webp" width="540" height="1168" loading="lazy" alt="מסך מדריך החירום באפליקציה"></div>
-      <div class="shot"><img src="assets/shomer-pilot/brand-app-profile.webp" width="540" height="1168" loading="lazy" alt="מסך הפרופיל באפליקציה"></div>
+      <div class="shot"><img src="assets/studio/shomer-app-map-clean.webp" width="600" height="1298" loading="lazy" alt="מסך המפה של SH✡MER עם כפתור SOS"></div>
+      <div class="shot"><img src="assets/studio/shomer-app-circles.webp" width="600" height="1298" loading="lazy" alt="מסך השומרים שלי: מעגלי שומרים"></div>
+      <div class="shot"><img src="assets/studio/shomer-app-guide.webp" width="600" height="1298" loading="lazy" alt="מסך מדריך החירום באפליקציה"></div>
+      <div class="shot"><img src="assets/studio/shomer-app-call.webp" width="600" height="1298" loading="lazy" alt="מסך מדריך החירום: מתי ואיך לחייג"></div>
     </div>
     <p class="feat-more">לוח הבקרה נקרא <span class="sh">SH<i>✡</i>MER</span> Command. <a class="tap" href="shomer-command/demo/">לסיור מודרך בלוח האמיתי, במצב הדגמה</a></p>
   </div>
@@ -536,7 +557,7 @@ footer.foot{background:var(--foot);color:#AEB8CF;padding:calc(clamp(150px,30vw,2
           <li><span>עד 10,000 תושבים</span><b><bdi>₪25,000</bdi> לשנה<small>כ־<bdi>₪2,080</bdi> לחודש</small></b></li>
           <li><span>רישיון מועצה<br><small style="font-size:14px;color:#8B96B0">מועצות אזוריות ורשויות</small></span><b><bdi>₪2</bdi> לתושב לשנה<small>מינימום <bdi>₪40,000</bdi></small></b></li>
         </ul>
-        <p class="tnote">יישוב של עד 1,000 תושבים שממשיך אחרי הפיילוט משלם <bdi>₪7,400</bdi> על השנה הראשונה. ברוב המקרים לא נדרש מכרז: הסכומים נמוכים מתקרות ההתקשרות בלי מכרז ברשויות המקומיות (מבקר המדינה).</p>
+        <p class="tnote">יישוב של עד 1,000 תושבים שממשיך אחרי הפיילוט משלם <bdi>₪7,400</bdi> על השנה הראשונה.</p>
       </div>
       <div class="needs">
         <h3>מה צריך מכם</h3>
@@ -568,18 +589,19 @@ footer.foot{background:var(--foot);color:#AEB8CF;padding:calc(clamp(150px,30vw,2
       <h2 id="cta-t">מתחילים?</h2>
       <p>שיחה של 15 דקות, ואתם יודעים אם זה מתאים לקהילה שלכם.</p>
       <a class="btn" href="mailto:dave@3shamrocks.com?subject=%D7%A4%D7%99%D7%99%D7%9C%D7%95%D7%98%20SH%E2%9C%A1MER">לתיאום שיחה</a>
-      <p class="more">או: <a class="tap" href="shomer-command/demo/">להדגמה מודרכת · 90 שניות</a> · <a class="tap" href="shomer-command/#plans">לכל התוכניות והמחירים</a></p>
+      <p class="more">או: <a class="tap" href="shomer-command/demo/">להדגמה מודרכת</a> · <a class="tap" href="shomer-command/#plans">לכל התוכניות והמחירים</a></p>
     </div>
     <div class="contact">
       <strong>דייב מרקוביץ' · 3Shamrocks Studio</strong>
       <a class="ltr tap" href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a>
+      <a class="ltr tap" href="mailto:support@shomer-app.co.il">support@shomer-app.co.il</a>
       <a class="ltr tap" href="https://www.shomer-app.co.il">shomer-app.co.il</a>
     </div>
   </div>
 </section>
 </main>
 
-<div class="foot-badge-wrap"><img class="foot-badge" src="assets/shomer-pilot/brand-badge.webp" alt="SH✡MER" width="360" height="360" loading="lazy"></div>
+<div class="foot-badge-wrap"><img class="foot-badge" src="assets/studio/logos/shomer.png" alt="SH✡MER" width="280" height="294" loading="lazy"></div>
 <footer class="foot">
   <div class="wrap">
     <p class="foot-meta"><img src="assets/shomer-pilot/brand-3shamrocks.png" alt="3Shamrocks Studio" width="905" height="133"><bdi>© 2026 3Shamrocks Studio</bdi> · <span class="sh">SH<i>✡</i>MER</span>™</p>
