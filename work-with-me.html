@@ -245,6 +245,38 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
 .proof-item{min-width:0}.proof-item b{overflow-wrap:break-word}
 .nav-logo{min-height:44px}
 .footer-social-links a,.contact-email-row{display:inline-flex;align-items:center;min-height:44px}
+
+/* ===== 3 Nov: Dave's 28 Oct + test-day requests ===== */
+/* logo large + unboxed */
+.nav-logo img{height:42px}
+@media(max-width:600px){.nav-logo img{height:28px}}
+.hero-brand{gap:16px}
+.hero-brand img{width:auto;height:54px;border-radius:0;box-shadow:none;filter:drop-shadow(0 6px 22px rgba(61,204,110,0.35))}
+/* hero visual: more real screens, SH✡MER app screen instead of its logo */
+.hero-visual{aspect-ratio:1/1.02}
+.hv-wide2{right:0;bottom:2%;width:56%;aspect-ratio:16/9;border-radius:12px;transform:rotate(3deg);z-index:1}
+.hv-lp{top:31%}.hv-sh{top:22%}.hv-th{top:29%}
+@media(prefers-reduced-motion:no-preference){.hv-wide2{animation-delay:0.15s}}
+/* green proof band */
+.proof.band-green{background:linear-gradient(120deg,#2fb862 0%,#3dcc6e 55%,#27a557 100%);border:0}
+.band-green .proof-item b,.band-green .proof-item:first-child b{color:#0f1035}
+.band-green .proof-item:first-child b{font-size:28px}
+.band-green .proof-item>span{color:rgba(15,16,53,0.78)}
+/* lavender band */
+.band-lav{background:#efe8fd;color:#0f1035}
+.band-lav .section-label{color:#6a2bc9}
+.band-lav .section-title{color:#0f1035}
+.band-lav .section-title em{color:#6a2bc9}
+.band-lav .steps li{background:#fff;border-color:rgba(106,43,201,0.18);box-shadow:0 10px 30px rgba(40,20,80,0.06)}
+.band-lav .steps b{color:#0f1035}
+.band-lav .steps li>span{color:#4a4a63}
+.band-lav :focus-visible{outline-color:#6a2bc9}
+/* experience cards get real work imagery */
+.work-item{overflow:hidden}
+.wi-img{margin:-28px -28px 22px;aspect-ratio:16/9;overflow:hidden;background:#0d0d1a;border-bottom:1px solid var(--line)}
+.wi-img img{width:100%;height:100%;object-fit:cover}
+.wi-duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 14px 0;background:linear-gradient(135deg,#1b1340,#0d0d1a)}
+.wi-duo img{border-radius:12px 12px 0 0;object-position:top}
 </style>
 </head>
 <body>
@@ -266,7 +298,7 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
   <div class="hero-grid-bg"></div>
   <div class="inner hero-layout">
    <div class="hero-copy">
-    <div class="hero-brand"><img src="assets/studio/3S_logo.png" alt="3Shamrocks Studio" width="46" height="46"><div class="hero-eyebrow"><span data-en>Work with me</span><span data-he>לעבוד איתי</span></div></div>
+    <div class="hero-brand"><picture><source srcset="assets/studio/heart-on-light.png" media="(prefers-color-scheme: light)"><img src="assets/studio/heart-on-dark.png" alt="3Shamrocks Studio" width="183" height="133"></picture><div class="hero-eyebrow"><span data-en>Work with me</span><span data-he>לעבוד איתי</span></div></div>
     <h1 data-en>Senior product design, <em>without hiring a design team.</em></h1>
     <h1 data-he>עיצוב מוצר ברמה בכירה, <em>בלי לגייס צוות עיצוב.</em></h1>
     <p class="hero-sub" data-en>You just raised. Now the product has to look and work like the company you pitched. Four clear ways I can get you there, starting this month.</p>
@@ -279,16 +311,17 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
    <div class="hero-visual-wrap">
     <div class="hero-visual" dir="ltr">
       <div class="hv hv-wide"><img src="assets/opt/vibrant.webp" alt="VIBRANT. brand book" width="1600" height="900" decoding="async"></div>
+      <div class="hv hv-wide2"><img src="assets/studio/apos-gait.webp" alt="AposHealth gait-cycle product screen" width="800" height="450" decoding="async"></div>
       <div class="hv hv-phone hv-lp"><img src="assets/opt/lickpick.webp" alt="LickPick app home screen" width="585" height="1266" decoding="async"></div>
       <div class="hv hv-phone hv-th"><img src="assets/opt/th-map.webp" alt="Trashure Hunters game map screen" width="600" height="1301" decoding="async"></div>
-      <div class="hv hv-phone hv-sh"><img src="assets/opt/shomer-screen.webp" alt="SH✡MER app onboarding screen" width="600" height="1298" decoding="async"></div>
+      <div class="hv hv-phone hv-sh"><img src="assets/studio/shomer-app-map.webp" alt="SH✡MER app live map screen" width="600" height="1298" decoding="async"></div>
     </div>
-    <p class="hero-visual-cap"><span data-en>From the studio: </span><span data-he>מתוך העבודות: </span><bdi dir="ltr">VIBRANT. brand book · LickPick home · SH✡MER onboarding · Trashure Hunters map</bdi></p>
+    <p class="hero-visual-cap"><span data-en>From the studio: </span><span data-he>מתוך העבודות: </span><bdi dir="ltr">VIBRANT. brand book · AposHealth gait screen · LickPick home · SH✡MER live map · Trashure Hunters map</bdi></p>
    </div>
   </div>
 </section>
 
-<section class="proof" aria-label="Proof">
+<section class="proof band-green" aria-label="Proof">
   <div class="inner proof-row">
     <div class="proof-item"><b><bdi dir="ltr">68% vs 34%</bdi></b><span data-en>Patient retention with the VIBRANT companion app. Doubled.</span><span data-he>שימור מטופלים עם האפליקציה הנלווית של VIBRANT. פי שניים.</span></div>
     <div class="proof-item"><b>TIME Best Inventions 2023</b><span data-en>The VIBRANT capsule system. I designed its brand and app.</span><span data-he>מערכת הקפסולה של VIBRANT. עיצבתי את המותג והאפליקציה.</span></div>
@@ -412,12 +445,14 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
     <div class="dave-card reveal"><img src="assets/opt/dave.webp" alt="Dave Markovich" width="480" height="659" decoding="async"><div><div class="dave-name">Dave Markovich</div><div class="dave-role"><span data-en>Founder &amp; design director · you work with me directly</span><span data-he>מייסד ומנהל עיצוב · עובדים איתי ישירות</span></div></div></div>
     <div class="work-strip">
       <div class="work-item reveal">
+        <div class="wi-img"><img src="assets/studio/apos-gait.webp" alt="AposHealth gait-cycle screen" width="800" height="450" loading="lazy" decoding="async"></div>
         <div class="work-item-role"><span data-en>Design system + product UX</span><span data-he>מערכת עיצוב וחוויית מוצר</span></div>
         <div class="work-item-name">AposHealth</div>
         <div class="work-item-desc" data-en>Full design-system overhaul and product UX for a clinical-grade digital therapeutics platform, from patient onboarding to clinical dashboards.</div>
         <div class="work-item-desc" data-he>שדרוג מלא של מערכת העיצוב וחוויית המוצר לפלטפורמת טיפול דיגיטלית ברמה קלינית, מאונבורדינג של מטופלים ועד דשבורדים קליניים.</div>
       </div>
       <div class="work-item reveal">
+        <div class="wi-img"><img src="assets/opt/vibrant.webp" alt="VIBRANT. brand book cover" width="1600" height="900" loading="lazy" decoding="async"></div>
         <div class="work-item-role"><span data-en>Brand + UX design</span><span data-he>מותג וחוויית משתמש</span></div>
         <div class="work-item-name">VIBRANT.</div>
         <div class="work-item-desc" data-en>Brand and companion app for the VIBRANT capsule system, a TIME Best Invention of 2023.</div>
@@ -426,6 +461,7 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
         <div class="work-item-stat" data-he>הכפלת שימור המטופלים: 68% מול 34%</div>
       </div>
       <div class="work-item reveal">
+        <div class="wi-img wi-duo" dir="ltr"><img src="assets/studio/shomer-app-circles.webp" alt="SH✡MER app circles screen" width="600" height="1298" loading="lazy" decoding="async"><img src="assets/opt/th-map.webp" alt="Trashure Hunters game map screen" width="600" height="1301" loading="lazy" decoding="async"></div>
         <div class="work-item-role"><span data-en>Own products</span><span data-he>מוצרים של הסטודיו</span></div>
         <div class="work-item-name">SH✡MER · Trashure Hunters</div>
         <div class="work-item-desc" data-en>Brand, interface and working software for the studio's own products, built end to end.</div>
@@ -435,7 +471,7 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
   </div>
 </section>
 
-<section id="how">
+<section id="how" class="band-lav">
   <div class="inner">
     <div class="section-label"><span data-en>How it starts</span><span data-he>איך מתחילים</span></div>
     <h2 class="section-title reveal" data-en>Three steps, <em>no guesswork.</em></h2>

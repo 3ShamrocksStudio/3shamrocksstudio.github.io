@@ -53,7 +53,7 @@
   color-scheme:dark;
 }
 
-html,body{height:100%;overflow-x:hidden;background:var(--black);color:var(--white);cursor:none;-webkit-font-smoothing:antialiased}
+html,body{overflow-x:hidden;background:var(--black);color:var(--white);cursor:none;-webkit-font-smoothing:antialiased}
 body{font-family:var(--font-body)}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
@@ -820,6 +820,86 @@ h1{font-size:clamp(34px,4.8vw,62px)!important}
 .device:hover .laptop .scr-on{opacity:1}
 .device:hover .laptop .scr-off{opacity:0}
 @media(max-width:600px){.phone .scr{--pw:146px}.device.sm .phone .scr{--pw:128px}.laptop{--lw:280px}}
+
+/* ===== REVISIONS 5 (3 Nov: Dave's 28 Oct + test-day requests) ===== */
+/* logo: large, unboxed */
+.nav-logo img{height:42px}
+@media(max-width:600px){.nav-logo img{height:30px}.hero{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}}
+.footer-logo{height:40px;width:auto}
+/* what is sold, to whom */
+.hero-offer{font-size:15px;line-height:1.6;color:var(--off-white);max-width:520px;margin:-12px 0 32px;padding-left:14px;border-left:3px solid #2fb862;animation:fadeUp 0.7s ease 0.85s both}
+.hero-offer b{font-weight:600}
+.hero-offer a{color:var(--green-2);font-weight:600;white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]) .hero-offer a{color:#157a3d}}
+/* second real SH✡MER screen in the hero */
+.hero-phone-2{position:absolute;right:-1%;top:58%;transform:translateY(-50%) rotate(8deg);--pw:164px;z-index:1;animation:phoneFloat2 7s ease-in-out infinite alternate}
+@keyframes phoneFloat2{from{transform:translateY(-50%) rotate(8deg)}to{transform:translateY(-55%) rotate(5deg)}}
+.hero-phone .phone,.hero-phone-2 .phone{display:block}
+@media(max-width:900px){
+  .hero-character{flex-wrap:wrap;gap:0 14px;align-items:center}
+  .hero-phone,.hero-phone-2{position:relative;left:auto;right:auto;top:auto;transform:none;animation:none;margin:8px 0 24px}
+  .hero-phone{--pw:140px;transform:rotate(-4deg)}
+  .hero-phone-2{--pw:128px;transform:rotate(5deg)}
+  .minime-stand{flex-basis:100%;display:flex;justify-content:center;padding-top:40px}
+}
+/* proof band (light lavender) */
+.proof-band{background:#efe8fd;color:#0f1035;padding:44px max(48px,env(safe-area-inset-right,0px)) 44px max(48px,env(safe-area-inset-left,0px))}
+.proof-band-row{display:grid;grid-template-columns:1fr 1.15fr 1fr auto;gap:36px;align-items:center;max-width:1340px;margin:0 auto}
+.pb-item b{display:block;font-family:var(--font-head);font-size:clamp(22px,2.2vw,30px);font-weight:800;letter-spacing:-0.025em;line-height:1.1;color:#0f1035;margin-bottom:8px}
+.pb-item:first-child b{color:#1f9a50}
+.pb-item b i{font-style:normal;font-size:0.6em;color:#4a4a63;font-weight:700}
+.pb-item span{display:block;font-size:14px;line-height:1.55;color:#3d3d5c}
+.pb-logos{display:flex;flex-direction:column;gap:14px;align-items:flex-start;padding-left:28px;border-left:1px solid rgba(130,57,234,0.25)}
+.pb-logos img{height:30px;width:auto;object-fit:contain}
+.pb-logos img+img{height:24px}
+.pb-word{font:800 22px/1 var(--font-head);letter-spacing:.12em;color:inherit;opacity:.85}
+@media(max-width:1000px){.proof-band-row{grid-template-columns:1fr 1fr}.pb-logos{flex-direction:row;padding-left:0;border-left:0;gap:24px;align-items:center}}
+@media(max-width:600px){.proof-band{padding:36px 20px}.proof-band-row{grid-template-columns:1fr;gap:22px}}
+/* showcase: real screens by default (no logos), second real screen on hover */
+.phone .scr-off.shot{background:#0a0a12}
+.scr-off.shot img{width:100%;height:100%;max-height:none;object-fit:cover;object-position:top;filter:none}
+/* showcase devices were inheriting the hero .phone frame (black box hid the labels) */
+.device.phone{width:auto;aspect-ratio:auto;border:0;border-radius:0;background:none;box-shadow:none;overflow:visible}
+.device.phone .scr{--pw:172px}
+.showcase-row{gap:clamp(18px,3vw,44px)}
+@media(max-width:600px){.device.phone .scr{--pw:140px}}
+/* about grid stayed 2-col on phones (specificity beat the 800px rule) -> 670px wide page at 390 */
+@media(max-width:800px){#about .about-grid{grid-template-columns:1fr;gap:40px}.about-content{min-width:0}}
+/* #about is a fixed dark-purple band: pin dark text tokens so light mode stays readable */
+#about{--white:#f4f4fc;--off-white:#e8e8f4;--muted:rgba(200,200,225,0.72);--muted-2:rgba(200,200,225,0.45);--black-3:#161229;--line:rgba(155,89,247,0.25);color:#f4f4fc}
+/* green brand band */
+.statement.band-green{background:linear-gradient(120deg,#2fb862 0%,#3dcc6e 55%,#27a557 100%)!important;border:0}
+.statement.band-green::before{display:none}
+.band-green .statement-text{color:rgba(15,16,53,0.72)}
+.band-green .statement-text em{background:none;-webkit-text-fill-color:#0f1035;color:#0f1035}
+.band-green .statement-text span{color:rgba(15,16,53,0.7)!important}
+/* cream band */
+.band-cream{background:#f7f2ea!important;color:#16162a}
+.band-cream .section-label{color:#6a2bc9}
+.band-cream .section-title{color:#16162a}
+.band-cream .section-title em{color:#6a2bc9}
+.band-cream .section-sub{color:#4a4a63}
+.band-cream .work-item{background:#fff;border-color:rgba(106,43,201,0.18);box-shadow:0 10px 30px rgba(40,20,80,0.06)}
+.band-cream .work-item:hover{box-shadow:0 20px 48px rgba(40,20,80,0.14)}
+.band-cream .work-item-role{color:#6a2bc9}
+.band-cream .work-item-name{color:#16162a}
+.band-cream .work-item-desc{color:#4a4a63}
+.band-cream .work-item-stat{color:#157a3d;background:rgba(47,184,98,0.12);border-color:rgba(47,184,98,0.35)}
+/* purple brand band */
+#contact.band-purple{background:linear-gradient(135deg,#5a1fc4 0%,#8239ea 60%,#7a34e0 100%)}
+#contact.band-purple::before{background:radial-gradient(circle,rgba(61,204,110,0.22) 0%,transparent 70%)}
+#contact.band-purple::after{background-image:linear-gradient(rgba(255,255,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.05) 1px,transparent 1px)}
+.band-purple .contact-avail{color:#fff;background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.3)}
+.band-purple .contact-avail::before{background:#b9f5cc;box-shadow:0 0 8px #b9f5cc}
+.band-purple .contact-title{color:#fff}
+.band-purple .contact-title em{background:none;-webkit-text-fill-color:#c8f7d6;color:#c8f7d6}
+.band-purple .contact-sub{color:rgba(255,255,255,0.88)}
+.band-purple .btn-primary{background:#fff;color:#4b1fa0}
+.band-purple .btn-primary:hover{background:#f1eaff;box-shadow:0 0 36px rgba(255,255,255,0.35)}
+.band-purple .btn-ghost{border-color:rgba(255,255,255,0.5);color:#fff}
+.band-purple .btn-ghost:hover{border-color:#fff}
+.band-purple .contact-email-row{color:rgba(255,255,255,0.85)}
+.band-purple .contact-email-row:hover{color:#fff}
 </style>
 </head>
 <body>
@@ -850,12 +930,13 @@ h1{font-size:clamp(34px,4.8vw,62px)!important}
   <canvas class="ds-grid" id="ds-grid"></canvas>
 
   <div class="hero-content">
-    <div class="hero-eyebrow">Est. 2007</div>
+    <div class="hero-eyebrow">Fractional Head of Design · Est. 2007</div>
     <h1>
       <span class="word" style="--d:0.12s">From</span>&nbsp;<span class="word" style="--d:0.2s">a</span>&nbsp;<span class="word" style="--d:0.28s">rough</span>&nbsp;<span class="word" style="--d:0.36s">idea</span><br>
       <span class="word" style="--d:0.44s">to</span>&nbsp;<em><span class="word" style="--d:0.52s">a</span>&nbsp;<span class="word" style="--d:0.6s">product</span>&nbsp;<span class="word" style="--d:0.68s">people</span>&nbsp;<span class="word" style="--d:0.76s">love.</span></em>
     </h1>
     <p class="hero-sub">I am Dave Markovich. I have been designing products for more than 20 years. I take an idea and turn it into a real, finished product. The brand, the interface, and the working app, built in weeks.</p>
+    <p class="hero-offer"><b>For startups that just raised:</b> a fractional Head of Design for your brand and product. <a href="work-with-me.html">See the 4 ways to work together&nbsp;&rarr;</a></p>
     <div class="hero-actions">
       <a href="#work" class="btn-primary">See the work</a>
       <a href="mailto:dave@3shamrocks.com" class="btn-ghost">Start a project</a>
@@ -886,14 +967,17 @@ h1{font-size:clamp(34px,4.8vw,62px)!important}
   <div class="hero-character">
     <div class="hero-phone" data-carousel data-interval="1200">
       <div class="phone"><div class="phone-notch"></div><div class="phone-screens">
-        <img class="pscreen on" src="assets/real/shomer-screen1.jpg" alt="SHOMER app">
-        <img class="pscreen" src="assets/brand/lickpick/m_home.jpg" alt="LickPick app">
-        <img class="pscreen" src="assets/real/scr-milo.png" alt="Milo app">
-        <img class="pscreen" src="assets/real/scr-rk.png" alt="Rookie and King app">
-        <img class="pscreen" src="assets/real/scr-chore.png" alt="Chore Royale app">
-        <img class="pscreen" src="assets/real/scr-fairent.png" alt="Fairent app">
-        <img class="pscreen" src="assets/screens/th-map.png" alt="Trashure-Hunters app">
-        <img class="pscreen" src="assets/screens/ezra.png" alt="Ezra app">
+        <img class="pscreen on" src="assets/studio/shomer-app-map.webp" alt="SH&#10017;MER app, live map screen">
+        <img class="pscreen" src="assets/brand/lickpick/m_home.jpg" alt="LickPick app, home screen">
+        <img class="pscreen" src="assets/work/chore-royale/scr-wheel.jpg" alt="Chore Royale app, prize wheel screen">
+        <img class="pscreen" src="assets/work/fairent/scr-hero.jpg" alt="FaiRent app, home screen">
+        <img class="pscreen" src="assets/opt/th-map.webp" alt="Trashure-Hunters app, game map screen">
+        <img class="pscreen" src="assets/brand/lickpick/m_pick.jpg" alt="LickPick app, pick screen">
+      </div></div>
+    </div>
+    <div class="hero-phone-2" aria-hidden="true">
+      <div class="phone"><div class="phone-notch"></div><div class="phone-screens">
+        <img class="pscreen on" src="assets/studio/shomer-app-circles.webp" alt="">
       </div></div>
     </div>
     <div class="minime-stand">
@@ -907,6 +991,16 @@ h1{font-size:clamp(34px,4.8vw,62px)!important}
         <div class="minime-pupil" id="mp-right"></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- PROOF BAND -->
+<section class="proof-band" aria-label="Proof">
+  <div class="proof-band-row">
+    <div class="pb-item"><b>68% <i>vs</i> 34%</b><span>2&times; patient retention with the VIBRANT companion app</span></div>
+    <div class="pb-item"><b>TIME Best Inventions 2023</b><span>VIBRANT capsule system. I designed its brand and app</span></div>
+    <div class="pb-item"><b>20+ years</b><span>Product design in HealthTech, SaaS and gaming. AposHealth, VIBRANT</span></div>
+    <div class="pb-logos"><span class="pb-word">VIBRANT</span><img src="assets/work/aposhealth/logo.png" alt="AposHealth" loading="lazy"></div>
   </div>
 </section>
 
@@ -954,34 +1048,38 @@ h1{font-size:clamp(34px,4.8vw,62px)!important}
   <div class="showcase">
     <div class="showcase-row">
       <a class="device phone" href="work/shomer.html">
-        <div class="scr"><img class="scr-on" src="assets/real/shomer-screen1.jpg" alt="SH&#10017;MER screen" loading="lazy"><div class="scr-off" style="background:radial-gradient(circle at 50% 36%,#16305c,#0a1428)"><img src="assets/products/shomergency.png" alt=""></div><span class="scr-cta">See it &#8250;</span></div>
+        <div class="scr"><img class="scr-on" src="assets/studio/shomer-app-circles.webp" alt="SH&#10017;MER app, my circles screen" loading="lazy"><div class="scr-off shot"><img src="assets/studio/shomer-app-map.webp" alt="SH&#10017;MER app, live map screen" loading="lazy"></div><span class="scr-cta">See it &#8250;</span></div>
         <span class="dev-name">SH&#10017;MER</span><span class="dev-cat">Community safety</span>
       </a>
       <a class="device phone" href="work/lickpick.html">
-        <div class="scr"><img class="scr-on" src="assets/brand/lickpick/m_home.jpg" alt="LickPick screen" loading="lazy"><div class="scr-off" style="background:radial-gradient(circle at 50% 40%,#123024,#0B0912)"><span class="wm">Lick<b style="color:#52e87d">Pick</b></span></div><span class="scr-cta">See it &#8250;</span></div>
+        <div class="scr"><img class="scr-on" src="assets/brand/lickpick/m_pick.jpg" alt="LickPick app, pick screen" loading="lazy"><div class="scr-off shot"><img src="assets/brand/lickpick/m_home.jpg" alt="LickPick app, home screen" loading="lazy"></div><span class="scr-cta">See it &#8250;</span></div>
         <span class="dev-name">LickPick</span><span class="dev-cat">Music</span>
       </a>
       <a class="device phone" href="work/trashure-hunters.html">
-        <div class="scr"><img class="scr-on" src="assets/screens/th-map.png" alt="Trashure-Hunters screen" loading="lazy"><div class="scr-off" style="background:radial-gradient(circle at 50% 36%,#3d2173,#160a2e)"><img src="assets/real/th-icon.png" alt="" style="width:66%;border-radius:18px"></div><span class="scr-cta">See it &#8250;</span></div>
+        <div class="scr"><img class="scr-on" src="assets/opt/th-splash.webp" alt="Trashure-Hunters app, splash screen" loading="lazy"><div class="scr-off shot"><img src="assets/opt/th-map.webp" alt="Trashure-Hunters app, game map screen" loading="lazy"></div><span class="scr-cta">See it &#8250;</span></div>
         <span class="dev-name">Trashure-Hunters</span><span class="dev-cat">Eco game</span>
       </a>
       <a class="device phone" href="work/chore-royale.html">
-        <div class="scr"><img class="scr-on" src="assets/real/scr-chore.png" alt="Chore Royale screen" loading="lazy"><div class="scr-off" style="background:radial-gradient(circle at 50% 36%,#3f1d78,#1a0f33)"><img src="assets/brand/chore-logo.png" alt=""></div><span class="scr-cta">See it &#8250;</span></div>
+        <div class="scr"><img class="scr-on" src="assets/work/chore-royale/scr-clan.jpg" alt="Chore Royale app, clan screen" loading="lazy"><div class="scr-off shot"><img src="assets/work/chore-royale/scr-wheel.jpg" alt="Chore Royale app, prize wheel screen" loading="lazy"></div><span class="scr-cta">See it &#8250;</span></div>
         <span class="dev-name">Chore Royale</span><span class="dev-cat">Family game</span>
+      </a>
+      <a class="device phone" href="work/fairent.html">
+        <div class="scr"><img class="scr-on" src="assets/work/fairent/scr-result.jpg" alt="FaiRent app, result screen" loading="lazy"><div class="scr-off shot"><img src="assets/work/fairent/scr-hero.jpg" alt="FaiRent app, home screen" loading="lazy"></div><span class="scr-cta">See it &#8250;</span></div>
+        <span class="dev-name">FaiRent</span><span class="dev-cat">Renter tools</span>
       </a>
     </div>
   </div>
 </section>
 
 <!-- BOLD STATEMENT -->
-<div class="statement reveal">
+<div class="statement band-green reveal">
   <p class="statement-text">
     "Design is not just what it looks like and feels like. <em>Design is how it works.</em>"<span style="display:block;margin-top:20px;font-family:var(--font-mono);font-size:0.42em;letter-spacing:0.16em;color:var(--muted)">STEVE JOBS</span>
   </p>
 </div>
 
 <!-- CLIENT WORK -->
-<section id="experience">
+<section id="experience" class="band-cream">
   <div class="section-label">Client Work</div>
   <h2 class="section-title reveal">Where I've built <em>real products.</em></h2>
   <p class="section-sub reveal">Senior design embedded in world-class teams. Clinical-grade platforms to cutting-edge ingestible tech.</p>
@@ -1083,15 +1181,15 @@ h1{font-size:clamp(34px,4.8vw,62px)!important}
 </section>
 
 <!-- CONTACT -->
-<section id="contact">
+<section id="contact" class="band-purple">
   <div class="contact-inner">
     <div class="contact-carousel reveal" data-carousel data-interval="1400">
       <div class="phone"><div class="phone-notch"></div><div class="phone-screens">
-        <img class="pscreen on" src="assets/real/shomer-screen1.jpg" alt="SHOMER app screen">
-        <img class="pscreen" src="assets/brand/lickpick/m_home.jpg" alt="LickPick app screen">
-        <img class="pscreen" src="assets/real/scr-rk.png" alt="Rookie and King app screen">
-        <img class="pscreen" src="assets/real/scr-milo.png" alt="Milo app screen">
-        <img class="pscreen" src="assets/real/scr-chore.png" alt="Chore Royale app screen">
+        <img class="pscreen on" src="assets/studio/shomer-app-map.webp" alt="SH&#10017;MER app screen" loading="lazy">
+        <img class="pscreen" src="assets/brand/lickpick/m_home.jpg" alt="LickPick app screen" loading="lazy">
+        <img class="pscreen" src="assets/work/chore-royale/scr-wheel.jpg" alt="Chore Royale app screen" loading="lazy">
+        <img class="pscreen" src="assets/work/fairent/scr-hero.jpg" alt="FaiRent app screen" loading="lazy">
+        <img class="pscreen" src="assets/studio/shomer-app-guide.webp" alt="SH&#10017;MER app first-aid guide screen" loading="lazy">
       </div></div>
     </div>
     <div class="contact-avail reveal">Taking on a few new projects</div>
@@ -1109,7 +1207,7 @@ h1{font-size:clamp(34px,4.8vw,62px)!important}
 <footer>
   <div class="footer-top">
     <div>
-      <div class="footer-brand-name">3Shamrocks Studio™</div>
+      <div class="footer-brand-name"><picture><source srcset="assets/studio/3shamrocks_black.png" media="(prefers-color-scheme: light)"><img src="assets/studio/3shamrocks.png" alt="3Shamrocks Studio" class="footer-logo" loading="lazy"></picture></div>
       <p class="footer-tagline">Boutique product and design studio. Est. 2007. Senior design at startup speed.</p>
     </div>
     <div class="footer-cols">
