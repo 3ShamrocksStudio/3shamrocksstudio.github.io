@@ -3641,12 +3641,16 @@ details.fold.more details.fold{margin-top:0}
     const top = cands.reduce((m, c) => Math.max(m, c.base), 0);
     for (const c of cands) { c.z = zOf(c.x, st); c.tasteAdj = c.base >= top * 0.7 ? tasteScore(taste, c.z) : 0; c.score += c.tasteAdj; }   // taste never lifts a weak phrase
     cands.sort((x, y) => y.score - x.score);
-    const out = [];
-    for (const c of cands) {
-      if (out.some(o => Math.min(o.e, c.e) - Math.max(o.s, c.s) > 0.4 * Math.min(o.len, c.len))) continue;
+    // A, B and C are different stretches of the jam: a runner-up shares at most a fifth of a lick already chosen,
+    // checked again once its edges are set (edges can grow a lick by a bar or a ring-out)
+    const out = [], apart = (o, c) => Math.min(o.e, c.e) - Math.max(o.s, c.s) <= 0.2 * Math.min(o.len, c.len);
+    for (const c0 of cands) {
+      if (!out.every(o => apart(o, c0))) continue;
+      const c = { ...c0 }; if (EDGES) phraseEdges(X, c); else c.endAt = c.e;
+      if (!out.every(o => apart(o, c))) continue;
       out.push(c); if (out.length === 3) break;
     }
-    for (const c of out) { if (EDGES) phraseEdges(X, c); else c.endAt = c.e; c.why = reasons(c); }
+    for (const c of out) c.why = reasons(c);
     out.curve = X.cell; out.lo = X.lo; out.stats = st;   // phrase strength per cell, so the app can show why this part won
     return out;
   }
