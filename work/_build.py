@@ -20,7 +20,7 @@ P = [
   cards=[("The problem","Players record every jam, then never dig the good take out of the camera roll."),
          ("What I built","The brand, the interface and a web app that runs on the phone, even offline. Clips never leave the device."),
          ("Where it is","Free beta on Android and Chrome.")],
-  shots=["../assets/studio/screens/lickpick-welcome.webp","../assets/studio/screens/lickpick-pick.webp"],
+  shots=["../assets/studio/screens/lickpick-cut.webp","../assets/studio/screens/lickpick-style.webp"],
   out=("Visit LickPick","../lickpick/")),
  dict(slug="trashure-hunters", name="Trashure-Hunters", cat="Kids' eco game", status="In development",
   line="Kids pick up real litter in their neighbourhood, and every cleanup heals a magical world.",
