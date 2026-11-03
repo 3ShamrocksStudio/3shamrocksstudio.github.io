@@ -1867,7 +1867,7 @@ details.fold.more details.fold{margin-top:0}
 <script>window.LP_PAY = { provider: "lemonsqueezy", mode: "test", store: "499938", portal: "https://3sstudio.lemonsqueezy.com/billing", products: { pro: ["1483622", "2312281", "2312296"] },
   test: { yearly: "https://3sstudio.lemonsqueezy.com/checkout/buy/287a3571-4cab-4413-854f-f52f8ae858f0", monthly: "https://3sstudio.lemonsqueezy.com/checkout/buy/c212571a-b04d-4622-b5cb-3d2197966fb2" },
   live: { yearly: "", monthly: "" } };</script>
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-03a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-03b"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -3397,6 +3397,29 @@ details.fold.more details.fold{margin-top:0}
     const beats = []; for (let t = s + best - P * Math.floor(best / P); t <= e + 0.02; t += P) beats.push(+t.toFixed(4));
     return { beats, bpm, conf: 0, cv: 0, reg: 0 };
   }
+  // 3 Nov: a second look at the grid the tracker chose, from two things a musician listens for.
+  // (1) tempo octave: a very slow reading (under 66 BPM) whose half-beats carry attacks about as strong as its beats is the
+  //     real beat heard at half speed, so the grid doubles. (2) phase: chords change and the low strings hit ON the beat;
+  //     when both cues sit clearly on the half-beat instead, the grid moves half a beat.
+  function refineGrid(raw, s, e, tb) {
+    if (!tb?.beats || tb.beats.length < 6 || !raw.fluxA) return tb;
+    const fr = raw.fluxRate, off = raw.fluxOff, pk = (F, t) => { if (!F) return 0; const i = Math.round((t - off) * fr); let m = 0; for (let j = i - 2; j <= i + 2; j++) m = Math.max(m, F[j] || 0); return m; };
+    const mids = B => B.slice(0, -1).map((t, i) => (t + B[i + 1]) / 2);
+    let B = tb.beats.slice(), out = { ...tb };
+    const p0 = (B[B.length - 1] - B[0]) / (B.length - 1), bpm0 = 60 / p0;
+    if (bpm0 < 66) { const M = mids(B), on = mean(B.map(t => pk(raw.fluxA, t))), md = mean(M.map(t => pk(raw.fluxA, t)));
+      if (on > 0 && md / on >= 0.5) { const D = []; B.forEach((t, i) => { D.push(t); if (i < M.length) D.push(M[i]); }); B = D; out = { ...out, beats: B.map(t => +t.toFixed(4)), bpm: tb.bpm * 2, doubled: +(md / on).toFixed(2) }; } }
+    if (raw.chromaFr && B.length >= 8) {
+      const p = (B[B.length - 1] - B[0]) / (B.length - 1), M = mids(B);
+      const nov = t => { const a = frameVec(raw.chromaFr, raw, t - 0.45 * p, t - 0.06 * p), b = frameVec(raw.chromaFr, raw, t + 0.06 * p, t + 0.45 * p); return 1 - cos(a, b); };
+      const low = T => mean(T.map(t => pk(raw.fluxL, t))), all = T => mean(T.map(t => pk(raw.fluxA, t))), hv = T => mean(T.map(nov));
+      const lOn = low(B), lMid = low(M), hOn = hv(B), hMid = hv(M), aOn = all(B), aMid = all(M);
+      const vote = (lMid > lOn * 1.15 ? 1 : lOn > lMid * 1.15 ? -1 : 0) + (hMid > hOn * 1.3 && hMid > 0.04 ? 1 : hOn > hMid * 1.3 ? -1 : 0) + (aMid > aOn * 1.15 ? 1 : aOn > aMid * 1.15 ? -1 : 0);
+      out.phaseCues = [+(lMid / (lOn || 1)).toFixed(2), +(hMid / (hOn || 1e-9)).toFixed(2), +(aMid / (aOn || 1)).toFixed(2), vote];
+      if (vote >= 2) { const S = M.slice(); if (S[0] - p >= s - 0.02) S.unshift(S[0] - p); if (S[S.length - 1] + p <= e + 0.02) S.push(S[S.length - 1] + p); out = { ...out, beats: S.map(t => +t.toFixed(4)), shifted: out.shifted || 1 }; }
+    }
+    return out;
+  }
   let LAST_CANDS = null, OFF_SHIFT = 2.2, METER_REP = 0.0001;
   function offRatio(raw, B) { const F = raw.fluxA, fr = raw.fluxRate, off = raw.fluxOff, v = t => { const i = Math.round((t - off) * fr); let m = 0; for (let j = i - 2; j <= i + 2; j++) m = Math.max(m, F[j] || 0); return m; };
     const on = B.map(v), mid = B.slice(0, -1).map((t, i) => v((t + B[i + 1]) / 2)); return (mid.reduce((a, b) => a + b, 0) / mid.length) / ((on.reduce((a, b) => a + b, 0) / on.length) || 1); }
@@ -3420,6 +3443,7 @@ details.fold.more details.fold{margin-top:0}
       for (let i = 0; i < chords.length; i++) { chords[i].t0 = i ? chords[i - 1].t1 : s; } if (chords.length) chords[chords.length - 1].t1 = e;
       return { pulse: false, meter: null, beats: [], bars: [], chords, swing: 0.5, bpm: null };
     }
+    if (!forced) tb = refineGrid(raw, s, e, tb);
     const { beats } = tb;
     const { on, fr, off } = env(raw);
     const acc = t => { const f = Math.round((t - off) * fr); return Math.max(on[f] || 0, on[f + 1] || 0, on[f - 1] || 0); };
