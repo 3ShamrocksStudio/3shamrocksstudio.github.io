@@ -110,13 +110,13 @@ What to change from the current screen:
 **B. Game**
 ```
 ┌──────────────────────────────┐
-│ (DK) Dana · founder   09:41  │
+│ (DK) Dana · founder   04:41  │
 │ ┌──────────────────────────┐ │
 │ │  top-down 8×8 board      │ │
 │ │  gold vs plum pieces     │ │
 │ │  last move highlighted   │ │
 │ └──────────────────────────┘ │
-│ (YOU) You             09:58  │
+│ (YOU) You             04:58  │
 │ [Resign] [Draw?] [😊] [≡]    │
 └──────────────────────────────┘
 ```

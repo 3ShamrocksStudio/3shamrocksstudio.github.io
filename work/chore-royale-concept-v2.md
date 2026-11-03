@@ -68,7 +68,7 @@ The family is a **royal household**. Everything on screen belongs to that one wo
 | **👑 Crowns** | Each confirmed chore pays its value (set by the Regent, e.g. 10–20) | Buy prizes from the Treasury | Only by spending. Earned Crowns are never taken away. |
 | **✦ XP** | Same number as Crowns earned; never spent | Rank (Page → Grand Duke). Lifetime, so it only goes up. | No |
 | **🔥 Streak** | +1 for each day with at least one confirmed chore | Every 3 days = 1 card | Yes: miss a day and it resets |
-| **Monarch** | Weekly, see below | Holds the Spoon-Sceptre for a week; Monarch crest on profile; picks the Royal Feast menu | Yes: re-decided every Sunday |
+| **Monarch** | Weekly, see below | Holds the Spoon-Sceptre for a week; Monarch crest on profile; picks the Royal Feast menu | Yes: re-decided every Monday morning |
 
 **Weekly Monarch rule (fair across ages):** the Monarch is the royal with the highest **completion rate** this week (chores confirmed ÷ chores landed on them), with at least 5 chores landed. Ties go to the longer streak, then to whoever finished their last chore first. A 7-year-old with 6 of 6 beats a 14-year-old with 9 of 12. Volume does not win; reliability does. The crowning happens on Monday morning (the first time anyone opens the app that week). If nobody reached 5 chores, the throne stays empty.
 
@@ -159,9 +159,9 @@ No revenue forecast is given here: there are no users or conversion data yet. **
 
 ## 8. Onboarding (3 steps)
 
-1. **Name your court.** Family name, the Regent's name (whoever is setting up) and each royal's name and colour. (In the final art the crest knight recolours live; the prototype uses initials.)
-2. **Pick the realm's chores.** Tick from a starter list; each chore shows its Crown value and a *flexible / time-critical* switch (the *no cards* switch lives in the Regent's Chores tab, to keep setup short). Walk the dog and feed the pet come pre-marked time-critical.
-3. **Stock the Treasury.** 3 starter prizes with Crown prices (editable), then **"Hand the phone to a royal: first spin!"**
+1. **Name your court.** Family name, the Regent's name and 4-digit PIN (whoever is setting up), and each royal's name and colour. (In the final art the crest knight recolours live; the prototype uses initials.)
+2. **Pick the realm's chores.** A starter list (add or remove chores later in the Regent screen); each chore shows its Crown value and a *flexible / time-critical* switch (the *no cards* switch lives in the Regent's Chores tab, to keep setup short). Walk the dog and feed the pet come pre-marked time-critical.
+3. **Stock the Treasury.** Starter prizes with Crown prices (editable), then **"Hand the phone to a royal: first spin!"**
 
 ---
 

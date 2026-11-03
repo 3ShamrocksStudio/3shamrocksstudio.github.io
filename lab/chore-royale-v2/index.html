@@ -895,10 +895,11 @@ svg.wheel{display:block;width:100%;height:100%;filter:drop-shadow(var(--shadow-l
 
     <div class="ob-step" id="ob1">
       <h2>Your court</h2>
-      <div class="ob-lead" style="margin-top:4px">Who's playing? Name your royals.</div>
+      <div class="ob-lead" style="margin-top:4px">Step 1 of 3. Who's playing? Name your royals, and set the Regent PIN.</div>
       <div class="ob-card">
         <div class="fld"><label>Court name</label><input id="clanName" value="The M Court" maxlength="24"></div>
         <div class="fld"><label>Regent (you, the parent)</label><input id="regentName" value="Dad" maxlength="16"></div>
+        <div class="fld"><label>Regent PIN (4 digits, keep it from the royals)</label><input id="regentPin" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="····"></div>
         <label style="display:block;font-size:var(--text-xs);font-weight:var(--weight-bold);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--on-hero-dim);margin-bottom:7px">Royals <span style="text-transform:none;letter-spacing:0;opacity:.85">· tap the avatar to change</span></label>
         <div id="kidEdits"></div>
         <button class="addkid" onclick="addKidEdit()">+ Add a royal</button>
@@ -934,7 +935,7 @@ svg.wheel{display:block;width:100%;height:100%;filter:drop-shadow(var(--shadow-l
     <h1>Chore <b>Royale</b></h1>
     <div class="sub" id="whoSub">👑 The M Clan · Who's here?</div>
     <div class="pickrow" id="pickrow"></div>
-    <button class="who-reset" onclick="resetAll()">Start over (clear data)</button>
+    <button class="who-reset" onclick="resetAsk()">Start over (clear data)</button>
     <footer class="studio-credit" style="margin-top:auto">
       <img class="studio-logo on-dark" src="assets/3shamrocks.png" alt="3Shamrocks Studio" height="14">
       <span class="cr">© 2026 <b>3Shamrocks Studio</b>. All rights reserved.</span>
@@ -986,7 +987,7 @@ svg.wheel{display:block;width:100%;height:100%;filter:drop-shadow(var(--shadow-l
         <span class="pe">👑</span>
         <div style="flex:1">
           <div class="pt">Royal <b style="color:var(--signature-400)">Household</b></div>
-          <div class="pm">Royal Household (for parents): up to 6 royals, custom chores, Trade &amp; Decree cards, themes. Price is a proposal.</div>
+          <div class="pm">Royal Household (for parents): up to 6 royals, custom chores, themes. Price is a proposal.</div>
         </div>
         <button class="pgo" onclick="toast('Prototype: the Royal Household plan is a proposal for parents. Kids never see a price.')">About</button>
       </div>
@@ -1419,7 +1420,7 @@ function buyPowerup(id){
    Limits: hand max 3 · S.cardLimit plays per royal per week (Regent sets 0–3) · one card per chore:
    a passed / traded / decreed chore is SEALED for the day · Delay only on flexible chores ·
    chores marked noCards can't be countered · the Regent can undo any card the same day (Court Log). */
-function carried(k){return (k.quests||[]).filter(q=>!(k.bonus||[]).includes(q)&&!(k.gifted||[]).includes(q)).length+(k.delayed||[]).length;}
+function carried(k){const ok=q=>!(k.bonus||[]).includes(q)&&!(k.gifted||[]).includes(q);return (k.quests||[]).filter(ok).length+(k.awaiting||[]).filter(a=>ok(a.id)).length+(k.delayed||[]).length;}   // held, waiting-to-confirm and delayed chores land again in the new week
 function wk(k){const w=weekKey();if(!k.wk||k.wk.key!==w)k.wk={key:w,played:0,landed:carried(k),done:0};return k.wk;}
 function randCard(){const t=['pass','trade','delay'];return t[Math.floor(Math.random()*t.length)];}
 function giveCard(k,type){k.cards=k.cards||[];if(k.cards.length>=HAND_MAX)return null;k.cards.push(type);return type;}
@@ -1501,7 +1502,7 @@ function crownMonarch(force){
   const w=weekKey();if(!force&&S.lastWeek===w)return null;
   const ks=kids().map(id=>({id,m:S.members[id]}));
   const elig=ks.filter(x=>(x.m.wk||{}).landed>=MONARCH_MIN).map(x=>({...x,rate:x.m.wk.done/x.m.wk.landed}));
-  elig.sort((a,b)=>b.rate-a.rate||b.m.streak-a.m.streak||((a.m.wk.lastDoneAt||9e15)-(b.m.wk.lastDoneAt||9e15)));
+  elig.sort((a,b)=>b.rate-a.rate||shownStreak(b.m)-shownStreak(a.m)||((a.m.wk.lastDoneAt||9e15)-(b.m.wk.lastDoneAt||9e15)));
   let res=null;
   if(elig.length){const top=elig[0];S.monarch={id:top.id,week:(top.m.wk||{}).key,rate:Math.round(top.rate*100),done:top.m.wk.done,landed:top.m.wk.landed};
     top.m.cards=top.m.cards||[];if(top.m.cards.length>=HAND_MAX)top.m.cards.shift();const got=giveCard(top.m,'decree');   /* the Decree always arrives (oldest card makes room) */addLog(`👑 ${top.m.name} is crowned Monarch (${top.m.wk.done} of ${top.m.wk.landed})${got?' and earns a Royal Decree':''}`,null);res=top.m.name;}
@@ -1528,7 +1529,7 @@ function undoLog(lid){
 function decreeTo(did,target){
   const i=S.decrees.findIndex(d=>d.id===did);if(i<0)return;const d=S.decrees.splice(i,1)[0];const c=choreById(d.cid);
   if(target==='regent'){addLog(`📜 The Regent took "${c.name}" from ${S.members[d.from].name}`,null);toast(`You'll do "${c.name}" 👑`);}
-  else{const m=S.members[target];m.quests.push(d.cid);(m.gifted=m.gifted||[]).push(d.cid);addLog(`📜 The Regent gave "${c.name}" to ${m.name}`,null);toast(`"${c.name}" decreed to ${m.name}`);}
+  else{const m=S.members[target];m.quests.push(d.cid);if(target!==d.from)(m.gifted=m.gifted||[]).push(d.cid);addLog(`📜 The Regent gave "${c.name}" to ${m.name}`,null);toast(`"${c.name}" decreed to ${m.name}`);}
   save();renderConfirm();
 }
 function pickBonusCard(t){const k=cur();delete k._pickCard;const got=giveCard(k,t);save();closeCards();toast(got?`You chose a ${CARD_TYPES[t].n} card 🂠`:`Hand full (max ${HAND_MAX})`);renderKid();}
@@ -1777,7 +1778,8 @@ function askPin(id){
 }
 function pinGo(id){const v=($('pinIn').value||'').trim();if(!/^\d{4}$/.test(v)){toast('4 digits please');return;}
   if(!S.pin){S.pin=v;save();}else if(v!==S.pin){toast('Wrong PIN');$('pinIn').value='';return;}
-  closeCards();enterOK(id);}
+  closeCards();if(id==='__reset'){resetAll();return;}enterOK(id);}
+function resetAsk(){if(S.pin){askPin('__reset');}else resetAll();}
 function enter(id){if(S.members[id]&&S.members[id].role==='parent'){askPin(id);return;}enterOK(id);}
 function enterOK(id){crownMonarch(false);S.current=id;S.deviceChampion=id;save();joinFamily();const m=S.members[id];if(m.role==='parent'){show('parent');renderParent();}else{show('kid');renderKid();}}
 function goWho(){S.current=null;B=null;save();show('who');renderWho();}
@@ -1870,6 +1872,7 @@ function renderKid(){
 /* ── RENDER: PARENT (Referee) ── */
 let pTab='confirm';
 function renderParent(){
+  crownMonarch(false);
   const p=S.members[parentId()];$('parentSub').textContent=p.name;
   $('parentChip').innerHTML=`<span class="ava" style="background:${p.color}">${p.av}</span> ${esc(p.name)}`;
   document.querySelectorAll('.ptab .t').forEach(b=>b.classList.toggle('on',b.dataset.tab===pTab));
@@ -1932,6 +1935,7 @@ function addReward(){const name=$('rName').value.trim();if(!name){toast('Type a 
 function delReward(id){S.rewards=S.rewards.filter(r=>r.id!==id);save();toast('Reward removed');renderRewards();}
 
 function renderFamily(){
+  crownMonarch(false);
   const ks=kids().map(id=>S.members[id]);ks.forEach(k=>wk(k));const mx=Math.max(...ks.map(x=>x.weekStars),1);
   const spread=ks.length>1?Math.abs(ks[0].weekStars-ks[ks.length-1].weekStars):0;const bal=spread<=Math.max(8,mx*0.4);
   let html=`<div class="toggle-row"><div style="flex:1"><div class="tg">🂠 Card plays per royal per week</div><div class="tgm">Each royal can counter this many chores a week. Resets Monday.</div></div><div style="display:flex;gap:6px">${[0,1,2,3].map(n=>`<button class="flagbtn ${S.cardLimit===n?'on':''}" onclick="S.cardLimit=${n};save();renderFamily()">${n}</button>`).join('')}</div></div>`+
@@ -2093,13 +2097,13 @@ function cycleAvatar(i){readKidEdits();const idx=AVATARS.indexOf(obKids[i].avata
 function readKidEdits(){[...$('kidEdits').querySelectorAll('input')].forEach((inp,i)=>{if(obKids[i])obKids[i].name=inp.value.trim()||obKids[i].name;});}
 function addKidEdit(){readKidEdits();if(obKids.length>=5){toast('Up to 5 royals');return;}obKids.push({name:'Champ'});renderKidEdits();}
 function rmKidEdit(i){readKidEdits();obKids.splice(i,1);renderKidEdits();}
-function renderObChores(){$('obChores').innerHTML=S.chores.map(c=>`<div class="rw-mini" style="display:flex;align-items:center;gap:8px"><span class="em">${c.icon}</span><b style="flex:1">${esc(c.name)}</b><button type="button" class="flagbtn ${c.flexible?'on':''}" onclick="choreFlagOb('${c.id}')">${c.flexible?'flexible':'time-critical'}</button></div>`).join('');}
+function renderObChores(){$('obChores').innerHTML=S.chores.map(c=>`<div class="rw-mini" style="display:flex;align-items:center;gap:8px"><span class="em">${c.icon}</span><b style="flex:1">${esc(c.name)} <small style="opacity:.75">👑 ${c.stars}</small></b><button type="button" class="flagbtn ${c.flexible?'on':''}" onclick="choreFlagOb('${c.id}')">${c.flexible?'flexible':'time-critical'}</button></div>`).join('');}
 function choreFlagOb(id){const c=choreById(id);c.flexible=!c.flexible;save();renderObChores();}
 function renderRwPreview(){$('rwPreview').innerHTML=S.rewards.map(r=>`<div class="rw-mini"><span class="em">${r.icon}</span><b>${esc(r.name)}</b><span class="cost">👑 ${r.cost}</span></div>`).join('');}
 function finishOnboard(){
   const newMembers={};
   obKids.forEach((k,i)=>{newMembers['k'+(i+1)]=mkKid(k.name,i,k.avatar);});
-  const rn=(($('regentName')||{}).value||'').trim()||'Dad';newMembers['dad']={name:rn,role:'parent',av:rn[0].toUpperCase(),color:'#A855F7'};
+  const rn=(($('regentName')||{}).value||'').trim()||'Dad';const rp=(($('regentPin')||{}).value||'').trim();if(/^\d{4}$/.test(rp))S.pin=rp;newMembers['dad']={name:rn,role:'parent',av:rn[0].toUpperCase(),color:'#A855F7'};
   S.members=newMembers;S.onboarded=true;save();
   show('who');renderWho();
 }
