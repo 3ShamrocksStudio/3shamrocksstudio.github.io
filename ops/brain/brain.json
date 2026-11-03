@@ -1,7 +1,7 @@
 {
  "version": 2,
  "updated": "2026-11-03",
- "last_run": "2026-11-03T16:50:00+02:00",
+ "last_run": "2026-11-03T18:15:00+02:00",
  "goal": {
   "target_usd": 1000000,
   "deadline": "2027-04-21",
@@ -187,6 +187,12 @@
    "owner": "CDO",
    "next_steps": [
     {
+     "step": "Finish the studio site revision list (in progress) and show Dave the result",
+     "seat": "CDO",
+     "due": "2026-11-04",
+     "done_when": "all items shipped on staging, verifier PASS"
+    },
+    {
      "step": "Dave re-test of homepage + offer page (to-do 'retest-studio'); apply his notes same shift",
      "seat": "CDO",
      "due": "2026-11-04",
@@ -231,6 +237,11 @@
      "date": "2026-11-03",
      "text": "Dave's test-day FAIL ('nothing I requested yesterday was done') fixed: hero real product screens (SH✡MER map/circles, AposHealth), colour bands break the dark look, proof strip under hero, logo unboxed, 390px overflow bug fixed; verifier PASS after 1 fix (wrong VIBRANT logo file → wordmark)",
      "link": "https://3shamrocksstudio.github.io/"
+    },
+    {
+     "date": "2026-11-03",
+     "text": "DNS check 3 Nov 18:11: 3shamrocks.com A records still 185.230.63.x (Wix), no CNAME in this repo: migration waits on Dave's 4 lines",
+     "link": "https://3shamrocksstudio.github.io/"
     }
    ],
    "verdict": "pour",
@@ -245,6 +256,30 @@
    "where": "https://www.shomer-app.co.il/",
    "owner": "CRO",
    "next_steps": [
+    {
+     "step": "Confirm v312 serves on www.shomer-app.co.il/version.json; then popups + update notices from Dave's 3 Nov list",
+     "seat": "CTO",
+     "due": "2026-11-04",
+     "done_when": "version.json = v312+, verifier PASS"
+    },
+    {
+     "step": "App 'שלח משוב' still opens markodave@gmail.com on main (shomer.html line ~4615) → support@shomer-app.co.il in the next version",
+     "seat": "CTO",
+     "due": "2026-11-04",
+     "done_when": "grep clean on main + live"
+    },
+    {
+     "step": "Closed-app SOS push: new Android build from sos-push-alarm on the Play testing track; Firebase server part only after Dave's Blaze yes (Q7)",
+     "seat": "CTO",
+     "due": "after Dave Q7",
+     "done_when": "locked phone rings on a test SOS"
+    },
+    {
+     "step": "LinkedIn tester post: finish the image with v311 screens + PNG logo, give Dave the final for his OK",
+     "seat": "CMO",
+     "due": "2026-11-04",
+     "done_when": "in to-do, Dave OK"
+    },
     {
      "step": "App: 'השומרים שלי' simplified edit to move a Shomer between circles of trust (Dave's 3 Nov tester feedback); design + build on staging",
      "seat": "CPO",
@@ -331,6 +366,9 @@
     }
    ],
    "dave": [
+    "Answer the 9 SOS event decisions (spec section 9), incl. a yes/no to Firebase Blaze",
+    "GO on 3 live-site fixes: iPhone SOS text, 5 vs 6 shakes, privacy text",
+    "Send the council emails from dave@3shamrocks.com",
     "Review Command demo",
     "OK price sheet"
    ],
@@ -356,10 +394,30 @@
      "date": "2026-11-03",
      "text": "Dave 3 Nov test: app 'שלח משוב' opens markodave@gmail.com, must be support@; + Dave email 3 Nov 11:23 UTC (subject 'SH✡MER tester feedback'): 'My Shomers easy simplified edit to switch circles of trust'",
      "link": "https://mail.google.com/mail/?authuser=markodave@gmail.com#all/thread-f:1880836057506137066"
+    },
+    {
+     "date": "2026-11-03",
+     "text": "v312 UX fixes for Dave's 3 Nov test on main (fb412cd: move a shomer between circles c1dd1be, map zoom f497703, SOS stays red f6276bf, one-line labels 0c2f454, help bar clears 8e5a1d9); live version.json still v311 at 18:11",
+     "link": "https://github.com/3ShamrocksStudio/shomer-app/commits/main"
+    },
+    {
+     "date": "2026-11-03",
+     "text": "Full-screen in-app SOS alarm takeover on main (3b70529)",
+     "link": "https://github.com/3ShamrocksStudio/shomer-app/commit/3b70529"
+    },
+    {
+     "date": "2026-11-03",
+     "text": "Event-lifecycle spec + review fixes (8be87aa) on branch event-lifecycle-spec; section 9 lists 9 product decisions (Q1, Q1b, Q2–Q8) incl. Q7 Firebase Blaze",
+     "link": "https://github.com/3ShamrocksStudio/shomer-app/blob/event-lifecycle-spec/EVENT-LIFECYCLE-SPEC.md"
+    },
+    {
+     "date": "2026-11-03",
+     "text": "Closed-app push alarm on branch sos-push-alarm (0d925c3): FCM push, per-device tokens (~1 km point), functions with emulator dry run; not built or deployed",
+     "link": "https://github.com/3ShamrocksStudio/shomer-app/tree/sos-push-alarm"
     }
    ],
    "verdict": "pour",
-   "dave_move": "Send 7 council emails + the 2 founding-community WhatsApps; answer: Chabad contact? what is TJE?"
+   "dave_move": "To-do 'SH✡MER: 9 SOS decisions': reply 'all defaults OK' or change a number"
   },
   {
    "id": "shomer-nature",
@@ -402,19 +460,40 @@
    "id": "shomer-ios",
    "name": "SH✡MER iOS",
    "engine": "shomer",
-   "status": "parked",
-   "stage": 0,
+   "status": "active",
+   "stage": 1,
    "where": null,
    "owner": "CTO",
-   "next_steps": [],
+   "next_steps": [
+    {
+     "step": "On 'Apple done': create the App ID + push key, run the iOS build runbook, upload the first TestFlight build",
+     "seat": "CTO",
+     "due": "same day as Dave's 'Apple done'",
+     "done_when": "build visible in TestFlight"
+    },
+    {
+     "step": "Invite the 2 Miami testers to TestFlight and check 911 numbers + English on iPhone",
+     "seat": "CPO",
+     "due": "after first build",
+     "done_when": "2 testers installed, notes logged"
+    }
+   ],
    "dave": [
-    "$99 Apple account needs his explicit OK"
+    "Install Xcode (Mac App Store)",
+    "Enrol as Individual in the Apple Developer app ($99/yr, approved by Dave 3 Nov)",
+    "Tell Claude 'Apple done'"
    ],
    "kill_rule": null,
-   "revisit": "2026-12-01",
-   "evidence": [],
-   "verdict": "park",
-   "dave_move": "Nothing until 1 Dec"
+   "revisit": null,
+   "evidence": [
+    {
+     "date": "2026-11-03",
+     "text": "Branch ios-native: native/ios Xcode project, IOS-BUILD-RUNBOOK.md, IOS-STORE-LISTING.md (HE/EN), IOS-APPSTORE-READINESS.md",
+     "link": "https://github.com/3ShamrocksStudio/shomer-app/tree/ios-native/native"
+    }
+   ],
+   "verdict": "pour",
+   "dave_move": "Install Xcode, enrol Individual ($99) in the Apple Developer app, then say 'Apple done'"
   },
   {
    "id": "tnufa",
@@ -553,6 +632,12 @@
    "owner": "CPO",
    "next_steps": [
     {
+     "step": "Fix the audio bug + band-harmony engine (in progress); bump LP_VER and verify on staging",
+     "seat": "CTO",
+     "due": "2026-11-05",
+     "done_when": "verifier PASS on staging"
+    },
+    {
      "step": "Reconcile pricing: data.json engines says Pro $4.99 once, app says $2.99/mo or $14.99/yr; one truth before checkout",
      "seat": "CFO",
      "due": "2026-11-05",
@@ -570,7 +655,13 @@
    ],
    "kill_rule": "0 sales 30 days after live → kill",
    "revisit": null,
-   "evidence": [],
+   "evidence": [
+    {
+     "date": "2026-11-03",
+     "text": "Lemon Squeezy dashboard still shows 'Activate your store' (checked 3 Nov 16:47 by the IG/LickPick shift)",
+     "link": "https://app.lemonsqueezy.com/"
+    }
+   ],
    "verdict": "park",
    "dave_move": "Finish Lemon Squeezy identity step"
   },
@@ -625,6 +716,12 @@
    "owner": "CMO",
    "next_steps": [
     {
+     "step": "On Dave's GO: create the 3Shamrocks Studio + SH✡MER LinkedIn company pages from the drafts",
+     "seat": "CMO",
+     "due": "after Dave GO",
+     "done_when": "pages exist, Dave OK"
+    },
+    {
      "step": "Restore the 4 LinkedIn posts (10–19 Nov) drafted 2 Nov afternoon into the to-do; they are missing from the live page",
      "seat": "CMO",
      "due": "2026-11-03",
@@ -650,7 +747,8 @@
     }
    ],
    "dave": [
-    "OK post #1"
+    "OK post #1",
+    "GO on LinkedIn company pages (3Shamrocks Studio, SH✡MER)"
    ],
    "kill_rule": null,
    "revisit": null,
@@ -671,26 +769,63 @@
   },
   {
    "id": "instagram",
-   "name": "Instagram 9 accounts / Media Network",
+   "name": "Instagram 6 accounts / Media Network",
    "engine": "products",
-   "status": "parked",
-   "stage": 0,
-   "where": null,
+   "status": "blocked",
+   "stage": 1,
+   "where": "https://3shamrocksstudio.github.io/n/getfetch/",
    "owner": "CMO",
    "next_steps": [
     {
-     "step": "Check tonight's IG first posts against design-systems/media-network before they reach Dave",
+     "step": "Swap the 20 old-style 4–10 Nov posts for the verified proof reels, per-audience times",
+     "seat": "CMO",
+     "due": "2026-11-04",
+     "done_when": "schedule shows reels only, verifier PASS"
+    },
+    {
+     "step": "Finish the fix loop on the 14 unverified proof pieces (max 2 rounds each)",
      "seat": "CDO",
-     "due": "2026-11-03",
-     "done_when": "checklist PASS"
+     "due": "2026-11-05",
+     "done_when": "each PASS or dropped"
+    },
+    {
+     "step": "After Dave's log-in: run the daily engagement queue (likes/comments drafts for approval)",
+     "seat": "CMO",
+     "due": "daily 17:23",
+     "done_when": "queue items posted after OK"
     }
    ],
-   "dave": [],
+   "dave": [
+    "Log back in to all 6 accounts at instagram.com in Chrome (Switch accounts → Log into an existing account, Save login info)",
+    "Add the 5 bio links in the IG app on the phone",
+    "Decide: keep or redraw the Grok-made echoxreels/meetinq logos; meetinq 'built at 3Shamrocks Studio' framing; own jam for LickPick reels (now CC-licensed clips)"
+   ],
    "kill_rule": null,
-   "revisit": "2026-11-21",
-   "evidence": [],
-   "verdict": "park",
-   "dave_move": "One GO on the first-posts batch when it lands"
+   "revisit": null,
+   "evidence": [
+    {
+     "date": "2026-11-03",
+     "text": "Free resource pages live (HTTP 200 3 Nov): /n/getfetch|dealxscout|meetinq|echoxreels/free/",
+     "link": "https://3shamrocksstudio.github.io/n/getfetch/free/"
+    },
+    {
+     "date": "2026-11-03",
+     "text": "18 proof pieces on disk (17 reel.mp4 + 1 carousel) in ig-proof/; verifier-passed: shomer.app 01-iphone-install, lickpick.app 01-3min-to-17sec, meetinq.ai 01-fairent-3-passes, dealxscout.ai 01-live-prompt-run",
+     "link": null
+    },
+    {
+     "date": "2026-11-03",
+     "text": "Dave rejected the old post style 3 Nov; 20 scheduled 4–10 Nov posts to be replaced by proof reels",
+     "link": null
+    },
+    {
+     "date": "2026-11-03",
+     "text": "Scheduled: daily engagement 17:23, weekly content Thu 22:17; approval queue artifact",
+     "link": "https://claude.ai/artifact/H3BZ2QiYhvKK6XSLzsBLwE"
+    }
+   ],
+   "verdict": "pour",
+   "dave_move": "Log in to all 6 IG accounts in Chrome"
   },
   {
    "id": "command-dashboard",
@@ -855,6 +990,24 @@
    "text": "PARK→check: list the studio as a vendor on VC portfolio-perk platforms (Proven powers perks for VC platform teams; vendors submit offers). Sources: https://vendors.getproven.com/proven-vs-openvc-perks , https://getproven.com/blog/vc-portfolio-perks-playbook-2026 . Kill-test: listing may need a paid plan (zero-spend); founders ignore perk lists; low intent. Cheapest disproof: read vendor terms (10 min, Claude). Weakest metric: replies 0/27.",
    "check": "2026-11-06",
    "prediction": "free listing exists"
+  },
+  {
+   "date": "2026-11-03",
+   "by": "Dave",
+   "text": "Said 'let's do it' to the US$99 Apple Developer fee: SH✡MER iOS un-parked (was parked to 1 Dec).",
+   "check": "2026-11-10"
+  },
+  {
+   "date": "2026-11-03",
+   "by": "Dave",
+   "text": "Rejected the old Instagram post style; replace the 20 scheduled 4–10 Nov posts with proof reels.",
+   "check": "2026-11-10"
+  },
+  {
+   "date": "2026-11-03",
+   "by": "Claude (COO)",
+   "text": "Firebase Blaze stays OFF until Dave's explicit yes (zero-spend rule); closed-app SOS push waits on it.",
+   "check": "2026-11-05"
   }
  ],
  "learnings": [
@@ -992,6 +1145,17 @@
    "blocked": "SH✡MER app + FaiRent app repos not in this session's GitHub scope",
    "flag": "xAI: no new charge since 2 Nov 15:34 UTC (Gmail)",
    "quota": "new contacts 0/10 (LinkedIn/Chrome not available; 8 drafted DMs still unsent, adding names to an unsent pile is low value); replies 0"
+  },
+  {
+   "at": "2026-11-03T18:15+02:00",
+   "seat": "COO write-back",
+   "dave_input_since_last": "no new to-do ticks since 09:49 UTC; chat decisions: Apple $99 yes, IG style rejected",
+   "done": [
+    "Tracking surfaces updated from verified repo/live state (COO)"
+   ],
+   "verifier": "independent pass after write",
+   "blocked": "IG log-in (Dave), Blaze yes (Dave), Apple enrol (Dave), Wix DNS (Dave), Lemon Squeezy ID (Dave)",
+   "quota": "new contacts 0/10 this run (write-back only)"
   }
  ]
 }
