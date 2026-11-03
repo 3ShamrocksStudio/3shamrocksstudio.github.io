@@ -141,12 +141,13 @@ p+p{margin-top:14px}
 /* ---------- Realms ---------- */
 .realm{position:relative;padding:120px 0 120px;overflow:hidden;background:linear-gradient(180deg,var(--top) 0%,var(--top) 30%,var(--bot) 100%)}
 .realm::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(55% 45% at var(--gx,80%) var(--gy,35%),color-mix(in srgb,var(--c) 26%,transparent),transparent 70%)}
-#space{--c:var(--space);--top:#0A0A2E;--bot:#1A0B36;--gx:85%;--gy:30%}
-#sky{--c:var(--air);--top:#1A0B36;--bot:#0F1B48;--gx:12%;--gy:40%}
-#waters{--c:var(--water);--top:#0F1B48;--bot:#06283A;--gx:85%;--gy:45%}
-#lands{--c:var(--earth);--top:#06283A;--bot:#0A2B20;--gx:15%;--gy:40%}
-#embers{--c:var(--fire);--top:#0A2B20;--bot:#2A1307;--gx:80%;--gy:50%}
-#temple{--c:#E8A400;--top:#2A1307;--bot:var(--cream);color:var(--ink);background:linear-gradient(180deg,#2A1307 0,#7A4A12 90px,#F6D98C 240px,var(--cream) 420px,var(--cream) 100%)}
+/* realm backgrounds end on the game's REALM_BG_COLORS (cosmic_void #0A0A2E, sky_realm #3C1F7B, deep_waters #0D2B4E, green_lands #0D3B1A, ember_fields #3B0F00) */
+#space{--c:var(--space);--top:#0E0B33;--bot:#1C0F45;--gx:85%;--gy:30%}
+#sky{--c:var(--air);--top:#1C0F45;--bot:#3C1F7B;--gx:12%;--gy:40%}
+#waters{--c:var(--water);--top:#2A1F6E;--bot:#0D2B4E;--gx:85%;--gy:45%;background:linear-gradient(180deg,#3C1F7B 0,#0D2B4E 340px,#0D2B4E 70%,#0A2A3A 100%)}
+#lands{--c:var(--earth);--top:#0A2A3A;--bot:#0D3B1A;--gx:15%;--gy:40%}
+#embers{--c:var(--fire);--top:#0D3B1A;--bot:#3B0F00;--gx:80%;--gy:50%}
+#temple{--c:#E8A400;--top:#3B0F00;--bot:var(--cream);color:var(--ink);background:linear-gradient(180deg,#3B0F00 0,#7A4A12 90px,#F6D98C 240px,var(--cream) 420px,var(--cream) 100%)}
 #temple::before{background:radial-gradient(40% 260px at 50% 220px,rgba(255,255,255,.85),transparent 70%)}
 
 .realm-head{display:flex;align-items:center;gap:16px;margin-bottom:40px}
@@ -164,11 +165,169 @@ p+p{margin-top:14px}
 .guide p{font-size:15px;line-height:1.45;color:rgba(238,240,255,.78);padding-bottom:10px;max-width:24em}
 .guide p b{display:block;font-family:var(--display);font-size:18px;color:var(--c)}
 
-/* floaters */
-.fx{position:absolute;z-index:1;pointer-events:none;width:var(--w,140px);opacity:.9;filter:drop-shadow(0 10px 18px rgba(0,0,0,.35));animation:drift var(--t,26s) ease-in-out infinite alternate;animation-play-state:paused}
-.realm.on .fx{animation-play-state:running}
-@keyframes drift{from{transform:translate3d(0,0,0) rotate(-4deg)}to{transform:translate3d(var(--dx,40px),var(--dy,-30px),0) rotate(5deg)}}
-@media(max-width:899px){.fx{display:none}}
+/* ---------- Realm scenes: floating element assets (mirrors the game's intro-scene props) ----------
+   Game behaviour (th-mvp IntroScreen + Cinematic): each prop sits at a fixed x/y with a fixed rotation and opacity,
+   and drifts on translateY only; the Elemonster bobs (6 → -4 → 2px), Cosmix sways ±6deg, Wispo has 3 dashed rings
+   spinning ±120deg, the Cosmic Void has 40 twinkling stars, the Temple has 12 light rays turning 30deg per 6s. */
+.scene{position:absolute;inset:0;z-index:1;pointer-events:none;--k:1;--ok:1}
+.prop{position:absolute;left:var(--x);top:var(--y);width:calc(var(--s,120px) * var(--k,1));
+  transform:translate(-50%,-50%) translate3d(0,calc(var(--p,0px) * var(--z,0)),0);opacity:0;scale:.82;transition:opacity 1.1s var(--ease),scale 1.1s var(--ease)}
+.seen .prop,.prop.now{opacity:calc(var(--o,1) * var(--ok,1));scale:1}
+.prop>img{width:100%;rotate:var(--r,0deg);filter:drop-shadow(0 12px 18px rgba(0,0,0,.38));animation:pdrift var(--t,6s) ease-in-out infinite alternate}
+@keyframes pdrift{from{translate:0 0}to{translate:0 calc(var(--d,0) * 2.4px)}}
+.prop.rise>img{animation:prise var(--t,7s) linear infinite;animation-delay:var(--dl,0s)}
+@keyframes prise{0%{translate:0 0;opacity:0}12%{opacity:1}80%{opacity:1}100%{translate:0 calc(var(--d,-60) * 4px);opacity:0}}
+.prop.grime>img{animation:gpulse 3.6s ease-in-out infinite;filter:drop-shadow(0 0 22px color-mix(in srgb,var(--c) 55%,transparent))}
+@keyframes gpulse{0%,100%{scale:1}50%{scale:1.07}}
+.realm:not(.on) .scene *,.hero:not(.on) .hills *{animation-play-state:paused!important}
+.tw{position:absolute;inset:0}
+.tw i{position:absolute;width:var(--z);height:var(--z);border-radius:50%;background:#fff;animation:twk var(--t) ease-in-out infinite;animation-delay:var(--dl)}
+@keyframes twk{0%,100%{opacity:.3}50%{opacity:.9}75%{opacity:.5}}
+.motes{position:absolute;inset:0;overflow:hidden}
+.motes i{position:absolute;bottom:-10px;width:var(--z);height:var(--z);border-radius:50%;background:var(--mc);box-shadow:0 0 8px var(--mc);opacity:0;animation:mote var(--t) linear infinite;animation-delay:var(--dl)}
+@keyframes mote{0%{opacity:0;transform:translate(0,0)}10%{opacity:.9}85%{opacity:.9}100%{opacity:0;transform:translate(var(--wx),calc(var(--h,600px) * -1))}}
+.rings{position:absolute;z-index:0;left:var(--rx,50%);top:var(--ry,50%);width:0;height:0}
+.rings i{position:absolute;left:50%;top:50%;border-radius:50%;border:2px dashed rgba(230,220,255,.35);width:var(--rs);height:var(--rs);margin:calc(var(--rs) / -2) 0 0 calc(var(--rs) / -2);animation:rspin 6s linear infinite alternate}
+.rings i:nth-child(1){--rs:150px}.rings i:nth-child(2){--rs:200px;animation-direction:alternate-reverse}.rings i:nth-child(3){--rs:250px}
+@keyframes rspin{from{rotate:0deg}to{rotate:120deg}}
+@media(max-width:899px){.scene{--k:.55;--ok:.6}.prop.dk{display:none}}
+
+/* Elemonster guides bob like the game intro, with their realm glow */
+.guide img,.phone-solo .buddy{animation:ebob 3.2s ease-in-out infinite alternate}
+.guide img.sway{animation:ebob 3.2s ease-in-out infinite alternate,esway 4s ease-in-out infinite alternate}
+@keyframes ebob{0%{translate:0 6px}55%{translate:0 -4px}100%{translate:0 2px}}
+@keyframes esway{from{rotate:-6deg}to{rotate:6deg}}
+.guide img{filter:drop-shadow(0 0 26px color-mix(in srgb,var(--glow,var(--c)) 55%,transparent)) drop-shadow(0 12px 18px rgba(0,0,0,.4))}
+#space{--glow:#D94FAA}#sky{--glow:#9B6BD8}#waters{--glow:#4BA3E3}#lands{--glow:#6BE08F}#embers{--glow:#F5961E}
+
+/* XP chip on realm heads (real realm-skin thresholds from the game) */
+.realm-head{flex-wrap:wrap}
+.xp-chip{display:inline-flex;align-items:center;gap:8px;margin-left:auto;padding:7px 14px 7px 8px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:14px;color:#fff;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--c) 60%,transparent)}
+.xp-chip svg{width:24px;height:24px;flex:none}
+#temple .xp-chip{color:var(--ink);background:#fff;margin-left:0}
+@media(max-width:600px){.xp-chip{margin-left:74px;margin-top:-6px;font-size:13px}}
+
+/* ---------- Real world + Gamification experience ---------- */
+.tag{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 6px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:13px;line-height:1.1;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;vertical-align:middle;color:var(--navy)}
+.tag::before{content:"";width:18px;height:18px;flex:none;border-radius:50%;background:rgba(10,10,46,.14) center/14px no-repeat}
+.tag.rw{background:#2EBD8A}
+.tag.rw::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A0A2E' stroke-width='2.4'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18'/%3E%3C/svg%3E")}
+.tag.ge{background:var(--gold)}
+.tag.ge::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z' fill='%230A0A2E'/%3E%3C/svg%3E")}
+.bridge{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px 14px;margin-top:24px;padding:14px 18px;border-radius:20px;background:rgba(0,0,0,.24);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.bridge b{font-family:var(--display);font-weight:600;font-size:16px;color:#fff}
+.bridge .arr{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--orange);color:var(--navy);animation:nudgex 1.8s ease-in-out infinite}
+@keyframes nudgex{0%,100%{translate:0 0}50%{translate:4px 0}}
+.bridge>span:not(.arr){display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+@media(max-width:480px){.bridge{grid-template-columns:1fr}.bridge .arr{rotate:90deg;margin-left:8px}}
+#temple .bridge{background:#fff;box-shadow:inset 0 0 0 1px rgba(22,22,58,.08);max-width:760px;margin-left:auto;margin-right:auto}
+#temple .bridge b{color:var(--ink)}
+
+.worlds{position:relative;padding:40px 0 110px;background:#0E0B33;overflow:hidden}
+.worlds-head{text-align:center;max-width:780px;margin:0 auto}
+.worlds-head .kick{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.worlds-head .kick em{font-style:normal;font-family:var(--display);font-weight:700;font-size:22px;color:var(--orange-l)}
+.worlds-head h2{color:#fff}
+.worlds-head .lead{margin:0 auto}
+.portal{position:relative;margin:44px auto 0;max-width:1060px;aspect-ratio:16/7;border-radius:32px;overflow:hidden;background:#0A0A2E;box-shadow:0 40px 80px -30px rgba(0,0,0,.8),inset 0 0 0 2px rgba(255,255,255,.12)}
+.portal .side{position:absolute;inset:0}
+.portal .real{clip-path:polygon(0 0,57% 0,45% 100%,0 100%);background:#4BA3E3}
+.portal .real>img{width:100%;height:100%;object-fit:cover;object-position:50% 62%}
+.portal .game{clip-path:polygon(57% 0,100% 0,100% 100%,45% 100%);background:radial-gradient(60% 70% at 78% 40%,rgba(217,79,170,.45),transparent 70%),radial-gradient(40% 50% at 60% 90%,rgba(75,163,227,.3),transparent 70%),#0A0A2E}
+.portal .seam{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+.portal .tag{position:absolute;top:16px;z-index:5;font-size:14px;box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.portal .tag.rw{left:16px}.portal .tag.ge{right:16px}
+.portal .prop{z-index:4}
+.portal .hero-mon{position:absolute;z-index:6;left:51%;bottom:-2%;width:22%;translate:-50% 0;filter:drop-shadow(0 18px 22px rgba(0,0,0,.5));animation:hop 2.6s var(--ease) infinite}
+@keyframes hop{0%,58%,100%{transform:translateY(0) scale(1,1)}64%{transform:translateY(0) scale(1.08,.9)}76%{transform:translateY(-16%) scale(.95,1.06)}88%{transform:translateY(0) scale(1.05,.95)}}
+.sparkle{position:absolute;z-index:4;width:22px;height:22px;background:radial-gradient(circle,#fff 0 20%,transparent 22%),conic-gradient(from 45deg,transparent 0 20deg,#fff 20deg 25deg,transparent 25deg 110deg,#fff 110deg 115deg,transparent 115deg 200deg,#fff 200deg 205deg,transparent 205deg 290deg,#fff 290deg 295deg,transparent 295deg);border-radius:50%;animation:spark 2.2s ease-in-out infinite;animation-delay:var(--dl,0s)}
+@keyframes spark{0%,100%{opacity:0;scale:.4}50%{opacity:1;scale:1.1}}
+@media(max-width:700px){.portal{--k:.6;aspect-ratio:4/3.6;border-radius:24px}.portal .tag{top:12px;font-size:11px;padding:4px 9px 4px 5px}.portal .tag.rw{left:10px}.portal .tag.ge{right:10px}.portal .hero-mon{width:34%}}
+
+.pairs{list-style:none;display:grid;gap:18px;max-width:1060px;margin:44px auto 0}
+@media(min-width:900px){.pairs{grid-template-columns:1fr 1fr;gap:22px}}
+.pair{display:grid;grid-template-columns:1fr 44px 1fr;align-items:stretch;gap:0}
+.pw{position:relative;display:flex;flex-direction:column;gap:6px;padding:18px 18px 20px;border-radius:22px}
+.pw .tag{align-self:flex-start;font-size:11px;padding:4px 9px 4px 4px}
+.pw .tag::before{width:16px;height:16px;background-size:12px}
+.pw img{height:62px;width:auto;max-width:90px;object-fit:contain;margin:8px 0 4px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.35))}
+.pw h3{font-size:1.08rem;color:#fff;line-height:1.2}
+.pw p{font-size:14px;line-height:1.45;color:rgba(238,240,255,.76)}
+.pw.r{background:linear-gradient(160deg,rgba(46,189,138,.2),rgba(46,189,138,.06));box-shadow:inset 0 0 0 2px rgba(46,189,138,.4)}
+.pw.g{background:linear-gradient(160deg,rgba(252,211,77,.2),rgba(217,79,170,.1));box-shadow:inset 0 0 0 2px rgba(252,211,77,.45)}
+.pair .lnk{align-self:center;justify-self:center;width:44px;height:44px;margin:0 -6px;z-index:2;display:grid;place-items:center;border-radius:50%;background:var(--orange);color:var(--navy);box-shadow:0 4px 0 #B84D00}
+.pair .lnk svg{animation:nudgex 1.8s ease-in-out infinite}
+@media(max-width:560px){.pair{grid-template-columns:1fr}.pair .lnk{margin:-8px auto;rotate:90deg}
+  .pw{display:grid;grid-template-columns:56px 1fr;column-gap:14px;row-gap:4px;align-items:center;padding:14px 16px}
+  .pw .tag{grid-column:1/-1;justify-self:start}.pw img{grid-row:2/4;margin:0;height:50px!important;max-width:56px;justify-self:center}
+  .pw h3{font-size:1rem}.pw p{grid-column:2;font-size:13.5px}
+  .worlds{padding-bottom:56px}}
+
+/* Hero layered scenery (parallax hills, like a game title screen) */
+.hero{--p:0px}
+.hero .stars{translate:0 calc(var(--p) * -.35)}
+.hero .stage{translate:0 calc(var(--p) * -.12)}
+.hills{position:absolute;left:0;right:0;bottom:-1px;height:170px;z-index:1;pointer-events:none}
+.hills svg{position:absolute;left:0;bottom:0;width:100%;height:100%}
+.hills .h1{translate:0 calc(var(--p) * -.22)}.hills .h2{translate:0 calc(var(--p) * -.1)}
+.hills .prop{opacity:1;scale:1}
+@media(max-width:899px){.hills{height:96px}.hills .prop{--k:.55}}
+@media(min-width:900px){.hero{padding-bottom:150px}}
+
+/* Bouncy game CTAs */
+.btn-primary:hover{animation:boing .55s var(--ease)}
+@keyframes boing{0%{transform:scale(1)}30%{transform:scale(1.09,.9)}55%{transform:scale(.96,1.05)}78%{transform:scale(1.02,.98)}100%{transform:translateY(-2px)}}
+.btn-hop{animation:ctahop 4s var(--ease) infinite 2s}
+.btn-hop:hover{animation:boing .55s var(--ease)}
+@keyframes ctahop{0%,80%,100%{transform:none}85%{transform:translateY(-7px) scale(1.03,.97)}90%{transform:translateY(0) scale(1.05,.94)}95%{transform:translateY(-2px)}}
+.btn-play{background:linear-gradient(180deg,#B38BFF,#7C4DDB);color:#fff;box-shadow:0 6px 0 #4B2A99,0 16px 30px -12px rgba(124,77,219,.7)}
+.btn-play:hover{transform:translateY(-2px);box-shadow:0 8px 0 #4B2A99,0 20px 34px -12px rgba(124,77,219,.75);animation:boing .55s var(--ease)}
+.btn-play:active{transform:translateY(4px);box-shadow:0 2px 0 #4B2A99}
+.btn-play img{height:26px;width:auto}
+
+/* Choose your Elemonster (team picker + evolution track, facts from the game) */
+.picker{margin-top:72px;padding:34px 28px 30px;border-radius:32px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.picker>h3{font-size:clamp(1.6rem,3vw,2.2rem);color:#fff;text-align:center}
+.picker>p{text-align:center;color:rgba(238,240,255,.76);margin-top:6px}
+.roster{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:28px}
+.mon{appearance:none;border:0;cursor:pointer;font:inherit;color:#fff;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px 12px;border-radius:22px;background:color-mix(in srgb,var(--mc) 16%,#0D1030);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--mc) 40%,transparent),0 6px 0 color-mix(in srgb,var(--mc) 35%,#05050f);transition:transform .25s var(--ease),box-shadow .25s}
+.mon img{height:96px;width:auto;max-width:100%;object-fit:contain;transition:transform .35s var(--ease);filter:drop-shadow(0 10px 12px rgba(0,0,0,.4))}
+.mon b{font-family:var(--display);font-size:17px}
+.mon span{font-size:12px;font-weight:600;opacity:.75}
+.mon:hover{transform:translateY(-4px)}
+.mon:hover img{transform:scale(1.08) rotate(-3deg)}
+.mon[aria-pressed="true"]{background:color-mix(in srgb,var(--mc) 34%,#0D1030);box-shadow:inset 0 0 0 3px var(--mc),0 6px 0 color-mix(in srgb,var(--mc) 55%,#05050f),0 0 30px -6px var(--mc)}
+.mon[aria-pressed="true"] img{animation:ebob 1.6s ease-in-out infinite alternate}
+@media(max-width:700px){.picker{padding:26px 14px}.roster{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.mon{padding:10px 2px 8px;border-radius:16px}.mon img{height:54px}.mon b{font-size:13px}.mon span{display:none}}
+.mon-detail{display:grid;gap:22px;margin-top:26px;padding:22px;border-radius:24px;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--mc) 45%,transparent)}
+@media(min-width:900px){.mon-detail{grid-template-columns:.9fr 1.1fr;align-items:center}}
+.mon-detail h4{font-family:var(--display);font-size:1.6rem;line-height:1.1;color:var(--mc)}
+.mon-detail .tl{font-family:var(--display);font-weight:600;font-size:1.1rem;color:#fff;margin-top:6px}
+.mon-detail .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.mon-detail .meta span{padding:5px 11px;border-radius:999px;font-size:13px;font-weight:600;background:rgba(255,255,255,.08)}
+.mon-detail .hide{margin-top:12px;font-size:15px;color:rgba(238,240,255,.78)}
+.evo{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:relative}
+.evo::before{content:"";position:absolute;left:12%;right:12%;top:44px;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--mc),rgba(255,255,255,.15))}
+.evo li{position:relative;text-align:center;font-size:12px;line-height:1.3;color:rgba(238,240,255,.75)}
+.evo .orb{position:relative;width:88px;height:88px;max-width:100%;aspect-ratio:1;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;background:#14123A;box-shadow:inset 0 0 0 3px var(--mc)}
+.evo .orb img{width:70%;height:70%;object-fit:contain}
+.evo .orb.lock{box-shadow:inset 0 0 0 3px rgba(255,255,255,.22);font-family:var(--display);font-weight:700;font-size:30px;color:rgba(255,255,255,.55)}
+.evo b{display:block;font-family:var(--display);font-size:14px;color:#fff}
+@media(max-width:600px){.evo .orb{width:64px;height:64px;font-size:24px}.evo::before{top:32px}.evo b{font-size:12px}}
+
+/* Temple of Light: rays, Orbo pulse, Compos, Light Cell (from the game's Temple cinematic) */
+.orbo-stage{position:relative;width:220px;height:230px;margin:0 auto 18px}
+.orbo-stage .rays{position:absolute;left:50%;top:50%;width:560px;height:560px;margin:-280px 0 0 -280px;z-index:0;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,rgba(232,164,0,.22) 0deg 7deg,transparent 7deg 30deg);
+  -webkit-mask:radial-gradient(circle,#000 18%,transparent 68%);mask:radial-gradient(circle,#000 18%,transparent 68%);animation:rays 6s linear infinite}
+@keyframes rays{to{rotate:30deg}}
+.orbo-stage .orbo{position:relative;z-index:2;margin:0 auto;animation:opulse 6s ease-in-out infinite}
+@keyframes opulse{0%,100%{scale:.96}25%{scale:1.03}50%{scale:.98}75%{scale:1.06}}
+.orbo-stage .cp{position:absolute;z-index:1;width:74px;left:50%;top:50%;margin:-37px;translate:var(--cx) var(--cy);animation:cfloat 3s ease-in-out infinite alternate;animation-delay:var(--dl,0s);filter:drop-shadow(0 10px 12px rgba(122,74,18,.35))}
+@keyframes cfloat{to{translate:var(--cx) calc(var(--cy) - 12px)}}
+.orbo-stage .cell{position:absolute;z-index:3;width:70px;left:50%;bottom:-6px;margin-left:-35px;animation:cellpop 6s var(--ease) infinite}
+@keyframes cellpop{0%,50%{opacity:0;scale:.2}62%{opacity:1;scale:1}85%{opacity:1;scale:1.25}100%{opacity:0;scale:1.25}}
+@media(max-width:600px){.orbo-stage .cp{width:54px;margin:-27px}.orbo-stage{--sx:.62}}
 
 /* Realm 1: story */
 .story-art{position:relative}
@@ -188,6 +347,12 @@ p+p{margin-top:14px}
 .steps li::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:56px;height:56px;border-radius:18px;background:#1E1450;box-shadow:inset 0 0 0 2px var(--c);font-family:var(--display);font-weight:700;font-size:24px;color:var(--c)}
 .steps h3{margin:4px 0 4px;color:#fff}
 .steps p{color:rgba(238,240,255,.78);font-size:16px}
+.steps p.st{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.steps .st .tag{font-size:11px;padding:3px 8px 3px 3px}.steps .st .tag::before{width:15px;height:15px;background-size:11px}
+.loot{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.loot span{padding:5px 12px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:14px;color:var(--navy);background:var(--gold);box-shadow:0 3px 0 #B8860B;animation:lootpop 2.4s var(--ease) infinite}
+.loot span:nth-child(2){animation-delay:.2s}.loot span:nth-child(3){animation-delay:.4s;background:#2EBD8A;box-shadow:0 3px 0 #167A55}
+@keyframes lootpop{0%,70%,100%{transform:none}78%{transform:translateY(-5px) scale(1.06)}86%{transform:none}}
 .phone-solo{width:min(290px,70vw);margin:0 auto;position:relative}
 .phone-solo .buddy{position:absolute;width:130px;bottom:-30px;left:-70px;z-index:3;filter:drop-shadow(0 14px 18px rgba(0,0,0,.45))}
 @media(max-width:600px){.phone-solo .buddy{width:96px;left:-36px}}
@@ -335,8 +500,8 @@ footer small{display:block;font-size:13px;line-height:1.5}
         <h1 id="h-hero"><span class="l1">Clean the World.</span> <span>Win the Game.</span></h1>
         <p class="lead">A real-world adventure game for kids and the grown-ups who play with them. Pick up real litter in your neighbourhood, and every cleanup heals a magical world of six realms.</p>
         <div class="actions">
-          <a class="btn btn-primary" href="#join">Join the hunt</a>
-          <a class="btn btn-line" id="playBtn" href="/th-mvp/">Beta test</a>
+          <a class="btn btn-primary btn-hop" href="#join">Join the hunt</a>
+          <a class="btn btn-play" id="playBtn" href="/th-mvp/"><img src="assets/img/th-icon.webp" width="240" height="246" alt="">Beta test</a>
         </div>
         <p class="who-line">Planned for iOS and Android. Made by 3Shamrocks Studio.</p>
       </div>
@@ -350,22 +515,83 @@ footer small{display:block;font-size:13px;line-height:1.5}
       </div>
     </div>
   </div>
+  <div class="hills" aria-hidden="true">
+    <svg class="h1" viewBox="0 0 1440 170" preserveAspectRatio="none"><path d="M0 92C160 50 330 46 520 82s380 74 560 30 290-62 360-40V170H0z" fill="#2A1B66" opacity=".75"/></svg>
+    <svg class="h2" viewBox="0 0 1440 170" preserveAspectRatio="none"><path d="M0 128c220-56 430-40 640-12s420 46 560 8 200-30 240-24V170H0z" fill="#1B1250"/></svg>
+    <svg viewBox="0 0 1440 170" preserveAspectRatio="none"><path d="M0 150c260-30 520-34 760-16s460 20 680-6V170H0z" fill="#0E0B33"/></svg>
+    <span class="prop grime" style="--x:86%;--y:40%;--s:96px;--c:var(--space)"><img src="assets/img/gz-space.webp" width="240" height="241" alt=""></span>
+    <span class="prop" style="--x:12%;--y:76%;--s:54px;--r:70deg;--d:3;--t:4s"><img src="assets/img/rf-bottle.webp" width="200" height="309" alt=""></span>
+    <span class="prop" style="--x:20%;--y:82%;--s:50px;--r:-20deg;--d:-3;--t:5s"><img src="assets/img/rf-wrapper.webp" width="220" height="258" alt=""></span>
+  </div>
   <a class="cue" href="#space">Begin the descent
     <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </a>
 </section>
 
+<!-- TWO WORLDS: real world + gamification experience -->
+<section class="worlds" id="worlds" aria-labelledby="h-worlds">
+  <div class="wrap">
+    <div class="worlds-head">
+      <p class="kick"><span class="tag rw">Real world</span><em aria-hidden="true">+</em><span class="tag ge">Gamification experience</span></p>
+      <h2 id="h-worlds">One cleanup. Two worlds.</h2>
+      <p class="lead">Every real-world action has a gamification experience reward. The litter, the park and the grown-up beside you are real. The quest, the XP and the Elemonster are the game.</p>
+    </div>
+    <div class="portal" role="img" aria-label="A real park on one side and the game's Cosmic Void on the other, with Sproutz jumping between them">
+      <div class="side real"><img src="assets/img/park-bg.webp" width="1440" height="1154" alt="" loading="lazy"></div>
+      <div class="side game scene"><div class="tw" data-stars="26"></div></div>
+      <svg class="seam" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="57" y1="0" x2="45" y2="100" stroke="#FCD34D" stroke-width="5" vector-effect="non-scaling-stroke"/><line x1="57" y1="0" x2="45" y2="100" stroke="#fff" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>
+      <span class="tag rw">Real world</span><span class="tag ge">Gamification experience</span>
+      <span class="prop now" style="--x:22%;--y:84%;--s:70px;--r:70deg;--d:2;--t:4s"><img src="assets/img/rf-bottle.webp" width="200" height="309" alt="" loading="lazy"></span>
+      <span class="prop now" style="--x:34%;--y:88%;--s:64px;--r:-20deg;--d:-2;--t:5s"><img src="assets/img/rf-wrapper.webp" width="220" height="258" alt="" loading="lazy"></span>
+      <i class="sparkle" style="left:20%;top:70%"></i><i class="sparkle" style="left:36%;top:76%;--dl:1.1s"></i>
+      <span class="prop now grime" style="--x:86%;--y:66%;--s:130px;--c:var(--earth)"><img src="assets/img/gz-earth.webp" width="240" height="258" alt="" loading="lazy"></span>
+      <span class="prop now" style="--x:70%;--y:30%;--s:86px;--d:-6;--t:3.4s"><img src="assets/img/compo-fluff.webp" width="220" height="207" alt="" loading="lazy"></span>
+      <span class="prop now" style="--x:90%;--y:24%;--s:72px;--d:6;--t:3.8s"><img src="assets/img/compo-leaf.webp" width="220" height="243" alt="" loading="lazy"></span>
+      <span class="prop now" style="--x:66%;--y:74%;--s:70px;--d:-5;--t:3s"><img src="assets/img/light-cell.webp" width="260" height="258" alt="" loading="lazy"></span>
+      <img class="hero-mon" src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy">
+    </div>
+    <ol class="pairs">
+      <li class="pair">
+        <div class="pw r"><span class="tag rw">Real world</span><img src="assets/img/rf-bottle.webp" width="200" height="309" alt="" loading="lazy"><h3>Pick up real litter</h3><p>With a grown-up, gloves on, into the right bin.</p></div>
+        <span class="lnk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div class="pw g"><span class="tag ge">Gamification experience</span><img src="assets/img/i-captured.webp" width="160" height="162" alt="" loading="lazy"><h3>Earn XP and Trash-Cash</h3><p>Every verified cleanup pays out in the game.</p></div>
+      </li>
+      <li class="pair">
+        <div class="pw r"><span class="tag rw">Real world</span><img src="assets/img/i-trashcam.webp" width="160" height="57" alt="" loading="lazy"><h3>Snap a before and after</h3><p>Trash-Cam checks the litter, not people.</p></div>
+        <span class="lnk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div class="pw g"><span class="tag ge">Gamification experience</span><img src="assets/img/gz-water.webp" width="240" height="249" alt="" loading="lazy"><h3>Clear a Grime Zone</h3><p>The zone on your live map heals, and King Grime shrinks.</p></div>
+      </li>
+      <li class="pair">
+        <div class="pw r"><span class="tag rw">Real world</span><img src="assets/img/photo-park.webp" width="1000" height="562" alt="" loading="lazy" style="border-radius:12px;height:56px"><h3>Clean the places you play</h3><p>Parks, beaches, the walk to school.</p></div>
+        <span class="lnk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div class="pw g"><span class="tag ge">Gamification experience</span><img src="assets/img/compo-cosmic.webp" width="220" height="248" alt="" loading="lazy"><h3>Hunt Trashures, free the Compos</h3><p>Real cleanups unlock hidden Trashures to catch with your Water Gun in AR.</p></div>
+      </li>
+      <li class="pair">
+        <div class="pw r"><span class="tag rw">Real world</span><img src="assets/img/photo-team.webp" width="800" height="800" alt="" loading="lazy" style="border-radius:12px;height:56px"><h3>Keep showing up together</h3><p>A weekend walk becomes a habit.</p></div>
+        <span class="lnk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div class="pw g"><span class="tag ge">Gamification experience</span><img src="assets/img/egg-earth.webp" width="220" height="317" alt="" loading="lazy"><h3>Hatch and grow your Elemonster</h3><p>From Seed or Egg to Realm Keeper, travelling inward through six realms.</p></div>
+      </li>
+    </ol>
+  </div>
+</section>
+
 <!-- REALM 1: COSMIC VOID / STORY -->
 <section class="realm" id="space" data-realm="1" data-name="Cosmic Void" aria-labelledby="h-space">
-  <img class="fx" src="assets/img/f-asteroid.webp" alt="" aria-hidden="true" loading="lazy" style="--w:130px;top:8%;right:4%;--t:30s;--dx:-60px;--dy:40px">
-  <img class="fx hide-m" src="assets/img/grime-space.webp" alt="" aria-hidden="true" loading="lazy" style="--w:110px;bottom:8%;left:3%;--t:34s;--dx:50px;--dy:-30px;opacity:.55">
+  <div class="scene" aria-hidden="true">
+    <div class="tw" data-stars="40"></div>
+    <span class="prop" style="--x:88%;--y:9%;--s:150px;--r:20deg;--d:-8;--z:-.18"><img src="assets/img/rf-asteroid.webp" width="240" height="271" alt="" loading="lazy"></span>
+    <span class="prop dk" style="--x:5%;--y:86%;--s:170px;--r:-12deg;--d:10;--o:.8;--z:.12;--t:7s"><img src="assets/img/rf-debris.webp" width="300" height="357" alt="" loading="lazy"></span>
+    <span class="prop grime" style="--x:95%;--y:62%;--s:120px;--o:.75;--z:-.08"><img src="assets/img/gz-space.webp" width="240" height="241" alt="" loading="lazy"></span>
+    <span class="prop dk" style="--x:50%;--y:5%;--s:60px;--r:-30deg;--d:6;--o:.6;--z:-.3;--t:5s"><img src="assets/img/rf-asteroid.webp" width="240" height="271" alt="" loading="lazy"></span>
+  </div>
   <div class="wrap">
-    <div class="realm-head"><span class="realm-badge" aria-hidden="true">1</span><p><b>The Cosmic Void</b><span>Realm 1 of 6</span></p></div>
+    <div class="realm-head"><span class="realm-badge" aria-hidden="true">1</span><p><b>The Cosmic Void</b><span>Realm 1 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FCD34D"/></svg>Every hunter starts here: 0 XP</span></div>
     <div class="split">
       <div>
         <h2 id="h-space">No villains. Only neglect.</h2>
         <p class="lead">Five young Elemonsters grew up together across five realms, joined by a living current called the River of Three. When people in our world stopped caring, litter drifted into the river, all the way down to the Temple of Light at the centre.</p>
         <p class="lead">The light dimmed. The Grime Signal flooded every realm. Now the only thing that can push it back is real care, in the real world.</p>
+        <div class="bridge"><span><span class="tag rw">Real world</span><b>Every cleanup</b></span><span class="arr" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="tag ge">Gamification experience</span><b>The light comes back</b></span></div>
         <ul class="descent-map" aria-label="The six realms, from outermost to centre">
           <li style="--rc:var(--space)"><i></i>Cosmic Void</li>
           <li style="--rc:var(--air)"><i></i>Sky Realm</li>
@@ -374,7 +600,7 @@ footer small{display:block;font-size:13px;line-height:1.5}
           <li style="--rc:var(--fire)"><i></i>Ember Fields</li>
           <li style="--rc:var(--light)"><i></i>Temple of Light</li>
         </ul>
-        <div class="guide"><img src="assets/img/cosmix.webp" width="520" height="540" alt="" loading="lazy"><p><b>Cosmix guides this realm</b>The wise one. She mapped the way back to the light before anyone else was brave enough to try.</p></div>
+        <div class="guide"><img class="sway" src="assets/img/cosmix.webp" width="520" height="540" alt="" loading="lazy"><p><b>Cosmix guides this realm</b>The wise one. She mapped the way back to the light before anyone else was brave enough to try.</p></div>
       </div>
       <div class="story-art">
         <img class="team" src="assets/img/team.webp" width="1200" height="735" alt="The five Elemonsters, Wispo, Sproutz, Blazo, Bloop and Cosmix, standing together in a park" loading="lazy">
@@ -389,24 +615,30 @@ footer small{display:block;font-size:13px;line-height:1.5}
 
 <!-- REALM 2: SKY / HOW IT WORKS -->
 <section class="realm" id="sky" data-realm="2" data-name="Sky Realm" aria-labelledby="h-sky">
-  <img class="fx" src="assets/img/f-cloud.webp" alt="" aria-hidden="true" loading="lazy" style="--w:220px;top:6%;right:-2%;--t:40s;--dx:-90px;--dy:10px">
-  <img class="fx hide-m" src="assets/img/f-balloon.webp" alt="" aria-hidden="true" loading="lazy" style="--w:110px;top:12%;left:42%;--t:22s;--dx:20px;--dy:-40px">
+  <div class="scene" aria-hidden="true">
+    <span class="prop dk" style="--x:4%;--y:30%;--s:340px;--d:12;--o:.75;--z:-.15;--t:7s"><img src="assets/img/rf-cloud.webp" width="440" height="238" alt="" loading="lazy"></span>
+    <span class="prop" style="--x:97%;--y:64%;--s:340px;--d:-12;--o:.75;--z:-.1;--t:8s"><img src="assets/img/rf-cloud.webp" width="440" height="238" alt="" loading="lazy"></span>
+    <span class="prop dk" style="--x:58%;--y:4%;--s:280px;--d:6;--o:.55;--z:-.25;--t:6s"><img src="assets/img/rf-cloud.webp" width="440" height="238" alt="" loading="lazy"></span>
+    <span class="prop dk" style="--x:44%;--y:13%;--s:96px;--d:-10;--z:-.3;--t:5s"><img src="assets/img/f-balloon.webp" width="144" height="195" alt="" loading="lazy"></span>
+    <span class="prop grime dk" style="--x:5%;--y:88%;--s:120px;--o:.8;--z:.1"><img src="assets/img/gz-air.webp" width="240" height="269" alt="" loading="lazy"></span>
+  </div>
   <div class="wrap">
-    <div class="realm-head"><span class="realm-badge" aria-hidden="true">2</span><p><b>The Sky Realm</b><span>Realm 2 of 6</span></p></div>
+    <div class="realm-head"><span class="realm-badge" aria-hidden="true">2</span><p><b>The Sky Realm</b><span>Realm 2 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FCD34D"/></svg>Reached at 500 XP</span></div>
     <div class="split rev">
       <div>
         <h2 id="h-sky">How the hunt works</h2>
         <p class="lead" style="margin-bottom:34px">The game loop is a real cleanup. The app just makes it a quest.</p>
         <ol class="steps">
-          <li><div><h3>Spot it</h3><p>Find litter on the live map's Grime Zones, or anywhere you walk with a grown-up.</p></div></li>
-          <li><div><h3>Clean it</h3><p>Pick it up safely, with gloves or a grabber, and put it in the right bin.</p></div></li>
-          <li><div><h3>Prove it</h3><p>Snap a before and after with Trash-Cam. It checks for trash, not people.</p></div></li>
-          <li><div><h3>Heal the realm</h3><p>Earn XP, clear the zone, and watch your Elemonster grow from seed or egg towards Realm Keeper.</p></div></li>
+          <li><div><p class="st"><span class="tag rw">Real world</span><span class="tag ge">Gamification experience</span></p><h3>Spot it</h3><p>Find litter on the live map's Grime Zones, or anywhere you walk with a grown-up.</p></div></li>
+          <li><div><p class="st"><span class="tag rw">Real world</span></p><h3>Clean it</h3><p>Pick it up safely, with gloves or a grabber, and put it in the right bin.</p></div></li>
+          <li><div><p class="st"><span class="tag rw">Real world</span></p><h3>Prove it</h3><p>Snap a before and after with Trash-Cam. It checks for trash, not people.</p></div></li>
+          <li><div><p class="st"><span class="tag ge">Gamification experience</span></p><h3>Heal the realm</h3><p>Earn XP, clear the zone, and watch your Elemonster grow from seed or egg towards Realm Keeper.</p><p class="loot"><span>+ XP</span><span>+ Trash-Cash</span><span>Zone cleared</span></p></div></li>
         </ol>
         <p class="note" style="margin-top:30px"><b style="color:var(--air);font-family:var(--display);font-size:16px">Wispo guides this realm.</b> The jokester, always on the move. He makes the first cleanup feel like play.</p>
       </div>
       <div class="phone-solo" style="--c:var(--air)">
         <div class="phone"><div class="phone-screen"><img src="assets/img/map-air.webp" width="560" height="1213" alt="The live map in the Sky Realm skin, with Grime Zones and Trashures to find" loading="lazy"></div></div>
+        <div class="rings" aria-hidden="true" style="--rx:0;--ry:calc(100% - 40px)"><i></i><i></i><i></i></div>
         <img class="buddy" src="assets/img/wispo.webp" width="520" height="505" alt="" loading="lazy">
       </div>
     </div>
@@ -415,10 +647,18 @@ footer small{display:block;font-size:13px;line-height:1.5}
 
 <!-- REALM 3: DEEP WATERS / INSIDE THE GAME -->
 <section class="realm" id="waters" data-realm="3" data-name="Deep Waters" aria-labelledby="h-waters">
-  <img class="fx" src="assets/img/f-bubble.webp" alt="" aria-hidden="true" loading="lazy" style="--w:80px;top:14%;left:4%;--t:18s;--dx:20px;--dy:-60px">
-  <img class="fx hide-m" src="assets/img/f-jelly.webp" alt="" aria-hidden="true" loading="lazy" style="--w:130px;bottom:12%;right:3%;--t:28s;--dx:-30px;--dy:-50px">
+  <div class="scene" aria-hidden="true">
+    <span class="prop" style="--x:5%;--y:24%;--s:120px;--r:70deg;--d:10;--o:.85;--z:-.12"><img src="assets/img/rf-bottle.webp" width="200" height="309" alt="" loading="lazy"></span>
+    <span class="prop" style="--x:95%;--y:6%;--s:120px;--r:-20deg;--d:-10;--o:.85;--z:-.18"><img src="assets/img/rf-wrapper.webp" width="220" height="258" alt="" loading="lazy"></span>
+    <span class="prop rise" style="--x:8%;--y:40%;--s:70px;--d:-60;--t:9s"><img src="assets/img/rf-bubble.webp" width="160" height="159" alt="" loading="lazy"></span>
+    <span class="prop rise dk" style="--x:93%;--y:46%;--s:48px;--d:-60;--t:7s;--dl:-3s"><img src="assets/img/rf-bubble.webp" width="160" height="159" alt="" loading="lazy"></span>
+    <span class="prop rise dk" style="--x:4%;--y:72%;--s:40px;--d:-60;--t:8s;--dl:-5s"><img src="assets/img/rf-bubble.webp" width="160" height="159" alt="" loading="lazy"></span>
+    <span class="prop rise" style="--x:96%;--y:92%;--s:56px;--d:-60;--t:10s;--dl:-2s"><img src="assets/img/rf-bubble.webp" width="160" height="159" alt="" loading="lazy"></span>
+    <span class="prop dk" style="--x:96%;--y:80%;--s:130px;--d:-14;--z:.1;--t:5s"><img src="assets/img/f-jelly.webp" width="200" height="252" alt="" loading="lazy"></span>
+    <span class="prop grime dk" style="--x:4%;--y:56%;--s:110px;--o:.8;--z:.08"><img src="assets/img/gz-water.webp" width="240" height="249" alt="" loading="lazy"></span>
+  </div>
   <div class="wrap">
-    <div class="realm-head"><span class="realm-badge" aria-hidden="true">3</span><p><b>The Deep Waters</b><span>Realm 3 of 6</span></p></div>
+    <div class="realm-head"><span class="realm-badge" aria-hidden="true">3</span><p><b>The Deep Waters</b><span>Realm 3 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FCD34D"/></svg>Reached at 2,500 XP</span></div>
     <div class="split">
       <div>
         <h2 id="h-waters">A real game, not a chore chart</h2>
@@ -436,6 +676,31 @@ footer small{display:block;font-size:13px;line-height:1.5}
       <div class="feature"><span class="ico"><img src="assets/img/watergun.webp" width="360" height="443" alt="" loading="lazy"></span><div><h3>AR Trashure Hunt</h3><p>Real cleanups unlock hidden Trashures. Spray, capture and collect them with your water gun.</p></div></div>
       <div class="feature"><span class="ico"><img src="assets/img/i-captured.webp" width="160" height="162" alt="" loading="lazy"></span><div><h3>Grow your Elemonster</h3><p>Pick one of five teams. Progress is earned by cleaning, never bought.</p></div></div>
     </div>
+    <div class="picker" id="team" style="--mc:#2EBD8A">
+      <h3>Choose your Elemonster</h3>
+      <p>Your partner on the quest to defeat King Grime. Five teams, one for every element.</p>
+      <div class="roster" role="group" aria-label="The five Elemonsters">
+        <button class="mon" type="button" aria-pressed="true" data-id="sproutz" style="--mc:#2EBD8A"><img src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy"><b>Sproutz</b><span>Earth Team</span></button>
+        <button class="mon" type="button" aria-pressed="false" data-id="bloop" style="--mc:#4BA3E3"><img src="assets/img/bloop.webp" width="520" height="715" alt="" loading="lazy"><b>Bloop</b><span>Water Team</span></button>
+        <button class="mon" type="button" aria-pressed="false" data-id="blazo" style="--mc:#F5961E"><img src="assets/img/blazo.webp" width="509" height="736" alt="" loading="lazy"><b>Blazo</b><span>Fire Team</span></button>
+        <button class="mon" type="button" aria-pressed="false" data-id="wispo" style="--mc:#A78BFA"><img src="assets/img/wispo.webp" width="520" height="505" alt="" loading="lazy"><b>Wispo</b><span>Air Team</span></button>
+        <button class="mon" type="button" aria-pressed="false" data-id="cosmix" style="--mc:#D94FAA"><img src="assets/img/cosmix.webp" width="520" height="540" alt="" loading="lazy"><b>Cosmix</b><span>Space Team</span></button>
+      </div>
+      <div class="mon-detail" aria-live="polite">
+        <div>
+          <h4 id="mName">Sproutz</h4>
+          <p class="tl" id="mTag">Earth Guardian. Stubborn heart. Grows with you.</p>
+          <p class="meta"><span id="mTeam">Earth Team</span><span id="mEl">Nature, growth, roots</span><span id="mStart">Starts as a Seed</span></p>
+          <p class="hide"><b>Hiding:</b> <span id="mHide">Buried under leaves in a forest creek…</span></p>
+        </div>
+        <ol class="evo" aria-label="Evolution stages">
+          <li><span class="orb"><img id="mEgg" src="assets/img/egg-earth.webp" width="220" height="317" alt="" loading="lazy"></span><b id="mS1">Seed</b>0 XP</li>
+          <li><span class="orb lock" aria-hidden="true">?</span><b>Baby</b>500 XP</li>
+          <li><span class="orb"><img id="mGrown" src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy"></span><b>Grown</b>2,500 XP</li>
+          <li><span class="orb lock" aria-hidden="true">?</span><b>Realm Keeper</b>10,000 XP</li>
+        </ol>
+      </div>
+    </div>
     <div class="skins" aria-label="Map skins change as you travel inward">
       <figure style="--rc:var(--water);--c:var(--water)"><div class="phone"><div class="phone-screen"><img src="assets/img/map-water.webp" width="560" height="1213" alt="Map in the Deep Waters skin" loading="lazy"></div></div><figcaption>Deep Waters</figcaption></figure>
       <figure style="--rc:var(--earth);--c:var(--earth)"><div class="phone"><div class="phone-screen"><img src="assets/img/map-earth.webp" width="560" height="1213" alt="Map in the Green Lands skin" loading="lazy"></div></div><figcaption>Green Lands</figcaption></figure>
@@ -446,13 +711,20 @@ footer small{display:block;font-size:13px;line-height:1.5}
 
 <!-- REALM 4: GREEN LANDS / FAMILIES & SCHOOLS -->
 <section class="realm" id="lands" data-realm="4" data-name="Green Lands" aria-labelledby="h-lands">
-  <img class="fx" src="assets/img/f-leaf.webp" alt="" aria-hidden="true" loading="lazy" style="--w:110px;top:6%;right:6%;--t:20s;--dx:-40px;--dy:50px">
+  <div class="scene" aria-hidden="true">
+    <span class="prop" style="--x:93%;--y:7%;--s:130px;--r:-35deg;--d:6;--z:-.15;--t:4s"><img src="assets/img/rf-leaf.webp" width="200" height="249" alt="" loading="lazy"></span>
+    <span class="prop dk" style="--x:4%;--y:34%;--s:120px;--r:40deg;--d:-6;--z:-.1;--t:4.6s"><img src="assets/img/rf-leaf.webp" width="200" height="249" alt="" loading="lazy"></span>
+    <span class="prop" style="--x:6%;--y:90%;--s:110px;--r:170deg;--d:4;--z:.1;--t:3.8s"><img src="assets/img/rf-leaf.webp" width="200" height="249" alt="" loading="lazy"></span>
+    <span class="prop dk" style="--x:96%;--y:52%;--s:100px;--r:70deg;--d:8;--o:.85;--z:-.06;--t:6s"><img src="assets/img/rf-bottle.webp" width="200" height="309" alt="" loading="lazy"></span>
+    <span class="prop grime dk" style="--x:95%;--y:90%;--s:120px;--o:.8;--z:.1"><img src="assets/img/gz-earth.webp" width="240" height="258" alt="" loading="lazy"></span>
+  </div>
   <div class="wrap">
-    <div class="realm-head"><span class="realm-badge" aria-hidden="true">4</span><p><b>The Green Lands</b><span>Realm 4 of 6</span></p></div>
+    <div class="realm-head"><span class="realm-badge" aria-hidden="true">4</span><p><b>The Green Lands</b><span>Realm 4 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FCD34D"/></svg>Reached at 5,000 XP</span></div>
     <div class="split">
       <div>
         <h2 id="h-lands">Screen time that ends outside</h2>
         <p class="lead">Trashure-Hunters is built to get families and classes out the door together, and to make looking after a place feel like winning.</p>
+        <div class="bridge"><span><span class="tag rw">Real world</span><b>Time outside, together</b></span><span class="arr" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="tag ge">Gamification experience</span><b>Rewards for doing</b></span></div>
       </div>
       <div class="guide" style="margin-top:0"><img src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy" style="width:92px"><p><b>Sproutz guides this realm</b>The gentle giant who leads with love. The Green Lands are his home, and the hardest place to see dimmed.</p></div>
     </div>
@@ -488,9 +760,16 @@ footer small{display:block;font-size:13px;line-height:1.5}
 
 <!-- REALM 5: EMBER FIELDS / SAFETY -->
 <section class="realm" id="embers" data-realm="5" data-name="Ember Fields" aria-labelledby="h-embers">
-  <img class="fx hide-m" src="assets/img/f-flame.webp" alt="" aria-hidden="true" loading="lazy" style="--w:70px;top:10%;right:8%;--t:9s;--dx:6px;--dy:-14px">
+  <div class="scene" aria-hidden="true">
+    <div class="motes" data-motes="16" style="--mc:#FFB347"></div>
+    <span class="prop" style="--x:92%;--y:8%;--s:96px;--d:-14;--o:.55;--z:-.2;--t:2.6s"><img src="assets/img/rf-flame.webp" width="200" height="498" alt="" loading="lazy"></span>
+    <span class="prop dk" style="--x:5%;--y:94%;--s:190px;--r:-10deg;--z:.12"><img src="assets/img/rf-charcoal.webp" width="260" height="336" alt="" loading="lazy"></span>
+    <span class="prop" style="--x:96%;--y:95%;--s:170px;--r:190deg;--z:.08"><img src="assets/img/rf-charcoal.webp" width="260" height="336" alt="" loading="lazy"></span>
+    <span class="prop dk" style="--x:4%;--y:30%;--s:110px;--r:-8deg;--d:5;--o:.9;--z:-.1;--t:5s"><img src="assets/img/rf-barrel.webp" width="200" height="337" alt="" loading="lazy"></span>
+    <span class="prop grime dk" style="--x:96%;--y:52%;--s:110px;--o:.8;--z:.06"><img src="assets/img/gz-fire.webp" width="240" height="260" alt="" loading="lazy"></span>
+  </div>
   <div class="wrap">
-    <div class="realm-head"><span class="realm-badge" aria-hidden="true">5</span><p><b>The Ember Fields</b><span>Realm 5 of 6</span></p></div>
+    <div class="realm-head"><span class="realm-badge" aria-hidden="true">5</span><p><b>The Ember Fields</b><span>Realm 5 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FCD34D"/></svg>Reached at 8,000 XP</span></div>
     <div class="split">
       <div>
         <h2 id="h-embers">Our safety promises</h2>
@@ -530,6 +809,7 @@ footer small{display:block;font-size:13px;line-height:1.5}
     <div class="outdoor">
       <img src="assets/img/watergun.webp" width="360" height="443" alt="" loading="lazy">
       <div>
+        <p style="margin-bottom:10px"><span class="tag rw">Real world</span></p>
         <h3>Out in the real world, the game teaches these first</h3>
         <ul>
           <li>Hunt with a grown-up nearby</li>
@@ -546,10 +826,24 @@ footer small{display:block;font-size:13px;line-height:1.5}
 
 <!-- REALM 6: TEMPLE OF LIGHT / JOIN + PARTNERS -->
 <section class="realm" id="temple" data-realm="6" data-name="Temple of Light" data-light aria-labelledby="h-join">
+  <div class="scene" aria-hidden="true">
+    <div class="motes" data-motes="18" style="--mc:#FFE7A3;--h:420px;bottom:auto;height:440px"></div>
+    <span class="prop dk" style="--x:10%;--y:12%;--s:90px;--d:-6;--z:-.15;--t:3s"><img src="assets/img/compo-fluid.webp" width="220" height="257" alt="" loading="lazy"></span>
+    <span class="prop dk" style="--x:90%;--y:11%;--s:84px;--d:6;--z:-.2;--t:3.4s"><img src="assets/img/compo-cosmic.webp" width="220" height="248" alt="" loading="lazy"></span>
+  </div>
   <div class="wrap" style="padding-top:150px">
-    <div class="realm-head" style="justify-content:center"><span class="realm-badge" aria-hidden="true">6</span><p><b>The Temple of Light</b><span>Realm 6 of 6</span></p></div>
+    <div class="realm-head" style="justify-content:center"><span class="realm-badge" aria-hidden="true">6</span><p><b>The Temple of Light</b><span>Realm 6 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#E8A400"/></svg>The centre: 10,000 XP</span></div>
     <div class="join-head" id="join">
-      <img class="orbo" src="assets/img/orbo.webp" width="520" height="566" alt="Orbo, the guardian of the Temple of Light" loading="lazy">
+      <div class="orbo-stage" aria-hidden="true">
+        <span class="rays"></span>
+        <img class="cp" src="assets/img/compo-leaf.webp" width="220" height="243" alt="" loading="lazy" style="--cx:calc(-150px * var(--sx,1));--cy:-20px">
+        <img class="cp" src="assets/img/compo-fluid.webp" width="220" height="257" alt="" loading="lazy" style="--cx:calc(150px * var(--sx,1));--cy:-10px;--dl:-1s">
+        <img class="cp" src="assets/img/compo-cosmic.webp" width="220" height="248" alt="" loading="lazy" style="--cx:calc(-128px * var(--sx,1));--cy:48px;--dl:-2s">
+        <img class="cp" src="assets/img/compo-fluff.webp" width="220" height="207" alt="" loading="lazy" style="--cx:calc(130px * var(--sx,1));--cy:54px;--dl:-1.5s">
+        <img class="orbo" src="assets/img/orbo.webp" width="520" height="566" alt="" loading="lazy">
+        <img class="cell" src="assets/img/light-cell.webp" width="260" height="258" alt="" loading="lazy">
+      </div>
+      <p class="sr">Orbo, the guardian of the Temple of Light, surrounded by Compos.</p>
       <h2 id="h-join">Join the hunt</h2>
       <p class="lead">We'll email you when the beta opens to families, and only for that. Grown-ups only, please: kids, ask a parent to sign up for you.</p>
     </div>
@@ -566,6 +860,7 @@ footer small{display:block;font-size:13px;line-height:1.5}
     <div class="partners" id="partners">
       <h2>Bring the hunt to your community</h2>
       <p class="lead">We're looking for the first partners to help shape where and how the game shows up.</p>
+      <div class="bridge"><span><span class="tag rw">Real world</span><b>Community cleanups and events</b></span><span class="arr" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="tag ge">Gamification experience</span><b>Grime Zones and event bonuses for players</b></span></div>
       <ul class="p-list">
         <li class="p-item" style="--pc:#E7F8F0">
           <span class="mark"><img src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy"></span>
@@ -628,11 +923,76 @@ footer small{display:block;font-size:13px;line-height:1.5}
     rail.classList.toggle('on-light',light);
   }
 
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hero=document.querySelector('.hero'),worlds=document.getElementById('worlds');
+  var depthEls=[hero,worlds].concat(realms);
+
+  // Cosmic Void stars: same layout formula as the game's intro scene (40 stars, sin-based positions, size 1-3px)
+  [].forEach.call(document.querySelectorAll('.tw[data-stars]'),function(box){
+    var n=+box.getAttribute('data-stars'),h='';
+    for(var t=0;t<n;t++){
+      var x=(0.5*Math.sin(91.7*t)+0.5)*100,y=(0.5*Math.sin(47.3*t)+0.5)*100,s=1+t%3;
+      h+='<i style="left:'+x.toFixed(2)+'%;top:'+y.toFixed(2)+'%;--z:'+s+'px;--t:'+(2.4+(t%5)*.5)+'s;--dl:-'+((t*0.37)%3).toFixed(2)+'s"></i>';
+    }
+    box.innerHTML=h;
+  });
+  // Rising embers / light motes (the game's rising particle layer)
+  [].forEach.call(document.querySelectorAll('.motes[data-motes]'),function(box){
+    var n=+box.getAttribute('data-motes'),h='';
+    function r(i,k){var o=43758.5453*Math.sin(12.9898*i+78.233*k);return o-Math.floor(o);}
+    for(var i=0;i<n;i++){
+      h+='<i style="left:'+(r(i,1)*100).toFixed(1)+'%;--z:'+(3+r(i,2)*4).toFixed(1)+'px;--t:'+(6+r(i,3)*6).toFixed(1)+'s;--dl:-'+(r(i,4)*10).toFixed(1)+'s;--wx:'+((r(i,5)-.5)*80).toFixed(0)+'px"></i>';
+    }
+    box.innerHTML=h;
+  });
+
   if('IntersectionObserver' in window){
     var vis=new IntersectionObserver(function(es){
-      es.forEach(function(e){ e.target.classList.toggle('on',e.isIntersecting); });
+      es.forEach(function(e){ e.target.classList.toggle('on',e.isIntersecting); if(e.isIntersecting){e.target.classList.add('seen');} });
     },{rootMargin:'0px'});
     realms.forEach(function(r){vis.observe(r);});
+    vis.observe(hero);
+  } else {
+    realms.concat([hero]).forEach(function(r){r.classList.add('on','seen');});
+  }
+
+  // Team picker: Elemonster facts as defined in the game build (th-mvp ELEMONSTERS)
+  var MONS={
+    sproutz:{n:'Sproutz',team:'Earth',el:'Nature, growth, roots',s1:'Seed',tag:'Earth Guardian. Stubborn heart. Grows with you.',hide:'Buried under leaves in a forest creek…',egg:'egg-earth',eh:317,img:'sproutz',w:496,h:702,c:'#2EBD8A'},
+    bloop:{n:'Bloop',team:'Water',el:'Oceans, rivers, flow',s1:'Egg',tag:'Water Keeper. Feels everything. Never gives up.',hide:'Deep in a tide pool…',egg:'egg-water',eh:307,img:'bloop',w:520,h:715,c:'#4BA3E3'},
+    blazo:{n:'Blazo',team:'Fire',el:'Heat, energy, passion',s1:'Egg',tag:'Fire Spirit. Born bold. Burns brightest for friends.',hide:'In a crack of volcanic rock…',egg:'egg-fire',eh:335,img:'blazo',w:509,h:736,c:'#F5961E'},
+    wispo:{n:'Wispo',team:'Air',el:'Wind, sky, freedom',s1:'Egg',tag:'Air Wanderer. Everywhere at once. Hides a brave heart.',hide:'Inside a storm cloud…',egg:'egg-air',eh:270,img:'wispo',w:520,h:505,c:'#A78BFA'},
+    cosmix:{n:'Cosmix',team:'Space',el:'Cosmos, wisdom, mystery',s1:'Egg',tag:'Space Sage. Oldest soul. Sees what others miss.',hide:'Drifting in deep space…',egg:'egg-space',eh:275,img:'cosmix',w:520,h:540,c:'#D94FAA'}
+  };
+  var picker=document.getElementById('team');
+  if(picker){
+    var btns=[].slice.call(picker.querySelectorAll('.mon'));
+    function $(id){return document.getElementById(id);}
+    btns.forEach(function(b){
+      b.addEventListener('click',function(){
+        var m=MONS[b.getAttribute('data-id')]; if(!m){return;}
+        btns.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});
+        picker.style.setProperty('--mc',m.c);
+        $('mName').textContent=m.n; $('mTag').textContent=m.tag; $('mTeam').textContent=m.team+' Team';
+        $('mEl').textContent=m.el; $('mStart').textContent='Starts as '+(m.s1==='Seed'?'a Seed':'an Egg');
+        $('mHide').textContent=m.hide; $('mS1').textContent=m.s1;
+        var e=$('mEgg'); e.src='assets/img/'+m.egg+'.webp'; e.height=m.eh;
+        var g=$('mGrown'); g.src='assets/img/'+m.img+'.webp'; g.width=m.w; g.height=m.h;
+      });
+    });
+  }
+
+  function parallax(){
+    if(reduce){return;}
+    var vh=window.innerHeight;
+    for(var i=0;i<depthEls.length;i++){
+      var el=depthEls[i]; if(!el){continue;}
+      var r=el.getBoundingClientRect();
+      if(r.bottom>-100&&r.top<vh+100){
+        var p=el===hero?r.top:(r.top+r.height/2-vh/2);
+        el.style.setProperty('--p',Math.max(-700,Math.min(700,p)).toFixed(0)+'px');
+      }
+    }
   }
 
   var ticking=false;
@@ -645,6 +1005,7 @@ footer small{display:block;font-size:13px;line-height:1.5}
     bar.style.transform='scaleX('+(max>0?Math.min(1,window.scrollY/max):0)+')';
     var t=document.getElementById('temple').getBoundingClientRect().top;
     hud.classList.toggle('is-light',t<=300);
+    parallax();
   }
   window.addEventListener('scroll',function(){ if(!ticking){ticking=true;requestAnimationFrame(onScroll);} },{passive:true});
   window.addEventListener('resize',onScroll,{passive:true});
