@@ -1867,7 +1867,7 @@ details.fold.more details.fold{margin-top:0}
 <script>window.LP_PAY = { provider: "lemonsqueezy", mode: "test", store: "499938", portal: "https://3sstudio.lemonsqueezy.com/billing", products: { pro: ["1483622", "2312281", "2312296"] },
   test: { yearly: "https://3sstudio.lemonsqueezy.com/checkout/buy/287a3571-4cab-4413-854f-f52f8ae858f0", monthly: "https://3sstudio.lemonsqueezy.com/checkout/buy/c212571a-b04d-4622-b5cb-3d2197966fb2" },
   live: { yearly: "", monthly: "" } };</script>
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-10-31a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-03a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -2548,7 +2548,7 @@ details.fold.more details.fold{margin-top:0}
   function bufferProcess(MB, M, s) {
     let tBase = null;
     return sample => {
-      if (tBase === null) tBase = sample.timestamp >= s - 0.5 ? s : 0;   // timestamps may be clip-time or output-time
+      if (tBase === null) tBase = Math.abs(sample.timestamp - s) < Math.abs(sample.timestamp) ? s : 0;   // timestamps may be clip-time or output-time
       const n = sample.numberOfFrames, ch = sample.numberOfChannels, out = new Float32Array(n * ch), o0 = Math.round((sample.timestamp - tBase) * M.sr);
       const rs = sample.sampleRate / M.sr;
       for (let c = 0; c < ch; c++) { const src = c ? M.r : M.l, plane = out.subarray(c * n, (c + 1) * n);
@@ -2614,7 +2614,7 @@ details.fold.more details.fold{margin-top:0}
     const cv = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(W, H) : Object.assign(document.createElement("canvas"), { width: W, height: H });
     const g = cv.getContext("2d"); let base = null;
     return sample => {
-      if (base === null) base = sample.timestamp >= s - 0.5 ? 0 : s;   // timestamps may be clip-time or output-time
+      if (base === null) base = Math.abs(sample.timestamp - s) < Math.abs(sample.timestamp) ? 0 : s;   // timestamps may be clip-time or output-time
       drawFrame(g, W, H, () => sample.draw(g, 0, 0, W, H));
       try { draw?.(g, W, H, base + sample.timestamp); } catch { }
       if (mark) drawMark(g, W, H);
@@ -2752,8 +2752,11 @@ details.fold.more details.fold{margin-top:0}
   async function decodeRange(MB, at, s, e) {
     const sr = at.sampleRate, ch = Math.min(2, at.numberOfChannels), n = Math.max(1, Math.ceil((e - s) * sr)), out = [new Float32Array(n), new Float32Array(n)];
     for await (const smp of new MB.AudioSampleSink(at).samples(s, e)) {
-      const nf = smp.numberOfFrames, o0 = Math.round((smp.timestamp - s) * sr), tmp = new Float32Array(nf);
-      for (let k = 0; k < ch; k++) { smp.copyTo(tmp, { planeIndex: k, format: "f32-planar" }); const d = out[k]; for (let i = 0; i < nf; i++) { const j = o0 + i; if (j >= 0 && j < n) d[j] = tmp[i]; } }
+      const nf = smp.numberOfFrames, o0 = Math.round((smp.timestamp - s) * sr), tmp = new Float32Array(nf), rr = smp.sampleRate / sr, sc = Math.min(ch, smp.numberOfChannels);
+      for (let k = 0; k < sc; k++) { smp.copyTo(tmp, { planeIndex: k, format: "f32-planar" }); const d = out[k];
+        if (Math.abs(rr - 1) < 1e-6) { for (let i = 0; i < nf; i++) { const j = o0 + i; if (j >= 0 && j < n) d[j] = tmp[i]; } }
+        else { const m = Math.floor(nf / rr); for (let i = 0; i < m; i++) { const j = o0 + i; if (j < 0 || j >= n) continue; const x = i * rr, q = x | 0, f = x - q; d[j] = tmp[q] * (1 - f) + (tmp[Math.min(nf - 1, q + 1)] || 0) * f; } } }
+      if (sc < ch) out[1].set(out[0].subarray(0, n));
       smp.close?.();
     }
     if (ch === 1) out[1].set(out[0]);
@@ -5761,7 +5764,7 @@ class Seg {
     this.v.addEventListener("seeked", () => { this.ui(); this.onTick(); });
   }
   load(url) { this.v.src = url; }
-  applyRate() { try { this.v.preservesPitch = true; this.v.defaultPlaybackRate = Seg.rate; this.v.playbackRate = Seg.rate; } catch { } const b = this.host.querySelector(".pb-speed"); if (b) { b.textContent = Seg.rate === 1 ? "1×" : Seg.rate === 0.75 ? "¾×" : "½×"; b.classList.toggle("on", Seg.rate !== 1); } }
+  applyRate() { try { this.v.preservesPitch = true; this.v.webkitPreservesPitch = true; this.v.defaultPlaybackRate = Seg.rate; this.v.playbackRate = Seg.rate; } catch { } const b = this.host.querySelector(".pb-speed"); if (b) { b.textContent = Seg.rate === 1 ? "1×" : Seg.rate === 0.75 ? "¾×" : "½×"; b.classList.toggle("on", Seg.rate !== 1); } }
   rs() { return this.ranges || [[0, this.v.duration || 0]]; }
   total() { if (this.ext && this.extTotal) return this.extTotal; return this.rs().reduce((t, [a, b]) => t + b - a, 0); }
   set(ranges, label, chipText) { this.pause(); this.ranges = ranges && ranges.length ? ranges : null; this.label = label; this.chipText = chipText; this.i = 0; this.ended = false; this.goStart(); this.ui(); }
@@ -5951,7 +5954,7 @@ function openStudio(c, keep) {
   state.openId = c.id;
   const stage = $("#sStage");
   const vsrc = c.file || c.vproxy;
-  stopAudio(); player?.destroy(); player = null; c.audioOnly = !vsrc; unfloat();
+  stopBand(); stopAudio(); player?.destroy(); player = null; c.audioOnly = !vsrc; unfloat();   // nothing from the last clip keeps playing
   if (vsrc) {
     player = new Seg(stage, { onTick: () => { drawWave(); markRows(); } }); video = player.v;
     video.addEventListener("pause", markRows); video.addEventListener("play", () => { c._played = true; markRows(); });
@@ -6298,7 +6301,9 @@ const speedOf = c => c.speed && Math.abs(c.speed - 1) > 0.001 ? c.speed : 1;
 const LOCK_MAX = 0.12, LOCK_STRETCH = 0.5;
 const metroManual = A => !!(A && (A.forced || A.given || A.tapped || A.picked || A.fixed || A.nudged));
 // layers play as recorded, so no automatic lock while a layer is on
-function tightAuto(c) { if (layersOn(c).length && c.ex?.layers !== false) return false; const T = tightCalc(c); if (!T) return false; if (metroManual(bandA(c))) return true; return T.maxShift <= LOCK_MAX && T.maxStretch <= LOCK_STRETCH; }
+// Never on by itself (3 Nov): an automatic lock time-stretched every Pick (WSOLA, up to 36% locally) and that was the
+// damaged sound players heard. The band follows the player; the take is only reshaped when the player turns Lock on.
+function tightAuto(c) { return false; }
 function tightOn(c) { const t = c.tight; if (t?.user) return !!t.on || speedOf(c) !== 1; return tightAuto(c) || speedOf(c) !== 1; }
 function feelFor(c, A) { if (!bandOn(c) || c.feel === "mine" || !A) return null; const st = LickBand.STYLES[bandStyleOf(c, A)]; return st?.swing || (A.swing > 0.58 ? A.swing : 0.5); }
 // the time map onto the metronome, whether or not it's switched on. A metronome the player set (tapped, typed, nudged,
@@ -7530,8 +7535,10 @@ function decodeWin(c, s, e) {
       while (true) {
         const step = await Promise.race([it.next(), new Promise((_, rej) => setTimeout(() => rej(new Error("stalled")), 8000))]);
         if (step.done) break;
-        const smp = step.value, nf = smp.numberOfFrames, o0 = Math.round((smp.timestamp - s) * sr), tmp = new Float32Array(nf);
-        for (let k = 0; k < ch; k++) { smp.copyTo(tmp, { planeIndex: k, format: "f32-planar" }); const d = out[k]; for (let i = 0; i < nf; i++) { const j = o0 + i; if (j >= 0 && j < n) d[j] = tmp[i]; } }
+        const smp = step.value, nf = smp.numberOfFrames, o0 = Math.round((smp.timestamp - s) * sr), tmp = new Float32Array(nf), rr = smp.sampleRate / sr, sc = Math.min(ch, smp.numberOfChannels);
+        for (let k = 0; k < sc; k++) { smp.copyTo(tmp, { planeIndex: k, format: "f32-planar" }); const d = out[k];
+          if (Math.abs(rr - 1) < 1e-6) { for (let i = 0; i < nf; i++) { const j = o0 + i; if (j >= 0 && j < n) d[j] = tmp[i]; } }
+          else { const m = Math.floor(nf / rr); for (let i = 0; i < m; i++) { const j = o0 + i; if (j < 0 || j >= n) continue; const x = i * rr, q = x | 0, f = x - q; d[j] = tmp[q] * (1 - f) + (tmp[Math.min(nf - 1, q + 1)] || 0) * f; } } }
         smp.close?.();
       }
       if (ch === 1) out[1].set(out[0]);
@@ -7565,8 +7572,11 @@ function planBuffer(c, P) {
   const key = c.key + JSON.stringify(P.segs.map(g => [g.s, g.e, g.warp?.len || 0])) + (c.tune ? tuneOff(c) : 0);
   if (planAudio.key === key) return planAudio.p;
   const p = (async () => {
-    const full = await soundBuf(c), sr = full.sampleRate, c0 = full.getChannelData(0), c1 = full.getChannelData(full.numberOfChannels > 1 ? 1 : 0);
-    const get = (a, b) => { const i0 = Math.max(0, Math.round(a * sr)), i1 = Math.min(c0.length, Math.round(b * sr)); return [c0.slice(i0, i1), c1.slice(i0, i1)]; };
+    // the take's real sound, part by part, from the video (full quality, stereo); the small sound copy only when the video is gone
+    let sr = 0, get;
+    if (c.file) try { const parts = []; for (const g of P.segs) parts.push(await decodeWin(c, g.s, g.e)); sr = parts[0].sampleRate; if (parts.some(b => b.sampleRate !== sr)) throw new Error("rates"); let i = 0; get = () => { const b = parts[i++]; return [b.getChannelData(0).slice(), b.getChannelData(1).slice()]; }; } catch { get = null; }
+    if (!get) { const full = await soundBuf(c), c0 = full.getChannelData(0), c1 = full.getChannelData(full.numberOfChannels > 1 ? 1 : 0); sr = full.sampleRate;
+      get = (a, b) => { const i0 = Math.max(0, Math.round(a * sr)), i1 = Math.min(c0.length, Math.round(b * sr)); return [c0.slice(i0, i1), c1.slice(i0, i1)]; }; }
     const { L, R, N } = await ClipExporter.assemble(get, P.segs, sr, { xfade: XF, tuneCents: c.tune ? -tuneOff(c) : 0 });
     const b = ensureCtx().createBuffer(2, Math.max(1, N), sr); b.copyToChannel(L, 0); b.copyToChannel(R, 1); return b;
   })();
@@ -7860,7 +7870,7 @@ let audioNodes = [], audioLabel = "", audioRanges = null, bufJob = null;
 function soundBuf(c) {
   if (audioBuf.id === c.id && audioBuf.buf) return Promise.resolve(audioBuf.buf);
   if (bufJob?.id === c.id) return bufJob.p;
-  const blob = c.proxy || c.file; if (!blob) return Promise.reject(new Error("no sound"));
+  const blob = c.file && c.file.size <= 160e6 ? c.file : c.proxy || c.file; if (!blob) return Promise.reject(new Error("no sound"));
   audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
   const p = new Promise((res, rej) => { blob.arrayBuffer().then(ab => { const pr = audioCtx.decodeAudioData(ab, res, rej); if (pr?.then) pr.then(res, rej); }, rej); })
     .then(buf => { if (bufJob?.p === p) { audioBuf = { id: c.id, buf }; bufJob = null; } return buf; }, e => { if (bufJob?.p === p) bufJob = null; throw e; });
@@ -8135,7 +8145,7 @@ document.addEventListener("click", e => {
   if (d.loop) { const was = bandPlaying; stopBand(); c.loop = { n: +d.loop }; c.src = "pick"; persist(c); renderStudio(); showPick(c); if (was) bandPreview(c); return; }
   if (d.act === "relisten") { if (!c.file) { toast("Re-add this video first."); return; } stopBand(); for (const k of ["_bandA", "_tight", "_picks", "_pins", "_fullA", "_mixWarn", "_pickJob"]) delete c[k]; c.status = "queued"; c.progress = 0; renderStudio(); renderCard(c); pump(); toast("Listening again with the new engine…"); return; }
   if (d.act === "fix-all") { const pk = pickOf(c); if (!pk) return; let n = 0; for (const pin of pinsIn(c, pk.s, pk.e)) { if ((c.patches || []).some(x => pin.t >= x.bar[0] && pin.t < x.bar[1])) continue; const fx2 = patchFor(c, pin); if (fx2) { c.patches = (c.patches || []).filter(x => x.bar[0] !== fx2.bar[0]).concat([fx2]); n++; } }
-    const A = bandA(c); let tt = false; if (A?.pulse && !A.forced && !tightFor(c)) { c.tight = { on: true }; c._tight = null; tt = true; } if (tuneOff(c) && !c.tune) c.tune = true;
+    const A = bandA(c); let tt = false; if (A?.pulse && !A.forced && !tightFor(c)) { c.tight = { on: true, user: true }; c._tight = null; tt = true; } if (tuneOff(c) && !c.tune) c.tune = true;
     stopBand(); persist(c); renderStudio(); showPick(c); toast([tt && "Timing tightened", n && `${n} bar${n > 1 ? "s" : ""} patched`, c.tune && tuneOff(c) && "tuned to A440"].filter(Boolean).join(", ") + ". Press play to hear it." || "Nothing left to fix."); return; }
   if (d.bpart) { const k = d.bpart, b = newBand(c), A = bandA(c); stopBand();
     if (k === "drums" && A && !A.pulse) { b.grid = { bpm: LickMusic.guessTempo(c.raw, bandWindow(c).s, bandWindow(c).e) }; b.parts.drums = true; b.touched = { ...(b.touched || {}), drums: true }; c._bandA = null; persist(c); renderStudio(); toast(`No steady beat in your playing, so the drums keep a steady ${b.grid.bpm} BPM. Set it under Metronome.`); return; }
