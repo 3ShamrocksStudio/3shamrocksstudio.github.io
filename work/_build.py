@@ -34,7 +34,7 @@ P = [
   line="See an injured animal, a small fire or litter in a reserve? Report it in one tap, and the shomers nearby know right away.",
   did="Brand, product design and the working app: one-tap reports, SOS and trip check-in, and first-aid guides in plain Hebrew.",
   cards=[("The problem","In nature, the person closest to an injured animal, a fire or a hiker in trouble is often the only one who can help in time."),
-         ("What I built","One-tap reports with photo and location, SOS and a trip check-in that alerts השומרים שלי, and step-by-step first-aid guides."),
+         ("What I built","One-tap reports with photo and location, SOS and a trip check-in that alerts the shomers you chose, and step-by-step first-aid guides."),
          ("Where it is","Free beta for Android, and in the browser on iPhone and desktop.")],
   shots=["../assets/studio/screens/nature-map.webp","../assets/studio/screens/nature-guide.webp","../assets/studio/screens/nature-report.webp"],
   out=("Visit SH✡MER Nature","../shomer-nature-preview/")),
