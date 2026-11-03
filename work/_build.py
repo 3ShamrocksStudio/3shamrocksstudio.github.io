@@ -37,7 +37,7 @@ P = [
          ("What I built","One-tap reports with photo and location, SOS and a trip check-in that alerts the shomers you chose, and step-by-step first-aid guides."),
          ("Where it is","Free beta for Android, and in the browser on iPhone and desktop.")],
   shots=["../assets/studio/screens/nature-map.webp","../assets/studio/screens/nature-guide.webp","../assets/studio/screens/nature-report.webp"],
-  out=("Visit SH✡MER Nature","../shomer-nature-preview/")),
+  out=("Visit SH✡MER Nature","https://www.shomer-app.co.il/nature")),
  # chore-royale.html and fairent.html are hand-built pages (2 Nov 2026): custom=True keeps them in "More work" links only.
  dict(slug="chore-royale", custom=True, name="Chore Royale", cat="Family game", status="Free web app",
   line="Spin the wheel, do the chore, snap a photo, earn stars. Nobody argues with the wheel.",
@@ -69,8 +69,6 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .cta-s{background:var(--purple);color:#fff!important;padding:9px 20px;border-radius:100px;font-weight:600}
 .hero{padding:64px 0 40px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;position:relative}
 .hero::before{content:"";position:absolute;inset:-80px 0 auto auto;width:520px;height:520px;background:radial-gradient(circle,rgba(130,57,234,.22),transparent 65%);z-index:-1}
-.eb{display:inline-flex;gap:10px;align-items:center;font:600 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--purple2);margin-bottom:18px}
-.eb i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
 h1{font:800 clamp(40px,6vw,76px)/1.02 var(--head);letter-spacing:-.035em;margin-bottom:18px}
 .line{font-size:clamp(18px,2vw,22px);line-height:1.5;margin-bottom:16px;max-width:30ch}
 .did{color:var(--mut);font-size:16px;max-width:52ch;margin-bottom:28px}
@@ -87,19 +85,24 @@ h1{font:800 clamp(40px,6vw,76px)/1.02 var(--head);letter-spacing:-.035em;margin-
 .shots.n1 .shot{flex-basis:420px;border-radius:20px}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:24px 0 72px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
-.card h2{font:600 12px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--lab);margin-bottom:10px}
 .card p{font-size:16px}
 .band{background:linear-gradient(135deg,var(--purple),#5a1fc0);color:#fff;border-radius:24px;padding:44px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
 .band h2{font:800 clamp(24px,3vw,34px)/1.1 var(--head);letter-spacing:-.02em;max-width:22ch}
 .band p{opacity:.9;margin-top:8px}
 .band a{background:#fff;color:#2a0f63;padding:14px 28px;border-radius:100px;font:600 14px var(--mono);white-space:nowrap}
 .more{padding:56px 0 24px}
-.more h2{font:600 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:14px}
+.more h2{font:800 clamp(22px,2.6vw,28px)/1.1 var(--head);letter-spacing:-.02em;margin-bottom:16px}
 .more .l{display:flex;flex-wrap:wrap;gap:10px}
 .more a{border:1px solid var(--line);border-radius:100px;padding:10px 18px;font:500 14px var(--mono)}
 .more a:hover{border-color:var(--purple)}
-footer{padding:28px 0 40px;color:var(--mut);font:400 13px var(--mono);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+footer{margin-top:32px;padding:32px 0 40px;border-top:1px solid var(--line);color:var(--mut);font:500 13px var(--mono);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
 footer a:hover{color:var(--ink)}
+.f-logo{display:block}
+.f-logo img{height:34px;width:auto;margin-bottom:10px}
+.social{display:flex;gap:12px}
+.social a{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:50%;color:var(--lab);transition:color .2s,transform .2s}
+.social a:hover{color:var(--green);transform:translateY(-2px)}
+.social svg{width:44px;height:44px}
 @media(max-width:860px){.hero{grid-template-columns:1fr;padding-top:40px;gap:36px}.cards{grid-template-columns:1fr}.band{padding:32px}.shots.n3 .shot:nth-child(2){transform:none}}
 @media(max-width:480px){.shots.n3 .shot:nth-child(3){display:none}.nl .hm{display:none}}
 """
@@ -107,7 +110,7 @@ footer a:hover{color:var(--ink)}
 def page(p):
     n = len(p["shots"])
     shots = "".join(f'<div class="shot"><img src="{s}" alt="{E(p["name"])} screen {i+1}" loading="{"eager" if i==0 else "lazy"}"></div>' for i, s in enumerate(p["shots"]))
-    cards = "".join(f'<div class="card"><h2>{E(h)}</h2><p>{E(t)}</p></div>' for h, t in p["cards"])
+    cards = "".join(f'<div class="card"><p>{E(t)}</p></div>' for h, t in p["cards"])
     out = f'<a class="bg" href="{E(p["out"][1])}" target="_blank" rel="noopener">{E(p["out"][0])} &#8599;</a>' if p["out"] else ""
     more = "".join(f'<a href="{q["slug"]}.html">{E(q["name"])}</a>' for q in P if q is not p)
     mail = f"mailto:{EMAIL}?subject=" + "New%20project"
@@ -132,7 +135,6 @@ def page(p):
 <main class="wrap">
  <section class="hero">
   <div>
-   <div class="eb"><i></i>{E(p["cat"])} · {E(p["status"])}</div>
    <h1>{E(p["name"])}</h1>
    <p class="line">{E(p["line"])}</p>
    <p class="did">{E(p["did"])}</p>
@@ -146,7 +148,12 @@ def page(p):
   <a href="{mail}">Start a project</a>
  </section>
  <section class="more"><h2>More work</h2><div class="l">{more}<a href="../#experience">Client work</a></div></section>
- <footer><span>&copy; 2026 3Shamrocks Studio · Dave Markovich</span><span><a href="mailto:{EMAIL}">{EMAIL}</a> · <a href="https://www.linkedin.com/in/davemarkovich/" target="_blank" rel="noopener">LinkedIn</a></span></footer>
+ <footer><div><a class="f-logo" href="../" aria-label="3Shamrocks Studio, home"><picture><source srcset="../assets/studio/3shamrocks_black.png" media="(prefers-color-scheme: light)"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="905" height="133" loading="lazy"></picture></a><span>&copy; 2026 3Shamrocks Studio. All rights reserved.</span></div>
+  <div class="social">
+   <a href="https://www.linkedin.com/in/davemarkovich/" target="_blank" rel="noopener" aria-label="Dave Markovich on LinkedIn"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="21"/><path d="M16 21v11M16 16.5v.01M22 32V21M22 26c0-3 2-5 4.5-5S31 23 31 26v6"/></svg></a>
+   <a href="https://www.instagram.com/3shamrocks.studio/" target="_blank" rel="noopener" aria-label="3Shamrocks Studio on Instagram, @3shamrocks.studio"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="21"/><rect x="14" y="14" width="20" height="20" rx="6"/><circle cx="24" cy="24" r="4.6"/><path d="M29.5 18.5v.01"/></svg></a>
+   <a href="mailto:{EMAIL}" aria-label="Email {EMAIL}"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="21"/><rect x="13" y="16" width="22" height="16" rx="3"/><path d="M14 18l10 7 10-7"/></svg></a>
+  </div></footer>
 </main>
 </body>
 </html>
