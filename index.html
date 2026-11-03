@@ -39,6 +39,8 @@ section{position:relative;padding:96px 0}
 h2{font-family:var(--font-head);font-weight:800;font-size:clamp(30px,4.4vw,54px);line-height:1.06;letter-spacing:-.03em;text-wrap:balance}
 h2 em{font-style:normal;color:var(--green-2)}
 .lede{font-size:17px;line-height:1.7;color:var(--muted);max-width:600px;margin-top:16px}
+.h-touch{display:none}
+@media (hover:none),(pointer:coarse),(max-width:600px){.h-fine{display:none}.h-touch{display:inline}}
 
 /* background field + cursor */
 #bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
@@ -343,11 +345,11 @@ footer{position:relative;background:var(--black);border-top:1px solid var(--line
         <div class="rig"><div class="ph"><div class="scr">
           <div class="media" style="opacity:1" data-slides="3600">
             <img class="cur" src="assets/studio/shomer-app-circles.webp" alt="SH&#10017;MER app, my shomers screen" width="600" height="1298">
-            <img data-src="assets/studio/screens/lickpick-welcome.webp" alt="LickPick app, welcome screen">
-            <img data-src="assets/work/chore-royale/scr-wheel.jpg" alt="Chore Royale app, prize wheel">
+            <img data-src="assets/studio/screens/lickpick-cut.webp" alt="LickPick app, best lick found in a jam">
+            <img data-src="assets/work/chore-royale/scr-wheel.jpg" alt="Chore Royale app, chore wheel">
             <img data-src="assets/opt/th-map.webp" alt="Trashure-Hunters game map">
             <img data-src="assets/studio/screens/nature-guide.webp" alt="SH&#10017;MER Nature app, emergency guide">
-            <img data-src="assets/studio/screens/lickpick-pick.webp" alt="LickPick app, your Pick explained">
+            <img data-src="assets/studio/screens/lickpick-style.webp" alt="LickPick app, video style picker">
             <img data-src="assets/work/fairent/scr-result.jpg" alt="FaiRent, rent check result">
             <img data-src="assets/work/chore-royale/scr-clan.jpg" alt="Chore Royale app, family clan">
           </div>
@@ -387,7 +389,7 @@ footer{position:relative;background:var(--black);border-top:1px solid var(--line
       <div class="meet-copy reveal">
         <h2>Here's what I've been <em>building lately.</em></h2>
         <p class="lede">Ten products, each with its own brand and its own story. The ones you can try today open their own page. The rest are still in the oven.</p>
-        <span class="hint"><svg class="ic" style="width:26px;height:26px"><use href="#i-app"/></svg>Hover a phone to switch it on</span>
+        <span class="hint"><svg class="ic" style="width:26px;height:26px"><use href="#i-app"/></svg><span><span class="h-fine">Hover</span><span class="h-touch">Tap</span> a phone to switch it on</span></span>
       </div>
     </div>
 
@@ -402,7 +404,7 @@ footer{position:relative;background:var(--black);border-top:1px solid var(--line
           <span class="shade"></span>
           <span class="cap"><b>SH&#10017;MER</b><small>Community safety</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <a class="dev" href="work/shomer-nature.html" data-shots="assets/studio/screens/nature-map.webp,assets/studio/screens/nature-guide.webp,assets/studio/screens/nature-report.webp,assets/studio/screens/nature-uxo.webp" style="--d:-1.6s">
+        <a class="dev" href="work/shomer-nature.html" data-shots="assets/studio/screens/nature-map.webp,assets/studio/screens/nature-guide.webp,assets/studio/screens/nature-report.webp" style="--d:-1.6s">
           <div class="rig"><div class="ph"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 30%,#1f5a30,#0e3018 60%,#06180c)"><img src="assets/studio/logos/shomer-nature.png" alt="" loading="lazy"></div>
             <div class="media"></div>
@@ -410,7 +412,7 @@ footer{position:relative;background:var(--black);border-top:1px solid var(--line
           <span class="shade"></span>
           <span class="cap"><b>SH&#10017;MER Nature</b><small>Safety on the trail</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <a class="dev" href="work/lickpick.html" data-shots="assets/studio/screens/lickpick-welcome.webp,assets/studio/screens/lickpick-pick.webp" style="--d:-2.8s">
+        <a class="dev" href="work/lickpick.html" data-shots="assets/studio/screens/lickpick-cut.webp,assets/studio/screens/lickpick-style.webp,assets/studio/screens/lickpick-share.webp" style="--d:-2.8s">
           <div class="rig"><div class="ph"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 35%,#1b1430,#0b0912 65%)"><img src="assets/studio/logos/lickpick-lockup.png" alt="" loading="lazy" style="--lw:80%"></div>
             <div class="media"></div>
@@ -426,7 +428,7 @@ footer{position:relative;background:var(--black);border-top:1px solid var(--line
           <span class="shade"></span>
           <span class="cap"><b>Trashure-Hunters</b><small>Kids' eco game</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <a class="dev" href="work/chore-royale.html" data-shots="assets/work/chore-royale/scr-clan.jpg,assets/work/chore-royale/scr-wheel.jpg,assets/work/chore-royale/scr-prize.jpg" style="--d:-5.2s">
+        <a class="dev" href="work/chore-royale.html" data-shots="assets/work/chore-royale/scr-clan.jpg,assets/work/chore-royale/scr-wheel.jpg,assets/work/chore-royale/scr-chores.jpg" style="--d:-5.2s">
           <div class="rig"><div class="ph"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 30%,#3d1180,#1c0640 60%,#0e0420)"><img src="assets/studio/logos/chore-royale.png" alt="" loading="lazy" style="--lw:80%"></div>
             <div class="media"></div>
@@ -660,7 +662,7 @@ if(heroBox){const hs=makeSlides(heroBox,+heroBox.dataset.slides||3600);
 const devs=$$('.stage .dev');
 devs.forEach(d=>{
   const media=$('.media',d);let player=null,video=media&&$('video',media);
-  if(d.dataset.shots&&media){media.innerHTML=d.dataset.shots.split(',').map((s,k)=>'<img data-src="'+s+'" alt="" class="'+(k?'':'cur')+'">').join('');player=makeSlides(media,1700)}
+  if(d.dataset.shots&&media){media.innerHTML=d.dataset.shots.split(',').map((s,k)=>'<img data-src="'+s+'" alt="" class="'+(k?'':'cur')+'">').join('');player=makeSlides(media,2800)}
   d._on=function(){if(d.classList.contains('soon'))return;devs.forEach(o=>o!==d&&o._off&&o._off());d.classList.add('on');
     if(video){if(!video.src){video.poster=video.dataset.poster;const r=d.dataset.reel;video.src=video.canPlayType('video/mp4; codecs="avc1.4D401E"')?r:r.replace(/\.mp4$/,'.webm')}video.currentTime=0;const p=video.play();if(p&&p.catch)p.catch(()=>{})}
     if(player){loadImg($('img',media));player.start()}};
