@@ -5431,9 +5431,12 @@ function soundKind(y, sr) {
 function takeKind(c) {
   const r = c?.raw; if (!r || c.status !== "done" || c.override) return "music";
   const K = r.kind || {}, Y = r.yam, avg = a => a?.length ? a.reduce((x, v) => x + v, 0) / a.length : null, m = Y ? avg(Y.music) : null, sp = Y ? avg(Y.speech) : null;
-  if (K.kind === "silence" || (r.musicalSeconds ?? 99) < 1) return "silence";
+  // silence only when there's no sound to speak of; sound with no musical structure in it is noise (or talking)
+  const L = r.loud || [], energy = K.loudFrac != null ? K.loudFrac >= 0.05 : L.filter(v => v > -50).length >= 0.05 * (L.length || 1);
+  if (K.kind === "silence" || !energy) return "silence";
   if (Y && m < 0.12 && sp < 0.4 && !(K.voicedFrac >= 0.6)) return "noise";
   if (Y && ((sp >= 0.4 && sp > m) || (sp >= 0.2 && m < 0.45 && K.semiDev > 19 && !(K.vibrato >= 0.3)))) return "speech";
+  if ((r.musicalSeconds ?? 99) < Math.min(8, Math.max(1.5, (r.duration || 0) * 0.5)) && !c.parts?.length) { const tk = r.penalty?.talking || []; return tk.filter(v => v > 0).length >= 0.3 * (tk.length || 1) && tk.length ? "speech" : "noise"; }
   if (K.voicedFrac >= 0.6 && K.vibrato >= 0.3) return "vocal";
   return "music";
 }
