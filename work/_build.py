@@ -12,7 +12,7 @@ P = [
   cards=[("The problem","In the first minutes of an emergency, the people closest to you can often get there first. There was no simple way to call them."),
          ("What I built","The brand, the Android and web app with real-time SOS and maps, and a community dashboard built privacy-first."),
          ("Where it is","In closed beta with first testers. Site: shomer-app.co.il.")],
-  shots=["../assets/real/shomer-screen1.jpg","../assets/screens/shomer-1.jpg"],
+  shots=["../assets/studio/shomer-app-map-clean.webp","../assets/studio/shomer-app-circles.webp","../assets/studio/shomer-app-guide.webp"],
   out=("Visit SH✡MER","https://www.shomer-app.co.il/")),
  dict(slug="lickpick", name="LickPick", cat="Music app", status="Free beta",
   line="Drop in your jams. LickPick cuts the flubs and hands you the take worth posting.",
@@ -20,7 +20,7 @@ P = [
   cards=[("The problem","Players record every jam, then never dig the good take out of the camera roll."),
          ("What I built","The brand, the interface and a web app that runs on the phone, even offline. Clips never leave the device."),
          ("Where it is","Free beta on Android and Chrome.")],
-  shots=["../lickpick/assets/m_home.jpg","../lickpick/assets/m_pick.jpg","../lickpick/assets/m_export.jpg"],
+  shots=["../assets/studio/screens/lickpick-welcome.webp","../assets/studio/screens/lickpick-pick.webp"],
   out=("Visit LickPick","../lickpick/")),
  dict(slug="trashure-hunters", name="Trashure-Hunters", cat="Kids' eco game", status="In development",
   line="Kids pick up real litter in their neighbourhood, and every cleanup heals a magical world.",
@@ -28,8 +28,16 @@ P = [
   cards=[("The problem","Kids see litter every day and learn to walk past it."),
          ("What I built","Six realms and their Elemonsters, the brand, the interface, and a test build where a photo of real litter earns progress."),
          ("Where it is","Private test build. Not yet available to download.")],
-  shots=["../assets/work/trashure/splashscreen.png","../assets/screens/th-map.png"],
-  out=None),
+  shots=["../assets/opt/th-splash.webp","../assets/opt/th-map.webp"],
+  out=("Visit Trashure-Hunters","../th-site/")),
+ dict(slug="shomer-nature", name="SH✡MER Nature", cat="Safety in nature", status="Free beta · Israel",
+  line="See an injured animal, a small fire or litter in a reserve? Report it in one tap, and the shomers nearby know right away.",
+  did="Brand, product design and the working app: one-tap reports, SOS and trip check-in, and first-aid guides in plain Hebrew.",
+  cards=[("The problem","In nature, the person closest to an injured animal, a fire or a hiker in trouble is often the only one who can help in time."),
+         ("What I built","One-tap reports with photo and location, SOS and a trip check-in that alerts השומרים שלי, and step-by-step first-aid guides."),
+         ("Where it is","Free beta for Android, and in the browser on iPhone and desktop.")],
+  shots=["../assets/studio/screens/nature-map.webp","../assets/studio/screens/nature-guide.webp","../assets/studio/screens/nature-report.webp"],
+  out=("Visit SH✡MER Nature","../shomer-nature-preview/")),
  # chore-royale.html and fairent.html are hand-built pages (2 Nov 2026): custom=True keeps them in "More work" links only.
  dict(slug="chore-royale", custom=True, name="Chore Royale", cat="Family game", status="Free web app",
   line="Spin the wheel, do the chore, snap a photo, earn stars. Nobody argues with the wheel.",
@@ -45,9 +53,9 @@ CSS = """
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#08080f;--bg2:#0d0d1a;--card:#111120;--ink:#f4f4fc;--mut:rgba(200,200,225,.62);--line:rgba(130,57,234,.2);
 --purple:#8239ea;--purple2:#9b59f7;--green:#3dcc6e;--green2:#52e87d;
---head:'Syne',sans-serif;--body:'Inter',sans-serif;--mono:'Space Grotesk',sans-serif;color-scheme:dark}
-@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f4fc;--bg2:#eaeaf6;--card:#ffffff;--ink:#0d0d1a;--mut:rgba(40,40,80,.68);--line:rgba(130,57,234,.16);color-scheme:light}}
-:root[data-theme="light"]{--bg:#f4f4fc;--bg2:#eaeaf6;--card:#ffffff;--ink:#0d0d1a;--mut:rgba(40,40,80,.68);--line:rgba(130,57,234,.16);color-scheme:light}
+--head:'Syne',sans-serif;--body:'Inter',sans-serif;--mono:'Space Grotesk',sans-serif;--lab:#b07cff;color-scheme:dark}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--lab:#6a2bc9;--bg:#f4f4fc;--bg2:#eaeaf6;--card:#ffffff;--ink:#0d0d1a;--mut:rgba(40,40,80,.68);--line:rgba(130,57,234,.16);color-scheme:light}}
+:root[data-theme="light"]{--lab:#6a2bc9;--bg:#f4f4fc;--bg2:#eaeaf6;--card:#ffffff;--ink:#0d0d1a;--mut:rgba(40,40,80,.68);--line:rgba(130,57,234,.16);color-scheme:light}
 html{scroll-behavior:smooth;overflow-x:clip}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
@@ -79,7 +87,7 @@ h1{font:800 clamp(40px,6vw,76px)/1.02 var(--head);letter-spacing:-.035em;margin-
 .shots.n1 .shot{flex-basis:420px;border-radius:20px}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:24px 0 72px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
-.card h2{font:600 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--purple2);margin-bottom:10px}
+.card h2{font:600 12px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--lab);margin-bottom:10px}
 .card p{font-size:16px}
 .band{background:linear-gradient(135deg,var(--purple),#5a1fc0);color:#fff;border-radius:24px;padding:44px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
 .band h2{font:800 clamp(24px,3vw,34px)/1.1 var(--head);letter-spacing:-.02em;max-width:22ch}
@@ -113,7 +121,7 @@ def page(p):
 <meta name="robots" content="noindex">
 <link rel="icon" href="../favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
 <style>{CSS}</style>
 </head>
 <body>
@@ -164,12 +172,13 @@ if __name__ == "__main__":
       "chorewars-case.html": "work/chore-royale.html", "th.html": "work/trashure-hunters.html",
       "products/th.html": "work/trashure-hunters.html", "products/lickpick.html": "work/lickpick.html",
       "products/chore-royale.html": "work/chore-royale.html", "studio/th.html": "work/trashure-hunters.html",
-      "studio/index.html": "", "shomernature-case.html": "work/shomer.html",
+      "studio/index.html": "", "shomernature-case.html": "work/shomer-nature.html",
       # parked: back to the studio home
       "j8nix-case.html": "", "products/j8nix.html": "", "ezra-case.html": "", "products/ezra.html": "",
       "milo-case.html": "", "products/milo.html": "", "fairent-case.html": "work/fairent.html", "products/fairent.html": "work/fairent.html",
       "products/rookie-king.html": "", "products/media-network.html": "",
     }
     for f, t in redirects.items():
+        os.makedirs(os.path.dirname(f) or ".", exist_ok=True)
         open(f, "w", encoding="utf-8").write(stub(R + t))
     print("built", len(P), "pages,", len(redirects), "redirects")
