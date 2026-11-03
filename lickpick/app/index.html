@@ -1883,7 +1883,7 @@ details.fold.more details.fold{margin-top:0}
     DARK: "lens covered / too dark", BLUR: "out of focus", MOVE: "camera moving", FRAME: "camera re-aimed (new shot)",
   };
   const HARD = new Set([R.SIL, R.STOP, R.FAIL, R.DARK, R.TALK, R.TICK, R.FRAME]);
-  const WEIGHTS = { [R.SIL]: 1, [R.STOP]: 1, [R.FAIL]: 1, [R.PITCH]: 0.55, [R.KEY]: 0.55, [R.NOISE]: 0.7, [R.TICK]: 1, [R.TIME]: 0.35, [R.CLIP]: 0.35, [R.DARK]: 1, [R.BLUR]: 0.4, [R.MOVE]: 0.6, [R.FRAME]: 1 };  // blur alone only cuts on Strict; a covered lens always cuts
+  const WEIGHTS = { [R.SIL]: 1, [R.STOP]: 1, [R.FAIL]: 1, [R.PITCH]: 0.55, [R.KEY]: 0.55, [R.NOISE]: 0.7, [R.TICK]: 1, [R.TIME]: 0.35, [R.CLIP]: 0.35, [R.DARK]: 1, [R.BLUR]: 0.4, [R.MOVE]: 0.6, [R.FRAME]: 1 };  // blur alone only cuts on Strict; a dark or covered lens is left to the sound (videoPenalties)
 
   // ---------- small math
   const median = a => { const b = a.filter(Number.isFinite).sort((x, y) => x - y); if (!b.length) return NaN; const m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; };
@@ -2309,12 +2309,16 @@ details.fold.more details.fold{margin-top:0}
   function videoPenalties(frames, nCells, step) {
     if (!frames.length) return null;
     const dark = new Array(nCells).fill(0), blur = new Array(nCells).fill(0);
-    const medSharp = median(frames.map(f => f.sharp)) || 1;
+    // a picture with almost no detail (a dark room, a phone face-down, a flat colour) says nothing about the playing:
+    // focus checks skip those frames, and every camera check is off when most of the take is like that. The sound decides.
+    const flat = f => f.std < 12 || f.luma < 30, pic = frames.filter(f => !flat(f));
+    if (pic.length < 0.5 * frames.length) { const z = () => new Array(nCells).fill(0); return { [R.DARK]: z(), [R.BLUR]: z(), [R.MOVE]: z(), [R.FRAME]: z(), _shots: [] }; }
+    const medSharp = median(pic.map(f => f.sharp)) || 1;
     for (const f of frames) {
+      if (flat(f)) continue;
       const a = Math.floor(f.t / CELL), b = Math.min(nCells, Math.max(a + 1, Math.floor((f.t + step) / CELL)));
-      const d = (f.luma < 18 || (f.luma < 30 && f.std < 10)) ? 1 : 0;
       const bl = f.sharp < 0.3 * medSharp && f.sharp < 40 ? clamp((0.3 * medSharp - f.sharp) / (0.2 * medSharp), 0, 1) : 0;
-      for (let i = a; i < b; i++) { dark[i] = Math.max(dark[i], d); blur[i] = Math.max(blur[i], bl); }
+      for (let i = a; i < b; i++) blur[i] = Math.max(blur[i], bl);
     }
     // the camera itself moving (picked up, put down, turned off): picture change far above this take's usual
     const move = new Array(nCells).fill(0), D = frames.map(f => f.diff).filter(Number.isFinite), medD = median(D) || 1;
