@@ -1867,7 +1867,7 @@ details.fold.more details.fold{margin-top:0}
 <script>window.LP_PAY = { provider: "lemonsqueezy", mode: "test", store: "499938", portal: "https://3sstudio.lemonsqueezy.com/billing", products: { pro: ["1483622", "2312281", "2312296"] },
   test: { yearly: "https://3sstudio.lemonsqueezy.com/checkout/buy/287a3571-4cab-4413-854f-f52f8ae858f0", monthly: "https://3sstudio.lemonsqueezy.com/checkout/buy/c212571a-b04d-4622-b5cb-3d2197966fb2" },
   live: { yearly: "", monthly: "" } };</script>
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-03c"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-03d"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -4893,6 +4893,7 @@ function verdict(c) {
   if (c.status === "error") return "review";
   if (c.status !== "done") return "busy";
   if (c.override) return c.override;
+  if (notMusic(c)) return "trash";   // talking or noise: suggested only, your own call always wins
   if (keptSeconds(c) >= state.minKeep) return "keep";
   return hasMusic(c) ? "review" : "trash";
 }
@@ -5370,12 +5371,101 @@ async function keepAwake(on) {
 }
 // Reads only the sound track, a chunk at a time, mixed to mono at 22.05 kHz. Big phone videos never
 // have to fit in memory. Falls back to the browser's one-shot decoder if this path isn't available.
+// What kind of sound is this? Pitch-track a sample of the take (YIN-style difference function on 46 ms frames)
+// and read the cues a listener uses: how much is pitched, whether the pitches sit on the semitone grid (music) or
+// glide freely (speech), whether notes are held with vibrato (a voice) or ring down after an attack (a plucked or
+// struck instrument), and how noise-like the spectrum is. Returns { kind: "instrument"|"vocal"|"speech"|"noise", ... }.
+function soundKind(y, sr) {
+  const N = 1024, H = 441, minL = Math.floor(sr / 900), maxL = Math.floor(sr / 65), seg = Math.round(sr * 1.5);
+  // up to 48 stretches of 1.5 s, spread over the take, so a 30-minute jam costs the same as a 1-minute one
+  const n = y.length, K = Math.max(1, Math.min(48, Math.floor(n / seg))), starts = [];
+  for (let k = 0; k < K; k++) starts.push(Math.floor((n - seg) * (K > 1 ? k / (K - 1) : 0)));
+  const fr = [];   // per frame: [f0 or 0, rms, flatness proxy]
+  const d = new Float32Array(maxL + 1), runs = [];
+  for (const st of starts) { let run = [];
+    for (let i = st; i + N + maxL < Math.min(n, st + seg); i += H) {
+      let e = 0; for (let j = 0; j < N; j++) e += y[i + j] * y[i + j]; const rms = Math.sqrt(e / N);
+      // zero-crossing rate: a cheap noisiness cue
+      let z = 0; for (let j = 1; j < N; j++) if ((y[i + j] >= 0) !== (y[i + j - 1] >= 0)) z++;
+      let f0 = 0;
+      if (rms > 0.004) {
+        for (let L = minL; L <= maxL; L++) { let s = 0; for (let j = 0; j < N; j += 2) { const q = y[i + j] - y[i + j + L]; s += q * q; } d[L] = s; }
+        let run2 = 0, best = -1; const cm = new Float32Array(maxL + 1);
+        for (let L = minL; L <= maxL; L++) { run2 += d[L]; cm[L] = d[L] * (L - minL + 1) / (run2 || 1); }
+        for (let L = minL + 1; L < maxL; L++) if (cm[L] < 0.18 && cm[L] <= cm[L - 1] && cm[L] <= cm[L + 1]) { best = L; break; }
+        if (best > 0) { const a = cm[best - 1], b = cm[best], c = cm[best + 1], den = a - 2 * b + c, off = den > 0 ? 0.5 * (a - c) / den : 0; f0 = sr / (best + off); }
+      }
+      fr.push([f0, rms, z / N]); run.push([f0, rms]);
+    }
+    runs.push(run); }
+  const tot = fr.length || 1, loud = fr.filter(f => f[1] > 0.004), voiced = fr.filter(f => f[0] > 0);
+  const voicedFrac = voiced.length / Math.max(1, loud.length), zcr = loud.reduce((a, f) => a + f[2], 0) / Math.max(1, loud.length);
+  // semitone grid: cents off the nearest semitone after the take's own tuning offset
+  const cents = voiced.map(f => { const m = 12 * Math.log2(f[0] / 440); return (m - Math.round(m)) * 100; });
+  let bestT = 0, bestDev = 99; for (let t = -50; t < 50; t += 2) { let s = 0; for (const c of cents) { let x = c - t; x -= 100 * Math.round(x / 100); s += Math.abs(x); } s /= Math.max(1, cents.length); if (s < bestDev) { bestDev = s; bestT = t; } }
+  // glide vs hold, vibrato, and how a note's level moves after it starts
+  let steps = 0, glide = 0, held = 0, heldN = 0, vib = 0, vibN = 0, decay = 0, decN = 0;
+  for (const run of runs) {
+    let a = 0; while (a < run.length) { if (!run[a][0]) { a++; continue; } let b = a; while (b + 1 < run.length && run[b + 1][0] && Math.abs(12 * Math.log2(run[b + 1][0] / run[b][0])) < 1.5) b++;
+      const len = b - a + 1;
+      for (let k = a + 1; k <= b; k++) { glide += Math.abs(12 * Math.log2(run[k][0] / run[k - 1][0])); steps++; }
+      if (len >= 8) { heldN++; const p = run.slice(a, b + 1).map(f => 12 * Math.log2(f[0] / 440)), mu = p.reduce((x, v) => x + v, 0) / len; const sd = Math.sqrt(p.reduce((x, v) => x + (v - mu) ** 2, 0) / len); if (sd < 0.6) held++;
+        // vibrato: the pitch crosses its own mean 4-7.5 times a second, by 0.1 to 1 semitone
+        let zc = 0; for (let k = 1; k < len; k++) if ((p[k] - mu >= 0) !== (p[k - 1] - mu >= 0)) zc++; const rate = zc / 2 / (len * H / sr); vibN++; if (rate >= 3.5 && rate <= 8 && sd > 0.06 && sd < 0.8) vib++;
+        const r0 = run[a + 1][1], r1 = run[b][1]; decay += 20 * Math.log10((r1 + 1e-6) / (r0 + 1e-6)) / (len * H / sr); decN++; }
+      a = b + 1; } }
+  const out = { voicedFrac: +voicedFrac.toFixed(2), semiDev: +bestDev.toFixed(1), glide: +(glide / Math.max(1, steps) * (sr / H)).toFixed(1), held: +(held / Math.max(1, heldN)).toFixed(2), vibrato: +(vib / Math.max(1, vibN)).toFixed(2), decayDbS: +(decay / Math.max(1, decN)).toFixed(1), zcr: +zcr.toFixed(3), loudFrac: +(loud.length / tot).toFixed(2), heldN };
+  out.kind = out.loudFrac < 0.05 ? "silence" : out.voicedFrac < 0.2 ? "noise" : out.semiDev > 19 && out.glide > 6 ? "speech" : (out.vibrato >= 0.3 && out.decayDbS > -6) ? "vocal" : "instrument";
+  return out;
+}
+// what this recording is, from the listening model (YAMNet, when it ran) and the pitch cues above:
+// "music", "vocal" (singing: LickPick picks vocal licks too), or "speech" / "noise" (no lick to pick, said plainly)
+function takeKind(c) {
+  const r = c?.raw; if (!r || c.status !== "done" || c.override) return "music";
+  const K = r.kind || {}, Y = r.yam, avg = a => a?.length ? a.reduce((x, v) => x + v, 0) / a.length : null, m = Y ? avg(Y.music) : null, sp = Y ? avg(Y.speech) : null;
+  if (K.kind === "silence" || (r.musicalSeconds ?? 99) < 1) return "silence";
+  if (Y && m < 0.12 && sp < 0.4 && !(K.voicedFrac >= 0.6)) return "noise";
+  if (Y && ((sp >= 0.4 && sp > m) || (sp >= 0.2 && m < 0.45 && K.semiDev > 19 && !(K.vibrato >= 0.3)))) return "speech";
+  if (K.voicedFrac >= 0.6 && K.vibrato >= 0.3) return "vocal";
+  return "music";
+}
+const notMusic = c => { const k = takeKind(c); return k === "speech" || k === "noise" ? k : null; };
+const NOT_MUSIC_MSG = { speech: "This sounds like talking, not playing. LickPick is built for music, so there's no lick to pick here.", noise: "This sounds like noise, not music. LickPick is built for playing and singing, so there's no lick to pick here." };
+// share of the recording where the mic was overloaded (distorted sound)
+const clipShare = c => { const v = c?.raw?.penalty?.[ClipEngine.R.CLIP]; return v?.length ? v.filter(x => x > 0).length / v.length : 0; };
+// no clean lick: the closest thing to one (the strongest 15 s), and what would help next time
+function closestLick(c) { const D = c.raw?.duration || 0; if (D < 6) return null; const w = ClipExporter.bestWindow(c.raw.highlight || [], CELL, [[0, D]], Math.min(15, D)); return w && w.e - w.s >= 4 ? w : null; }
+function noLickHTML(c) {
+  const w = closestLick(c), cl = clipShare(c), tn = c.raw?.info?.tuning, tips = [];
+  if (cl > 0.3) tips.push("The sound is distorted: the mic was overloaded. Move the phone a step back or turn the amp down.");
+  if (Number.isFinite(tn) && Math.abs(tn) >= 25) tips.push(`Tune up first: this recording is ${Math.abs(Math.round(tn))} cents ${tn > 0 ? "sharp" : "flat"}.`);
+  tips.push("Play one idea for 20 seconds or more without stopping.", "Keep a steady tempo. A click or a drum loop helps.", "A quiet room, phone 1 to 2 m away, still.");
+  return `<div class="pickhero none"><p><b>No clean lick in this one.</b> Nothing held up for ${state.pickLen === "auto" ? "about 20" : Math.round(state.pickLen * 0.8)} seconds in a row${cl > 0.3 ? ", and the sound is distorted" : ""}.</p>
+    ${w ? `<p><button class="btn sm" type="button" data-act="closest-play" data-s="${w.s}" data-e="${w.e}">${icon("i-play")}Hear the closest one (${fmt(w.s)} → ${fmt(w.e)})</button></p>` : ""}
+    <ul class="hint keep">${tips.slice(0, 4).map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+    <p class="hint keep">${state.pickLen === "auto" || state.pickLen > 15 ? "Short clip? Set Pick length to 15s below. " : ""}Or open Segments and keep what you like.</p></div>`;
+}
+// lots of great playing: the strong licks past A, B and C, so nothing good is hidden
+function moreLicks(c, list) {
+  if ((list || []).length < 3 || !c.raw?.highlight) return [];
+  const key = list.map(p => p.s + ":" + p.e).join("|"); if (c._more?.key === key) return c._more.v;
+  const Hh = c.raw.highlight, avgH = (a, b) => { let t = 0, n = 0; for (let i = Math.floor(a / CELL); i < Math.min(Hh.length, Math.ceil(b / CELL)); i++) { t += Hh[i]; n++; } return n ? t / n : 0; };
+  const len = list.reduce((t, p) => t + p.e - p.s, 0) / list.length, bar = Math.min(...list.map(p => avgH(p.s, p.e))) * 0.9, taken = list.map(p => [p.s, p.e]), out = [];
+  for (let k = 0; k < 6; k++) {
+    const free = []; let t = 0; for (const [a, b] of taken.slice().sort((x, y) => x[0] - y[0])) { if (a - t >= len) free.push([t, a]); t = Math.max(t, b); } if ((c.raw.duration || 0) - t >= len) free.push([t, c.raw.duration]);
+    const parts = free.filter(([a, b]) => onParts(c).some(p => Math.min(p.end, b) - Math.max(p.start, a) >= len * 0.8)); if (!parts.length) break;
+    const w = ClipExporter.bestWindow(Hh, CELL, parts, len); if (!w || avgH(w.s, w.e) < bar) break;
+    out.push({ s: w.s, e: w.e }); taken.push([w.s, w.e]);
+  }
+  out.sort((a, b) => a.s - b.s); c._more = { key, v: out }; return out;
+}
 async function decodeAudioStream(file, onP) {
   const M = await mb();
   const input = new M.Input({ source: new M.BlobSource(file), formats: M.ALL_FORMATS });
   const stall = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("stalled")), ms))]);
   const at = await stall(input.getPrimaryAudioTrack(), 8000);
-  if (!at || !(await stall(at.canDecode(), 8000))) return null;
+  if (!at) { let vt = null; try { vt = await stall(input.getPrimaryVideoTrack(), 8000); } catch { } if (vt) throw Object.assign(new Error("no sound track"), { code: "no_audio" }); return null; }
+  if (!(await stall(at.canDecode(), 8000))) return null;
   const dur = await stall(at.computeDuration(), 8000), SR = 22050;
   if (dur > LIMITS.maxSec) throw Object.assign(new Error("too long"), { code: "too_long" });
   if (dur < LIMITS.minSec) throw Object.assign(new Error("too short"), { code: "too_short" });
@@ -5419,7 +5509,7 @@ async function pump() {
   busy = true; keepAwake(true); c.status = "listening"; c.phase = "listening"; c._t0 = performance.now(); renderCard(c); renderTop();
   try {
     let y = null, sr = 22050;
-    if (!streamBroken) try { const st = await decodeAudioStream(c.file, p => { c.progress = p * 0.25; renderCard(c); }); if (st) { y = st.data; sr = st.sampleRate; c.decoder = "stream"; } } catch (e) { y = null; if (e?.code === "too_long" || e?.code === "too_short") throw e; if (String(e).includes("stalled")) streamBroken = true; }
+    if (!streamBroken) try { const st = await decodeAudioStream(c.file, p => { c.progress = p * 0.25; renderCard(c); }); if (st) { y = st.data; sr = st.sampleRate; c.decoder = "stream"; } } catch (e) { y = null; if (e?.code === "too_long" || e?.code === "too_short" || e?.code === "no_audio") throw e; if (String(e).includes("stalled")) streamBroken = true; }
     if (!y) {
       // a file the phone can't decode must never block the clips behind it
       const audio = await within(decodeAudio(c.file), 45000 + c.size / 2e6 * 1000, "decode"); c.decoder = "full";
@@ -5430,6 +5520,7 @@ async function pump() {
     { const d0 = y.length / sr; if (d0 > LIMITS.maxSec) throw Object.assign(new Error("too long"), { code: "too_long" }); if (d0 < LIMITS.minSec) throw Object.assign(new Error("too short"), { code: "too_short" }); }
     c.raw = await ClipEngine.analyzePCM(y, sr, p => { c.progress = base + p * (0.62 - base); renderCard(c); }, 150);
     delete c.raw._dbg;
+    try { c.raw.kind = soundKind(y, sr); } catch { }
     // the listening model's second opinion on the whole take (music / talking / silence / noise per half second)
     c.phase = "listening"; try { c.raw.yam = await within(yamTake(y, sr, p => { c.progress = 0.62 + p * 0.08; renderCard(c); }), 12000 + c.raw.duration * 120, "listen"); if (c.raw.yam) ClipEngine.applyYam(c.raw); } catch (err) { diagLog("listening model skipped: " + String(err?.message || err).slice(0, 60)); } { const pcm = { data: y, sampleRate: sr }; saveProxy(c, async () => pcm); } y = null;
     if (c.raw.duration <= 240) try { const A = LickMusic.analyze(c.raw, 0, c.raw.duration); if (A?.pulse && A.bpm) c.raw.info.tempo = Math.round(A.bpm); } catch { } // one tempo everywhere: the beat tracker's (long takes keep the scan's, to stay fast)
@@ -5447,7 +5538,7 @@ async function pump() {
     redecide(c, true); c.status = "done"; keepVideo(c); c.scanMs = performance.now() - c._t0; diag.scans.push({ name: c.name, sec: Math.round(c.raw.duration), scan: +(c.scanMs / 1000).toFixed(1) }); persist(c); unpend(c);
   } catch (err) {
     { const j = keepJobs.get(c.key); keepJobs.delete(c.key); (j || Promise.resolve()).then(() => vault.del("v", c.key)); c.inLib = false; }   // a failed scan keeps no copy
-    diagLog("scan failed: " + c.name + " (" + String(err?.code || err?.message || err || "unreadable").slice(0, 80) + ")"); unpend(c); c.status = "error"; c.errorMsg = err?.code === "too_long" ? "Over 30 minutes. Trim it in your gallery, then add it again." : err?.code === "too_short" ? "Under 5 seconds. Too short to judge." : ""; c.error = err?.code === "too_long" ? "can't scan videos over 30 minutes" : err?.code === "too_short" ? "can't judge a clip under 5 seconds" : /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
+    diagLog("scan failed: " + c.name + " (" + String(err?.code || err?.message || err || "unreadable").slice(0, 80) + ")"); unpend(c); c.status = "error"; c.errorMsg = err?.code === "too_long" ? "Over 30 minutes. Trim it in your gallery, then add it again." : err?.code === "too_short" ? "Under 5 seconds. Too short to judge." : err?.code === "no_audio" ? "This video has no sound. LickPick listens for your playing, so it needs a video with sound." : ""; c.error = err?.code === "too_long" ? "can't scan videos over 30 minutes" : err?.code === "too_short" ? "can't judge a clip under 5 seconds" : err?.code === "no_audio" ? "no sound in this video" : /memory|allocation|range/i.test(String(err)) ? "too big for this phone to listen to" : "couldn't read the sound";
   }
   busy = false; renderCard(c); renderTop(); renderBoxes(); if (state.openId === c.id) renderStudio(); pump();
 }
@@ -5461,7 +5552,7 @@ function unpend(c) { if (unloading) return; store.set("lp:pending", (store.get("
 // The Pick: the best complete musical phrases of the take (bar-aligned when there's a beat), up to 3
 // alternatives. Length: "auto" (the best phrase, 20-45 s) or a target in seconds.
 function picksOf(c) {
-  if (c.status !== "done" || !c.raw?.loud) return [];
+  if (c.status !== "done" || !c.raw?.loud || notMusic(c)) return [];
   const parts = onParts(c).map(p => [p.start, p.end]), key = JSON.stringify([parts, state.pickLen, c.raw.v, c._tv ?? taste.ver]);
   if (c._picks?.key !== key) {
     // computed just after the screen updates, so a long take never freezes a tap
@@ -5523,7 +5614,7 @@ function phrase(c) {
   if (c.status === "error") return c.errorMsg ? `<b>Not checked</b> ${esc(c.errorMsg)}` : `<b>Not checked</b>${esc(c.error)}. Open it to play it yourself.`;
   const v = verdict(c), k = keptSeconds(c), n = onParts(c).length;
   const pk = pickOf(c), cuts = (c.result?.removed || []).length;
-  if (v === "trash") return c.override ? "Marked by you" : "No music found";
+  if (v === "trash") return c.override ? "Marked by you" : notMusic(c) === "speech" ? "Sounds like talking, not music" : notMusic(c) === "noise" ? "Sounds like noise, not music" : "No music found";
   const pickTxt = pk ? `<b class="pk-l">★ ${fmt(pk.len)}</b>` : c._pickJob ? "<b>Finding pick…</b>" : "<b>No pick</b>";
   const info = c.raw?.info || {}, facts = [keyText(c), info.tempo && `${info.tempo} BPM`, fmt(c.raw.duration)].filter(Boolean);
   return `${pickTxt} <span class="sub">${esc(facts.join(" · "))}${c.saved || c.pickSaved ? " · saved" : ""}${c.file ? "" : " · re-add to save"}</span>`;
@@ -6235,18 +6326,21 @@ function suggestHTML(c) {
 }
 function pickPanel(c) {
   const list = picksOf(c), pk = pickOf(c), v = verdict(c), rep = report(c), k = keptSeconds(c), D = c.raw?.duration || 0;
-  const verdictLine = { keep: `Worth keeping. ${fmt(k)} of clean playing.`, review: k ? `Some gold, not much: ${fmt(k)} clean.` : "Playing, but nothing clean enough.", trash: "No music found. Safe to delete." }[v] || "";
+  const verdictLine = { keep: `Worth keeping. ${fmt(k)} of clean playing.`, review: k ? `Some gold, not much: ${fmt(k)} clean.` : "Playing, but nothing clean enough.", trash: notMusic(c) ? NOT_MUSIC_MSG[notMusic(c)] : "No music found. Safe to delete." }[v] || "";
   const facts = [keyText(c) && ["Key", keyText(c)], c.raw?.info?.tempo && ["Tempo", c.raw.info.tempo + " BPM"], ["Length", fmt(D)], ["Camera", c.raw?.cameraChecked ? "checked" : "not checked"]].filter(Boolean);
   const canSave = !!c.file && !!downloads && !c.exporting, L = state.pickLen;
   return `    ${!pk && c._pickJob ? `<div class="pickhero none"><p class="working"><span class="pulse"></span>Finding your best phrase…</p></div>` : pk ? `<div class="pickhero">
       <div class="pk-top"><span class="pk-tag">Pick ${"ABC"[c.pickSel || 0]}</span>${pk.why?.length ? `<span class="pk-why">${pk.why.map(esc).join(" · ")}</span>` : ""}${tasteK() > 0 && Math.abs(pk.tasteAdj || 0) > 0.004 ? `<button type="button" class="tuned" data-act="taste-open">${icon("i-bolt")}Tuned to you</button>` : ""}</div>
       <div class="pk-big"><strong>${fmt(pk.len)}</strong><span>${fmt(pk.s)} → ${fmt(pk.e)}</span></div>
     </div>
+    ${takeKind(c) === "vocal" ? `<p class="hint keep">${icon("i-note")}Singing: LickPick picks your best vocal lick, and the band can build chords from your melody.</p>` : ""}
+    ${clipShare(c) > 0.3 ? `<p class="hint keep warnline">Heads up: the sound is distorted in much of this jam (the mic was overloaded). Next time, move the phone a step back or turn the amp down.</p>` : ""}
+    ${(() => { const M = moreLicks(c, list); return M.length ? `<div class="morelicks"><p class="hint keep"><b>Lots of great playing here.</b> ${M.length} more strong lick${M.length > 1 ? "s" : ""} past A, B and C:</p><div class="row-btns">${M.map(x => `<button class="btn sm ghost" type="button" data-act="more-play" data-s="${x.s}" data-e="${x.e}">${icon("i-play")}${fmt(x.s)} → ${fmt(x.e)}</button>`).join("")}</div></div>` : ""; })()}
     ${pk.adj || state.adjust ? `<div class="finetune">
       <div class="grp"><div class="lbl">Starts <b>${fmtP(pk.s)}</b></div><div class="btns"><button type="button" data-padj="s:-1" aria-label="Start one bar earlier">−1 bar</button><button type="button" data-padj="s:1" aria-label="Start one bar later">+1 bar</button></div></div>
       <div class="grp"><div class="lbl">Ends <b>${fmtP(pk.e)}</b></div><div class="btns"><button type="button" data-padj="e:-1" aria-label="End one bar earlier">−1 bar</button><button type="button" data-padj="e:1" aria-label="End one bar later">+1 bar</button></div></div>
     </div>` : `<p class="adjrow"><button class="linkbtn" type="button" data-act="pick-adjust">Adjust start or end</button></p>`}
-    <p class="hint">${pk.adj ? `Nudged by you. <button class="linkbtn" type="button" data-padj="reset">Undo nudges</button>` : list.length > 1 ? "Not feeling it? Tap B or C. Drag the yellow handles on the timeline to add or trim time, a bar at a time." : "Drag the yellow handles on the timeline to add or trim time, a bar at a time."}</p>${suggestHTML(c)}` : `<div class="pickhero none"><p>${hasMusic(c) ? `A Pick needs ${state.pickLen === "auto" ? "about 20" : Math.round(state.pickLen * 0.8)} seconds of clean playing in one go. ${state.pickLen === "auto" || state.pickLen > 15 ? "For short clips, set Pick length to 15s below. " : ""}Or open Segments and keep what you like.` : "No music found in this clip."}</p></div>`}
+    <p class="hint">${pk.adj ? `Nudged by you. <button class="linkbtn" type="button" data-padj="reset">Undo nudges</button>` : list.length > 1 ? "Not feeling it? Tap B or C. Drag the yellow handles on the timeline to add or trim time, a bar at a time." : "Drag the yellow handles on the timeline to add or trim time, a bar at a time."}</p>${suggestHTML(c)}` : (notMusic(c) ? `<div class="pickhero none"><p>${esc(NOT_MUSIC_MSG[notMusic(c)])}</p><p class="hint keep">Got a jam? Add it and LickPick finds your best lick. Think it's music? Tap Keep and LickPick treats it as music.</p></div>` : hasMusic(c) ? noLickHTML(c) : `<div class="pickhero none"><p>No music found in this clip.</p></div>`)}
 <details class="bsub" data-bsub="pmore"${state.bsub === "pmore" ? " open" : ""}><summary><b>Rate, length, why this part</b><em>${L === "auto" ? "Auto length" : L + "s"}</em></summary><div class="bsubin">
 ${pk ? rateStrip(c, pk.s, pk.e, `Rate Pick ${"ABC"[c.pickSel || 0]}`) : ""}
 <div class="row2 lenrow"><span><b>Pick length</b></span><span class="seg">${[["auto", "Auto"], [15, "15s"], [30, "30s"], [45, "45s"], [60, "60s"]].map(([val, lab]) => `<button type="button" data-plen="${val}" aria-pressed="${L === val}">${lab}</button>`).join("")}</span></div>
@@ -6897,7 +6991,7 @@ const keyCtx = c => [c?.raw?.info?.keyRoot ?? null, c?.raw?.info?.keyMode === "m
 const keyText = c => c?.raw?.info?.keyRoot != null ? LickMusic.keyLabel(c.raw.info.keyRoot, c.raw.info.keyMode === "min") : (c?.raw?.info?.key && c.raw.info.key !== "no clear key" ? c.raw.info.key : "");
 const sp = (c, name) => LickMusic.spellChord(name, ...keyCtx(c));
 // ---------- chords the band plays: what LickPick heard, or chords made from your melody (singers), and your edits
-const isSinger = c => (profile.plays || []).includes("vocals") || (c.band?.heard?.p?.vocals ?? 0) >= 0.35;
+const isSinger = c => (profile.plays || []).includes("vocals") || (c.band?.heard?.p?.vocals ?? 0) >= 0.35 || takeKind(c) === "vocal";
 const chOf = c => { const b = newBand(c); return b.ch || (b.ch = { src: null, edits: { at: {}, byName: {} }, selT: null, scope: "one" }); };
 const hasChEdits = c => { const e = c.band?.ch?.edits; return !!e && (Object.keys(e.at || {}).length + Object.keys(e.byName || {}).length) > 0; };
 function applyEdits(H, ed) {
@@ -8168,6 +8262,7 @@ document.addEventListener("click", e => {
   if (d.act === "tight-toggle") { const was = bandPlaying; stopBand(); c.tight = { on: !tightOn(c), user: true }; c._tight = null; persist(c); renderStudio(); showPick(c); if (c.tight.on) toast("Tightened. Press play to hear it, with the band locked to the same beat."); if (was) bandPreview(c); return; }
   if (d.loop) { const was = bandPlaying; stopBand(); c.loop = { n: +d.loop }; c.src = "pick"; persist(c); renderStudio(); showPick(c); if (was) bandPreview(c); return; }
   if (d.act === "relisten") { if (!c.file) { toast("Re-add this video first."); return; } stopBand(); for (const k of ["_bandA", "_tight", "_picks", "_pins", "_fullA", "_mixWarn", "_pickJob"]) delete c[k]; c.status = "queued"; c.progress = 0; renderStudio(); renderCard(c); pump(); toast("Listening again with the new engine…"); return; }
+  if (d.act === "closest-play" || d.act === "more-play") { playRanges(c, [[+d.s, +d.e]], d.act === "closest-play" ? "Closest lick" : "Great lick"); return; }
   if (d.act === "fix-all") { const pk = pickOf(c); if (!pk) return; let n = 0; for (const pin of pinsIn(c, pk.s, pk.e)) { if ((c.patches || []).some(x => pin.t >= x.bar[0] && pin.t < x.bar[1])) continue; const fx2 = patchFor(c, pin); if (fx2) { c.patches = (c.patches || []).filter(x => x.bar[0] !== fx2.bar[0]).concat([fx2]); n++; } }
     const A = bandA(c); let tt = false; if (A?.pulse && !A.forced && !tightFor(c)) { c.tight = { on: true, user: true }; c._tight = null; tt = true; } if (tuneOff(c) && !c.tune) c.tune = true;
     stopBand(); persist(c); renderStudio(); showPick(c); toast([tt && "Timing tightened", n && `${n} bar${n > 1 ? "s" : ""} patched`, c.tune && tuneOff(c) && "tuned to A440"].filter(Boolean).join(", ") + ". Press play to hear it." || "Nothing left to fix."); return; }
