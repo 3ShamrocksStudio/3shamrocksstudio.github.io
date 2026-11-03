@@ -2200,7 +2200,7 @@ details.fold.more details.fold{margin-top:0}
     const bassQ = bassC.map(v => { const m = Math.max(...v); return m > 0 ? Array.from(v, x => Math.round(x / m * 9)) : new Array(12).fill(0); });
         return { _dbg, musicalSeconds, styleNotes, onsetQ, onsetF, fineRate: sr / FH, fluxA, fluxL, fluxH, chgF, chromaFr, bassFr, fluxRate: sr / FHf, fluxOff: FN / 2 / sr, chromaQ, clarQ, bassQ, v: 4, frameRate: sr / HOP, frameOffset: N / 2 / sr, beatPeriodFrames, loud: db.map(v => Math.round(v * 10) / 10),
       duration: dur, nCells, penalty: pen, highlight,
-      info: { key: tonal ? `${(gmode === "maj" ? ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"] : ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"])[gk]} ${gmode === "maj" ? "major" : "minor"}` : "no clear key", keyRoot: tonal ? gk : null, keyMode: gmode, tempo: tempo ? Math.round(tempo) : null, tempoExact: tempo, tuning: Math.round(tuning) },
+      info: { key: tonal ? `${(gmode === "maj" ? ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"] : ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"])[gk]} ${gmode === "maj" ? "major" : "minor"}` : "no clear key", keyRoot: tonal ? gk : null, keyMode: gmode, tempo: tempo ? Math.round(tempo) : null, tuning: Math.round(tuning) },
     };
   }
 
