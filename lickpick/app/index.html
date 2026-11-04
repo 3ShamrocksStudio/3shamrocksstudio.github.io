@@ -1867,7 +1867,7 @@ details.fold.more details.fold{margin-top:0}
 <script>window.LP_PAY = { provider: "lemonsqueezy", mode: "test", store: "499938", portal: "https://3sstudio.lemonsqueezy.com/billing", products: { pro: ["1483622", "2312281", "2312296"] },
   test: { yearly: "https://3sstudio.lemonsqueezy.com/checkout/buy/287a3571-4cab-4413-854f-f52f8ae858f0", monthly: "https://3sstudio.lemonsqueezy.com/checkout/buy/c212571a-b04d-4622-b5cb-3d2197966fb2" },
   live: { yearly: "", monthly: "" } };</script>
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-04b"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-04c"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -1935,12 +1935,16 @@ details.fold.more details.fold{margin-top:0}
   // the notes' pitch-class weight: duration, the last note 1.5x (melodies settle on home). Shared by the audio and notes key paths.
   function noteHist(notes) { const h = new Array(12).fill(0); notes.forEach((n, i) => { h[((n.midi % 12) + 12) % 12] += (n.e - n.t) * (i === notes.length - 1 ? 1.5 : 1); }); return h; }
   // key vs the key a fifth away (E minor / B minor share most notes): when a root a fifth up or down scores about the same,
-  // keep whichever has more weight on its tonic triad (root + third) plus the tonic pull (final, lowest, longest notes)
+  // the scale's notes decide first (C major has F, G major needs F#; minor allows both 7ths): a key whose scale leaves out
+  // played weight loses. Only when the notes fit both equally: more weight on the tonic triad (root + third), tonic pull small.
+  const FIFTH_SC = { false: [0, 2, 4, 5, 7, 9, 11], true: [0, 2, 3, 5, 7, 8, 10, 11] };
   function fifthByTonic(H, T, k, minor, scoreOf, close) {
     if (!H || !T) return { k, minor }; const sH = H.reduce((a, b) => a + b, 0) || 1, sT = T.reduce((a, b) => a + b, 0) || 1;
-    const w = (r, mi) => (H[r] + H[(r + (mi ? 3 : 4)) % 12]) / sH + T[r] / sT, c0 = close(scoreOf(k, minor));
-    let best = { k, minor, w: w(k, minor) + 0.1 };
-    for (const r of [(k + 7) % 12, (k + 5) % 12]) for (const mi of [true, false]) if (scoreOf(r, mi) >= c0 && w(r, mi) > best.w) best = { k: r, minor: mi, w: w(r, mi) };
+    const out = (r, mi) => H.reduce((s, v, p) => s + (FIFTH_SC[mi].includes((p - r + 12) % 12) ? 0 : v), 0) / sH;
+    const w = (r, mi) => (H[r] + H[(r + (mi ? 3 : 4)) % 12]) / sH + 0.25 * T[r] / sT, c0 = close(scoreOf(k, minor));
+    let best = { k, minor, o: out(k, minor), w: w(k, minor) + 0.1 };
+    for (const r of [(k + 7) % 12, (k + 5) % 12]) for (const mi of [true, false]) { if (scoreOf(r, mi) < c0) continue; const o = out(r, mi), x = w(r, mi);
+      if (o < best.o - 0.02 || (Math.abs(o - best.o) <= 0.02 && x > best.w)) best = { k: r, minor: mi, o, w: x }; }
     return { k: best.k, minor: best.minor };
   }
   // key (root, minor?) or its relative, whichever the melody treats as home; only when the two profiles score about the same
@@ -7036,7 +7040,7 @@ function bandA(c) {
       else if (Bf.length >= 8 && !A?.pulse) { /* free-time Pick inside a steady take: keep free time (the player chose this stretch) */ }
     } catch { } }
     // a band plays at the felt tempo: a 172 BPM reading of an 86 BPM song is the eighth notes, so the band takes every other beat (from the downbeat)
-    if (A?.pulse && A.bpm > 135 && !G.bpm && !G.taps?.length && !G.beats?.length && A.beats.length >= 8) { const k0 = (A.bars?.[0]?.k ?? 0) % 2, B = A.beats.filter((_, i) => i % 2 === k0); try { const A2 = LickMusic.analyze(c.raw, w.s, w.e, { beats: B }); if (A2?.pulse) { A2.halved = true; A2.given = false; A = A2; } } catch { } }
+    if (A?.pulse && LickMusic.tempoOctave(A.bpm, null).mult === 0.5 && !G.bpm && !G.taps?.length && !G.beats?.length && A.beats.length >= 8) { const k0 = (A.bars?.[0]?.k ?? 0) % 2, B = A.beats.filter((_, i) => i % 2 === k0); try { const A2 = LickMusic.analyze(c.raw, w.s, w.e, { beats: B }); if (A2?.pulse) { A2.halved = true; A2.given = false; A2.halfTime = A2.halfTime || Math.round(A.bpm); A = A2; } } catch { } }
     if (G.beats?.length >= 4) { A = LickMusic.analyze(c.raw, w.s, w.e, { beats: G.beats }); A.picked = true; }
     else if (G.taps?.length >= 4) { const T = G.taps.slice().sort((a, b) => a - b), d = T.slice(1).map((t, i) => t - T[i]).sort((a, b) => a - b), p = d[d.length >> 1];
       if (p > 0.25 && p < 1.3) { let ph = 0, n = 0; for (const t of T) { const r = ((t - T[0]) / p) % 1; ph += r > 0.5 ? r - 1 : r; n++; } const t0 = T[0] + (ph / n) * p, B = []; for (let t = t0 - p * Math.ceil((t0 - w.s) / p); t <= w.e + 0.01; t += p) B.push(+t.toFixed(4)); A = LickMusic.analyze(c.raw, w.s, w.e, { beats: B }); A.tapped = true; } }
@@ -7312,7 +7316,7 @@ function beatCheck(c, A) {
   // two grooves, half a beat apart: the player hears both and keeps the one that sits on their notes
   return `<div class="beatcheck groove"><h4>${icon("i-ear")}Lock the groove</h4>
     <p>Play both. Keep the one that sits on your notes.</p>
-    <div class="grooves"><button type="button" class="gv" data-groove="1" aria-pressed="${!two}">${icon("i-play")}<b>Groove 1</b><em>${A.bpm} BPM</em></button><button type="button" class="gv" data-groove="2" aria-pressed="${two}">${icon("i-play")}<b>Groove 2</b><em>½ beat later</em></button></div>
+    <div class="grooves"><button type="button" class="gv" data-groove="1" aria-pressed="${!two}">${icon("i-play")}<b>Groove 1</b><em>${A.bpm} BPM${A.halfTime ? " ½×" : ""}</em></button><button type="button" class="gv" data-groove="2" aria-pressed="${two}">${icon("i-play")}<b>Groove 2</b><em>½ beat later</em></button></div>
     <button class="btn wide" type="button" data-bchk="yes">${icon("i-check")}Use Groove ${two ? 2 : 1}</button>
     <p class="hint">Neither? <button class="linkbtn" type="button" data-bchk="speed">Speed</button> · <button class="linkbtn" type="button" data-bpm="tap">Tap the beat</button></p></div>`;
 }
