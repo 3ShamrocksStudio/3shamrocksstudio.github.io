@@ -1,38 +1,33 @@
-# FaiRent · Brand v3
+# FaiRent · Brand v4
 
-**Idea:** power back to renters. Fair rent, verified by the community.
-**Name:** always **FaiRent** (capital F, capital R). Never "Fairent", "FairRent" or "FAIRRENT".
+**Idea:** power back to renters. Stop paying more for less.
+**Name:** always **FaiRent** (capital F, capital R). It is a **mobile app**.
 
-## Direction and rationale
-- FaiRent is a **mobile app**, so v3 is built around the app icon first.
-- The mark is the real FaiRent vector (`Brand/Fairent_icon.svg`): a green **R** and a mirrored indigo **R** that overlap in violet. Two parties at one table, and the overlap is where the rent is fair. v3 keeps the exact geometry.
-- **App icon:** on a deep indigo tile (Ink Black → Indigo with a violet glow), the mirrored R turns white so the pair reads at 48 px on any home screen. `app-icon-ios-1024.png` is the full-bleed square the stores need (iOS and Android apply their own masks).
-- **Wordmark:** the old all-caps logotype read as "FAIRRENT". v3 sets **FaiRent** in Heebo 900 with only the R in Signal Green. It spells the name correctly and links the wordmark back to the green R in the mark.
+## Source
+- `Fairent/Brand/Fairent_icon.svg`: the RR mark. A green R and a mirrored indigo R overlap in violet: two sides at one table. v4 keeps the exact geometry and colours.
+- `Fairent.ai`: Dave's tagline "Stop Paying More For Less", hand-lettered. v4 keeps it as the brand voice line.
 
-## Palette (anchors taken from the official artwork)
+## Logo system
+- **Wordmark:** "FaiRent" in Fredoka 700. "Fai" is Signal Green and "Rent" is Deep Indigo (white on dark). Fredoka's round terminals match Dave's chunky logotype, and it spells the name correctly.
+- `logo.png` / `logo-on-dark.png`: mark + wordmark + the Kalam tagline.
+- `logo-mark.png`, `mark.svg`, `mark-on-dark.svg`: the RR mark.
+- **App icons:** `app-icon.png` (rounded, dark indigo glow, white mirrored R), `app-icon-ios-1024.png` (full-bleed for the stores), `app-icon-light.png` (white tile, original colours).
+- `hero.png`: the app's "Is your rent fair?" screen with a fairness meter. It shows no numbers; real figures must always cite their source.
+
+## Icons
+`icons.svg` / `icons.png`: 10 renter icons (My home, Compare, Verified, Community, Area, Lease, Overcharge, Ask renters, Fair price, Check a flat). Chunky 4.5 px indigo strokes with one solid green shape, like the two Rs.
+
+## Palette (the real four, plus two tints)
 | Name | Hex | Use |
 |---|---|---|
-| Deep Indigo | `#310A91` | Primary, "Rent" |
-| Electric Violet | `#6550FF` | Energy, the overlap |
-| Signal Green | `#53D805` | The fair one: R, CTAs, positive numbers |
-| Ink Black | `#050511` | Depth, dark canvas |
+| Deep Indigo | `#310A91` | Primary, "Rent", mirrored R |
+| Electric Violet | `#6550FF` | The overlap, energy |
+| Signal Green | `#53D805` | "Fai", the fair R, verified, CTAs on dark |
+| Ink Black | `#050511` | Text, dark canvas |
 | Lavender | `#B9AEFF` | Text on dark |
 | Cloud | `#F4F2FF` | Light canvas |
 
+Never put green text on white.
+
 ## Type
-- Display and every number: **Heebo 900** (Hebrew-first). Body: **Assistant 400–700**.
-
-## Files
-- `app-icon.png`: rounded app icon, 1024 px, transparent corners. `app-icon-ios-1024.png`: full-bleed store icon.
-- `logo.png`: lockup for light backgrounds (primary). `logo-on-dark.png`: for dark backgrounds.
-- `logo-mark.png`, `mark.svg`, `mark-on-dark.svg`: the RR mark.
-- `brand-card.png`: 1200×1200 portfolio card.
-
-## Do
-- Use Signal Green for one thing at a time: the R, the main CTA, or a "fair" number.
-- On dark surfaces, use the white version of the mirrored R.
-
-## Don't
-- Don't misspell the name, and don't set it in all caps.
-- Don't put the indigo mirrored R on indigo.
-- Don't recolour the overlap. It's always Electric Violet.
+- Display, Hebrew and Latin: **Fredoka 600–700**. Body: **Assistant**. Voice line: **Kalam 700**.

@@ -1,48 +1,41 @@
-# J8NIX · Brand v3
+# J8NIX · Brand v4
 
-**Idea:** the studio's operations OS. Time, tasks and projects in one command view.
+**The logo is Dave's. It is not redrawn.** Every logo file here is built from the vectors in `J8NIX.ai` (the wordmark paths and the Futura tagline) and Dave's `icon.svg`. Shapes, proportions and colours are untouched. v4 only builds the system around it.
 
-## Derived from the real platform
-Every value comes from the J8NIX platform we built (`3S Projects/J8NIX/index.html` `:root` tokens, `icon.svg`, and the dashboard wireframe):
-- Canvas `--bg #0D1C2B`, header `--header-bg #0A1622`, panels on dark `--bg-2 #11283C`, cards `--panel-bg #FFFFFF`.
-- Accent `--accent #F2C194` and `--accent-deep #E0A878` (the peach-gold of the original J8NIX wordmark).
-- Status colours: Live `#2F9E63`, In progress `#2F74C0`, Waiting `#D4892A`, Backlog `#76859A`.
-- Type in the platform: **Plus Jakarta Sans** for UI and **JetBrains Mono** for data.
+## Source files used
+- `3S Projects/J8NIX/Brand/J8NIX.ai`: wordmark vectors (peach J N I X, white hourglass 8) and the tagline "SMART OPERATIONS OS, ONLY SMARTER" (Futura Medium + Bold).
+- `J8NIX_LOGO.png`: the official stacked layout (tagline under the wordmark, full width). `logo.png` reproduces it in vector.
+- `icon.svg`: the app icon (peach hourglass on a Slate tile). `logo-mark.png` and `mark.svg` are this file, unchanged.
+- `J8NIX_wireframe.jpg` and the J8NIX platform: workspace colours and the dashboard structure.
 
-## Direction and rationale
-- **The 8 is an hourglass.** The platform's icon already drew the 8 as a thin hourglass line. v3 redraws it as a bold, round-capped stroke with a sand fill in the lower bulb (time spent, the day's progress), so it holds up from a 32 px favicon to a laptop dock.
-- **Logo system:** app tile (peach hourglass on navy), the glyph alone in peach, white and navy, a wordmark where the hourglass replaces the 8 in `J8NIX` at cap height, and a full lockup with the `SMART OPERATIONS OS` mono tagline.
-- **Desktop first:** the card shows the brand on a laptop-width dashboard frame, the way people will meet it.
-- **Icon set** (`icons.svg`): 8 platform icons (tasks, projects, progress, status, chat, voice, reminder, audit) on a 24 px grid, 2 px round strokes in `currentColor`, with one filled accent (class `a`). They match the platform's actual panels and buttons.
+## Logo system
+- `logo.png` / `logo.svg`: official stacked lockup, for dark backgrounds.
+- `wordmark.png`, `glyph-wordmark.svg`: wordmark without tagline.
+- `logo-on-light.png`: single-colour Command Navy version for light backgrounds (same shapes; the white 8 cannot show on white).
+- `logo-mark.png`, `mark.svg`: app icon. `glyph-*.png`, `glyph.svg`: the hourglass 8 alone.
+- Never recolour the 8 to peach or the letters to white in the full-colour logo. Never stretch, outline or re-set it in another font.
+
+## Icons
+`icons.svg` / `icons.png`: 10 icons for the platform's real panels and buttons (tasks, projects, calendar, progress, live status, chat, voice memo, reminder, audit, new project). They follow the wordmark's own drawing rule: one monoline weight, round caps, open terminals. Each icon has one white stroke, the way the logo has one white 8.
 
 ## Palette
-| Name | Hex | Platform token |
+| Name | Hex | Source / use |
 |---|---|---|
-| Command Navy | `#0D1C2B` | `--bg` |
-| Header Navy | `#0A1622` | `--header-bg` |
-| Deck Navy | `#11283C` | `--bg-2` |
-| Peach Gold | `#F2C194` | `--accent` |
-| Peach Deep | `#E0A878` | `--accent-deep` |
-| Slate | `#586475` | `--neutral` |
-| Panel | `#FFFFFF` | `--panel-bg` |
-| Ink | `#102A43` | `--text` |
-| Live / In progress / Waiting / Backlog | `#2F9E63` / `#2F74C0` / `#D4892A` / `#76859A` | `--st-*` |
+| Peach Gold | `#F2C194` | Logo letters J N I X, tagline, accent (logo files; platform --accent) |
+| White | `#FFFFFF` | The hourglass 8 and "SMARTER" (logo files) |
+| Slate | `#586475` | App-icon tile, workspace frame (icon.svg; wireframe; platform --neutral) |
+| Mist | `#CCD8E5` | Workspace canvas (wireframe) |
+| Steel | `#93A3B5` | Chat panel, secondary (wireframe) |
+| Frame | `#6A809B` | Frame stroke (wireframe) |
+| Signal Blue | `#1563FF` | Daily progress (wireframe) |
+| Wire Ink | `#231F20` | Text on light panels (wireframe) |
+| Command Navy | `#0D1C2B` | Platform canvas (platform --bg) |
+| Deck Navy | `#11283C` | Panels on dark (platform --bg-2) |
+| Header Navy | `#0A1622` | Header (platform --header-bg) |
+| Peach Deep | `#E0A878` | Accent pressed (platform --accent-deep) |
+
+Status colours (platform): Live `#2F9E63`, In progress `#2F74C0`, Waiting `#D4892A`, Backlog `#76859A`.
 
 ## Type
-- Wordmark and UI: **Plus Jakarta Sans 800 / 400–700**. Data, labels and tagline: **JetBrains Mono 500–700**, caps, tracking 0.2em.
-
-## Files
-- `logo.png`: lockup for dark backgrounds (primary). `logo-on-light.png`: for light backgrounds. `wordmark.png`: wordmark and tagline, no tile.
-- `logo-mark.png` / `mark.svg`: app tile, 1024 px.
-- `glyph-peach.png`, `glyph-white.png`, `glyph-navy.png`, `glyph.svg`, `glyph-wordmark.svg`: the hourglass glyph.
-- `icons.svg` (sprite), `icons.png` (sheet).
-- `brand-card.png`: 1200×1200 portfolio card.
-
-## Do
-- Keep peach for the brand and for the active state. Use the status colours only for status.
-- Use the mono face for numbers, dates and labels.
-
-## Don't
-- Don't use status colours as decoration.
-- Don't swap the hourglass for a plain 8 in the wordmark.
-- Don't show sample numbers as real figures in brand or marketing material.
+- Logo tagline and display: **Futura** Medium / Bold (from the .ai). Web fallback: Jost.
+- Interface: **Source Sans 3** (the wireframe).

@@ -1,44 +1,30 @@
-# R&K (Rookie & King) · Brand v3
+# R&K (Rookie & King) · Brand v4
 
 **Idea:** a rookie and a king on one board, as equals. One game instead of a cold message.
 
-## Direction and rationale
-- v2 was a flat pawn and king on a plinth with a serif wordmark. It was tidy but weak at small sizes and had no character.
-- v3 direction was explored in **Grok Imagine** on Dave's account (free tier, 4 Nov 2026): 56 options across two prompts, a crest mark and a mascot duo. The strongest were a shield crest with the pawn and king split by a seam, and a pawn and king fist-bump.
-- We kept those two ideas and **redrew both by hand as clean vectors** (`mark.svg`, `mascot.svg`). No raw AI image ships.
-- **Crest:** gold pawn (the rookie) and ivory king share one plinth inside one shield. The king breaks the top of the frame, and a knockout seam around him keeps both pieces readable at 32 px. Sports-badge energy for a game people play at events.
-- **Mascot duo:** the Rookie (gold pawn, teal headband, determined grin) fist-bumps the King (ivory, gold crown, relaxed smirk). It's the Handshake moment of the product, as a character.
+## Direction
+- v4 builds on the v3 crest and moves it from sports badge to heritage club crest.
+- **Shield:** a bevelled gold rim with a fine inner line. The navy field fades into a chessboard at the base.
+- **Pieces:** a gold pawn (the Rookie) and an ivory king share one plinth. Navy knockout seams keep both pieces clear at 32 px.
+- **Laurel:** gold laurel branches hold the shield. They read as an award and a welcome.
+- **Ribbon:** "ROOKIE & KING" on a gold-edged ribbon, used in hero and event formats.
+- **Wordmark:** Cinzel 800 capitals with the ampersand in gold Playfair italic. Tagline in Inter caps with wide tracking.
+- `mascot.png` / `mascot.svg` (the fist-bump duo) are unchanged.
+
+## Icons
+`icons.svg` / `icons.png`: 8 event icons (Board, Rookie, King, Game clock, Handshake, Scan to play, Leaderboard, Invite). 2.6 px round gold strokes with one ivory accent.
 
 ## Palette
 | Name | Hex | Use |
 |---|---|---|
 | Midnight | `#0E1B33` | Base canvas |
-| Court Navy | `#1E3159` | Raised surfaces |
-| Crown Gold | `#D4A84B` | Accent, CTAs, the pawn |
+| Court Navy | `#1E3159` | Shield field, cards |
+| Crown Gold | `#D4A84B` | Rim, laurel, the pawn, CTAs |
 | Gold Light | `#E8C77A` | Gold text on navy |
-| Ivory | `#F4EFE4` | Text, the king |
+| Gold Deep | `#A97A2A` | Gold shadow, gold text on light |
+| Ivory | `#F4EFE4` | The king, text |
 | Rookie Teal | `#2BB5A8` | Mascot accent only |
 
-Gold gradient for the mark: `#F3D58A → #D4A84B → #A97A2A`.
-
 ## Type
-- Display and wordmark: **Playfair Display 900**, with the `&` in italic Crown Gold.
-- UI: **Inter 400–700**. Tagline in Inter 700 caps, tracking 0.32em.
-
-## Files
-- `logo.png`: lockup for dark backgrounds (primary). `logo-on-light.png`: lockup for light backgrounds.
-- `logo-mark.png` / `mark.svg`: crest, transparent, 1024 px.
-- `app-icon.png`: crest on a navy tile.
-- `mascot.png` / `mascot.svg`: the Rookie and the King.
-- `brand-card.png`: 1200×1200 portfolio card.
-
-## Do
-- Put the crest on Midnight or Court Navy. Keep clear space of one pawn-head around it.
-- Use the mascot for onboarding, empty states, the Handshake and event screens.
-- Keep teal to the mascot. Gold and ivory carry the brand.
-
-## Don't
-- Don't recolour the pawn ivory or the king gold. Their roles are fixed.
-- Don't remove the seam around the king or close the shield over the crown.
-- Don't use the raw Grok renders. They are references only.
-- Don't add real chess-site logos or real people's names to brand material.
+- Display: **Cinzel 800**, with the ampersand in **Playfair Display Italic**.
+- Interface: **Inter 400–700**.
