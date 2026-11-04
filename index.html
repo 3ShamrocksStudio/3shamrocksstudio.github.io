@@ -221,7 +221,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .dev.on .cap .go,.dev:focus-visible .cap .go{opacity:1;transform:none}
 .dev.soon.nudge .rig{animation:nudge .5s ease}
 @keyframes nudge{0%,100%{transform:none}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
-.lt{--lw:360px;display:flex;flex-direction:column;align-items:center}
+.lt{--lw:330px;display:flex;flex-direction:column;align-items:center}
 .lt .lid{position:relative;width:var(--lw);aspect-ratio:16/10.6;border-radius:16px 16px 4px 4px;padding:2.4% 2.4% 3.2%;background:linear-gradient(160deg,#4b4c53,#1b1b20 30%,#141418);box-shadow:inset 0 0 0 1.5px #6a6b72,inset 0 0 0 3px #0c0c0f}
 .lt .lid::before{content:"";position:absolute;top:1%;left:50%;width:5px;height:5px;border-radius:50%;background:#2b2c33;transform:translateX(-50%)}
 .lt .scr{border-radius:4px}
@@ -230,8 +230,8 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .lt .shade{width:92%}
 .lt .splash img{--lw:46%;max-height:40%}
 @media(max-width:1340px){.dev{--pw:148px}.lt{--lw:330px}.row{gap:36px 28px}}
-@media(max-width:1200px){.dev{--pw:140px}.lt{--lw:300px}.row{gap:36px 24px}}
-@media(min-width:701px) and (max-width:1060px){.dev{--pw:min(136px,calc((100vw - 120px)/5.4))}.row{gap:32px 18px}.lt{--lw:min(290px,40vw)}}
+@media(max-width:1200px){.dev{--pw:140px}.lt{--lw:280px}.row{gap:36px 24px}}
+@media(min-width:701px) and (max-width:1060px){.dev{--pw:min(136px,calc((100vw - 120px)/5.4))}.row{gap:32px 18px}.lt{--lw:min(290px,23vw)}}
 @media(max-width:700px){
   .devices{display:grid;grid-template-columns:1fr 1fr;gap:34px 12px;justify-items:center}
   .row{display:contents}
@@ -239,6 +239,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
   .dev[href*="chore"]{order:3}
   .row .lt{grid-column:1/-1;order:2;--lw:min(320px,80vw);margin-bottom:6px}
   .dev.soon{order:4}
+  .row .lt.soon{order:5}
   .dev.soon:last-child{grid-column:1/-1}
   .cap b{font-size:15px}
 }
@@ -387,7 +388,7 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
       <div class="stats fade-in" style="--d:.85s">
         <div class="stat"><div class="stat-val">20<i>+</i></div><div class="stat-lbl">Years in product design</div></div>
         <div class="stat"><div class="stat-val">10<i>+</i></div><div class="stat-lbl">Years in HealthTech</div></div>
-        <div class="stat"><div class="stat-val">10</div><div class="stat-lbl">Products in the studio</div></div>
+        <div class="stat"><div class="stat-val">9</div><div class="stat-lbl">Products in the studio</div></div>
         <div class="stat"><div class="stat-val">2<i>×</i></div><div class="stat-lbl">Patient retention at VIBRANT</div></div>
       </div>
     </div>
@@ -492,7 +493,7 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
     <div class="stage-head">
       <div>
         <h2 class="reveal">Here's what I've been building lately.</h2>
-        <p class="lede reveal">Ten products, each with its own brand and its own story. The ones you can try today open their own page. The rest are still in the oven.</p>
+        <p class="lede reveal">Nine products, each with its own brand and its own story. The ones you can try today open their own page. The rest are still in the oven.</p>
       </div>
       <span class="hint reveal"><svg><use href="#i-app"/></svg><span><span class="h-fine">Hover a phone to switch it on</span><span class="h-touch">Tap a screen to switch it on, tap again to open</span></span></span>
     </div>
@@ -541,10 +542,10 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
         </a>
       </div>
       <div class="row">
-        <div class="dev soon" tabindex="0" style="--d:-1s" aria-label="J8NIX, coming soon">
-          <div class="rig"><div class="ph"><div class="scr">
+        <div class="dev lt soon" tabindex="0" style="--d:-1s" aria-label="J8NIX, coming soon">
+          <div class="rig"><div class="lid"><div class="scr">
             <div class="splash"><img src="assets/studio/screens/j8nix-wire.webp" alt="J8NIX dashboard wireframe" class="still fit" loading="lazy"></div>
-            <i class="glare"></i></div></div></div>
+            <i class="glare"></i></div></div><div class="deck"></div></div>
           <span class="shade"></span>
           <span class="cap"><b>J8NIX</b><small>Operations</small><span class="soon">Coming soon</span></span>
         </div>
@@ -569,13 +570,6 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
             <i class="glare"></i></div></div></div>
           <span class="shade"></span>
           <span class="cap"><b>Milo</b><small>Companion pet</small><span class="soon">Coming soon</span></span>
-        </div>
-        <div class="dev soon" tabindex="0" style="--d:-5.8s" aria-label="3S Media Network, coming soon">
-          <div class="rig"><div class="ph"><div class="scr">
-            <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 30%,#232566,#0f1035 65%)"><img src="assets/studio/logos/media-network.png" alt="" loading="lazy" style="--lw:44%"><span class="wm">Media Network</span></div>
-            <i class="glare"></i></div></div></div>
-          <span class="shade"></span>
-          <span class="cap"><b>Media Network</b><small>Instagram channels</small><span class="soon">Coming soon</span></span>
         </div>
       </div>
     </div>
@@ -773,7 +767,7 @@ devs.forEach(d=>{
 });
 
 /* Chore Wars icon band from the real icon sprite */
-const IC=['dishes','trash','bed','laundry','vacuum','pet','plant','toilet','broom','book','car','spark','pts','crown','flame','steal','shield','double','bounty','swap','camera','check','gift','trophy','cards','vs','rank1','rank2','rank3','rank4','av-fox','av-wolf','av-owl'];
+const IC=['dishes','trash','bed','laundry','vacuum','pet','plant','toilet','broom','book','car','spark','pts','crown','flame','steal','shield','double','bounty','swap','camera','check','gift','trophy','cards','vs','rank1','rank2','rank3','rank4','av-fox','av-wolf','av-owl','cross','ad','qr','plus','sound','mute','lock','av-bear','av-cat','av-shark','av-robot','av-dino'];
 const trk=$('#icon-track');
 if(trk){const one=IC.map(n=>'<span><svg viewBox="0 0 48 48" aria-hidden="true"><use href="assets/studio/marks/cw-icons.svg#cw-'+n+'"/></svg></span>').join('');trk.innerHTML=one+one}
 
