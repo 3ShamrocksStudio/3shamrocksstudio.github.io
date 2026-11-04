@@ -3433,7 +3433,11 @@ details.fold.more details.fold{margin-top:0}
     let B = tb.beats.slice(), out = { ...tb };
     const p0 = (B[B.length - 1] - B[0]) / (B.length - 1), bpm0 = 60 / p0;
     if (bpm0 < 66) { const M = mids(B), on = mean(B.map(t => pk(raw.fluxA, t))), md = mean(M.map(t => pk(raw.fluxA, t)));
-      if (on > 0 && md / on >= 0.5) { const D = []; B.forEach((t, i) => { D.push(t); if (i < M.length) D.push(M[i]); }); B = D; out = { ...out, beats: B.map(t => +t.toFixed(4)), bpm: tb.bpm * 2, doubled: +(md / on).toFixed(2) }; } }
+      if (on > 0 && md / on >= 0.5) { const D = []; B.forEach((t, i) => { D.push(t); if (i < M.length) D.push(M[i]); }); B = D; out = { ...out, beats: B.map(t => +t.toFixed(4)), bpm: tb.bpm * 2, doubled: +(md / on).toFixed(2) }; }}
+    // half-time vs double-time: a reading under 100 whose half-beats hit as hard as its beats is equally a pulse at twice
+    // the speed. Above 140 the band would race, so it keeps the slower (70-140) beat and labels it half-time of the fast one.
+    else if (bpm0 < 100) { const M = mids(B), on = mean(B.map(t => pk(raw.fluxA, t))), md = mean(M.map(t => pk(raw.fluxA, t)));
+      if (on > 0 && md / on >= 0.8 && bpm0 * 2 > 140) out = { ...out, halfTime: Math.round(tb.bpm * 2) }; }
     if (raw.chromaFr && B.length >= 8) {
       const p = (B[B.length - 1] - B[0]) / (B.length - 1), M = mids(B);
       const nov = t => { const a = frameVec(raw.chromaFr, raw, t - 0.45 * p, t - 0.06 * p), b = frameVec(raw.chromaFr, raw, t + 0.06 * p, t + 0.45 * p); return 1 - cos(a, b); };
@@ -3511,7 +3515,7 @@ details.fold.more details.fold{margin-top:0}
     const lo = Math.min(...be), hi = Math.max(...be);
     bars.forEach((b, i) => { b.energy = hi - lo < 3 ? 0.7 : (be[i] - lo) / (hi - lo); });
     const offR = raw.fluxA && beats.length >= 8 ? +offRatio(raw, beats).toFixed(2) : 0;
-    return { pulse: true, meter, beats, bars, chords, swing, offRatio: offR, bpm: Math.round(tb.bpm), forced: !!forced?.bpm, given: !!forced?.beats, unsure: !!tb.unsure, shifted: tb.shifted || 0 };
+    return { pulse: true, meter, beats, bars, chords, swing, offRatio: offR, bpm: Math.round(tb.bpm), forced: !!forced?.bpm, given: !!forced?.beats, unsure: !!tb.unsure, shifted: tb.shifted || 0, halfTime: tb.halfTime || 0 };
   }
 
   // Steady-groove zones inside [ps, pe]: 10 s windows every 2 s that hold a real pulse, merged while the
@@ -3974,14 +3978,15 @@ details.fold.more details.fold{margin-top:0}
   function gridFromNotes(notes, s, e) {
     const on = notes.map(n => n.t); if (on.length < 8) return [];
     let best = { sc: 0 };
-    for (let bpm = 60; bpm <= 160; bpm += 1) { const p = 60 / bpm; let c = 0, sn = 0; for (const t of on) { const ph = ((t - on[0]) / p) % 1, d = Math.min(ph, 1 - ph); c += Math.cos(2 * Math.PI * d); sn += Math.sin(2 * Math.PI * ph); } const sc = Math.hypot(c, sn) / on.length; if (sc > best.sc + 0.01) best = { sc, p }; }
+    for (let bpm = 60; bpm <= 200; bpm += 1) { const p = 60 / bpm; let c = 0, sn = 0; for (const t of on) { const ph = ((t - on[0]) / p) % 1, d = Math.min(ph, 1 - ph); c += Math.cos(2 * Math.PI * d); sn += Math.sin(2 * Math.PI * ph); } const sc = Math.hypot(c, sn) / on.length; if (sc > best.sc + 0.01) best = { sc, p }; }
     if (best.sc < 0.6) return [];
-    const p = best.p, bar = 4 * p;
+    // notes faster than 140 a minute: bars on the half-time beat (every other note start), so the band doesn't race
+    const half = 60 / best.p > 140, p = half ? 2 * best.p : best.p, bar = 4 * p;
     // the downbeat: the phase where the longest notes start
     let ph0 = on[0], bestW = -1; for (let k = 0; k < 4; k++) { const st = on[0] + k * p; let w = 0; for (const n of notes) { const x = ((n.t - st) / bar) % 1, d = Math.min(Math.abs(x), Math.abs(1 - x)); if (d * bar < 0.12) w += n.e - n.t; } if (w > bestW) { bestW = w; ph0 = st; } }
     let t = ph0; while (t - bar > s - 0.05) t -= bar;
     const cells = []; for (; t < e - 0.3; t += bar) cells.push({ t0: Math.max(s, t), t1: Math.min(e, t + bar) });
-    return cells;
+    cells.halfTime = half; return cells;
   }
   // chords for a melody in a window: bars when there's a beat, otherwise phrases of about 2.5 s
   function melodyPlan(raw, A, R, s, e) {
@@ -4047,7 +4052,7 @@ details.fold.more details.fold{margin-top:0}
   const spellPc = (pc, r, minor) => flatKey(r, minor) && !(r === 0 && !minor && pc === 6) && !(r === 9 && minor && pc === 6) ? FLAT[pc] : NOTES[pc];
   function spellChord(name, r, minor) { const m = /^([A-G]#?)(.*)$/.exec(name || ""); if (!m) return name; const pc = NOTES.indexOf(m[1]); return pc < 0 ? name : spellPc(pc, r, minor) + m[2]; }
 
-  root.LickMusic = { _getHypW: () => HYP_W, _unsure: v => { UNSURE = v; }, offbeat, _chMix: v => { CH_MIX = v; }, beatHyps, _hypW: w => { HYP_W = w; }, _pulseMin: v => { PULSE_MIN = v; }, guessTempo, keyLabel, spellChord, spellPc, flatKey, alignLayer, chromaSeq, QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, harmonyPlanOld, keyOfWindow, _hp: v => { HP = { ...HP, ...v }; }, _offShift: v => { OFF_SHIFT = v; }, _meterRep: v => { METER_REP = v; }, cellFeats, musicness, _musW: w => { MUS_W = w; }, _musPen: v => { MUS_PEN = v; }, _trim: v => { TRIM = v; }, _cleanW: v => { CLEAN_W = v; }, _homeW: v => { HOME_W = v; }, _edges: v => { EDGES = v; }, _flubW: v => { FLUB_W = v; }, _cands: () => LAST_CANDS, offRatio, _getHp: () => HP, trackBeats, analyze, picks, chordsFor, NOTES };
+  root.LickMusic = { _gridFromNotes: gridFromNotes, _getHypW: () => HYP_W, _unsure: v => { UNSURE = v; }, offbeat, _chMix: v => { CH_MIX = v; }, beatHyps, _hypW: w => { HYP_W = w; }, _pulseMin: v => { PULSE_MIN = v; }, guessTempo, keyLabel, spellChord, spellPc, flatKey, alignLayer, chromaSeq, QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, harmonyPlanOld, keyOfWindow, _hp: v => { HP = { ...HP, ...v }; }, _offShift: v => { OFF_SHIFT = v; }, _meterRep: v => { METER_REP = v; }, cellFeats, musicness, _musW: w => { MUS_W = w; }, _musPen: v => { MUS_PEN = v; }, _trim: v => { TRIM = v; }, _cleanW: v => { CLEAN_W = v; }, _homeW: v => { HOME_W = v; }, _edges: v => { EDGES = v; }, _flubW: v => { FLUB_W = v; }, _cands: () => LAST_CANDS, offRatio, _getHp: () => HP, trackBeats, analyze, picks, chordsFor, NOTES };
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* LickBand 2: a real-sounding band that plays WITH the take.
