@@ -98,7 +98,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .minime-img{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 0 1px rgba(255,255,255,.35)) drop-shadow(0 0 22px rgba(176,124,255,.28))}
 .minime-eyes{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .minime-eyes .eyelid{transform:translateY(-100%);transform-box:fill-box}
-.minime-eyes.blink .lid{animation:blink .24s ease-in-out}
+.minime-eyes.blink .eyelid{animation:blink .24s ease-in-out}
 @keyframes blink{0%,100%{transform:translateY(-100%)}42%,58%{transform:translateY(0)}}
 .minime-floor{position:absolute;left:10%;right:10%;bottom:-14px;height:24px;border-radius:50%;background:radial-gradient(closest-side,rgba(176,124,255,.35),transparent);z-index:1}
 
@@ -795,7 +795,8 @@ if(trk){const one=IC.map(n=>'<span><svg viewBox="0 0 48 48" aria-hidden="true"><
     raf=requestAnimationFrame(step)}
   if(RM){addEventListener('pointermove',()=>{aim();const tr='translate('+tgt[0].toFixed(2)+' '+tgt[1].toFixed(2)+')';iL.setAttribute('transform',tr);iR.setAttribute('transform',tr)},{passive:true});return}
   new IntersectionObserver(es=>{if(es[0].isIntersecting){if(!raf)raf=requestAnimationFrame(step)}else{cancelAnimationFrame(raf);raf=null}}).observe(box);
-  function blink(){svg.classList.remove('blink');void svg.getBoundingClientRect();svg.classList.add('blink');setTimeout(blink,2400+Math.random()*3600)}
+  function shut(){svg.classList.remove('blink');void svg.getBoundingClientRect();svg.classList.add('blink')}
+  function blink(){shut();if(Math.random()<.2)setTimeout(shut,320);setTimeout(blink,3000+Math.random()*3000)}
   setTimeout(blink,1600);
 })();
 
