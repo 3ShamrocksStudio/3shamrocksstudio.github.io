@@ -267,7 +267,64 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
 .wi-img img{width:100%;height:100%;object-fit:cover}
 .wi-duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 14px 0;background:linear-gradient(135deg,#1b1340,#0d0d1a)}
 .wi-duo img{border-radius:12px 12px 0 0;object-position:top}
+
+/* ===== 4 Nov: "let's figure out what you need" questionnaire ===== */
+#fit{padding-bottom:56px}
+#fit .section-title,#fit .section-sub{text-align:center;margin-inline:auto}
+#fit .section-sub{margin-bottom:32px}
+.fit-nojs{max-width:640px;margin:0 auto;padding:16px 20px;border-radius:14px;background:#fff;border:1px solid rgba(106,43,201,.18);color:#23233a;font-size:15px;line-height:1.6;text-align:center}
+.fit-card{max-width:720px;margin:0 auto;background:#fff;border:1px solid rgba(106,43,201,.18);border-radius:24px;padding:28px 28px 24px;box-shadow:0 18px 44px rgba(40,20,80,.08);color:#16162a}
+@media(max-width:480px){.fit-card{padding:20px 16px 18px;border-radius:20px}}
+.fit-top{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.fit-bar{flex:1;height:6px;border-radius:6px;background:#efe8fd;overflow:hidden}
+.fit-bar i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--purple),#25a556);transition:width .35s var(--ease)}
+.fit-count{font:600 13px var(--font-mono);color:#4a4a63;white-space:nowrap}
+.fit-q{font-family:var(--font-head);font-size:clamp(22px,3.4vw,30px);font-weight:800;line-height:1.2;color:#16162a;margin-bottom:6px;outline:none}
+html[lang="he"] .fit-q{letter-spacing:-0.01em}
+.fit-hint{font-size:15px;line-height:1.55;color:#4a4a63;margin-bottom:18px}
+.fit-opts{display:grid;gap:10px;margin-top:16px}
+.fit-opt{display:block;width:100%;text-align:start;min-height:56px;padding:14px 18px;border:1.5px solid rgba(106,43,201,.22);border-radius:14px;background:#faf8ff;color:#16162a;font-size:16px;font-weight:500;line-height:1.4;cursor:pointer;transition:border-color .2s,background .2s,transform .2s var(--ease)}
+.fit-opt small{display:block;margin-top:3px;font-size:13px;font-weight:400;color:#4a4a63}
+.fit-opt:hover{border-color:var(--purple);background:#f3edff}
+.fit-opt:active{transform:scale(.99)}
+.fit-opt[aria-pressed="true"]{border-color:var(--purple);background:#efe6ff;box-shadow:0 0 0 1px var(--purple)}
+.fit-card :focus-visible{outline-color:#6a2bc9}
+.fit-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;min-height:44px}
+.fit-link{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font:600 14px var(--font-mono);color:#4b1fa0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(75,31,160,.35)}
+.fit-link:hover{color:#16162a}
+.fit-foot-2{margin-top:0}
+.fit-step{animation:none}
+@media(prefers-reduced-motion:no-preference){.fit-step{animation:fitIn .35s var(--ease) both}}
+@keyframes fitIn{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
+.fit-kicker{font:600 12px var(--font-mono);color:#25a556;margin-bottom:8px}
+.fit-why{font-size:17px;line-height:1.65;color:#23233a;margin:8px 0 18px}
+.fit-price{background:#0f1035;color:#fff;border-radius:18px;padding:20px 22px;margin-bottom:20px}
+.fit-price-label{font:600 12px var(--font-mono);color:#b9f5cc;margin-bottom:6px}
+.fit-price-num{font-family:var(--font-head);font-size:clamp(28px,6vw,38px);font-weight:800;letter-spacing:-0.02em;line-height:1.1}
+.fit-price-num .from{font-size:.55em;letter-spacing:0}
+.fit-price-sub{font:500 13px var(--font-mono);color:#d8ccff;margin-top:6px;line-height:1.5}
+.fit-price-fine{font-size:13px;line-height:1.55;color:rgba(255,255,255,.78);margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14)}
+.fit-card .process-list{margin-bottom:18px}
+.fit-card .process-list li{color:#23233a}
+.fit-card .process-list li::before{background:#25a556;box-shadow:none}
+.fit-note{font-size:15px;line-height:1.6;color:#23233a;background:#f7f2ea;border-radius:14px;padding:14px 16px;margin-bottom:18px}
+.fit-also{border:1px dashed rgba(106,43,201,.35);border-radius:14px;padding:14px 16px;margin-bottom:22px;font-size:15px;line-height:1.55;color:#23233a}
+.fit-also b{font-family:var(--font-head);font-weight:800}
+.fit-actions{display:flex;flex-wrap:wrap;gap:12px}
+.fit-actions .btn-ghost{border-color:rgba(106,43,201,.35);color:#4b1fa0}
+.fit-actions .btn-ghost:hover{border-color:var(--purple);color:#16162a}
+@media(max-width:480px){.fit-actions a{width:100%}}
+/* all four options: open without JS, folded behind a toggle with JS */
+#fit+#offers{padding-top:0}
+.opts-summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;max-width:720px;margin:0 auto;padding:12px 20px;border-radius:100px;border:1px solid rgba(106,43,201,.35);font:600 15px var(--font-mono);color:#4b1fa0;text-align:center}
+.opts-summary::-webkit-details-marker{display:none}
+.opts-summary::after{content:'+';font-size:20px;line-height:1}
+#all-options[open] .opts-summary{margin-bottom:48px}
+#all-options[open] .opts-summary::after{content:'−'}
+.opts-summary:hover{border-color:var(--purple);color:#16162a}
+.band-cream .process-step.is-match{border-color:#25a556;box-shadow:0 0 0 2px #25a556,0 18px 44px rgba(37,165,86,.18)}
 </style>
+<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
 <div id="scroll-progress"></div>
@@ -289,12 +346,12 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
   <div class="inner hero-layout">
    <div class="hero-copy">
     <div class="hero-brand"><img src="assets/studio/heart-on-dark.png" alt="3Shamrocks Studio" width="183" height="133"></div>
-    <h1 data-en>Your brand and product, <em>designed by one senior designer.</em></h1>
-    <h1 data-he>המותג והמוצר שלכם, <em>בידיים של מעצב בכיר אחד.</em></h1>
-    <p class="hero-sub" data-en>For founders and small businesses who want a brand people trust and a product that's easy to use, without hiring a design team. Four clear ways to work together, each with a price and an exact list of what you get.</p>
-    <p class="hero-sub" data-he>ליזמים ולעסקים קטנים שרוצים מותג שסומכים עליו ומוצר שקל להשתמש בו, בלי לגייס צוות עיצוב. ארבע דרכים ברורות לעבוד יחד, לכל אחת מחיר ורשימה מדויקת של מה מקבלים.</p>
+    <h1 data-en>Let's figure out <em>what you actually need.</em></h1>
+    <h1 data-he>בואו נבין יחד <em>מה אתם באמת צריכים.</em></h1>
+    <p class="hero-sub" data-en>I'm Dave. I've designed brands and products for over 20 years, and I still do the work myself. Answer five quick questions and I'll tell you what I'd suggest and roughly what it costs. No long forms. No commitment.</p>
+    <p class="hero-sub" data-he>אני Dave. אני מעצב מותגים ומוצרים כבר יותר מ-20 שנה, ועדיין עושה את העבודה בעצמי. עונים על חמש שאלות קצרות, ואני אגיד לכם מה הייתי מציע ובערך כמה זה עולה. בלי טפסים ארוכים. בלי התחייבות.</p>
     <div class="hero-actions">
-      <a href="#offers" class="btn-primary"><span data-en>See the options</span><span data-he>לאפשרויות</span></a>
+      <a href="#fit" class="btn-primary"><span data-en>Let's start</span><span data-he>בואו נתחיל</span></a>
       <a href="./#work" class="btn-ghost"><span data-en>See the work</span><span data-he>לעבודות</span></a>
     </div>
    </div>
@@ -320,16 +377,33 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
   </div>
 </section>
 
+<section id="fit" class="band-cream" aria-labelledby="fit-title">
+  <div class="inner">
+    <h2 class="section-title" id="fit-title"><span data-en>Five quick questions. <em>Then a straight answer.</em></span><span data-he>חמש שאלות קצרות. <em>ואז תשובה ישירה.</em></span></h2>
+    <p class="section-sub" data-en>Tap whatever's closest. You can go back at any point. At the end you'll see what I'd suggest and a rough price, so you know where you stand before we even talk.</p>
+    <p class="section-sub" data-he>לחצו על מה שהכי קרוב. אפשר לחזור אחורה בכל שלב. בסוף תראו מה הייתי מציע וטווח מחיר, כדי שתדעו איפה אתם עומדים עוד לפני שנדבר.</p>
+    <noscript><p class="fit-nojs"><span data-en>The questions need JavaScript, which is off in your browser. All four options are listed right below, with their prices.</span><span data-he>כדי לענות על השאלות צריך JavaScript, והוא כבוי אצלכם בדפדפן. כל ארבע האפשרויות מופיעות כאן למטה, עם המחירים.</span></p></noscript>
+    <div class="fit-card" id="fit-card" hidden>
+      <div class="fit-top" id="fit-top">
+        <div class="fit-bar" aria-hidden="true"><i id="fit-bar"></i></div>
+        <span class="fit-count" id="fit-count" aria-live="polite"></span>
+      </div>
+      <div id="fit-stage"></div>
+    </div>
+  </div>
+</section>
+
 <section id="offers" class="band-cream">
   <div class="inner">
-    
-    <h2 class="section-title reveal" data-en>Pick the one that <em>fits your stage.</em></h2>
-    <h2 class="section-title reveal" data-he>בחרו את מה <em>שמתאים לשלב שלכם.</em></h2>
+   <details id="all-options" open>
+    <summary class="opts-summary"><span data-en>Rather see all four options side by side?</span><span data-he>מעדיפים לראות את כל ארבע האפשרויות אחת ליד השנייה?</span></summary>
+    <h2 class="section-title reveal" data-en>Or pick it <em>yourself.</em></h2>
+    <h2 class="section-title reveal" data-he>או שתבחרו <em>בעצמכם.</em></h2>
     <p class="section-sub reveal" data-en>Every option shows its price or starting price, plus VAT, and exactly what you get. No long contracts. You get the final, fixed price in writing before we start.</p>
     <p class="section-sub reveal" data-he>בכל אפשרות כתוב המחיר או המחיר ההתחלתי, לפני מע״מ, ובדיוק מה מקבלים. בלי חוזים ארוכים. את המחיר הסופי והקבוע מקבלים בכתב לפני שמתחילים.</p>
 
     <div class="offers">
-      <article class="process-step featured reveal">
+      <article class="process-step featured reveal" data-pkg="lead">
         <span class="start-badge"><span data-en>Most flexible · cancel any month</span><span data-he>הכי גמיש · אפשר לעצור בכל חודש</span></span>
         <h3 class="process-title" data-en>Your part-time design lead</h3>
         <h3 class="process-title" data-he>מוביל עיצוב במשרה חלקית</h3>
@@ -353,7 +427,7 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
         <a class="btn-primary" href="mailto:dave@3shamrocks.com?subject=Part-time%20design%20lead&body=Business%3A%20%0AWhat%20you%20do%3A%20%0AWhat%20hurts%20right%20now%3A%20%0AWhen%20you%20want%20to%20start%3A%20"><span data-en>Ask for a 20-min call</span><span data-he>לתיאום שיחה של 20 דקות</span></a>
       </article>
 
-      <article class="process-step reveal">
+      <article class="process-step reveal" data-pkg="sprint">
         <h3 class="process-title" data-en>Two-week redesign</h3>
         <h3 class="process-title" data-he>עיצוב מחדש בשבועיים</h3>
         <div class="price"><bdi dir="ltr">₪32,000</bdi></div>
@@ -376,7 +450,7 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
         <a class="btn-ghost" href="mailto:dave@3shamrocks.com?subject=Two-week%20redesign&body=Business%3A%20%0AWhat%20you%20do%3A%20%0AWhat%20hurts%20right%20now%3A%20%0AWhen%20you%20want%20to%20start%3A%20"><span data-en>Ask about a redesign</span><span data-he>לפרטים על עיצוב מחדש</span></a>
       </article>
 
-      <article class="process-step reveal">
+      <article class="process-step reveal" data-pkg="launch">
         <h3 class="process-title" data-en>Launch Package</h3>
         <h3 class="process-title" data-he>חבילת השקה</h3>
         <div class="price"><span data-en>from </span><span data-he>החל מ־</span><bdi dir="ltr">₪120,000</bdi></div>
@@ -399,7 +473,7 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
         <a class="btn-ghost" href="mailto:dave@3shamrocks.com?subject=Launch%20Package&body=Business%3A%20%0AWhat%20you%20do%3A%20%0AWhat%20hurts%20right%20now%3A%20%0AWhen%20you%20want%20to%20start%3A%20"><span data-en>Ask about the package</span><span data-he>לפרטים על חבילת ההשקה</span></a>
       </article>
 
-      <article class="process-step reveal">
+      <article class="process-step reveal" data-pkg="system">
         <h3 class="process-title" data-en>Design system</h3>
         <h3 class="process-title" data-he>מערכת עיצוב</h3>
         <div class="price"><span data-en>from </span><span data-he>החל מ־</span><bdi dir="ltr">₪55,000</bdi></div>
@@ -422,6 +496,7 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
         <a class="btn-ghost" href="mailto:dave@3shamrocks.com?subject=Design%20system&body=Business%3A%20%0AWhat%20you%20do%3A%20%0AWhat%20hurts%20right%20now%3A%20%0AWhen%20you%20want%20to%20start%3A%20"><span data-en>Ask about a system</span><span data-he>לפרטים על מערכת עיצוב</span></a>
       </article>
     </div>
+   </details>
   </div>
 </section>
 
@@ -464,8 +539,8 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
 <section id="how" class="band-lav">
   <div class="inner">
     
-    <h2 class="section-title reveal" data-en>Three steps, <em>no guesswork.</em></h2>
-    <h2 class="section-title reveal" data-he>שלושה צעדים, <em>בלי ניחושים.</em></h2>
+    <h2 class="section-title reveal" data-en>What happens <em>after you write to me.</em></h2>
+    <h2 class="section-title reveal" data-he>מה קורה <em>אחרי שכותבים לי.</em></h2>
     <ol class="steps reveal">
       <li><b><span data-en>A 20-minute call</span><span data-he>שיחה של 20 דקות</span></b><span data-en>Show me the product and where it hurts. No deck or prep needed.</span><span data-he>תראו לי את המוצר ואיפה כואב. לא צריך מצגת או הכנה.</span></li>
       <li><b><span data-en>A written proposal</span><span data-he>הצעה כתובה</span></b><span data-en>What you get, the price and the start date. On one page.</span><span data-he>מה מקבלים, המחיר ותאריך ההתחלה. בעמוד אחד.</span></li>
@@ -508,6 +583,7 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
     btn.textContent=l==='he'?'English':'עברית';
     document.title=l==='he'?'לעבוד איתי: מותג, עיצוב מוצר ואפליקציה עובדת | 3Shamrocks Studio':'Work with me: brand, product design and a working app | 3Shamrocks Studio';
     try{localStorage.setItem('3s-lang',l)}catch(e){}
+    try{document.dispatchEvent(new CustomEvent('3s-lang',{detail:l}))}catch(e){}
   }
   var saved=null;try{saved=localStorage.getItem('3s-lang')}catch(e){}
   var q=new URLSearchParams(location.search).get('lang');
@@ -534,6 +610,175 @@ html:not([lang="he"]) .start-badge{font-family:var(--font-mono)}
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})},{threshold:0.08});
     els.forEach(function(el){io.observe(el)});
   }else{els.forEach(function(el){el.classList.add('visible')})}
+})();
+</script>
+<!-- NEEDS YOUR EYES: estimator ranges derived from existing anchors -->
+<!-- Only the four prices already on this page are used: part-time lead ₪24,000/mo (2 days a week) to ₪38,000/mo (full-time); two-week redesign ₪32,000 fixed; Launch Package from ₪120,000; design system from ₪55,000. All + VAT. No new price points. -->
+<script>
+(function(){
+  var card=document.getElementById('fit-card');if(!card)return;
+  var stage=document.getElementById('fit-stage'),bar=document.getElementById('fit-bar'),count=document.getElementById('fit-count'),top=document.getElementById('fit-top');
+  var details=document.getElementById('all-options');
+  card.hidden=false;if(details)details.open=false;
+
+  function t(he,en){return '<span data-he>'+he+'</span><span data-en>'+en+'</span>'}
+  function lang(){return document.documentElement.lang==='en'?'en':'he'}
+  function money(n){return '<bdi dir="ltr">₪'+n.toLocaleString('en-US')+'</bdi>'}
+
+  // s = points toward each package: lead (part-time design lead), sprint (two-week redesign), launch (Launch Package), system (design system)
+  var Q=[
+    {he:'איפה אתם עומדים היום?',en:'Where are you right now?',
+     opts:[
+      {he:'בדיוק גייסנו כסף',en:'We just raised a round',s:{lead:2,launch:1}},
+      {he:'יש לקוחות, ואנחנו גדלים',en:'We have customers and we\'re growing',s:{lead:1,sprint:1,system:1}},
+      {he:'בהתחלה. בונים את הגרסה הראשונה',en:'Early. Building the first version',s:{launch:2,sprint:1}},
+      {he:'עסק ותיק שרוצה להתרענן',en:'An established business that wants a refresh',s:{launch:1,system:1,sprint:1}}]},
+    {he:'מה הכי מציק לכם כרגע?',en:'What\'s bugging you most right now?',hintHe:'בחרו את הדבר שהכי בוער.',hintEn:'Pick the one that burns the most.',
+     opts:[
+      {he:'המותג לא נראה כמו מי שאנחנו',en:'Our brand doesn\'t look like who we are',s:{launch:3},k:'launch',brand:1},
+      {he:'יש מקום אחד במוצר שבו אנשים נתקעים',en:'There\'s one spot in the product where people get stuck',subHe:'הרשמה, תשלום, הזמנה',subEn:'Sign-up, checkout, booking',s:{sprint:3},k:'sprint'},
+      {he:'כל מסך במוצר נראה קצת אחרת',en:'Every screen looks a little different',s:{system:3},k:'system'},
+      {he:'יוצאים עם משהו חדש וצריך הכול',en:'We\'re putting out something new and need all of it',subHe:'מותג, מסכים, מערכת',subEn:'Brand, screens, system',s:{launch:3},k:'launch'},
+      {he:'העיצוב תמיד מעכב אותנו',en:'Design keeps slowing us down',s:{lead:3},k:'lead'}]},
+    {he:'מתי אתם צריכים לראות שינוי?',en:'When do you need to see a difference?',
+     opts:[
+      {he:'בשבועיים הקרובים',en:'In the next two weeks',s:{sprint:2},soon:1},
+      {he:'תוך חודש או חודשיים',en:'In a month or two',s:{launch:1,system:1}},
+      {he:'ברבעון הבא',en:'Next quarter',s:{launch:1,system:1}},
+      {he:'אין תאריך. זה לטווח ארוך',en:'No date. This is for the long run',s:{lead:2}}]},
+    {he:'יש היום מעצב בצוות?',en:'Is there a designer on the team today?',
+     opts:[
+      {he:'לא, אף אחד',en:'No, nobody',s:{lead:2,launch:1}},
+      {he:'פרילנסר או ג׳וניור, מדי פעם',en:'A freelancer or junior, now and then',s:{lead:1,system:1}},
+      {he:'כן, יש צוות. חסר מישהו בכיר',en:'Yes, a team. We\'re missing someone senior',s:{system:2,sprint:1}}]},
+    {he:'כמה מעורבות שלי אתם צריכים?',en:'How much of me do you want?',
+     opts:[
+      {he:'שאכנס, אפתור דבר אחד ואעביר לכם',en:'Come in, fix one thing, hand it over',s:{sprint:3}},
+      {he:'פרויקט עם התחלה וסוף',en:'A project with a start and an end',s:{launch:1,system:1,sprint:1}},
+      {he:'חלק מהצוות, יומיים בשבוע',en:'Part of the team, two days a week',s:{lead:3},inv:'part'},
+      {he:'כמעט כל השבוע',en:'Most of the week',s:{lead:3},inv:'full'}]}
+  ];
+
+  var P={
+    lead:{he:'מוביל עיצוב במשרה חלקית',en:'Your part-time design lead',
+      whyHe:'נשמע שאתם לא צריכים עוד פרויקט. אתם צריכים מישהו בכיר שנמצא שם כל שבוע, מחליט איתכם מה בונים ודואג שזה ייראה נכון.',
+      whyEn:'Sounds like you don\'t need one more project. You need someone senior who\'s there every week, helps decide what to build and makes sure it looks right.',
+      li:[['אני מעצב את המוצר, האתר וחומרי המותג','I design your product, website and brand materials'],['אני משתתף בפגישות התכנון ועוזר להחליט מה בונים הלאה','I join your planning meetings and help decide what to build next'],['דרך עבודה פשוטה וברורה, כדי שהעיצוב לא יעכב אתכם','A simple, clear way of working, so design stops being a bottleneck'],['עזרה בגיוס המעצב הראשון, כשתהיו מוכנים','Help hiring your first designer, when you\'re ready']]},
+    sprint:{he:'עיצוב מחדש בשבועיים',en:'Two-week redesign',
+      whyHe:'יש מקום אחד שעולה לכם בלקוחות. בואו נתקן אותו קודם, כמו שצריך, בשבועיים.',
+      whyEn:'There\'s one spot that\'s costing you customers. Let\'s fix that first, properly, in two weeks.',
+      li:[['שיחות קצרות עם הלקוחות שלכם ותוכנית בעמוד אחד','Short talks with your customers and a one-page plan'],['כל המסכים של המסלול, מעוצבים עד הסוף','Every screen of that journey, fully designed'],['גרסה לחיצה שנבדקה עם משתמשים אמיתיים','A clickable version, tried with real users'],['קבצים שהמפתחים יכולים לבנות מהם מיד','Files your developers can build from right away']]},
+    launch:{he:'חבילת השקה',en:'Launch Package',
+      whyHe:'אתם יוצאים לעולם עם משהו חדש. כדאי שזה ייראה מוכן מהיום הראשון: מותג, מסכים והמערכת שמחזיקה את הכול.',
+      whyEn:'You\'re going out with something new. It should look ready from day one: the brand, the screens and the system that holds it together.',
+      li:[['מותג מחודש: לוגו, צבעים, גופנים ומדריך מותג קצר','A fresh brand: logo, colours, fonts and a short brand guide'],['מסכי מוצר לעד 3 מסלולים מרכזיים','Product screens for up to 3 main journeys'],['מערכת עיצוב, כך שמה שנבנה נראה בדיוק כמו בעיצוב','A design system, so what gets built looks exactly like the design'],['הוויז׳ואלים שצריך כדי להכריז על ההשקה','The visuals you need to announce the launch']]},
+    system:{he:'מערכת עיצוב',en:'Design system',
+      whyHe:'המוצר גדל מהר יותר מכללי העיצוב שלו. סט אחד של רכיבים משותפים, וכל מסך חדש ירגיש שהוא שייך.',
+      whyEn:'Your product grew faster than its design rules. One shared set of parts, and every new screen will feel like it belongs.',
+      li:[['סקירה של המוצר הקיים, עם מה לתקן קודם','A review of your current product, with what to fix first'],['כללי צבע, טיפוגרפיה ומרווחים, ורכיבים מוכנים','Colour, type and spacing rules, and ready-made parts'],['מוכן לשימוש של המפתחים, כך שהם בונים מהר יותר','Ready for your developers, so they build faster'],['מדריך קצר והדרכה לצוות','A short guide and a walkthrough for your team']]}
+  };
+
+  // Indicative price per package, built only from the page's existing anchors.
+  function price(k,inv){
+    if(k==='lead'){
+      if(inv==='full')return {num:money(38000),sub:t('לחודש + מע״מ · משרה מלאה · יומיים בשבוע מתחילים ב־'+money(24000),'per month + VAT · full-time · two days a week starts at '+money(24000))};
+      if(inv==='part')return {num:'<span class="from">'+t('החל מ־','from ')+'</span>'+money(24000),sub:t('לחודש + מע״מ · יומיים בשבוע · משרה מלאה '+money(38000),'per month + VAT · 2 days a week · full-time '+money(38000))};
+      return {num:money(24000)+'–'+money(38000),sub:t('לחודש + מע״מ · מיומיים בשבוע ועד משרה מלאה · אפשר לעצור בכל חודש','per month + VAT · from 2 days a week up to full-time · stop any month')};
+    }
+    if(k==='sprint')return {num:money(32000),sub:t('מחיר קבוע + מע״מ · שבועיים','fixed price + VAT · 2 weeks')};
+    if(k==='launch')return {num:'<span class="from">'+t('החל מ־','from ')+'</span>'+money(120000),sub:t('+ מע״מ · שישה שבועות','+ VAT · 6 weeks')};
+    return {num:'<span class="from">'+t('החל מ־','from ')+'</span>'+money(55000),sub:t('+ מע״מ · 4–6 שבועות','+ VAT · 4–6 weeks')};
+  }
+  function shortPrice(k){
+    return {lead:t('החל מ־'+money(24000)+' לחודש','from '+money(24000)+' a month'),sprint:t(money(32000)+', מחיר קבוע',money(32000)+' fixed'),launch:t('החל מ־'+money(120000),'from '+money(120000)),system:t('החל מ־'+money(55000),'from '+money(55000))}[k];
+  }
+
+  var ans=[],step=0;
+
+  function setBar(){
+    var n=Q.length,done=Math.min(step,n);
+    bar.style.width=(step>=n?100:Math.round(done/n*100))+'%';
+    count.innerHTML=step>=n?t('סיימנו','Done'):t('שאלה '+(step+1)+' מתוך '+n,'Question '+(step+1)+' of '+n);
+  }
+  function focusHead(){
+    var h=stage.querySelector('.fit-q');if(!h)return;
+    try{h.focus({preventScroll:true})}catch(e){h.focus()}
+    var r=card.getBoundingClientRect();
+    if(r.top<0||r.top>innerHeight*0.6)card.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});
+  }
+
+  function renderQ(){
+    var q=Q[step],h='<div class="fit-step">';
+    h+='<h3 class="fit-q" tabindex="-1">'+t(q.he,q.en)+'</h3>';
+    if(q.hintHe)h+='<p class="fit-hint">'+t(q.hintHe,q.hintEn)+'</p>';
+    h+='<div class="fit-opts">';
+    q.opts.forEach(function(o,i){
+      h+='<button type="button" class="fit-opt" data-i="'+i+'" aria-pressed="'+(ans[step]===i)+'">'+t(o.he,o.en)+(o.subHe?'<small>'+t(o.subHe,o.subEn)+'</small>':'')+'</button>';
+    });
+    h+='</div><div class="fit-foot">';
+    h+=step>0?'<button type="button" class="fit-link" data-act="back">'+t('→ חזרה','← Back')+'</button>':'<span></span>';
+    h+='<button type="button" class="fit-link" data-act="skip-all">'+t('רק תראו לי את כל האפשרויות','Just show me all the options')+'</button>';
+    h+='</div></div>';
+    stage.innerHTML=h;setBar();
+  }
+
+  function score(){
+    var sc={lead:0,sprint:0,launch:0,system:0};
+    ans.forEach(function(a,i){var s=Q[i].opts[a].s;for(var k in s)sc[k]+=s[k]});
+    var hurt=Q[1].opts[ans[1]].k,order=[hurt,'lead','sprint','system','launch'];
+    var keys=['lead','sprint','launch','system'].sort(function(a,b){return (sc[b]-sc[a])||(order.indexOf(a)-order.indexOf(b))});
+    var second=keys[1];
+    return {sc:sc,first:keys[0],second:(sc[second]>0&&sc[second]>=sc[keys[0]]-2)?second:null};
+  }
+
+  function mailto(r){
+    var L=lang(),labels=L==='he'?['איפה אנחנו','מה מציק','מתי','מעצב בצוות','כמה מעורבות']:['Where we are','What hurts','Timeline','Designer on the team','How involved'];
+    var lines=ans.map(function(a,i){return labels[i]+': '+Q[i].opts[a][L]});
+    var name=P[r.first][L];
+    var body=L==='he'
+      ?'היי Dave,\n\nעניתי על השאלות באתר.\n'+lines.join('\n')+'\nההמלצה שקיבלתי: '+name+'\n\nשם העסק:\nמה אנחנו עושים:\nמתי נוח לדבר:\n'
+      :'Hi Dave,\n\nI answered the questions on your site.\n'+lines.join('\n')+'\nYour suggestion: '+name+'\n\nBusiness:\nWhat we do:\nGood times to talk:\n';
+    return 'mailto:dave@3shamrocks.com?subject='+encodeURIComponent('20-min call: '+P[r.first].en)+'&body='+encodeURIComponent(body);
+  }
+
+  function renderResult(){
+    var r=score(),p=P[r.first],inv=Q[4].opts[ans[4]].inv,pr=price(r.first,inv);
+    var soon=Q[2].opts[ans[2]].soon,brand=Q[1].opts[ans[1]].brand;
+    var h='<div class="fit-step">';
+    h+='<p class="fit-kicker">'+t('זה מה שהייתי מציע','Here\'s what I\'d suggest')+'</p>';
+    h+='<h3 class="fit-q" tabindex="-1">'+t(p.he,p.en)+'</h3>';
+    h+='<p class="fit-why">'+t(p.whyHe,p.whyEn)+'</p>';
+    h+='<div class="fit-price"><div class="fit-price-label">'+t('טווח מחיר משוער','Indicative price range')+'</div>';
+    h+='<div class="fit-price-num">'+pr.num+'</div><div class="fit-price-sub">'+pr.sub+'</div>';
+    h+='<p class="fit-price-fine">'+t('זו הערכה בלבד, לא הצעת מחיר. את המחיר הסופי והקבוע תקבלו בכתב אחרי שיחה קצרה. כל המחירים לפני מע״מ.','This is an indicative estimate, not a quote. You get the final, fixed price in writing after a short call. All prices are before VAT.')+'</p></div>';
+    h+='<ul class="process-list">';p.li.forEach(function(x){h+='<li>'+t(x[0],x[1])+'</li>'});h+='</ul>';
+    if(soon&&(r.first==='launch'||r.first==='system'))h+='<p class="fit-note">'+t('התאריך שלכם קרוב. '+(r.first==='launch'?'שישה שבועות':'4–6 שבועות')+' זה הזמן האמיתי לעבודה המלאה, אז בשיחה נבחר מה חייב להיות מוכן קודם.','Your date is close. '+(r.first==='launch'?'Six weeks':'Four to six weeks')+' is the honest time for the full thing, so on the call we\'ll pick what has to be ready first.')+'</p>';
+    else if(soon&&r.first==='sprint')h+='<p class="fit-note">'+t('התזמון מתאים. זה בדיוק מה שהעבודה הזאת בנויה בשבילו.','Good timing. This one is built for exactly that.')+'</p>';
+    if(brand&&r.first==='launch')h+='<p class="fit-note">'+t('אם זה באמת רק המותג, תגידו לי בשיחה. נתאים את ההיקף למה שאתם צריכים.','If it\'s really just the brand, tell me on the call. We\'ll shape the scope around what you need.')+'</p>';
+    if(r.second)h+='<p class="fit-also">'+t('שווה להכיר גם: ','Also worth a look: ')+'<b>'+t(P[r.second].he,P[r.second].en)+'</b> · '+shortPrice(r.second)+'</p>';
+    h+='<div class="fit-actions"><a class="btn-primary" id="fit-mail" href="'+mailto(r)+'">'+t('לתיאום שיחה של 20 דקות','Ask for a 20-min call')+'</a>';
+    h+='<a class="btn-ghost" href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a></div>';
+    h+='<div class="fit-foot"><button type="button" class="fit-link" data-act="back">'+t('→ חזרה','← Back')+'</button><button type="button" class="fit-link" data-act="restart">'+t('להתחיל מחדש','Start over')+'</button></div>';
+    h+='<div class="fit-foot fit-foot-2"><span></span><button type="button" class="fit-link" data-act="skip-all">'+t('לראות את כל ארבע האפשרויות','See all four options')+'</button></div>';
+    h+='</div>';
+    stage.innerHTML=h;setBar();
+    document.querySelectorAll('[data-pkg]').forEach(function(a){a.classList.toggle('is-match',a.getAttribute('data-pkg')===r.first)});
+  }
+
+  function render(){step>=Q.length?renderResult():renderQ()}
+
+  stage.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    var act=b.getAttribute('data-act');
+    if(b.classList.contains('fit-opt')){ans[step]=+b.getAttribute('data-i');step++;ans.length=Math.max(ans.length,step);render();focusHead();return}
+    if(act==='back'&&step>0){step--;render();focusHead();return}
+    if(act==='restart'){ans=[];step=0;document.querySelectorAll('.is-match').forEach(function(a){a.classList.remove('is-match')});render();focusHead();return}
+    if(act==='skip-all'&&details){details.open=true;details.querySelectorAll('.reveal').forEach(function(el){el.classList.add('visible')});details.scrollIntoView({behavior:'smooth',block:'start'});var s=details.querySelector('summary');if(s)try{s.focus({preventScroll:true})}catch(x){}}
+  });
+  document.addEventListener('3s-lang',function(){
+    if(step>=Q.length){var m=document.getElementById('fit-mail');if(m)m.href=mailto(score())}
+  });
+  render();
 })();
 </script>
 </body>
