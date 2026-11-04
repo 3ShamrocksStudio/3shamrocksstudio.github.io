@@ -94,7 +94,10 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .hero-character{position:relative;display:flex;justify-content:center;align-items:flex-end;min-height:640px}
 .minime-stand{position:relative;margin-left:190px}
 .minime-stand::before{content:"";position:absolute;left:50%;top:44%;width:150%;aspect-ratio:1;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(130,57,234,.2),rgba(130,57,234,.06) 55%,transparent);z-index:0;pointer-events:none}
-.minime{position:relative;z-index:2;width:clamp(200px,17vw,250px);aspect-ratio:445/1009}
+.minime{position:relative;z-index:2;width:clamp(168px,13.4vw,204px);aspect-ratio:445/1009}
+.minime-vid{position:absolute;left:50%;bottom:-.7%;height:101.2%;width:auto;max-width:none;transform:translateX(-50%);opacity:0;transition:opacity .5s ease;pointer-events:none;filter:drop-shadow(0 0 1px rgba(255,255,255,.3)) drop-shadow(0 0 22px rgba(176,124,255,.28))}
+.minime.vid .minime-vid{opacity:1}
+.minime.vid .minime-img,.minime.vid .minime-eyes{opacity:0;transition:opacity .5s ease}
 .minime-img{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 0 1px rgba(255,255,255,.35)) drop-shadow(0 0 22px rgba(176,124,255,.28))}
 .minime-eyes{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .minime-eyes .eyelid{transform:translateY(-100%);transform-box:fill-box}
@@ -133,7 +136,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
   .hero-character{min-height:0;justify-content:center;align-items:flex-end;padding:120px 0 78px;gap:0}
   .hero-dev{position:relative;left:auto;top:auto;transform:rotate(-5deg);--pw:min(160px,38vw);margin-right:-6px}
   .minime-stand{margin-left:0}
-  .minime{width:min(180px,44vw)}
+  .minime{width:min(150px,38vw)}
   .hero-tag{transform:translateX(-50%) rotate(5deg);bottom:-56px;font-size:13px}
 }
 @media(max-width:600px){
@@ -436,6 +439,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
         </div>
         <div class="minime" id="minime">
           <img src="assets/studio/minime_nobg.webp" alt="Mini Dave, the 3Shamrocks Studio avatar" class="minime-img" width="445" height="1009">
+          <video class="minime-vid" id="minime-vid" muted playsinline loop preload="none" aria-hidden="true" data-src="assets/studio/s7/minime-idle.webm" poster="assets/studio/s7/minime-idle-poster.webp"></video>
           <svg class="minime-eyes" id="minime-eyes" viewBox="0 0 445 1009" aria-hidden="true">
             <defs>
               <mask id="eyeMask" maskUnits="userSpaceOnUse" x="0" y="0" width="445" height="1009"><image href="assets/studio/home/minime-eyes-mask.png" x="101" y="152" width="182" height="63"/></mask>
@@ -794,10 +798,15 @@ if(trk){const one=IC.map(n=>'<span><svg viewBox="0 0 48 48" aria-hidden="true"><
     cur[0]+=(tgt[0]-cur[0])*.14;cur[1]+=(tgt[1]-cur[1])*.14;
     const tr='translate('+cur[0].toFixed(2)+' '+cur[1].toFixed(2)+')';iL.setAttribute('transform',tr);iR.setAttribute('transform',tr);
     raf=requestAnimationFrame(step)}
+  /* premium idle loop (alpha webm). Safari cannot show webm alpha, so it keeps the still with live eyes. */
+  const vid=$('#minime-vid'),ua=navigator.userAgent,SAF=/Safari/.test(ua)&&!/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
+  if(vid&&!RM&&!SAF&&vid.canPlayType('video/webm; codecs="vp09.00.10.08"')){
+    addEventListener('load',()=>{vid.src=vid.dataset.src;vid.addEventListener('playing',()=>{box.classList.add('vid');cancelAnimationFrame(raf);raf=null},{once:true});const pl=vid.play();if(pl&&pl.catch)pl.catch(()=>{box.classList.remove('vid')})});
+    new IntersectionObserver(es=>{if(!box.classList.contains('vid'))return;es[0].isIntersecting?vid.play().catch(()=>{}):vid.pause()}).observe(box)}
   if(RM){addEventListener('pointermove',()=>{aim();const tr='translate('+tgt[0].toFixed(2)+' '+tgt[1].toFixed(2)+')';iL.setAttribute('transform',tr);iR.setAttribute('transform',tr)},{passive:true});return}
-  new IntersectionObserver(es=>{if(es[0].isIntersecting){if(!raf)raf=requestAnimationFrame(step)}else{cancelAnimationFrame(raf);raf=null}}).observe(box);
+  new IntersectionObserver(es=>{if(box.classList.contains('vid'))return;if(es[0].isIntersecting){if(!raf)raf=requestAnimationFrame(step)}else{cancelAnimationFrame(raf);raf=null}}).observe(box);
   function shut(){svg.classList.remove('blink');void svg.getBoundingClientRect();svg.classList.add('blink')}
-  function blink(){shut();if(Math.random()<.2)setTimeout(shut,320);setTimeout(blink,3000+Math.random()*3000)}
+  function blink(){if(box.classList.contains('vid'))return;shut();if(Math.random()<.2)setTimeout(shut,320);setTimeout(blink,3000+Math.random()*3000)}
   setTimeout(blink,1600);
 })();
 
