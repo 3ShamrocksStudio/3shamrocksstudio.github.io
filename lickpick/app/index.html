@@ -1921,6 +1921,22 @@ details.fold.more details.fold{margin-top:0}
     res.sort((a, b) => b[0] - a[0]);
     return { k: res[0][1], mode: res[0][2], margin: (res[0][0] - res[1][0]) / tot };
   }
+  // where a melody comes home: the first, last and longest notes and the lowest held note. Profiles alone can't tell a key
+  // from its relative (A minor / C major share every note); the tonic is what a musician hears as home.
+  function tonicPull(notes) {
+    if (!notes || notes.length < 4) return null;
+    const T = new Array(12).fill(0), pc = n => ((n.midi % 12) + 12) % 12, d = n => n.e - n.t;
+    T[pc(notes[0])] += 1; T[pc(notes[notes.length - 1])] += 2;
+    notes.slice().sort((a, b) => d(b) - d(a)).slice(0, 3).forEach((n, i) => T[pc(n)] += [1, 0.6, 0.3][i]);
+    notes.forEach((n, i) => { const nx = notes[i + 1]; if (nx && nx.t - n.e > 0.25) T[pc(n)] += 0.5; });   // phrase ends
+    const held = notes.filter(n => d(n) >= 0.25); if (held.length) T[pc(held.reduce((m, n) => n.midi < m.midi ? n : m))] += 1.5;
+    return T;
+  }
+  // key (root, minor?) or its relative, whichever the melody treats as home; only when the two profiles score about the same
+  function relativeByTonic(T, k, minor, scoreOf, close) {
+    if (!T) return { k, minor }; const k2 = minor ? (k + 3) % 12 : (k + 9) % 12;
+    return scoreOf(k2, !minor) >= close(scoreOf(k, minor)) && T[k2] > T[k] + 0.5 ? { k: k2, minor: !minor } : { k, minor };
+  }
   function bestKey(prof) { let best = [-2, 0, "maj"]; for (let k = 0; k < 12; k++) { const a = corr(prof, roll(MAJOR, k)), b = corr(prof, roll(MINOR, k)); if (a > best[0]) best = [a, k, "maj"]; if (b > best[0]) best = [b, k, "min"]; } return best; }
   function* runs(mask) { let i = 0; const n = mask.length; while (i < n) { if (mask[i]) { let j = i; while (j < n && mask[j]) j++; yield [i, j]; i = j; } else i++; } }
   function robustZ(x, ref) { const r = x.filter((v, i) => ref[i] && Number.isFinite(v)); if (r.length < 4) return x.map(() => 0); const m = median(r); const mad = median(r.map(v => Math.abs(v - m))) * 1.4826 + 1e-9; return x.map(v => (v - m) / mad); }
@@ -1989,7 +2005,7 @@ details.fold.more details.fold{margin-top:0}
     for (let i = 0; i < yd.length; i++) yd[i] = 0.5 * (y[2 * i] + y[2 * i + 1]);
     const srd = sr / 2, PW = 512, maxLag = Math.floor(srd / 70), minLag = Math.max(2, Math.floor(srd / 1100));
     const dbuf = new Float64Array(maxLag + 2);
-    const signedCents = [], glideByCell = Array.from({ length: nCells }, () => []); let lastMidi = null, lastF = -9;
+    const signedCents = [], pTrack = [], glideByCell = Array.from({ length: nCells }, () => []); let lastMidi = null, lastF = -9;
 
     for (let f = 0; f < nFrames; f++) {
       const off = f * HOP, t = (off + N / 2) / sr, c = Math.min(nCells - 1, Math.floor(t / CELL));
@@ -2024,7 +2040,7 @@ details.fold.more details.fold{margin-top:0}
           if (Number.isFinite(hz) && conf > 0.85 && hz > 65 && hz < 1200) {
             const midi = 12 * Math.log2(hz / 440) + 69;
             const sc = (midi - Math.round(midi)) * 100;
-            signedCents.push(sc); centsByCell[c].push(sc); confFramesByCell[c]++;
+            signedCents.push(sc); pTrack.push([f, Math.round(midi)]); centsByCell[c].push(sc); confFramesByCell[c]++;
             if (lastMidi != null && f - lastF === 2) glideByCell[c].push(Math.abs(midi - lastMidi));
             lastMidi = midi; lastF = f;
           }
@@ -2066,6 +2082,11 @@ details.fold.more details.fold{margin-top:0}
     let [gcorr, gk, gmode] = bestKey(gprof);
     let tonal = gcorr > 0.55;
     { const ck = keyByChords(chromaH, bassC, active.map((a0, i) => a0 && clarity[i] > clar20)); if (ck && (ck.margin > 0.02 || !tonal)) { gk = ck.k; gmode = ck.mode; tonal = true; } }
+    { // a single-note lick: its notes from the pitch track, then tonic vs relative key
+      const fs = HOP / sr, pn = []; for (const [f, m] of pTrack) { const l = pn[pn.length - 1]; if (l && l.midi === m && f - l.f <= 4) { l.f = f; l.e = (f + 2) * fs; } else pn.push({ f, t: f * fs, e: (f + 2) * fs, midi: m }); }
+      const notes = pn.filter(n => n.e - n.t >= 0.12);
+      if (notes.length >= 6) { const r = relativeByTonic(tonicPull(notes), gk, gmode === "min", (k, mi) => corr(gprof, roll(mi ? MINOR : MAJOR, k)), c0 => c0 - 0.15); gk = r.k; gmode = r.minor ? "min" : "maj"; }
+    }
     const gscale = roll(gmode === "maj" ? MAJ_S : MIN_S, gk);
     // out-of-key energy against the LOCAL key (±10 s), so a deliberate key change isn't "wrong notes";
     // a few wrong chords inside a passage don't move the local key, so they still count
@@ -2357,7 +2378,7 @@ details.fold.more details.fold{margin-top:0}
       if (Y.trust && m < 0.3 && si < 0.3 && loud[i] > -55) noise[i] = Math.max(noise[i], 0.8); }
     P[R.TALK] = talk; P[R.NOISE] = noise;
   }
-  root.ClipEngine = { analyzePCM, decide, videoPenalties, applyYam, CELL, R, _shotT: v => { SHOT_T = v; } };
+  root.ClipEngine = { analyzePCM, tonicPull, relativeByTonic, decide, videoPenalties, applyYam, CELL, R, _shotT: v => { SHOT_T = v; } };
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
@@ -3928,6 +3949,8 @@ details.fold.more details.fold{margin-top:0}
     const KM = [6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88], Km = [6.33, 2.68, 3.52, 5.38, 2.6, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17];
     const corr = (p, r) => { let s = 0; for (let i = 0; i < 12; i++) s += h[(i + r) % 12] * p[i]; return s; };
     let best = { s: -1 }; for (let r = 0; r < 12; r++) for (const [p, minor] of [[KM, false], [Km, true]]) { const sc = corr(p, r); if (sc > best.s) best = { s: sc, key: r, minor }; }
+    const tp = root.ClipEngine?.tonicPull, rel = root.ClipEngine?.relativeByTonic;
+    if (tp && rel) { const r = rel(tp(notes), best.key, best.minor, (k, mi) => corr(mi ? Km : KM, k), c0 => c0 * 0.9); if (r.k !== best.key) best = { s: corr(r.minor ? Km : KM, r.k), key: r.k, minor: r.minor, relative: true }; }
     return best;
   }
   // harmonise a melody: one chord per bar (or per phrase in free time), chord tones on the long and strong notes,
