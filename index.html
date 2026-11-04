@@ -329,16 +329,21 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
   .cast small{font-size:11px}
 }
 
-/* CLIENT WORK */
-.work-strip{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:52px}
-@media(max-width:760px){.work-strip{grid-template-columns:1fr}}
-.work-item{border-radius:28px;overflow:hidden;background:#0f0d18;box-shadow:inset 0 0 0 1px var(--line);transition:transform .5s var(--ease),box-shadow .5s}
-.work-item:hover{transform:translateY(-6px);box-shadow:inset 0 0 0 1px rgba(176,124,255,.35),0 30px 60px -30px rgba(130,57,234,.5)}
-.work-item-img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
-.work-item-body{padding:28px 30px 32px}
-.work-item-role{font:600 14px var(--font-b);color:var(--violet-2);margin-bottom:8px}
-.work-item-name{font:800 28px/1.1 var(--font-d);letter-spacing:-.03em;margin-bottom:10px}
-.work-item-desc{font-size:16px;line-height:1.6;color:var(--ink-2)}
+/* IN-HOUSE HEALTHTECH: same floating devices as the portfolio */
+.hw{display:grid;grid-template-columns:1fr 1fr;gap:56px 48px;align-items:start}
+.hw-item{position:relative;display:flex;flex-direction:column;align-items:center;outline-offset:10px;-webkit-tap-highlight-color:transparent}
+.hw-devs{position:relative;display:flex;justify-content:center;width:max-content;max-width:100%;margin:0 auto}
+.hw .lt{--lw:min(420px,34vw)}
+.hw-vb .hw-devs{translate:-30px 0}
+.hw-ph{position:absolute;right:-70px;bottom:40px;z-index:3;--pw:118px;transform:rotate(5deg)}
+.hw-ph .rig{animation-duration:7s}
+.hw-item.on .rig{animation-play-state:paused}
+.hw-cap{margin-top:22px;text-align:center;max-width:460px}
+.hw-role{display:block;font:600 14px var(--font-b);color:var(--violet-2);margin-bottom:6px}
+.hw-cap b{display:block;font:800 28px/1.1 var(--font-d);letter-spacing:-.03em;margin-bottom:8px}
+.hw-cap p{font-size:16px;line-height:1.6;color:var(--ink-2)}
+@media(max-width:900px){.hw{grid-template-columns:1fr;gap:64px}.hw .lt{--lw:min(380px,74vw)}}
+@media(max-width:600px){.hw .lt{--lw:min(300px,72vw)}.hw-vb .hw-devs{translate:-34px 0}.hw-ph{--pw:84px;right:-44px;bottom:30px}.hw-cap b{font-size:24px}}
 
 /* ABOUT */
 .about-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:72px;align-items:center}
@@ -699,27 +704,46 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
   </div>
 </section>
 
-<!-- CLIENT WORK -->
+<!-- IN-HOUSE: HealthTech -->
 <section id="experience">
   <div class="wrap">
-    <h2 class="reveal">Client work in HealthTech.</h2>
-    <p class="lede reveal">Senior design inside medical companies, from a clinical treatment brand to a patient companion app.</p>
-    <div class="work-strip">
-      <div class="work-item reveal">
-        <img src="assets/studio/marks/apos-screen.webp" alt="AposHealth brand work" class="work-item-img" width="960" height="540" loading="lazy">
-        <div class="work-item-body">
-          <div class="work-item-role">Brand and product marketing</div>
-          <div class="work-item-name">AposHealth</div>
-          <p class="work-item-desc">I led the brand and product marketing for a clinical treatment for knee and back pain, built on biomechanical footwear.</p>
-        </div>
+    <div class="stage-head">
+      <div>
+        <h2 class="reveal">Product and brand leadership in HealthTech.</h2>
+        <p class="lede reveal">In-house roles inside two medical companies, where I led the brand and the product experience.</p>
       </div>
-      <div class="work-item reveal">
-        <img src="assets/opt/vibrant.webp" alt="VIBRANT brand book" class="work-item-img" width="1600" height="900" loading="lazy">
-        <div class="work-item-body">
-          <div class="work-item-role">Brand and companion app</div>
-          <div class="work-item-name">VIBRANT</div>
-          <p class="work-item-desc">The brand and the companion app for the VIBRANT capsule, a TIME Best Invention of 2023. Complex medical technology turned into a warm, simple patient experience.</p>
+      <span class="hint reveal"><svg><use href="#i-app"/></svg><span><span class="h-fine">Hover a device to switch it on</span><span class="h-touch">Tap a screen to switch it on</span></span></span>
+    </div>
+    <div class="hw">
+      <div class="hw-item hw-ap reveal" tabindex="0" aria-label="AposHealth: brand and product marketing">
+        <div class="hw-devs">
+          <div class="dev lt" style="--d:-1.2s;--glow:rgba(36,67,214,.55)">
+            <div class="rig"><div class="lid"><div class="scr">
+              <div class="splash" style="--sp:#ffffff"><img src="assets/work/aposhealth/logo.png" alt="AposHealth logo" style="--lw2:52%" loading="lazy"></div>
+              <div class="media" data-shots="assets/studio/s7/hw/ap-brand.webp,assets/studio/s7/hw/ap-logo.webp,assets/studio/s7/hw/ap-gait.webp,assets/studio/s7/hw/ap-icons.webp"></div>
+              <i class="glare"></i></div></div><div class="base"></div></div>
+            <span class="shade"></span>
+          </div>
         </div>
+        <div class="hw-cap"><span class="hw-role">In-house · Brand and product marketing</span><b>AposHealth</b><p>I led the brand and product marketing for a clinical treatment for knee and back pain, built on biomechanical footwear.</p></div>
+      </div>
+      <div class="hw-item hw-vb reveal" tabindex="0" aria-label="VIBRANT: companion app and brand">
+        <div class="hw-devs">
+          <div class="dev lt" style="--d:-2.6s;--glow:rgba(27,111,208,.55)">
+            <div class="rig"><div class="lid"><div class="scr">
+              <div class="splash" style="--sp:linear-gradient(150deg,#1f7fe0,#0d3a9a 70%)"><img src="assets/studio/marks/vibrant-white.png" alt="VIBRANT logo" style="--lw2:50%" loading="lazy"></div>
+              <div class="media" data-shots="assets/studio/s7/hw/vb-web.webp,assets/studio/s7/hw/vb-brand.webp,assets/studio/s7/hw/vb-logo.webp,assets/studio/s7/hw/vb-icons.webp"></div>
+              <i class="glare"></i></div></div><div class="base"></div></div>
+            <span class="shade"></span>
+          </div>
+          <div class="dev hw-ph" style="--d:-.6s;--glow:rgba(27,111,208,.6)">
+            <div class="rig"><div class="ph"><div class="bez"><div class="scr">
+              <div class="splash" style="--sp:linear-gradient(170deg,#2a8ff0,#0d3a9a)"><img src="assets/studio/marks/vibrant-white.png" alt="VIBRANT logo" style="--lw2:70%" loading="lazy"></div>
+              <div class="media" data-shots="assets/studio/s7/hw/vb-app-home.webp,assets/studio/s7/hw/vb-app-tour2.webp,assets/studio/s7/hw/vb-app-tour3.webp,assets/studio/s7/hw/vb-app-tour4.webp"></div>
+              <i class="glare"></i></div></div></div></div>
+          </div>
+        </div>
+        <div class="hw-cap"><span class="hw-role">In-house · Companion app and brand</span><b>VIBRANT</b><p>I designed the companion app and the brand for the VIBRANT capsule, a TIME Best Invention of 2023. Complex medical technology turned into a warm, simple patient experience.</p></div>
       </div>
     </div>
   </div>
@@ -847,6 +871,17 @@ devs.forEach(d=>{
     d.addEventListener('click',()=>{if(!FINE&&!d.classList.contains('on')){d._on();return}nud()});
     d.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();nud()}});return}
   d.addEventListener('click',e=>{if(!FINE&&!d.classList.contains('on')){e.preventDefault();d._on()}});
+});
+
+/* in-house HealthTech devices: brand splash when off, hover or tap plays the real screens */
+$$('.hw-item').forEach(it=>{
+  const ds=$$('.dev',it),pl=$$('.media',it).map(m=>{m.innerHTML=m.dataset.shots.split(',').map((s,k)=>'<img data-src="'+s+'" alt="" class="'+(k?'':'cur')+'">').join('');return[m,makeSlides(m,2400)]});
+  let on=false;
+  const go=()=>{if(on)return;on=true;it.classList.add('on');ds.forEach(d=>d.classList.add('on'));pl.forEach(([m,p],k)=>{loadImg($('img',m));setTimeout(()=>on&&p.start(),k*900)})};
+  const stop=()=>{on=false;it.classList.remove('on');ds.forEach(d=>d.classList.remove('on'));pl.forEach(([m,p])=>p.stop())};
+  it.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')go()});it.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')stop()});
+  it.addEventListener('focus',()=>{if(it.matches(':focus-visible'))go()});it.addEventListener('blur',stop);
+  it.addEventListener('click',e=>{if(e.pointerType==='mouse')return;on?stop():go()});
 });
 
 /* Chore Royale icon band from the real icon sprite */
