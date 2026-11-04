@@ -1867,7 +1867,7 @@ details.fold.more details.fold{margin-top:0}
 <script>window.LP_PAY = { provider: "lemonsqueezy", mode: "test", store: "499938", portal: "https://3sstudio.lemonsqueezy.com/billing", products: { pro: ["1483622", "2312281", "2312296"] },
   test: { yearly: "https://3sstudio.lemonsqueezy.com/checkout/buy/287a3571-4cab-4413-854f-f52f8ae858f0", monthly: "https://3sstudio.lemonsqueezy.com/checkout/buy/c212571a-b04d-4622-b5cb-3d2197966fb2" },
   live: { yearly: "", monthly: "" } };</script>
-<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-04a"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
+<script>window.LP_PRO_URL = ""; window.LP_SELL = ""; window.LP_VER = "lp-2026-11-04b"; window.LP_SUPPORT = "lickpick.app@gmail.com"; window.LP_FIREBASE = null; window.LP_SND = "snd/"; window.LP_KIND = "pwa"; window.LP_BUILD = "pwa";</script>
 <script>
 /* ClipKeeper on-device engine: listens to a clip's audio and finds the good parts.
    Pure functions, no DOM. analyzePCM(samples, sr) -> raw; decide(raw, opts) -> result */
@@ -1931,6 +1931,17 @@ details.fold.more details.fold{margin-top:0}
     notes.forEach((n, i) => { const nx = notes[i + 1]; if (nx && nx.t - n.e > 0.25) T[pc(n)] += 0.5; });   // phrase ends
     const held = notes.filter(n => d(n) >= 0.25); if (held.length) T[pc(held.reduce((m, n) => n.midi < m.midi ? n : m))] += 1.5;
     return T;
+  }
+  // the notes' pitch-class weight: duration, the last note 1.5x (melodies settle on home). Shared by the audio and notes key paths.
+  function noteHist(notes) { const h = new Array(12).fill(0); notes.forEach((n, i) => { h[((n.midi % 12) + 12) % 12] += (n.e - n.t) * (i === notes.length - 1 ? 1.5 : 1); }); return h; }
+  // key vs the key a fifth away (E minor / B minor share most notes): when a root a fifth up or down scores about the same,
+  // keep whichever has more weight on its tonic triad (root + third) plus the tonic pull (final, lowest, longest notes)
+  function fifthByTonic(H, T, k, minor, scoreOf, close) {
+    if (!H || !T) return { k, minor }; const sH = H.reduce((a, b) => a + b, 0) || 1, sT = T.reduce((a, b) => a + b, 0) || 1;
+    const w = (r, mi) => (H[r] + H[(r + (mi ? 3 : 4)) % 12]) / sH + T[r] / sT, c0 = close(scoreOf(k, minor));
+    let best = { k, minor, w: w(k, minor) + 0.1 };
+    for (const r of [(k + 7) % 12, (k + 5) % 12]) for (const mi of [true, false]) if (scoreOf(r, mi) >= c0 && w(r, mi) > best.w) best = { k: r, minor: mi, w: w(r, mi) };
+    return { k: best.k, minor: best.minor };
   }
   // key (root, minor?) or its relative, whichever the melody treats as home; only when the two profiles score about the same
   function relativeByTonic(T, k, minor, scoreOf, close) {
@@ -2081,11 +2092,13 @@ details.fold.more details.fold{margin-top:0}
     chroma.forEach((v, i) => { if (active[i] && clarity[i] > clar20) for (let k = 0; k < 12; k++) gprof[k] += v[k]; });
     let [gcorr, gk, gmode] = bestKey(gprof);
     let tonal = gcorr > 0.55;
-    { const ck = keyByChords(chromaH, bassC, active.map((a0, i) => a0 && clarity[i] > clar20)); if (ck && (ck.margin > 0.02 || !tonal)) { gk = ck.k; gmode = ck.mode; tonal = true; } }
+    let byChords = false; { const ck = keyByChords(chromaH, bassC, active.map((a0, i) => a0 && clarity[i] > clar20)); if (ck && (ck.margin > 0.02 || !tonal)) { gk = ck.k; gmode = ck.mode; tonal = true; byChords = true; } }
     { // a single-note lick: its notes from the pitch track, then tonic vs relative key
       const fs = HOP / sr, pn = []; for (const [f, m] of pTrack) { const l = pn[pn.length - 1]; if (l && l.midi === m && f - l.f <= 4) { l.f = f; l.e = (f + 2) * fs; } else pn.push({ f, t: f * fs, e: (f + 2) * fs, midi: m }); }
       const notes = pn.filter(n => n.e - n.t >= 0.12);
-      if (notes.length >= 6) { const r = relativeByTonic(tonicPull(notes), gk, gmode === "min", (k, mi) => corr(gprof, roll(mi ? MINOR : MAJOR, k)), c0 => c0 - 0.15); gk = r.k; gmode = r.minor ? "min" : "maj"; }
+      if (notes.length >= 6) { const T = tonicPull(notes), sc = (k, mi) => corr(gprof, roll(mi ? MINOR : MAJOR, k)), cl = c0 => c0 - 0.15;
+        if (!byChords) { const f = fifthByTonic(noteHist(notes), T, gk, gmode === "min", sc, cl); gk = f.k; gmode = f.minor ? "min" : "maj"; }
+        const r = relativeByTonic(T, gk, gmode === "min", sc, cl); gk = r.k; gmode = r.minor ? "min" : "maj"; }
     }
     const gscale = roll(gmode === "maj" ? MAJ_S : MIN_S, gk);
     // out-of-key energy against the LOCAL key (±10 s), so a deliberate key change isn't "wrong notes";
@@ -2378,7 +2391,7 @@ details.fold.more details.fold{margin-top:0}
       if (Y.trust && m < 0.3 && si < 0.3 && loud[i] > -55) noise[i] = Math.max(noise[i], 0.8); }
     P[R.TALK] = talk; P[R.NOISE] = noise;
   }
-  root.ClipEngine = { analyzePCM, tonicPull, relativeByTonic, decide, videoPenalties, applyYam, CELL, R, _shotT: v => { SHOT_T = v; } };
+  root.ClipEngine = { analyzePCM, tonicPull, relativeByTonic, noteHist, fifthByTonic, decide, videoPenalties, applyYam, CELL, R, _shotT: v => { SHOT_T = v; } };
 })(typeof window !== "undefined" ? window : globalThis);
 
 </script>
@@ -3426,18 +3439,29 @@ details.fold.more details.fold{margin-top:0}
   // (1) tempo octave: a very slow reading (under 66 BPM) whose half-beats carry attacks about as strong as its beats is the
   //     real beat heard at half speed, so the grid doubles. (2) phase: chords change and the low strings hit ON the beat;
   //     when both cues sit clearly on the half-beat instead, the grid moves half a beat.
+  // one tempo-octave rule for the beat tracker and the sung-notes grid: the band's beat stays about 66-130 BPM.
+  // mid = half-beat attacks / beat attacks (null when unknown). A slow reading with strong half-beats doubles; a pulse above
+  // 130 is kept at half-time (every other beat, still on the real pulse) and halfTime keeps the fast pulse for the label.
+  const TEMPO_HI = 130;
+  function tempoOctave(bpm, mid) {
+    if (!(bpm > 0)) return { mult: 1, halfTime: 0 };
+    if (bpm < 66 && mid >= 0.5) return { mult: 2, halfTime: 0 };
+    if (bpm > TEMPO_HI) return { mult: 0.5, halfTime: Math.round(bpm) };
+    if (bpm < 100 && mid >= 0.8 && bpm * 2 > TEMPO_HI) return { mult: 1, halfTime: Math.round(bpm * 2) };
+    return { mult: 1, halfTime: 0 };
+  }
   function refineGrid(raw, s, e, tb) {
     if (!tb?.beats || tb.beats.length < 6 || !raw.fluxA) return tb;
     const fr = raw.fluxRate, off = raw.fluxOff, pk = (F, t) => { if (!F) return 0; const i = Math.round((t - off) * fr); let m = 0; for (let j = i - 2; j <= i + 2; j++) m = Math.max(m, F[j] || 0); return m; };
     const mids = B => B.slice(0, -1).map((t, i) => (t + B[i + 1]) / 2);
     let B = tb.beats.slice(), out = { ...tb };
     const p0 = (B[B.length - 1] - B[0]) / (B.length - 1), bpm0 = 60 / p0;
-    if (bpm0 < 66) { const M = mids(B), on = mean(B.map(t => pk(raw.fluxA, t))), md = mean(M.map(t => pk(raw.fluxA, t)));
-      if (on > 0 && md / on >= 0.5) { const D = []; B.forEach((t, i) => { D.push(t); if (i < M.length) D.push(M[i]); }); B = D; out = { ...out, beats: B.map(t => +t.toFixed(4)), bpm: tb.bpm * 2, doubled: +(md / on).toFixed(2) }; }}
-    // half-time vs double-time: a reading under 100 whose half-beats hit as hard as its beats is equally a pulse at twice
-    // the speed. Above 140 the band would race, so it keeps the slower (70-140) beat and labels it half-time of the fast one.
-    else if (bpm0 < 100) { const M = mids(B), on = mean(B.map(t => pk(raw.fluxA, t))), md = mean(M.map(t => pk(raw.fluxA, t)));
-      if (on > 0 && md / on >= 0.8 && bpm0 * 2 > 140) out = { ...out, halfTime: Math.round(tb.bpm * 2) }; }
+    { const M = mids(B), on = mean(B.map(t => pk(raw.fluxA, t))), md = mean(M.map(t => pk(raw.fluxA, t))), O = tempoOctave(bpm0, on > 0 ? md / on : 0);
+      if (O.mult === 2) { const D = []; B.forEach((t, i) => { D.push(t); if (i < M.length) D.push(M[i]); }); B = D; out = { ...out, beats: B.map(t => +t.toFixed(4)), bpm: tb.bpm * 2, doubled: +(md / on).toFixed(2) }; }
+      // too fast for the band: every other beat, from the beats that hit harder (low strings first), so it plays half-time ON the pulse
+      else if (O.mult === 0.5) { const hit = k => mean(B.filter((_, i) => i % 2 === k).map(t => pk(raw.fluxL, t) + pk(raw.fluxA, t))), k0 = hit(1) > hit(0) * 1.05 ? 1 : 0;
+        B = B.filter((_, i) => i % 2 === k0); out = { ...out, beats: B.map(t => +t.toFixed(4)), bpm: tb.bpm / 2, halfTime: O.halfTime }; }
+      else if (O.halfTime) out = { ...out, halfTime: O.halfTime }; }
     if (raw.chromaFr && B.length >= 8) {
       const p = (B[B.length - 1] - B[0]) / (B.length - 1), M = mids(B);
       const nov = t => { const a = frameVec(raw.chromaFr, raw, t - 0.45 * p, t - 0.06 * p), b = frameVec(raw.chromaFr, raw, t + 0.06 * p, t + 0.45 * p); return 1 - cos(a, b); };
@@ -3473,6 +3497,7 @@ details.fold.more details.fold{margin-top:0}
       return { pulse: false, meter: null, beats: [], bars: [], chords, swing: 0.5, bpm: null };
     }
     if (!forced) tb = refineGrid(raw, s, e, tb);
+    else if (forced.beats && raw.fluxA && tb.beats.length >= 6) { const O = tempoOctave(tb.bpm, offRatio(raw, tb.beats)); if (O.mult === 1 && O.halfTime) tb = { ...tb, halfTime: O.halfTime }; }
     const { beats } = tb;
     const { on, fr, off } = env(raw);
     const acc = t => { const f = Math.round((t - off) * fr); return Math.max(on[f] || 0, on[f + 1] || 0, on[f - 1] || 0); };
@@ -3949,11 +3974,12 @@ details.fold.more details.fold{margin-top:0}
   // the most likely key from the melody alone (Krumhansl profiles)
   function keyOfNotes(notes) {
     // long notes, the first and the last note weigh more: melodies start and settle on home
-    const h = new Array(12).fill(0); notes.forEach((n, i) => { h[((n.midi % 12) + 12) % 12] += (n.e - n.t) * (i === notes.length - 1 ? 1.5 : 1); });
+    const h = root.ClipEngine?.noteHist ? root.ClipEngine.noteHist(notes) : new Array(12).fill(0);
     const KM = [6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88], Km = [6.33, 2.68, 3.52, 5.38, 2.6, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17];
     const corr = (p, r) => { let s = 0; for (let i = 0; i < 12; i++) s += h[(i + r) % 12] * p[i]; return s; };
     let best = { s: -1 }; for (let r = 0; r < 12; r++) for (const [p, minor] of [[KM, false], [Km, true]]) { const sc = corr(p, r); if (sc > best.s) best = { s: sc, key: r, minor }; }
-    const tp = root.ClipEngine?.tonicPull, rel = root.ClipEngine?.relativeByTonic;
+    const tp = root.ClipEngine?.tonicPull, rel = root.ClipEngine?.relativeByTonic, fifth = root.ClipEngine?.fifthByTonic;
+    if (tp && fifth) { const f = fifth(h, tp(notes), best.key, best.minor, (k, mi) => corr(mi ? Km : KM, k), c0 => c0 * 0.9); if (f.k !== best.key || f.minor !== best.minor) best = { s: corr(f.minor ? Km : KM, f.k), key: f.k, minor: f.minor, fifth: true }; }
     if (tp && rel) { const r = rel(tp(notes), best.key, best.minor, (k, mi) => corr(mi ? Km : KM, k), c0 => c0 * 0.9); if (r.k !== best.key) best = { s: corr(r.minor ? Km : KM, r.k), key: r.k, minor: r.minor, relative: true }; }
     return best;
   }
@@ -3980,13 +4006,13 @@ details.fold.more details.fold{margin-top:0}
     let best = { sc: 0 };
     for (let bpm = 60; bpm <= 200; bpm += 1) { const p = 60 / bpm; let c = 0, sn = 0; for (const t of on) { const ph = ((t - on[0]) / p) % 1, d = Math.min(ph, 1 - ph); c += Math.cos(2 * Math.PI * d); sn += Math.sin(2 * Math.PI * ph); } const sc = Math.hypot(c, sn) / on.length; if (sc > best.sc + 0.01) best = { sc, p }; }
     if (best.sc < 0.6) return [];
-    // notes faster than 140 a minute: bars on the half-time beat (every other note start), so the band doesn't race
-    const half = 60 / best.p > 140, p = half ? 2 * best.p : best.p, bar = 4 * p;
+    // the same tempo-octave rule as the beat tracker: notes faster than 130 a minute get bars on the half-time beat
+    const O = tempoOctave(60 / best.p, null), half = O.mult === 0.5, p = half ? 2 * best.p : best.p, bar = 4 * p;
     // the downbeat: the phase where the longest notes start
     let ph0 = on[0], bestW = -1; for (let k = 0; k < 4; k++) { const st = on[0] + k * p; let w = 0; for (const n of notes) { const x = ((n.t - st) / bar) % 1, d = Math.min(Math.abs(x), Math.abs(1 - x)); if (d * bar < 0.12) w += n.e - n.t; } if (w > bestW) { bestW = w; ph0 = st; } }
     let t = ph0; while (t - bar > s - 0.05) t -= bar;
     const cells = []; for (; t < e - 0.3; t += bar) cells.push({ t0: Math.max(s, t), t1: Math.min(e, t + bar) });
-    cells.halfTime = half; return cells;
+    cells.halfTime = O.halfTime; return cells;
   }
   // chords for a melody in a window: bars when there's a beat, otherwise phrases of about 2.5 s
   function melodyPlan(raw, A, R, s, e) {
@@ -4052,7 +4078,7 @@ details.fold.more details.fold{margin-top:0}
   const spellPc = (pc, r, minor) => flatKey(r, minor) && !(r === 0 && !minor && pc === 6) && !(r === 9 && minor && pc === 6) ? FLAT[pc] : NOTES[pc];
   function spellChord(name, r, minor) { const m = /^([A-G]#?)(.*)$/.exec(name || ""); if (!m) return name; const pc = NOTES.indexOf(m[1]); return pc < 0 ? name : spellPc(pc, r, minor) + m[2]; }
 
-  root.LickMusic = { _gridFromNotes: gridFromNotes, _getHypW: () => HYP_W, _unsure: v => { UNSURE = v; }, offbeat, _chMix: v => { CH_MIX = v; }, beatHyps, _hypW: w => { HYP_W = w; }, _pulseMin: v => { PULSE_MIN = v; }, guessTempo, keyLabel, spellChord, spellPc, flatKey, alignLayer, chromaSeq, QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, harmonyPlanOld, keyOfWindow, _hp: v => { HP = { ...HP, ...v }; }, _offShift: v => { OFF_SHIFT = v; }, _meterRep: v => { METER_REP = v; }, cellFeats, musicness, _musW: w => { MUS_W = w; }, _musPen: v => { MUS_PEN = v; }, _trim: v => { TRIM = v; }, _cleanW: v => { CLEAN_W = v; }, _homeW: v => { HOME_W = v; }, _edges: v => { EDGES = v; }, _flubW: v => { FLUB_W = v; }, _cands: () => LAST_CANDS, offRatio, _getHp: () => HP, trackBeats, analyze, picks, chordsFor, NOTES };
+  root.LickMusic = { _gridFromNotes: gridFromNotes, tempoOctave, _getHypW: () => HYP_W, _unsure: v => { UNSURE = v; }, offbeat, _chMix: v => { CH_MIX = v; }, beatHyps, _hypW: w => { HYP_W = w; }, _pulseMin: v => { PULSE_MIN = v; }, guessTempo, keyLabel, spellChord, spellPc, flatKey, alignLayer, chromaSeq, QUAL, chord, parseChord, keyChords, alternatives, melodyNotes, keyOfNotes, harmonize, melodyPlan, notesFromPCM, tabFor, picksAsync, featuresOf, zOf, TASTE_F, setStay: v => { CHORD_STAY = v; }, setFineOff: v => { FINE_OFF = v; }, harmonyPlan, harmonyPlanOld, keyOfWindow, _hp: v => { HP = { ...HP, ...v }; }, _offShift: v => { OFF_SHIFT = v; }, _meterRep: v => { METER_REP = v; }, cellFeats, musicness, _musW: w => { MUS_W = w; }, _musPen: v => { MUS_PEN = v; }, _trim: v => { TRIM = v; }, _cleanW: v => { CLEAN_W = v; }, _homeW: v => { HOME_W = v; }, _edges: v => { EDGES = v; }, _flubW: v => { FLUB_W = v; }, _cands: () => LAST_CANDS, offRatio, _getHp: () => HP, trackBeats, analyze, picks, chordsFor, NOTES };
 })(typeof window !== "undefined" ? window : globalThis);
 
 /* LickBand 2: a real-sounding band that plays WITH the take.
@@ -6290,7 +6316,7 @@ function arrangePanel(c) {
       <span class="seg wide" role="group" aria-label="Repeat">${[1, 2, 3, 4].map(k => `<button type="button" data-loop="${k}" aria-pressed="${n === k && c.src !== "mix"}">${k === 1 ? "Once" : `×${k}`}</button>`).join("")}</span>
       <span class="seg wide" role="group" aria-label="Fill a length">${[15, 30, 60].map(t => `<button type="button" data-loop="${fill(t)}" aria-pressed="false">Fill ${t}s</button>`).join("")}</span>
       <p class="hint">Repeats Lick ${"ABC"[c.pickSel || 0]} on the bar with a short blend, so the beat never skips. The band keeps playing across every repeat.${rep && Math.abs(rep - pk.len) > 0.05 ? ` Tightened: each repeat is ${fmt(rep)}.` : ""}</p></div>` : `<p class="hint keep">Loops work on a lick.</p>`}
-    ${pk && c.raw?.chromaQ ? (() => { const A = bandA(c), sp = speedOf(c); return A?.pulse && !A.forced ? `<div class="sndcard"><div class="sndhead"><h3>${icon("i-clock")}Tempo</h3><span class="foldv">${Math.round(A.bpm * sp)} BPM${sp !== 1 ? ` (${sp > 1 ? "+" : ""}${Math.round((sp - 1) * 100)}%)` : ""}</span></div>
+    ${pk && c.raw?.chromaQ ? (() => { const A = bandA(c), sp = speedOf(c); return A?.pulse && !A.forced ? `<div class="sndcard"><div class="sndhead"><h3>${icon("i-clock")}Tempo</h3><span class="foldv">${Math.round(A.bpm * sp)} BPM${A.halfTime ? " ½×" : ""}${sp !== 1 ? ` (${sp > 1 ? "+" : ""}${Math.round((sp - 1) * 100)}%)` : ""}</span></div>
       <span class="seg wide"><button type="button" data-speed="-">Slower</button><button type="button" data-speed="1" aria-pressed="${sp === 1}">As played</button><button type="button" data-speed="+">Faster</button></span>
       <p class="hint">Speeds the whole video up or slows it down (picture and sound together, pitch stays). The band plays at the new tempo.</p></div>` : ""; })() : ""}
     ${mixHTML(c)}`;
@@ -7299,7 +7325,7 @@ function beatCard(c, A) {
   const lockWhy = lock ? (T ? `On · your notes land on it (biggest move ${mv} ms)` : "On") : T ? (mv > LOCK_MAX * 1000 || T.maxStretch > LOCK_STRETCH ? `Off · some notes are ${mv} ms away; locking would be audible` : "Off · the band follows you instead") : "Off · nothing to move";
   return `<div class="metro2${b.click ? " clicking" : ""}" style="--beat:${A?.pulse ? (60 / A.bpm).toFixed(3) : 0.7}s">
     <div class="metrohead">
-      <button type="button" class="metrotap" data-bpm="tap" aria-label="Tap along to set the tempo"><b>${A?.pulse ? A.bpm : "—"}</b><em>BPM${A?.meter === 3 ? " · 3/4" : ""}${A?.swing > 0.58 ? " · swung" : ""}</em><i class="beatdot" aria-hidden="true"></i></button>
+      <button type="button" class="metrotap" data-bpm="tap" aria-label="Tap along to set the tempo"><b>${A?.pulse ? A.bpm : "—"}</b><em>BPM${A?.pulse && A.halfTime ? " · ½×" : ""}${A?.meter === 3 ? " · 3/4" : ""}${A?.swing > 0.58 ? " · swung" : ""}</em><i class="beatdot" aria-hidden="true"></i></button>
       <span class="metroby">${esc(by)}${ms}<br>tap it on the beat to set it</span>
     </div>
     <div class="metrorow"><span class="seg" role="group" aria-label="Tempo"><button type="button" data-bpm="-1" aria-label="1 BPM slower">−1</button><button type="button" data-bpm="+1" aria-label="1 BPM faster">+1</button></span><button type="button" class="dtg" data-act="beat-click" aria-pressed="${!!b.click}">${icon("i-clock")}Click</button>
