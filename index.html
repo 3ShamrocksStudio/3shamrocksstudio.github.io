@@ -179,7 +179,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 
 /* laptop */
 .lt{--lw:380px}
-.lid{position:relative;width:var(--lw);aspect-ratio:16/10.5;border-radius:calc(var(--lw)*.034) calc(var(--lw)*.034) calc(var(--lw)*.008) calc(var(--lw)*.008);padding:calc(var(--lw)*.022) calc(var(--lw)*.022) calc(var(--lw)*.03);
+.lid{position:relative;width:var(--lw);margin-inline:auto;aspect-ratio:16/10.5;border-radius:calc(var(--lw)*.034) calc(var(--lw)*.034) calc(var(--lw)*.008) calc(var(--lw)*.008);padding:calc(var(--lw)*.022) calc(var(--lw)*.022) calc(var(--lw)*.03);
   background:#08080a;box-shadow:inset 0 0 0 1.4px #8d8f96,inset 0 0 0 2.6px #141416,0 26px 50px -22px rgba(0,0,0,.95),0 50px 120px -50px var(--glow,rgba(130,57,234,.6))}
 .lid::before{content:"";position:absolute;z-index:8;top:calc(var(--lw)*.022);left:50%;width:9%;height:calc(var(--lw)*.016);transform:translateX(-50%);background:#08080a;border-radius:0 0 6px 6px}
 .lid .scr{border-radius:calc(var(--lw)*.006)}
@@ -187,6 +187,8 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .base::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:15%;height:42%;background:linear-gradient(180deg,#8f9198,#c2c4c9);border-radius:0 0 8px 8px}
 .lt .splash img{--lw2:44%}
 .lt .shade{width:96%}
+/* the base overhangs the lid by 8% each side; pull it in by half so lid and base sit evenly between neighbours */
+.row .lt{margin-inline:calc(var(--lw)*-.04)}
 
 /* WORK (one section, floating devices) */
 .stage-head{display:grid;grid-template-columns:1fr auto;align-items:end;gap:28px;margin-bottom:84px}
@@ -214,7 +216,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
   .devices{display:grid;grid-template-columns:1fr 1fr;gap:44px 12px;justify-items:center}
   .row{display:contents}
   .dev{--pw:min(146px,38vw)}
-  .row .lt{grid-column:1/-1;order:2;--lw:min(320px,82vw)}
+  .row .lt{grid-column:1/-1;order:2;--lw:min(320px,82vw);margin-inline:0}
   .dev{order:1}
   .cap b{font-size:15px}
 }
