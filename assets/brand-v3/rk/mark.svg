@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#F3D58A"/><stop offset=".55" stop-color="#D4A84B"/><stop offset="1" stop-color="#A97A2A"/>
+    </linearGradient>
+    <linearGradient id="ivory" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#FFFDF7"/><stop offset="1" stop-color="#E6DCC6"/>
+    </linearGradient>
+    <!-- king silhouette, reused for the knockout seam -->
+    <g id="king">
+      <rect x="301" y="40" width="22" height="64" rx="5"/>
+      <rect x="282" y="58" width="60" height="22" rx="5"/>
+      <path d="M262 112 H362 Q366 112 365 116 L350 170 H274 L259 116 Q258 112 262 112 Z"/>
+      <rect x="266" y="172" width="92" height="22" rx="11"/>
+      <path d="M286 194 H338 Q338 292 372 370 H252 Q286 292 286 194 Z"/>
+      <rect x="240" y="366" width="148" height="28" rx="10"/>
+    </g>
+    <g id="pawn">
+      <circle cx="206" cy="210" r="46"/>
+      <rect x="154" y="254" width="104" height="22" rx="11"/>
+      <path d="M179 276 H233 Q233 326 268 372 H144 Q179 326 179 276 Z"/>
+      <rect x="130" y="366" width="152" height="28" rx="10"/>
+    </g>
+    <mask id="seam" maskUnits="userSpaceOnUse">
+      <rect width="512" height="512" fill="#fff"/>
+      <use href="#king" fill="#000" stroke="#000" stroke-width="22" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+  <!-- crest: one shield, open at the crown so the king breaks the frame -->
+  <g mask="url(#seam)">
+    <path d="M256 64 L428 112 V262 C428 370 352 438 256 476 C160 438 84 370 84 262 V112 Z" fill="none" stroke="url(#gold)" stroke-width="24" stroke-linejoin="round"/>
+    <use href="#pawn" fill="url(#gold)"/>
+    <rect x="118" y="404" width="276" height="22" rx="11" fill="url(#gold)"/>
+  </g>
+  <use href="#king" fill="url(#ivory)"/>
+</svg>
