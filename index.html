@@ -153,6 +153,26 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
   .stat-lbl{font-size:12px;max-width:none}
   .lvl-ms li{font-size:10.5px}.lvl-ms li b{font-size:11.5px}
 }
+/* mobile: the minime and his phone land right under the headline, stats follow, then the long copy */
+@media(max-width:700px){
+  .hero{padding-top:84px}
+  .hero .wrap{grid-template-columns:1fr 1fr;gap:0}
+  .hero-content,.hero-character{display:contents}
+  .hero .wrap>*,.hero-content>*,.hero-character>*{grid-column:1/-1}
+  .hero-kicker{order:1;margin-bottom:16px}
+  .hero h1{order:2}
+  .hero-dev{order:3;grid-column:1;justify-self:end;align-self:end;margin:22px -6px 18px 0}
+  .minime-stand{order:3;grid-column:2;justify-self:start;align-self:end;margin:22px 0 18px}
+  .minime{width:min(132px,34vw)}
+  .hero-dev{--pw:min(146px,36vw)}
+  .stats{order:4;margin:6px 0 4px}
+  .hero-sub{order:5}
+  .hero-offer{order:6}
+  .hero-actions{order:7}
+  .lvl{order:8;margin:4px auto 0;width:100%}
+  .hero-dev,.minime-stand,.lvl{animation:fadeOnly .9s var(--ease) .3s both}
+}
+@keyframes fadeOnly{from{opacity:0}}
 
 /* DEVICES (shared): phone */
 .rig{position:relative;will-change:transform;animation:float 6.5s ease-in-out infinite;animation-delay:var(--d,0s)}
