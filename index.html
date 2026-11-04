@@ -362,7 +362,30 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .svc svg{width:38px;height:38px;flex:0 0 auto;--ic-ink:#fff;--ic-a:var(--violet-2)}
 .svc b{display:block;font:700 17px var(--font-d);letter-spacing:-.01em}
 .svc span{display:block;font-size:14.5px;line-height:1.5;color:var(--ink-2);margin-top:3px}
-@media(max-width:900px){.about-grid{grid-template-columns:1fr;gap:40px}.about-visual{max-width:460px}}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr;gap:40px}.about-pic{max-width:460px}}
+/* photo stickers */
+.about-pic{position:relative}
+.about-visual{touch-action:pan-y}
+.stk-layer{position:absolute;inset:0;z-index:2}
+.stk{position:absolute;left:var(--x);top:var(--y);width:var(--w);transform:translate(-50%,-50%) rotate(var(--r,0deg));padding:0;border:0;background:none;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+.stk svg{display:block;width:100%;height:auto;overflow:visible;pointer-events:none}
+.stk.drag{cursor:grabbing;z-index:5;filter:drop-shadow(0 16px 22px rgba(0,0,0,.55));transition:none}
+.stk.land{animation:stkLand .45s var(--ease)}
+@keyframes stkLand{0%{transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(1.25)}60%{transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(.94)}100%{transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(1)}}
+.stk-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+.stk-bar p{flex:1 0 100%;font:500 14px var(--font-b);color:var(--ink-3);margin-bottom:2px}
+.stk-tray{display:flex;gap:8px}
+.stk-slot{position:relative;width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px var(--line);display:grid;place-items:center;transition:background .25s,box-shadow .25s}
+.stk-slot:hover{background:rgba(176,124,255,.12);box-shadow:inset 0 0 0 1px rgba(176,124,255,.4)}
+.stk-slot .stk{position:static;transform:none;width:40px;filter:none;transition:transform .3s var(--ease)}
+.stk-slot .stk:hover{transform:scale(1.12) rotate(-6deg)}
+.stk-slot.used .stk{display:none}
+.stk-reset{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font:600 14px var(--font-b);color:var(--ink-2);background:none;border:1.5px solid rgba(255,255,255,.2);border-radius:100px;padding:9px 16px;cursor:pointer;transition:color .2s,border-color .2s}
+.stk-reset:hover{color:#fff;border-color:#fff}
+.stk-reset svg{width:16px;height:16px}
+@media(max-width:600px){.stk-slot{width:48px;height:48px;border-radius:14px}.stk-slot .stk{width:34px}.stk-tray{gap:6px}}
+
+
 @media(max-width:600px){.services{grid-template-columns:1fr}.about-stat-val{font-size:30px}.about-stat+.about-stat{padding-left:14px}}
 
 /* CONTACT: the River of Three, and the 3S logo growing out of it */
@@ -780,7 +803,20 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
 <!-- ABOUT -->
 <section class="about" id="about">
   <div class="wrap about-grid">
-    <div class="about-visual reveal"><img src="assets/studio/dave-portrait.webp" alt="Dave Markovich, founder of 3Shamrocks Studio" width="800" height="1098" loading="lazy"></div>
+    <div class="about-pic reveal">
+      <div class="about-visual" id="about-visual"><img src="assets/studio/dave-portrait.webp" alt="Dave Markovich, founder of 3Shamrocks Studio" width="800" height="1098" loading="lazy"><div class="stk-layer" id="stk-layer"></div></div>
+      <div class="stk-bar">
+        <p>Dress me up: drag a sticker onto the photo, or tap one.</p>
+        <div class="stk-tray" id="stk-tray">
+          <span class="stk-slot"><button class="stk" type="button" aria-label="Add the hat" data-k="hat" data-x="43" data-y="5.5" data-w="40" data-r="-6"><svg viewBox="0 0 120 96"><defs><linearGradient id="sHat" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b33b0"/><stop offset="1" stop-color="#22134a"/></linearGradient><linearGradient id="sBand" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3fbf7f"/><stop offset="1" stop-color="#c8f26a"/></linearGradient></defs><ellipse cx="60" cy="84" rx="58" ry="11" fill="#1a0f3a"/><ellipse cx="60" cy="82" rx="56" ry="9.5" fill="url(#sHat)"/><path d="M28 82V16C28 8 40 4 60 4S92 8 92 16V82C92 87 28 87 28 82Z" fill="url(#sHat)"/><path d="M28 60H92V74C92 79 28 79 28 74Z" fill="url(#sBand)"/><path d="M36 14C42 9 52 8 60 8" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3" stroke-linecap="round"/><g transform="translate(60 67)"><circle r="8.5" fill="#f4d36b"/><circle r="6" fill="#22134a"/><path d="M0 3.5C-1.5 1.5-4.2.4-4 -2 -3.8-3.8-1.6-4.3 0-2.6 1.6-4.3 3.8-3.8 4-2 4.2.4 1.5 1.5 0 3.5Z" fill="#8be36a"/></g></svg></button></span>
+          <span class="stk-slot"><button class="stk" type="button" aria-label="Add the hair" data-k="hair" data-x="43" data-y="9.5" data-w="38" data-r="0"><svg viewBox="0 0 140 64"><defs><linearGradient id="sHair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98a52"/><stop offset="1" stop-color="#6b3b20"/></linearGradient></defs><path d="M8 58C2 44 8 30 20 28 20 16 34 10 44 16 48 4 66 0 74 10 82 2 100 4 102 16 114 12 128 22 124 34 136 38 138 52 130 60 120 50 106 48 96 54 86 44 72 44 64 52 54 42 38 44 32 54 24 48 14 50 8 58Z" fill="url(#sHair)"/><path d="M30 30C34 24 42 22 48 25M70 16C76 12 84 13 88 18M100 28C106 26 112 28 116 33" fill="none" stroke="rgba(255,235,210,.5)" stroke-width="3" stroke-linecap="round"/></svg></button></span>
+          <span class="stk-slot"><button class="stk" type="button" aria-label="Add the glasses" data-k="glasses" data-x="40.5" data-y="24" data-w="36" data-r="0"><svg viewBox="0 0 120 36" shape-rendering="crispEdges"><path d="M0 0H120V6H114V24H108V30H102V36H72V30H66V18H54V30H48V36H18V30H12V24H6V6H0Z" fill="#0b0b10"/><path d="M10 9H16V15H10ZM16 15H22V21H16ZM74 9H80V15H74ZM80 15H86V21H80Z" fill="#fff"/><path d="M0 0H120V2H0Z" fill="#3a3a48"/></svg></button></span>
+          <span class="stk-slot"><button class="stk" type="button" aria-label="Add the moustache" data-k="tache" data-x="40.3" data-y="32" data-w="23" data-r="0"><svg viewBox="0 0 120 40"><defs><linearGradient id="sTache" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6238"/><stop offset="1" stop-color="#4f2a15"/></linearGradient></defs><path d="M60 12C52 2 36 4 28 14 22 22 14 26 6 22 2 20 0 16 3 12 1 22 8 32 20 32 34 32 46 24 60 20 74 24 86 32 100 32 112 32 119 22 117 12 120 16 118 20 114 22 106 26 98 22 92 14 84 4 68 2 60 12Z" fill="url(#sTache)"/><path d="M40 14C46 12 52 13 56 16" fill="none" stroke="rgba(255,225,190,.4)" stroke-width="2.5" stroke-linecap="round"/></svg></button></span>
+          <span class="stk-slot"><button class="stk" type="button" aria-label="Add the shamrock pin" data-k="pin" data-x="66" data-y="60" data-w="11" data-r="-10"><svg viewBox="0 0 60 60"><defs><linearGradient id="sGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1b0"/><stop offset=".5" stop-color="#e0a828"/><stop offset="1" stop-color="#9a6a10"/></linearGradient></defs><circle cx="30" cy="30" r="28" fill="url(#sGold)"/><circle cx="30" cy="30" r="23.5" fill="#160d33"/><g transform="translate(30 31)"><path d="M0 0C-3-4-10-6-10-12-10-16-6-18-3-17-1-16 0-14 0-12 0-14 1-16 3-17 6-18 10-16 10-12 10-6 3-4 0 0Z" fill="#8be36a"/><path d="M0 0C-3-4-10-6-10-12-10-16-6-18-3-17-1-16 0-14 0-12 0-14 1-16 3-17 6-18 10-16 10-12 10-6 3-4 0 0Z" fill="#2fb7c9" transform="rotate(120)"/><path d="M0 0C-3-4-10-6-10-12-10-16-6-18-3-17-1-16 0-14 0-12 0-14 1-16 3-17 6-18 10-16 10-12 10-6 3-4 0 0Z" fill="#9b59f7" transform="rotate(240)"/><circle r="2.2" fill="#f4d36b"/></g><path d="M12 18C16 11 23 7 30 6.5" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.4" stroke-linecap="round"/></svg></button></span>
+        </div>
+        <button class="stk-reset" type="button" id="stk-reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Reset</button>
+      </div>
+    </div>
     <div class="about-content">
       <h2 class="reveal">20 years, disciplined by strategy.</h2>
       <div class="about-stats reveal">
@@ -1076,6 +1112,35 @@ addEventListener('load',()=>{const lv=$('#lvl'),fill=$('#lvl-fill');if(!lv)retur
   sec.addEventListener('pointerleave',()=>{leanT=0});
   sec.addEventListener('click',e=>{if(e.target.closest('a,button')||!grown||RM)return;bloom=1;box.classList.remove('glitch');void box.offsetWidth;box.classList.add('glitch');
     const r=box.getBoundingClientRect();window.__leafBurst&&window.__leafBurst(r.left+r.width*.49,r.top+r.height*.13,34)});
+})();
+
+/* photo stickers: drag one onto the photo (or tap to drop it in place), drag it off to remove, Reset clears all */
+(function(){
+  const vis=$('#about-visual'),layer=$('#stk-layer'),tray=$('#stk-tray'),reset=$('#stk-reset');if(!vis)return;
+  const home=new Map();$$('.stk',tray).forEach(s=>home.set(s,s.parentElement));
+  function setPos(s,x,y){s.style.setProperty('--x',x+'%');s.style.setProperty('--y',y+'%')}
+  function place(s,x,y){const slot=home.get(s);slot.classList.add('used');s.style.setProperty('--w',s.dataset.w+'%');s.style.setProperty('--r',s.dataset.r+'deg');setPos(s,x,y);
+    if(s.parentElement!==layer)layer.appendChild(s);s.setAttribute('aria-label',s.getAttribute('aria-label').replace('Add','Remove'));s.classList.remove('land');void s.offsetWidth;s.classList.add('land')}
+  function back(s){const slot=home.get(s);slot.appendChild(s);slot.classList.remove('used');['--x','--y','--w','--r'].forEach(v=>s.style.removeProperty(v));s.setAttribute('aria-label',s.getAttribute('aria-label').replace('Remove','Add'))}
+  $$('.stk',tray).forEach(s=>{
+    let drag=null;
+    const move=e=>{if(!drag)return;const r=vis.getBoundingClientRect();
+      if(!drag.moved&&Math.hypot(e.clientX-drag.x0,e.clientY-drag.y0)<5)return;
+      if(!drag.moved){drag.moved=true;if(s.parentElement!==layer){place(s,s.dataset.x,s.dataset.y);s.classList.remove('land')}s.classList.add('drag')}
+      e.preventDefault();setPos(s,(e.clientX-r.left)/r.width*100,(e.clientY-r.top)/r.height*100)};
+    const end=e=>{removeEventListener('pointermove',move);removeEventListener('pointerup',end);removeEventListener('pointercancel',end);
+      if(!drag)return;const d=drag;drag=null;s.classList.remove('drag');
+      if(e.type==='pointercancel'){if(d.moved&&!d.on)back(s);return}
+      if(!d.moved){if(s.parentElement===layer)back(s);else place(s,s.dataset.x,s.dataset.y);return}
+      const r=vis.getBoundingClientRect(),inside=e.clientX>r.left&&e.clientX<r.right&&e.clientY>r.top&&e.clientY<r.bottom;
+      if(inside){s.classList.remove('land');void s.offsetWidth;s.classList.add('land')}else back(s)};
+    s.addEventListener('pointerdown',e=>{if(e.button>0)return;e.preventDefault();drag={x0:e.clientX,y0:e.clientY,moved:false,on:s.parentElement===layer};
+      addEventListener('pointermove',move,{passive:false});addEventListener('pointerup',end);addEventListener('pointercancel',end)});
+    s.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();s.parentElement===layer?back(s):place(s,s.dataset.x,s.dataset.y)}});
+    s.addEventListener('click',e=>e.preventDefault());
+  });
+  reset.addEventListener('click',()=>$$('.stk',layer).forEach(back));
+  [vis,tray].forEach(el=>el.addEventListener('dragstart',e=>e.preventDefault()));
 })();
 
 /* smooth anchors */
