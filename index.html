@@ -391,6 +391,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 /* CONTACT: the River of Three, and the 3S logo growing out of it */
 .contact{position:relative;padding:150px 0;overflow:hidden;isolation:isolate}
 .ct-bg{position:absolute;inset:0;z-index:-1}
+.ct-fx{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .ct-bg img{width:100%;height:100%;object-fit:cover;object-position:30% 55%;opacity:.92}
 .ct-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(52% 78% at 75% 52%,rgba(6,3,18,.9),rgba(6,3,18,.55) 60%,rgba(6,3,18,0) 100%),linear-gradient(180deg,#000 0%,rgba(0,0,0,.15) 16%,rgba(0,0,0,.15) 80%,#000 100%)}
 .ct-grid{display:grid;grid-template-columns:1fr 1fr;align-items:center}
@@ -838,6 +839,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
 <!-- CONTACT -->
 <section class="contact" id="contact" data-noburst>
   <div class="ct-bg" aria-hidden="true"><img src="assets/studio/s7/river-of-three.webp" alt="" width="1280" height="720" loading="lazy"></div>
+  <canvas class="ct-fx" id="ct-fx" aria-hidden="true"></canvas>
   <div class="wrap ct-grid">
     <div class="ct-main">
       <div class="ct-logo" id="ct-logo" role="img" aria-label="The 3Shamrocks logo, growing">
@@ -1083,7 +1085,14 @@ addEventListener('load',()=>{const lv=$('#lvl'),fill=$('#lvl-fill');if(!lv)retur
     leaves=leaves.filter(l=>t-l.t0<l.life);
     for(const l of leaves){const k=(t-l.t0)/l.life;l.vx*=.962;l.vy=l.vy*.962+.035*dpr;l.x+=l.vx;l.y+=l.vy;l.r+=l.vr;
       ctx.globalAlpha=k<.12?k/.12:Math.max(0,1-(k-.55)/.45);const sz=l.s*(k<.15?.4+4*k:1);ctx.save();ctx.translate(l.x,l.y);ctx.rotate(l.r);ctx.drawImage(LS[l.c][l.tre],-sz,-sz,sz*2,sz*2);ctx.restore()}
-    ctx.globalAlpha=1}
+    ctx.globalAlpha=1;fxLeaves(t)}
+  /* the contact section paints its river over this fixed canvas, so its leaves are redrawn on a layer above the river and below the text */
+  const cf=$('#ct-fx'),cg=cf&&cf.getContext('2d');let cfOn=false;
+  function fxLeaves(t){if(!cg)return;if(!leaves.length){if(cfOn){cg.clearRect(0,0,cf.width,cf.height);cfOn=false}return}
+    const r=cf.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight){if(cfOn){cg.clearRect(0,0,cf.width,cf.height);cfOn=false}return}
+    const W=Math.round(r.width*dpr),H=Math.round(r.height*dpr);if(cf.width!==W||cf.height!==H){cf.width=W;cf.height=H}else cg.clearRect(0,0,W,H);cfOn=true;
+    for(const l of leaves){const k=(t-l.t0)/l.life;cg.globalAlpha=k<.12?k/.12:Math.max(0,1-(k-.55)/.45);const sz=l.s*(k<.15?.4+4*k:1);cg.save();cg.translate(l.x-r.left*dpr,l.y-r.top*dpr);cg.rotate(l.r);cg.drawImage(LS[l.c][l.tre],-sz,-sz,sz*2,sz*2);cg.restore()}
+    cg.globalAlpha=1}
   if(RM){frame(0);addEventListener('resize',()=>frame(0));return}
   let run=true;document.addEventListener('visibilitychange',()=>{run=!document.hidden;if(run)requestAnimationFrame(loop)});
   function loop(t){if(!run)return;frame(t);requestAnimationFrame(loop)}
