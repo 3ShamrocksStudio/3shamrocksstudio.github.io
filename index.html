@@ -203,6 +203,8 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .glare{position:absolute;inset:0;z-index:5;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.05) 26%,transparent 27%)}
 .splash{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--sp,#111);transition:opacity .45s ease}
 .splash img{width:var(--lw,72%);height:auto;max-height:46%;object-fit:contain}
+.scr .splash img.still{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;object-position:top}
+.scr .splash img.fit{object-fit:contain;object-position:center;background:#586375}
 .splash .wm{font:800 calc(var(--pw)*.072) var(--font-d);color:#fff;text-align:center;padding:0 8%}
 .media{position:absolute;inset:0;z-index:1;opacity:0;transition:opacity .45s ease}
 .media video,.media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
@@ -217,7 +219,6 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .cap .soon{display:inline-block;margin-top:7px;font:600 12px var(--font-b);color:var(--violet);background:var(--violet-soft);border-radius:100px;padding:3px 11px}
 .cap .go{display:inline-block;margin-top:7px;font:600 13px var(--font-b);color:var(--violet);opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
 .dev.on .cap .go,.dev:focus-visible .cap .go{opacity:1;transform:none}
-.dev.soon .splash{filter:saturate(.85)}
 .dev.soon.nudge .rig{animation:nudge .5s ease}
 @keyframes nudge{0%,100%{transform:none}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
 .lt{--lw:360px;display:flex;flex-direction:column;align-items:center}
@@ -500,7 +501,7 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
       <div class="row">
         <a class="dev" href="work/shomer.html" data-reel="assets/studio/reels/shomer.mp4" style="--d:-0.4s">
           <div class="rig"><div class="ph"><div class="scr">
-            <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 30%,#1e315f,#0c1b3a 60%,#071026)"><img src="assets/studio/logos/shomer.png" alt="" loading="lazy"></div>
+            <div class="splash"><img src="assets/studio/hero/shomer-map.webp" alt="SH&#10017;MER live map" class="still" loading="lazy"></div>
             <div class="media"><video muted playsinline loop preload="none" data-poster="assets/studio/reels/shomer.webp"></video></div>
             <i class="glare"></i></div></div></div>
           <span class="shade"></span>
@@ -508,7 +509,7 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
         </a>
         <a class="dev" href="work/shomer-nature.html" data-shots="assets/studio/screens/nature-map.webp,assets/studio/screens/nature-guide.webp,assets/studio/screens/nature-report.webp" style="--d:-1.6s">
           <div class="rig"><div class="ph"><div class="scr">
-            <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 30%,#1f5a30,#0e3018 60%,#06180c)"><img src="assets/studio/logos/shomer-nature.png" alt="" loading="lazy"></div>
+            <div class="splash"><img src="assets/studio/screens/nature-map.webp" alt="SH&#10017;MER Nature trail map" class="still" loading="lazy"></div>
             <div class="media"></div>
             <i class="glare"></i></div></div></div>
           <span class="shade"></span>
@@ -516,7 +517,7 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
         </a>
         <a class="dev" href="work/lickpick.html" data-shots="assets/studio/screens/lickpick-cut.webp,assets/studio/screens/lickpick-style.webp,assets/studio/screens/lickpick-share.webp" style="--d:-2.8s">
           <div class="rig"><div class="ph"><div class="scr">
-            <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 35%,#1b1430,#0b0912 65%)"><img src="assets/studio/logos/lickpick-lockup.png" alt="" loading="lazy" style="--lw:80%"></div>
+            <div class="splash"><img src="assets/studio/screens/lickpick-cut.webp" alt="LickPick best-lick screen" class="still" loading="lazy"></div>
             <div class="media"></div>
             <i class="glare"></i></div></div></div>
           <span class="shade"></span>
@@ -524,7 +525,7 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
         </a>
         <a class="dev" href="work/trashure-hunters.html" data-shots="assets/opt/th-map.webp,assets/studio/reels/th-live.webp" style="--d:-4s">
           <div class="rig"><div class="ph"><div class="scr">
-            <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 30%,#3b1d8f,#1a0b4a 60%,#0a0a2e)"><img src="assets/studio/logos/trashure-hunters.png" alt="" loading="lazy" style="--lw:84%"></div>
+            <div class="splash"><img src="assets/opt/th-map.webp" alt="Trashure-Hunters game map" class="still" loading="lazy"></div>
             <div class="media"></div>
             <i class="glare"></i></div></div></div>
           <span class="shade"></span>
@@ -532,7 +533,7 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
         </a>
         <a class="dev" href="work/chore-wars.html" data-shots="assets/studio/hero/cw-arena.webp,assets/studio/hero/cw-chores.webp,assets/studio/hero/cw-cards.webp" style="--d:-5.2s">
           <div class="rig"><div class="ph"><div class="scr">
-            <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 30%,#6a3bff,#4b23d9 60%,#2a1290)"><img src="assets/studio/marks/cw-stacked.png" alt="" loading="lazy" style="--lw:74%"></div>
+            <div class="splash"><img src="assets/studio/hero/cw-arena.webp" alt="Chore Wars weekly arena" class="still" loading="lazy"></div>
             <div class="media"></div>
             <i class="glare"></i></div></div></div>
           <span class="shade"></span>
@@ -542,21 +543,21 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
       <div class="row">
         <div class="dev soon" tabindex="0" style="--d:-1s" aria-label="J8NIX, coming soon">
           <div class="rig"><div class="ph"><div class="scr">
-            <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 30%,#232a3b,#121620 65%)"><img src="assets/studio/logos/j8nix.png" alt="" loading="lazy" style="--lw:80%"></div>
+            <div class="splash"><img src="assets/studio/screens/j8nix-wire.webp" alt="J8NIX dashboard wireframe" class="still fit" loading="lazy"></div>
             <i class="glare"></i></div></div></div>
           <span class="shade"></span>
           <span class="cap"><b>J8NIX</b><small>Operations</small><span class="soon">Coming soon</span></span>
         </div>
         <div class="dev soon" tabindex="0" style="--d:-2.2s" aria-label="EZRA, coming soon">
           <div class="rig"><div class="ph"><div class="scr">
-            <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 30%,#4a360c,#241904 65%)"><img src="assets/studio/logos/ezra.png" alt="" loading="lazy" style="--lw:50%"></div>
+            <div class="splash"><img src="assets/screens/ezra.png" alt="EZRA voice screen" class="still" loading="lazy"></div>
             <i class="glare"></i></div></div></div>
           <span class="shade"></span>
           <span class="cap"><b>EZRA</b><small>Safety assistant</small><span class="soon">Coming soon</span></span>
         </div>
         <a class="dev lt" href="work/fairent.html" data-reel="assets/studio/reels/fairent-web.mp4" style="--d:-3.4s">
           <div class="rig"><div class="lid"><div class="scr">
-            <div class="splash" style="--sp:radial-gradient(120% 90% at 50% 40%,#ffffff,#efeaff 55%,#ddd4ff)"><img src="assets/studio/logos/fairent.png" alt="" loading="lazy" style="--lw:56%"></div>
+            <div class="splash"><img src="assets/studio/reels/fairent-web.webp" alt="FaiRent rent check" class="still" loading="lazy"></div>
             <div class="media"><video muted playsinline loop preload="none" data-poster="assets/studio/reels/fairent-web.webp"></video></div>
             <i class="glare"></i></div></div><div class="deck"></div></div>
           <span class="shade"></span>
@@ -564,7 +565,7 @@ footer{background:var(--white);border-top:1px solid var(--line);padding:56px 0 3
         </a>
         <div class="dev soon" tabindex="0" style="--d:-4.6s" aria-label="Milo, coming soon">
           <div class="rig"><div class="ph"><div class="scr">
-            <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 30%,#f7845f,#ef6440 55%,#c94a2a)"><img src="assets/studio/logos/milo.png" alt="" loading="lazy" style="--lw:62%"></div>
+            <div class="splash"><img src="assets/screens/milo-screen.png" alt="Milo companion screen" class="still" loading="lazy"></div>
             <i class="glare"></i></div></div></div>
           <span class="shade"></span>
           <span class="cap"><b>Milo</b><small>Companion pet</small><span class="soon">Coming soon</span></span>
@@ -756,7 +757,7 @@ if(heroBox){const hs=makeSlides(heroBox,2600,setTag);if(!RM){new IntersectionObs
 const cBox=$('#contact-media');
 if(cBox){const cs=makeSlides(cBox,2400);new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){loadImg($('img',cBox));if(!RM)cs.start()}else cs.stop()})).observe(cBox)}
 
-/* portfolio devices: splash when off, hover/tap plays the screens, click opens the page */
+/* portfolio devices: still of the first screen when off, hover/tap plays the screens, click opens the page */
 const devs=$$('.stage .dev');
 devs.forEach(d=>{
   const media=$('.media',d);let player=null,video=media&&$('video',media);
