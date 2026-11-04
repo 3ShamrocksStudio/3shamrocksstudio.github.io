@@ -531,7 +531,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
       <div class="minime-stand">
         <div class="minime" id="minime">
           <img src="assets/studio/minime_nobg.webp" alt="Mini Dave, the 3Shamrocks Studio avatar" class="minime-img" width="445" height="1009">
-          <video class="minime-vid" id="minime-vid" muted playsinline loop preload="none" aria-hidden="true" data-src="assets/studio/s7/minime-idle.webm" poster="assets/studio/s7/minime-idle-poster.webp"></video>
+          <video class="minime-vid" id="minime-vid" muted playsinline loop preload="none" aria-hidden="true" data-src="assets/studio/s7/minime-idle.webm" data-anim="assets/studio/s7/minime-idle-anim.webp" poster="assets/studio/s7/minime-idle-poster.webp"></video>
           <svg class="minime-eyes" id="minime-eyes" viewBox="0 0 445 1009" aria-hidden="true">
             <defs>
               <mask id="eyeMask" maskUnits="userSpaceOnUse" x="0" y="0" width="445" height="1009"><image href="assets/studio/home/minime-eyes-mask.png" x="101" y="152" width="182" height="63"/></mask>
@@ -1014,9 +1014,12 @@ if(trk){const one=IC.map(n=>'<span><svg viewBox="0 0 48 48" aria-hidden="true"><
     cur[0]+=(tgt[0]-cur[0])*.14;cur[1]+=(tgt[1]-cur[1])*.14;
     const tr='translate('+cur[0].toFixed(2)+' '+cur[1].toFixed(2)+')';iL.setAttribute('transform',tr);iR.setAttribute('transform',tr);
     raf=requestAnimationFrame(step)}
-  /* premium idle loop (alpha webm). Safari cannot show webm alpha, so it keeps the still with live eyes. */
-  const vid=$('#minime-vid'),ua=navigator.userAgent,SAF=/Safari/.test(ua)&&!/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
-  if(vid&&!RM&&!SAF&&vid.canPlayType('video/webm; codecs="vp09.00.10.08"')){
+  /* premium idle loop (alpha webm). Safari and every iPhone/iPad browser cannot show webm alpha, so they get the same loop as an animated webp; if that fails they keep the still with live eyes. */
+  const vid=$('#minime-vid'),ua=navigator.userAgent,IOS=/iP(hone|ad|od)/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),SAF=IOS||/Safari/.test(ua)&&!/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
+  if(vid&&!RM&&SAF&&vid.dataset.anim){
+    addEventListener('load',()=>{const im=new Image();im.className='minime-vid';im.alt='';im.setAttribute('aria-hidden','true');
+      im.onload=()=>{vid.replaceWith(im);requestAnimationFrame(()=>requestAnimationFrame(()=>{box.classList.add('vid');cancelAnimationFrame(raf);raf=null}))};im.src=vid.dataset.anim})}
+  else if(vid&&!RM&&!SAF&&vid.canPlayType('video/webm; codecs="vp09.00.10.08"')){
     addEventListener('load',()=>{vid.src=vid.dataset.src;vid.addEventListener('playing',()=>{box.classList.add('vid');cancelAnimationFrame(raf);raf=null},{once:true});const pl=vid.play();if(pl&&pl.catch)pl.catch(()=>{box.classList.remove('vid')})});
     new IntersectionObserver(es=>{if(!box.classList.contains('vid'))return;es[0].isIntersecting?vid.play().catch(()=>{}):vid.pause()}).observe(box)}
   if(RM){addEventListener('pointermove',()=>{aim();const tr='translate('+tgt[0].toFixed(2)+' '+tgt[1].toFixed(2)+')';iL.setAttribute('transform',tr);iR.setAttribute('transform',tr)},{passive:true});return}
