@@ -14,7 +14,7 @@
     house_full: 'Family is full (8)', not_enough: 'Not enough points', trade_stale: 'Trade expired', ads_maxed: 'Back tomorrow',
     bounty_max: 'Bounty maxed', need_name: 'Add a name', photo_too_big: 'Photo too big', not_allowed: 'Signed out', no_trade: 'Trade gone',
     no_chal: 'Challenge gone', bad_target: 'Pick a rival', players_only: 'Players only', parent_only: 'Parent only',
-    locked: 'Too many tries. Wait 15 min', too_many: 'Too many waiting. Try later', no_req: 'Request gone',
+    locked: 'Too many tries. Wait 15 min', busy: 'Too many tries. Wait 5 min', too_many: 'Too many waiting. Try later', no_req: 'Request gone',
     update_app: 'Reload the app', demo: 'Demo only. Start a family!'
   };
   /* rarity by total points: drives tile size, colour and glow */
@@ -133,6 +133,21 @@
     save(key, f.id); var p = d.players.find(function (x) { return x.id === f.actor; });
     if (p) setTimeout(function () { ceremony(p, 'Won last week'); }, 400);
   }
+  /* victory screen when the referee approves my chore: confetti, points, and a rank-up if XP crossed a rank */
+  function victory(c, gain, xpOld, xpNew) {
+    var old = document.querySelector('.victory'); if (old) old.remove();
+    var r0 = rankOf(xpOld || 0), r1 = rankOf(xpNew || 0), up = xpOld != null && r1.n !== r0.n;
+    var el = document.createElement('div'); el.className = 'victory'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Chore approved');
+    var h = '<div class="rays"></div><div class="stage"><div class="vic-art">' + ic((c && c.icon) || 'check', 120) + '</div><div class="ttl">Approved!</div>' +
+      '<div class="vic-gain">+' + gain + ic('pts', 56) + '</div>' +
+      (up ? '<div class="rankup"><span class="r0">' + ic(r0.ic, 52) + '</span><span class="arr">' + ic('spark', 30) + '</span><span class="r1">' + ic(r1.ic, 72) + '</span><b>Rank up: ' + r1.n + '</b></div>' : '') +
+      '<div class="sub">Tap to keep going</div></div>';
+    var cols = ['#FFD12E', '#22D3EE', '#FF3B7F', '#fff'];
+    for (var i = 0; i < 40; i++) { var a = Math.random() * Math.PI * 2, d = 150 + Math.random() * 230; h += '<i class="confetti" style="animation-delay:.25s;background:' + cols[i % 4] + ';--x:' + Math.cos(a) * d + 'px;--y:' + Math.sin(a) * d + 'px;--r:' + (Math.random() * 720) + 'deg"></i>'; }
+    el.innerHTML = h; document.body.appendChild(el); fx('win'); if (up) setTimeout(function () { fx('crown'); }, 900);
+    var close = function () { if (!el.parentNode) return; el.classList.add('out'); setTimeout(function () { el.remove(); }, 300); };
+    el.addEventListener('click', close); setTimeout(close, up ? 4200 : 3000);
+  }
   function flash() { var el = document.createElement('div'); el.className = 'fx'; el.innerHTML = '<div class="flash"></div>'; document.body.appendChild(el); app.classList.add('shake'); setTimeout(function () { el.remove(); app.classList.remove('shake'); }, 650); }
 
   /* ---------- server ---------- */
@@ -182,7 +197,7 @@
       var c = f.info && f.info.chore ? (d.chores.find(function (x) { return x.id === f.info.chore; }) || {}) : {};
       if (f.kind === 'steal' && f.target === d.me) { flash(); fx('steal'); toast(av(a.avatar, 32) + esc(a.name) + ' stole ' + esc(c.title || 'a chore'), 'bad'); }
       else if (f.kind === 'blocked' && f.actor === d.me) { fx('card'); toast(ic('shield', 28) + 'Shield blocked a steal!', 'good'); }
-      else if (f.kind === 'approved' && f.actor === d.me) { fx('win'); burst(f.info.gain || 0); if (f.info.card) setTimeout(function () { toast(ic(f.info.card, 28) + 'New card!', 'good'); }, 900); }
+      else if (f.kind === 'approved' && f.actor === d.me) { victory(c, f.info.gain || 0, (oldD.players.find(function (p) { return p.id === d.me; }) || {}).xp, (d.players.find(function (p) { return p.id === d.me; }) || {}).xp); if (f.info.card) setTimeout(function () { toast(ic(f.info.card, 28) + 'New card!', 'good'); }, 1800); }
       else if (f.kind === 'rejected' && f.actor === d.me) { fx('bad'); toast(ic('cross', 28) + esc(c.title || 'Chore') + ': redo it', 'bad'); }
       else if (f.kind === 'offer' && f.target === d.me) { fx('card'); toast(ic('swap', 28) + esc(a.name) + ' wants a swap'); }
       else if (f.kind === 'counter' && f.target === d.me) { fx('card'); toast(ic('swap', 28) + esc(a.name) + ' countered'); }
@@ -220,7 +235,8 @@
     var right = m.role === 'parent'
       ? '<span class="chip">' + ic('check', 24) + S.d.chores.filter(function (c) { return c.status === 'done'; }).length + '</span>'
       : '<span class="chip streak' + (m.streak > 0 ? ' hot' : '') + '" title="Streak">' + ic('flame', 24) + m.streak + '</span><span class="chip" title="Cards">' + ic('cards', 24) + cardCount(m) + '</span>';
-    return '<header class="top"><button class="me" data-act="profile" aria-label="Profile">' + avb(m, 52) +
+    var flame = m.role === 'player' && m.streak > 0 ? '<span class="avflame" title="' + m.streak + '-day streak">' + ic('flame', 26) + '<b>' + m.streak + '</b></span>' : '';
+    return '<header class="top"><button class="me" data-act="profile" aria-label="Profile"><span class="mewrap">' + avb(m, 52) + flame + '</span>' +
       '<div style="min-width:0"><div class="me-name">' + esc(m.name) + '</div>' +
       (m.role === 'parent' ? '<div style="color:#fff;opacity:.8;font-size:13px">Referee</div>' :
         '<div class="tier">' + ic(r.ic, 22) + '<span>' + r.n + '</span><div class="xpbar"><i style="width:' + pct + '%"></i></div></div>') +
@@ -320,6 +336,15 @@
     }
     return h + '</div></div>';
   }
+  /* who to beat: the player just above me this week, or the one right behind me if I lead */
+  function rivalCall() {
+    var d = S.d, ps = d.players.filter(function (p) { return p.role === 'player'; }).sort(function (a, b) { return b.pts - a.pts || b.xp - a.xp; });
+    var i = ps.findIndex(function (p) { return p.id === d.me; }); if (i < 0 || ps.length < 2) return '';
+    var m = ps[i], o, txt, cls;
+    if (i > 0) { o = ps[i - 1]; var gap = o.pts - m.pts; txt = gap > 0 ? esc(o.name) + ' is ' + gap + ' pts ahead!' : 'Tied with ' + esc(o.name) + '!'; cls = gap > 0 ? 'behind' : 'tied'; }
+    else { o = ps[1]; var lead = m.pts - o.pts; txt = lead > 0 ? 'You lead ' + esc(o.name) + ' by ' + lead + '!' : 'Tied with ' + esc(o.name) + '!'; cls = lead > 0 ? 'ahead' : 'tied'; }
+    return '<div class="rival ' + cls + '">' + avb(o, 40) + '<span class="rt">' + txt + '</span>' + ic(cls === 'ahead' ? 'crown' : 'trophy', 30) + '</div>';
+  }
   function chores() {
     var d = S.d, order = { open: 1, claimed: 2, done: 3, approved: 4 };
     var list = d.chores.slice().sort(function (a, b) {
@@ -327,7 +352,7 @@
       return (am - bm) || (order[a.status] - order[b.status]) || (b.bounty - a.bounty) || ((b.pts + b.bounty) - (a.pts + a.bounty));
     });
     var open = d.chores.filter(function (c) { return c.status === 'open'; }).length;
-    var h = '<div class="h">' + ic('broom', 30) + 'Chores' + (!isParent() && open ? '<span class="hint">' + open + ' up for grabs</span>' : '') + '</div><div class="grid">' + list.map(choreTile).join('') + '</div>';
+    var h = (isParent() ? '' : rivalCall()) + '<div class="h">' + ic('broom', 30) + 'Chores' + (!isParent() && open ? '<span class="hint">' + open + ' up for grabs</span>' : '') + '</div><div class="grid">' + list.map(choreTile).join('') + '</div>';
     if (isParent()) h += '<button class="btn big" data-act="add_sheet" style="margin-top:20px">' + ic('plus', 30) + 'Add chore</button>';
     return h;
   }
@@ -366,8 +391,8 @@
     h += '<div class="h">' + ic('ad', 28) + 'Free card</div><div class="panel adslot">' + ic('ad', 56) + '<div class="txt">Watch, win a card<div class="dots">' +
       [0, 1, 2].map(function (i) { return '<i class="' + (i < used ? 'used' : '') + '"></i>'; }).join('') + '</div></div>' +
       '<button class="btn" data-act="ad" ' + (used >= 3 ? 'disabled' : '') + '>Watch</button></div>';
-    h += '<div class="h">' + ic('gift', 28) + 'Shop <span class="eyes">NEEDS YOUR EYES</span></div><div class="shop">' +
-      [['crown', 'Skins'], ['trophy', 'Season pass'], ['cards', 'Card pack']].map(function (s) { return '<div class="item">' + ic(s[0], 48) + '<b>' + s[1] + '</b><span class="tbd">price TBD</span></div>'; }).join('') + '</div>';
+    h += '<div class="h">' + ic('gift', 28) + 'Shop</div><div class="shop">' +
+      [['crown', 'Skins'], ['trophy', 'Season pass'], ['cards', 'Card pack']].map(function (s) { return '<div class="item soon" aria-label="' + s[1] + ', coming soon"><span class="lk">' + ic('lock', 22) + '</span>' + ic(s[0], 48) + '<b>' + s[1] + '</b><span class="cs">Coming soon</span></div>'; }).join('') + '</div>';
     return h;
   }
 
@@ -398,7 +423,7 @@
   }
   function invite() {
     var d = S.d, url = location.origin + location.pathname + '?join=' + d.house.code;
-    var h = reqBlock() + '<div class="h">' + ic('qr', 30) + 'Invite</div><div class="panel"><div class="qr">' + qrSvg(url) + '</div><div class="bigcode">' + esc(d.house.code) + '</div>' +
+    var h = reqBlock() + '<div class="h">' + ic('qr', 30) + 'Invite</div><div class="panel"><div class="qr">' + qrSvg(url) + '</div><div class="bigcode" aria-label="' + esc(d.house.code) + '">' + esc(d.house.code.slice(0, 4)) + '<span class="gap"></span>' + esc(d.house.code.slice(4)) + '</div>' +
       '<div style="text-align:center;opacity:.7;font-size:15px">Scan on their phone. You approve.</div>' +
       '<div style="display:flex;justify-content:center;margin-top:12px"><button class="btn cyan" data-act="share">Share link</button></div></div>';
     h += '<div class="h">' + av('fox', 30) + 'Players</div><div class="panel">';
@@ -447,6 +472,20 @@
   }
   function avPicker(sel) { return '<div class="avpick">' + AV_NAMES.map(function (n) { return '<button type="button" class="' + (n === sel ? 'on' : '') + '" data-act="pick_av" data-id="' + n + '" aria-label="' + n + '">' + av(n, 56) + '</button>'; }).join('') + '</div>'; }
   function badgePicker(sel) { return '<div class="field"><span>Your badge</span></div><div class="bdpick">' + BADGES.map(function (n) { return '<button type="button" class="' + (n === sel ? 'on' : '') + '" data-act="pick_bd" data-id="' + n + '" aria-label="' + n + '">' + ic(n, 40) + '</button>'; }).join('') + '</div>'; }
+  /* PIN: digits are masked as dots; only the digit just typed shows, briefly */
+  function pinField(id, label) {
+    return '<label class="field">' + (label ? '<span>' + label + '</span>' : '') + '<div class="pinbox"><input id="' + id + '" class="pin-in" type="text" inputmode="numeric" maxlength="4" pattern="[0-9]*" autocomplete="off" spellcheck="false" aria-label="' + (label || 'Parent PIN') + '">' +
+      '<div class="pindots" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div></label>';
+  }
+  var peekT = null;
+  document.addEventListener('input', function (e) {
+    var el = e.target; if (!el.classList || !el.classList.contains('pin-in')) return;
+    var v = el.value.replace(/\D/g, '').slice(0, 4); if (v !== el.value) el.value = v;
+    var dots = el.parentNode.querySelectorAll('.pindots i'), peek = e.inputType && e.inputType.indexOf('insert') === 0 ? v.length - 1 : -1;
+    clearTimeout(peekT);
+    dots.forEach(function (d, k) { d.className = k < v.length ? (k === peek ? 'on peek' : 'on') : ''; d.textContent = k === peek ? v[k] : ''; });
+    if (peek >= 0) peekT = setTimeout(function () { dots.forEach(function (d) { if (d.classList.contains('peek')) { d.classList.remove('peek'); d.textContent = ''; } }); }, 700);
+  });
   function keepDraft() { var v = function (q) { var el = document.querySelector(q); return el ? el.value : null; }; ['house', 'name'].forEach(function (k) { var x = v('#f_' + k); if (x !== null) S.draft[k] = x; }); }
   function createForm() {
     var dr = S.draft; dr.av = dr.av || 'owl'; dr.bd = dr.bd || 'crown';
@@ -454,20 +493,20 @@
       '<label class="field"><span>Family name</span><input id="f_house" maxlength="24" placeholder="The Thunder House" value="' + esc(dr.house || '') + '"></label>' +
       '<label class="field"><span>Your name</span><input id="f_name" maxlength="14" placeholder="Captain" value="' + esc(dr.name || '') + '"></label>' +
       avPicker(dr.av) +
-      '<label class="field"><span>Parent PIN (4 digits)</span><input id="f_pin" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="••••"></label>' +
+      pinField('f_pin', 'Parent PIN (4 digits)') +
       '<button class="btn big" data-act="create">' + ic('crown', 30) + 'Create</button></div><button class="btn ghost" data-act="home">Back</button>';
   }
   function joinForm() {
     var dr = S.draft;
     if (dr.parent) {
       return '<div class="hero-logo" style="padding-top:20px"><img src="brand/mark.svg" alt="" style="width:110px"></div><div class="panel stack">' +
-        '<label class="field"><span>Family code</span><input id="f_code" class="code-in" maxlength="6" autocomplete="off" autocapitalize="characters" value="' + esc(S.joinCode || '') + '"></label>' +
-        '<label class="field"><span>Parent PIN</span><input id="f_pin" class="code-in" inputmode="numeric" maxlength="4" pattern="[0-9]*"></label>' +
+        '<label class="field"><span>Family code</span><input id="f_code" class="code-in" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" value="' + esc(S.joinCode || '') + '"></label>' +
+        pinField('f_pin', 'Parent PIN') +
         '<button class="btn big" data-act="parent_in">' + ic('lock', 28) + 'Referee in</button></div><button class="btn ghost" data-act="home">Back</button>';
     }
     if (!dr.code) {
       return '<div class="hero-logo" style="padding-top:20px"><img src="brand/mark.svg" alt="" style="width:110px"></div><div class="panel stack">' +
-        '<label class="field"><span>Family code</span><input id="f_code" class="code-in" maxlength="6" autocomplete="off" autocapitalize="characters" value="' + esc(S.joinCode || '') + '"></label>' +
+        '<label class="field"><span>Family code</span><input id="f_code" class="code-in" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" value="' + esc(S.joinCode || '') + '"></label>' +
         '<button class="btn big" data-act="find">Join</button></div><button class="btn ghost" data-act="parent_mode">I\'m the parent</button><button class="btn ghost" data-act="home">Back</button>';
     }
     dr.av = dr.av || 'fox'; dr.bd = dr.bd || 'bolt';
@@ -527,7 +566,7 @@
       '<button class="btn ghost" style="color:var(--ink)" data-sheet="noproof">No photo</button></div>');
     s.querySelector('#proofIn').addEventListener('change', function (e) {
       var file = e.target.files[0]; if (!file) return;
-      shrink(file).then(function (url) { closeSheet(); return act('done', { chore: id, proof: url }); }).then(function () { fx('grab'); toast(ic('lock', 28) + 'Sent to the referee', 'good'); }).catch(function () { /* toast shown */ });
+      shrink(file).then(function (url) { closeSheet(); return act('done', { chore: id, proof: url }); }).then(function () { fx('grab'); toast(ic('lock', 28) + 'Sent to the referee', 'good'); }).catch(function (er) { if (er && er.local) fail(er); /* server errors already shown */ });
     });
     s.querySelector('[data-sheet="noproof"]').addEventListener('click', function () { closeSheet(); act('done', { chore: id }).then(function () { fx('grab'); toast(ic('lock', 28) + 'Sent to the referee', 'good'); }).catch(function () { /* shown */ }); });
   }
@@ -539,9 +578,14 @@
         var k = Math.min(1, 720 / Math.max(img.width, img.height)), cv = document.createElement('canvas');
         cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
         cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height); URL.revokeObjectURL(u);
-        var out = cv.toDataURL('image/jpeg', 0.7);
-        if (out.length > 300000) out = cv.toDataURL('image/jpeg', 0.5);
-        res(out);
+        /* the server refuses anything over 250 KB: step quality down, then size, until it fits */
+        var out = '', qs = [0.7, 0.55, 0.4];
+        for (var tries = 0; tries < 4; tries++) {
+          for (var j = 0; j < qs.length; j++) { out = cv.toDataURL('image/jpeg', qs[j]); if (out.length <= 240000) return res(out); }
+          var c2 = document.createElement('canvas'); c2.width = Math.round(cv.width * 0.75); c2.height = Math.round(cv.height * 0.75);
+          c2.getContext('2d').drawImage(cv, 0, 0, c2.width, c2.height); cv = c2;
+        }
+        var er = new Error('photo_too_big'); er.local = true; rej(er);
       };
       img.onerror = rej; img.src = u;
     });
@@ -579,7 +623,7 @@
     s.querySelector('[data-sheet="add"]').addEventListener('click', function () { var t = s.querySelector('#c_title').value.trim(); if (!t) { toast(ic('cross', 28) + 'Add a name', 'bad'); return; } closeSheet(); act('add_chore', { icon: sel.icon, title: t, pts: sel.pts }).catch(function () { /* shown */ }); });
   }
   function pinSheet(cb) {
-    var s = sheet('<div class="ttl">Parent PIN</div><label class="field"><input id="p_pin" class="code-in" inputmode="numeric" maxlength="4" pattern="[0-9]*"></label><button class="btn big" style="margin-top:14px" data-sheet="ok">OK</button>');
+    var s = sheet('<div class="ttl">Parent PIN</div>' + pinField('p_pin', '') + '<button class="btn big" style="margin-top:14px" data-sheet="ok">OK</button>');
     s.querySelector('[data-sheet="ok"]').addEventListener('click', function () { var v = s.querySelector('#p_pin').value; closeSheet(); cb(v); });
     setTimeout(function () { var i = s.querySelector('#p_pin'); if (i) i.focus(); }, 50);
   }
@@ -597,20 +641,22 @@
      The slot is where a non-personalised ad network will render (see model page); none is wired yet. */
   function adSheet() {
     var n = 5;
-    var s = sheet('<div class="admoment"><span class="adtag">Ad</span><div class="ring" style="--p:0"><span class="num" id="adn">5</span></div>' +
-      '<div class="adbrand"><img src="brand/lockup.svg" alt="Chore Wars"></div><div class="fine">Your free card is coming</div>' +
-      '<div class="reveal" id="rev"><div class="flipcard"><div class="face back">' + ic('cards', 72) + '</div><div class="face front" id="revf"></div></div></div></div>');
+    var s = sheet('<div class="admoment"><span class="adtag">Ad</span><div class="adbrand"><img src="brand/lockup.svg" alt="Chore Wars"></div>' +
+      '<div class="reveal show" id="rev"><div class="flipcard spin"><div class="face back">' + ic('cards', 72) + '</div><div class="face front" id="revf"><span class="q">?</span></div></div></div>' +
+      '<div class="adrow"><div class="ring" style="--p:0"><span class="num" id="adn">5</span></div><div class="adtxt"><b id="adname">Free power card</b><span class="fine" id="adsub">Steal, Shield or 2X</span></div></div></div>');
     var ring = s.querySelector('.ring');
     var t = setInterval(function () {
       if (!document.body.contains(s)) { clearInterval(t); return; }
       n -= 1; ring.style.setProperty('--p', (5 - n) / 5);
       if (n > 0) { s.querySelector('#adn').textContent = n; fx('tick'); return; }
-      clearInterval(t); s.querySelector('#adn').textContent = '';
-      ring.classList.add('done'); s.querySelector('#rev').classList.add('show');
+      clearInterval(t); s.querySelector('#adn').innerHTML = ic('check', 40);
+      ring.classList.add('done'); s.querySelector('#adsub').textContent = 'Unlocking…';
       act('ad_reward').then(function (got) {
         var k = got || 'cards', nm = { steal: 'Steal', shield: 'Shield', double: '2X' }[k] || 'Card';
         s.querySelector('#revf').innerHTML = ic(k, 84) + '<b>' + nm + '</b>';
-        setTimeout(function () { s.querySelector('.flipcard').classList.add('flip'); fx('card'); }, 250);
+        s.querySelector('#adname').textContent = nm + ' card!'; s.querySelector('#adsub').textContent = 'Added to your deck';
+        var fc = s.querySelector('.flipcard'); fc.classList.remove('spin');
+        setTimeout(function () { fc.classList.add('flip'); fx('card'); }, 250);
         setTimeout(function () { burst(1); fx('win'); }, 900);
         setTimeout(closeSheet, 2600);
       }).catch(function () { closeSheet(); });
@@ -688,7 +734,7 @@
         document.querySelectorAll('.bdpick button').forEach(function (x) { x.classList.toggle('on', x.dataset.id === id); }); fx('card'); break;
       case 'parent_mode': S.draft.parent = true; S.joinCode = v('#f_code').toUpperCase() || S.joinCode; render(); break;
       case 'parent_in': {
-        var pc = v('#f_code').toUpperCase(), pp = v('#f_pin');
+        var pc = v('#f_code').toUpperCase().replace(/[^A-Z0-9]/g, ''), pp = v('#f_pin');
         if (!/^\d{4}$/.test(pp)) { toast(ic('lock', 28) + 'PIN: 4 digits', 'bad'); return; }
         rpcj('cw_parent', { p_code: pc, p_pin: pp, p_device: DEV }).then(function (r) { fx('win'); return startSession(r); }).catch(fail);
         break;
@@ -753,8 +799,8 @@
     }
   });
   function findHouse(code) {
-    code = (code || '').toUpperCase();
-    if (code.length !== 6) { toast(ic('cross', 28) + 'Code is 6 letters', 'bad'); return; }
+    code = (code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (code.length !== 8) { toast(ic('cross', 28) + 'Code is 8 characters', 'bad'); return; }
     rpcj('cw_seats', { p_code: code, p_device: DEV }).then(function (r) {
       S.draft.code = r.code; S.view = 'join'; fx('grab'); render();
     }).catch(fail);
@@ -762,12 +808,12 @@
 
   /* ---------- boot ---------- */
   var q = new URLSearchParams(location.search);
-  if (q.get('join')) { S.joinCode = q.get('join').toUpperCase().slice(0, 6); S.view = 'join'; save('cw_onb', true); }
+  if (q.get('join')) { S.joinCode = q.get('join').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8); S.view = 'join'; save('cw_onb', true); }
   if (q.get('demo') !== null && !S.sess) { S.demo = true; S.d = demoState(); S.tab = 'chores'; S.seenFeed = 3; }
   render();
   if (S.sess) { connect(); refresh(); }
   else if (S.pend) startWaiting();
   else if (S.joinCode) findHouse(S.joinCode);
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(function () { /* optional */ });
-  window.CW_DEBUG = { state: function () { return S.d; }, crown: function () { var ps = S.d.players.filter(function (p) { return p.role === 'player'; }).sort(function (a, b) { return b.pts - a.pts; }); ceremony(ps[0], 'Champion of the week'); } };
+  window.CW_DEBUG = { state: function () { return S.d; }, victory: function (a, b) { victory({ icon: 'dishes' }, b - a, a, b); }, crown: function () { var ps = S.d.players.filter(function (p) { return p.role === 'player'; }).sort(function (a, b) { return b.pts - a.pts; }); ceremony(ps[0], 'Champion of the week'); } };
 })();
