@@ -30,23 +30,15 @@ P = [
          ("Where it is","Private test build. Not yet available to download.")],
   shots=["../assets/opt/th-splash.webp","../assets/opt/th-map.webp"],
   out=("Visit Trashure-Hunters","../th-site/")),
- dict(slug="shomer-nature", name="SH✡MER Nature", cat="Safety in nature", status="Free beta · Israel",
-  line="See an injured animal, a small fire or litter in a reserve? Report it in one tap, and the shomers nearby know right away.",
-  did="Brand, product design and the working app: one-tap reports, SOS and trip check-in, and first-aid guides in plain Hebrew.",
-  cards=[("The problem","In nature, the person closest to an injured animal, a fire or a hiker in trouble is often the only one who can help in time."),
-         ("What I built","One-tap reports with photo and location, SOS and a trip check-in that alerts the shomers you chose, and step-by-step first-aid guides."),
-         ("Where it is","Free beta for Android, and in the browser on iPhone and desktop.")],
-  shots=["../assets/studio/screens/nature-map.webp","../assets/studio/screens/nature-guide.webp","../assets/studio/screens/nature-report.webp"],
-  out=("Visit SH✡MER Nature","https://www.shomer-app.co.il/nature")),
- # chore-wars.html and fairent.html are hand-built pages (2 Nov 2026): custom=True keeps them in "More work" links only.
- dict(slug="chore-wars", custom=True, name="Chore Wars", cat="Family game", status="Free web app",
+ # chore-royale.html and fairent.html are hand-built pages (2 Nov 2026): custom=True keeps them in "More work" links only.
+ dict(slug="chore-royale", custom=True, name="Chore Royale", cat="Family game", status="Free web app",
   line="Grab chores, steal, swap and win the weekly crown. A parent referees with a photo check.",
   did="Brand, game loop and a working web app that runs on any phone. No app store, no sign-up.",
   cards=[("The problem","“In a minute” means never. Chores turn into a nightly negotiation."),
          ("What I built","A multiplayer chore game: every player on their own phone, power cards, duels, photo proof and a weekly crown."),
          ("Where it is","Staging build on the web. Not released.")],
   shots=["../assets/real/scr-chore.png"],
-  out=("Open Chore Wars","https://3shamrocksstudio.github.io/chore-wars/app/")),
+  out=("Open Chore Royale","https://3shamrocksstudio.github.io/chore-wars/app/")),
 ]
 
 CSS = """
@@ -176,10 +168,10 @@ if __name__ == "__main__":
     R = "https://3shamrocksstudio.github.io/"
     redirects = {
       "shomer-case.html": "work/shomer.html", "lickpick-case.html": "work/lickpick.html",
-      "chorewars-case.html": "work/chore-wars.html", "work/chore-royale.html": "work/chore-wars.html", "th.html": "work/trashure-hunters.html",
+      "chorewars-case.html": "work/chore-royale.html", "work/chore-wars.html": "work/chore-royale.html", "th.html": "work/trashure-hunters.html",
       "products/th.html": "work/trashure-hunters.html", "products/lickpick.html": "work/lickpick.html",
-      "products/chore-royale.html": "work/chore-wars.html", "studio/th.html": "work/trashure-hunters.html",
-      "studio/index.html": "", "shomernature-case.html": "work/shomer-nature.html",
+      "products/chore-royale.html": "work/chore-royale.html", "studio/th.html": "work/trashure-hunters.html",
+      "studio/index.html": "", "shomernature-case.html": "work/shomer.html", "work/shomer-nature.html": "work/shomer.html",
       # parked: back to the studio home
       "j8nix-case.html": "", "products/j8nix.html": "", "ezra-case.html": "", "products/ezra.html": "",
       "milo-case.html": "", "products/milo.html": "", "fairent-case.html": "work/fairent.html", "products/fairent.html": "work/fairent.html",
