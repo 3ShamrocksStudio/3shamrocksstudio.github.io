@@ -34,7 +34,7 @@
     try { gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false }); } catch (e) {}
     var inst = gl && gl.getExtension('ANGLE_instanced_arrays');
     if (!gl || !inst) return;
-    Promise.all([fetch(BASE + 'layout.json').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
+    Promise.all([fetch(BASE + 'layout.json?v=s20').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
                  loadImg(BASE + 'atlas.webp'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src)])
       .then(function (r) { build(cv, gl, inst, r[0], r[1], r[2]); })
       .catch(function () { /* keep the plain photo */ });
@@ -54,7 +54,7 @@
     var VS = [
       'precision highp float;',
       'attribute vec2 c;attribute vec3 tg,fr,gd;attribute float dl;attribute vec2 uv;attribute vec3 mn,cc;attribute float al,fl,id;',
-      'uniform vec2 res;uniform float W,t,ex,sel,asp,sc,mag,pass;uniform vec4 lens;',
+      'uniform vec2 res;uniform float W,t,ex,sel,asp,sc,mag,pass,sy;uniform vec4 lens;',
       'varying vec2 vUv,vPh,vC,vP;varying vec3 vMn,vCc;varying float vAl,vPx,vRaw,vOp,vSel;',
       'void main(){',
       ' float p=clamp((t-dl)/1.15,0.,1.);float e=1.-pow(1.-p,4.);',
@@ -62,18 +62,18 @@
       ' vec2 cf=ct+fr.xy*W;float rot=fr.z*(1.-e);',
       ' vec2 cen=mix(cf,ct,e);s*=mix(.25,1.,e);',
       ' float k=clamp(ex*1.7-fract(fr.z*7.13)*.7,0.,1.);k=k*k*(3.-2.*k);',
-      ' cen=mix(cen,(gd.xy+gd.z*.5)*W,k);s=mix(s,gd.z*W,k);',
+      ' cen=mix(cen,(gd.xy+gd.z*.5)*W-vec2(0.,sy),k);s=mix(s,gd.z*W,k);',
       ' float raw=k;',
       ' if(pass>.5){cen=lens.xy+(cen-lens.xy)*mag;s*=mag;raw=.86;}',
       ' float f=clamp((t-fl)/.55,0.,1.);float sx=max(abs(cos(f*3.14159)),.04);',
       ' float q=pass>.5&&pass<1.5?s+1.:max(s-sc,1.);vec2 o=(c-.5)*vec2(q*sx,q);float cs=cos(rot),sn=sin(rot);o=vec2(o.x*cs-o.y*sn,o.x*sn+o.y*cs);',
       ' vec2 P=cen+o;vP=P;gl_Position=vec4(P.x/res.x*2.-1.,1.-P.y/res.y*2.,0.,1.);',
       ' vUv=uv+c*'+(SL - 2 * PD).toFixed(6)+';vPh=(tg.xy+c*tg.z)/vec2(1.,asp);vC=c;vMn=mn;vCc=cc;vAl=al;vPx=q;vRaw=raw;',
-      ' vOp=smoothstep(0.,.3,p);vSel=step(abs(id-sel),.5);}'
+      ' vOp=smoothstep(0.,.3,p)*(1.-k*step(gd.z,0.));vSel=step(abs(id-sel),.5);}'
     ].join('\n');
     var FS = [
       '#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif',
-      'uniform sampler2D at,ph;uniform float K,dpr,pass;uniform vec4 lens;',
+      'uniform sampler2D at,ph;uniform float K,dpr,pass,cut;uniform vec4 lens;',
       'varying vec2 vUv,vPh,vC,vP;varying vec3 vMn,vCc;varying float vAl,vPx,vRaw,vOp,vSel;',
       'void main(){',
       ' float lo=1.;if(pass>.5){float r=length(vP-lens.xy);if(r>lens.z)discard;lo=clamp((lens.z-r)*dpr,0.,1.)*lens.w;',
@@ -83,7 +83,7 @@
       ' vec3 bg=t*.3+P*.25;float w=clamp((vAl-.15)/.6,0.,1.);',
       ' vec3 col=mix(mix(bg,fig,w),t,vRaw);',
       ' vec2 q=abs(vC-.5)*vPx;float rr=min(2.5,vPx*.22);float d=length(max(q-(vPx*.5-rr),0.))-rr;',
-      ' float a=clamp(.5-d*dpr,0.,1.)*vOp*lo;',
+      ' float a=clamp(.5-d*dpr,0.,1.)*vOp*lo;if(pass<.5)a*=1.-vRaw*smoothstep(cut-12.,cut,vP.y);',
       ' float edge=step(vPx*.5-1.5,max(q.x,q.y))*vSel;col=mix(col,vec3(1.),edge);',
       ' gl_FragColor=vec4(col*a,a);}'
     ].join('\n');
@@ -92,7 +92,7 @@
     try { gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); } catch (e) { return; }
     gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
     gl.useProgram(pr);
-    var U = {}; ['res', 'W', 't', 'ex', 'sel', 'asp', 'sc', 'mag', 'pass', 'lens', 'at', 'ph', 'K', 'dpr'].forEach(function (n) { U[n] = gl.getUniformLocation(pr, n); });
+    var U = {}; ['res', 'W', 't', 'ex', 'sel', 'asp', 'sc', 'mag', 'pass', 'lens', 'at', 'ph', 'K', 'dpr', 'sy', 'cut'].forEach(function (n) { U[n] = gl.getUniformLocation(pr, n); });
 
     function tex(im, mip) {
       var tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
@@ -128,29 +128,34 @@
       cur[i] = s[3]; alt[i] = s[4]; setTile(i, s[3]);
     });
 
-    /* explode grid: every tile sorted by product, one labelled band per product */
-    var groups = {}; ORDER.forEach(function (k) { groups[k] = []; });
-    function regroup() { ORDER.forEach(function (k) { groups[k].length = 0; }); for (var i = 0; i < N; i++) groups[TL[cur[i]][0]].push(i); }
-    var labels = [];
+    /* explode grid: per product, a labelled sample of up to 24 different pieces of its work, 8 to a row so each one
+       reads; the band scrolls inside the frame, the other tiles fade out where they stand */
+    var PER = 24, COLS = 8, GPAD = .04, LBL = .052, RES = 58; /* RES: px kept clear for the Reassemble button */
+    var labels = [], gridH = 1;
     function gridLayout() {
-      regroup();
-      var Wn = 1, Hn = ASP, pad = .035, best = 0;
-      for (var ts = .08; ts > .005; ts *= .97) {
-        var cols = Math.floor((Wn - pad * 2) / ts), rows = 0;
-        ORDER.forEach(function (k) { if (groups[k].length) rows += 1.6 + Math.ceil(groups[k].length / cols); });
-        if (rows * ts <= Hn - pad * 2) { best = ts; break; }
+      var groups = {}, seen = {}; ORDER.forEach(function (k) { groups[k] = []; });
+      for (var i = 0; i < N; i++) {
+        var o = i * NF, a = cur[i], g = groups[TL[a][0]];
+        D[o + 6] = D[o] + D[o + 2] / 2; D[o + 7] = D[o + 1] + D[o + 2] / 2; D[o + 8] = 0;
+        if (g && g.length < PER && !seen[a]) { seen[a] = 1; g.push(i); }
       }
-      var cols2 = Math.floor((Wn - pad * 2) / best), x0 = (Wn - cols2 * best) / 2, y = pad;
+      var ts = (1 - GPAD * 2) / COLS, gap = ts * .06, y = GPAD;
       labels = [];
       ORDER.forEach(function (k) {
         var g = groups[k]; if (!g.length) return;
-        labels.push([k, x0, y]); y += best * 1.6;
+        labels.push([k, GPAD + gap / 2, y]); y += LBL;
         g.forEach(function (i, j) {
-          var o = i * NF; D[o + 6] = x0 + (j % cols2) * best; D[o + 7] = y + Math.floor(j / cols2) * best; D[o + 8] = best;
+          var o = i * NF; D[o + 6] = GPAD + (j % COLS) * ts + gap / 2; D[o + 7] = y + Math.floor(j / COLS) * ts + gap / 2; D[o + 8] = ts - gap;
         });
-        y += Math.ceil(g.length / cols2) * best;
+        y += Math.ceil(g.length / COLS) * ts + ts * .25;
       });
+      gridH = y;
     }
+    function finishFlips() {
+      flips.forEach(function (f) { var j = f[0], b = alt[j]; alt[j] = cur[j]; cur[j] = b; setTile(j, b); D[j * NF + 19] = -99; });
+      flips.length = 0;
+    }
+    var flips = [];
     gridLayout();
 
     var cb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, cb);
@@ -168,16 +173,18 @@
     /* chrome: lens ring, tag, explode button, hint, product labels for the grid */
     function el(tag, cls, html) { var e = document.createElement(tag); e.className = cls; if (html) e.innerHTML = html; return e; }
     var ring = el('div', 'mz-lens'), tag = el('a', 'mz-tag'), btn = el('button', 'mz-btn', 'Explode'), hint = el('div', 'mz-hint', HOVER ? 'Made of the work · hover to look closer' : 'Made of the work · tap a tile');
-    var lbox = el('div', 'mz-labels');
+    var lbox = el('div', 'mz-labels'), lin = el('div', 'mz-lin'), scr = el('div', 'mz-scroll'), spc = el('div', 'mz-spc');
+    lbox.appendChild(lin); scr.appendChild(spc);
     btn.type = 'button'; btn.setAttribute('aria-pressed', 'false'); ring.setAttribute('aria-hidden', 'true'); lbox.setAttribute('aria-hidden', 'true');
-    vis.appendChild(cv); vis.appendChild(lbox); vis.appendChild(ring); vis.appendChild(tag); vis.appendChild(hint); vis.appendChild(btn);
+    vis.appendChild(cv); vis.appendChild(scr); vis.appendChild(lbox); vis.appendChild(ring); vis.appendChild(tag); vis.appendChild(hint); vis.appendChild(btn);
 
     var w = 0, h = 0, dpr = 1;
     function size() {
       w = vis.clientWidth; h = vis.clientHeight; dpr = Math.min(2, window.devicePixelRatio || 1);
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
       gl.viewport(0, 0, cv.width, cv.height);
-      lbox.innerHTML = labels.map(function (l) {
+      spc.style.height = Math.max(h, Math.ceil(gridH * w + RES)) + 'px';
+      lin.innerHTML = labels.map(function (l) {
         return '<span style="left:' + (l[1] * w).toFixed(1) + 'px;top:' + (l[2] * w).toFixed(1) + 'px">' + esc(L.products[l[0]].n) + '</span>';
       }).join('');
       kick();
@@ -186,7 +193,7 @@
 
     /* state */
     var T0 = performance.now() / 1000, now = 0, prev = 0, visible = true, raf = 0, explode = 0, exT = 0, exFrom = 0, exStart = 0, selId = -1;
-    var lens = { x: 0, y: 0, a: 0, ta: 0, m: 3, tm: 3 }, lastFlip = 0, flips = [];
+    var lens = { x: 0, y: 0, a: 0, ta: 0, m: 3, tm: 3 }, lastFlip = 0, sy = 0;
     if (RM) T0 -= 10;
     var INTRO = 3.4;
     vis.classList.add('mz-on');
@@ -211,6 +218,7 @@
       gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       gl.uniform2f(U.res, w, h); gl.uniform1f(U.W, w); gl.uniform1f(U.t, now); gl.uniform1f(U.ex, explode);
       gl.uniform1f(U.sel, selId); gl.uniform1f(U.sc, w > 420 ? 1.2 : .9); gl.uniform1f(U.dpr, dpr);
+      gl.uniform1f(U.sy, sy); gl.uniform1f(U.cut, h - RES);
       gl.uniform4f(U.lens, lens.x, lens.y, lensR(), lens.a); gl.uniform1f(U.mag, lens.m);
       gl.uniform1f(U.pass, 0); X.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, N);
       if (lens.a > 0) { gl.uniform1f(U.pass, 1); X.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, N); gl.uniform1f(U.pass, 2); X.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, N); }
@@ -233,7 +241,8 @@
     function pick(p) {
       var ex = exT > .5, best = -1;
       for (var i = 0; i < N; i++) {
-        var o = i * NF, x = (ex ? D[o + 6] : D[o]) * w, y = (ex ? D[o + 7] : D[o + 1]) * w, s = (ex ? D[o + 8] : D[o + 2]) * w;
+        var o = i * NF, x = (ex ? D[o + 6] : D[o]) * w, y = (ex ? D[o + 7] * w - sy : D[o + 1] * w), s = (ex ? D[o + 8] : D[o + 2]) * w;
+        if (ex && (s <= 0 || p.y > h - RES)) continue;
         if (p.x >= x && p.x < x + s && p.y >= y && p.y < y + s) { best = i; break; }
       }
       return best;
@@ -266,14 +275,15 @@
     function dropLens() { lens.ta = 0; ring.classList.remove('on'); kick(); }
 
     var lensTimer = 0, lastTap = 0, down = null;
-    cv.addEventListener('pointermove', function (e) {
+    function listen(type, fn) { cv.addEventListener(type, fn); scr.addEventListener(type, fn); }
+    listen('pointermove', function (e) {
       if (e.pointerType === 'mouse') { moveLens(local(e)); return; }
       if (down && e.pointerId === down.id) { var p = local(e); if (Math.hypot(p.x - down.x, p.y - down.y) > 6) { down.moved = true; moveLens(p); } }
     });
-    cv.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') dropLens(); });
-    cv.addEventListener('pointerdown', function (e) { var p = local(e); down = { id: e.pointerId, x: p.x, y: p.y, moved: false }; });
-    cv.addEventListener('pointercancel', function () { down = null; });
-    cv.addEventListener('pointerup', function (e) {
+    listen('pointerleave', function (e) { if (e.pointerType === 'mouse') dropLens(); });
+    listen('pointerdown', function (e) { var p = local(e); down = { id: e.pointerId, x: p.x, y: p.y, moved: false }; });
+    listen('pointercancel', function () { down = null; });
+    listen('pointerup', function (e) {
       var p = local(e), touch = e.pointerType !== 'mouse', moved = down && down.moved; down = null;
       if (touch) {
         var t = performance.now();
@@ -283,14 +293,17 @@
       }
       if (!moved) showTag(pick(p), p);
     });
-    cv.addEventListener('dblclick', function (e) { e.preventDefault(); hideTag(); toggle(); });
+    listen('dblclick', function (e) { e.preventDefault(); hideTag(); toggle(); });
     var lastToggle = 0;
     function toggle() { var t = performance.now(); if (t - lastToggle < 500) return; lastToggle = t; setExplode(!exT); }
     document.addEventListener('pointerdown', function (e) { if (!vis.contains(e.target)) hideTag(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideTag(); });
 
+    scr.addEventListener('scroll', function () {
+      sy = scr.scrollTop; lin.style.transform = 'translateY(' + (-sy).toFixed(1) + 'px)'; hideTag();
+    }, { passive: true });
     function setExplode(on) {
-      if (on) gridLayout(), size();
+      if (on) { finishFlips(); gridLayout(); scr.scrollTop = 0; sy = 0; lin.style.transform = ''; size(); }
       exFrom = explode; exStart = performance.now() / 1000 - T0;
       exT = on ? 1 : 0; vis.classList.toggle('mz-ex', on); vis.classList.add('mz-used');
       btn.textContent = on ? 'Reassemble' : 'Explode'; btn.setAttribute('aria-pressed', on ? 'true' : 'false');

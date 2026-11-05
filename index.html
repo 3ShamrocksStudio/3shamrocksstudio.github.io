@@ -458,9 +458,12 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .mz-btn:hover{border-color:var(--violet-2);background:rgba(130,57,234,.3)}
 .mz-hint{position:absolute;left:12px;bottom:12px;z-index:4;max-width:calc(100% - 140px);padding:8px 11px;border-radius:var(--rad);background:rgba(10,7,20,.6);font:500 12.5px/1.25 var(--font-b);color:var(--ink-2);pointer-events:none;transition:opacity .4s}
 .about-visual.mz-used .mz-hint,.about-visual.mz-ex .mz-hint{opacity:0}
-.mz-labels{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .3s}
+.mz-labels{position:absolute;inset:0 0 58px 0;z-index:3;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .3s}
+.mz-scroll{position:absolute;inset:0;z-index:3;overflow-x:hidden;overflow-y:auto;visibility:hidden;pointer-events:none;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.28) transparent;-webkit-tap-highlight-color:transparent}
+.about-visual.mz-ex .mz-scroll{visibility:visible;pointer-events:auto}
+.mz-spc{width:1px}
 .about-visual.mz-ex .mz-labels{opacity:1;transition-delay:.5s}
-.mz-labels span{position:absolute;font:700 11.5px/1 var(--font-d);letter-spacing:.02em;color:var(--ink);white-space:nowrap}
+.mz-labels span{position:absolute;font:700 12.5px/1 var(--font-d);letter-spacing:.02em;color:var(--ink);white-space:nowrap}
 
 
 @media(max-width:600px){.services{grid-template-columns:1fr}.about-stat-val{font-size:30px}.about-stat+.about-stat{padding-left:14px}}
@@ -897,7 +900,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
   <div class="wrap about-grid">
     <div class="about-pic reveal">
       <div class="about-visual" id="about-visual"><canvas class="about-fx" id="about-fx" aria-hidden="true"></canvas><img src="assets/studio/dave-portrait-cut.webp" alt="Dave Markovich, founder of 3Shamrocks Studio" width="800" height="1098" loading="lazy"></div>
-      <script src="js/mosaic.js" defer></script>
+      <script src="js/mosaic.js?v=s20" defer></script>
     </div>
     <div class="about-content">
       <h2 class="reveal">20 years, disciplined by strategy.</h2>

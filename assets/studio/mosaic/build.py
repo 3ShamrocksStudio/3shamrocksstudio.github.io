@@ -111,7 +111,8 @@ for i, (p, label, t) in enumerate(tiles):
   atlas.paste(edge, (x, y)); atlas.paste(t, (x + PAD, y + PAD))
   a = np.asarray(t, dtype=np.float32) / 255
   q = a.reshape(2, C // 2, 2, C // 2, 3).mean((1, 3)).reshape(4, 3)
-  meta.append({'p': p, 'l': label, 'm': [round(float(c), 3) for c in a.reshape(-1, 3).mean(0)], 'q': q})
+  meta.append({'p': p, 'l': label, 'm': [round(float(c), 3) for c in a.reshape(-1, 3).mean(0)], 'q': q,
+               'sd': float((a @ np.array([.299, .587, .114])).std())})
 atlas.save(OUT + '/atlas.webp', 'WEBP', quality=84, method=6)
 print('atlas kB', os.path.getsize(OUT + '/atlas.webp') // 1024)
 
@@ -127,6 +128,14 @@ gy, gx = np.gradient(np.asarray(Image.fromarray((lum * 255).astype(np.uint8)).fi
 energy = np.hypot(gx, gy)
 yy, xx = np.mgrid[0:PH, 0:PW]
 face = np.exp(-(((xx - 400) / 150) ** 2 + ((yy - 300) / 230) ** 2))   # head + beard region of this photo
+# Lower half (beard, shirt, suit): everything whose cell starts below the lips. Cells are matched top to bottom, so
+# every cell above Y0 (eyes, nose, mouth, skull) keeps exactly the tiles it had: the face never changes.
+Y0 = 410
+# Matching-only target for the lower half: a slight levels + contrast curve so dark tones separate (beard vs shirt vs
+# suit) and pull dark, quiet tiles. Rendering still uses the real photo colour (cc) and the real photo texture.
+def levels(c, lo=.025, hi=.80, gam=1.12):
+  return np.clip((c - lo) / (hi - lo), 0, 1) ** gam
+match_lo = levels(photo)
 
 def layout(N, base_cols, min_div, seed):
   S0 = PW / base_cols; rows = math.ceil(PH / S0)
@@ -147,17 +156,36 @@ def layout(N, base_cols, min_div, seed):
       k += 1; n = (x + d[0], y + d[1], s2); heapq.heappush(h, (-score(n), k, n))
   cells = out + [c for _, _, c in h]
   cells = [c for c in cells if c[0] < PW and c[1] < PH]
+  # slightly smaller tiles in the lower half of the figure: base tiles halve; beard-edge tiles halve again
+  out = []
+  for x, y, s in cells:
+    sl = (slice(int(y), min(PH, int(y + s))), slice(int(x), min(PW, int(x + s))))
+    fig, sub = alpha[sl].mean(), lum[sl]
+    split = y >= Y0 - 1e-6 and fig > .5 and (s > S0 * .75 or (s > S0 * .375 and face[sl].mean() > .25 and sub.std() > .07))
+    if split: out += [(x + dx, y + dy, s / 2) for dy in (0, s / 2) for dx in (0, s / 2) if x + dx < PW and y + dy < PH - .5]
+    else: out.append((x, y, s))
+  cells = out
   rnd = random.Random(seed); used = np.zeros(len(meta)); res = []
   PK = list(PRODUCTS); TP = np.array([PK.index(m['p']) for m in meta]); pused = np.zeros(len(PK))
-  TM = np.array([m['m'] for m in meta]); TQ = np.array([m['q'] for m in meta])
+  TM = np.array([m['m'] for m in meta]); TQ = np.array([m['q'] for m in meta]); TS = np.array([m['sd'] for m in meta])
+  TMl, TQl = levels(TM), levels(TQ)
   for x, y, s in sorted(cells, key=lambda c: (c[1], c[0])):
     sl = (slice(int(y), min(PH, int(round(y + s)))), slice(int(x), min(PW, int(round(x + s)))))
-    reg = photo[sl]; hh, ww = reg.shape[:2]
-    mean = reg.reshape(-1, 3).mean(0)
-    q = np.array([reg[:max(1, hh // 2), :max(1, ww // 2)].reshape(-1, 3).mean(0), reg[:max(1, hh // 2), ww // 2:].reshape(-1, 3).mean(0) if ww > 1 else mean,
-                  reg[hh // 2:, :max(1, ww // 2)].reshape(-1, 3).mean(0) if hh > 1 else mean, reg[hh // 2:, ww // 2:].reshape(-1, 3).mean(0) if hh > 1 and ww > 1 else mean])
+    low = y >= Y0 - 1e-6
+    reg = (match_lo if low else photo)[sl]; hh, ww = reg.shape[:2]
+    mean = photo[sl].reshape(-1, 3).mean(0); mm = reg.reshape(-1, 3).mean(0)
+    q = np.array([reg[:max(1, hh // 2), :max(1, ww // 2)].reshape(-1, 3).mean(0), reg[:max(1, hh // 2), ww // 2:].reshape(-1, 3).mean(0) if ww > 1 else mm,
+                  reg[hh // 2:, :max(1, ww // 2)].reshape(-1, 3).mean(0) if hh > 1 else mm, reg[hh // 2:, ww // 2:].reshape(-1, 3).mean(0) if hh > 1 and ww > 1 else mm])
     fig = alpha[sl].mean()
-    d = ((TQ - q) ** 2).sum((1, 2)) + 2 * ((TM - mean) ** 2).sum(1) + .02 * used + np.array([rnd.random() for _ in meta]) * .01
+    rn = np.array([rnd.random() for _ in meta])
+    if not low:
+      d = ((TQ - q) ** 2).sum((1, 2)) + 2 * ((TM - mean) ** 2).sum(1) + .02 * used + rn * .01
+    else:
+      # dark tones: favour quiet tiles (their detail is what turned the beard and suit muddy) and let the few truly dark
+      # tiles repeat, instead of the repeat penalty pushing dark cells onto brighter, busier work
+      dk = 1 - min(1, float(mm @ np.array([.299, .587, .114])) / .45)
+      d = (((TQl - q) ** 2).sum((1, 2)) + 3 * ((TMl - mm) ** 2).sum(1) + (.02 + .5 * dk) * TS ** 2
+           + .02 * (1 - .75 * dk) * used + rn * .004)
     if fig < .3:   # backdrop cells show the work in its own colours (dimmed), so spread them across every product
       d = .03 * d + .01 * pused[TP] + .03 * used
     o = np.argsort(d); a, b = int(o[0]), int(o[1 + rnd.randrange(3)])
