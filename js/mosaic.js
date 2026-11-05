@@ -34,7 +34,7 @@
     try { gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false }); } catch (e) {}
     var inst = gl && gl.getExtension('ANGLE_instanced_arrays');
     if (!gl || !inst) return;
-    Promise.all([fetch(BASE + 'layout.json?v=s20').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
+    Promise.all([fetch(BASE + 'layout.json?v=s21').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
                  loadImg(BASE + 'atlas.webp'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src)])
       .then(function (r) { build(cv, gl, inst, r[0], r[1], r[2]); })
       .catch(function () { /* keep the plain photo */ });
@@ -129,15 +129,17 @@
     });
 
     /* explode grid: per product, a labelled sample of up to 24 different pieces of its work, 8 to a row so each one
-       reads; the band scrolls inside the frame, the other tiles fade out where they stand */
+       reads; the band scrolls inside the frame, the other tiles fade out where they stand. L.g maps each atlas tile to
+       its piece (all crops of one asset, and assets that show the same artwork), so no piece shows twice */
     var PER = 24, COLS = 8, GPAD = .04, LBL = .052, RES = 58; /* RES: px kept clear for the Reassemble button */
     var labels = [], gridH = 1;
     function gridLayout() {
-      var groups = {}, seen = {}; ORDER.forEach(function (k) { groups[k] = []; });
+      var groups = {}, seen = {}, PG = L.g || []; ORDER.forEach(function (k) { groups[k] = []; });
       for (var i = 0; i < N; i++) {
         var o = i * NF, a = cur[i], g = groups[TL[a][0]];
         D[o + 6] = D[o] + D[o + 2] / 2; D[o + 7] = D[o + 1] + D[o + 2] / 2; D[o + 8] = 0;
-        if (g && g.length < PER && !seen[a]) { seen[a] = 1; g.push(i); }
+        var pk = PG[a] != null ? PG[a] : 'a' + a;
+        if (g && g.length < PER && !seen[pk]) { seen[pk] = 1; g.push(i); }
       }
       var ts = (1 - GPAD * 2) / COLS, gap = ts * .06, y = GPAD;
       labels = [];

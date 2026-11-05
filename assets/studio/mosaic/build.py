@@ -71,6 +71,13 @@ SRC = [  # (product, label, path, mode)  mode: screen = several square crops + w
   ('vb','brand book',W+'vibrant/screen-5.png','screen'),
 ]
 C = SLOT - 2 * PAD
+# pieces that show the same artwork under another file: one piece in the exploded grid (layout.json 'g')
+SAME = [[W+'shomer/badge.webp', SH+'/logo-512.png', SH+'/sos-icon-96.png', SH+'/report-icon-96.png'],
+  [BV+'j8nix/glyph-peach.png', BV+'j8nix/glyph-white.png'], [BV+'chore-royale/app-icon.png', BV+'chore-royale/logo-mark.png'],
+  [S9+'ap-brand.webp', W+'aposhealth/screen-5.png'], [S9+'ap-icons.webp', W+'aposhealth/screen-6.png'],
+  [S9+'ap-logo.webp', W+'aposhealth/screen-4.png'], [S9+'vb-brand.webp', W+'vibrant/screen-1.png'],
+  [S9+'vb-icons.webp', W+'vibrant/screen-5.png']]
+PIECE = {q: g[0] for g in SAME for q in g}
 
 def on_bg(im, col):
   bg = Image.new('RGBA', im.size, col + (255,)); bg.alpha_composite(im); return bg.convert('RGB')
@@ -99,13 +106,13 @@ for p, label, path, mode in SRC:
     n = 1 if r < 1.25 else 2 if r < 2 else 3 if r < 3 else 4
     v = crops(rgb, n)
     if r >= 1.25: v.append(contain(im, (22, 18, 38)))
-  for t in v: tiles.append((p, label, t))
+  for t in v: tiles.append((p, label, t, PIECE.get(path, path)))
 print('tiles', len(tiles))
 assert len(tiles) <= GRID * GRID, len(tiles)
 
 atlas = Image.new('RGB', (ATLAS, ATLAS), (16, 12, 30))
 meta = []
-for i, (p, label, t) in enumerate(tiles):
+for i, (p, label, t, _) in enumerate(tiles):
   x, y = (i % GRID) * SLOT, (i // GRID) * SLOT
   edge = t.resize((SLOT, SLOT), Image.LANCZOS)          # bleed edge pixels into the padding
   atlas.paste(edge, (x, y)); atlas.paste(t, (x + PAD, y + PAD))
@@ -199,5 +206,6 @@ print('desktop', len(desk), 'mobile', len(mob))
 json.dump({'v': 1, 'atlas': ATLAS, 'aspect': PH / PW, 'slot': SLOT, 'pad': PAD, 'grid': GRID,
            'products': {k: {'n': v[0], 'h': v[1]} for k, v in PRODUCTS.items()},
            'tiles': [[m['p'], m['l']] + m['m'] for m in meta],
+           'g': (lambda u: [u.setdefault(t[3], len(u)) for t in tiles])({}),
            'desktop': desk, 'mobile': mob}, open(OUT + '/layout.json', 'w'), separators=(',', ':'), ensure_ascii=False)
 print('layout kB', os.path.getsize(OUT + '/layout.json') // 1024)
