@@ -237,13 +237,24 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 @media(max-width:1200px){.dev{--pw:140px}.lt{--lw:340px}.row{gap:38px 24px}}
 @media(min-width:701px) and (max-width:1060px){.dev{--pw:min(136px,calc((100vw - 120px)/5.4))}.row{gap:34px 18px}.lt{--lw:min(320px,30vw)}}
 @media(max-width:700px){
-  .devices{display:grid;grid-template-columns:1fr 1fr;gap:44px 12px;justify-items:center}
+  /* mobile: one swipe carousel. Live products first, the coming-soon ones after them */
+  .devices{--cw:min(196px,52vw);display:flex;flex-direction:row;align-items:flex-end;gap:0;width:100vw;margin-inline:calc(50% - 50vw);padding:26px calc(50vw - var(--cw)/2) 8px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .devices::-webkit-scrollbar{display:none}
   .row{display:contents}
-  .dev{--pw:min(146px,38vw)}
-  .row .lt{grid-column:1/-1;--lw:min(320px,82vw);margin-inline:0}
-  .dev{order:var(--o,9)}
-  .cap b{font-size:15px}
+  .dev{--pw:var(--cw);flex:0 0 auto;width:var(--cw);scroll-snap-align:center;scroll-snap-stop:always;order:var(--o,9);will-change:transform,opacity;transform-origin:50% 80%}
+  .dev.soon{order:10}
+  .row .lt{--lw:min(300px,78vw);width:calc(var(--lw)*1.1);margin-inline:0}
+  .dev .rig{animation:none}
+  .dev .cap{opacity:0;transform:translateY(10px);transition:opacity .35s ease,transform .45s var(--ease)}
+  .dev.cur .cap{opacity:1;transform:none}
+  .cap b{font-size:17px}
+  .dev.bump{animation:carBump .5s var(--ease)}
+  @keyframes carBump{30%{translate:var(--bx,0) 0}100%{translate:0 0}}
+  .car-dots{display:flex;justify-content:center;align-items:center;gap:7px;margin-top:6px}
+  .car-dots button{width:7px;height:7px;padding:0;border:0;border-radius:4px;background:rgba(255,255,255,.22);transition:width .35s var(--ease),background .35s;cursor:pointer}
+  .car-dots button.on{width:26px;background:var(--c)}
 }
+@media(min-width:701px){.car-dots{display:none}}
 
 /* BRAND SHOWCASE: one 3SDS sheet per brand, each in its own identity */
 .ident-head{margin-bottom:40px}
@@ -961,6 +972,33 @@ devs.forEach(d=>{
     d.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();nud()}});return}
   d.addEventListener('click',e=>{if(!FINE&&!d.classList.contains('on')){e.preventDefault();d._on()}});
 });
+
+/* mobile: the devices become a swipe carousel. The centred one switches on; neighbours sit smaller, dimmer and turned away */
+(function(){
+  const track=$('#work .devices');if(!track)return;const mq=matchMedia('(max-width:700px)');
+  const dots=document.createElement('div');dots.className='car-dots';dots.setAttribute('aria-hidden','true');
+  let list=[],cur=-1,raf=0,settle=0,lastX=0;
+  function build(){list=devs.slice().sort((a,b)=>(+getComputedStyle(a).order||0)-(+getComputedStyle(b).order||0)||devs.indexOf(a)-devs.indexOf(b));
+    dots.innerHTML='';list.forEach(d=>{const b=document.createElement('button');b.tabIndex=-1;b.style.setProperty('--c',(d.style.getPropertyValue('--glow')||'rgba(176,124,255,.9)').replace(/[\d.]+\)$/,'1)'));b.addEventListener('click',()=>center(d));dots.appendChild(b)})}
+  function center(d,instant){track.scrollTo({left:d.offsetLeft+d.offsetWidth/2-track.clientWidth/2,behavior:instant||RM?'auto':'smooth'})}
+  function frame(){raf=0;const mid=track.scrollLeft+track.clientWidth/2;let best=0,bd=1e9;
+    list.forEach((d,i)=>{const c=d.offsetLeft+d.offsetWidth/2,off=(c-mid)/(d.offsetWidth*.9),a=Math.min(1,Math.abs(off)),k=1-a;
+      if(Math.abs(c-mid)<bd){bd=Math.abs(c-mid);best=i}
+      d.style.transform=RM?'scale('+(.84+.16*k).toFixed(3)+')':'perspective(700px) scale('+(.8+.2*k).toFixed(3)+') rotateY('+(Math.max(-1,Math.min(1,off))*-22).toFixed(2)+'deg) translateY('+(a*14).toFixed(1)+'px)';
+      d.style.opacity=(.42+.58*k).toFixed(3)});
+    if(best!==cur){cur=best;list.forEach((d,i)=>d.classList.toggle('cur',i===cur));[...dots.children].forEach((b,i)=>b.classList.toggle('on',i===cur))}
+    clearTimeout(settle);settle=setTimeout(()=>{const d=list[cur];if(d&&!d.classList.contains('on'))d._on()},140);
+    /* a soft bounce when a swipe runs into either end */
+    const max=track.scrollWidth-track.clientWidth,x=track.scrollLeft,v=x-lastX;lastX=x;
+    if(!RM&&Math.abs(v)>4&&(x<=0||x>=max-1)){const d=list[cur];d.style.setProperty('--bx',(x<=0?14:-14)+'px');d.classList.remove('bump');void d.offsetWidth;d.classList.add('bump')}}
+  const onScroll=()=>{if(!raf)raf=requestAnimationFrame(frame)};
+  function tap(e){if(!mq.matches)return;const d=e.target.closest('.dev');if(!d)return;if(list.indexOf(d)!==cur){e.preventDefault();e.stopImmediatePropagation();center(d)}}
+  function enable(){build();track.after(dots);track.addEventListener('scroll',onScroll,{passive:true});track.addEventListener('click',tap,true);addEventListener('resize',onScroll);
+    requestAnimationFrame(()=>{center(list[0],true);frame()})}
+  function disable(){track.removeEventListener('scroll',onScroll);track.removeEventListener('click',tap,true);removeEventListener('resize',onScroll);dots.remove();cur=-1;
+    devs.forEach(d=>{d.style.transform='';d.style.opacity='';d.classList.remove('cur','bump');d._off&&d._off()})}
+  if(mq.matches)enable();mq.addEventListener('change',()=>mq.matches?enable():disable());
+})();
 
 /* in-house HealthTech devices: brand splash when off, hover or tap plays the real screens */
 $$('.hw-item').forEach(it=>{
