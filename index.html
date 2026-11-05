@@ -215,6 +215,9 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .dev.on .media{opacity:1;animation:powerOn .5s ease}
 .dev.on .splash{opacity:0}
 .dev.on .media{z-index:4}
+/* honest data label over real screens (e.g. J8NIX shows the studio's own real project list) */
+.snap{position:absolute;z-index:5;left:3%;bottom:4%;padding:.35em .8em;border-radius:99px;background:rgba(35,42,54,.82);color:#fff;font:600 9px/1 var(--font-b);letter-spacing:.14em;text-transform:uppercase;opacity:0;transition:opacity .45s ease;pointer-events:none}
+.dev.on .snap{opacity:1}
 @keyframes powerOn{0%{filter:brightness(2.2) saturate(.3)}100%{filter:none}}
 
 /* laptop */
@@ -604,7 +607,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
             <img data-src="assets/studio/s9/lp-pick.webp" alt="LickPick app, your best lick found" data-b="1">
             <img data-src="assets/studio/s9/cr-arena.webp" alt="Chore Royale app, this week's arena" data-b="2">
             <img data-src="assets/studio/s9/th-cine.webp" alt="Trashure-Hunters, the Temple of Light" data-b="3">
-            <img data-src="assets/studio/s9/fr-result.webp" alt="FaiRent, rent fairness result" data-b="4">
+            <img data-src="assets/work/fairent/app-result.webp" alt="FaiRent, rent fairness result" data-b="4">
             <img data-src="assets/studio/s9/sh-card.webp" alt="SH&#10017;MER app, event card" data-b="0">
             <img data-src="assets/studio/s9/sh-cpr.webp" alt="SH&#10017;MER app, CPR card" data-b="0">
           </div>
@@ -661,10 +664,10 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
           <span class="shade"></span>
           <span class="cap"><b>SH&#10017;MER</b><small>Community safety</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <div class="dev lt soon" tabindex="0" role="link" data-href="work/j8nix.html" data-shots="assets/studio/s9/j8-dash.webp?v=s12,assets/studio/s9/j8-detail.webp?v=s12,assets/studio/s9/j8-forge.webp?v=s12" style="--o:3;--d:-3.4s;--glow:rgba(242,193,148,.4)" aria-label="J8NIX, under construction">
+        <div class="dev lt soon" tabindex="0" role="link" data-href="work/j8nix.html" data-shots="assets/work/j8nix/cc-overview.webp,assets/work/j8nix/cc-detail.webp,assets/work/j8nix/cc-forge.webp" style="--o:3;--d:-3.4s;--glow:rgba(242,193,148,.4)" aria-label="J8NIX, under construction">
           <div class="rig"><div class="lid"><div class="scr">
             <div class="splash cs" style="--sp:radial-gradient(90% 70% at 50% 40%,#6a7890,#586475 60%,#4b5668)"><img src="assets/brand/j8nix-real/logo.png" alt="J8NIX logo" style="--lw2:60%" loading="lazy"><i class="ban" style="--b1:#F2C194;--b2:#d29a62;--bt:#232a36" aria-hidden="true"><svg class="hh" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 18.5h20v2.2H2z"/><path d="M4 17.4a8 8 0 0 1 5.6-7.6V7.2a.8.8 0 0 1 .8-.8h3.2a.8.8 0 0 1 .8.8v2.6a8 8 0 0 1 5.6 7.6z"/></svg><span class="bt"><span>Under</span> <span>construction</span></span></i></div>
-            <div class="media"></div>
+            <div class="media"></div><span class="snap" aria-hidden="true">Studio snapshot</span>
             <i class="glare"></i></div></div><div class="base"></div></div>
           <span class="shade"></span>
           <span class="cap"><b>J8NIX</b><small>Operations platform</small></span>
@@ -695,7 +698,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
           <span class="shade"></span>
           <span class="cap"><b>Chore Royale</b><small>Family game</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <a class="dev" href="work/fairent.html" data-shots="assets/studio/s9/fr-hero.webp,assets/studio/s9/fr-result.webp,assets/studio/s9/fr-script.webp" style="--o:6;--d:-4s;--glow:rgba(101,80,255,.5)">
+        <a class="dev" href="work/fairent.html" data-shots="assets/work/fairent/app-home.webp,assets/work/fairent/app-result.webp,assets/work/fairent/app-message.webp" style="--o:6;--d:-4s;--glow:rgba(101,80,255,.5)">
           <div class="rig"><div class="ph"><div class="bez"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(110% 70% at 50% 32%,#4a1fc4,#310A91 58%,#1c0560)"><img src="assets/brand-v3/fairent/logo-on-dark.png?v=s13" alt="FaiRent logo" style="--lw2:70%" loading="lazy"></div>
             <div class="media"></div>
