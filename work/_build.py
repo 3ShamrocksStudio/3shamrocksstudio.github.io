@@ -6,7 +6,7 @@ E = html.escape
 EMAIL = "dave@3shamrocks.com"
 
 P = [
- dict(slug="shomer", name="SH✡MER", cat="Community safety", status="Closed beta · Israel",
+ dict(slug="shomer", custom=True, name="SH✡MER", cat="Community safety", status="Closed beta · Israel",
   line="One tap sends an SOS with your live location to the people you trust and to users nearby.",
   did="Brand, product design and the working app, end to end. Plus SH✡MER Command, a dashboard for communities.",
   cards=[("The problem","In the first minutes of an emergency, the people closest to you can often get there first. There was no simple way to call them."),
@@ -14,7 +14,7 @@ P = [
          ("Where it is","In closed beta with first testers. Site: shomer-app.co.il.")],
   shots=["../assets/studio/shomer-app-map-clean.webp","../assets/studio/shomer-app-circles.webp","../assets/studio/shomer-app-guide.webp"],
   out=("Visit SH✡MER","https://www.shomer-app.co.il/")),
- dict(slug="lickpick", name="LickPick", cat="Music app", status="Free beta",
+ dict(slug="lickpick", custom=True, name="LickPick", cat="Music app", status="Free beta",
   line="Drop in your jams. LickPick cuts the flubs and hands you the take worth posting.",
   did="Brand, app design and the working app: it finds your best phrase, on the bar, ready for Reels, TikTok or Shorts.",
   cards=[("The problem","Players record every jam, then never dig the good take out of the camera roll."),
@@ -22,7 +22,7 @@ P = [
          ("Where it is","Free beta on Android and Chrome.")],
   shots=["../assets/studio/screens/lickpick-cut.webp","../assets/studio/screens/lickpick-style.webp"],
   out=("Visit LickPick","../lickpick/")),
- dict(slug="trashure-hunters", name="Trashure-Hunters", cat="Kids' eco game", status="In development",
+ dict(slug="trashure-hunters", custom=True, name="Trashure-Hunters", cat="Kids' eco game", status="In development",
   line="Kids pick up real litter in their neighbourhood, and every cleanup heals a magical world.",
   did="Game world and characters, brand, app design and a working test build with camera, map and rewards.",
   cards=[("The problem","Kids see litter every day and learn to walk past it."),
