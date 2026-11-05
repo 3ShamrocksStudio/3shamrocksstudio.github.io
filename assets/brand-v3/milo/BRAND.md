@@ -1,38 +1,55 @@
-# Milo · Brand v4
+# hoppa (with Milo) · Brand v5
 
-**Idea:** Milo is a bear who's got you. Cool on the outside, soft on the inside.
+> **Proposed name: hoppa / הופה. NEEDS YOUR EYES.** The bear keeps his name, **Milo**. The folder stays `brand-v3/milo/` until you decide. If you keep "Milo" as the product name, use `logo-alt-milo.png`; everything else in this kit works unchanged. Reasons: see the decision memo (3s-status `org/memos/2026-11-05-milo.md`, §5).
+
+**Idea:** done feeling sorry for ourselves. Milo is a cool polar bear who treats every small brave move like a big deal. "Hoppa!" is what Israeli parents say when a kid falls and gets straight back up.
 
 ## Source
-- The real Milo is the caramel plush in `Milo/art/milo-*.webp`: floppy ears, cream muzzle and belly, a honey heart on his chest, blush cheeks.
-- Dave prefers the bear with sunglasses. v4 draws the real plush Milo as clean vectors and gives him the shades. It is the same character, not a new one.
+Dave's Grok reference (`grok.com/imagine/post/b5a8ea17…`): a white polar bear, head turned slightly right, smiling, black pixel-art "deal with it" shades with magenta and cyan pixel glints, a chunky purple chain, holding a glowing crystal popsicle (magenta to violet to cyan) on a wooden stick, bust cropped in a circle, deep indigo background (`#1B023B`), "Milo" in a bold hot-pink geometric sans (`#F42B93`).
+v5 redraws that bear as clean vectors: same character, front-facing for the marks, the bust with the popsicle for the hero.
 
 ## The shades are the mood
-- **Cool** (default): shades on.
-- **Proud**: shades pushed up, happy eyes, a sparkle.
-- **Curious**: shades slid down, eyes peeking over.
+| Expression | File | Use |
+|---|---|---|
+| Cool (shades on) | `mark.svg` | Default, logos, app icon |
+| Hyped (shades up, happy eyes, sparkle) | `mark-happy.svg` | A win, a level-up |
+| Curious (shades slid down, eyes peeking over) | `mark-peek.svg` | New move, "what's next?" |
+| Calm (shades up, eyes closed) | `expressions.png` only | Breathing, wind-down |
 
-One character covers every state. See `expressions.png`, `mark.svg`, `mark-happy.svg`, `mark-peek.svg`.
+## Files
+| File | What it is |
+|---|---|
+| `logo.png` / `logo-on-dark.png` | Head in a Night circle + **hoppa** wordmark + "One brave move a day." (1676 x 707, transparent) |
+| `logo-alt-milo.png` | Same lockup with **Milo**, if the name stays |
+| `logo-mark.png` | Cool Milo in a Night circle, 1024 px (works on the studio site's cream splash) |
+| `app-icon.png` | Night tile with a soft glow, 1024 px |
+| `hero.png` | 1600 x 1000: "Small brave moves. Big happy kids." + the full bear with the popsicle |
+| `expressions.png` | The four moods |
+| `icons.svg` / `icons.png` | 8 icons: Brave move, Win, Bounce back, Crew, Level up, Vibe check, Treat, Grown-up help |
+| `brand-card.png` | 1200 x 1200 brand summary |
 
-## Logo system
-- `logo.png` / `logo-on-dark.png`: head + lowercase **milo** (Fredoka 700), with the i dot as a honey heart, and the line "A friend who's got you."
-- `logo-mark.png`: Cool Milo, transparent. `app-icon.png`: Milo on a warm cream tile.
-- `hero.png`: full-body Milo, sitting, with the honey heart on his belly.
-
-## Icons
-`icons.svg` / `icons.png`: 8 feelings icons (Happy, Sad, Calm, Brave, Sleepy, Talk it out, Big hug, Growing). Soft fills from the palette with a 3.5 px Cocoa outline, sticker-like, made for kids. There are no alarming reds and no dark green.
-
-## Palette (from the plush)
+## Palette
 | Name | Hex | Use |
 |---|---|---|
-| Caramel | `#E58A3C` | Fur |
-| Caramel Deep | `#C96A2B` | Fur shadow, tagline |
-| Honey | `#F2B544` | Heart, rewards |
-| Cream | `#FBE6C8` | Muzzle, belly |
-| Cocoa | `#3A281F` | Ink, wordmark, shades |
-| Blush | `#F49A84` | Cheeks, love |
-| Sky | `#9CC9E8` | Sad, sleepy |
-| Mint | `#A8D8C2` | Calm, growing (light only) |
-| Oat | `#FBF3E8` | Canvas |
+| Night | `#1B0A3B` | Canvas (from the reference background) |
+| Plum | `#2D1263` | Cards |
+| Pop Pink | `#FF2E93` | Wordmark, CTAs (from the reference wordmark) |
+| Magenta | `#F733B9` | Popsicle top, lens glints |
+| Grape | `#8C3BEF` | Chain, level-up |
+| Sky Pop | `#3BC8FF` | Glints, vibe check |
+| Honey | `#FFC94D` | Wins, stars |
+| Snow | `#F6F3FA` | Fur, light canvas |
+| Frost | `#D9D1EA` | Fur shadow |
+| Ink | `#140828` | Nose, shades, text on light |
+
+No alarming reds anywhere. The "Grown-up help" path uses Snow + Pop Pink, never a red alert.
 
 ## Type
-- Wordmark and display: **Fredoka 600–700**. Body: **Nunito 600–800**.
+**Rubik** 800 for the wordmark and headlines, 500–700 for body. One family covers Latin and Hebrew (הופה!).
+
+## Voice
+Hype, not pity. "Hoppa! Next move?" "You tried it. That counts." Never "poor you", never "are you OK?" as the opener. Feelings are welcome; they are not the headline.
+
+## Open questions (NEEDS YOUR EYES)
+1. Name: **hoppa** vs keep **Milo**.
+2. The chain: it is in your reference and stays in v5. A few parents may read it as "bling". Cheap check: a 5-second test with 10 parents (memo §3). Fallback: a chunky knitted scarf in Grape.
