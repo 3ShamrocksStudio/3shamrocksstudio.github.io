@@ -510,5 +510,15 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
   addEventListener('scroll',on,{passive:true});addEventListener('resize',on);chk();setTimeout(chk,400);
 })();
 </script>
+<!-- 3Shamrocks audio: original studio sound, nothing plays before a tap -->
+<script src="../lab/chore-wars/s3-audio.js"></script>
+<script>
+(function(){if(!window.S3Audio)return;
+var A=S3Audio.create({base:'../lab/chore-wars/audio/',name:'cr',lead:0.1,sfxGain:0.7,store:{sfx:'s3_sfx'},sprite:{"crown":[3.9547,2.0959]}});
+var B=S3Audio.mount(A,{});B.style.cssText+='--s3a-bg:#1A0B3B;--s3a-fg:#F3EEFF;--s3a-accent:#F5B92E;--s3a-font:Nunito,system-ui,sans-serif;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 6px 20px rgba(0,0,0,.3)';
+/* one sound on this page: the crown card turns to its Sunday-ceremony side */
+document.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.card');if(c&&c.querySelector('use[href="#cr-crowns"]')&&c.getAttribute('aria-pressed')==='true')A.play('crown');});
+})();
+</script>
 </body>
 </html>
