@@ -26,6 +26,18 @@ img{height:auto}
 :focus-visible{outline:4px solid var(--coral);outline-offset:3px;border-radius:10px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .he{font-family:var(--f)}
+h1,h2{text-wrap:balance}
+p{text-wrap:pretty}
+/* backgrounds: soft bands, never one long flat colour */
+.tex{background-image:radial-gradient(rgba(29,91,216,.10) 1.2px,transparent 1.3px);background-size:22px 22px}
+.band-a{position:relative;background:linear-gradient(180deg,#fff 0%,var(--mist) 100%)}
+.band-b{position:relative;overflow:hidden;background:radial-gradient(50% 70% at 100% 0%,rgba(255,122,69,.10),transparent 70%),linear-gradient(180deg,#EAF1FF,#F6F8FC 90%)}
+.band-b .wm{position:absolute;right:-150px;top:-120px;width:460px;opacity:.05;pointer-events:none;transform:rotate(-8deg)}
+.band-c{background:radial-gradient(60% 60% at 0% 100%,rgba(220,232,255,.9),transparent 70%),radial-gradient(50% 50% at 100% 10%,rgba(29,91,216,.08),transparent 70%),#fff}
+.band-d{background-color:var(--mist)}
+.band-e{background:radial-gradient(60% 80% at 50% 0%,rgba(255,122,69,.12),transparent 65%),radial-gradient(70% 90% at 50% 0%,var(--sky),transparent 70%),var(--mist)}
+.glow{position:absolute;width:520px;height:520px;border-radius:50%;left:0;top:0;pointer-events:none;background:radial-gradient(circle,rgba(255,180,140,.30),rgba(220,232,255,.35) 40%,transparent 70%);transition:opacity .6s;opacity:0;will-change:transform}
+.hero:hover .glow{opacity:1}
 
 .snav{position:sticky;top:0;z-index:30;background:rgba(11,37,69,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .snav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
@@ -33,7 +45,7 @@ img{height:auto}
 .snav .back{font-weight:700;font-size:1.05rem;color:#fff;min-height:48px;display:inline-flex;align-items:center}
 .snav .back:hover{color:var(--sky)}
 
-h1,h2,h3{font-weight:800;letter-spacing:-.01em;line-height:1.1}
+h1,h2,h3{font-weight:800;letter-spacing:-.022em;line-height:1.06}
 .kick{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
 .kick::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--coral)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:60px;padding:0 28px;border-radius:18px;font-weight:800;font-size:1.1rem;transition:transform .2s,background .2s}
@@ -43,7 +55,9 @@ h1,h2,h3{font-weight:800;letter-spacing:-.01em;line-height:1.1}
 .ctas{display:flex;flex-wrap:wrap;gap:12px}
 
 /* hero */
-.hero{position:relative;overflow:hidden;background:radial-gradient(60% 70% at 90% 10%,var(--sky),transparent 65%),var(--mist)}
+.hero{position:relative;overflow:hidden;background:radial-gradient(60% 70% at 90% 10%,var(--sky),transparent 65%),radial-gradient(40% 50% at 0% 100%,rgba(255,122,69,.08),transparent 70%),var(--mist)}
+.hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(29,91,216,.12) 1.2px,transparent 1.3px);background-size:24px 24px;-webkit-mask:linear-gradient(100deg,transparent 30%,#000 75%);mask:linear-gradient(100deg,transparent 30%,#000 75%);pointer-events:none}
+.hero .wrap{position:relative}
 .hero .wrap{display:grid;gap:30px;align-items:center;padding-top:44px;padding-bottom:70px}
 @media(min-width:940px){.hero .wrap{grid-template-columns:1fr 1fr;padding-top:70px;padding-bottom:90px}}
 .hero .wrap>*{min-width:0}
@@ -66,6 +80,19 @@ h1,h2,h3{font-weight:800;letter-spacing:-.01em;line-height:1.1}
 .scr small{font-size:.8rem;opacity:.85}
 .scr span{margin-top:20px;background:#fff;color:var(--blue);border-radius:999px;padding:6px 16px;font-size:.75rem;font-weight:800}
 .duo .phone:first-of-type{transform:translateY(30px)}
+.dn{aspect-ratio:440/954;border-radius:31px;background:linear-gradient(180deg,#fff,var(--mist));display:flex;flex-direction:column;padding:40px 16px 18px;color:var(--navy);text-align:center;overflow:hidden}
+.dn .lg{width:62%;margin:0 auto 10px}
+.dn .ck{width:64px;height:64px;margin:12px auto 10px;border-radius:50%;background:var(--done);display:grid;place-items:center;box-shadow:0 0 0 10px rgba(18,183,106,.14);animation:pop 4.5s ease-in-out infinite}
+@keyframes pop{0%,100%{box-shadow:0 0 0 10px rgba(18,183,106,.14)}50%{box-shadow:0 0 0 18px rgba(18,183,106,.06)}}
+.dn .ck svg{width:34px;height:34px}
+.dn b{font-size:1.15rem;font-weight:800;line-height:1.15}
+.dn p{font-size:.78rem;color:var(--slate);line-height:1.35;margin-top:6px}
+.dn .rw{margin-top:12px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:9px 10px;text-align:left;font-size:.74rem;font-weight:700;line-height:1.3;display:flex;gap:8px;align-items:center}
+.dn .rw svg{width:26px;height:26px;flex:none;fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.dn .rw small{display:block;color:var(--slate);font-weight:600}
+.dn .bt{margin-top:auto;background:var(--blue);color:#fff;border-radius:14px;padding:10px;font-weight:800;font-size:.85rem}
+@media(max-width:600px){.dn{padding:30px 10px 12px}.dn .rw,.dn p{display:none}.dn .lg{width:78%}.dn b{font-size:.92rem}.dn .ck{width:48px;height:48px}.dn .bt{font-size:.72rem;padding:8px}}
+.dn .cd{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
 .concept{position:absolute;top:-6px;right:4%;background:var(--coral);color:var(--navy);font-weight:800;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;padding:6px 14px;border-radius:999px;z-index:3}
 
 /* built */
@@ -90,12 +117,20 @@ h1,h2,h3{font-weight:800;letter-spacing:-.01em;line-height:1.1}
 .small{background:#fff;border-radius:24px;padding:26px;border:1px solid var(--line);display:grid;gap:14px}
 .small div{display:flex;gap:14px;align-items:center;font-weight:700}
 .small svg{width:44px;height:44px;flex:none;padding:8px;border-radius:12px;background:var(--mist)}
-.small s{color:var(--slate);text-decoration-color:var(--coral);text-decoration-thickness:3px}
+.small s{color:#8592a8;text-decoration-color:#a9b4c6;text-decoration-thickness:2px}
+.small .x svg{filter:grayscale(1);opacity:.55;background:#eef1f6}
+.small .x{color:#8592a8}
+.small .ok{color:var(--blue);border-top:1px dashed var(--line);padding-top:14px;transition:transform .3s}
+.small .ok:hover{transform:translateX(4px)}
+.small .ok svg{background:var(--sky)}
 
 /* how */
 .steps{display:grid;gap:16px}
 @media(min-width:880px){.steps{grid-template-columns:repeat(3,1fr)}}
-.step{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px}
+.step{position:relative;background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:24px;padding:24px;transition:transform .35s ease,box-shadow .35s ease}
+.step:hover{transform:translateY(-4px);box-shadow:0 24px 40px -28px rgba(11,37,69,.45)}
+.steps{position:relative}
+@media(min-width:880px){.steps::before{content:"";position:absolute;left:8%;right:8%;top:50px;border-top:3px dotted var(--sky);z-index:0}.step{z-index:1}}
 .step .n{width:52px;height:52px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800;font-size:1.4rem;margin-bottom:14px}
 .step:nth-child(2) .n{background:var(--coral);color:var(--navy)}
 .step:nth-child(3) .n{background:var(--navy)}
@@ -112,12 +147,24 @@ h1,h2,h3{font-weight:800;letter-spacing:-.01em;line-height:1.1}
 .task svg{width:38px;height:38px;flex:none;fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
 .task:hover{border-color:var(--sky)}
 .task[aria-pressed="true"]{border-color:var(--blue);background:#eef4ff}
-.panel{background:var(--navy);color:#fff;border-radius:28px;padding:30px;position:sticky;top:80px}
+.panel{background:radial-gradient(80% 60% at 100% 0%,rgba(29,91,216,.45),transparent 70%),var(--navy);color:#fff;border-radius:28px;padding:30px;position:sticky;top:80px}
 .panel .k{font-weight:800;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--coral)}
 .panel h3{font-size:1.9rem;margin:8px 0 10px}
 .panel p{color:#cfdcf5}
 .panel .ok{display:inline-flex;align-items:center;gap:10px;margin-top:20px;background:rgba(18,183,106,.15);color:#7ce6b2;border-radius:999px;padding:8px 16px;font-weight:800;font-size:.95rem}
 .panel .ok svg{width:22px;height:22px}
+.flow{list-style:none;display:grid;gap:10px;margin:20px 0 4px}
+.flow li{display:flex;align-items:center;gap:12px;font-weight:700;font-size:1rem;color:#8ea3c8;transition:color .4s}
+.flow i{width:30px;height:30px;flex:none;border-radius:50%;border:2.5px solid #3a5684;display:grid;place-items:center;transition:background .4s,border-color .4s}
+.flow i svg{width:16px;height:16px;opacity:0;transition:opacity .3s}
+.flow li.on{color:#fff}
+.flow li.on i{background:var(--blue);border-color:var(--blue)}
+.flow li.on i svg{opacity:1}
+.flow li.done{color:#7ce6b2}
+.flow li.done i{background:var(--done);border-color:var(--done)}
+.task svg{transition:transform .3s}
+.task:hover svg{transform:scale(1.1) rotate(-4deg)}
+.task:active{transform:scale(.98)}
 
 /* design system */
 .ds{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
@@ -156,7 +203,7 @@ h1,h2,h3{font-weight:800;letter-spacing:-.01em;line-height:1.1}
 .bp svg{width:100%;max-width:440px;margin:0 auto}
 .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 6s ease-in-out infinite}
 @keyframes draw{0%{stroke-dashoffset:1}45%,80%{stroke-dashoffset:0}100%{stroke-dashoffset:1}}
-.stamp{display:inline-block;margin-top:18px;border:3px solid var(--coral);color:var(--coral);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:.85rem;padding:6px 14px;border-radius:8px;transform:rotate(-3deg)}
+.stamp{display:inline-block;margin-top:18px;border:3px solid var(--sky);color:var(--sky);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:.85rem;padding:6px 14px;border-radius:8px;transform:rotate(-3deg)}
 
 .cta{text-align:center;padding-top:90px;padding-bottom:36px}
 .cta h2{font-size:clamp(2.1rem,5vw,3.2rem);max-width:17ch;margin:10px auto 14px}
@@ -174,7 +221,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
-<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false"><!-- EZRA icons: 48 grid, 4px round strokes in Ezra Blue, one Sky "Ezra dot" --> <symbol id="ez-pharmacy" viewBox="0 0 48 48"><rect x="8" y="17" width="32" height="14" rx="7" transform="rotate(-40 24 24)" stroke="#1D5BD8"/><path d="M19 14l10 19" stroke="#1D5BD8" transform="rotate(-10 24 24)"/><circle cx="36" cy="38" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-doctor" viewBox="0 0 48 48"><rect x="7" y="11" width="34" height="30" rx="7" stroke="#1D5BD8"/><path d="M7 20h34M16 6v8M32 6v8M24 26v10M19 31h10" stroke="#1D5BD8"/><circle cx="36" cy="36" r="0" /></symbol><symbol id="ez-call" viewBox="0 0 48 48"><path d="M14 7l5 1 3 8-4 3c2 4 5 7 9 9l3-4 8 3 1 5c0 3-3 6-6 6C20 38 10 28 10 13c0-3 3-6 6-6" stroke="#1D5BD8"/><circle cx="36" cy="12" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-groceries" viewBox="0 0 48 48"><path d="M9 17h30l-3 22H12z" stroke="#1D5BD8"/><path d="M17 17c0-6 3-9 7-9s7 3 7 9" stroke="#1D5BD8"/><circle cx="24" cy="28" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-bills" viewBox="0 0 48 48"><path d="M12 6h24v36l-4-3-4 3-4-3-4 3-4-3-4 3z" stroke="#1D5BD8"/><path d="M18 15h12M18 22h12" stroke="#1D5BD8"/><circle cx="24" cy="31" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-ride" viewBox="0 0 48 48"><path d="M8 31v-7l4-10h24l4 10v7z" stroke="#1D5BD8"/><path d="M8 24h32M12 31v5M36 31v5" stroke="#1D5BD8"/><circle cx="24" cy="9" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-scan" viewBox="0 0 48 48"><path d="M7 15V10a3 3 0 0 1 3-3h5M33 7h5a3 3 0 0 1 3 3v5M41 33v5a3 3 0 0 1-3 3h-5M15 41h-5a3 3 0 0 1-3-3v-5" stroke="#1D5BD8"/><path d="M16 19h16M16 26h16M16 33h9" stroke="#1D5BD8"/></symbol><symbol id="ez-reminder" viewBox="0 0 48 48"><circle cx="24" cy="26" r="15" stroke="#1D5BD8"/><path d="M24 18v8l6 4M10 9l5-3M38 9l-5-3" stroke="#1D5BD8"/></symbol><symbol id="ez-video" viewBox="0 0 48 48"><rect x="5" y="13" width="28" height="22" rx="6" stroke="#1D5BD8"/><path d="M33 21l10-6v18l-10-6" stroke="#1D5BD8"/><circle cx="19" cy="24" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-shield" viewBox="0 0 48 48"><path d="M24 6l15 5v11c0 10-6 17-15 20C15 39 9 32 9 22V11z" stroke="#1D5BD8"/><path d="M17 23l5 5 9-10" stroke="#1D5BD8"/></symbol></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false"><!-- EZRA icons: 48 grid, 4px round strokes in Ezra Blue, one Sky "Ezra dot" --> <symbol id="ez-pharmacy" viewBox="0 0 48 48"><rect x="8" y="17" width="32" height="14" rx="7" transform="rotate(-40 24 24)" stroke="#1D5BD8"/><path d="M19 14l10 19" stroke="#1D5BD8" transform="rotate(-10 24 24)"/><circle cx="36" cy="38" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-doctor" viewBox="0 0 48 48"><rect x="7" y="11" width="34" height="30" rx="7" stroke="#1D5BD8"/><path d="M7 20h34M16 6v8M32 6v8" stroke="#1D5BD8"/><circle cx="24" cy="30.5" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-call" viewBox="0 0 48 48"><path d="M14 7l5 1 3 8-4 3c2 4 5 7 9 9l3-4 8 3 1 5c0 3-3 6-6 6C20 38 10 28 10 13c0-3 3-6 6-6" stroke="#1D5BD8"/><circle cx="36" cy="12" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-groceries" viewBox="0 0 48 48"><path d="M9 17h30l-3 22H12z" stroke="#1D5BD8"/><path d="M17 17c0-6 3-9 7-9s7 3 7 9" stroke="#1D5BD8"/><circle cx="24" cy="28" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-bills" viewBox="0 0 48 48"><path d="M12 6h24v36l-4-3-4 3-4-3-4 3-4-3-4 3z" stroke="#1D5BD8"/><path d="M18 15h12M18 22h12" stroke="#1D5BD8"/><circle cx="24" cy="31" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-ride" viewBox="0 0 48 48"><path d="M8 31v-7l4-10h24l4 10v7z" stroke="#1D5BD8"/><path d="M8 24h32M12 31v5M36 31v5" stroke="#1D5BD8"/><circle cx="24" cy="9" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-scan" viewBox="0 0 48 48"><path d="M7 15V10a3 3 0 0 1 3-3h5M33 7h5a3 3 0 0 1 3 3v5M41 33v5a3 3 0 0 1-3 3h-5M15 41h-5a3 3 0 0 1-3-3v-5" stroke="#1D5BD8"/><path d="M16 19h16M16 26h16M16 33h7" stroke="#1D5BD8"/><circle cx="31" cy="33" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-reminder" viewBox="0 0 48 48"><circle cx="24" cy="26" r="15" stroke="#1D5BD8"/><path d="M24 18v8l6 4M10 9l5-3M38 9l-5-3" stroke="#1D5BD8"/><circle cx="24" cy="26" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-video" viewBox="0 0 48 48"><rect x="5" y="13" width="28" height="22" rx="6" stroke="#1D5BD8"/><path d="M33 21l10-6v18l-10-6" stroke="#1D5BD8"/><circle cx="19" cy="24" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-shield" viewBox="0 0 48 48"><path d="M24 6l15 5v11c0 10-6 17-15 20C15 39 9 32 9 22V11z" stroke="#1D5BD8"/><path d="M17 23l5 5 9-10" stroke="#1D5BD8"/><circle cx="38" cy="9" r="4.6" fill="#FF7A45" stroke="none"/></symbol></svg>
 
 <nav class="snav" aria-label="Studio"><div class="wrap">
   <a href="../" aria-label="3Shamrocks Studio home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="150" height="22"></a>
@@ -182,6 +229,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 </div></nav>
 
 <header class="hero">
+  <i class="glow" id="glow" aria-hidden="true"></i>
   <div class="wrap">
     <div>
       <img class="lock" src="../assets/work/s16/ez-logo.webp" alt="EZRA עזרא" width="900" height="225" fetchpriority="high">
@@ -198,7 +246,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
       <i class="ring" style="width:100%;aspect-ratio:1;left:0;top:-4%" aria-hidden="true"></i>
       <i class="ring" style="width:80%;aspect-ratio:1;left:10%;top:10%;animation-delay:-3s" aria-hidden="true"></i>
       <span class="concept">Concept</span>
-      <div class="phone"><div class="scr"><img src="../assets/work/s16/ez-logo-dark.webp" alt="" width="900" height="225"><b>Help that does it for you.</b><small lang="he" dir="rtl">עזרא עושה את זה בשבילך.</small><span>Coming soon</span></div></div>
+      <div class="phone"><div class="dn" role="img" aria-label="Concept screen: Done. Your refill is ordered, ready Thursday after 10:00."><img class="lg" src="../assets/work/s16/ez-logo.webp" alt="" width="900" height="225"><span class="cd">Concept design</span><span class="ck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4.2 4L18.5 8" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Done. Your refill is ordered.</b><p lang="he" dir="rtl">בוצע. התרופה הוזמנה.</p><div class="rw"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ez-pharmacy"/></svg><span>Ready Thursday after 10:00<small>EZRA will remind you.</small></span></div><span class="bt">Read it to me</span></div></div>
       <div class="phone"><img src="../assets/work/s16/ez-tasks-v5.webp" alt="EZRA concept screen: Everyday tasks, done for you, with ten large task buttons" width="440" height="954"></div>
     </div>
   </div>
@@ -214,7 +262,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     </dl>
   </section>
 
-  <section class="sec wrap" aria-labelledby="p-h">
+  <section class="sec band-a" aria-labelledby="p-h"><div class="wrap">
     <div class="prob">
       <div class="rv">
         <span class="kick">The problem</span>
@@ -223,15 +271,15 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
         <p style="color:var(--slate);margin-top:12px">EZRA's idea is simple: say what you need, and EZRA does the steps.</p>
       </div>
       <div class="small rv" aria-label="Everyday steps EZRA is designed to take over">
-        <div><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-pharmacy"/></svg><span><s>Find the refill form, log in, choose a branch</s></span></div>
-        <div><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-scan"/></svg><span><s>Read a long letter in small print</s></span></div>
-        <div><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-ride"/></svg><span><s>Book a ride through three screens</s></span></div>
-        <div style="color:var(--blue)"><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round;background:var(--sky)"><use href="#ez-shield"/></svg><span>One button: “Do it for me.”</span></div>
+        <div class="x"><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-pharmacy"/></svg><span><s>Find the refill form, log in, choose a branch</s></span></div>
+        <div class="x"><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-scan"/></svg><span><s>Read a long letter in small print</s></span></div>
+        <div class="x"><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-ride"/></svg><span><s>Book a ride through three screens</s></span></div>
+        <div class="ok"><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-shield"/></svg><span>One button: “Do it for me.”</span></div>
       </div>
     </div>
-  </section>
+  </div></section>
 
-  <section class="sec wrap" aria-labelledby="h-h" style="padding-top:0">
+  <section class="sec band-b" aria-labelledby="h-h"><img class="wm" src="../assets/work/s16/ez-mark.webp" alt="" width="400" height="400" loading="lazy"><div class="wrap" style="position:relative">
     <div class="head rv">
       <span class="kick">How it works · concept</span>
       <h2 id="h-h">Three calm steps.</h2>
@@ -241,9 +289,9 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
       <div class="step rv"><span class="n">2</span><h3>EZRA takes it from there</h3><p>EZRA asks only what it needs, then does the steps and shows what it did.</p></div>
       <div class="step rv"><span class="n">3</span><h3>Check before you trust</h3><p>Scam check is on the home screen, not hidden in settings.</p></div>
     </div>
-  </section>
+  </div></section>
 
-  <section class="sec wrap" id="tasks" aria-labelledby="t-h" style="padding-top:0">
+  <section class="sec band-c" id="tasks" aria-labelledby="t-h"><div class="wrap">
     <div class="head rv">
       <span class="kick">Key moments</span>
       <h2 id="t-h">Ten tasks, done for you.</h2>
@@ -251,27 +299,32 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     </div>
     <div class="tasks rv">
       <div class="grid" role="group" aria-label="EZRA tasks">
-        <button class="task" type="button" aria-pressed="true" data-t="Pharmacy" data-d="Order a repeat prescription and say when it is ready."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-pharmacy"/></svg>Pharmacy</button>
-        <button class="task" type="button" aria-pressed="false" data-t="Doctor visit" data-d="Find a free slot with the right doctor and book it."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-doctor"/></svg>Doctor visit</button>
-        <button class="task" type="button" aria-pressed="false" data-t="Call family" data-d="Call a son, daughter or grandchild by name. No phone book."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-call"/></svg>Call family</button>
-        <button class="task" type="button" aria-pressed="false" data-t="Groceries" data-d="Repeat the usual order, or add one thing to it."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-groceries"/></svg>Groceries</button>
-        <button class="task" type="button" aria-pressed="false" data-t="Bills" data-d="Show what is due and pay it, with a clear yes before any payment."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-bills"/></svg>Bills</button>
-        <button class="task" type="button" aria-pressed="false" data-t="Book a ride" data-d="A ride to the clinic or to family, booked in one step."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-ride"/></svg>Book a ride</button>
-        <button class="task" type="button" aria-pressed="false" data-t="Read a letter" data-d="Point the camera at a letter. EZRA reads it aloud and says what it asks."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-scan"/></svg>Read a letter</button>
-        <button class="task" type="button" aria-pressed="false" data-t="Medication time" data-d="A gentle reminder at the right time, and a tap to confirm."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-reminder"/></svg>Medication</button>
-        <button class="task" type="button" aria-pressed="false" data-t="Video call" data-d="See the family with one tap. The camera is already set up."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-video"/></svg>Video call</button>
-        <button class="task" type="button" aria-pressed="false" data-t="Scam check" data-d="Got a strange message or call? Ask EZRA before you answer or pay."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-shield"/></svg>Scam check</button>
+        <button class="task" type="button" aria-pressed="true" data-t="Pharmacy" data-f="Done. Ready Thursday." data-d="Order a repeat prescription and say when it is ready."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-pharmacy"/></svg>Pharmacy</button>
+        <button class="task" type="button" aria-pressed="false" data-t="Doctor visit" data-f="Booked: Sunday, 09:30." data-d="Find a free slot with the right doctor and book it."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-doctor"/></svg>Doctor visit</button>
+        <button class="task" type="button" aria-pressed="false" data-t="Call family" data-f="Calling Dana now." data-d="Call a son, daughter or grandchild by name. No phone book."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-call"/></svg>Call family</button>
+        <button class="task" type="button" aria-pressed="false" data-t="Groceries" data-f="Order sent. Arrives tomorrow." data-d="Repeat the usual order, or add one thing to it."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-groceries"/></svg>Groceries</button>
+        <button class="task" type="button" aria-pressed="false" data-t="Bills" data-f="Paid, after your yes." data-d="Show what is due and pay it, with a clear yes before any payment."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-bills"/></svg>Bills</button>
+        <button class="task" type="button" aria-pressed="false" data-t="Book a ride" data-f="Ride booked for 10:00." data-d="A ride to the clinic or to family, booked in one step."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-ride"/></svg>Book a ride</button>
+        <button class="task" type="button" aria-pressed="false" data-t="Read a letter" data-f="Read aloud. Nothing to pay." data-d="Point the camera at a letter. EZRA reads it aloud and says what it asks."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-scan"/></svg>Read a letter</button>
+        <button class="task" type="button" aria-pressed="false" data-t="Medication time" data-f="Reminder set for 08:00." data-d="A gentle reminder at the right time, and a tap to confirm."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-reminder"/></svg>Medication</button>
+        <button class="task" type="button" aria-pressed="false" data-t="Video call" data-f="Connected. Say hello." data-d="See the family with one tap. The camera is already set up."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-video"/></svg>Video call</button>
+        <button class="task" type="button" aria-pressed="false" data-t="Scam check" data-f="Checked. You are safe: do not reply." data-d="Got a strange message or call? Ask EZRA before you answer or pay."><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#ez-shield"/></svg>Scam check</button>
       </div>
       <div class="panel" aria-live="polite">
         <span class="k">Designed to</span>
         <h3 id="pt">Pharmacy</h3>
         <p id="pd">Order a repeat prescription and say when it is ready.</p>
+        <ol class="flow" id="flow" aria-label="What happens after one tap (concept)">
+          <li><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 3.5 8-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></i>You tap one button</li>
+          <li><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 3.5 8-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></i>EZRA does the steps</li>
+          <li><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 3.5 8-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span id="pf">Done. Ready Thursday.</span></li>
+        </ol>
         <span class="ok"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#12B76A"/><path d="M7 12.5l3.2 3L17 9" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Concept, not built</span>
       </div>
     </div>
-  </section>
+  </div></section>
 
-  <section class="sec wrap" id="system" aria-labelledby="b-h" style="padding-top:0">
+  <section class="sec band-d tex" id="system" aria-labelledby="b-h"><div class="wrap">
     <div class="head rv">
       <span class="kick">Design system</span>
       <h2 id="b-h">One stem, read both ways.</h2>
@@ -335,9 +388,9 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
         </div>
       </div>
     </div>
-  </section>
+  </div></section>
 
-  <section class="sec wrap" aria-labelledby="u-h" style="padding-top:0">
+  <section class="sec wrap" aria-labelledby="u-h">
     <div class="bp rv">
       <div class="body">
         <div>
@@ -364,19 +417,26 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     </div>
   </section>
 
-  <section class="cta wrap" aria-labelledby="c-h">
+  <section class="cta band-e" aria-labelledby="c-h"><div class="wrap">
     <span class="kick" style="justify-content:center">Work with me</span>
     <h2 id="c-h">Designing for people who need it most?</h2>
     <p>Brand, product design and a working product, from one senior designer.</p>
     <div class="ctas"><a class="btn b" href="mailto:dave@3shamrocks.com?subject=New%20project">Start a project</a></div>
     <nav class="more" aria-label="More work"><a href="chore-royale.html">Chore Royale</a><a href="fairent.html">FaiRent</a><a href="rk.html">R&amp;K</a><a href="milo.html">Milo</a><a href="shomer.html">SH✡MER</a><a href="lickpick.html">LickPick</a><a href="trashure-hunters.html">Trashure-Hunters</a><a href="j8nix.html">J8NIX</a></nav>
-  </section>
+  </div></section>
   <footer><div class="wrap"><span>&copy; 2026 3Shamrocks Studio · Dave Markovich</span><span><a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a> · <a href="https://www.linkedin.com/in/davemarkovich/" target="_blank" rel="noopener">LinkedIn</a></span></div></footer>
 </main>
 <script>
 (function(){
   var ts=document.querySelectorAll('.grid .task'),pt=document.getElementById('pt'),pd=document.getElementById('pd');
-  ts.forEach(function(b){b.addEventListener('click',function(){ts.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');pt.textContent=b.dataset.t;pd.textContent=b.dataset.d})});
+  var fl=[].slice.call(document.querySelectorAll('#flow li')),pf=document.getElementById('pf'),tm=[],RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function run(done){tm.forEach(clearTimeout);tm=[];pf.textContent=done;fl.forEach(function(l){l.className=''});
+    if(RM){fl[0].className=fl[1].className='on';fl[2].className='done';return}
+    tm.push(setTimeout(function(){fl[0].className='on'},150));tm.push(setTimeout(function(){fl[1].className='on'},900));tm.push(setTimeout(function(){fl[2].className='done'},1700))}
+  ts.forEach(function(b){b.addEventListener('click',function(){ts.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');pt.textContent=b.dataset.t;pd.textContent=b.dataset.d;run(b.dataset.f)})});
+  run(ts[0].dataset.f);
+  var hero=document.querySelector('.hero'),gl=document.getElementById('glow');
+  if(!RM)hero.addEventListener('pointermove',function(e){var r=hero.getBoundingClientRect();gl.style.transform='translate('+(e.clientX-r.left-260)+'px,'+(e.clientY-r.top-260)+'px)'});
   var els=[].slice.call(document.querySelectorAll('.rv'));
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){els.forEach(function(e){e.classList.add('on')});return}
   var t=0;function chk(){t=0;var lim=innerHeight*0.94;els=els.filter(function(e){if(e.getBoundingClientRect().top<lim){e.classList.add('on');return false}return true});if(!els.length){removeEventListener('scroll',on);removeEventListener('resize',on)}}
