@@ -406,5 +406,17 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
   addEventListener('scroll',on,{passive:true});addEventListener('resize',on);chk();setTimeout(chk,400);
 })();
 </script>
+<!-- 3Shamrocks audio: original studio sound, nothing plays before a tap -->
+<script src="../assets/audio/s3-audio.js"></script>
+<script>
+(function(){if(!window.S3Audio)return;
+var A=S3Audio.create({base:'../assets/audio/',name:'rk',lead:0.1,loopLen:72,musicGain:0.5,sfxGain:0.7,store:{sfx:'s3_sfx'},sprite:{"deal":[1.6607,0.7978]},haptics:{deal:[30,40,30,40,80]}});
+var B=S3Audio.mount(A,{music:true,label:'Play theme'});B.style.cssText+='--s3a-bg:#0F1E3F;--s3a-fg:#E8EDF8;--s3a-accent:#E4B04A;--s3a-font:Sora,system-ui,sans-serif;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 6px 20px rgba(0,0,0,.3)';
+/* sound only on the payoff: the pawn reaches the king and both sides shake hands */
+var hs=document.getElementById('hs'),mv=document.getElementById('mv');if(!hs||!mv)return;
+var was=hs.dataset.s;mv.addEventListener('pointerdown',function(){was=hs.dataset.s;});
+document.addEventListener('click',function(e){if(!e.target.closest||!e.target.closest('#mv'))return;if(hs.dataset.s==='1'&&was!=='1')A.play('deal');was=hs.dataset.s;});
+})();
+</script>
 </body>
 </html>
