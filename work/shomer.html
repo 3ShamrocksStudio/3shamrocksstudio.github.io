@@ -46,18 +46,20 @@ img{display:block;max-width:100%;height:auto}
 .eyebrow{font:700 12px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--g3);display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .eyebrow::before{content:"";width:22px;height:2px;background:var(--gold);border-radius:2px}
 h1,h2,h3{font-family:var(--disp);letter-spacing:-.02em}
-h2{font-weight:800;font-size:clamp(30px,4.6vw,52px);line-height:1.06;margin-bottom:18px}
+h2{font-weight:800;font-size:clamp(30px,4.4vw,50px);line-height:1.08;margin-bottom:16px;text-wrap:balance}
 h2 .g,h1 .g{background:var(--gold);-webkit-background-clip:text;background-clip:text;color:transparent}
 .lede{font-size:clamp(17px,1.6vw,19px);color:var(--tx1);max-width:56ch}
 section{position:relative}
-.sec{padding:96px 0}
-@media(max-width:700px){.sec{padding:72px 0}}
+.sec{padding:112px 0}
+@media(max-width:700px){.sec{padding:76px 0}}
 
 /* buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;font:700 15px var(--body);transition:transform .15s,box-shadow .2s,background .2s}
 .btn.gold{background:var(--gold);color:#23170a;box-shadow:0 10px 30px -10px rgba(224,168,40,.6)}
 .btn.gold:hover{transform:translateY(-2px);box-shadow:0 16px 36px -12px rgba(224,168,40,.75)}
-.btn.line{border:1.5px solid rgba(224,168,40,.5);color:var(--g4)}
+.btn.line{border:1.5px solid rgba(224,168,40,.5);color:var(--g4);transition:transform .15s,background .2s,border-color .2s}
+.btn.line:hover{transform:translateY(-2px);border-color:var(--g3)}
+.btn:active{transform:translateY(0) scale(.98)}
 .btn.line:hover{background:rgba(224,168,40,.1)}
 .btns{display:flex;flex-wrap:wrap;gap:12px}
 
@@ -66,16 +68,19 @@ section{position:relative}
 .phone .scr{position:relative;width:100%;height:100%;border-radius:38px;overflow:hidden;background:var(--n0)}
 .phone .scr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
 
+/* interactive map-grid field (canvas, see script) */
+.field{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block}
+
 /* hero */
-.hero{overflow:hidden;isolation:isolate;min-height:min(100svh,880px);display:flex;align-items:center}
-.hero .bg{position:absolute;inset:0;z-index:-2;background:url(../assets/work/shomer/keyvisual.webp) 70% 30%/cover}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:
-  linear-gradient(90deg,rgba(6,15,30,.97) 0%,rgba(6,15,30,.88) 42%,rgba(10,22,40,.55) 70%,rgba(10,22,40,.8) 100%),
-  linear-gradient(0deg,var(--n1) 0%,transparent 30%)}
+.hero{overflow:hidden;isolation:isolate;min-height:min(100svh,880px);display:flex;align-items:center;background:
+  radial-gradient(60% 70% at 78% 45%,rgba(46,64,112,.55),transparent 70%),
+  radial-gradient(40% 40% at 10% 0%,rgba(224,168,40,.10),transparent 70%),
+  linear-gradient(180deg,var(--n0) 0%,var(--n1) 100%)}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(224,168,40,.45),transparent)}
 .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;width:100%;padding-top:56px;padding-bottom:80px}
-.badge-h{width:96px;height:96px;margin-bottom:18px;filter:drop-shadow(0 12px 24px rgba(0,0,0,.6))}
-.wm{font:800 clamp(52px,9vw,112px)/.95 var(--disp);letter-spacing:.01em;color:var(--p4);text-shadow:0 2px 0 rgba(0,0,0,.3)}
-.wm .star{background:var(--gold);-webkit-background-clip:text;background-clip:text;color:transparent;animation:turn 14s linear infinite;transform-origin:50% 55%}
+.badge-h{width:88px;height:88px;margin-bottom:22px;filter:drop-shadow(0 12px 24px rgba(0,0,0,.6))}
+/* wordmark = the real app header logo (logo.svg, copied from the app) */
+.wm-img{display:block;width:clamp(280px,40vw,540px);height:auto;filter:drop-shadow(0 2px 7px rgba(0,0,0,.6))}
 @keyframes turn{to{transform:rotate(360deg)}}
 .hero h1{font-weight:700;font-size:clamp(24px,3.2vw,36px);line-height:1.2;margin:18px 0 14px;max-width:20ch}
 .hero .heb{font:700 clamp(18px,2vw,22px)/1.3 var(--heb);color:var(--g4);margin-bottom:6px;direction:rtl;text-align:left}
@@ -88,10 +93,11 @@ section{position:relative}
 .hero-ph .rings i{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(224,168,40,.35);animation:ring 6s ease-out infinite;opacity:0}
 .hero-ph .rings i:nth-child(2){animation-delay:2s}.hero-ph .rings i:nth-child(3){animation-delay:4s}
 @keyframes ring{0%{transform:scale(.35);opacity:.9}100%{transform:scale(1);opacity:0}}
-@media(max-width:860px){.hero .wrap{grid-template-columns:1fr;padding-top:36px;gap:48px}.hero::after{background:linear-gradient(180deg,rgba(6,15,30,.92),rgba(6,15,30,.86) 60%,var(--n1))}.hero-ph .rings{width:440px;height:440px;margin:-220px 0 0 -220px}}
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr;padding-top:36px;gap:48px}.hero-ph .rings{width:440px;height:440px;margin:-220px 0 0 -220px}.wm-img{width:min(86vw,400px)}}
 
-/* problem + tap demo */
-.problem{background:linear-gradient(180deg,var(--n1),var(--n0))}
+/* problem + tap demo: navy-2 with a faint street grid */
+.problem{background:linear-gradient(180deg,var(--n2),var(--n1));isolation:isolate}
+.problem::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(131,146,171,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(131,146,171,.07) 1px,transparent 1px);background-size:56px 56px;-webkit-mask:radial-gradient(70% 80% at 75% 50%,#000,transparent 75%);mask:radial-gradient(70% 80% at 75% 50%,#000,transparent 75%)}
 .problem .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
 .nums{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap}
 .nums span{font:800 22px var(--disp);color:var(--p4);border:1px solid var(--line);border-radius:14px;padding:10px 16px;background:var(--n2)}
@@ -122,32 +128,53 @@ section{position:relative}
 @keyframes march{to{stroke-dashoffset:-26}}
 @media(max-width:860px){.problem .wrap{grid-template-columns:1fr;gap:40px}}
 
-/* how it works: sticky phone */
-.how{background:var(--n0)}
-.how-head{max-width:640px;margin-bottom:48px}
-.how-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px}
-.how-stage{position:relative}
-.how-stage .phone{position:sticky;top:110px;margin:0 auto;max-width:320px}
-.how-stage .scr img{opacity:0;transform:scale(1.03);transition:opacity .6s,transform .8s}
-.how-stage .scr img.on{opacity:1;transform:none}
-.steps{list-style:none}
-.step{min-height:72vh;display:flex;flex-direction:column;justify-content:center;padding:24px 0;opacity:.35;transition:opacity .5s}
-.step.on{opacity:1}
-.step .n{font:800 14px var(--disp);color:var(--g3);letter-spacing:.1em;margin-bottom:10px}
-.step h3{font-size:clamp(24px,3vw,34px);font-weight:800;line-height:1.1;margin-bottom:12px}
-.step p{color:var(--tx1);max-width:44ch}
-.step .ico{width:56px;height:56px;border-radius:50%;border:1.5px solid var(--g3);display:grid;place-items:center;margin-bottom:18px;color:var(--g3)}
-.step .ico svg{width:26px;height:26px}
-.step .phone{display:none}
-@media(max-width:860px){.how-grid{grid-template-columns:1fr}.how-stage{display:none}.step{min-height:0;opacity:1;padding:20px 0 44px}.step .phone{display:block;max-width:270px;margin:26px auto 0}}
+/* how it works: 4-step grid. Deep navy with soft concentric "circle" rings */
+.how{background:radial-gradient(50% 60% at 100% 0%,rgba(224,168,40,.08),transparent 70%),var(--n0);isolation:isolate;overflow:hidden}
+.how::before{content:"";position:absolute;inset:0;z-index:-1;background:repeating-radial-gradient(circle at 100% 0%,transparent 0 63px,rgba(131,146,171,.06) 63px 64px);-webkit-mask:radial-gradient(80% 70% at 100% 0%,#000,transparent 80%);mask:radial-gradient(80% 70% at 100% 0%,#000,transparent 80%)}
+.how-head{max-width:640px;margin-bottom:56px}
+.moves{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:28px;position:relative;counter-reset:mv}
+.moves::before{content:"";position:absolute;left:24px;right:24px;top:23px;height:2px;background:linear-gradient(90deg,var(--g2),rgba(224,168,40,.15));border-radius:2px}
+.mv{position:relative;display:flex;flex-direction:column}
+.mv-top{display:flex;align-items:center;gap:12px;margin-bottom:24px;position:relative}
+.mv-n{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font:800 15px var(--disp);color:#23170a;background:var(--gold);box-shadow:0 0 0 6px var(--n0),0 8px 20px -6px rgba(224,168,40,.6);flex:none}
+.mv-top .ico{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(224,168,40,.55);display:grid;place-items:center;color:var(--g3);background:var(--n0);transition:background .2s,color .2s}
+.mv-top .ico svg{width:20px;height:20px}
+.mv .phone{max-width:none;border-radius:34px;padding:7px;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+.mv .phone .scr{border-radius:28px}
+.mv:hover .phone{transform:translateY(-6px);box-shadow:0 0 0 1px rgba(224,168,40,.45),0 40px 70px -30px rgba(0,0,0,.85),0 0 60px -18px rgba(224,168,40,.45)}
+.mv:hover .ico{background:var(--g3);color:var(--n1)}
+.mv-txt{margin-top:24px}
+.mv-k{font:700 11px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--g3);margin-bottom:10px}
+.mv h3{font-size:clamp(19px,1.6vw,22px);font-weight:700;line-height:1.25;margin-bottom:10px;letter-spacing:-.01em}
+.mv p{color:var(--tx1);font-size:15px;line-height:1.6}
+@media(max-width:1020px){.moves{grid-template-columns:repeat(2,1fr);gap:48px 28px}.moves::before{display:none}.mv .phone{max-width:280px}}
+@media(max-width:640px){.moves{grid-template-columns:1fr;gap:0}
+ .moves::before{display:block;left:23px;right:auto;top:24px;bottom:24px;width:2px;height:auto;background:linear-gradient(180deg,var(--g2),rgba(224,168,40,.12))}
+ .mv{display:grid;grid-template-columns:48px 1fr;column-gap:16px;padding-bottom:36px}
+ .mv-top{grid-column:1;grid-row:1/3;flex-direction:column;margin:0;align-self:start}
+ .mv-top .ico{display:none}
+ .mv .phone{grid-column:2;grid-row:1;max-width:200px;border-radius:28px;padding:6px}.mv .phone .scr{border-radius:23px}
+ .mv-txt{grid-column:2;grid-row:2;margin-top:18px}}
 
-/* moments */
-.moments{background:linear-gradient(180deg,var(--n0),var(--n1))}
+/* moments: lighter navy, the one "lifted" section */
+.moments{background:radial-gradient(70% 60% at 0% 0%,rgba(224,168,40,.07),transparent 70%),linear-gradient(180deg,var(--n3),var(--n2));isolation:isolate}
+.moments::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(182,194,214,.10) 1px,transparent 1.2px);background-size:22px 22px;-webkit-mask:linear-gradient(180deg,#000,transparent 60%);mask:linear-gradient(180deg,#000,transparent 60%)}
 .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px}
-.m{position:relative;border-radius:24px;overflow:hidden;background:var(--n2);border:1px solid var(--line);display:flex;flex-direction:column}
-.m figure{aspect-ratio:16/11;overflow:hidden}
-.m img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s}
-.m:hover img{transform:scale(1.05)}
+.m{position:relative;border-radius:24px;overflow:hidden;background:var(--n1);border:1px solid var(--line);display:flex;flex-direction:column;transition:transform .35s cubic-bezier(.2,.7,.2,1),border-color .35s}
+.m:hover{transform:translateY(-4px);border-color:rgba(224,168,40,.4)}
+.m figure{aspect-ratio:16/10;overflow:hidden;background:radial-gradient(90% 90% at 50% 50%,#13254a,#0b1730);border-bottom:1px solid var(--line)}
+.m figure svg{width:100%;height:100%;display:block}
+.ill .st{fill:none;stroke:#1d2f55;stroke-width:6;stroke-linecap:round}
+.ill .st2{fill:none;stroke:#16264a;stroke-width:2.5}
+.ill .ring{fill:none;stroke:var(--g3);stroke-width:1.5;opacity:0;transform-box:fill-box;transform-origin:center;animation:ring 4.5s ease-out infinite}
+.ill .ring.b{animation-delay:1.5s}.ill .ring.c{animation-delay:3s}
+.ill .usr{fill:#2fd27f}
+.ill .rt{fill:none;stroke:var(--g4);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:5 6;animation:march 1.2s linear infinite}
+.ill .me{fill:var(--n1);stroke:var(--g3);stroke-width:2}
+.ill .str{fill:none;stroke:var(--g4);stroke-width:1.6;stroke-linejoin:round}
+.ill .pp{fill:var(--p3)}
+.ill .trail{fill:none;stroke:var(--p1);stroke-width:2;stroke-linecap:round;stroke-dasharray:2 7}
+.ill .halo{fill:rgba(224,168,40,.12);stroke:rgba(224,168,40,.55);stroke-width:1.2}
 .m .t{padding:20px 22px 24px}
 .m h3{font-size:20px;font-weight:700;margin-bottom:6px}
 .m p{color:var(--tx1);font-size:15px}
@@ -159,16 +186,18 @@ section{position:relative}
 @media(max-width:860px){.mgrid{grid-template-columns:1fr}}
 
 /* brand system */
-.brand{background:var(--n1)}
+.brand{background:linear-gradient(180deg,var(--n1),var(--n0));isolation:isolate}
+.brand::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(224,168,40,.4),transparent)}
 .bgrid{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;margin-top:40px}
-.tile{background:var(--n2);border:1px solid var(--line);border-radius:24px;padding:28px;position:relative;overflow:hidden}
+.tile{background:var(--n2);border:1px solid var(--line);border-radius:24px;padding:28px;position:relative;overflow:hidden;transition:border-color .3s}
+.tile:hover{border-color:rgba(224,168,40,.3)}
 .tile h3{font:700 12px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--tx2);margin-bottom:18px}
 .t-logo{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;background:radial-gradient(90% 90% at 30% 40%,var(--n5),var(--n1) 70%)}
 .t-logo .bdg{width:200px;height:200px;position:relative}
 .t-logo .bdg img{width:100%;height:100%;filter:drop-shadow(0 18px 30px rgba(0,0,0,.6))}
 .t-logo .bdg::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.45) 50%,transparent 65%);background-size:250% 100%;-webkit-mask:url(../assets/work/shomer/badge.webp) center/contain no-repeat;mask:url(../assets/work/shomer/badge.webp) center/contain no-repeat;animation:glint 5s ease-in-out infinite}
 @keyframes glint{0%,60%{background-position:120% 0}100%{background-position:-60% 0}}
-.t-logo .wm{font-size:clamp(40px,5vw,58px)}
+.t-logo .wm-img{width:min(100%,320px)}
 .t-logo p{color:var(--tx1);font-size:14px;margin-top:10px;max-width:30ch}
 .sw{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .sw div{border-radius:14px;padding:58px 10px 10px;font:600 12px/1.3 var(--body);color:var(--tx0);border:1px solid rgba(255,255,255,.06)}
@@ -212,22 +241,22 @@ section{position:relative}
 @media(max-width:860px){.status .wrap{grid-template-columns:1fr;gap:48px}.watch li{grid-template-columns:auto 1fr}.watch em{grid-column:2}}
 
 /* cta + footer */
-.cta{padding:96px 0 40px;text-align:center;background:var(--n0)}
+.cta{padding:112px 0 40px;text-align:center;background:radial-gradient(60% 70% at 50% 100%,rgba(224,168,40,.12),transparent 70%),linear-gradient(180deg,var(--n2),var(--n0));isolation:isolate;overflow:hidden}
 .cta h2{max-width:20ch;margin:0 auto 14px}
 .cta .lede{margin:0 auto 30px}
 .cta .btns{justify-content:center}
 .more{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:56px}
 .more a{border:1px solid var(--line);border-radius:999px;padding:10px 18px;font:600 14px var(--body);color:var(--tx1);min-height:44px;display:inline-flex;align-items:center}
 .more a:hover{border-color:var(--g3);color:var(--g4)}
-.disc{max-width:640px;margin:48px auto 0;border:1px solid rgba(204,20,38,.45);border-radius:16px;padding:16px 20px;font-size:14px;color:var(--tx1)}
-.disc b{color:#ff8a95}
+.disc{max-width:640px;margin:48px auto 0;border:1px solid rgba(224,168,40,.35);background:rgba(10,22,40,.6);border-radius:16px;padding:16px 20px;font-size:14px;color:var(--tx1)}
+.disc b{color:var(--g4)}
 footer{background:var(--n0);border-top:1px solid var(--line);padding:28px 0 40px;color:var(--tx2);font-size:13px}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
 footer img{height:20px;width:auto}
 
 
 /* what I built: 30-second scan */
-.built{background:var(--n1);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.built{background:linear-gradient(90deg,var(--n2),var(--n3) 50%,var(--n2));border-bottom:1px solid var(--line);padding-top:26px}
 .built .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
 .built div.f{padding:26px 22px;border-left:1px solid var(--line)}
 .built div.f:first-child{border-left:0;padding-left:0}
@@ -238,7 +267,7 @@ footer img{height:20px;width:auto}
 @media(max-width:420px){.built .wrap{grid-template-columns:1fr}.built div.f:nth-child(2){border-top:1px solid var(--line)}}
 
 /* website + dashboard frames */
-.site{background:linear-gradient(180deg,var(--n1),var(--n0))}
+.site{background:radial-gradient(50% 50% at 0% 40%,rgba(224,168,40,.08),transparent 70%),linear-gradient(180deg,var(--n1),var(--n2))}
 .sgrid{display:grid;grid-template-columns:1fr 250px;gap:28px;align-items:end;margin-top:40px}
 .browser{border-radius:16px;overflow:hidden;background:var(--n2);border:1px solid var(--line);box-shadow:0 40px 80px -40px rgba(0,0,0,.8)}
 .browser .chrome{display:flex;align-items:center;gap:7px;padding:10px 14px;background:#0d1a2e;border-bottom:1px solid var(--line)}
@@ -253,7 +282,7 @@ footer img{height:20px;width:auto}
 .fcap b{color:var(--tx1)}
 .dash{margin-top:56px}
 .dash .win{aspect-ratio:1100/687}
-.tag{display:inline-block;font:700 11px var(--body);letter-spacing:.08em;text-transform:uppercase;color:#ffb3ba;border:1px solid rgba(204,20,38,.5);border-radius:999px;padding:3px 10px;margin-left:6px;vertical-align:middle}
+.tag{display:inline-block;font:700 11px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--p3);border:1px solid rgba(182,194,214,.4);border-radius:999px;padding:3px 10px;margin-left:6px;vertical-align:middle}
 @media(max-width:860px){.sgrid{grid-template-columns:1fr}.sgrid .mwrap{max-width:240px;margin:0 auto}}
 
 /* components sheet */
@@ -273,7 +302,7 @@ footer img{height:20px;width:auto}
 .c-in:focus-within,.c-in.f{border-color:var(--g3);box-shadow:0 0 0 3px rgba(224,168,40,.25);color:var(--tx0)}
 .c-card{background:var(--n2);border:1px solid rgba(131,146,171,.22);border-radius:14px;padding:12px 14px;font-size:13px;color:var(--tx1)}
 .c-card .top{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--tx0);margin-bottom:6px;font-size:13px}
-.c-card .top i{width:22px;height:22px;border-radius:50%;background:#e8590c;display:grid;place-items:center;font-style:normal;font-size:12px}
+.c-card .top i{width:22px;height:22px;border-radius:50%;background:#e8590c;color:#fff;display:grid;place-items:center}.c-card .top i svg{width:13px;height:13px}
 .c-card .lk{margin-left:auto;font-size:10px;color:#2fd27f;border:1px solid rgba(47,210,127,.4);border-radius:999px;padding:2px 8px}
 .c-card .src{font-size:11px;color:var(--tx2);margin-top:6px}
 .marks{display:flex;align-items:flex-end;justify-content:space-around;gap:8px;padding-top:6px}
@@ -281,7 +310,7 @@ footer img{height:20px;width:auto}
 .marks .mk{height:42px;display:grid;place-items:center;margin-bottom:8px;position:relative}
 .mk-sos{width:30px;height:30px;border-radius:50%;background:var(--r4);border:2px solid #fff;box-shadow:0 0 0 0 rgba(232,24,44,.6);animation:sosp 1.6s ease-out infinite}
 @keyframes sosp{100%{box-shadow:0 0 0 16px rgba(232,24,44,0)}}
-.mk-me{width:30px;height:30px;border-radius:50%;background:var(--n1);border:2.5px solid var(--g3);color:var(--g4);display:grid;place-items:center;font-size:16px}
+.mk-me{width:30px;height:30px;border-radius:50%;background:var(--n1);border:2.5px solid var(--g3);color:var(--g4);display:grid;place-items:center}.mk-me svg{width:16px;height:16px}
 .mk-user{width:12px;height:12px;border-radius:50%;background:#2fd27f;box-shadow:0 0 0 0 rgba(47,210,127,.6);animation:dot 2s ease-out infinite}
 .mk-pin{width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;background:#e8590c;box-shadow:0 3px 8px rgba(0,0,0,.5)}
 @media(max-width:860px){.comp{grid-template-columns:1fr}}
@@ -289,7 +318,7 @@ footer img{height:20px;width:auto}
 /* reveal */
 .js .rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
 .js .rv.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none}.how-stage .scr img{transform:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none}.mv .phone{transform:none}}
 </style>
 </head>
 <body>
@@ -300,7 +329,9 @@ footer img{height:20px;width:auto}
  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
  <symbol id="i-aid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6.5" width="17" height="13" rx="3"/><path d="M9 6.5V5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5v1.5M12 10v6M9 13h6"/></symbol>
  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></symbol>
- <symbol id="i-sos" viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-family="Sora,sans-serif" font-weight="800" font-size="8" fill="currentColor">SOS</text></symbol>
+ <symbol id="i-sos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14"/></symbol>
+ <symbol id="i-star" viewBox="-12 -12 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M0-10 8.66 5H-8.66ZM0 10 8.66-5H-8.66Z"/></symbol>
+ <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-9-2 2-2 4-2 5-1-1-2-2-2-4-2 2-4 4.5-4 8a6 6 0 0 0 6 6Z"/></symbol>
 </defs></svg>
 
 <nav class="studio" aria-label="3Shamrocks Studio"><div class="wrap">
@@ -311,11 +342,11 @@ footer img{height:20px;width:auto}
 <main>
 <!-- 1 · HERO -->
 <header class="hero">
- <div class="bg" role="img" aria-label="A mother and son at dusk under a gold Star of David outline, from the SH✡MER campaign"></div>
+ <canvas class="field" aria-hidden="true"></canvas>
  <div class="wrap">
   <div>
    <img class="badge-h" src="../assets/work/shomer/badge.webp" alt="SH✡MER badge: a silver sheriff star with a gold Star of David" width="560" height="560">
-   <div class="wm" aria-label="SH✡MER">SH<span class="star">&#10017;</span>MER</div>
+   <img class="wm-img" src="../assets/work/shomer/logo.svg" alt="SH✡MER" width="1190" height="277">
    <h1>Whoever is closest <span class="g">gets there first.</span></h1>
    <p class="heb he" lang="he">אזרחים למען אזרחים</p>
    <p class="lede">Citizens for citizens. SH&#10017;MER is Israel&rsquo;s community safety network: one tap sends an SOS with your live location to the people you trust and to SH&#10017;MER users nearby.</p>
@@ -324,7 +355,7 @@ footer img{height:20px;width:auto}
   </div>
   <div class="hero-ph">
    <div class="rings" aria-hidden="true"><i></i><i></i><i></i></div>
-   <div class="phone"><div class="scr"><img src="../assets/studio/s9/sh-map.webp" alt="SH✡MER app: live map of the user's town with real reported events" width="440" height="954"></div></div>
+   <div class="phone"><div class="scr"><img src="../assets/work/shomer/app-map.webp" alt="SH✡MER app: live map of Israel with real reported events and the SOS button" width="720" height="1558" fetchpriority="high"></div></div>
   </div>
  </div>
 </header>
@@ -354,7 +385,7 @@ footer img{height:20px;width:auto}
   </div>
   <div class="demo rv" aria-labelledby="demo-cap">
    <svg class="map" id="map" viewBox="0 0 400 280" role="img" aria-label="Illustration: a town map with your position at the centre and SH✡MER users nearby as green dots">
-    <g stroke="#1a2a4a" stroke-width="10" stroke-linecap="round"><path d="M-10 70H410M-10 190H410M90 -10V290M300 -10V290M-10 250L180 120 410 40"/></g>
+    <g fill="none" stroke="#1a2a4a" stroke-width="10" stroke-linecap="round"><path d="M-10 70H410M-10 190H410M90 -10V290M300 -10V290M-10 250L180 120 410 40"/></g>
     <g stroke="#14223e" stroke-width="4"><path d="M-10 130H410M200 -10V290M150 -10V290M-10 30H410M350 -10V290"/></g>
     <circle class="wave" cx="200" cy="140" r="10"/><circle class="wave w2" cx="200" cy="140" r="10"/>
     <path class="route" d="M300 190H200V140"/>
@@ -366,7 +397,7 @@ footer img{height:20px;width:auto}
      <circle class="dotg" cx="40" cy="190" r="6"/><circle class="pulse" cx="40" cy="190" r="6"/>
      <circle class="dotg" cx="255" cy="30" r="6"/><circle class="pulse" cx="255" cy="30" r="6"/>
     </g>
-    <g transform="translate(200 140)"><circle r="17" fill="#0A1628" stroke="#E0A828" stroke-width="2.5"/><text y="7" text-anchor="middle" font-size="20" fill="#F5C840">&#10017;</text></g>
+    <g transform="translate(200 140)"><circle r="17" fill="#0A1628" stroke="#E0A828" stroke-width="2.5"/><use href="#i-star" x="-9" y="-9" width="18" height="18" color="#F5C840"/></g>
    </svg>
    <div class="bar">
     <button class="sos" id="sos" type="button" aria-describedby="demo-cap">SOS</button>
@@ -382,21 +413,21 @@ footer img{height:20px;width:auto}
 <!-- 3 · HOW IT WORKS -->
 <section class="sec how" id="how" aria-labelledby="h-h">
  <div class="wrap">
-  <div class="how-head rv"><div class="eyebrow">How it works</div><h2 id="h-h">One app. <span class="g">Four calm moves.</span></h2><p class="lede">Real screens from the app in closed beta. Map, events, people and first aid, all within a thumb&rsquo;s reach.</p></div>
-  <div class="how-grid">
-   <div class="how-stage" aria-hidden="true"><div class="phone"><div class="scr">
-    <img class="on" data-k="0" src="../assets/studio/s9/sh-map.webp" alt="" width="440" height="954">
-    <img data-k="1" src="../assets/studio/s9/sh-card.webp" alt="" width="440" height="954" loading="lazy">
-    <img data-k="2" src="../assets/studio/s9/sh-circle.webp" alt="" width="440" height="954" loading="lazy">
-    <img data-k="3" src="../assets/studio/s9/sh-cpr.webp" alt="" width="440" height="954" loading="lazy">
-   </div></div></div>
-   <ol class="steps">
-    <li class="step on" data-k="0"><span class="ico"><svg><use href="#i-pin"/></svg></span><div class="n">01 &middot; YOUR TOWN, LIVE</div><h3>See your streets the way a good neighbour does.</h3><p>Real events appear on the map the moment they are reported. You are the only &#10017; on your map; every other user is a quiet green dot.</p><div class="phone"><div class="scr"><img src="../assets/studio/s9/sh-map.webp" alt="SH✡MER live map screen" width="440" height="954" loading="lazy"></div></div></li>
-    <li class="step" data-k="1"><span class="ico"><svg><use href="#i-bell"/></svg></span><div class="n">02 &middot; KNOW WHAT HAPPENED</div><h3>Every event, with its source.</h3><p>Each card shows where the report came from, how confident it is and what to do next. Facts, not rumours.</p><div class="phone"><div class="scr"><img src="../assets/studio/s9/sh-card.webp" alt="SH✡MER event card screen with source and what to do" width="440" height="954" loading="lazy"></div></div></li>
-    <li class="step" data-k="2"><span class="ico"><svg><use href="#i-circles"/></svg></span><div class="n">03 &middot; YOUR PEOPLE</div><h3>Your circle, one tap away.</h3><p>Family, friends and neighbours, grouped your way. Your SOS reaches them even when they are nowhere near.</p><div class="phone"><div class="scr"><img src="../assets/studio/s9/sh-circle.webp" alt="SH✡MER circle screen" width="440" height="954" loading="lazy"></div></div></li>
-    <li class="step" data-k="3"><span class="ico"><svg><use href="#i-aid"/></svg></span><div class="n">04 &middot; FIRST AID</div><h3>Step by step, at the right beat.</h3><p>Clear cards for the worst minutes, read aloud. The CPR card plays a steady compression beat so anyone can keep time.</p><div class="phone"><div class="scr"><img src="../assets/studio/s9/sh-cpr.webp" alt="SH✡MER first-aid CPR card screen" width="440" height="954" loading="lazy"></div></div></li>
-   </ol>
-  </div>
+  <div class="how-head rv"><div class="eyebrow">How it works</div><h2 id="h-h">One app. <span class="g">Four calm moves.</span></h2><p class="lede">Real screens from the app in closed beta, captured from the live app. Map, events, people and first aid, all within a thumb&rsquo;s reach.</p></div>
+  <ol class="moves">
+   <li class="mv rv" style="transition-delay:0ms"><div class="mv-top"><span class="mv-n">01</span><span class="ico" aria-hidden="true"><svg><use href="#i-pin"/></svg></span></div>
+    <div class="phone"><div class="scr"><img src="../assets/work/shomer/app-map.webp" alt="SH✡MER live map screen with real events and the SOS button" width="720" height="1558" loading="lazy"></div></div>
+    <div class="mv-txt"><div class="mv-k">Your town, live</div><h3>See your streets the way a good neighbour does.</h3><p>Real events appear on the map the moment they are reported. You are the only &#10017; on your map; every other user is a quiet green dot.</p></div></li>
+   <li class="mv rv" style="transition-delay:90ms"><div class="mv-top"><span class="mv-n">02</span><span class="ico" aria-hidden="true"><svg><use href="#i-bell"/></svg></span></div>
+    <div class="phone"><div class="scr"><img src="../assets/work/shomer/app-around.webp" alt="SH✡MER Around me screen: a list of real recent events with type, place and time" width="720" height="1558" loading="lazy"></div></div>
+    <div class="mv-txt"><div class="mv-k">Around me</div><h3>Know what happened nearby.</h3><p>Live events near you and the people you chose, each with its type, place and time. Open one for its source and what to do.</p></div></li>
+   <li class="mv rv" style="transition-delay:180ms"><div class="mv-top"><span class="mv-n">03</span><span class="ico" aria-hidden="true"><svg><use href="#i-circles"/></svg></span></div>
+    <div class="phone"><div class="scr"><img src="../assets/work/shomer/app-circles.webp" alt="SH✡MER circles screen: Family, Friends and Neighbours, with an invite button" width="720" height="1558" loading="lazy"></div></div>
+    <div class="mv-txt"><div class="mv-k">Your people</div><h3>Your circle, one tap away.</h3><p>Family, friends and neighbours, in circles you build. Invite them on WhatsApp or by number. Your SOS reaches them wherever they are.</p></div></li>
+   <li class="mv rv" style="transition-delay:270ms"><div class="mv-top"><span class="mv-n">04</span><span class="ico" aria-hidden="true"><svg><use href="#i-aid"/></svg></span></div>
+    <div class="phone"><div class="scr"><img src="../assets/work/shomer/app-cpr.webp" alt="SH✡MER emergency guide: the CPR card with a 110 beat and numbered steps" width="720" height="1558" loading="lazy"></div></div>
+    <div class="mv-txt"><div class="mv-k">First aid</div><h3>Step by step, at the right beat.</h3><p>Clear cards for the worst minutes, read aloud. The CPR card plays a steady 110-a-minute beat so anyone can keep time.</p></div></li>
+  </ol>
  </div>
 </section>
 
@@ -418,11 +449,17 @@ footer img{height:20px;width:auto}
  <div class="wrap">
   <div class="rv"><div class="eyebrow">Key moments</div><h2 id="m-h">Ordinary people, <span class="g">on watch for each other.</span></h2></div>
   <div class="mgrid">
-   <article class="m rv"><figure><img src="../assets/work/shomer/scene-s1.webp" alt="A young man kneels to help an elderly woman who has fallen on a sunny street" width="1024" height="576" loading="lazy"></figure><div class="t"><div class="k">Nearby</div><h3>The closest neighbour comes first.</h3><p>One tap alerts SH&#10017;MER users around you and shows them the fastest route.</p></div></article>
-   <article class="m rv"><figure><img src="../assets/work/shomer/scene-s2.webp" alt="A family walking together toward a neighbourhood at dusk" width="1024" height="576" loading="lazy"></figure><div class="t"><div class="k">My SH✡MER</div><h3>Family, wherever they are.</h3><p>The people you chose get the alert and your live location, even from across the country.</p></div></article>
-   <article class="m rv"><figure><img src="../assets/work/shomer/scene-s3.webp" alt="Two friends walking home together along a lit street at night" width="1024" height="576" loading="lazy"></figure><div class="t"><div class="k">Circles</div><h3>Never walk home alone.</h3><p>Your circle sits one tap away, quiet until you need it.</p></div></article>
+   <article class="m rv"><figure><svg class="ill" viewBox="0 0 320 200" role="img" aria-label="Illustration: your position with soft alert rings, users nearby as green dots and a route from the closest one"><g class="st"><path d="M-10 60H330M-10 150H330M70-10V210M230-10V210"/></g><g class="st2"><path d="M-10 105H330M150-10V210M-10 20H330M290-10V210"/></g>
+<circle class="ring" cx="150" cy="105" r="90"/><circle class="ring b" cx="150" cy="105" r="90"/><circle class="ring c" cx="150" cy="105" r="90"/>
+<path class="rt" d="M230 150H150V118"/><circle class="usr" cx="230" cy="150" r="5"/><circle class="usr" cx="70" cy="60" r="5" opacity=".6"/><circle class="usr" cx="290" cy="20" r="5" opacity=".6"/><circle class="usr" cx="40" cy="150" r="5" opacity=".6"/><g transform="translate(150 105)"><circle class="me" r="13"/><use href="#i-star" x="-7" y="-7" width="14" height="14" color="#F5C840"/></g></svg></figure><div class="t"><div class="k">Nearby</div><h3>The closest neighbour comes first.</h3><p>One tap alerts SH&#10017;MER users around you and shows them the fastest route.</p></div></article>
+   <article class="m rv"><figure><svg class="ill" viewBox="0 0 320 200" role="img" aria-label="Illustration: an alert travelling from you to the people you chose, far away"><g class="st2"><path d="M40 190C70 120 60 70 110 10M200 200C230 140 250 90 300 40"/></g>
+<path class="rt" d="M70 140C120 40 220 40 255 80"/><g transform="translate(70 140)"><circle class="me" r="13"/><use href="#i-star" x="-7" y="-7" width="14" height="14" color="#F5C840"/></g>
+<g transform="translate(262 88)"><circle class="halo" r="26"/><circle class="pp" cx="-9" cy="-4" r="5"/><circle class="pp" cx="9" cy="-4" r="5"/><circle class="pp" cx="0" cy="9" r="5"/></g></svg></figure><div class="t"><div class="k">My SH&#10017;MER</div><h3>Family, wherever they are.</h3><p>The people you chose get the alert and your live location, even from across the country.</p></div></article>
+   <article class="m rv"><figure><svg class="ill" viewBox="0 0 320 200" role="img" aria-label="Illustration: a walk home at night with your circle quietly beside you"><g class="st"><path d="M-10 60H330M-10 150H330M70-10V210M230-10V210"/></g><g class="st2"><path d="M-10 105H330M150-10V210M-10 20H330M290-10V210"/></g>
+<path class="trail" d="M30 180C80 170 70 110 130 105S230 80 250 40"/><path id="walk" d="M30 180C80 170 70 110 130 105S230 80 250 40" fill="none"/>
+<g><circle class="halo" r="22"><animateMotion dur="9s" repeatCount="indefinite" rotate="0"><mpath href="#walk"/></animateMotion></circle><circle r="5" fill="#F5C840"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#walk"/></animateMotion></circle></g>
+<g transform="translate(250 34)" fill="none" stroke="#B6C2D6" stroke-width="2" stroke-linejoin="round"><path d="M-12 2 0-9 12 2V14H-12Z"/><path d="M-3 14V6H3V14"/></g></svg></figure><div class="t"><div class="k">Circles</div><h3>Never walk home alone.</h3><p>Your circle sits one tap away, quiet until you need it.</p></div></article>
   </div>
-  <p class="mcap">Scenes from the SH&#10017;MER campaign imagery.</p>
   <div class="credo rv"><div class="he" lang="he">&rdquo;שומר אחי אנוכי&ldquo;</div><p>&ldquo;I am my brother&rsquo;s keeper.&rdquo; The line the whole brand is built on.</p></div>
  </div>
 </section>
@@ -432,7 +469,7 @@ footer img{height:20px;width:auto}
  <div class="wrap">
   <div class="rv"><div class="eyebrow">Brand system</div><h2 id="b-h">A badge you can <span class="g">trust at a glance.</span></h2><p class="lede">An engraved silver sheriff star carrying a gold Star of David: authority without aggression. Navy for calm, gold for trust, and red kept for one job only.</p></div>
   <div class="bgrid">
-   <div class="tile t-logo rv"><div class="bdg"><img src="../assets/work/shomer/badge.webp" alt="SH✡MER badge" width="560" height="560" loading="lazy"></div><div><h3>Logo</h3><div class="wm">SH<span class="star">&#10017;</span>MER</div><p>The &#10017; replaces the O in every spelling, in the badge, the wordmark and the name.</p></div></div>
+   <div class="tile t-logo rv"><div class="bdg"><img src="../assets/work/shomer/badge.webp" alt="SH✡MER badge" width="560" height="560" loading="lazy"></div><div><h3>Logo</h3><img class="wm-img" src="../assets/work/shomer/logo.svg" alt="SH✡MER" width="1190" height="277" loading="lazy"><p>The &#10017; replaces the O in every spelling, in the badge, the wordmark and the name.</p></div></div>
    <div class="tile type rv"><h3>Type</h3>
     <div class="row"><span class="big" style="font:800 38px var(--disp)">Sora</span><small>Display &middot; headlines</small></div>
     <div class="row"><span class="big" style="font:500 32px var(--body)">Inter</span><small>Interface &middot; body</small></div>
@@ -450,15 +487,15 @@ footer img{height:20px;width:auto}
      <div class="dk" style="background:#E0A828"><b>Gold 3</b><span>#E0A828</span></div>
      <div style="background:#CC1426"><b>SOS red</b><span>#CC1426</span></div>
     </div>
-    <p class="rule"><b>Navy</b> is the ground. <b>Gold</b> is for authority and accents. <b>Red</b> is for SOS only, and the SOS button never changes colour.</p>
+    <p class="rule"><b>Navy</b> is the ground. <b>Gold</b> is for authority and accents. <b style="color:#ff5a6a">Red</b> is for SOS only, and the SOS button never changes colour.</p>
    </div>
 
    <div class="tile wide rv"><h3>UI components &middot; from the app&rsquo;s CSS</h3>
     <div class="comp">
      <div class="cell"><span class="lbl">Buttons: primary, secondary, ghost, danger</span><span class="c-btn pri">Join the network</span><span class="c-btn sec">Add someone to your circle</span><span class="c-btn gho">Not now</span><span class="c-btn dan">End SOS</span></div>
      <div class="cell"><span class="lbl">SOS button &middot; chips &middot; input</span><div class="c-sos">SOS</div><div class="c-chips" style="margin-top:22px"><span class="c-chip on">All</span><span class="c-chip">Medical</span><span class="c-chip">Fire</span><span class="c-chip">Violence</span></div><label class="c-in f"><svg width="16" height="16" aria-hidden="true"><use href="#i-person"/></svg>Contact&rsquo;s name</label></div>
-     <div class="cell"><span class="lbl">Event card &middot; map markers</span><div class="c-card"><div class="top"><i>&#128293;</i>Fire &middot; reported nearby<span class="lk">Likely true</span></div>Every card carries what happened, what to do and where the report came from.<div class="src">Source: shown on every event</div></div>
-      <div class="marks" style="margin-top:18px"><figure><div class="mk"><span class="mk-sos"></span></div>Live SOS</figure><figure><div class="mk"><span class="mk-me">&#10017;</span></div>You</figure><figure><div class="mk"><span class="mk-user"></span></div>Other users</figure><figure><div class="mk"><span class="mk-pin"></span></div>Event</figure></div></div>
+     <div class="cell"><span class="lbl">Event card &middot; map markers</span><div class="c-card"><div class="top"><i><svg aria-hidden="true"><use href="#i-flame"/></svg></i>Fire &middot; reported nearby<span class="lk">Likely true</span></div>Every card carries what happened, what to do and where the report came from.<div class="src">Source: shown on every event</div></div>
+      <div class="marks" style="margin-top:18px"><figure><div class="mk"><span class="mk-sos"></span></div>Live SOS</figure><figure><div class="mk"><span class="mk-me"><svg aria-hidden="true"><use href="#i-star"/></svg></span></div>You</figure><figure><div class="mk"><span class="mk-user"></span></div>Other users</figure><figure><div class="mk"><span class="mk-pin"></span></div>Event</figure></div></div>
     </div>
    </div>
    <div class="tile wide rv"><h3>Icons</h3>
@@ -495,11 +532,12 @@ footer img{height:20px;width:auto}
 
 <!-- 7 · CTA -->
 <section class="cta" aria-labelledby="c-h">
+ <canvas class="field" aria-hidden="true"></canvas>
  <div class="wrap">
   <h2 id="c-h" class="rv">Brand, app and network, <span class="g">built by one studio.</span></h2>
   <p class="lede rv">3Shamrocks Studio designed the SH&#10017;MER brand, the app and the system around it, end to end.</p>
   <div class="btns rv"><a class="btn gold" href="mailto:dave@3shamrocks.com?subject=New%20project">Start a project</a><a class="btn line" href="../#work">&larr; All work</a></div>
-  <div class="disc rv"><b>SH&#10017;MER is a community tool, not an emergency service.</b> In an emergency call 100 &middot; 101 &middot; 102.</div>
+  <div class="disc rv"><b>SH&#10017;MER is a community tool, not an emergency service.</b> In an emergency call <span style="white-space:nowrap">100 &middot; 101 &middot; 102.</span></div>
   <nav class="more" aria-label="More work"><a href="j8nix.html">J8NIX</a><a href="lickpick.html">LickPick</a><a href="trashure-hunters.html">Trashure Hunters</a><a href="chore-royale.html">Chore Royale</a><a href="fairent.html">FaiRent</a></nav>
  </div>
 </section>
@@ -513,12 +551,33 @@ footer img{height:20px;width:auto}
   if('IntersectionObserver' in window){
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
     rv.forEach(function(el){io.observe(el)});
-    var imgs=document.querySelectorAll('.how-stage img'),steps=document.querySelectorAll('.step');
-    var so=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;var k=e.target.getAttribute('data-k');
-      steps.forEach(function(s){s.classList.toggle('on',s===e.target)});imgs.forEach(function(i){i.classList.toggle('on',i.getAttribute('data-k')===k)})})},{rootMargin:'-45% 0px -45% 0px'});
-    steps.forEach(function(s){so.observe(s)});
   } else rv.forEach(function(el){el.classList.add('in')});
 
+  /* map-grid field: faint street-grid dots that warm to gold near the cursor; a tap sends one soft circle ripple */
+  document.querySelectorAll('canvas.field').forEach(function(cv){
+    var cx=cv.getContext('2d'),host=cv.parentNode,W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2),G=34;
+    var px=-999,py=-999,tx=-999,ty=-999,rip=[],vis=false,raf=0;
+    function size(){var r=host.getBoundingClientRect();W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);draw()}
+    function draw(){cx.clearRect(0,0,W,H);
+      px+=(tx-px)*.12;py+=(ty-py)*.12;
+      for(var y=G/2;y<H;y+=G)for(var x=G/2;x<W;x+=G){
+        var dx=x-px,dy=y-py,d=Math.sqrt(dx*dx+dy*dy),k=d<170?1-d/170:0,rk=0;
+        for(var i=0;i<rip.length;i++){var dd=Math.abs(Math.hypot(x-rip[i].x,y-rip[i].y)-rip[i].r);if(dd<26)rk=Math.max(rk,(1-dd/26)*rip[i].a)}
+        var m=Math.max(k,rk),ox=d>0?dx/d*k*6:0,oy=d>0?dy/d*k*6:0;
+        cx.fillStyle=m>.02?'rgba(245,200,64,'+(.10+m*.5)+')':'rgba(131,146,171,.13)';
+        cx.beginPath();cx.arc(x+ox,y+oy,1.1+m*1.2,0,6.283);cx.fill()}
+      rip=rip.filter(function(r){r.r+=4;r.a*=.985;return r.a>.05&&r.r<Math.max(W,H)});
+      for(var j=0;j<rip.length;j++){cx.strokeStyle='rgba(224,168,40,'+rip[j].a*.25+')';cx.lineWidth=1.2;cx.beginPath();cx.arc(rip[j].x,rip[j].y,rip[j].r,0,6.283);cx.stroke()}}
+    function loop(){draw();raf=vis?requestAnimationFrame(loop):0}
+    size();window.addEventListener('resize',size);
+    if(rm)return;
+    host.addEventListener('pointermove',function(e){var r=cv.getBoundingClientRect();tx=e.clientX-r.left;ty=e.clientY-r.top;if(px<-900){px=tx;py=ty}});
+    host.addEventListener('pointerleave',function(){tx=ty=-999});
+    host.addEventListener('pointerdown',function(e){var r=cv.getBoundingClientRect();rip.push({x:e.clientX-r.left,y:e.clientY-r.top,r:6,a:1})});
+    if('IntersectionObserver' in window)new IntersectionObserver(function(es){vis=es[0].isIntersecting;if(vis&&!raf)loop()}).observe(host);
+  });
+
+  if(rm)document.querySelectorAll('svg.ill').forEach(function(v){try{v.pauseAnimations()}catch(e){}});
   var btn=document.getElementById('sos'),map=document.getElementById('map'),log=document.querySelectorAll('#log li'),dots=document.querySelectorAll('#dots .dotg'),timers=[];
   function reset(){timers.forEach(clearTimeout);timers=[];map.classList.remove('go','routed');log.forEach(function(l){l.classList.remove('on')});dots.forEach(function(d){d.classList.remove('on')})}
   btn.addEventListener('click',function(){
