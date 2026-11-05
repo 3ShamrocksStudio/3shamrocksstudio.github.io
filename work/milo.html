@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Milo · 3Shamrocks Studio</title>
-<meta name="description" content="Milo is a concept design for a kids' app: one small brave move a day, with a cool polar bear who cheers every try. Concept by 3Shamrocks Studio.">
+<meta name="description" content="Milo is a concept design for a kids' app (6–12): check in, breathe together with a cool polar bear, then take one small brave move into real life. Concept by 3Shamrocks Studio.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#1A023B">
 <link rel="icon" href="../favicon.png">
@@ -14,7 +14,7 @@
      Palette = PIL median of each region of that image: night #1A023B, wordmark pink #F42A92, chain violet #6C31B5, popsicle magenta #E527C8, popsicle blue #197EE7, popsicle cyan #1CBCF5, fur #E8DFE2.
      Derived mood tints for hard moments (cool, muted): Quiet #7D7BA8, Dusk #4A4E86. Warm/bright = wins, cool/muted = "not today", low vibes, help.
      Every bear image in assets/work/milo/ is a straight crop of the reference image (no redraw): bust, shades, pop, chain, icon, wordmark.
-     Concept screens are HTML mock-ups around those crops (s25, 5 Nov 2026), based on org/memos/2026-11-05-milo.md. No clinical claims. -->
+     Concept screens are HTML mock-ups around those crops (s25, 5 Nov 2026), based on org/memos/2026-11-05-milo.md (v2, reconciled loop: check in, breathe 4-2-6, brave move, grow). No clinical claims. No chat. -->
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--night:#1A023B;--night2:#2a0a55;--night3:#12012b;--pink:#F42A92;--violet:#6C31B5;--mag:#E527C8;--ice:#197EE7;--cyan:#1CBCF5;--fur:#E8DFE2;
@@ -207,6 +207,45 @@ h1,h2,h3{font-weight:800;letter-spacing:-.025em;line-height:1.02}
 @keyframes fall{to{transform:translateY(560px) rotate(240deg)}}
 .burst i{animation-duration:1.4s!important;animation-iteration-count:1!important}
 
+/* v2 screens */
+.ck{border:0;padding-top:0;margin-top:10px}
+.rns{display:block;width:100%;margin-top:8px;min-height:32px;border-radius:999px;border:1.5px dashed rgba(189,174,214,.45);color:var(--mut);font-weight:700;font-size:11.5px}
+.rns[aria-pressed="true"]{border-style:solid;border-color:var(--fur);color:var(--fur)}
+.s2{background:radial-gradient(70% 45% at 50% 42%,rgba(28,188,245,.22),transparent 70%),var(--night);text-align:center}
+.br{position:relative;width:62%;margin:18px auto 6px;aspect-ratio:1}
+.br img,.br .halo{position:absolute;inset:0;border-radius:50%}
+.br img{width:100%;height:100%;box-shadow:0 0 0 3px var(--cyan);animation:breathe 12s ease-in-out infinite}
+.br .halo{background:radial-gradient(circle,rgba(28,188,245,.55),transparent 68%);animation:halo 12s ease-in-out infinite}
+@keyframes breathe{0%{transform:scale(.72)}33.3%{transform:scale(1)}50%{transform:scale(1)}100%{transform:scale(.72)}}
+@keyframes halo{0%{transform:scale(.8);opacity:.35}33.3%{transform:scale(1.35);opacity:1}50%{transform:scale(1.35);opacity:1}100%{transform:scale(.8);opacity:.35}}
+.bph{font-weight:900;font-size:20px;margin-top:10px}
+.bct{font-family:var(--px);font-size:22px;color:var(--cyan);line-height:1}
+.bsteps{display:flex;justify-content:center;gap:5px;margin-top:10px}
+.bsteps span{font-family:var(--px);font-size:8.5px;padding:3px 7px;border-radius:999px;border:1.5px solid rgba(28,188,245,.35);color:var(--mut)}
+.bsteps span.on{background:var(--cyan);border-color:var(--cyan);color:var(--night)}
+.bm{border-radius:14px;padding:10px 11px;margin:5px 0 6px;background:linear-gradient(90deg,rgba(244,42,146,.28),rgba(108,49,181,.4));border:2px solid var(--pink);box-shadow:0 0 18px -4px rgba(244,42,146,.6)}
+.bm .r{display:flex;justify-content:space-between;align-items:center;font-family:var(--px);font-size:8.5px;color:#ffc2e2;text-transform:uppercase}
+.bm .r span{display:inline-flex;gap:1px;color:var(--mag)}
+.bm .r .pxi{width:10px;height:10px}
+.bm b{display:block;font-size:15px;line-height:1.25;margin-top:3px}
+.bm small{display:block;font-size:10.5px;color:var(--mut);font-weight:600;margin-top:2px}
+.swap{font-size:11px;font-weight:700;color:var(--cyan);text-decoration:underline;text-underline-offset:3px;margin:0 auto 9px;display:block;min-height:24px}
+.arc{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin:10px 0 8px}
+.arc span{font-family:var(--px);font-size:6.8px;color:var(--mut);display:grid;gap:4px;justify-items:center}
+.arc span::before{content:"";width:14px;height:14px;border:2px dashed var(--dusk)}
+.arc .d::before{border:0;background:var(--pink);box-shadow:0 0 8px -1px rgba(244,42,146,.7)}
+.arc .t{color:#fff}.arc .t::before{border:0;background:var(--cyan);box-shadow:0 0 10px rgba(28,188,245,.8)}
+.grew{text-align:left;background:rgba(42,10,85,.7);border:1.5px solid rgba(108,49,181,.7);border-radius:12px;padding:7px 10px}
+.grew p{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;margin-top:3px}
+.grew .pxi{width:12px;height:12px;color:var(--mag)}
+.par{display:grid;gap:12px;margin-top:16px}
+@media(min-width:760px){.par{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.par div{border-radius:18px;padding:16px 18px;line-height:1.45}
+.par b{display:block;font-family:var(--px);font-weight:400;font-size:.7rem;text-transform:uppercase;margin-bottom:4px}
+.par .f{border:2px solid var(--cyan);background:rgba(25,126,231,.12)}.par .f b{color:var(--cyan)}
+.par .p{border:2px solid var(--pink);background:rgba(244,42,146,.12)}.par .p b{color:#ffc2e2}
+.par span{color:var(--mut);font-size:.95rem}
+
 /* loop */
 .loop{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr));counter-reset:l}
 @media(min-width:900px){.loop{grid-template-columns:repeat(4,minmax(0,1fr))}}
@@ -311,7 +350,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
-<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false"><!-- Milo pixel icons: 12px grid, solid fill, currentColor, crisp edges (matches the pixel-art bear) --><symbol id="px-bolt" viewBox="0 0 12 12"><path d="M6 1h4v1h-4zM5 2h4v1h-4zM4 3h4v1h-4zM3 4h4v1h-4zM2 5h8v1h-8zM5 6h4v1h-4zM4 7h4v1h-4zM3 8h3v1h-3zM2 9h2v1h-2zM1 10h1v1h-1z"/></symbol><symbol id="px-star" viewBox="0 0 12 12"><path d="M5 1h2v1h-2zM5 2h2v1h-2zM4 3h4v1h-4zM0 4h12v1h-12zM1 5h10v1h-10zM2 6h8v1h-8zM3 7h6v1h-6zM2 8h3v1h-3zM7 8h3v1h-3zM2 9h2v1h-2zM8 9h2v1h-2zM1 10h2v1h-2zM9 10h2v1h-2z"/></symbol><symbol id="px-flag" viewBox="0 0 12 12"><path d="M1 1h2v1h-2zM1 2h9v1h-9zM1 3h10v1h-10zM1 4h9v1h-9zM1 5h8v1h-8zM1 6h2v1h-2zM1 7h2v1h-2zM1 8h2v1h-2zM1 9h2v1h-2zM0 10h4v1h-4z"/></symbol><symbol id="px-moon" viewBox="0 0 12 12"><path d="M4 0h4v1h-4zM2 1h4v1h-4zM1 2h3v1h-3zM1 3h3v1h-3zM0 4h3v1h-3zM0 5h3v1h-3zM0 6h3v1h-3zM1 7h3v1h-3zM9 7h1v1h-1zM1 8h4v1h-4zM8 8h2v1h-2zM2 9h7v1h-7zM3 10h5v1h-5z"/></symbol><symbol id="px-pop" viewBox="0 0 12 12"><path d="M3 0h6v1h-6zM2 1h8v1h-8zM2 2h2v1h-2zM5 2h5v1h-5zM2 3h2v1h-2zM5 3h5v1h-5zM2 4h8v1h-8zM2 5h8v1h-8zM2 6h8v1h-8zM2 7h8v1h-8zM3 8h6v1h-6zM5 9h2v1h-2zM5 10h2v1h-2zM5 11h2v1h-2z"/></symbol><symbol id="px-heart" viewBox="0 0 12 12"><path d="M1 1h3v1h-3zM8 1h3v1h-3zM0 2h5v1h-5zM7 2h5v1h-5zM0 3h12v1h-12zM0 4h12v1h-12zM1 5h10v1h-10zM2 6h8v1h-8zM3 7h6v1h-6zM4 8h4v1h-4zM5 9h2v1h-2z"/></symbol><symbol id="px-parent" viewBox="0 0 12 12"><path d="M2 1h2v1h-2zM1 2h4v1h-4zM8 2h2v1h-2zM1 3h4v1h-4zM7 3h4v1h-4zM2 4h2v1h-2zM7 4h4v1h-4zM1 5h4v1h-4zM8 5h2v1h-2zM0 6h6v1h-6zM7 6h4v1h-4zM0 7h6v1h-6zM7 7h4v1h-4zM0 8h6v1h-6zM7 8h4v1h-4zM1 9h1v1h-1zM4 9h1v1h-1zM8 9h1v1h-1zM10 9h1v1h-1z"/></symbol><symbol id="px-level" viewBox="0 0 12 12"><path d="M5 1h2v1h-2zM4 2h4v1h-4zM3 3h2v1h-2zM7 3h2v1h-2zM2 4h2v1h-2zM8 4h2v1h-2zM1 5h2v1h-2zM5 5h2v1h-2zM9 5h2v1h-2zM4 6h4v1h-4zM3 7h2v1h-2zM7 7h2v1h-2zM2 8h2v1h-2zM8 8h2v1h-2zM1 9h2v1h-2zM9 9h2v1h-2z"/></symbol><symbol id="px-sun" viewBox="0 0 12 12"><path d="M5 0h2v1h-2zM1 1h1v1h-1zM5 1h2v1h-2zM10 1h1v1h-1zM2 2h1v1h-1zM9 2h1v1h-1zM4 3h4v1h-4zM3 4h6v1h-6zM0 5h2v1h-2zM3 5h6v1h-6zM10 5h2v1h-2zM0 6h2v1h-2zM3 6h6v1h-6zM10 6h2v1h-2zM3 7h6v1h-6zM4 8h4v1h-4zM2 9h1v1h-1zM9 9h1v1h-1zM1 10h1v1h-1zM5 10h2v1h-2zM10 10h1v1h-1zM5 11h2v1h-2z"/></symbol><symbol id="px-partly" viewBox="0 0 12 12"><path d="M1 1h1v1h-1zM4 1h1v1h-1zM2 2h4v1h-4zM1 3h6v1h-6zM0 4h5v1h-5zM6 4h3v1h-3zM1 5h3v1h-3zM5 5h5v1h-5zM3 6h9v1h-9zM2 7h10v1h-10zM2 8h10v1h-10zM3 9h8v1h-8z"/></symbol><symbol id="px-cloud" viewBox="0 0 12 12"><path d="M4 3h3v1h-3zM3 4h5v1h-5zM2 5h8v1h-8zM1 6h10v1h-10zM0 7h12v1h-12zM0 8h12v1h-12zM1 9h10v1h-10z"/></symbol><symbol id="px-rain" viewBox="0 0 12 12"><path d="M4 1h3v1h-3zM3 2h5v1h-5zM2 3h8v1h-8zM1 4h10v1h-10zM0 5h12v1h-12zM1 6h10v1h-10zM2 8h1v1h-1zM5 8h1v1h-1zM8 8h1v1h-1zM1 9h1v1h-1zM4 9h1v1h-1zM7 9h1v1h-1z"/></symbol><symbol id="px-storm" viewBox="0 0 12 12"><path d="M4 1h3v1h-3zM3 2h5v1h-5zM2 3h8v1h-8zM1 4h10v1h-10zM0 5h12v1h-12zM1 6h10v1h-10zM5 7h2v1h-2zM4 8h2v1h-2zM3 9h4v1h-4zM5 10h1v1h-1z"/></symbol></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false"><!-- Milo pixel icons: 12px grid, solid fill, currentColor, crisp edges (matches the pixel-art bear) --><symbol id="px-bolt" viewBox="0 0 12 12"><path d="M6 1h4v1h-4zM5 2h4v1h-4zM4 3h4v1h-4zM3 4h4v1h-4zM2 5h8v1h-8zM5 6h4v1h-4zM4 7h4v1h-4zM3 8h3v1h-3zM2 9h2v1h-2zM1 10h1v1h-1z"/></symbol><symbol id="px-star" viewBox="0 0 12 12"><path d="M5 1h2v1h-2zM5 2h2v1h-2zM4 3h4v1h-4zM0 4h12v1h-12zM1 5h10v1h-10zM2 6h8v1h-8zM3 7h6v1h-6zM2 8h3v1h-3zM7 8h3v1h-3zM2 9h2v1h-2zM8 9h2v1h-2zM1 10h2v1h-2zM9 10h2v1h-2z"/></symbol><symbol id="px-flag" viewBox="0 0 12 12"><path d="M1 1h2v1h-2zM1 2h9v1h-9zM1 3h10v1h-10zM1 4h9v1h-9zM1 5h8v1h-8zM1 6h2v1h-2zM1 7h2v1h-2zM1 8h2v1h-2zM1 9h2v1h-2zM0 10h4v1h-4z"/></symbol><symbol id="px-moon" viewBox="0 0 12 12"><path d="M4 0h4v1h-4zM2 1h4v1h-4zM1 2h3v1h-3zM1 3h3v1h-3zM0 4h3v1h-3zM0 5h3v1h-3zM0 6h3v1h-3zM1 7h3v1h-3zM9 7h1v1h-1zM1 8h4v1h-4zM8 8h2v1h-2zM2 9h7v1h-7zM3 10h5v1h-5z"/></symbol><symbol id="px-pop" viewBox="0 0 12 12"><path d="M3 0h6v1h-6zM2 1h8v1h-8zM2 2h2v1h-2zM5 2h5v1h-5zM2 3h2v1h-2zM5 3h5v1h-5zM2 4h8v1h-8zM2 5h8v1h-8zM2 6h8v1h-8zM2 7h8v1h-8zM3 8h6v1h-6zM5 9h2v1h-2zM5 10h2v1h-2zM5 11h2v1h-2z"/></symbol><symbol id="px-heart" viewBox="0 0 12 12"><path d="M1 1h3v1h-3zM8 1h3v1h-3zM0 2h5v1h-5zM7 2h5v1h-5zM0 3h12v1h-12zM0 4h12v1h-12zM1 5h10v1h-10zM2 6h8v1h-8zM3 7h6v1h-6zM4 8h4v1h-4zM5 9h2v1h-2z"/></symbol><symbol id="px-parent" viewBox="0 0 12 12"><path d="M2 1h2v1h-2zM1 2h4v1h-4zM8 2h2v1h-2zM1 3h4v1h-4zM7 3h4v1h-4zM2 4h2v1h-2zM7 4h4v1h-4zM1 5h4v1h-4zM8 5h2v1h-2zM0 6h6v1h-6zM7 6h4v1h-4zM0 7h6v1h-6zM7 7h4v1h-4zM0 8h6v1h-6zM7 8h4v1h-4zM1 9h1v1h-1zM4 9h1v1h-1zM8 9h1v1h-1zM10 9h1v1h-1z"/></symbol><symbol id="px-level" viewBox="0 0 12 12"><path d="M5 1h2v1h-2zM4 2h4v1h-4zM3 3h2v1h-2zM7 3h2v1h-2zM2 4h2v1h-2zM8 4h2v1h-2zM1 5h2v1h-2zM5 5h2v1h-2zM9 5h2v1h-2zM4 6h4v1h-4zM3 7h2v1h-2zM7 7h2v1h-2zM2 8h2v1h-2zM8 8h2v1h-2zM1 9h2v1h-2zM9 9h2v1h-2z"/></symbol><symbol id="px-sun" viewBox="0 0 12 12"><path d="M5 0h2v1h-2zM1 1h1v1h-1zM5 1h2v1h-2zM10 1h1v1h-1zM2 2h1v1h-1zM9 2h1v1h-1zM4 3h4v1h-4zM3 4h6v1h-6zM0 5h2v1h-2zM3 5h6v1h-6zM10 5h2v1h-2zM0 6h2v1h-2zM3 6h6v1h-6zM10 6h2v1h-2zM3 7h6v1h-6zM4 8h4v1h-4zM2 9h1v1h-1zM9 9h1v1h-1zM1 10h1v1h-1zM5 10h2v1h-2zM10 10h1v1h-1zM5 11h2v1h-2z"/></symbol><symbol id="px-partly" viewBox="0 0 12 12"><path d="M1 1h1v1h-1zM4 1h1v1h-1zM2 2h4v1h-4zM1 3h6v1h-6zM0 4h5v1h-5zM6 4h3v1h-3zM1 5h3v1h-3zM5 5h5v1h-5zM3 6h9v1h-9zM2 7h10v1h-10zM2 8h10v1h-10zM3 9h8v1h-8z"/></symbol><symbol id="px-cloud" viewBox="0 0 12 12"><path d="M4 3h3v1h-3zM3 4h5v1h-5zM2 5h8v1h-8zM1 6h10v1h-10zM0 7h12v1h-12zM0 8h12v1h-12zM1 9h10v1h-10z"/></symbol><symbol id="px-rain" viewBox="0 0 12 12"><path d="M4 1h3v1h-3zM3 2h5v1h-5zM2 3h8v1h-8zM1 4h10v1h-10zM0 5h12v1h-12zM1 6h10v1h-10zM2 8h1v1h-1zM5 8h1v1h-1zM8 8h1v1h-1zM1 9h1v1h-1zM4 9h1v1h-1zM7 9h1v1h-1z"/></symbol><symbol id="px-wave" viewBox="0 0 12 12"><path d="M1 3h3v1h-3zM0 4h1v1h-1zM4 4h1v1h-1zM5 5h2v1h-2zM7 4h1v1h-1zM8 3h3v1h-3zM11 4h1v1h-1zM1 7h3v1h-3zM0 8h1v1h-1zM4 8h1v1h-1zM5 9h2v1h-2zM7 8h1v1h-1zM8 7h3v1h-3zM11 8h1v1h-1z"/></symbol><symbol id="px-storm" viewBox="0 0 12 12"><path d="M4 1h3v1h-3zM3 2h5v1h-5zM2 3h8v1h-8zM1 4h10v1h-10zM0 5h12v1h-12zM1 6h10v1h-10zM5 7h2v1h-2zM4 8h2v1h-2zM3 9h4v1h-4zM5 10h1v1h-1z"/></symbol></svg>
 
 <nav class="snav" aria-label="Studio"><div class="wrap">
   <a href="../" aria-label="3Shamrocks Studio home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="150" height="22"></a>
@@ -324,8 +363,8 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     <div>
       <span class="concept">Concept design</span>
       <h1>Milo<span>.</span></h1>
-      <p class="tl">One small brave move a day. <em>Milo cheers every try.</em></p>
-      <p class="lead">A kids' app concept for ages 8–12. The kid does one small brave thing in real life, taps how it went, and Milo hypes the win.</p>
+      <p class="tl">Milo breathes with you. <em>Then dares you.</em></p>
+      <p class="lead">A kids' app concept for ages 6–12. Check in, breathe together, then take one small brave move into real life. Calm is a skill, and Milo makes it a cool one.</p>
       <div class="ctas"><a class="btn" href="#screens">See the concept screens</a><a class="btn2" href="#brand">The brand world</a></div>
     </div>
     <div class="bear">
@@ -341,20 +380,20 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     <div class="idea">
       <div class="rv">
         <span class="kick">The idea</span>
-        <h2 id="i-h" class="big" style="margin-top:14px">Not <em>“poor you”</em>.<br>“Let's go.”</h2>
-        <p style="color:var(--mut);margin-top:14px;max-width:44ch">Most kids' wellbeing apps start from a sad feeling. Milo starts from a small win. The brave move happens off the screen; the app is where the kid comes back to brag.</p>
+        <h2 id="i-h" class="big" style="margin-top:14px">Calm is a <em>power</em>,<br>not a problem.</h2>
+        <p style="color:var(--mut);margin-top:14px;max-width:44ch">Milo doesn't do “poor you”. Breathing together is trained like a strength skill, and the real win happens off the screen, in one small brave move. Parents get a kid who practises calm, not another screen to fight about.</p>
         <dl class="built" aria-label="What I built">
-          <div><dt>What I built</dt><dd>The concept, the brand world around Dave's reference bear, and four concept app screens.</dd></div>
+          <div><dt>What I built</dt><dd>The concept, the brand world around Dave's reference bear, and five concept app screens.</dd></div>
           <div><dt>Role</dt><dd>Founder, concept, brand and UX</dd></div>
           <div><dt>Platform</dt><dd>Kids' app, concept only</dd></div>
           <div><dt>Timeframe</dt><dd>Nov 2026</dd></div>
         </dl>
       </div>
       <div class="vs rv" aria-label="The shift">
-        <div class="no"><svg class="pxi" aria-hidden="true"><use href="#px-moon"/></svg><span><small>Out</small><s>Sad pet that needs looking after</s></span></div>
-        <div class="no"><svg class="pxi" aria-hidden="true"><use href="#px-cloud"/></svg><span><small>Out</small><s>“How do you feel?” as the first question</s></span></div>
-        <div class="yes"><svg class="pxi" aria-hidden="true" style="color:var(--pink)"><use href="#px-bolt"/></svg><span><small style="color:var(--cyan)">In</small>One brave move in real life, every day</span></div>
-        <div class="yes"><svg class="pxi" aria-hidden="true" style="color:var(--mag)"><use href="#px-star"/></svg><span><small style="color:var(--cyan)">In</small>Every try counts. No failure state.</span></div>
+        <div class="no"><svg class="pxi" aria-hidden="true"><use href="#px-moon"/></svg><span><small>Out</small><s>A needy pet the kid has to look after</s></span></div>
+        <div class="no"><svg class="pxi" aria-hidden="true"><use href="#px-cloud"/></svg><span><small>Out</small><s>An AI chat for kids, streaks, a store</s></span></div>
+        <div class="yes"><svg class="pxi" aria-hidden="true" style="color:var(--cyan)"><use href="#px-wave"/></svg><span><small style="color:var(--cyan)">In</small>Breathe together: a strength skill</span></div>
+        <div class="yes"><svg class="pxi" aria-hidden="true" style="color:var(--pink)"><use href="#px-bolt"/></svg><span><small style="color:var(--cyan)">In</small>One brave move in real life. “Maybe later” is fine.</span></div>
       </div>
     </div>
   </div></section>
@@ -363,83 +402,76 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     <div class="wrap">
       <div class="head center rv">
         <span class="kick">Concept screens</span>
-        <h2 id="s-h">Four screens, one brave day.</h2>
-        <p>Concept design, not a built app. Tap the screens: pick a move, say how it went, watch Milo react.</p>
+        <h2 id="s-h">Check in. Breathe. Be brave. Grow.</h2>
+        <p>Concept design, not a built app. Tap the screens: check in, breathe with Milo, log a brave move.</p>
       </div>
       <div class="rail rv" role="list">
         <figure role="listitem">
           <div class="phone"><div class="scr s1">
-            <div class="sb" aria-hidden="true"><span>9:41</span><span>▮▮▮</span></div><span class="cd">Concept design</span>
+            <div class="sb" aria-hidden="true"><span>7:40</span><span>▮▮▮</span></div><span class="cd">Concept design</span>
             <div class="bust"><img src="../assets/work/milo/milo-bust.webp" alt="Milo the polar bear" width="720" height="720" loading="lazy"></div>
-            <div class="bub">Yo. I'm Milo.<small>I don't do “poor you”. I do “let's go”.</small></div>
-            <div class="prac"><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg><span><small>Practice move</small>Teach me a high-five rhythm</span></div>
-            <span class="sbtn" role="presentation">Let's go</span>
-            <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
-            <p class="gs">A grown-up set this up</p>
+            <div class="bub">Hey. How are you?<small>Any answer is a good answer.</small></div>
+            <div class="vibe ck"><div class="row" role="group" aria-label="How are you (concept)" id="vibes">
+              <button type="button" class="v1" aria-label="Sunny" aria-pressed="false"><svg class="pxi" aria-hidden="true"><use href="#px-sun"/></svg></button>
+              <button type="button" class="v2" aria-label="Mostly sunny" aria-pressed="false"><svg class="pxi" aria-hidden="true"><use href="#px-partly"/></svg></button>
+              <button type="button" class="v3" aria-label="Cloudy" aria-pressed="false"><svg class="pxi" aria-hidden="true"><use href="#px-cloud"/></svg></button>
+              <button type="button" class="v4" aria-label="Rainy" aria-pressed="false"><svg class="pxi" aria-hidden="true"><use href="#px-rain"/></svg></button>
+              <button type="button" class="v5" aria-label="Stormy: opens Grown-up help" aria-pressed="false"><svg class="pxi" aria-hidden="true"><use href="#px-storm"/></svg></button>
+            </div></div>
+            <button type="button" class="rns" id="rns" aria-pressed="false">I'd rather not say</button>
+            <p class="reply" id="reply" aria-live="polite">Tap one, or skip. Then we breathe.</p>
+            <span class="help"><svg class="pxi" aria-hidden="true"><use href="#px-heart"/></svg>Grown-up help</span>
           </div></div>
-          <figcaption class="fc"><i>01</i><b>Meet Milo</b><span>A win before any feelings question.</span></figcaption>
+          <figcaption class="fc"><i>01</i><b>How are you?</b><span>Home opens here. “I'd rather not say” is always an option.</span></figcaption>
         </figure>
         <figure role="listitem">
           <div class="phone"><div class="scr s2">
-            <div class="sb" aria-hidden="true"><span>9:41</span><span>▮▮▮</span></div><span class="cd">Concept design</span>
-            <div class="top"><h3>Today</h3><div class="stat"><span><svg class="pxi" aria-hidden="true"><use href="#px-level"/></svg>LV 2</span><span><svg class="pxi" aria-hidden="true"><use href="#px-pop"/></svg>7</span></div></div>
-            <div class="hi"><img src="../assets/work/milo/milo-icon.webp" alt="" width="360" height="360" loading="lazy"><p>Pick one. I'll be right here.</p></div>
-            <div role="group" aria-label="Today's brave moves (concept)" id="moves">
-              <button class="mv" type="button" aria-pressed="false" data-m="Ask the waiter for ketchup"><span class="r">Easy<span><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg></span></span><b>Ask the waiter for ketchup</b></button>
-              <button class="mv" type="button" aria-pressed="true" data-m="Say hi to a new kid"><span class="r">Brave<span><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg></span></span><b>Say hi to a new kid</b></button>
-              <button class="mv" type="button" aria-pressed="false" data-m="Try a food you've never had"><span class="r">Legend<span><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg></span></span><b>Try a food you've never had</b></button>
-            </div>
-            <span class="sbtn" role="presentation">I'll do it today</span>
+            <div class="sb" aria-hidden="true"><span>7:41</span><span>▮▮▮</span></div><span class="cd">Concept design</span>
+            <span class="lbl" style="text-align:center">Calm power · round <b id="brn">1</b> of 3</span>
+            <div class="br" aria-hidden="true"><i class="halo"></i><img src="../assets/work/milo/milo-icon.webp" alt="" width="360" height="360" loading="lazy"></div>
+            <p class="bph" id="bph" aria-live="off">Breathe in</p>
+            <p class="bct" id="bct" aria-hidden="true">4</p>
+            <div class="bsteps" aria-label="Breathe in for 4, hold for 2, out for 6"><span class="on" id="bp0">In 4</span><span id="bp1">Hold 2</span><span id="bp2">Out 6</span></div>
+            <p class="gs" style="margin-top:6px">Milo grows when you breathe in.<br>Optional buzz on each step.</p>
             <span class="help"><svg class="pxi" aria-hidden="true"><use href="#px-heart"/></svg>Grown-up help</span>
           </div></div>
-          <figcaption class="fc"><i>02</i><b>Today's brave move</b><span>Three sizes. The kid picks, so it feels like a challenge, not a chore.</span></figcaption>
+          <figcaption class="fc"><i>02</i><b>Breathe together</b><span>The hero. In 4, hold 2, out 6, trained like a strength skill.</span></figcaption>
         </figure>
         <figure role="listitem">
           <div class="phone"><div class="scr s3">
-            <div class="sb" aria-hidden="true"><span>6:12</span><span>▮▮▮</span></div><span class="cd">Concept design</span>
-            <span class="lbl">Your brave move</span>
-            <p class="mvn" id="mvn">Say hi to a new kid</p>
-            <h3>How did it go?</h3>
-            <div role="group" aria-label="How did it go (concept)" id="outs">
-              <button class="out o1" type="button" data-o="1"><svg class="pxi" aria-hidden="true"><use href="#px-star"/></svg><span><b>Nailed it</b><small>Full credit</small></span></button>
-              <button class="out o2" type="button" data-o="2"><svg class="pxi" aria-hidden="true"><use href="#px-flag"/></svg><span><b>Tried it</b><small>Counts in full</small></span></button>
-              <button class="out o3" type="button" data-o="3"><svg class="pxi" aria-hidden="true"><use href="#px-moon"/></svg><span><b>Not today</b><small>No streak to lose</small></span></button>
+            <div class="sb" aria-hidden="true"><span>7:43</span><span>▮▮▮</span></div><span class="cd">Concept design</span>
+            <div class="hi"><img src="../assets/work/milo/milo-icon.webp" alt="" width="360" height="360" loading="lazy"><p>Calm power: on. Ready for a dare?</p></div>
+            <span class="lbl">Today's brave move</span>
+            <div class="bm"><span class="r">Brave<span><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg></span></span><b id="mvn">Say hi to a new kid</b><small>In real life, any time today</small></div>
+            <button type="button" class="swap" id="swap">Show me a different one</button>
+            <div role="group" aria-label="Log your brave move (concept)" id="outs">
+              <button class="out o1" type="button" data-o="1"><svg class="pxi" aria-hidden="true"><use href="#px-star"/></svg><span><b>I did it</b><small>Milo grows with you</small></span></button>
+              <button class="out o3" type="button" data-o="3"><svg class="pxi" aria-hidden="true"><use href="#px-moon"/></svg><span><b>Maybe later</b><small>Totally fine. Nothing lost.</small></span></button>
             </div>
-            <p class="reply" id="reply" aria-live="polite">Tap one. All three are fine.</p>
-            <div class="vibe"><span class="lbl">Vibe check</span>
-              <div class="row" role="group" aria-label="Vibe check (concept)" id="vibes">
-                <button type="button" class="v1" aria-label="Sunny" aria-pressed="false"><svg class="pxi" aria-hidden="true"><use href="#px-sun"/></svg></button>
-                <button type="button" class="v2" aria-label="Mostly sunny" aria-pressed="false"><svg class="pxi" aria-hidden="true"><use href="#px-partly"/></svg></button>
-                <button type="button" class="v3" aria-label="Cloudy" aria-pressed="false"><svg class="pxi" aria-hidden="true"><use href="#px-cloud"/></svg></button>
-                <button type="button" class="v4" aria-label="Rainy" aria-pressed="false"><svg class="pxi" aria-hidden="true"><use href="#px-rain"/></svg></button>
-                <button type="button" class="v5" aria-label="Stormy: opens Grown-up help" aria-pressed="false"><svg class="pxi" aria-hidden="true"><use href="#px-storm"/></svg></button>
-              </div>
-            </div>
+            <p class="reply" id="reply2" aria-live="polite">No wrong answer here.</p>
             <span class="help"><svg class="pxi" aria-hidden="true"><use href="#px-heart"/></svg>Grown-up help</span>
           </div></div>
-          <figcaption class="fc"><i>03</i><b>How did it go?</b><span>One tap. Wins glow warm; “not today” stays cool and calm.</span></figcaption>
+          <figcaption class="fc"><i>03</i><b>Today's brave move</b><span>The real-life quest. “I did it” or “maybe later”, zero shame.</span></figcaption>
         </figure>
         <figure role="listitem">
           <div class="phone"><div class="scr s4" id="s4">
             <div class="conf" id="conf" aria-hidden="true"></div>
             <div class="sb" aria-hidden="true"><span>6:12</span><span>▮▮▮</span></div><span class="cd">Concept design</span>
-            <div class="bust"><i class="ring"></i><i class="ring"></i><img src="../assets/work/milo/milo-bust.webp" alt="Milo, hyped" width="720" height="720" loading="lazy"></div>
-            <span class="hype" id="hype">HYPED!</span>
-            <h3 id="yd">You did it.</h3>
-            <span class="plus"><svg class="pxi" aria-hidden="true"><use href="#px-pop"/></svg><span id="pops">+1 popsicle · 8 collected</span></span>
-            <div class="lvl"><div class="r"><span>Level 2</span><span id="lvn">4 / 5 moves</span></div><div class="bar"><i id="lvb" style="--w:80%"></i></div></div>
-            <div class="wk" aria-label="This week: 4 brave moves, 3 rest days">
-              <span><i class="d"><svg class="pxi" aria-hidden="true"><use href="#px-star"/></svg></i>M</span>
-              <span><i class="t"><svg class="pxi" aria-hidden="true"><use href="#px-flag"/></svg></i>T</span>
-              <span><i><svg class="pxi" aria-hidden="true"><use href="#px-moon"/></svg></i>W</span>
-              <span><i class="d"><svg class="pxi" aria-hidden="true"><use href="#px-star"/></svg></i>T</span>
-              <span><i class="d"><svg class="pxi" aria-hidden="true"><use href="#px-star"/></svg></i>F</span>
-              <span><i></i>S</span><span><i></i>S</span>
+            <div class="bust"><i class="ring"></i><i class="ring"></i><img src="../assets/work/milo/milo-bust.webp" alt="Milo, glowing" width="720" height="720" loading="lazy"></div>
+            <span class="hype" id="hype">GROWING!</span>
+            <h3 id="yd">We're Steady.</h3>
+            <div class="arc" aria-label="Growth: stage 3 of 5, Steady">
+              <span class="d">Curled</span><span class="d">Awake</span><span class="t">Steady</span><span>Brave</span><span>Radiant</span>
             </div>
-            <p class="wkn">Brave week · rest days never break it</p>
+            <div class="grew"><span class="lbl">What we practised</span>
+              <p><svg class="pxi" aria-hidden="true"><use href="#px-wave"/></svg>Breathe together</p>
+              <p><svg class="pxi" aria-hidden="true"><use href="#px-cloud"/></svg>Naming a feeling</p>
+              <p><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg>Brave moves</p>
+            </div>
+            <p class="wkn">No streaks. Milo never shrinks back.</p>
             <span class="sbtn" role="presentation">Back to Milo</span>
           </div></div>
-          <figcaption class="fc"><i>04</i><b>Streak and celebration</b><span>Collectibles and levels. Rest days are calm, never red.</span></figcaption>
+          <figcaption class="fc"><i>04</i><b>Grow together</b><span>Five stages, side by side. Practice grows it; time away never takes it back.</span></figcaption>
         </figure>
       </div>
     </div>
@@ -449,20 +481,24 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     <div class="wrap">
       <div class="head rv">
         <span class="kick">User experience</span>
-        <h2 id="l-h">The loop happens off the screen.</h2>
-        <p>Three minutes in the app, the real win out in the world. A parent sees a weekly win card, never mood data.</p>
+        <h2 id="l-h">A few calm minutes in. A brave move out.</h2>
+        <p>Every visit is short and ends off the screen. Sometimes (about 1 in 4) Milo has butterflies and the kid breathes with him; any help works, and Milo always hands it back.</p>
       </div>
       <div class="loop">
-        <div class="lp rv"><span class="n">01</span><span class="ic"><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg></span><h3>Pick</h3><p>Three moves a day: Easy, Brave or Legend.</p></div>
-        <div class="lp rv"><span class="n">02</span><span class="ic"><svg class="pxi" aria-hidden="true"><use href="#px-flag"/></svg></span><h3>Do</h3><p>In real life. “Say hi to a new kid.”</p></div>
-        <div class="lp rv"><span class="n">03</span><span class="ic"><svg class="pxi" aria-hidden="true"><use href="#px-star"/></svg></span><h3>Tell Milo</h3><p>Nailed it, tried it or not today. One tap.</p></div>
-        <div class="lp rv"><span class="n">04</span><span class="ic"><svg class="pxi" aria-hidden="true"><use href="#px-pop"/></svg></span><h3>Win</h3><p>A popsicle, a level-up every five moves.</p></div>
+        <div class="lp rv"><span class="n">01</span><span class="ic"><svg class="pxi" aria-hidden="true"><use href="#px-sun"/></svg></span><h3>Check in</h3><p>“How are you?” Or “I'd rather not say”.</p></div>
+        <div class="lp rv"><span class="n">02</span><span class="ic"><svg class="pxi" aria-hidden="true"><use href="#px-wave"/></svg></span><h3>Breathe</h3><p>In 4, hold 2, out 6, with Milo. Then one small care skill.</p></div>
+        <div class="lp rv"><span class="n">03</span><span class="ic"><svg class="pxi" aria-hidden="true"><use href="#px-bolt"/></svg></span><h3>Be brave</h3><p>One move in real life. “I did it” or “maybe later”.</p></div>
+        <div class="lp rv"><span class="n">04</span><span class="ic"><svg class="pxi" aria-hidden="true"><use href="#px-level"/></svg></span><h3>Grow</h3><p>Five stages together. Nothing ever shrinks back.</p></div>
       </div>
       <div class="rules rv">
-        <div><b>No failure state</b>“Tried it” earns full credit.</div>
-        <div><b>No streak to lose</b>Rest days stay calm and cool.</div>
-        <div><b>No chat, no feed</b>Nothing typed leaves the phone.</div>
+        <div><b>No shame</b>“Maybe later” costs nothing.</div>
+        <div><b>No streaks, no decay</b>Time away never takes growth back.</div>
+        <div><b>No AI chat</b>Scripted Milo only. Nothing typed leaves the phone.</div>
         <div><b>Help in one tap</b>Grown-up help on every screen.</div>
+      </div>
+      <div class="par rv" aria-label="For parents">
+        <div class="f"><b>Free, forever</b><span>Breathe together, the check-in and Grown-up help. Safety is never behind a paywall.</span></div>
+        <div class="p"><b>Parent plan · concept</b><span>The full brave-move library and weekly grown-up tips on practising calm at home. No cosmetics, no streak freeze, no view into your kid's feelings.</span></div>
       </div>
     </div>
   </section>
@@ -471,15 +507,15 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     <div class="wrap safe">
       <div class="rv">
         <span class="kick" style="color:#9fd8ff">Safety rail · concept</span>
-        <h2 id="h-h" style="font-size:clamp(2rem,5vw,3.1rem);margin:12px 0 12px">The feelings check is a rail, not the ride.</h2>
-        <p style="color:#c3cff0;max-width:46ch">A one-tap weather check sits after the move. The stormiest tap, or the Grown-up help button, always leads to a real adult.</p>
+        <h2 id="h-h" style="font-size:clamp(2rem,5vw,3.1rem);margin:12px 0 12px">Every feeling is welcome. The big ones go to a grown-up.</h2>
+        <p style="color:#c3cff0;max-width:46ch">The stormiest check-in, or the Grown-up help button on every screen, always leads to a real adult. An on-device check and scripted replies keep it safe; there is no chat.</p>
         <ol class="steps">
           <li>Milo, calm: “Thanks for telling me. This one's for a grown-up.”</li>
           <li>A full-screen card the kid can show: “Tell a grown-up you trust, now.”</li>
           <li>One tap to a helpline, and the emergency numbers if it's urgent.</li>
           <li>An optional parent alert, if the parent switched it on. No content shared.</li>
         </ol>
-        <p class="note">Concept only. Milo is a confidence game, not a clinical tool, and makes no clinical claims. Every word and number gets a child-psychologist and legal review before any child uses it.</p>
+        <p class="note">Concept only. Milo helps kids practise calm; it is not a clinical tool and makes no clinical claims. Every word, and every helpline number, gets verified with a child psychologist and a legal review before any child uses it.</p>
       </div>
       <figure class="rv">
         <div class="phone" style="box-shadow:0 0 0 2px #3d5fb8,0 40px 60px -30px rgba(0,0,0,.9)"><div class="scr s5">
@@ -488,7 +524,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
           <h3>Thanks for telling me.</h3>
           <p>This one's for a grown-up. Let's get one.</p>
           <div class="card5">Tell a grown-up you trust, now.<small>Show them this screen.</small></div>
-          <span class="call">Call ERAN · 1201<small>24/7 helpline</small></span>
+          <span class="call">Call ERAN · 1201<small>24/7 helpline · to verify</small></span>
           <span class="call o">In danger right now?<small>101 ambulance · 100 police</small></span>
           <span class="help" style="margin-top:auto">Back to Milo</span>
         </div></div>
@@ -517,9 +553,9 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
           <h3>Type</h3>
           <div class="scale">
             <div><b style="font-weight:900;font-size:2.3rem;color:var(--pink);line-height:1">Milo</b><span>Outfit 900</span></div>
-            <div><b style="font-weight:800;font-size:1.2rem;line-height:1.1">How did it go?</b><span>Outfit 800</span></div>
-            <div><b class="px" style="font-weight:400;font-size:.95rem;color:var(--cyan)">LEVEL UP</b><span>Silkscreen</span></div>
-            <div><span style="font-family:var(--disp);font-size:.98rem;color:var(--text);white-space:normal">Every try counts.</span><span>Outfit 400</span></div>
+            <div><b style="font-weight:800;font-size:1.2rem;line-height:1.1">How are you?</b><span>Outfit 800</span></div>
+            <div><b class="px" style="font-weight:400;font-size:.95rem;color:var(--cyan)">CALM POWER</b><span>Silkscreen</span></div>
+            <div><span style="font-family:var(--disp);font-size:.98rem;color:var(--text);white-space:normal">Maybe later is fine.</span><span>Outfit 400</span></div>
           </div>
         </div>
         <div class="tile c6 rv">
@@ -536,8 +572,8 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
             <div style="background:#4A4E86">Dusk<span>#4A4E86</span></div>
           </div>
           <div class="mood">
-            <div class="w"><b style="color:#ffc2e2">Warm, bright · wins</b>Pink and magenta glow for nailed it, tried it, popsicles and level-ups.</div>
-            <div class="c"><b>Cool, muted · hard moments</b>Quiet and Dusk for “not today”, rainy vibes and rest days. Help is calm blue. No red, anywhere.</div>
+            <div class="w"><b style="color:#ffc2e2">Warm, bright · wins</b>Pink and magenta glow for “I did it” and growing. Cyan is the breath.</div>
+            <div class="c"><b>Cool, muted · hard moments</b>Quiet and Dusk for “maybe later”, rainy feelings and time away. Help is calm blue. No red, anywhere.</div>
           </div>
         </div>
         <div class="tile c3 rv">
@@ -547,15 +583,15 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
             <figure><img src="../assets/work/milo/milo-pop.webp" alt="Crop of the glowing popsicle" width="400" height="520" loading="lazy"><figcaption>Popsicle</figcaption></figure>
             <figure><img src="../assets/work/milo/milo-chain.webp" alt="Crop of the violet chain" width="640" height="397" loading="lazy"><figcaption>Chain</figcaption></figure>
           </div>
-          <p class="cap">The popsicle is the collectible. The shades are the cool.</p>
+          <p class="cap">The shades are the cool. The popsicle is pure flavour, not a currency.</p>
         </div>
         <div class="tile c3 rv">
           <h3>Components · concept</h3>
-          <div class="cmp"><span class="btn" style="min-height:44px;padding:0 18px;font-size:.95rem">Let's go</span><span class="btn2">Not now</span></div>
+          <div class="cmp"><span class="btn" style="min-height:44px;padding:0 18px;font-size:.95rem">Breathe with Milo</span><span class="btn2">I'd rather not say</span></div>
           <div class="cmp" style="margin-top:12px">
-            <span class="chip w"><svg class="pxi" aria-hidden="true"><use href="#px-star"/></svg>Nailed it</span>
-            <span class="chip" style="border-color:var(--mag);color:#ffc2f4"><svg class="pxi" aria-hidden="true"><use href="#px-flag"/></svg>Tried it</span>
-            <span class="chip c"><svg class="pxi" aria-hidden="true"><use href="#px-moon"/></svg>Not today</span>
+            <span class="chip w"><svg class="pxi" aria-hidden="true"><use href="#px-star"/></svg>I did it</span>
+            <span class="chip" style="border-color:var(--cyan);color:#bfe9ff"><svg class="pxi" aria-hidden="true"><use href="#px-wave"/></svg>Breathe</span>
+            <span class="chip c"><svg class="pxi" aria-hidden="true"><use href="#px-moon"/></svg>Maybe later</span>
           </div>
           <div class="cmp" style="margin-top:12px"><span class="help" style="padding:0 14px;min-height:38px;font-size:.85rem;margin:0"><svg class="pxi" aria-hidden="true"><use href="#px-heart"/></svg>Grown-up help</span></div>
         </div>
@@ -563,11 +599,11 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
           <h3>Icons · 12px pixel grid, solid fill, crisp edges</h3>
           <div class="icons">
             <div><svg class="pxi" style="color:var(--pink)" aria-hidden="true"><use href="#px-bolt"/></svg><span>Brave move</span></div>
-            <div><svg class="pxi" style="color:var(--pink)" aria-hidden="true"><use href="#px-star"/></svg><span>Nailed it</span></div>
-            <div><svg class="pxi" style="color:var(--mag)" aria-hidden="true"><use href="#px-flag"/></svg><span>Tried it</span></div>
-            <div><svg class="pxi" style="color:var(--quiet)" aria-hidden="true"><use href="#px-moon"/></svg><span>Not today</span></div>
+            <div><svg class="pxi" style="color:var(--pink)" aria-hidden="true"><use href="#px-star"/></svg><span>I did it</span></div>
+            <div><svg class="pxi" style="color:var(--mag)" aria-hidden="true"><use href="#px-wave"/></svg><span>Breathe</span></div>
+            <div><svg class="pxi" style="color:var(--quiet)" aria-hidden="true"><use href="#px-moon"/></svg><span>Maybe later</span></div>
             <div><svg class="pxi" style="color:var(--mag)" aria-hidden="true"><use href="#px-pop"/></svg><span>Popsicle</span></div>
-            <div><svg class="pxi" style="color:var(--cyan)" aria-hidden="true"><use href="#px-level"/></svg><span>Level</span></div>
+            <div><svg class="pxi" style="color:var(--cyan)" aria-hidden="true"><use href="#px-level"/></svg><span>Grow</span></div>
             <div><svg class="pxi" style="color:var(--fur)" aria-hidden="true"><use href="#px-parent"/></svg><span>Parent</span></div>
             <div><svg class="pxi" style="color:var(--cyan)" aria-hidden="true"><use href="#px-heart"/></svg><span>Grown-up help</span></div>
             <div><svg class="pxi v1" aria-hidden="true"><use href="#px-sun"/></svg><span>Sunny</span></div>
@@ -575,7 +611,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
             <div><svg class="pxi v3" aria-hidden="true"><use href="#px-cloud"/></svg><span>Cloudy</span></div>
             <div><svg class="pxi v4" aria-hidden="true"><use href="#px-rain"/></svg><span>Rainy</span></div>
             <div><svg class="pxi v5" aria-hidden="true"><use href="#px-storm"/></svg><span>Stormy</span></div>
-            <div><svg class="pxi" style="color:var(--violet)" aria-hidden="true"><use href="#px-bolt"/></svg><span>Legend</span></div>
+            <div><svg class="pxi" style="color:var(--violet)" aria-hidden="true"><use href="#px-flag"/></svg><span>Quest</span></div>
           </div>
           <p class="cap" style="text-align:center;margin-top:12px">Same pixel grid as the bear's shades · concept, not final</p>
         </div>
@@ -594,7 +630,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
       <div>
         <span class="kick">Status</span>
         <h2 id="u-h">Concept on ice.</h2>
-        <p>Milo is a concept design. The screens above are mock-ups to show the idea; nothing is built, and no child uses it.</p>
+        <p>Milo is a concept design. The screens above are mock-ups to show the idea; nothing new is built, and no child uses it.</p>
         <span class="stamp">Under construction</span>
       </div>
     </div>
@@ -613,23 +649,28 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 (function(){
   var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
   /* concept screen interactions */
-  var mv=[].slice.call(document.querySelectorAll('#moves .mv')),mvn=document.getElementById('mvn');
-  mv.forEach(function(b){b.addEventListener('click',function(){mv.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');mvn.textContent=b.dataset.m})});
-  var reply=document.getElementById('reply'),outs=[].slice.call(document.querySelectorAll('#outs .out')),conf=document.getElementById('conf'),
-      hype=document.getElementById('hype'),yd=document.getElementById('yd'),pops=document.getElementById('pops'),lvn=document.getElementById('lvn'),lvb=document.getElementById('lvb'),n=8,m=4;
+  var reply=document.getElementById('reply'),vb=[].slice.call(document.querySelectorAll('#vibes button')),rns=document.getElementById('rns');
+  function clr(){vb.forEach(function(x){x.setAttribute('aria-pressed','false')});rns.setAttribute('aria-pressed','false')}
+  vb.forEach(function(b,i){b.addEventListener('click',function(){clr();b.setAttribute('aria-pressed','true');
+    if(i===4){reply.textContent='Thanks for telling me. Let\'s get a grown-up.';reply.className='reply calm';var s=document.getElementById('safety');setTimeout(function(){s.scrollIntoView({behavior:RM?'auto':'smooth'})},700)}
+    else{reply.textContent=i<2?'Love that. Let\'s power up.':'Got it. Let\'s breathe together.';reply.className=i<2?'reply':'reply calm'}})});
+  rns.addEventListener('click',function(){clr();rns.setAttribute('aria-pressed','true');reply.textContent='That\'s okay. Let\'s just breathe.';reply.className='reply calm'});
+  /* breathe 4-2-6, synced to the 12s CSS animation */
+  var bph=document.getElementById('bph'),bct=document.getElementById('bct'),brn=document.getElementById('brn'),bp=[0,1,2].map(function(i){return document.getElementById('bp'+i)});
+  var PH=[['Breathe in',4],['Hold',2],['Breathe out',6]];
+  if(!RM){var t0=performance.now();setInterval(function(){var e=(performance.now()-t0)/1000,c=Math.floor(e/12),x=e%12,k=x<4?0:x<6?1:2,left=k===0?4-x:k===1?6-x:12-x;
+    bph.textContent=PH[k][0];bct.textContent=Math.ceil(left);brn.textContent=c%3+1;bp.forEach(function(p,j){p.className=j===k?'on':''})},200)}
+  /* brave move */
+  var MV=['Say hi to a new kid','Ask a question in class','Try a food you\'ve never had','Order for yourself'],mi=0,mvn=document.getElementById('mvn');
+  document.getElementById('swap').addEventListener('click',function(){mi=(mi+1)%MV.length;mvn.textContent=MV[mi]});
+  var reply2=document.getElementById('reply2'),outs=[].slice.call(document.querySelectorAll('#outs .out')),conf=document.getElementById('conf');
   var C=['#F42A92','#E527C8','#1CBCF5','#E8DFE2','#6C31B5'];
   function rain(k,burst){var f=document.createDocumentFragment();for(var i=0;i<k;i++){var e=document.createElement('i');e.style.left=(Math.random()*100)+'%';e.style.background=C[i%C.length];e.style.animationDuration=(2.6+Math.random()*2.4)+'s';e.style.animationDelay=(burst?Math.random()*.3:-Math.random()*5)+'s';f.appendChild(e)}
     if(burst){var w=document.createElement('div');w.className='conf burst';w.appendChild(f);conf.parentNode.appendChild(w);setTimeout(function(){w.remove()},1900)}else conf.appendChild(f)}
-  if(!RM)rain(18);
-  outs.forEach(function(b){b.addEventListener('click',function(){outs.forEach(function(x){x.classList.remove('sel')});b.classList.add('sel');var o=b.dataset.o;
-    if(o==='3'){reply.textContent='All good. A new move tomorrow. Nothing lost.';reply.className='reply calm';return}
-    reply.textContent=o==='1'?'Nailed it! Milo is hyped.':'Tried it counts in full. Milo is hyped.';reply.className='reply';
-    n++;m=m%5+1;pops.textContent='+1 popsicle · '+n+' collected';hype.textContent=o==='1'?'HYPED!':'BRAVE!';yd.textContent=o==='1'?'You did it.':'You tried it.';
-    lvn.textContent=m===5?'Level up!':m+' / 5 moves';lvb.style.setProperty('--w',(m*20)+'%');if(!RM)rain(26,true)})});
-  var vb=[].slice.call(document.querySelectorAll('#vibes button'));
-  vb.forEach(function(b,i){b.addEventListener('click',function(){vb.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');
-    if(i===4){reply.textContent='Thanks for telling me. Let\'s get a grown-up.';reply.className='reply calm';var s=document.getElementById('safety');setTimeout(function(){s.scrollIntoView({behavior:RM?'auto':'smooth'})},700)}
-    else{reply.textContent=i<2?'Love that.':'Got it. Thanks for checking in.';reply.className=i<2?'reply':'reply calm'}})});
+  if(!RM)rain(14);
+  outs.forEach(function(b){b.addEventListener('click',function(){outs.forEach(function(x){x.classList.remove('sel')});b.classList.add('sel');
+    if(b.dataset.o==='3'){reply2.textContent='All good. It\'ll be here when you\'re ready.';reply2.className='reply calm';return}
+    reply2.textContent='You did it! Milo is glowing.';reply2.className='reply';if(!RM)rain(26,true)})});
 
   /* hero: pixel stars that drift away from the pointer */
   var cv=document.getElementById('stars'),hero=cv.parentNode,ctx=cv.getContext('2d'),S=[],W=0,H=0,mx=-999,my=-999,run=false,raf=0;
