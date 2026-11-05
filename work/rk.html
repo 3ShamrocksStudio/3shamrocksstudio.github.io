@@ -39,6 +39,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .snav img{height:22px;width:auto}
 .snav .back{font-weight:500;font-size:.92rem;color:var(--mut);min-height:44px;display:inline-flex;align-items:center}
 .snav .back:hover{color:#fff}
+.nr{display:flex;align-items:center;gap:12px}
+.snav .s3snd{position:static!important;box-shadow:none!important;background:rgba(15,30,63,.7)!important;border:1px solid var(--line2);padding:3px!important}
+@media(max-width:600px){.snav .s3snd .mu>span:not(.eq){position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.snav .back{font-size:.85rem}}
 
 h1,h2,h3{font-family:var(--disp);letter-spacing:-.02em;color:#fff}
 h1,h2{font-weight:700;line-height:1.06}
@@ -59,12 +62,37 @@ h3{font-weight:600;line-height:1.25}
 
 /* section rhythm: soft gradient bands and hairline seams instead of long flat blocks */
 .band{position:relative}
-.band::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--line2) 30%,rgba(245,158,11,.25) 50%,var(--line2) 70%,transparent)}
+.band::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--line2) 30%,rgba(90,151,255,.35) 50%,var(--line2) 70%,transparent)}
 .band.a{background:radial-gradient(70% 60% at 15% 0%,rgba(31,91,255,.10),transparent 70%)}
 .band.b{background:linear-gradient(180deg,rgba(15,30,63,0),rgba(15,30,63,.5) 22%,rgba(7,13,28,0) 88%)}
 .band.c{background:radial-gradient(60% 55% at 85% 10%,rgba(90,151,255,.09),transparent 70%),linear-gradient(180deg,transparent,rgba(15,30,63,.35) 55%,transparent)}
 
-.hero::before{content:"";position:absolute;left:0;right:0;top:0;bottom:-260px;z-index:-1;pointer-events:none;background:radial-gradient(60% 60% at 78% 22%,rgba(31,91,255,.22),transparent 70%),radial-gradient(36% 36% at 92% 62%,rgba(245,158,11,.06),transparent 70%);-webkit-mask:linear-gradient(180deg,#000 55%,transparent);mask:linear-gradient(180deg,#000 55%,transparent)}
+.band.tex::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-conic-gradient(rgba(139,154,184,.06) 0 25%,transparent 0 50%) 0 0/64px 64px;-webkit-mask:radial-gradient(70% 60% at 50% 40%,#000,transparent);mask:radial-gradient(70% 60% at 50% 40%,#000,transparent)}
+.band.tex>*{position:relative;z-index:1}
+.band.steel{background:linear-gradient(180deg,#141C2B,#1A2333 40%,#121A28);}
+.band.steel::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 1px,transparent 1px 4px)}
+.band.steel>*{position:relative;z-index:1}
+.band.steel .tile{background:linear-gradient(180deg,rgba(38,50,72,.75),rgba(24,33,50,.75));border-color:rgba(139,154,184,.2)}
+/* light sections: Ink text, Amber Deep for warm accents */
+.band.light{background:linear-gradient(180deg,#F3F6FB,#E6ECF4);color:#1A2740}
+.band.light::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-conic-gradient(rgba(15,30,63,.035) 0 25%,transparent 0 50%) 0 0/72px 72px;-webkit-mask:radial-gradient(60% 70% at 85% 20%,#000,transparent);mask:radial-gradient(60% 70% at 85% 20%,#000,transparent)}
+.band.light>*{position:relative;z-index:1}
+.band.light h2,.band.light h3,.band.light .lounge b{color:#070D1C}
+.band.light .kick{color:#4A5873}
+.band.light .head p,.band.light .step p,.band.light .lounge p,.band.light .cta p{color:#44526E}
+.band.light .step{background:#fff;border-color:rgba(15,30,63,.09);box-shadow:0 14px 34px -22px rgba(15,30,63,.35)}
+.band.light .step:hover{border-color:rgba(31,91,255,.35)}
+.band.light .step .n{color:#6B7A96}
+.band.light .ib{background:rgba(31,91,255,.08);box-shadow:inset 0 0 0 1px rgba(31,91,255,.22)}
+.band.light .ib .ic{color:#1F5BFF}
+.band.light .ib.w{background:rgba(180,83,9,.08);box-shadow:inset 0 0 0 1px rgba(180,83,9,.32)}
+.band.light .ib.w .ic{color:#B45309}
+.band.light .lounge{background:linear-gradient(100deg,rgba(31,91,255,.10),#fff 60%);border-color:rgba(15,30,63,.09)}
+.band.light .more a{color:#24324F;border-color:rgba(15,30,63,.16)}
+.band.light .more a:hover{color:#070D1C;border-color:#1F5BFF}
+.band.light footer .wrap{color:#4A5873;border-top-color:rgba(15,30,63,.12)}
+.band.light :focus-visible{outline-color:#1F5BFF}
+.hero::before{content:"";position:absolute;left:0;right:0;top:0;bottom:-260px;z-index:-1;pointer-events:none;background:radial-gradient(60% 60% at 78% 22%,rgba(31,91,255,.22),transparent 70%);-webkit-mask:linear-gradient(180deg,#000 55%,transparent);mask:linear-gradient(180deg,#000 55%,transparent)}
 .hero .wrap{position:relative;display:grid;gap:40px;align-items:center;padding-top:48px;padding-bottom:80px}
 @media(min-width:940px){.hero .wrap{grid-template-columns:1.05fr .95fr;padding-top:76px;padding-bottom:110px}}
 .hero .wrap>*{min-width:0}
@@ -97,13 +125,18 @@ h3{font-weight:600;line-height:1.25}
 .s2 .vs span{display:flex;align-items:center;gap:6px}
 .s2 .vs svg{width:18px;height:22px}
 .s2 .vs b{font-size:.62rem;font-family:var(--ui);font-weight:600;color:#fff;letter-spacing:0}
-.mb{display:grid;grid-template-columns:repeat(6,1fr);border-radius:8px;overflow:hidden;margin:10px 0;position:relative;box-shadow:0 0 0 3px #16243F,0 0 0 4px var(--line)}
+.mb{display:grid;grid-template-columns:repeat(8,1fr);border-radius:8px;overflow:hidden;margin:10px 0;position:relative;box-shadow:0 0 0 3px #16243F,0 0 0 4px var(--line)}
 .mb i{aspect-ratio:1}
-.mb .l,.bd .l{background:#15264A}
-.mb .d,.bd .d{background:#0C1730}
+.mb .l{background:#33456A}
+.mb .d{background:#121C31}
 .mb svg{position:absolute;inset:0;width:100%;height:100%}
 .s2 .meta{font-size:.56rem;color:var(--steel);text-align:center;margin-bottom:10px}
 .s2 .go{background:var(--blue);color:#fff;border-radius:10px;padding:9px;font-size:.7rem;font-weight:600;text-align:center;font-family:var(--disp)}
+.s2 .pr{display:flex;align-items:center;justify-content:space-between;font-size:.62rem;color:var(--mut);margin-top:4px}
+.s2 .pr span{display:flex;align-items:center;gap:6px}.s2 .pr svg{width:16px;height:20px}.s2 .pr b{color:#fff;font-weight:600}
+.s2 .pr .c{font-family:var(--disp);font-weight:600;font-size:.72rem;padding:3px 8px;border-radius:6px;background:var(--ink);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.s2 .pr .c.on{border-color:var(--sky);color:#fff}
+.s2 .turn{margin-top:12px;align-self:center;font-size:.66rem;font-weight:600;color:#fff;background:rgba(31,91,255,.25);box-shadow:inset 0 0 0 1px rgba(90,151,255,.5);border-radius:999px;padding:5px 14px}
 .s2 .no{color:var(--steel);font-size:.62rem;text-align:center;margin-top:8px}
 
 .built{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -157,45 +190,53 @@ h3{font-weight:600;line-height:1.25}
 .lounge b{font-family:var(--disp);font-weight:600;color:#fff;display:block;margin-bottom:4px;font-size:1.05rem}
 .lounge p{color:var(--mut);font-size:.98rem}
 
-/* key moment: the executive board */
-.play{display:grid;gap:28px;align-items:center;border-radius:28px;padding:18px;border:1px solid var(--line);background:radial-gradient(80% 70% at 20% 0%,rgba(31,91,255,.12),transparent 65%),linear-gradient(180deg,#0E1A35,#0A1328)}
-@media(min-width:900px){.play{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);padding:36px;gap:40px}}
+/* key moment: the executive board (8x8, brushed slate in a metal frame) */
+.play{display:grid;gap:28px;align-items:center;border-radius:28px;padding:16px;border:1px solid var(--line);background:radial-gradient(80% 70% at 20% 0%,rgba(31,91,255,.14),transparent 65%),linear-gradient(180deg,#0E1A35,#0A1328)}
+@media(min-width:900px){.play{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);padding:36px;gap:40px}}
 .play>*{min-width:0}
-.bd{position:relative;max-width:460px;width:100%;margin:0 auto;padding:clamp(8px,1.8vw,14px);border-radius:20px;
-  background:linear-gradient(155deg,#22355E,#0B1429 45%,#14213F);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -1px 0 rgba(0,0,0,.5),0 0 0 1px rgba(139,154,184,.2),0 40px 70px -34px #000;transition:box-shadow .6s}
-.grid6{position:relative;display:grid;grid-template-columns:repeat(6,1fr);border-radius:10px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.6)}
-.grid6::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(125deg,rgba(255,255,255,.07),transparent 38%,transparent 70%,rgba(255,255,255,.03))}
-.grid6 i{position:relative;aspect-ratio:1;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.03);transition:background .3s}
-.grid6 i em{position:absolute;font-style:normal;font-size:clamp(8px,1.6vw,10px);font-weight:600;color:rgba(139,154,184,.55);line-height:1}
-.grid6 i em.rk{left:4px;top:4px}
-.grid6 i em.fl{right:4px;bottom:4px}
-.grid6 i.lm{background:rgba(31,91,255,.20)}
-.grid6 i.t{cursor:pointer}
-.grid6 i.t::after{content:"";position:absolute;left:50%;top:50%;width:32%;height:32%;margin:-16% 0 0 -16%;border-radius:50%;box-shadow:inset 0 0 0 2px var(--sky),0 0 14px rgba(90,151,255,.45);animation:tp 1.8s var(--ease) infinite}
-.grid6 i.t:hover::after{background:rgba(90,151,255,.35)}
-@keyframes tp{0%,100%{transform:scale(1)}50%{transform:scale(.82)}}
-.grid6 i.ks::before{content:"";position:absolute;inset:12%;border-radius:50%;background:radial-gradient(closest-side,rgba(245,158,11,.28),transparent)}
-.trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-.trail .ln{fill:none;stroke:url(#tg);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;transition:stroke-dashoffset .6s var(--ease)}
-.trail .glow{fill:none;stroke:url(#tg);stroke-width:16;stroke-linecap:round;opacity:.18;filter:blur(3px)}
-.trail .cn{fill:none;stroke:var(--amber);stroke-width:5;stroke-linecap:round;stroke-dasharray:6 12;opacity:0;transition:opacity .4s}
-.trail .nd{fill:#0A1328;stroke:var(--sky);stroke-width:3}
-.trail .pulse{fill:none;stroke:var(--amber);stroke-width:3;opacity:0}
-.bd.done{box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 0 0 1px rgba(245,158,11,.45),0 0 60px -10px rgba(245,158,11,.35),0 40px 70px -34px #000}
-.bd.done .cn{opacity:1;animation:dash 1s linear infinite}
+.bd{--fp:clamp(20px,3.6vw,30px);position:relative;max-width:540px;width:100%;margin:0 auto;padding:var(--fp);border-radius:20px;
+  background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,0) 28%,rgba(255,255,255,0) 72%,rgba(255,255,255,.07)),repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 1px,transparent 1px 3px),linear-gradient(160deg,#46536E,#1D2638 38%,#2C3852 68%,#121A2B);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -2px 0 rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.05),0 0 0 1px rgba(0,0,0,.65),0 60px 90px -45px #000,0 24px 40px -24px rgba(0,0,0,.8);transition:box-shadow .6s}
+.grid8{position:relative;display:grid;grid-template-columns:repeat(8,1fr);border-radius:4px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.7),0 1px 0 1px rgba(255,255,255,.08)}
+.grid8::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 2px),linear-gradient(125deg,rgba(255,255,255,.09),transparent 34%,transparent 66%,rgba(255,255,255,.04));mix-blend-mode:screen}
+.grid8::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;box-shadow:inset 0 3px 14px rgba(0,0,0,.65),inset 0 0 0 1px rgba(0,0,0,.5)}
+.grid8 i{position:relative;aspect-ratio:1;transition:background .3s}
+.grid8 .l{background:linear-gradient(135deg,#3B4D73,#31425F)}
+.grid8 .d{background:linear-gradient(135deg,#17233C,#111A2E)}
+.grid8 i.lm::after{content:"";position:absolute;inset:0;background:rgba(90,151,255,.18);box-shadow:inset 0 0 0 1px rgba(90,151,255,.35)}
+.grid8 i.t{cursor:pointer}
+.grid8 i.t::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(90,151,255,.55) 0 14%,rgba(90,151,255,.16) 15% 100%);box-shadow:inset 0 0 0 2px rgba(90,151,255,.75),inset 0 0 18px rgba(90,151,255,.35);animation:tp 1.8s var(--ease) infinite}
+.grid8 i.t:hover::after{background:radial-gradient(circle,rgba(90,151,255,.8) 0 16%,rgba(90,151,255,.28) 17% 100%)}
+@keyframes tp{0%,100%{opacity:1}50%{opacity:.6}}
+.coord{position:absolute;display:grid;pointer-events:none;font-size:clamp(9px,1.4vw,11px);font-weight:600;letter-spacing:.14em;color:rgba(214,222,238,.55);text-transform:uppercase}
+.coord.f{left:var(--fp);right:var(--fp);bottom:0;height:var(--fp);grid-template-columns:repeat(8,1fr);place-items:center}
+.coord.r{top:var(--fp);bottom:var(--fp);left:0;width:var(--fp);grid-template-rows:repeat(8,1fr);place-items:center}
+.trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2}
+.trail .ln{fill:none;stroke:url(#tg);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.trail .glow{fill:none;stroke:#5A97FF;stroke-width:18;stroke-linecap:round;stroke-linejoin:round;opacity:.45}
+.trail .cn,.trail .cng{fill:none;stroke:var(--sky);stroke-width:5;stroke-linecap:round;stroke-dasharray:142;stroke-dashoffset:142;opacity:0}
+.trail .cng{stroke-width:18;opacity:0}
+.trail .nd{fill:#0F182B;stroke:var(--sky);stroke-width:3}
+.trail .pulse{fill:none;stroke:var(--sky);stroke-width:3;opacity:0}
+.bd.done .cn{opacity:1;stroke-dasharray:8 12;stroke-dashoffset:0;animation:dash 1s linear infinite}
 .bd.done .pulse{animation:pl 1.6s var(--ease) infinite}
-.bd.shook .cn{stroke-dasharray:none;animation:none}
-@keyframes dash{to{stroke-dashoffset:-18}}
-@keyframes pl{0%{opacity:.9;r:6}100%{opacity:0;r:40}}
-.pc{position:absolute;width:calc((100% - 2*var(--fp))/6);aspect-ratio:1;display:grid;place-items:center;transition:left .55s var(--ease),top .55s var(--ease);z-index:2}
-.bd{--fp:clamp(8px,1.8vw,14px)}
-.pc svg{width:90%;height:90%;filter:drop-shadow(0 6px 6px rgba(0,0,0,.55)) drop-shadow(0 1px 0 rgba(0,0,0,.4));transition:transform .25s var(--ease),filter .25s}
-.pc:hover svg,.pc.lift svg{transform:translateY(-4px) scale(1.04);filter:drop-shadow(0 12px 10px rgba(0,0,0,.6))}
+.bd.shook .cn{stroke:var(--amber);stroke-dasharray:142;stroke-dashoffset:142;animation:draw .8s var(--ease) forwards}
+.bd.shook .cng{stroke:var(--amber);opacity:.5;animation:draw .8s var(--ease) forwards}
+.bd.shook .pulse{stroke:var(--amber)}
+.bd.shook{box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -2px 0 rgba(0,0,0,.5),0 0 0 1px rgba(245,158,11,.55),0 0 70px -10px rgba(245,158,11,.4),0 60px 90px -45px #000}
+@keyframes dash{to{stroke-dashoffset:-20}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pl{0%{opacity:.9;r:8}100%{opacity:0;r:50}}
+.pc{position:absolute;width:calc((100% - 2*var(--fp))/8);aspect-ratio:1;display:grid;place-items:center;transition:left .55s var(--ease),top .55s var(--ease);z-index:3}
+.pc::before{content:"";position:absolute;left:22%;right:22%;bottom:6%;height:14%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),transparent);transition:transform .25s var(--ease),opacity .25s}
+.pc svg{position:relative;width:92%;height:92%;filter:drop-shadow(0 4px 4px rgba(0,0,0,.55)) drop-shadow(0 0 1px rgba(0,0,0,.6));transition:transform .25s var(--ease),filter .25s}
+.pc:hover svg,.pc.lift svg{transform:translateY(-5px) scale(1.04);filter:drop-shadow(0 12px 10px rgba(0,0,0,.6))}
+.pc:hover::before,.pc.lift::before{transform:scale(.8);opacity:.6}
 #pawn{cursor:pointer}
 
 /* challenge card */
 .cc{background:linear-gradient(180deg,rgba(19,36,74,.9),rgba(15,30,63,.9));border:1px solid var(--line2);border-radius:20px;padding:20px;box-shadow:0 30px 60px -36px #000,inset 0 1px 0 rgba(255,255,255,.06);transition:border-color .5s}
-.cc[data-s="1"]{border-color:rgba(245,158,11,.5)}
+.cc.shook{border-color:rgba(245,158,11,.55);box-shadow:0 0 50px -16px rgba(245,158,11,.4),0 30px 60px -36px #000}
 .cc .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .cc .mode{font-size:.76rem;font-weight:500;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
 .pl{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
@@ -209,7 +250,8 @@ h3{font-weight:600;line-height:1.25}
 .prog{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:14px 0 16px}
 .prog i{height:4px;border-radius:2px;background:rgba(139,154,184,.2);transition:background .4s}
 .prog i.on{background:var(--sky)}
-.cc[data-s="1"] .prog i{background:var(--amber)}
+.cc.shook .prog i{background:var(--amber)}
+.cc.shook #hst{color:var(--amber)}
 .cc h3{font-size:1.3rem;margin-bottom:6px;min-height:1.4em}
 .cc p{color:var(--mut);margin-bottom:16px;min-height:3.2em;font-size:.98rem}
 .cc .act{display:flex;flex-wrap:wrap;gap:10px}
@@ -246,6 +288,8 @@ h3{font-weight:600;line-height:1.25}
 .meaning .c1 b{color:var(--steel)}
 .meaning .c2{border-color:rgba(245,158,11,.35)}
 .meaning .c2 b{color:var(--amber)}
+.won{display:inline-flex;align-items:center;gap:8px;min-height:50px;padding:0 18px;border-radius:12px;font-family:var(--disp);font-weight:600;color:var(--amber);background:rgba(245,158,11,.10);box-shadow:inset 0 0 0 1px rgba(245,158,11,.45)}
+.won::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber)}
 .scale div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:10px 0}
 .scale span{font-size:.74rem;color:var(--steel);white-space:nowrap}
 .icons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
@@ -297,7 +341,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 
 <nav class="snav" aria-label="Studio"><div class="wrap">
   <a href="../" aria-label="3Shamrocks Studio home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="150" height="22"></a>
-  <a class="back" href="../#work">&larr; All work</a>
+  <div class="nr" id="nr"><a class="back" href="../#work">&larr; All work</a></div>
 </div></nav>
 
 <header class="hero">
@@ -314,13 +358,20 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     </div>
     <div class="duo" aria-label="R&amp;K concept screens">
       <span class="tagc">Concept screens</span>
-      <div class="phone"><div class="scr"><img class="mk" src="../assets/work/rk/rk-mark.webp" alt="" width="400" height="400"><b>ROOKIE <span class="warm">&amp;</span> KING</b><small>PLAY THE GAME. BUILD THE NETWORK.</small><span class="pill">Coming soon</span></div></div>
+      <div class="phone"><div class="scr s2" role="img" aria-label="Concept screen: a game in progress, King's clock 5:00, your clock 4:37, your move">
+        <div class="top"><img src="../assets/work/rk/rk-mark.webp" alt="" width="400" height="400"><span>Concept</span></div>
+        <div class="pr"><span><svg><use href="#pc-king"/></svg><b>Guest</b></span><span class="c">5:00</span></div>
+        <div class="mb"><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><svg viewBox="0 0 8 8"><path d="M2.5 6.5V3.5" fill="none" stroke="#5A97FF" stroke-width=".08" stroke-linecap="round"/><use href="#pc-pawn" x="2.06" y="3.06" width=".88" height=".88"/><use href="#pc-king" x="3.06" y=".06" width=".88" height=".88"/></svg></div>
+        <div class="pr"><span><svg><use href="#pc-pawn"/></svg><b>You</b></span><span class="c on">4:37</span></div>
+        <span class="turn">Your move</span>
+        <span class="no">Resign · Offer draw</span>
+      </div></div>
       <div class="phone"><div class="scr s2" role="img" aria-label="Concept screen: a challenge to one game of blitz, Rookie versus King, with Accept challenge and Not now">
         <div class="top"><img src="../assets/work/rk/rk-mark.webp" alt="" width="400" height="400"><span>Concept</span></div>
         <span class="k">Challenge received</span>
         <span class="h">One game of blitz?</span>
         <div class="vs"><span><svg><use href="#pc-pawn"/></svg><b>You</b></span><span>vs</span><span><b>Guest</b><svg><use href="#pc-king"/></svg></span></div>
-        <div class="mb"><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><svg viewBox="0 0 6 6"><path d="M2.5 5.5V1.5L3.5 .5" fill="none" stroke="#5A97FF" stroke-width=".07" stroke-linecap="round" stroke-dasharray=".12 .14"/><use href="#pc-pawn" x="2.08" y="5.08" width=".84" height=".84"/><use href="#pc-king" x="3.08" y=".08" width=".84" height=".84"/></svg></div>
+        <div class="mb"><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><svg viewBox="0 0 8 8"><path d="M2.5 6.5V1.5L3.5 .5" fill="none" stroke="#5A97FF" stroke-width=".08" stroke-linecap="round" stroke-dasharray=".14 .16"/><use href="#pc-pawn" x="2.06" y="6.06" width=".88" height=".88"/><use href="#pc-king" x="3.06" y=".06" width=".88" height=".88"/></svg></div>
         <span class="meta">5 + 0 · about ten minutes · no account</span>
         <span class="go">Accept challenge</span>
         <span class="no">Not now</span>
@@ -352,7 +403,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     </div>
   </section></div>
 
-  <div class="band b"><section class="sec wrap" aria-labelledby="h-h">
+  <div class="band light"><section class="sec wrap" aria-labelledby="h-h">
     <div class="head rv">
       <span class="kick">How it works · concept</span>
       <h2 id="h-h">Three moves to a real intro.</h2>
@@ -365,7 +416,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     <div class="lounge rv"><span class="ib"><svg class="ic" aria-hidden="true"><use href="#rk-podium"/></svg></span><div><b>The Lounge, for events and communities</b><p>Guests scan a QR code, get paired by level and play on their phones. A big screen shows the live leaderboard and the King of the Lounge.</p></div></div>
   </section></div>
 
-  <div class="band c"><section class="sec wrap" id="play" aria-labelledby="k-h">
+  <div class="band c tex"><section class="sec wrap" id="play" aria-labelledby="k-h">
     <div class="head rv">
       <span class="kick">Key moment</span>
       <h2 id="k-h">At the board, a rookie can reach a king.</h2>
@@ -373,10 +424,11 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     </div>
     <div class="play rv">
       <div class="bd" id="board">
-        <div class="grid6" id="grid"><i class="l" data-x="0" data-y="0"><em class="rk">6</em></i><i class="d" data-x="1" data-y="0"></i><i class="l" data-x="2" data-y="0"></i><i class="d" data-x="3" data-y="0"></i><i class="l" data-x="4" data-y="0"></i><i class="d" data-x="5" data-y="0"></i><i class="d" data-x="0" data-y="1"><em class="rk">5</em></i><i class="l" data-x="1" data-y="1"></i><i class="d" data-x="2" data-y="1"></i><i class="l" data-x="3" data-y="1"></i><i class="d" data-x="4" data-y="1"></i><i class="l" data-x="5" data-y="1"></i><i class="l" data-x="0" data-y="2"><em class="rk">4</em></i><i class="d" data-x="1" data-y="2"></i><i class="l" data-x="2" data-y="2"></i><i class="d" data-x="3" data-y="2"></i><i class="l" data-x="4" data-y="2"></i><i class="d" data-x="5" data-y="2"></i><i class="d" data-x="0" data-y="3"><em class="rk">3</em></i><i class="l" data-x="1" data-y="3"></i><i class="d" data-x="2" data-y="3"></i><i class="l" data-x="3" data-y="3"></i><i class="d" data-x="4" data-y="3"></i><i class="l" data-x="5" data-y="3"></i><i class="l" data-x="0" data-y="4"><em class="rk">2</em></i><i class="d" data-x="1" data-y="4"></i><i class="l" data-x="2" data-y="4"></i><i class="d" data-x="3" data-y="4"></i><i class="l" data-x="4" data-y="4"></i><i class="d" data-x="5" data-y="4"></i><i class="d" data-x="0" data-y="5"><em class="rk">1</em><em class="fl">a</em></i><i class="l" data-x="1" data-y="5"><em class="fl">b</em></i><i class="d" data-x="2" data-y="5"><em class="fl">c</em></i><i class="l" data-x="3" data-y="5"><em class="fl">d</em></i><i class="d" data-x="4" data-y="5"><em class="fl">e</em></i><i class="l" data-x="5" data-y="5"><em class="fl">f</em></i>
-          <svg class="trail" viewBox="0 0 600 600" aria-hidden="true"><defs><linearGradient id="tg" gradientUnits="userSpaceOnUse" x1="250" y1="550" x2="350" y2="50"><stop offset="0" stop-color="#1F5BFF"/><stop offset=".6" stop-color="#5A97FF"/><stop offset="1" stop-color="#F59E0B"/></linearGradient></defs>
-            <path class="glow" id="tgl" d="M250 550"/><path class="ln" id="tln" d="M250 550"/><path class="cn" d="M250 150L350 50"/><g id="tnd"></g><circle class="pulse" cx="300" cy="100" r="6"/></svg>
+        <div class="grid8" id="grid"><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i><i class="d"></i><i class="l"></i>
+          <svg class="trail" viewBox="0 0 800 800" aria-hidden="true"><defs><linearGradient id="tg" gradientUnits="userSpaceOnUse" x1="250" y1="650" x2="250" y2="150"><stop offset="0" stop-color="#1F5BFF"/><stop offset="1" stop-color="#8DB8FF"/></linearGradient><filter id="tb" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter></defs>
+            <path class="glow" id="tgl" d="M250 650" filter="url(#tb)"/><path class="ln" id="tln" d="M250 650"/><path class="cng" d="M250 150L350 50" filter="url(#tb)"/><path class="cn" d="M250 150L350 50"/><g id="tnd"></g><circle class="pulse" cx="300" cy="100" r="8"/></svg>
         </div>
+        <span class="coord f" aria-hidden="true"><b>a</b><b>b</b><b>c</b><b>d</b><b>e</b><b>f</b><b>g</b><b>h</b></span><span class="coord r" aria-hidden="true"><b>8</b><b>7</b><b>6</b><b>5</b><b>4</b><b>3</b><b>2</b><b>1</b></span>
         <span class="pc" id="king" aria-hidden="true"><svg><use href="#pc-king"/></svg></span>
         <span class="pc" id="pawn" aria-hidden="true"><svg><use href="#pc-pawn"/></svg></span>
       </div>
@@ -386,8 +438,8 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
         <div class="pl"><span class="av k"><svg aria-hidden="true"><use href="#pc-king"/></svg></span><div><b>King</b><small>Guest, plays in the browser</small></div><span class="clk" id="ck2" aria-label="King clock">5:00</span></div>
         <div class="prog" id="prog" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         <h3 id="hst">Your move.</h3>
-        <p id="hsp">Four moves to reach the king's side of the board.</p>
-        <div class="act"><button class="btn b" id="mv" type="button">Play a move</button><button class="btn g" id="shk" type="button">Shake hands</button></div>
+        <p id="hsp">Four moves up the c-file to reach the king on d8.</p>
+        <div class="act"><button class="btn b" id="mv" type="button">Play a move</button><button class="btn b" id="shk" type="button">Shake hands</button></div>
         <small class="note">Illustrative demo of the concept, not a live game.</small>
       </div>
     </div>
@@ -398,7 +450,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     </div>
   </section></div>
 
-  <div class="band a"><section class="sec wrap" id="system" aria-labelledby="b-h">
+  <div class="band steel"><section class="sec wrap" id="system" aria-labelledby="b-h">
     <div class="head rv">
       <span class="kick">Design system · brand v6</span>
       <h2 id="b-h">Two sides, one deal.</h2>
@@ -444,9 +496,10 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
         <h3>Key UI components</h3>
         <div class="comps">
           <span class="btn b" style="pointer-events:none">Accept challenge</span>
-          <span class="btn g" style="pointer-events:none">Shake hands</span>
+          <span class="btn b" style="pointer-events:none">Shake hands</span><span class="won">Connected</span>
           <span class="clock2" aria-label="Game clock, sample"><span class="clk on">4:52</span><span class="clk">5:00</span></span>
         </div>
+        <p style="font-size:.8rem;color:var(--steel);margin-top:10px">Actions are blue. Amber appears only once the connection is made.</p>
         <h3 style="margin-top:24px">Icons · 24 grid · 1.75 stroke · 2.5 radius</h3>
         <div class="icons">
           <figure><svg class="ic" aria-hidden="true"><use href="#rk-board"/></svg><figcaption>Board</figcaption></figure>
@@ -462,7 +515,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     </div>
   </section></div>
 
-  <div class="band b"><section class="sec wrap" aria-labelledby="u-h">
+  <div class="band tex"><section class="sec wrap" aria-labelledby="u-h">
     <div class="uc rv">
       <div class="rule" aria-hidden="true"></div>
       <div class="body">
@@ -484,11 +537,11 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     </div>
   </section></div>
 
-  <div class="band c"><section class="cta wrap" aria-labelledby="c-h">
+  <div class="band light cta-b"><section class="cta wrap" aria-labelledby="c-h">
     <span class="kick" style="justify-content:center">Work with me</span>
     <h2 id="c-h">Need a serious product with a playful edge?</h2>
     <p>Brand, product design and a working product, from one senior designer.</p>
-    <div class="ctas"><a class="btn g" href="mailto:dave@3shamrocks.com?subject=New%20project">Start a project</a></div>
+    <div class="ctas"><a class="btn b" href="mailto:dave@3shamrocks.com?subject=New%20project">Start a project</a></div>
     <nav class="more" aria-label="More work"><a href="chore-royale.html">Chore Royale</a><a href="fairent.html">FaiRent</a><a href="ezra.html">EZRA</a><a href="milo.html">Milo</a><a href="shomer.html">SH✡MER</a><a href="lickpick.html">LickPick</a><a href="trashure-hunters.html">Trashure-Hunters</a><a href="j8nix.html">J8NIX</a></nav>
   </section>
   <footer><div class="wrap"><span>&copy; 2026 3Shamrocks Studio · Dave Markovich</span><span><a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a> · <a href="https://www.linkedin.com/in/davemarkovich/" target="_blank" rel="noopener">LinkedIn</a></span></div></footer></div>
@@ -501,28 +554,29 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
   for(var r=0;r<3;r++)for(var c=0;c<8;c++){var q=document.createElementNS(ns,'rect');q.setAttribute('x',40+c*40);q.setAttribute('y',20+r*40);q.setAttribute('width',40);q.setAttribute('height',40);
     q.setAttribute('fill',(r+c)%2?'#15264A':'#0C1730');q.setAttribute('class','sq');q.style.animationDelay=((r*8+c)*0.12)+'s';g.appendChild(q)}
 
-  // key moment: the pawn advances up the c-file and meets the king on d6
-  var path=[[2,5],[2,4],[2,3],[2,2],[2,1]],K=[3,0],i=0,
+  // key moment: the pawn advances c2-c4-c5-c6-c7 and meets the king on d8
+  var path=[[2,6],[2,4],[2,3],[2,2],[2,1]],K=[3,0],i=0,curLen=0,
       pawn=document.getElementById('pawn'),king=document.getElementById('king'),hs=document.getElementById('hs'),b=document.getElementById('mv'),shk=document.getElementById('shk'),
       t=document.getElementById('hst'),p=document.getElementById('hsp'),bd=document.getElementById('board'),grid=document.getElementById('grid'),
       ln=document.getElementById('tln'),gl=document.getElementById('tgl'),nd=document.getElementById('tnd'),
       cells=[].slice.call(grid.querySelectorAll('i')),bars=[].slice.call(document.querySelectorAll('#prog i')),ck1=document.getElementById('ck1'),ck2=document.getElementById('ck2'),secs=300,tick=0;
-  function cell(x,y){return cells[y*6+x]}
-  function pos(el,xy){el.style.left='calc(var(--fp) + (100% - 2*var(--fp))/6*'+xy[0]+')';el.style.top='calc(var(--fp) + (100% - 2*var(--fp))/6*'+xy[1]+')'}
+  function cell(x,y){return cells[y*8+x]}
+  function pos(el,xy){el.style.left='calc(var(--fp) + (100% - 2*var(--fp))/8*'+xy[0]+')';el.style.top='calc(var(--fp) + (100% - 2*var(--fp))/8*'+xy[1]+')'}
   function fmt(s){return Math.floor(s/60)+':'+('0'+s%60).slice(-2)}
   function clock(on){clearInterval(tick);tick=0;if(on&&!reduce)tick=setInterval(function(){if(secs>0){secs--;ck1.textContent=fmt(secs)}},1000)}
   function draw(){
     var d='M'+(path[0][0]*100+50)+' '+(path[0][1]*100+50);for(var k=1;k<=i;k++)d+='L'+(path[k][0]*100+50)+' '+(path[k][1]*100+50);
-    ln.setAttribute('d',d);gl.setAttribute('d',d);
-    nd.innerHTML='';for(var k=0;k<i;k++){var c=document.createElementNS(ns,'circle');c.setAttribute('class','nd');c.setAttribute('cx',path[k][0]*100+50);c.setAttribute('cy',path[k][1]*100+50);c.setAttribute('r',7);nd.appendChild(c)}
+    var prev=i?curLen:0;ln.setAttribute('d',d);gl.setAttribute('d',d);var L=ln.getTotalLength?ln.getTotalLength():0;curLen=L;
+    [ln,gl].forEach(function(e){e.style.transition='none';e.style.strokeDasharray=(L+1)+' '+(L+1);e.style.strokeDashoffset=reduce?0:(L-prev);e.getBoundingClientRect();e.style.transition='stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1)';e.style.strokeDashoffset=0});
+    nd.innerHTML='';for(var k=0;k<i;k++){var c=document.createElementNS(ns,'circle');c.setAttribute('class','nd');c.setAttribute('cx',path[k][0]*100+50);c.setAttribute('cy',path[k][1]*100+50);c.setAttribute('r',8);nd.appendChild(c)}
     cells.forEach(function(c){c.classList.remove('t','lm')});
     if(i>0)cell(path[i-1][0],path[i-1][1]).classList.add('lm');
     if(i<path.length-1)cell(path[i+1][0],path[i+1][1]).classList.add('t');
     bars.forEach(function(x,k){x.classList.toggle('on',k<i)});
     pos(pawn,path[i]);
   }
-  function reset(){i=0;secs=300;ck1.textContent='5:00';ck1.classList.add('on');ck2.classList.remove('on');clock(false);hs.dataset.s='0';hs.classList.remove('shook');bd.classList.remove('done','shook');t.textContent='Your move.';p.textContent="Four moves to reach the king's side of the board.";b.textContent='Play a move';b.className='btn b';draw()}
-  pos(king,K);cell(K[0],K[1]).classList.add('ks');reset();
+  function reset(){i=0;secs=300;ck1.textContent='5:00';ck1.classList.add('on');ck2.classList.remove('on');clock(false);hs.dataset.s='0';hs.classList.remove('shook');bd.classList.remove('done','shook');t.textContent='Your move.';p.textContent="Four moves up the c-file to reach the king on d8.";b.textContent='Play a move';b.className='btn b';draw()}
+  pos(king,K);reset();
   b.addEventListener('click',function(){
     if(i>=path.length-1){reset();return}
     i++;secs=Math.max(0,secs-(3+Math.floor(Math.random()*6)));ck1.textContent=fmt(secs);clock(true);draw();var left=path.length-1-i;
@@ -530,7 +584,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     if(left){t.textContent='Good move.';p.textContent=left+(left>1?' moves':' move')+' to go. The clock is ticking.'}
     else{clock(false);ck1.classList.remove('on');hs.dataset.s='1';bd.classList.add('done');cells.forEach(function(c){c.classList.remove('t')});t.textContent='Good game. Shake hands?';p.textContent='Both sides choose to swap a one-line intro and connect.';b.textContent='Play again';b.className='btn o'}
   });
-  shk.addEventListener('click',function(){bd.classList.add('shook');hs.classList.add('shook');t.textContent='Connected.';p.textContent='In the product, this is where both players would swap a one-line intro.';b.focus()});
+  shk.addEventListener('click',function(){bd.classList.add('shook');hs.classList.add('shook');t.textContent='Connected.';b.className='btn o';p.textContent='In the product, this is where both players would swap a one-line intro.';b.focus()});
   // tap the highlighted square (or the pawn) to move: routed through the button so every hook on #mv still fires
   grid.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('i.t');if(c)b.click()});
   pawn.addEventListener('click',function(){if(hs.dataset.s==='0')b.click()});
@@ -562,6 +616,10 @@ var hs=document.getElementById('hs'),mv=document.getElementById('mv');if(!hs||!m
 var was=hs.dataset.s;mv.addEventListener('pointerdown',function(){was=hs.dataset.s;});
 document.addEventListener('click',function(e){if(!e.target.closest||!e.target.closest('#mv'))return;if(hs.dataset.s==='1'&&was!=='1')A.play('deal');was=hs.dataset.s;});
 })();
+</script>
+<script>
+/* dock the studio sound control in the nav so it never covers content */
+(function(){var s=document.querySelector('.s3snd'),n=document.getElementById('nr');if(s&&n)n.insertBefore(s,n.firstChild)})();
 </script>
 </body>
 </html>
