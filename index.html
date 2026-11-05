@@ -389,27 +389,9 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .svc b{display:block;font:700 17px var(--font-d);letter-spacing:-.01em}
 .svc span{display:block;font-size:14.5px;line-height:1.5;color:var(--ink-2);margin-top:3px}
 @media(max-width:900px){.about-grid{grid-template-columns:1fr;gap:40px}.about-pic{max-width:460px}}
-/* photo stickers */
-.about-pic{position:relative}
-.about-visual{touch-action:pan-y}
-.stk-layer{position:absolute;inset:0;z-index:2}
-.stk{position:absolute;left:var(--x);top:var(--y);width:var(--w);transform:translate(-50%,-50%) rotate(var(--r,0deg));padding:0;border:0;background:none;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
-.stk svg{display:block;width:100%;height:auto;overflow:visible;pointer-events:none}
-.stk.drag{cursor:grabbing;z-index:5;filter:drop-shadow(0 16px 22px rgba(0,0,0,.55));transition:none}
-.stk.land{animation:stkLand .45s var(--ease)}
-@keyframes stkLand{0%{transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(1.25)}60%{transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(.94)}100%{transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(1)}}
-.stk-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px}
-.stk-bar p{flex:1 0 100%;font:500 14px var(--font-b);color:var(--ink-3);margin-bottom:2px}
-.stk-tray{display:flex;gap:8px}
-.stk-slot{position:relative;width:54px;height:54px;border-radius:var(--rad);background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px var(--line);display:grid;place-items:center;transition:background .25s,box-shadow .25s}
-.stk-slot:hover{background:rgba(176,124,255,.12);box-shadow:inset 0 0 0 1px rgba(176,124,255,.4)}
-.stk-slot .stk{position:static;transform:none;width:40px;filter:none;transition:transform .3s var(--ease)}
-.stk-slot .stk:hover{transform:scale(1.12) rotate(-6deg)}
-.stk-slot.used .stk{display:none}
-.stk-reset{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font:600 14px var(--font-b);color:var(--ink-2);background:none;border:2px solid rgba(255,255,255,.24);border-radius:var(--rad);padding:9px 16px;cursor:pointer;transition:color .2s,border-color .2s}
-.stk-reset:hover{color:#fff;border-color:#fff}
-.stk-reset svg{width:16px;height:16px}
-@media(max-width:600px){.stk-slot{width:48px;height:48px;border-radius:8px}.stk-slot .stk{width:34px}.stk-tray{gap:6px}}
+/* about: Dave cut out in front of a drifting backdrop of brand rings, orbits and discs */
+.about-fx{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.about-visual img{position:relative;z-index:1}
 
 
 @media(max-width:600px){.services{grid-template-columns:1fr}.about-stat-val{font-size:30px}.about-stat+.about-stat{padding-left:14px}}
@@ -837,18 +819,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
 <section class="about" id="about">
   <div class="wrap about-grid">
     <div class="about-pic reveal">
-      <div class="about-visual" id="about-visual"><img src="assets/studio/dave-portrait.webp" alt="Dave Markovich, founder of 3Shamrocks Studio" width="800" height="1098" loading="lazy"><div class="stk-layer" id="stk-layer"></div></div>
-      <div class="stk-bar">
-        <p>Dress me up: drag a sticker onto the photo, or tap one.</p>
-        <div class="stk-tray" id="stk-tray">
-          <span class="stk-slot"><button class="stk" type="button" aria-label="Add the hat" data-k="hat" data-x="43" data-y="5.5" data-w="40" data-r="-6"><svg viewBox="0 0 120 96"><defs><linearGradient id="sHat" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b33b0"/><stop offset="1" stop-color="#22134a"/></linearGradient><linearGradient id="sBand" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3fbf7f"/><stop offset="1" stop-color="#c8f26a"/></linearGradient></defs><ellipse cx="60" cy="84" rx="58" ry="11" fill="#1a0f3a"/><ellipse cx="60" cy="82" rx="56" ry="9.5" fill="url(#sHat)"/><path d="M28 82V16C28 8 40 4 60 4S92 8 92 16V82C92 87 28 87 28 82Z" fill="url(#sHat)"/><path d="M28 60H92V74C92 79 28 79 28 74Z" fill="url(#sBand)"/><path d="M36 14C42 9 52 8 60 8" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3" stroke-linecap="round"/><g transform="translate(60 67)"><circle r="8.5" fill="#f4d36b"/><circle r="6" fill="#22134a"/><circle r="2.6" fill="#8be36a"/></g></svg></button></span>
-          <span class="stk-slot"><button class="stk" type="button" aria-label="Add the hair" data-k="hair" data-x="43" data-y="9.5" data-w="38" data-r="0"><svg viewBox="0 0 140 64"><defs><linearGradient id="sHair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98a52"/><stop offset="1" stop-color="#6b3b20"/></linearGradient></defs><path d="M8 58C2 44 8 30 20 28 20 16 34 10 44 16 48 4 66 0 74 10 82 2 100 4 102 16 114 12 128 22 124 34 136 38 138 52 130 60 120 50 106 48 96 54 86 44 72 44 64 52 54 42 38 44 32 54 24 48 14 50 8 58Z" fill="url(#sHair)"/><path d="M30 30C34 24 42 22 48 25M70 16C76 12 84 13 88 18M100 28C106 26 112 28 116 33" fill="none" stroke="rgba(255,235,210,.5)" stroke-width="3" stroke-linecap="round"/></svg></button></span>
-          <span class="stk-slot"><button class="stk" type="button" aria-label="Add the sunglasses" data-k="glasses" data-x="40.5" data-y="24" data-w="36" data-r="0"><svg viewBox="0 0 120 36"><defs><linearGradient id="sLens" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b2a6e"/><stop offset=".5" stop-color="#170f33"/><stop offset="1" stop-color="#07050f"/></linearGradient><linearGradient id="sRim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1b0"/><stop offset=".5" stop-color="#e0a828"/><stop offset="1" stop-color="#9a6a10"/></linearGradient><clipPath id="sLensClip"><path d="M9 6C9 4.3 10.4 3 12.2 3H50.5C53.2 3 55 5 54.6 7.8 53.4 18 48.5 31 34 31 20.5 31 11 22.5 9 11.5Z"/><path d="M111 6C111 4.3 109.6 3 107.8 3H69.5C66.8 3 65 5 65.4 7.8 66.6 18 71.5 31 86 31 99.5 31 109 22.5 111 11.5Z"/></clipPath></defs><path d="M9.5 7.5L1.5 6.5M110.5 7.5L118.5 6.5" stroke="url(#sRim)" stroke-width="3" stroke-linecap="round"/><path d="M54.6 8.2C57.5 5.2 62.5 5.2 65.4 8.2" fill="none" stroke="url(#sRim)" stroke-width="2.6" stroke-linecap="round"/><path d="M9 6C9 4.3 10.4 3 12.2 3H50.5C53.2 3 55 5 54.6 7.8 53.4 18 48.5 31 34 31 20.5 31 11 22.5 9 11.5Z" fill="url(#sLens)" stroke="url(#sRim)" stroke-width="2.4" stroke-linejoin="round"/><path d="M111 6C111 4.3 109.6 3 107.8 3H69.5C66.8 3 65 5 65.4 7.8 66.6 18 71.5 31 86 31 99.5 31 109 22.5 111 11.5Z" fill="url(#sLens)" stroke="url(#sRim)" stroke-width="2.4" stroke-linejoin="round"/><g clip-path="url(#sLensClip)"><path d="M38 0H50L28 36H16ZM98 0H110L88 36H76Z" fill="rgba(255,255,255,.08)"/></g><path d="M15 8.5C22 7.4 30 7.3 37 8M75 8C82 7.3 90 7.4 97 8.5" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2.2" stroke-linecap="round"/></svg></button></span>
-          <span class="stk-slot"><button class="stk" type="button" aria-label="Add the moustache" data-k="tache" data-x="40.3" data-y="32" data-w="23" data-r="0"><svg viewBox="0 0 120 40"><defs><linearGradient id="sTache" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6238"/><stop offset="1" stop-color="#4f2a15"/></linearGradient></defs><path d="M60 12C52 2 36 4 28 14 22 22 14 26 6 22 2 20 0 16 3 12 1 22 8 32 20 32 34 32 46 24 60 20 74 24 86 32 100 32 112 32 119 22 117 12 120 16 118 20 114 22 106 26 98 22 92 14 84 4 68 2 60 12Z" fill="url(#sTache)"/><path d="M40 14C46 12 52 13 56 16" fill="none" stroke="rgba(255,225,190,.4)" stroke-width="2.5" stroke-linecap="round"/></svg></button></span>
-          <span class="stk-slot"><button class="stk" type="button" aria-label="Add the gold pin" data-k="pin" data-x="66" data-y="60" data-w="11" data-r="-10"><svg viewBox="0 0 60 60"><defs><linearGradient id="sGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1b0"/><stop offset=".5" stop-color="#e0a828"/><stop offset="1" stop-color="#9a6a10"/></linearGradient></defs><circle cx="30" cy="30" r="28" fill="url(#sGold)"/><circle cx="30" cy="30" r="23.5" fill="#160d33"/><g transform="translate(30 30)"><circle cx="0" cy="-7" r="6.2" fill="#8be36a"/><circle cx="-6.6" cy="4.6" r="6.2" fill="#2fb7c9"/><circle cx="6.6" cy="4.6" r="6.2" fill="#9b59f7"/><circle r="2.2" fill="#f4d36b"/></g><path d="M12 18C16 11 23 7 30 6.5" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.4" stroke-linecap="round"/></svg></button></span>
-        </div>
-        <button class="stk-reset" type="button" id="stk-reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Reset</button>
-      </div>
+      <div class="about-visual" id="about-visual"><canvas class="about-fx" id="about-fx" aria-hidden="true"></canvas><img src="assets/studio/dave-portrait-cut.webp" alt="Dave Markovich, founder of 3Shamrocks Studio" width="800" height="1098" loading="lazy"></div>
     </div>
     <div class="about-content">
       <h2 class="reveal">20 years, disciplined by strategy.</h2>
@@ -1128,33 +1099,38 @@ addEventListener('load',()=>{const lv=$('#lvl'),fill=$('#lvl-fill');if(!lv)retur
     const r=box.getBoundingClientRect();window.__dotBurst&&window.__dotBurst(r.left+r.width*.49,r.top+r.height*.1,34)});
 })();
 
-/* photo stickers: drag one onto the photo (or tap to drop it in place), drag it off to remove, Reset clears all */
+/* about backdrop: brand rings, orbit lines and discs drift behind Dave, lean with the cursor, tilt or scroll, and ripple on tap */
 (function(){
-  const vis=$('#about-visual'),layer=$('#stk-layer'),tray=$('#stk-tray'),reset=$('#stk-reset');if(!vis)return;
-  const home=new Map();$$('.stk',tray).forEach(s=>home.set(s,s.parentElement));
-  function setPos(s,x,y){s.style.setProperty('--x',x+'%');s.style.setProperty('--y',y+'%')}
-  function place(s,x,y){const slot=home.get(s);slot.classList.add('used');s.style.setProperty('--w',s.dataset.w+'%');s.style.setProperty('--r',s.dataset.r+'deg');setPos(s,x,y);
-    if(s.parentElement!==layer)layer.appendChild(s);s.setAttribute('aria-label',s.getAttribute('aria-label').replace('Add','Remove'));s.classList.remove('land');void s.offsetWidth;s.classList.add('land')}
-  function back(s){const slot=home.get(s);slot.appendChild(s);slot.classList.remove('used');['--x','--y','--w','--r'].forEach(v=>s.style.removeProperty(v));s.setAttribute('aria-label',s.getAttribute('aria-label').replace('Remove','Add'))}
-  $$('.stk',tray).forEach(s=>{
-    let drag=null;
-    const move=e=>{if(!drag)return;const r=vis.getBoundingClientRect();
-      if(!drag.moved&&Math.hypot(e.clientX-drag.x0,e.clientY-drag.y0)<5)return;
-      if(!drag.moved){drag.moved=true;if(s.parentElement!==layer){place(s,s.dataset.x,s.dataset.y);s.classList.remove('land')}s.classList.add('drag')}
-      e.preventDefault();setPos(s,(e.clientX-r.left)/r.width*100,(e.clientY-r.top)/r.height*100)};
-    const end=e=>{removeEventListener('pointermove',move);removeEventListener('pointerup',end);removeEventListener('pointercancel',end);
-      if(!drag)return;const d=drag;drag=null;s.classList.remove('drag');
-      if(e.type==='pointercancel'){if(d.moved&&!d.on)back(s);return}
-      if(!d.moved){if(s.parentElement===layer)back(s);else place(s,s.dataset.x,s.dataset.y);return}
-      const r=vis.getBoundingClientRect(),inside=e.clientX>r.left&&e.clientX<r.right&&e.clientY>r.top&&e.clientY<r.bottom;
-      if(inside){s.classList.remove('land');void s.offsetWidth;s.classList.add('land')}else back(s)};
-    s.addEventListener('pointerdown',e=>{if(e.button>0)return;e.preventDefault();drag={x0:e.clientX,y0:e.clientY,moved:false,on:s.parentElement===layer};
-      addEventListener('pointermove',move,{passive:false});addEventListener('pointerup',end);addEventListener('pointercancel',end)});
-    s.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();s.parentElement===layer?back(s):place(s,s.dataset.x,s.dataset.y)}});
-    s.addEventListener('click',e=>e.preventDefault());
-  });
-  reset.addEventListener('click',()=>$$('.stk',layer).forEach(back));
-  [vis,tray].forEach(el=>el.addEventListener('dragstart',e=>e.preventDefault()));
+  const vis=$('#about-visual'),cv=$('#about-fx');if(!vis||!cv)return;const g=cv.getContext('2d');
+  const C={lime:'#f2ee86',green:'#8be36a',leaf:'#45c27a',teal:'#2fb7c9',violet:'#8239ea',lilac:'#b07cff'};
+  const discs=[[.14,.2,.11,'violet',.5,.9],[.86,.16,.07,'teal',.8,1.2],[.9,.62,.13,'violet',.35,.7],[.1,.7,.06,'green',.9,1.4],[.74,.88,.05,'lime',1,1.1],[.3,.06,.035,'teal',1.2,1.6]];
+  const orbits=[[.36,.22,'lilac',.04,'green'],[.52,.14,'teal',-.025,'lime'],[.7,.1,'lilac',.016,'teal']];
+  let w=0,h=0,dpr=1,px=0,py=0,tx=0,ty=0,ripples=[],raf=null,on=false,tilt=false;
+  function size(){const r=vis.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);w=r.width;h=r.height;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr)}
+  function draw(t){g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,w,h);px+=(tx-px)*.05;py+=(ty-py)*.05;
+    const cx=w*.5,cy=h*.3,m=Math.min(w,h);
+    let gr=g.createRadialGradient(cx+px*30,cy+py*24,0,cx+px*30,cy+py*24,m*.75);gr.addColorStop(0,'rgba(130,57,234,.42)');gr.addColorStop(1,'rgba(130,57,234,0)');g.fillStyle=gr;g.fillRect(0,0,w,h);
+    gr=g.createRadialGradient(w*.82-px*20,h*.86-py*16,0,w*.82-px*20,h*.86-py*16,m*.6);gr.addColorStop(0,'rgba(47,183,201,.22)');gr.addColorStop(1,'rgba(47,183,201,0)');g.fillStyle=gr;g.fillRect(0,0,w,h);
+    for(const[x,y,r,c,d,sp]of discs){const ox=Math.sin(t*.00011*sp+x*9)*m*.02+px*d*26,oy=Math.cos(t*.00009*sp+y*7)*m*.02+py*d*20;
+      g.globalAlpha=.2;g.fillStyle=C[c];g.beginPath();g.arc(w*x+ox,h*y+oy,m*r,0,7);g.fill()}
+    g.lineWidth=1.2;
+    for(const[r,a,c,sp,dc]of orbits){const ox=cx+px*r*34,oy=cy+py*r*28,R=m*r;g.globalAlpha=a*2.2;g.strokeStyle=C[c];g.beginPath();g.arc(ox,oy,R,0,7);g.stroke();
+      const an=t*.001*sp+r*11;g.globalAlpha=.9;g.fillStyle=C[dc];g.beginPath();g.arc(ox+Math.cos(an)*R,oy+Math.sin(an)*R,3.2,0,7);g.fill()}
+    /* one bold green arc, the brand's geometric stroke */
+    const an=t*.00006;g.globalAlpha=.55;g.lineWidth=5;g.lineCap='round';gr=g.createLinearGradient(0,0,w,h);gr.addColorStop(0,C.lime);gr.addColorStop(.5,C.green);gr.addColorStop(1,C.leaf);g.strokeStyle=gr;
+    g.beginPath();g.arc(cx+px*20,cy+py*16,m*.44,an+3.6,an+4.5);g.stroke();
+    ripples=ripples.filter(p=>t-p.t<1600);
+    for(const p of ripples){const k=(t-p.t)/1600;g.globalAlpha=(1-k)*.7;g.lineWidth=2;g.strokeStyle=k<.5?C.teal:C.green;g.beginPath();g.arc(p.x,p.y,8+k*m*.55,0,7);g.stroke();
+      g.globalAlpha=(1-k)*.35;g.beginPath();g.arc(p.x,p.y,4+k*m*.32,0,7);g.stroke()}
+    g.globalAlpha=1}
+  function loop(t){draw(t);raf=on?requestAnimationFrame(loop):null}
+  size();new ResizeObserver(()=>{size();if(RM||!raf)draw(performance.now())}).observe(vis);
+  if(RM){draw(0);return}
+  new IntersectionObserver(es=>{on=es[0].isIntersecting;if(on&&!raf)raf=requestAnimationFrame(loop)}).observe(vis);
+  addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;tx=Math.max(-1,Math.min(1,(e.clientX/innerWidth-.5)*2));ty=Math.max(-1,Math.min(1,(e.clientY/innerHeight-.5)*2))},{passive:true});
+  addEventListener('deviceorientation',e=>{if(e.gamma==null)return;tilt=true;tx=Math.max(-1,Math.min(1,e.gamma/30));ty=Math.max(-1,Math.min(1,(e.beta-45)/30))},{passive:true});
+  addEventListener('scroll',()=>{if(tilt||matchMedia('(hover:hover)').matches)return;const r=vis.getBoundingClientRect();ty=Math.max(-1,Math.min(1,(r.top+r.height/2-innerHeight/2)/(innerHeight/2)))},{passive:true});
+  vis.addEventListener('pointerdown',e=>{const r=vis.getBoundingClientRect();ripples.push({x:e.clientX-r.left,y:e.clientY-r.top,t:performance.now()})});
 })();
 
 /* smooth anchors */
