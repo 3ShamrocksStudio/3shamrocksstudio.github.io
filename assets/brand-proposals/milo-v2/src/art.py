@@ -44,6 +44,7 @@ def build_noshade():
     Bbg=cv2.inpaint(img.astype(np.uint8),(hole|(inside&(xx>780))|(img.min(2)>120)&(xx>780)).astype(np.uint8)*255,20,cv2.INPAINT_TELEA).astype(np.float32)
     out[bgh]=Bbg[bgh]
     out=rim_outline(out,inside,hole&(xx>850),seed=2)
+    out=retouch(out,img,hole,inside,xc)
     return out
 def dq(c,rng):
     d=np.sqrt(((RAMP-c)**2).sum(1)); o=np.argsort(d); a,b=o[0],o[1]
@@ -134,3 +135,35 @@ def erase_mouth(img,xmin,xmax,seed=7):
     hole=cellify(hole,OX,OY,0.15)
     inside=np.ones((H,W),bool)
     return fill_region(img,hole,inside,seed,fall=0,kmin=150,speck_p=0.0,sig=14)
+
+def retouch(out,img,hole,inside,xc):
+    """v2.1 retouch: (1) dithered rim gradient beside the far eye, sampled from the
+    original head-edge fur; (2) clean the stair seam left of the near eye."""
+    H,W,_=out.shape; rng=np.random.default_rng(21)
+    yy,xx=np.mgrid[0:H,0:W]
+    ref=load()
+    # rim gradient: colours sampled from the original left head edge (same light, same fur), dithered by distance
+    lvl=[(RAMP[4],RAMP[3],.5),(RAMP[3],RAMP[2],.5),(RAMP[2],RAMP[1],.45),(RAMP[1],RAMP[0],.35),(RAMP[0],RAMP[1],.15)]
+    for cy,cx,sl in list(grid_cells(hole&inside&(xx>780)&(yy>270)&(yy<415),OX,OY,C)):
+        yc,x0=cy+C//2,cx+C//2
+        if out[yc,x0].max()<60: continue
+        d=xc[yc,x0]-x0-C
+        if d<0 or d>=45: continue
+        a_,b_,p=lvl[int(d//C)]
+        m=hole[sl]&(out[sl].max(2)>60)
+        out[sl][m]=b_ if rng.random()<p else a_
+    # light speckle texture in the flat area between the far eye and the rim
+    for cy,cx,sl in list(grid_cells(hole&inside&(xx>780)&(xx<905)&(yy>280)&(yy<400),OX,OY,C)):
+        if out[sl].max(2).min()>200 and rng.random()<0.12: out[sl]=RAMP[1] if rng.random()<.7 else RAMP[2]
+    # (2) stair seam left of the near eye: remnant shade-halo pixels just below the fill
+    band=(xx>=470)&(xx<=640)&(yy>=330)&(yy<=392)
+    edge=cv2.dilate(hole.astype(np.uint8),np.ones((15,15),np.uint8)).astype(bool)&~hole
+    wr,_=ncv(ref,((~hole)&(ref.min(2)>232)).astype(np.float32),14)
+    bad=band&edge&(out.min(2)<236)&(out.min(2)>150)&(wr.min(2)>225)
+    out[bad]=wr[bad]
+    dk=(band&(out.min(2)<222)).astype(np.uint8)
+    n,lab,st,_=cv2.connectedComponentsWithStats(dk)
+    for k in range(1,n):
+        if st[k,4]<40:
+            mm=lab==k; out[mm]=wr[mm] if wr[mm].min()>225 else RAMP[0]
+    return out
