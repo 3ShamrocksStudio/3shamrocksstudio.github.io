@@ -1,35 +1,29 @@
-# EZRA · Brand v4
+# EZRA (עזרא) · Brand v5
 
-**Idea:** help that does it for you. עֶזְרָא עושה את זה בשבילך.
+**Idea:** help that does it for you. עזרא עושה את זה בשבילך.
 
-## Source and rule
-- Dave's logo, `Ezra senior helper/Ezra Logo.svg`: a helping arm reaching under a column of dots, and his own rounded **EZRA** letterforms, in `#005CFF` and `#041933`.
-- v4 uses Dave's mark and Dave's wordmark vectors exactly. v3 had replaced the wordmark with a font; v4 restores the real one.
-- **No brown, tan or beige anywhere.** The palette is blue, navy, sky, mist and one success green.
+## The mark
+- The Hebrew **ע** and the Latin **E** share one upright stem. The ע (Trust Blue) sits on the left: its arm reaches in and its foot reaches out. The E (Warm Coral) opens to the right.
+- One glyph, read in both directions: Hebrew right to left, English left to right. Steady blue for trust, coral for warmth.
+- Thick, rounded strokes stay clear at small sizes and for older eyes.
+- Files: `logo-mark.png` (transparent), `mark-blue.svg`, `mark-white.svg` (for dark), `app-icon.png`.
 
-## Logo system
-- `logo.png` / `logo-on-dark.png`: mark + EZRA + עֶזְרָא, as one bilingual lockup.
-- `logo-mark.png`, `mark-blue.svg`, `mark-white.svg`: the mark. `wordmark.svg`: Dave's EZRA letters.
-- `app-icon.png`: the white mark on an Ezra Blue tile.
-- `hero.png`: the "done for you" moment on a phone.
+## Lockups
+- `logo.png`: mark + **EZRA** (Navy) + divider + **עזרא** (Trust Blue), transparent, for light backgrounds.
+- `logo-on-dark.png`: white mark and EZRA, light-blue עזרא, for dark backgrounds.
 
-## Icons
-`icons.svg` / `icons.png`: 10 everyday-task icons for older adults (Pharmacy, Doctor visit, Call family, Groceries, Bills, Book a ride, Read a letter, Medication time, Video call, Scam check). Thick 4 px round strokes in Ezra Blue. Several carry one solid sky dot taken from the mark's dot column. Large and calm.
-
-## Palette
+## Palette (no brown, tan or beige)
 | Name | Hex | Use |
 |---|---|---|
-| Ezra Blue | `#005CFF` | Mark, primary, CTAs (Ezra Logo.svg) |
-| Blue Deep | `#0046CC` | Pressed, gradient end |
-| Navy | `#041933` | Wordmark, ink (Ezra Logo.svg) |
+| Navy | `#0B2545` | Text, EZRA |
+| Trust Blue | `#1D5BD8` | ע, עזרא, primary, CTAs |
+| Warm Coral | `#FF7A45` | E, warm highlights (not for body text) |
+| Sky | `#DCE8FF` | Soft fills |
+| Mist | `#F6F8FC` | Canvas |
 | Slate | `#5B6B85` | Secondary text |
-| Signal Sky | `#5C92FF` | Icon dot |
-| Sky | `#A9C6FF` | Soft fills, Hebrew on dark |
-| Mist | `#F4F7FE` | Canvas |
-| Line | `#E4EBF8` | Borders |
-| Done | `#12B76A` | "Done for you" success only |
+| Done | `#12B76A` | Success only |
 
 ## Type
-- Display, Hebrew and Latin: **Rubik 700–800**. Its rounded corners match Dave's letterforms.
-- Reading: **Assistant 400–700**, with body text 22 px or larger.
-- Contrast: Navy on Mist 16.4:1, white on Ezra Blue 5.3:1.
+- **Assistant** (Google Fonts), Hebrew and Latin. 800 for the wordmark and headings, 400–700 for reading, body 22 px or larger.
+
+`hero.png`, `icons.png`, `icons.svg` and `wordmark.svg` are from v4 and still show the old mark and letterforms.
