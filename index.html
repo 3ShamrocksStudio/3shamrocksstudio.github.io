@@ -425,16 +425,17 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .ct-logo{width:150px;margin-bottom:26px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .ct-logo svg{display:block;width:100%;height:auto;overflow:visible}
 .ct-letters{fill:#ecebf3}
-.ct-mask path{fill:none;stroke:#fff;stroke-width:60;stroke-dasharray:1 1;stroke-dashoffset:1}
-.ct-logo.grow .ct-mask path{stroke-dashoffset:0;transition:stroke-dashoffset 1.15s cubic-bezier(.55,.1,.25,1)}
-.ct-logo.grow .ct-mask .m-s{transition-delay:.18s}.ct-logo.grow .ct-mask .m-m{transition-delay:.55s;transition-duration:.5s}
+.ct-heart{transform-box:fill-box;transform-origin:50% 60%;animation:ctBeat 1.6s ease-in-out infinite}
+@keyframes ctBeat{0%,42%,100%{transform:scale(1)}12%{transform:scale(1.06)}22%{transform:scale(1.01)}31%{transform:scale(1.045)}}
+.ct-aura circle{fill:none;stroke-width:3;opacity:0;transform-box:fill-box;transform-origin:center;animation:ctAura 3.2s cubic-bezier(.2,.6,.35,1) infinite}
+.ct-aura circle:nth-child(2){animation-delay:1.07s}.ct-aura circle:nth-child(3){animation-delay:2.13s}
+@keyframes ctAura{0%{transform:scale(.55);opacity:0}12%{opacity:.5}100%{transform:scale(2.3);opacity:0}}
+@media (prefers-reduced-motion:reduce){.ct-heart{animation:none}.ct-aura{display:none}}
 .ct-gl{opacity:0}
 .ct-logo.glitch .ct-gl{animation:ctGlitch .42s steps(1) 1}
 .ct-logo.glitch .ct-letters{animation:ctJit .42s steps(1) 1}
 @keyframes ctGlitch{0%{opacity:.9;transform:translate(-7px,0)}25%{opacity:.8;transform:translate(6px,3px)}50%{opacity:.9;transform:translate(-3px,-2px)}75%{opacity:.6;transform:translate(4px,0)}100%{opacity:0;transform:none}}
 @keyframes ctJit{0%{transform:translate(2px,0)}50%{transform:translate(-2px,1px)}100%{transform:none}}
-.ct-glow{opacity:0;transition:opacity 1.2s ease}
-.ct-logo.leafed .ct-glow{opacity:1}
 .contact-inner{max-width:560px;position:relative;z-index:2}
 .contact h2{text-shadow:0 4px 30px rgba(0,0,0,.6)}
 .contact-sub{font-size:19px;line-height:1.6;color:var(--ink-2);margin:20px auto 34px;max-width:480px;text-wrap:balance}
@@ -873,29 +874,18 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
   <canvas class="ct-fx" id="ct-fx" aria-hidden="true"></canvas>
   <div class="wrap ct-grid">
     <div class="ct-main">
-      <div class="ct-logo" id="ct-logo" role="img" aria-label="The 3Shamrocks logo, growing">
+      <div class="ct-logo" id="ct-logo" role="img" aria-label="The 3Shamrocks logo">
         <svg viewBox="190 40 470 740" aria-hidden="true">
           <defs>
-            <mask id="ctMask" class="ct-mask" maskUnits="userSpaceOnUse" x="150" y="0" width="560" height="820">
-              <path class="m-3" pathLength="1" d="M215 729H316Q358 729 358 687V253Q358 212 316 212H215"/>
-              <path class="m-m" pathLength="1" d="M358 470H239"/>
-              <path class="m-s" pathLength="1" d="M475 591V690Q475 734 520 734H570Q614 734 614 690V505L475 440V255Q475 210 530 210H560Q614 210 614 255V379"/>
-            </mask>
-            <linearGradient id="ctLeafA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f2ee86"/><stop offset=".55" stop-color="#9be67f"/><stop offset="1" stop-color="#45c27a"/></linearGradient>
-            <linearGradient id="ctLeafB" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f27a"/><stop offset=".6" stop-color="#86dd84"/><stop offset="1" stop-color="#3aa86c"/></linearGradient>
-            <radialGradient id="ctGlowG"><stop offset="0" stop-color="#8be36a" stop-opacity=".55"/><stop offset="1" stop-color="#8be36a" stop-opacity="0"/></radialGradient>
             <path id="ctL" d="M215,191 215,233 310,233 311,234 316,234 325,237 331,242 335,249 336,256 337,257 337,264 338,265 338,449 337,450 239,450 239,491 337,491 338,492 338,677 337,678 336,689 332,698 328,702 320,706 312,707 311,708 215,708 215,750 304,750 305,749 321,748 338,743 346,739 356,732 361,727 367,719 373,707 377,694 378,682 379,681 379,259 378,258 378,252 372,231 365,219 356,209 346,202 338,198 321,193 306,192 305,191ZM525,188 524,189 516,189 515,190 510,190 509,191 505,191 501,193 498,193 483,200 477,204 465,217 461,224 457,235 457,238 455,243 455,250 454,251 454,441 455,442 456,449 459,455 463,460 470,465 478,469 480,469 493,476 495,476 508,483 510,483 523,490 525,490 538,497 540,497 553,504 555,504 568,511 570,511 583,518 585,518 593,523 594,687 591,697 582,707 577,710 567,713 562,713 561,714 529,714 528,713 523,713 517,711 507,705 501,698 498,692 496,685 496,679 495,678 495,591 454,591 454,685 455,686 455,693 456,694 457,703 464,721 470,730 479,739 488,745 502,751 505,751 514,754 520,754 521,755 568,755 569,754 576,754 577,753 589,751 595,748 597,748 610,741 615,737 623,728 630,715 632,709 632,706 634,701 634,695 635,694 635,514 630,501 626,496 619,491 613,489 596,480 594,480 577,471 575,471 558,462 556,462 539,453 537,453 496,433 496,300 495,299 495,263 496,262 495,261 495,258 496,257 497,249 501,242 511,234 519,231 533,230 534,229 555,229 556,230 568,231 579,236 589,247 592,254 593,263 594,264 594,377 602,377 603,378 611,378 612,379 635,381 635,257 634,256 634,249 633,248 632,240 626,224 618,212 604,200 592,194 578,190 574,190 573,189 566,189 565,188Z"/>
           </defs>
-          <circle class="ct-glow" cx="432" cy="112" r="120" fill="url(#ctGlowG)"/>
-          <g mask="url(#ctMask)">
+          <g class="ct-aura"><circle cx="433.5" cy="113" r="70" stroke="#8be36a"/><circle cx="433.5" cy="113" r="70" stroke="#2fb7c9"/><circle cx="433.5" cy="113" r="70" stroke="#8239ea"/></g>
+          <g>
             <use class="ct-gl" href="#ctL" fill="#ff2bd6" fill-rule="evenodd"/>
             <use class="ct-gl" href="#ctL" fill="#39ff8a" fill-rule="evenodd" style="animation-direction:reverse"/>
             <use class="ct-letters" href="#ctL" fill-rule="evenodd"/>
           </g>
-          <g id="ct-sprout" transform="translate(420 171) scale(0)">
-            <g id="ct-lf-l"><path d="M0 0C-22-25-64-43-63-73C-62-97-42-109-22-107C-2-105 10-89 12-71C8-43 4-21 0 0Z" fill="#2f8f5a" transform="translate(3 4)"/><path d="M0 0C-22-25-64-43-63-73C-62-97-42-109-22-107C-2-105 10-89 12-71C8-43 4-21 0 0Z" fill="url(#ctLeafA)"/><path d="M0-4C-6-30-18-60-34-90" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2.4" stroke-linecap="round"/></g>
-            <g id="ct-lf-r"><path d="M0 0C6-21 12-45 14-71C18-91 36-105 58-104C80-103 92-87 90-67C86-39 36-21 0 0Z" fill="#2f8f5a" transform="translate(-3 4)"/><path d="M0 0C6-21 12-45 14-71C18-91 36-105 58-104C80-103 92-87 90-67C86-39 36-21 0 0Z" fill="url(#ctLeafB)"/><path d="M2-4C14-30 34-58 56-86" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2.4" stroke-linecap="round"/></g>
-          </g>
+          <image class="ct-heart" href="assets/studio/heart-on-dark.png" x="355.5" y="60" width="156" height="113.4"/>
         </svg>
       </div>
       <div class="contact-inner">
@@ -1131,27 +1121,11 @@ addEventListener('load',()=>{const lv=$('#lvl'),fill=$('#lvl-fill');if(!lv)retur
   requestAnimationFrame(loop);
 })();
 
-/* contact: the 3S mark grows once, then its leaves lean toward the cursor and bloom on click */
+/* contact: the brand heart beats on a CSS loop; a click bursts circles from it */
 (function(){
-  const box=$('#ct-logo'),sec=$('#contact');if(!box)return;const sp=$('#ct-sprout'),lL=$('#ct-lf-l'),lR=$('#ct-lf-r');
-  let open=0,bloom=0,lean=0,leanT=0,t0=0,raf=null,vis=false,grown=false;
-  const ease=k=>1-Math.pow(1-k,3),back=k=>{const c=1.9;return 1+(c+1)*Math.pow(k-1,3)+c*Math.pow(k-1,2)};
-  function draw(t){const sw=RM?0:Math.sin(t/900)*2.2;
-    lean+=(leanT-lean)*.08;bloom*=.94;
-    const s=Math.max(0,open)*(1+bloom*.3);
-    sp.setAttribute('transform','translate(420 171) scale('+s.toFixed(4)+')');
-    const fold=(1-Math.min(1,open))*38;
-    lL.setAttribute('transform','rotate('+(fold+sw+lean-bloom*10).toFixed(2)+')');
-    lR.setAttribute('transform','rotate('+(-fold-sw*.8+lean+bloom*10).toFixed(2)+')')}
-  function loop(t){if(t0&&open<1){const k=Math.min(1,(t-t0)/900);open=back(k)}draw(t);if(vis)raf=requestAnimationFrame(loop);else raf=null}
-  function grow(){if(grown)return;grown=true;
-    if(RM){box.classList.add('grow','leafed');open=1;draw(0);return}
-    box.classList.add('grow');setTimeout(()=>{t0=performance.now();box.classList.add('leafed')},1250);setTimeout(()=>box.classList.add('glitch'),2150)}
-  new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis){grow();if(!raf&&!RM)raf=requestAnimationFrame(loop)}},{threshold:.35}).observe(box);
-  sec.addEventListener('pointermove',e=>{const r=box.getBoundingClientRect(),cx=r.left+r.width*.5,cy=r.top+r.height*.17;const dx=e.clientX-cx,dy=e.clientY-cy;leanT=Math.max(-1,Math.min(1,dx/320))*16*Math.min(1,Math.hypot(dx,dy)/120)},{passive:true});
-  sec.addEventListener('pointerleave',()=>{leanT=0});
-  sec.addEventListener('click',e=>{if(e.target.closest('a,button')||!grown||RM)return;bloom=1;box.classList.remove('glitch');void box.offsetWidth;box.classList.add('glitch');
-    const r=box.getBoundingClientRect();window.__dotBurst&&window.__dotBurst(r.left+r.width*.49,r.top+r.height*.13,34)});
+  const box=$('#ct-logo'),sec=$('#contact');if(!box)return;
+  sec.addEventListener('click',e=>{if(e.target.closest('a,button')||RM)return;box.classList.remove('glitch');void box.offsetWidth;box.classList.add('glitch');
+    const r=box.getBoundingClientRect();window.__dotBurst&&window.__dotBurst(r.left+r.width*.49,r.top+r.height*.1,34)});
 })();
 
 /* photo stickers: drag one onto the photo (or tap to drop it in place), drag it off to remove, Reset clears all */
