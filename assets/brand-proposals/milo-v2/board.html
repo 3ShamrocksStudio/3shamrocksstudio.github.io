@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Milo Brand v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#1A023B; --ink:#0E0820; --fur:#F4EFEB; --fur-shade:#B5AEC8; --frost:#F6F3FF;
+  --indigo:#4B3A9E; --lilac:#784EB2; --ice:#5CC8FF; --ice-deep:#1B9BDC; --frost-blue:#CDEFFF;
+  --pink:#FF4FA3; --pink-deep:#C2186F; --coral:#FF7A66; --magenta:#EB2AC7;
+  --bg:var(--frost); --text:var(--ink); --muted:#5B5470; --card:#FFFFFF; --line:#E4DEF5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#120129; --text:var(--fur); --muted:var(--fur-shade); --card:#1F0A45; --line:#33215F; }
+}
+:root[data-theme="dark"]{ --bg:#120129; --text:var(--fur); --muted:var(--fur-shade); --card:#1F0A45; --line:#33215F; }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:400 15px/1.5 Rubik,system-ui,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:28px 16px 48px}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;margin-bottom:20px}
+header img{height:72px;width:auto}
+header h1{font:600 30px/1.1 Fredoka,Rubik,sans-serif;margin:0}
+header p{margin:2px 0 0;color:var(--muted)}
+.tag{display:inline-block;font-weight:700;font-size:12px;letter-spacing:.06em;background:var(--coral);color:var(--ink);padding:3px 8px;border-radius:6px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}
+.card h2{font:600 19px/1.2 Fredoka,Rubik,sans-serif;margin:0 0 4px}
+.card .sub{color:var(--muted);font-size:13px;margin:0 0 10px}
+.card img{display:block;width:100%;height:auto;border-radius:10px}
+.dark{background:var(--night);border-color:var(--night);color:var(--fur)}
+.dark .sub{color:var(--fur-shade)}
+.s12{grid-column:span 12}.s8{grid-column:span 8}.s7{grid-column:span 7}.s6{grid-column:span 6}.s5{grid-column:span 5}.s4{grid-column:span 4}
+ul{margin:6px 0 0;padding-left:18px}
+li{margin:3px 0}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.chip{border-radius:12px;overflow:hidden;border:1px solid var(--line);font-size:12.5px}
+.chip i{display:block;height:54px}
+.chip div{padding:7px 9px}
+.chip b{display:block;font-weight:600;font-size:13px}
+.chip code{font-size:12px}
+.group{font:600 13px Rubik;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.type-demo .wm{font:600 64px/1 Fredoka,sans-serif;color:var(--pink-deep)}
+.type-demo .h{font:700 26px/1.2 Rubik}
+.type-demo .b{font:400 16px/1.5 Rubik}
+.type-demo .he{font:500 22px/1.3 Rubik;direction:rtl;text-align:right}
+.icons{display:flex;flex-wrap:wrap;gap:14px;margin:8px 0 6px}
+.icons figure{margin:0;text-align:center;font-size:12px;color:var(--muted)}
+.icons svg{width:64px;height:64px;display:block;background:var(--night);border-radius:14px;padding:10px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+td,th{border-top:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+th{font-weight:600}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:middle;margin-right:5px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.icon-check{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+.icon-check img{border-radius:22.5%;flex:none}
+.icon-check img.i180{width:180px}.icon-check img.i90{width:90px}.icon-check img.i60{width:60px}.icon-check img.i40{width:40px}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+@media (max-width:900px){.s8,.s7,.s6,.s5,.s4{grid-column:span 12}.pair{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <img src="logo/app-icon-180.png" alt="Milo app icon" width="72" height="72" style="border-radius:16px">
+  <div>
+    <h1>Milo · brand v2 (proposal)</h1>
+    <p>Shades dropped. Same bear, same pose, edited by hand from the reference art. Staging only, not live. <span class="tag">NEEDS YOUR EYES</span></p>
+  </div>
+</header>
+
+<div class="grid">
+
+  <section class="card dark s7">
+    <h2>1 · Shades off</h2>
+    <p class="sub">Left: the reference art. Right: the same art, shades removed and fur repainted in the same pixel style, with new warm eyes.</p>
+    <img src="character/before-after.png" alt="Before and after: Milo with and without sunglasses" loading="lazy">
+  </section>
+  <section class="card dark s5">
+    <h2>2× proof: eye area</h2>
+    <p class="sub">Nearest-neighbour 2× crop of where the shades were.</p>
+    <img src="character/eye-area-2x.png" alt="Eye area at 2x" loading="lazy">
+  </section>
+
+  <section class="card dark s12">
+    <h2>2 · Mood states</h2>
+    <p class="sub">Only the eyes and mouth change. Calm/happy is the default.</p>
+    <img src="character/moods.png" alt="Calm, breathing and proud moods" loading="lazy">
+  </section>
+
+  <section class="card dark s8">
+    <h2>3 · Chain: your pick</h2>
+    <p class="sub">A keeps the purple chain. B drops it. The popsicle stays in both: it says "cool down".</p>
+    <img src="character/chain-compare.png" alt="Milo with and without the chain" loading="lazy">
+  </section>
+  <section class="card s4">
+    <h2>Recommendation: B</h2>
+    <ul>
+      <li>A chain reads as "bling". It says status, not calm.</li>
+      <li>Parents pay. B is the safer first impression for them.</li>
+      <li>B gives the eyes and the popsicle the attention.</li>
+      <li>Both sets are ready: <code>milo-*.png</code> and <code>milo-*-nochain.png</code>.</li>
+    </ul>
+    <img src="character/chain-area-2x.png" alt="Chain area at 2x after removal" loading="lazy" style="margin-top:10px">
+    <p class="note">2× proof of the neck after the chain is removed.</p>
+  </section>
+
+  <section class="card s6">
+    <h2>4 · Wordmark</h2>
+    <p class="sub">Fredoka SemiBold: rounded and geometric. The i-dot is a pixel ice cube, a small nod to the pixel art.</p>
+    <div class="pair">
+      <div style="background:var(--night);border-radius:10px;padding:18px"><img src="logo/wordmark-pink.png" alt="Milo wordmark, pink on dark"></div>
+      <div style="background:#F6F3FF;border-radius:10px;padding:18px"><img src="logo/wordmark-pink-deep.png" alt="Milo wordmark, deep pink on light"></div>
+    </div>
+    <p class="note">On dark: Pink #FF4FA3 (6.2:1). On light: Pink Deep #C2186F (5.3:1). Tuned from the art's #F42A92.</p>
+  </section>
+  <section class="card s6">
+    <h2>App icon</h2>
+    <p class="sub">1024 px master (nearest-neighbour, crisp pixels). Checked at 180, 120, 60 and 40 px: eyes and nose still read.</p>
+    <div class="icon-check">
+      <img class="i180" src="logo/app-icon-1024.png" alt="App icon 1024" width="180" height="180" loading="lazy">
+      <img class="i90" src="logo/app-icon-180.png" alt="App icon 180" width="90" height="90">
+      <img class="i60" src="logo/app-icon-180.png" alt="App icon 60" width="60" height="60">
+      <img class="i40" src="logo/app-icon-180.png" alt="App icon 40" width="40" height="40">
+    </div>
+    <p class="note">Uses the no-chain art, so the icon works whichever way the chain goes.</p>
+  </section>
+
+  <section class="card s6 dark">
+    <h2>Lockup · on dark</h2>
+    <img src="logo/lockup-horizontal-on-dark.png" alt="Horizontal lockup on dark" loading="lazy">
+  </section>
+  <section class="card s6" style="background:#F6F3FF;color:var(--ink);border-color:#E4DEF5">
+    <h2>Lockup · on light</h2>
+    <img src="logo/lockup-horizontal-on-light.png" alt="Horizontal lockup on light" loading="lazy">
+  </section>
+
+  <section class="card s12 dark">
+    <h2>Brand card</h2>
+    <img src="logo/brand-card.png" alt="Milo brand card" loading="lazy">
+  </section>
+
+  <section class="card s12">
+    <h2>5 · Palette and colour psychology</h2>
+    <p class="sub">Sampled from the art; "tuned" means adjusted from a sampled colour. Calm is cool. Wins are warm.</p>
+    <div class="group">Core</div>
+    <div class="chips">
+      <div class="chip"><i style="background:#1A023B"></i><div><b>Night</b><code>#1A023B</code><br>Sampled. Default surface.</div></div>
+      <div class="chip"><i style="background:#0E0820"></i><div><b>Ink</b><code>#0E0820</code><br>Sampled outline. Text on light.</div></div>
+      <div class="chip"><i style="background:#F4EFEB"></i><div><b>Fur</b><code>#F4EFEB</code><br>Sampled. Text on dark.</div></div>
+      <div class="chip"><i style="background:#B5AEC8"></i><div><b>Fur Shade</b><code>#B5AEC8</code><br>Sampled. Secondary text on dark.</div></div>
+      <div class="chip"><i style="background:#F6F3FF"></i><div><b>Frost</b><code>#F6F3FF</code><br>Tuned. Light surface.</div></div>
+    </div>
+    <div class="group">Calm (cool): check-in, breathe, grown-up help</div>
+    <div class="chips">
+      <div class="chip"><i style="background:#4B3A9E"></i><div><b>Calm Indigo</b><code>#4B3A9E</code><br>Tuned from the eyes. Slows things down.</div></div>
+      <div class="chip"><i style="background:#784EB2"></i><div><b>Lilac</b><code>#784EB2</code><br>Sampled chain. Secondary.</div></div>
+      <div class="chip"><i style="background:#5CC8FF"></i><div><b>Ice Blue</b><code>#5CC8FF</code><br>Tuned from the lens. Breathe ring.</div></div>
+      <div class="chip"><i style="background:#1B9BDC"></i><div><b>Ice Deep</b><code>#1B9BDC</code><br>Sampled. Ice on light.</div></div>
+      <div class="chip"><i style="background:#CDEFFF"></i><div><b>Frost Blue</b><code>#CDEFFF</code><br>Tuned. Calm surface on light.</div></div>
+    </div>
+    <div class="group">Wins (warm): "I did it", growth, brave move</div>
+    <div class="chips">
+      <div class="chip"><i style="background:#FF4FA3"></i><div><b>Milo Pink</b><code>#FF4FA3</code><br>Tuned. Wordmark, celebration.</div></div>
+      <div class="chip"><i style="background:#C2186F"></i><div><b>Pink Deep</b><code>#C2186F</code><br>Tuned. Pink on light.</div></div>
+      <div class="chip"><i style="background:#FF7A66"></i><div><b>Coral</b><code>#FF7A66</code><br>New. Brave-move wins.</div></div>
+      <div class="chip"><i style="background:#EB2AC7"></i><div><b>Popsicle</b><code>#EB2AC7</code><br>Sampled. Illustration only.</div></div>
+    </div>
+    <p class="note">Cool, low-saturation colours lower arousal, so breathe and check-in screens stay indigo and ice. Warm colours read as energy and reward, so pink and coral appear only when a child finishes something. Never use warm colours on the crisis or grown-up help screens.</p>
+  </section>
+
+  <section class="card s6 type-demo">
+    <h2>Type</h2>
+    <p class="sub">Two families, both free on Google Fonts, both with Hebrew.</p>
+    <div class="wm">Milo</div>
+    <p class="note" style="margin-top:2px">Fredoka SemiBold: wordmark and big kid-facing headlines only.</p>
+    <div class="h">Breathe with Milo</div>
+    <div class="b">Rubik for all UI text. 400 body, 500 labels, 700 headings. Minimum 17 px for read-aloud screens (ages 6–8).</div>
+    <div class="he">נושמים יחד עם מיילו</div>
+  </section>
+
+  <section class="card s6">
+    <h2>Icon style</h2>
+    <div class="icons" id="icons"></div>
+    <ul>
+      <li>Pixel icons on a 12 × 12 grid, square pixels, no anti-aliasing.</li>
+      <li>One colour per icon. Fur on dark, Ink on light. The state colour shows only when active.</li>
+      <li>Icons sit in a rounded tile (22% radius), like the app icon.</li>
+      <li>No outline icons, no gradients, no emoji.</li>
+    </ul>
+  </section>
+
+  <section class="card s6">
+    <h2>Character rules (shades-free)</h2>
+    <ul>
+      <li>No sunglasses, ever. His eyes carry the mood.</li>
+      <li>Same bear, same pose, same pixel size (about 9 px cells at 1408 px). Edit the eyes and mouth; never redraw him.</li>
+      <li>Eyes: deep ink with a 2 × 2 white highlight top-left and a small ice glint. Keep the highlight in every open-eye state.</li>
+      <li>The popsicle stays. It means "cool down".</li>
+      <li>Milo lives on Night. On light pages he sits in his Night tile; never cut him out onto white.</li>
+      <li>Scale with nearest-neighbour at whole steps (2×, 3×). Never blur or smooth the pixels.</li>
+      <li>Never: a phone, money, weapons or a screen in his paws, or text in his speech.</li>
+    </ul>
+  </section>
+
+  <section class="card s6">
+    <h2>Mood-state usage</h2>
+    <table>
+      <tr><th>State</th><th>Use on</th><th>Colour</th></tr>
+      <tr><td><b>Calm / happy</b></td><td>Home, "How are you?", Grown-up help, crisis card</td><td><span class="dot" style="background:#4B3A9E"></span>Indigo, Night</td></tr>
+      <tr><td><b>Breathing</b></td><td>Breathe together: in 4, hold 2, out 6. Milo stays on this face for the whole exercise.</td><td><span class="dot" style="background:#5CC8FF"></span>Ice, Frost Blue</td></tr>
+      <tr><td><b>Proud</b></td><td>"I did it", stage growth. Never on "maybe later" (that stays calm, with no penalty).</td><td><span class="dot" style="background:#FF4FA3"></span>Pink, Coral</td></tr>
+    </table>
+    <p class="note">The crisis path always uses Calm. Milo never looks proud, sad or worried on safety screens.</p>
+  </section>
+
+  <section class="card s12">
+    <h2>Files</h2>
+    <p class="sub">All in <code>assets/brand-proposals/milo-v2/</code>. Live brand assets are untouched.</p>
+    <ul>
+      <li><b>character/</b> milo-calm, milo-breathe, milo-proud (+ -nochain), avatar-*, moods, moods-nochain, chain-compare, before-after, eye-area-2x, chain-area-2x</li>
+      <li><b>logo/</b> wordmark-pink, wordmark-pink-deep, app-icon-1024, app-icon-180, app-icon-check, lockup-horizontal-on-dark, lockup-horizontal-on-light, brand-card</li>
+      <li><b>system/</b> palette.json · <b>src/</b> the Python edit scripts</li>
+    </ul>
+  </section>
+
+</div>
+</div>
+<script>
+// pixel icons drawn from 12x12 grids
+const ICONS={
+ 'Breathe':['............','..####......','.#....#.....','......#.....','#########...','............','###########.','............','#######.....','.......#....','....#..#....','.....##.....'],
+ 'Feeling':['............','.###...###..','#####.#####.','###########.','###########.','.#########..','..#######...','...#####....','....###.....','.....#......','............','............'],
+ 'Brave':['.....#......','.....#......','....###.....','#.#######.#.','.#########..','..#######...','...#####....','..###.###...','..##...##...','.##.....##..','............','............'],
+ 'Grown-up':['....####....','...######...','...######...','....####....','............','..########..','.##########.','.##########.','.##########.','.##########.','............','............']
+};
+const host=document.getElementById('icons');
+for(const [name,rows] of Object.entries(ICONS)){
+  let r='';rows.forEach((row,y)=>[...row].forEach((c,x)=>{if(c==='#')r+=`<rect x="${x}" y="${y}" width="1" height="1"/>`;}));
+  host.insertAdjacentHTML('beforeend',`<figure><svg viewBox="0 0 12 12" shape-rendering="crispEdges" fill="#F4EFEB" role="img" aria-label="${name} icon">${r}</svg>${name}</figure>`);
+}
+</script>
+</body>
+</html>
