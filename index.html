@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&text=Chore%20Royale&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600&display=swap">
-<link rel="preload" as="image" href="assets/studio/s9/sh-map.webp">
+<link rel="preload" as="image" href="assets/work/shomer/app-map.webp">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -218,6 +218,8 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 /* honest data label over real screens (e.g. J8NIX shows the studio's own real project list) */
 .snap{position:absolute;z-index:5;left:3%;bottom:4%;padding:.35em .8em;border-radius:99px;background:rgba(35,42,54,.82);color:#fff;font:600 9px/1 var(--font-b);letter-spacing:.14em;text-transform:uppercase;opacity:0;transition:opacity .45s ease;pointer-events:none}
 .dev.on .snap{opacity:1}
+.hero-media .snap{z-index:2;bottom:3%}
+.hero-media img.cur[data-s]~.snap{opacity:1}
 @keyframes powerOn{0%{filter:brightness(2.2) saturate(.3)}100%{filter:none}}
 
 /* laptop */
@@ -603,13 +605,14 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
       <div class="hero-dev" id="hero-dev" style="--glow:rgba(130,57,234,.7)">
         <div class="rig"><div class="ph"><div class="bez"><div class="scr">
           <div class="hero-media" id="hero-media">
-            <img class="cur" src="assets/studio/s9/sh-map.webp" alt="SH&#10017;MER app, live map with events" data-b="0" width="440" height="954">
+            <img class="cur" src="assets/work/shomer/app-map.webp" alt="SH&#10017;MER app, live map with events" data-b="0" width="720" height="1558">
             <img data-src="assets/studio/s9/lp-pick.webp" alt="LickPick app, your best lick found" data-b="1">
-            <img data-src="assets/studio/s9/cr-arena.webp" alt="Chore Royale app, this week's arena" data-b="2">
+            <img data-src="assets/work/chore-royale/live-grid.webp" alt="Chore Royale app, the chore board" data-b="2" data-s>
             <img data-src="assets/studio/s9/th-cine.webp" alt="Trashure-Hunters, the Temple of Light" data-b="3">
             <img data-src="assets/work/fairent/app-result.webp" alt="FaiRent, rent fairness result" data-b="4">
-            <img data-src="assets/studio/s9/sh-card.webp" alt="SH&#10017;MER app, event card" data-b="0">
-            <img data-src="assets/studio/s9/sh-cpr.webp" alt="SH&#10017;MER app, CPR card" data-b="0">
+            <img data-src="assets/work/shomer/app-around.webp" alt="SH&#10017;MER app, events around me" data-b="0">
+            <img data-src="assets/work/shomer/app-cpr.webp" alt="SH&#10017;MER app, CPR card" data-b="0">
+            <span class="snap" aria-hidden="true">Sample data</span>
           </div>
           <i class="glare"></i></div></div></div></div>
       </div>
@@ -656,7 +659,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
 
     <div class="devices">
       <div class="row">
-        <a class="dev" href="work/shomer.html" data-shots="assets/studio/s9/sh-map.webp,assets/studio/s9/sh-card.webp,assets/studio/s9/sh-cpr.webp,assets/studio/s9/sh-circle.webp" style="--o:1;--d:-0.4s;--glow:rgba(224,168,40,.45)">
+        <a class="dev" href="work/shomer.html" data-shots="assets/work/shomer/app-map.webp,assets/work/shomer/app-around.webp,assets/work/shomer/app-cpr.webp,assets/work/shomer/app-circles.webp" style="--o:1;--d:-0.4s;--glow:rgba(224,168,40,.45)">
           <div class="rig"><div class="ph"><div class="bez"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(120% 70% at 50% 30%,#243460,#0A1628 60%,#060F1E)"><img src="assets/studio/logos/shomer.png" alt="SH&#10017;MER badge" style="--lw2:62%" loading="lazy"></div>
             <div class="media"></div>
@@ -690,10 +693,10 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
         </a>
       </div>
       <div class="row">
-        <a class="dev" href="work/chore-royale.html" data-shots="assets/studio/s9/cr-arena.webp,assets/studio/s9/cr-chores.webp,assets/studio/s9/cr-cards.webp" style="--o:5;--d:-1.6s;--glow:rgba(91,44,240,.6)">
+        <a class="dev" href="work/chore-royale.html" data-shots="assets/work/chore-royale/live-grid.webp,assets/work/chore-royale/live-grab.webp,assets/work/chore-royale/live-duel.webp" style="--o:5;--d:-1.6s;--glow:rgba(91,44,240,.6)">
           <div class="rig"><div class="ph"><div class="bez"><div class="scr">
             <div class="splash" style="--sp:linear-gradient(160deg,#6a3bff,#4b23d9 60%)"><img src="assets/brand-v3/chore-royale/logo-stacked-600.webp" alt="Chore Royale logo" style="--lw2:78%" loading="lazy"></div>
-            <div class="media"></div>
+            <div class="media"></div><span class="snap" aria-hidden="true">Sample data</span>
             <i class="glare"></i></div></div></div></div>
           <span class="shade"></span>
           <span class="cap"><b>Chore Royale</b><small>Family game</small><span class="go">Open &rsaquo;</span></span>
