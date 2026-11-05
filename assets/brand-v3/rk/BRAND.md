@@ -1,30 +1,31 @@
-# R&K (Rookie & King) · Brand v4
+# R&K (Rookie & King) · Brand v5
 
-**Idea:** a rookie and a king on one board, as equals. One game instead of a cold message.
+**Idea:** a rookie and a king meet on one board. Professional connection first, played as a game.
 
-## Direction
-- v4 builds on the v3 crest and moves it from sports badge to heritage club crest.
-- **Shield:** a bevelled gold rim with a fine inner line. The navy field fades into a chessboard at the base.
-- **Pieces:** a gold pawn (the Rookie) and an ivory king share one plinth. Navy knockout seams keep both pieces clear at 32 px.
-- **Laurel:** gold laurel branches hold the shield. They read as an award and a welcome.
-- **Ribbon:** "ROOKIE & KING" on a gold-edged ribbon, used in hero and event formats.
-- **Wordmark:** Cinzel 800 capitals with the ampersand in gold Playfair italic. Tagline in Inter caps with wide tracking.
-- `mascot.png` / `mascot.svg` (the fist-bump duo) are unchanged.
+## The mark
+- One chess piece split in two: the **Rookie** (pawn head, Signal Blue) and the **King** (crown, Crown Brass). It still reads as "vs".
+- **Clasp:** the seam between the halves interlocks. A blue tab reaches into the king's side and a brass tab reaches back, like a handshake grip. Two sides, one deal.
+- **Bridge:** one white collar bar runs across both halves: the common ground that connects them.
+- Files: `logo-mark.png` (transparent), `mark.svg`, `app-icon.png`.
 
-## Icons
-`icons.svg` / `icons.png`: 8 event icons (Board, Rookie, King, Game clock, Handshake, Scan to play, Leaderboard, Invite). 2.6 px round gold strokes with one ivory accent.
+## Lockups
+- `logo.png`: for dark backgrounds (white wordmark, white bridge).
+- `logo-on-light.png`: for light backgrounds (Ink wordmark, Ink bridge, Brass Deep ampersand).
+- Tagline: **PLAY THE GAME. BUILD THE NETWORK.**
 
 ## Palette
 | Name | Hex | Use |
 |---|---|---|
-| Midnight | `#0E1B33` | Base canvas |
-| Court Navy | `#1E3159` | Shield field, cards |
-| Crown Gold | `#D4A84B` | Rim, laurel, the pawn, CTAs |
-| Gold Light | `#E8C77A` | Gold text on navy |
-| Gold Deep | `#A97A2A` | Gold shadow, gold text on light |
-| Ivory | `#F4EFE4` | The king, text |
-| Rookie Teal | `#2BB5A8` | Mascot accent only |
+| Ink | `#070D1C` | Base canvas |
+| Board Navy | `#0F1E3F` | Surfaces, cards |
+| Signal Blue | `#1F5BFF` | Rookie half, primary actions |
+| Sky Blue | `#5A97FF` | Links, taglines on dark |
+| Crown Brass | `#E4B04A` | King half, ampersand, accent |
+| Brass Deep | `#B07A22` | Brass on light |
+| White | `#FFFFFF` | Bridge, text on dark |
 
 ## Type
-- Display: **Cinzel 800**, with the ampersand in **Playfair Display Italic**.
-- Interface: **Inter 400–700**.
+- Display: **Unbounded 800** caps (Google Fonts). Wide, geometric, with a gaming edge.
+- Interface: **Sora 400–700** (Google Fonts).
+
+`hero.png`, `icons.png`, `icons.svg` and the mascot files are from v4 and still use the old crest styling.
