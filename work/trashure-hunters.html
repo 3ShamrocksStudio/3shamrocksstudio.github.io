@@ -492,5 +492,16 @@ footer img{height:20px;width:auto}
     $('d-h').textContent='Hiding: '+d[5]+'…';$('d-s1').textContent=d[3];$('d-egg').src=base+d[6]+'.webp';$('d-img').src=base+b.getAttribute('data-id')+'.webp';})});
 })();
 </script>
+<!-- 3Shamrocks audio: original studio sound, nothing plays before a tap -->
+<script src="../th-site/assets/audio/s3-audio.js"></script>
+<script>
+(function(){if(!window.S3Audio)return;
+var A=S3Audio.create({base:'../th-site/assets/audio/',name:'th',lead:0.1,loopLen:72,musicGain:0.5,sfxGain:0.7,store:{sfx:'s3_sfx'},sprite:{"earth":[0.1,0.3975],"water":[0.7475,0.4179],"fire":[1.4154,0.3973],"air":[2.0627,0.4451],"space":[2.7577,0.4975]}});
+var B=S3Audio.mount(A,{});B.style.cssText+='--s3a-bg:#0A0A2E;--s3a-fg:#FFF7E8;--s3a-accent:#FF6C00;--s3a-font:Fredoka,system-ui,sans-serif;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 6px 20px rgba(0,0,0,.3)';
+/* one soft element sound when a different Elemonster is chosen */
+var EL={sproutz:'earth',bloop:'water',blazo:'fire',wispo:'air',cosmix:'space'},sel=document.querySelector('.mon[aria-pressed="true"]'),cur=sel&&sel.getAttribute('data-id');
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.mon[data-id]');if(!b)return;var id=b.getAttribute('data-id');if(id!==cur&&EL[id])A.play(EL[id]);cur=id;});
+})();
+</script>
 </body>
 </html>
