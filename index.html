@@ -390,6 +390,24 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .hw-ph .rig{animation-duration:7s}
 .hw-ph.on .splash{opacity:1}
 .hw-item.on .rig{animation-play-state:paused}
+.hw-item[data-gallery]{cursor:zoom-in}
+/* HealthTech gallery lightbox: fixed stage, so images never shift the layout */
+.lb{position:fixed;inset:0;z-index:1000;background:rgba(5,3,14,.985);opacity:0;transition:opacity .25s ease;touch-action:pan-y}
+.lb.in{opacity:1}
+.lb[hidden]{display:none}
+.lb-top{position:absolute;top:0;left:0;right:0;height:60px;display:flex;align-items:center;gap:14px;padding:0 16px 0 24px;color:#fff;font:600 15px var(--font-b)}
+.lb-t{font:800 18px var(--font-d)}
+.lb-n{color:rgba(236,232,255,.65);margin-right:auto}
+.lb-stage{position:absolute;inset:64px 84px 28px}
+.lb-img{width:100%;height:100%;object-fit:contain;transition:opacity .2s ease}
+.lb-img.ld{opacity:.25}
+.lb-x,.lb-a{display:grid;place-items:center;border:0;cursor:pointer;color:#fff;background:rgba(255,255,255,.1);border-radius:50%;font:400 30px/1 var(--font-b);transition:background .2s}
+.lb-x:hover,.lb-a:hover{background:rgba(255,255,255,.22)}
+.lb-x{width:44px;height:44px}
+.lb-a{position:absolute;top:50%;width:56px;height:56px;margin-top:-28px;font-size:40px}
+.lb-p{left:16px}.lb-nx{right:16px}
+@media(max-width:700px){.lb-stage{inset:64px 8px 84px}.lb-a{top:auto;bottom:16px;margin:0;width:52px;height:52px}.lb-p{left:calc(50% - 64px)}.lb-nx{right:calc(50% - 64px)}}
+@media (prefers-reduced-motion:reduce){.lb,.lb-img{transition:none}}
 .hw-cap{margin-top:22px;text-align:center;max-width:460px}
 .hw-role{display:block;font:600 14px var(--font-b);color:var(--violet-2);margin-bottom:6px}
 .hw-cap b{display:block;font:800 28px/1.1 var(--font-d);letter-spacing:-.03em;margin-bottom:8px}
@@ -808,7 +826,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
       <span class="hint reveal"><svg><use href="#i-app"/></svg><span><span class="h-fine">Hover a device to switch it on</span><span class="h-touch">Tap a screen to switch it on</span></span></span>
     </div>
     <div class="hw">
-      <div class="hw-item hw-ap reveal" tabindex="0" aria-label="AposHealth: brand and product marketing">
+      <div class="hw-item hw-ap reveal" tabindex="0" role="button" aria-haspopup="dialog" data-gallery="assets/work/aposhealth/screen-1.png,assets/work/aposhealth/screen-2.png,assets/work/aposhealth/screen-3.png,assets/work/aposhealth/screen-4.png,assets/work/aposhealth/screen-5.png,assets/work/aposhealth/screen-6.png" data-title="AposHealth" aria-label="AposHealth: brand and product marketing. Open the gallery">
         <div class="hw-devs">
           <div class="dev lt" style="--d:-1.2s;--glow:rgba(36,67,214,.55)">
             <div class="rig"><div class="lid"><div class="scr">
@@ -820,7 +838,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
         </div>
         <div class="hw-cap"><span class="hw-role">In-house · Brand and product marketing</span><b>AposHealth</b><p>I led the brand and product marketing for a clinical treatment for knee and back pain, built on biomechanical footwear.</p></div>
       </div>
-      <div class="hw-item hw-vb reveal" tabindex="0" aria-label="VIBRANT: companion app and brand">
+      <div class="hw-item hw-vb reveal" tabindex="0" role="button" aria-haspopup="dialog" data-gallery="assets/work/vibrant/screen-1.png,assets/work/vibrant/screen-2.png,assets/work/vibrant/screen-3.png,assets/work/vibrant/screen-4.png,assets/work/vibrant/screen-5.png,assets/work/vibrant/screen-6.png" data-title="VIBRANT" aria-label="VIBRANT: companion app and brand. Open the gallery">
         <div class="hw-devs">
           <div class="dev lt" style="--d:-2.6s;--glow:rgba(27,111,208,.55)">
             <div class="rig"><div class="lid"><div class="scr">
@@ -841,6 +859,13 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
   </div>
 </section>
 
+<!-- HealthTech gallery lightbox -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-labelledby="lb-t" hidden>
+  <div class="lb-top"><b class="lb-t" id="lb-t"></b><span class="lb-n" aria-live="polite"></span><button class="lb-x" type="button" aria-label="Close gallery">&times;</button></div>
+  <div class="lb-stage"><img class="lb-img" alt="" decoding="async"></div>
+  <button class="lb-a lb-p" type="button" aria-label="Previous image">&lsaquo;</button>
+  <button class="lb-a lb-nx" type="button" aria-label="Next image">&rsaquo;</button>
+</div>
 
 <!-- ABOUT -->
 <section class="about" id="about">
@@ -1015,6 +1040,26 @@ devs.forEach(d=>{
   if(mq.matches)enable();mq.addEventListener('change',()=>mq.matches?enable():disable());
 })();
 
+/* HealthTech gallery: full-screen lightbox with arrows, swipe, Esc; loads only the current image and its neighbours */
+const openLb=(function(){
+  const lb=$('#lb');if(!lb)return()=>{};const im=$('.lb-img',lb),n=$('.lb-n',lb),t=$('.lb-t',lb),x=$('.lb-x',lb);let set=[],i=0,name='',back=null,sx=null,sy=0;
+  const pre=u=>{const p=new Image();p.src=u};
+  function show(k){i=(k+set.length)%set.length;const u=set[i];im.classList.add('ld');const p=new Image();
+    p.onload=()=>{if(set[i]===u){im.src=u;im.alt=name+' presentation, image '+(i+1)+' of '+set.length;im.classList.remove('ld')}};p.src=u;
+    n.textContent=(i+1)+' / '+set.length;if(set.length>1){pre(set[(i+1)%set.length]);pre(set[(i-1+set.length)%set.length])}}
+  function close(){lb.classList.remove('in');lb.hidden=true;im.removeAttribute('src');document.documentElement.style.overflow='';document.body.style.paddingRight='';if(back)back.focus()}
+  $('.lb-p',lb).addEventListener('click',()=>show(i-1));$('.lb-nx',lb).addEventListener('click',()=>show(i+1));x.addEventListener('click',close);
+  lb.addEventListener('click',e=>{if(e.target===lb||e.target.classList.contains('lb-stage'))close()});
+  lb.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close()}else if(e.key==='ArrowRight')show(i+1);else if(e.key==='ArrowLeft')show(i-1);
+    else if(e.key==='Tab'){const f=$$('button',lb),a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
+  lb.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'){sx=e.clientX;sy=e.clientY}});
+  lb.addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;sx=null;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))show(dx<0?i+1:i-1)});
+  lb.addEventListener('pointercancel',()=>{sx=null});
+  return function(it){set=it.dataset.gallery.split(',');name=it.dataset.title||'';t.textContent=name;back=it;
+    const sw=innerWidth-document.documentElement.clientWidth;document.documentElement.style.overflow='hidden';if(sw)document.body.style.paddingRight=sw+'px';
+    lb.hidden=false;requestAnimationFrame(()=>lb.classList.add('in'));show(0);x.focus()};
+})();
+
 /* in-house HealthTech devices: brand splash when off, hover or tap plays the real screens */
 $$('.hw-item').forEach(it=>{
   const ds=$$('.dev',it),pl=$$('.media',it).map(m=>{m.innerHTML=m.dataset.shots.split(',').map((s,k)=>'<img data-src="'+s+'" alt="" class="'+(k?'':'cur')+'">').join('');return[m,makeSlides(m,2400)]});
@@ -1023,7 +1068,8 @@ $$('.hw-item').forEach(it=>{
   const stop=()=>{on=false;it.classList.remove('on');ds.forEach(d=>d.classList.remove('on'));pl.forEach(([m,p])=>p.stop())};
   it.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')go()});it.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')stop()});
   it.addEventListener('focus',()=>{if(it.matches(':focus-visible'))go()});it.addEventListener('blur',stop);
-  it.addEventListener('click',e=>{if(e.pointerType==='mouse')return;on?stop():go()});
+  it.addEventListener('click',()=>{if(it.dataset.gallery)openLb(it)});
+  it.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&it.dataset.gallery){e.preventDefault();openLb(it)}});
 });
 
 /* Chore Royale icon band from the real icon sprite */
