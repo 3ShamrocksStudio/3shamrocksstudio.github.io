@@ -9,7 +9,9 @@
 
 ## Logo system
 - **Wordmark:** "FaiRent" in Fredoka 700. "Fai" is Signal Green and "Rent" is Deep Indigo (white on dark). Fredoka's round terminals match Dave's chunky logotype, and it spells the name correctly.
-- `logo.png` / `logo-on-dark.png`: mark + wordmark + the Kalam tagline.
+- `logo.png`: the complete logo. The RR mark with "FaiRent" set underneath in Fredoka 700 ("Fai" Signal Green, "Rent" Deep Indigo), on a transparent background.
+- `logo-on-dark.png`: the same lockup for dark backgrounds ("Rent" and the mirrored R in white).
+- The Kalam tagline "Stop paying more for less" is used beside the logo, not inside it.
 - `logo-mark.png`, `mark.svg`, `mark-on-dark.svg`: the RR mark.
 - **App icons:** `app-icon.png` (rounded, dark indigo glow, white mirrored R), `app-icon-ios-1024.png` (full-bleed for the stores), `app-icon-light.png` (white tile, original colours).
 - `hero.png`: the app's "Is your rent fair?" screen with a fairness meter. It shows no numbers; real figures must always cite their source.
