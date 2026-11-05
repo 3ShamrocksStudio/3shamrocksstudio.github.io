@@ -15,7 +15,7 @@
   var HOVER = matchMedia('(hover:hover) and (pointer:fine)').matches;
   var BASE = 'assets/studio/mosaic/';
   var ORDER = ['sh', 'lp', 'cr', 'th', 'j8', 'mi', 'rk', 'ez', 'fr', 'ap', 'vb'];
-  var NF = 21; /* floats per tile */
+  var NF = 24; /* floats per tile */
 
   var io = new IntersectionObserver(function (es) {
     if (!es[0].isIntersecting) return;
@@ -34,16 +34,21 @@
     try { gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false }); } catch (e) {}
     var inst = gl && gl.getExtension('ANGLE_instanced_arrays');
     if (!gl || !inst) return;
-    Promise.all([fetch(BASE + 'layout.json?v=s21').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
-                 loadImg(BASE + 'atlas.webp'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src)])
-      .then(function (r) { build(cv, gl, inst, r[0], r[1], r[2]); })
+    Promise.all([fetch(BASE + 'layout.json?v=s22').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
+                 loadImg(BASE + 'atlas.webp'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src),
+                 loadImg(BASE + 'atlas2.webp?v=s21').catch(function () { return null; })])
+      .then(function (r) { build(cv, gl, inst, r[0], r[1], r[2], r[3]); })
       .catch(function () { /* keep the plain photo */ });
   }
 
-  function build(cv, gl, X, L, atlasImg, photoImg) {
+  function build(cv, gl, X, L, atlasImg, photoImg, atlas2Img) {
     var MOBILE = vis.clientWidth < 520 || matchMedia('(pointer:coarse)').matches;
     var src = MOBILE ? L.mobile : L.desktop, N = src.length, ASP = L.aspect;
     var TL = L.tiles, SL = L.slot / L.atlas, PD = L.pad / L.atlas, G = L.grid;
+    /* swaps: retired pieces show their current replacement (atlas2) in the magnifier, the tag and the exploded grid only;
+       the portrait at rest keeps sampling atlas.webp, so its pixels never change */
+    var R = atlas2Img && L.r ? L.r : {}, T2 = L.tiles2 || [], SL2 = L.slot / (L.atlas2 || 1), PD2 = L.pad / (L.atlas2 || 1), G2 = L.grid2 || 1;
+    function rep(a) { var r = R[a]; return r == null ? -1 : r; }
 
     /* photo texture: the real cut-out photo over the section's own backdrop gradient (as the static version shows it) */
     var pc = document.createElement('canvas'); pc.width = photoImg.naturalWidth; pc.height = photoImg.naturalHeight;
@@ -53,9 +58,9 @@
 
     var VS = [
       'precision highp float;',
-      'attribute vec2 c;attribute vec3 tg,fr,gd;attribute float dl;attribute vec2 uv;attribute vec3 mn,cc;attribute float al,fl,id;',
+      'attribute vec2 c;attribute vec3 tg,fr,gd;attribute float dl;attribute vec2 uv;attribute vec3 mn,cc;attribute float al,fl,id;attribute vec3 u2;',
       'uniform vec2 res;uniform float W,t,ex,sel,asp,sc,mag,pass,sy;uniform vec4 lens;',
-      'varying vec2 vUv,vPh,vC,vP;varying vec3 vMn,vCc;varying float vAl,vPx,vRaw,vOp,vSel;',
+      'varying vec2 vUv,vPh,vC,vP,vUv2;varying vec3 vMn,vCc;varying float vAl,vPx,vRaw,vOp,vSel,vSw;',
       'void main(){',
       ' float p=clamp((t-dl)/1.15,0.,1.);float e=1.-pow(1.-p,4.);',
       ' vec2 ct=(tg.xy+tg.z*.5)*W;float s=tg.z*W;',
@@ -69,16 +74,17 @@
       ' float q=pass>.5&&pass<1.5?s+1.:max(s-sc,1.);vec2 o=(c-.5)*vec2(q*sx,q);float cs=cos(rot),sn=sin(rot);o=vec2(o.x*cs-o.y*sn,o.x*sn+o.y*cs);',
       ' vec2 P=cen+o;vP=P;gl_Position=vec4(P.x/res.x*2.-1.,1.-P.y/res.y*2.,0.,1.);',
       ' vUv=uv+c*'+(SL - 2 * PD).toFixed(6)+';vPh=(tg.xy+c*tg.z)/vec2(1.,asp);vC=c;vMn=mn;vCc=cc;vAl=al;vPx=q;vRaw=raw;',
-      ' vOp=smoothstep(0.,.3,p)*(1.-k*step(gd.z,0.));vSel=step(abs(id-sel),.5);}'
+      ' vOp=smoothstep(0.,.3,p)*(1.-k*step(gd.z,0.));vSel=step(abs(id-sel),.5);',
+      ' vUv2=u2.xy+c*'+(SL2 - 2 * PD2).toFixed(6)+';vSw=u2.z*max(step(.5,pass),step(.5,k));}'
     ].join('\n');
     var FS = [
       '#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif',
-      'uniform sampler2D at,ph;uniform float K,dpr,pass,cut;uniform vec4 lens;',
-      'varying vec2 vUv,vPh,vC,vP;varying vec3 vMn,vCc;varying float vAl,vPx,vRaw,vOp,vSel;',
+      'uniform sampler2D at,ph,at2;uniform float K,dpr,pass,cut;uniform vec4 lens;',
+      'varying vec2 vUv,vPh,vC,vP,vUv2;varying vec3 vMn,vCc;varying float vAl,vPx,vRaw,vOp,vSel,vSw;',
       'void main(){',
       ' float lo=1.;if(pass>.5){float r=length(vP-lens.xy);if(r>lens.z)discard;lo=clamp((lens.z-r)*dpr,0.,1.)*lens.w;',
       '  if(pass<1.5){gl_FragColor=vec4(.03,.02,.06,1.)*lo;return;}}',
-      ' vec3 t=texture2D(at,vUv).rgb;vec3 P=texture2D(ph,vPh).rgb;',
+      ' vec3 t=texture2D(at,vUv).rgb,t2=texture2D(at2,vUv2).rgb;if(vSw>.5)t=t2;vec3 P=texture2D(ph,vPh).rgb;',
       ' vec3 tint=clamp(vCc+(t-vMn)*.55,0.,1.);vec3 fig=mix(tint,P,K);',
       ' vec3 bg=t*.3+P*.25;float w=clamp((vAl-.15)/.6,0.,1.);',
       ' vec3 col=mix(mix(bg,fig,w),t,vRaw);',
@@ -92,7 +98,7 @@
     try { gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); } catch (e) { return; }
     gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
     gl.useProgram(pr);
-    var U = {}; ['res', 'W', 't', 'ex', 'sel', 'asp', 'sc', 'mag', 'pass', 'lens', 'at', 'ph', 'K', 'dpr', 'sy', 'cut'].forEach(function (n) { U[n] = gl.getUniformLocation(pr, n); });
+    var U = {}; ['res', 'W', 't', 'ex', 'sel', 'asp', 'sc', 'mag', 'pass', 'lens', 'at', 'ph', 'at2', 'K', 'dpr', 'sy', 'cut'].forEach(function (n) { U[n] = gl.getUniformLocation(pr, n); });
 
     function tex(im, mip) {
       var tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
@@ -106,6 +112,7 @@
     }
     gl.activeTexture(gl.TEXTURE0); tex(atlasImg, true); gl.uniform1i(U.at, 0);
     gl.activeTexture(gl.TEXTURE1); tex(pc, false); gl.uniform1i(U.ph, 1);
+    gl.activeTexture(gl.TEXTURE2); tex(atlas2Img || pc, !!atlas2Img); gl.uniform1i(U.at2, 2);
 
     /* per-tile data */
     var D = new Float32Array(N * NF), cur = new Int32Array(N), alt = new Int32Array(N);
@@ -117,6 +124,8 @@
       var o = i * NF, m = TL[a];
       D[o + 10] = (a % G) * SL + PD; D[o + 11] = Math.floor(a / G) * SL + PD;
       D[o + 12] = m[2]; D[o + 13] = m[3]; D[o + 14] = m[4];
+      var r = rep(a); D[o + 23] = r < 0 ? 0 : 1;
+      if (r >= 0) { D[o + 21] = (r % G2) * SL2 + PD2; D[o + 22] = Math.floor(r / G2) * SL2 + PD2; }
     }
     src.forEach(function (s, i) {
       var o = i * NF, ang = rnd(i, 1) * 6.283, rr = .55 + rnd(i, 2) * .9;
@@ -136,9 +145,9 @@
     function gridLayout() {
       var groups = {}, seen = {}, PG = L.g || []; ORDER.forEach(function (k) { groups[k] = []; });
       for (var i = 0; i < N; i++) {
-        var o = i * NF, a = cur[i], g = groups[TL[a][0]];
+        var o = i * NF, a = cur[i], r = rep(a), g = groups[(r < 0 ? TL[a] : T2[r])[0]];
         D[o + 6] = D[o] + D[o + 2] / 2; D[o + 7] = D[o + 1] + D[o + 2] / 2; D[o + 8] = 0;
-        var pk = PG[a] != null ? PG[a] : 'a' + a;
+        var pk = r >= 0 ? 'n' + L.g2[r] : PG[a] != null ? PG[a] : 'a' + a;
         if (g && g.length < PER && !seen[pk]) { seen[pk] = 1; g.push(i); }
       }
       var ts = (1 - GPAD * 2) / COLS, gap = ts * .06, y = GPAD;
@@ -164,7 +173,7 @@
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
     var lc = gl.getAttribLocation(pr, 'c'); gl.enableVertexAttribArray(lc); gl.vertexAttribPointer(lc, 2, gl.FLOAT, false, 0, 0);
     var ib = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, ib); gl.bufferData(gl.ARRAY_BUFFER, D, gl.DYNAMIC_DRAW);
-    [['tg', 3, 0], ['fr', 3, 3], ['gd', 3, 6], ['dl', 1, 9], ['uv', 2, 10], ['mn', 3, 12], ['cc', 3, 15], ['al', 1, 18], ['fl', 1, 19], ['id', 1, 20]]
+    [['tg', 3, 0], ['fr', 3, 3], ['gd', 3, 6], ['dl', 1, 9], ['uv', 2, 10], ['mn', 3, 12], ['cc', 3, 15], ['al', 1, 18], ['fl', 1, 19], ['id', 1, 20], ['u2', 3, 21]]
       .forEach(function (a) {
         var l = gl.getAttribLocation(pr, a[0]); if (l < 0) return;
         gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, a[1], gl.FLOAT, false, NF * 4, a[2] * 4); X.vertexAttribDivisorANGLE(l, 1);
@@ -251,7 +260,7 @@
     }
     function showTag(i, p) {
       if (i < 0) return hideTag();
-      selId = i; var m = TL[cur[i]], pr = L.products[m[0]];
+      selId = i; var r = rep(cur[i]), m = r < 0 ? TL[cur[i]] : T2[r], pr = L.products[m[0]];
       tag.href = pr.h; tag.innerHTML = '<b>' + esc(pr.n) + '</b><span> · ' + esc(m[1]) + '</span><i aria-hidden="true">&rarr;</i>';
       tag.setAttribute('aria-label', pr.n + ', ' + m[1] + '. Open the project');
       tag.classList.add('on');
