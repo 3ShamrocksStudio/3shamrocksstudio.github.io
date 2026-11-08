@@ -178,6 +178,8 @@ footer img{height:20px;width:auto}
 </style>
 <script>document.documentElement.classList.add('js')</script>
 <script src="../js/hits.js" defer></script>
+<link rel="stylesheet" href="../assets/audio/snd.css?v=sc1">
+<style>.studio .snd{--snd-fg:#51606c;--snd-line:rgba(16,40,60,.2);--snd-hover:rgba(16,40,60,.45);--snd-on-bg:rgba(130,57,234,.1);--snd-c1:#3f9e2c;--snd-c2:#1b8797;--snd-c3:#8239ea}</style>
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -192,7 +194,7 @@ footer img{height:20px;width:auto}
 </svg>
 <nav class="studio" aria-label="3Shamrocks Studio"><div class="wrap">
  <a class="s-logo" href="../" aria-label="3Shamrocks Studio, home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="905" height="133"></a>
- <a class="back" href="../#work">&larr; All work</a>
+ <span class="snd-r"><button type="button" class="snd" id="snd" aria-pressed="false" aria-label="Sound off" title="Sound off"><span class="snd-eq" aria-hidden="true"><i></i><i></i><i></i></span></button><a class="back" href="../#work">&larr; All work</a></span>
 </div></nav>
 
 <main>
@@ -347,5 +349,10 @@ footer img{height:20px;width:auto}
   lb.addEventListener('touchend',function(e){if(x0===null)return;var d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>50)show(cur+(d<0?1:-1));x0=null});
 })();
 </script>
+<!-- 3Shamrocks Studio sound: off by default, header toggle; this page's own loop from the studio theme family -->
+<script src="../assets/audio/s3-score.js?v=sc1" defer></script>
+<script>addEventListener('DOMContentLoaded',function(){if(!window.S3Score)return;
+var A=S3Score.start({base:'../assets/audio/studio/pages/',loop:32.727,musicGain:0.4,sfxGain:0.7,stems:{theme:'healthtech'},sfx:null});
+});</script>
 </body>
 </html>

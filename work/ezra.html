@@ -234,13 +234,14 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 </style>
 <script>document.documentElement.classList.add('js')</script>
 <script src="../js/hits.js" defer></script>
+<link rel="stylesheet" href="../assets/audio/snd.css?v=sc1">
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false"><!-- EZRA icons: 48 grid, 4px round strokes in Ezra Blue, one Sky "Ezra dot" --> <symbol id="ez-pharmacy" viewBox="0 0 48 48"><rect x="8" y="17" width="32" height="14" rx="7" transform="rotate(-40 24 24)" stroke="#1D5BD8"/><path d="M19 14l10 19" stroke="#1D5BD8" transform="rotate(-10 24 24)"/><circle cx="36" cy="38" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-doctor" viewBox="0 0 48 48"><rect x="7" y="11" width="34" height="30" rx="7" stroke="#1D5BD8"/><path d="M7 20h34M16 6v8M32 6v8" stroke="#1D5BD8"/><circle cx="24" cy="30.5" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-call" viewBox="0 0 48 48"><path d="M14 7l5 1 3 8-4 3c2 4 5 7 9 9l3-4 8 3 1 5c0 3-3 6-6 6C20 38 10 28 10 13c0-3 3-6 6-6" stroke="#1D5BD8"/><circle cx="36" cy="12" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-groceries" viewBox="0 0 48 48"><path d="M9 17h30l-3 22H12z" stroke="#1D5BD8"/><path d="M17 17c0-6 3-9 7-9s7 3 7 9" stroke="#1D5BD8"/><circle cx="24" cy="28" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-bills" viewBox="0 0 48 48"><path d="M12 6h24v36l-4-3-4 3-4-3-4 3-4-3-4 3z" stroke="#1D5BD8"/><path d="M18 15h12M18 22h12" stroke="#1D5BD8"/><circle cx="24" cy="31" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-ride" viewBox="0 0 48 48"><path d="M8 31v-7l4-10h24l4 10v7z" stroke="#1D5BD8"/><path d="M8 24h32M12 31v5M36 31v5" stroke="#1D5BD8"/><circle cx="24" cy="9" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-scan" viewBox="0 0 48 48"><path d="M7 15V10a3 3 0 0 1 3-3h5M33 7h5a3 3 0 0 1 3 3v5M41 33v5a3 3 0 0 1-3 3h-5M15 41h-5a3 3 0 0 1-3-3v-5" stroke="#1D5BD8"/><path d="M16 19h16M16 26h16M16 33h7" stroke="#1D5BD8"/><circle cx="31" cy="33" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-reminder" viewBox="0 0 48 48"><circle cx="24" cy="26" r="15" stroke="#1D5BD8"/><path d="M24 18v8l6 4M10 9l5-3M38 9l-5-3" stroke="#1D5BD8"/><circle cx="24" cy="26" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-video" viewBox="0 0 48 48"><rect x="5" y="13" width="28" height="22" rx="6" stroke="#1D5BD8"/><path d="M33 21l10-6v18l-10-6" stroke="#1D5BD8"/><circle cx="19" cy="24" r="4.6" fill="#FF7A45" stroke="none"/></symbol><symbol id="ez-shield" viewBox="0 0 48 48"><path d="M24 6l15 5v11c0 10-6 17-15 20C15 39 9 32 9 22V11z" stroke="#1D5BD8"/><path d="M17 23l5 5 9-10" stroke="#1D5BD8"/><circle cx="38" cy="9" r="4.6" fill="#FF7A45" stroke="none"/></symbol></svg>
 
 <nav class="snav" aria-label="Studio"><div class="wrap">
   <a href="../" aria-label="3Shamrocks Studio home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="150" height="22"></a>
-  <a class="back" href="../#work">&larr; All work</a>
+  <span class="snd-r"><button type="button" class="snd" id="snd" aria-pressed="false" aria-label="Sound off" title="Sound off"><span class="snd-eq" aria-hidden="true"><i></i><i></i><i></i></span></button><a class="back" href="../#work">&larr; All work</a></span>
 </div></nav>
 
 <header class="hero">
@@ -461,5 +462,10 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 })();
 </script>
 <script src="../js/guide.js?v=g1" defer></script>
+<!-- 3Shamrocks Studio sound: off by default, header toggle; this page's own loop from the studio theme family -->
+<script src="../assets/audio/s3-score.js?v=sc1" defer></script>
+<script>addEventListener('DOMContentLoaded',function(){if(!window.S3Score)return;
+var A=S3Score.start({base:'../assets/audio/studio/pages/',loop:30.0,musicGain:0.4,sfxGain:0.7,stems:{theme:'ezra'},sfx:null});
+});</script>
 </body>
 </html>

@@ -69,11 +69,12 @@ footer img{height:20px;width:auto}
 footer a:hover{color:#fff}
 @media (prefers-reduced-motion:reduce){.card,.btn{transition:none}.card:hover{transform:none}}
 </style>
+<link rel="stylesheet" href="../assets/audio/snd.css?v=sc1">
 </head>
 <body>
 <nav class="snav" aria-label="Studio"><div class="wrap">
   <a href="../" aria-label="3Shamrocks Studio, home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="905" height="133"></a>
-  <a class="back" href="../#work">&larr; All work</a>
+  <span class="snd-r"><button type="button" class="snd" id="snd" aria-pressed="false" aria-label="Sound off" title="Sound off"><span class="snd-eq" aria-hidden="true"><i></i><i></i><i></i></span></button><a class="back" href="../#work">&larr; All work</a></span>
 </div></nav>
 
 <main>
@@ -109,5 +110,10 @@ footer a:hover{color:#fff}
 
 <p class="fit-line" style="margin:0;padding:22px 16px;text-align:center;font-size:14px;opacity:.78"><a href="../work-with-me.html" style="color:inherit;text-decoration:underline;text-underline-offset:4px">Find your fit · 60 sec</a></p>
 <footer><div class="wrap"><a href="../" aria-label="3Shamrocks Studio, home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="905" height="133" loading="lazy"></a><span>&copy; 2026 3Shamrocks Studio &middot; Dave Markovich</span><a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a></div></footer>
+<!-- 3Shamrocks Studio sound: off by default, header toggle; this page's own loop from the studio theme family -->
+<script src="../assets/audio/s3-score.js?v=sc1" defer></script>
+<script>addEventListener('DOMContentLoaded',function(){if(!window.S3Score)return;
+var A=S3Score.start({base:'../assets/audio/studio/pages/',loop:30.0,musicGain:0.4,sfxGain:0.7,stems:{theme:'ezra'},sfx:null});
+});</script>
 </body>
 </html>

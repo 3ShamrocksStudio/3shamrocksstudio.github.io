@@ -1,0 +1,13 @@
+/* 3Shamrocks Studio sound toggle (header). Off: three quiet level bars. On: they move in the studio's green, teal and grape.
+   Fixed size, static markup: no layout shift. Pages can retint it with the --snd-* variables. */
+.snd-r{display:flex;align-items:center;gap:10px}
+.snd{--snd-fg:rgba(255,255,255,.62);--snd-line:rgba(255,255,255,.2);--snd-hover:rgba(255,255,255,.45);--snd-on-bg:rgba(130,57,234,.18);--snd-on-line:rgba(176,124,255,.55);--snd-c1:#8be36a;--snd-c2:#2fb7c9;--snd-c3:#9b59f7;
+  all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:none;width:36px;height:36px;border-radius:3px;border:1px solid var(--snd-line);color:var(--snd-fg);transition:border-color .2s,color .2s,background .2s}
+.snd:hover{border-color:var(--snd-hover)}.snd:focus-visible{outline:2px solid var(--snd-c3);outline-offset:3px}
+.snd-eq{display:flex;align-items:center;gap:3px;height:16px}
+.snd-eq i{width:4px;height:15px;border-radius:2px;background:currentColor;--o:4.5px;clip-path:inset(var(--o) 0 round 2px);transition:clip-path .3s ease,background .3s}.snd-eq i:nth-child(2){--o:2px}
+.snd[aria-pressed=true]{border-color:var(--snd-on-line);background:var(--snd-on-bg)}
+.snd[aria-pressed=true] .snd-eq i{animation:sndEq 1.1s ease-in-out infinite}
+.snd[aria-pressed=true] .snd-eq i:nth-child(1){background:var(--snd-c1);animation-delay:-.2s}.snd[aria-pressed=true] .snd-eq i:nth-child(2){background:var(--snd-c2);animation-delay:-.6s}.snd[aria-pressed=true] .snd-eq i:nth-child(3){background:var(--snd-c3);animation-delay:-.9s}
+@keyframes sndEq{0%,100%{clip-path:inset(var(--o) 0 round 2px)}50%{clip-path:inset(0 0 round 2px)}}
+@media (prefers-reduced-motion:reduce){.snd[aria-pressed=true] .snd-eq i{animation:none}.snd[aria-pressed=true] .snd-eq i:nth-child(1){clip-path:inset(3px 0 round 2px)}.snd[aria-pressed=true] .snd-eq i:nth-child(2){clip-path:inset(0 0 round 2px)}.snd[aria-pressed=true] .snd-eq i:nth-child(3){clip-path:inset(2px 0 round 2px)}}
