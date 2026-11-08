@@ -72,6 +72,16 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .nav-cta{background:#fff;color:#14102a;padding:11px 22px;border-radius:var(--rad);font-weight:700;transition:background .2s}
 .nav-cta:hover{background:var(--violet-3)}
 @media(max-width:760px){.nav-links .hm{display:none}.nav-logo img{height:28px}nav .wrap{height:64px}}
+/* sound toggle: three quiet grey level bars when off; when on they move in the brand's green, teal and grape */
+.snd{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:none;width:40px;height:40px;border-radius:var(--rad);border:1px solid var(--line);color:var(--ink-3);transition:border-color .2s,color .2s,background .2s}
+.snd:hover{border-color:rgba(255,255,255,.34);color:#fff}.snd:focus-visible{outline:2px solid var(--violet-2);outline-offset:3px}
+.snd-eq{display:flex;align-items:center;gap:3px;height:16px}.snd-eq i{width:4px;height:15px;border-radius:2px;background:currentColor;--o:4.5px;clip-path:inset(var(--o) 0 round 2px);transition:clip-path .3s var(--ease),background .3s}.snd-eq i:nth-child(2){--o:2px}
+.snd[aria-pressed=true]{border-color:rgba(176,124,255,.5);background:rgba(130,57,234,.16)}
+.snd[aria-pressed=true] .snd-eq i{animation:sndEq 1.1s ease-in-out infinite}
+.snd[aria-pressed=true] .snd-eq i:nth-child(1){background:var(--green);animation-delay:-.2s}.snd[aria-pressed=true] .snd-eq i:nth-child(2){background:var(--teal);animation-delay:-.6s}.snd[aria-pressed=true] .snd-eq i:nth-child(3){background:var(--grape);animation-delay:-.9s}
+@keyframes sndEq{0%,100%{clip-path:inset(var(--o) 0 round 2px)}50%{clip-path:inset(0 0 round 2px)}}
+@media (prefers-reduced-motion:reduce){.snd[aria-pressed=true] .snd-eq i{animation:none}.snd[aria-pressed=true] .snd-eq i:nth-child(1){clip-path:inset(3px 0 round 2px)}.snd[aria-pressed=true] .snd-eq i:nth-child(2){clip-path:inset(0 0 round 2px)}.snd[aria-pressed=true] .snd-eq i:nth-child(3){clip-path:inset(2px 0 round 2px)}}
+@media(max-width:760px){.nav-links{gap:10px}.snd{width:36px;height:36px}}
 
 /* HERO */
 .hero{min-height:100svh;display:flex;align-items:center;padding:112px 0 40px;overflow:hidden}
@@ -564,6 +574,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
       <a href="#work" class="hm">Work</a>
       <a href="#identity" class="hm">Brands</a>
       <a href="#about" class="hm">Studio</a>
+      <button type="button" class="snd" id="snd" aria-pressed="false" aria-label="Sound off" title="Sound off"><span class="snd-eq" aria-hidden="true"><i></i><i></i><i></i></span></button>
       <a href="mailto:dave@3shamrocks.com" class="nav-cta">Let's talk</a>
     </div>
   </div>
@@ -906,7 +917,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
   <div class="wrap about-grid">
     <div class="about-pic reveal">
       <div class="about-visual" id="about-visual"><canvas class="about-fx" id="about-fx" aria-hidden="true"></canvas><img src="assets/studio/dave-portrait-cut.webp" alt="Dave Markovich, founder of 3Shamrocks Studio" width="800" height="1098" loading="lazy"></div>
-      <script src="js/mosaic.js?v=s23" defer></script>
+      <script src="js/mosaic.js?v=s24" defer></script>
     </div>
     <div class="about-content">
       <h2 class="reveal">20 years, disciplined by strategy.</h2>
@@ -1061,7 +1072,7 @@ devs.forEach(d=>{
       if(Math.abs(c-mid)<bd){bd=Math.abs(c-mid);best=i}
       d.style.transform=RM?'scale('+(.84+.16*k).toFixed(3)+')':'perspective(700px) scale('+(.8+.2*k).toFixed(3)+') rotateY('+(Math.max(-1,Math.min(1,off))*-22).toFixed(2)+'deg) translateY('+(a*14).toFixed(1)+'px)';
       d.style.opacity=(.42+.58*k).toFixed(3)});
-    if(best!==cur){cur=best;list.forEach((d,i)=>d.classList.toggle('cur',i===cur));[...dots.children].forEach((b,i)=>b.classList.toggle('on',i===cur))}
+    if(best!==cur){const was=cur;cur=best;if(was>=0)document.dispatchEvent(new CustomEvent('s3:sfx',{detail:'swipe'}));list.forEach((d,i)=>d.classList.toggle('cur',i===cur));[...dots.children].forEach((b,i)=>b.classList.toggle('on',i===cur))}
     clearTimeout(settle);settle=setTimeout(()=>{const d=list[cur];if(d&&!d.classList.contains('on'))d._on()},140);
     /* a soft bounce when a swipe runs into either end */
     const max=track.scrollWidth-track.clientWidth,x=track.scrollLeft,v=x-lastX;lastX=x;
@@ -1272,5 +1283,7 @@ $$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttri
 })();
 </script>
 <script>/* not-live devices open their branded pages too */document.querySelectorAll('.dev[data-href]').forEach(function(d){function go(){location.href=d.dataset.href}d.style.cursor='pointer';d.addEventListener('click',go);d.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();go()}})});</script>
+<script src="assets/audio/s3-audio.js?v=st1" defer></script>
+<script src="js/studio-sound.js?v=st1" defer></script>
 </body>
 </html>

@@ -306,7 +306,9 @@
     });
     listen('dblclick', function (e) { e.preventDefault(); hideTag(); toggle(); });
     var lastToggle = 0;
-    function toggle() { var t = performance.now(); if (t - lastToggle < 500) return; lastToggle = t; setExplode(!exT); }
+    function toggle() { var t = performance.now(); if (t - lastToggle < 500) return; lastToggle = t; setExplode(!exT); cue(); }
+    /* user-initiated explode / reassemble only: the homepage sound layer (js/studio-sound.js) decides whether to play it */
+    function cue() { try { document.dispatchEvent(new CustomEvent('s3:sfx', { detail: exT ? 'explode' : 'assemble' })); } catch (e) { /* no sound */ } }
     document.addEventListener('pointerdown', function (e) { if (!vis.contains(e.target)) hideTag(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideTag(); });
 
@@ -322,6 +324,6 @@
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, D);
       kick();
     }
-    btn.addEventListener('click', function () { hideTag(); setExplode(!exT); });
+    btn.addEventListener('click', function () { hideTag(); setExplode(!exT); cue(); });
   }
 })();

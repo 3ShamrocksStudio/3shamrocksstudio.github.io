@@ -48,8 +48,10 @@
       return spriteP;
     }
     function gesture() {
-      if (gestured) { ensure(); return; }
-      gestured = true; ensure();
+      if (gestured) { if (sfxOn || musicOn) ensure(); return; }
+      gestured = true;
+      if (!sfxOn && !musicOn) return; /* everything off: no AudioContext until the user turns sound on */
+      ensure();
       if (sfxOn) loadSprite();
       if (musicOn) startMusic();
     }
