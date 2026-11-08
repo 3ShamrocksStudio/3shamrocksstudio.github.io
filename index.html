@@ -1059,30 +1059,35 @@ devs.forEach(d=>{
   d.addEventListener('click',e=>{if(!FINE&&!d.classList.contains('on')){e.preventDefault();d._on()}});
 });
 
-/* mobile: the devices become a swipe carousel. The centred one switches on; neighbours sit smaller, dimmer and turned away */
+/* mobile: the devices become an endless swipe carousel. The centred one switches on; neighbours sit smaller, dimmer and turned away.
+   Endless: once a swipe settles, the ring is re-ordered so the centred product sits in the middle with products on both sides */
 (function(){
   const track=$('#work .devices');if(!track)return;const mq=matchMedia('(max-width:700px)');
   const dots=document.createElement('div');dots.className='car-dots';dots.setAttribute('aria-hidden','true');
-  let list=[],cur=-1,raf=0,settle=0,lastX=0;
-  function build(){list=devs.slice().sort((a,b)=>(+getComputedStyle(a).order||0)-(+getComputedStyle(b).order||0)||devs.indexOf(a)-devs.indexOf(b));
-    dots.innerHTML='';list.forEach(d=>{const b=document.createElement('button');b.tabIndex=-1;b.style.setProperty('--c',(d.style.getPropertyValue('--glow')||'rgba(176,124,255,.9)').replace(/[\d.]+\)$/,'1)'));b.addEventListener('click',()=>center(d));dots.appendChild(b)})}
+  let base=[],list=[],cur=-1,curDev=null,raf=0,settle=0,lastX=0;
+  function build(){devs.forEach(d=>d.style.order='');
+    base=devs.slice().sort((a,b)=>(+getComputedStyle(a).order||0)-(+getComputedStyle(b).order||0)||devs.indexOf(a)-devs.indexOf(b));list=base.slice();
+    dots.innerHTML='';base.forEach(d=>{const b=document.createElement('button');b.tabIndex=-1;b.style.setProperty('--c',(d.style.getPropertyValue('--glow')||'rgba(176,124,255,.9)').replace(/[\d.]+\)$/,'1)'));b.addEventListener('click',()=>center(d));dots.appendChild(b)})}
+  /* rotate the ring so d sits in the middle, then pin the view on d (absolute, since browsers may re-snap on their own) */
+  function arrange(d){const k=base.indexOf(d),n=base.length,h=Math.floor(n/2);if(k<0)return;
+    list=base.map((_,i)=>base[(k-h+i+n)%n]);list.forEach((x,i)=>x.style.order=i);
+    track.scrollLeft=d.offsetLeft+d.offsetWidth/2-track.clientWidth/2;lastX=track.scrollLeft;cur=list.indexOf(d)}
   function center(d,instant){track.scrollTo({left:d.offsetLeft+d.offsetWidth/2-track.clientWidth/2,behavior:instant||RM?'auto':'smooth'})}
   function frame(){raf=0;const mid=track.scrollLeft+track.clientWidth/2;let best=0,bd=1e9;
     list.forEach((d,i)=>{const c=d.offsetLeft+d.offsetWidth/2,off=(c-mid)/(d.offsetWidth*.9),a=Math.min(1,Math.abs(off)),k=1-a;
       if(Math.abs(c-mid)<bd){bd=Math.abs(c-mid);best=i}
       d.style.transform=RM?'scale('+(.84+.16*k).toFixed(3)+')':'perspective(700px) scale('+(.8+.2*k).toFixed(3)+') rotateY('+(Math.max(-1,Math.min(1,off))*-22).toFixed(2)+'deg) translateY('+(a*14).toFixed(1)+'px)';
       d.style.opacity=(.42+.58*k).toFixed(3)});
-    if(best!==cur){const was=cur;cur=best;if(was>=0)document.dispatchEvent(new CustomEvent('s3:sfx',{detail:'swipe'}));list.forEach((d,i)=>d.classList.toggle('cur',i===cur));[...dots.children].forEach((b,i)=>b.classList.toggle('on',i===cur))}
-    clearTimeout(settle);settle=setTimeout(()=>{const d=list[cur];if(d&&!d.classList.contains('on'))d._on()},140);
-    /* a soft bounce when a swipe runs into either end */
-    const max=track.scrollWidth-track.clientWidth,x=track.scrollLeft,v=x-lastX;lastX=x;
-    if(!RM&&Math.abs(v)>4&&(x<=0||x>=max-1)){const d=list[cur];d.style.setProperty('--bx',(x<=0?14:-14)+'px');d.classList.remove('bump');void d.offsetWidth;d.classList.add('bump')}}
+    cur=best;const d=list[cur];
+    if(d!==curDev){const was=curDev;curDev=d;if(was)document.dispatchEvent(new CustomEvent('s3:sfx',{detail:'swipe'}));list.forEach(x=>x.classList.toggle('cur',x===d));[...dots.children].forEach((b,i)=>b.classList.toggle('on',base[i]===d))}
+    clearTimeout(settle);settle=setTimeout(()=>{const d=list[cur];if(!d)return;if(cur!==Math.floor(list.length/2)){arrange(d);frame()}if(!d.classList.contains('on'))d._on()},140);
+    lastX=track.scrollLeft}
   const onScroll=()=>{if(!raf)raf=requestAnimationFrame(frame)};
   function tap(e){if(!mq.matches)return;const d=e.target.closest('.dev');if(!d)return;if(list.indexOf(d)!==cur){e.preventDefault();e.stopImmediatePropagation();center(d)}}
   function enable(){build();track.after(dots);track.addEventListener('scroll',onScroll,{passive:true});track.addEventListener('click',tap,true);addEventListener('resize',onScroll);
-    requestAnimationFrame(()=>{center(list[0],true);frame()})}
-  function disable(){track.removeEventListener('scroll',onScroll);track.removeEventListener('click',tap,true);removeEventListener('resize',onScroll);dots.remove();cur=-1;
-    devs.forEach(d=>{d.style.transform='';d.style.opacity='';d.classList.remove('cur','bump');d._off&&d._off()})}
+    requestAnimationFrame(()=>{arrange(base[0]);center(base[0],true);frame()})}
+  function disable(){track.removeEventListener('scroll',onScroll);track.removeEventListener('click',tap,true);removeEventListener('resize',onScroll);dots.remove();cur=-1;curDev=null;clearTimeout(settle);
+    devs.forEach(d=>{d.style.transform='';d.style.opacity='';d.style.order='';d.classList.remove('cur','bump');d._off&&d._off()})}
   if(mq.matches)enable();mq.addEventListener('change',()=>mq.matches?enable():disable());
 })();
 
