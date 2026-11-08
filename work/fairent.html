@@ -91,13 +91,16 @@ h1,h2,h3{font-family:var(--disp);font-weight:700;letter-spacing:-.01em}
 .hero .note{margin-top:18px;font-size:.92rem;color:var(--mut);display:flex;flex-wrap:wrap;gap:6px 18px;font-weight:600}
 .hero .note span{display:inline-flex;align-items:center;gap:6px}
 .hero .note i{width:8px;height:8px;border-radius:50%;background:var(--lav)}
-.hstage{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:18px;min-height:460px}
-.hstage .phone{width:min(230px,46vw)}
-.hstage .phone.b{width:min(200px,40vw);transform:translateY(40px) rotate(4deg);opacity:.96}
+.hstage{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:22px;min-height:520px}
+.hstage .phone{width:min(270px,46vw)}
+.hstage .phone.b{width:min(236px,40vw);transform:translateY(40px) rotate(4deg);opacity:.96}
 .hstage .phone.a{transform:rotate(-3deg)}
-.hstage .cap2{position:absolute;left:0;right:0;bottom:-44px;text-align:center}
-.hstage{margin-bottom:44px}
-@media(max-width:520px){.hstage{min-height:0;gap:10px}.hstage .phone.b{transform:translateY(24px) rotate(3deg)}}
+.hstage .cap2{position:absolute;left:0;right:0;bottom:-78px;text-align:center}
+.hstage .phone{animation:bob 7s ease-in-out infinite}.hstage .phone.b{animation-delay:-3.5s}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -8px}}
+.hstage{margin-bottom:78px}
+.hstage .cap2>span:last-child{font-size:.85rem;color:var(--mut);font-weight:600}
+@media(max-width:520px){.hstage{min-height:0;gap:10px;margin-bottom:96px}.hstage .cap2{bottom:-90px}.hstage .phone.b{transform:translateY(24px) rotate(3deg)}}
 
 /* phone frame */
 .phone{position:relative;border-radius:40px;padding:9px;background:#0b0920;box-shadow:0 0 0 2px rgba(185,174,255,.4),0 40px 60px -30px rgba(5,5,17,.75);flex:none}
@@ -151,6 +154,41 @@ h1,h2,h3{font-family:var(--disp);font-weight:700;letter-spacing:-.01em}
 .tour .fc{color:#cfc8ff;font-size:.95rem;margin-top:16px;display:grid;gap:8px;justify-items:start}
 .tour .fc b{color:#fff}
 @media(max-width:899px){.tour .phone{max-width:280px}.tour>div{order:-1}.tsteps{grid-template-columns:1fr}.tour .side2{order:3}}
+
+/* the receipt: signature outcome visual */
+.rcw{background:linear-gradient(180deg,#fff,var(--cloud))}
+.rcg{display:grid;gap:44px;align-items:center}
+@media(min-width:900px){.rcg{grid-template-columns:minmax(0,440px) 1fr;gap:72px}}
+.rcg>*{min-width:0}
+.rc{position:relative;background:#fff;color:var(--ink);padding:30px 28px 34px;border-radius:6px 6px 0 0;box-shadow:0 40px 70px -40px rgba(49,10,145,.55),0 0 0 1px var(--line);transform:rotate(-1.5deg);font-family:var(--body)}
+.rc::after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:14px;background:linear-gradient(-45deg,transparent 7px,#fff 0) 0 0/14px 14px repeat-x,linear-gradient(45deg,transparent 7px,#fff 0) 0 0/14px 14px repeat-x;filter:drop-shadow(0 1px 0 var(--line))}
+.rc .rh{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:2px dashed var(--line);padding-bottom:16px;margin-bottom:12px}
+.rc .rh img{width:96px}
+.rc .rh small{font-weight:700;font-size:.82rem;color:var(--mut);text-align:right;line-height:1.35}
+.rc dl{display:grid;gap:2px}
+.rc .ln{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:9px 0;font-size:1rem}
+.rc .ln dt{color:var(--mut);font-weight:600}
+.rc .ln dt small{display:block;font-size:.8rem;font-weight:600;opacity:.85}
+.rc .ln dd{font-family:var(--disp);font-weight:600;font-size:1.2rem;color:var(--indigo);white-space:nowrap}
+.rc .gap{border-top:2px dashed var(--line);margin-top:6px;padding-top:14px}
+.rc .gap dt{color:var(--indigo);font-weight:800}
+.rc .over{position:relative;margin:10px -10px 0;padding:12px 10px;border-radius:12px}
+.rc .over::before{content:"";position:absolute;inset:0;border-radius:12px;background:#ECE9FF;box-shadow:inset 0 0 0 2px var(--violet);transform-origin:left;transition:transform .9s .5s cubic-bezier(.2,.8,.2,1)}
+.js .rv:not(.on) .rc .over::before{transform:scaleX(0)}
+.rc .over>*{position:relative}
+.rc .over dt{color:var(--indigo);font-weight:800;display:flex;align-items:center;gap:8px}
+.rc .over dt svg{width:22px;height:22px;flex:none}
+.rc .over dd{font-size:1.9rem;font-weight:700;color:var(--indigo)}
+.rc .ft{margin-top:18px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;font-size:.82rem;color:var(--mut);font-weight:600}
+.rc .hn{position:absolute;right:-8px;top:-22px;font-family:var(--hand);font-size:1.25rem;color:var(--violet);transform:rotate(6deg)}
+.rpts{list-style:none;display:grid;gap:14px;margin-top:22px}
+.rpts li{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;color:var(--mut)}
+.rpts li b{display:block;color:var(--indigo);font-family:var(--disp);font-weight:600;font-size:1.1rem}
+.rpts .ib{width:44px;height:44px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--line);display:grid;place-items:center}
+.rpts .ib svg{width:26px;height:26px}
+.kick b{font-weight:700;color:var(--mut);letter-spacing:.06em}
+.dark .kick b{color:#cfc8ff}
+@media(max-width:520px){.rc{padding:24px 18px 28px;transform:rotate(-1deg)}.rc .over dd{font-size:1.5rem}.rc .hn{right:0}}
 
 /* key moment meter */
 .km{background:radial-gradient(60% 60% at 15% 30%,rgba(185,174,255,.35),transparent 70%),var(--cloud)}
@@ -269,7 +307,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     <div class="hstage rv">
       <div class="phone a"><div class="sc"><img src="../assets/work/fairent/app-home.webp" alt="FaiRent home screen in Hebrew: Is your rent inflated? Let's check. A green button starts the check." width="585" height="1266" fetchpriority="high"></div></div>
       <div class="phone b"><div class="sc"><img src="../assets/work/fairent/app-result.webp" alt="FaiRent verdict screen: a fairness gauge and plus 14 percent against the estimate, about 1,054 shekels a month more" width="585" height="1266" loading="lazy"></div></div>
-      <span class="cap2"><span class="samp">Sample</span> <span style="font-size:.85rem;color:var(--mut);font-weight:600">Real screens, example entry</span></span>
+      <span class="cap2"><span class="samp">Sample</span> <span>Real screens from the staged app, example entry</span></span>
     </div>
   </div>
 </header>
@@ -289,7 +327,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
   <section class="sec prob" aria-labelledby="p-h">
     <div class="wrap">
       <div class="head rv">
-        <span class="kick"><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-alert"/></svg></span>The problem</span>
+        <span class="kick"><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-alert"/></svg></span><b>01</b>The problem</span>
         <h2 id="p-h">Renters negotiate blind. The data exists.</h2>
         <p>Listing sites show asking prices. The CBS publishes what people actually pay, but in PDF tables nobody reads before signing.</p>
       </div>
@@ -304,7 +342,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
   <section class="sec dark" aria-labelledby="h-h">
     <div class="wrap">
       <div class="head c rv">
-        <span class="kick"><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-search"/></svg></span>How it works &middot; real screens</span>
+        <span class="kick"><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-search"/></svg></span><b>02</b>What I built &middot; real screens</span>
         <h2 id="h-h">From doubt to a fair offer, in six screens.</h2>
         <p>Captured from the staged app on a phone. Pick a step.</p>
       </div>
@@ -334,10 +372,37 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     </div>
   </section>
 
+  <section class="sec rcw" aria-labelledby="r-h">
+    <div class="wrap rcg">
+      <div class="rv">
+        <div class="rc" id="rcpt" role="img" aria-label="A FaiRent rent receipt for the app's sample entry: Tel Aviv-Yafo, 3 rooms. Asking rent 8,400 shekels a month. New-lease estimate 7,346 shekels: the CBS paid average of 6,976 plus 5.3 percent. Gap 1,054 shekels a month, plus 14 percent. Over a year: 12,647 shekels above the estimate. Source CBS Table 4.9, Q2 2025.">
+          <span class="hn" aria-hidden="true">that&rsquo;s the gap!</span>
+          <div class="rh"><img src="../assets/brand-v3/fairent/logo.png" alt="" width="1134" height="1066"><small>Tel Aviv&ndash;Yafo<br>3 rooms</small></div>
+          <dl>
+            <div class="ln"><dt>Asking rent</dt><dd>&#8362;8,400</dd></div>
+            <div class="ln"><dt>New-lease estimate<small>CBS paid average &#8362;6,976 + 5.3%</small></dt><dd>&#8362;7,346</dd></div>
+            <div class="ln gap"><dt>Above the estimate, monthly</dt><dd>&#8362;1,054 &middot; +14%</dd></div>
+            <div class="ln over"><dt><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-alert"/></svg>Over a year</dt><dd>&#8362;12,647</dd></div>
+          </dl>
+          <div class="ft"><span>Source: CBS Table 4.9, Q2 2025</span><span class="samp">Sample entry</span></div>
+        </div>
+      </div>
+      <div class="head rv" style="margin-bottom:0">
+        <span class="kick"><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-tag"/></svg></span><b>03</b>The outcome</span>
+        <h2 id="r-h">A vague feeling, turned into a number.</h2>
+        <p>This is what the staged app returns for its own example entry. Every figure comes from the app&rsquo;s result screens; the asking rent is the sample, the averages are real CBS data.</p>
+        <ul class="rpts">
+          <li><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-verified"/></svg></span><span><b>The source travels with it</b>CBS table and quarter, next to the figure.</span></li>
+          <li><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-chat"/></svg></span><span><b>Ready to send</b>The same number goes straight into a polite message.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <section class="sec km" aria-labelledby="k-h">
     <div class="wrap">
       <div class="head rv">
-        <span class="kick"><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-tag"/></svg></span>Key moment</span>
+        <span class="kick"><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-tag"/></svg></span><b>04</b>Key moment</span>
         <h2 id="k-h">The verdict you feel before you read it.</h2>
         <p>Green only ever means fair. Overpriced reads as a calm, cool warning, never as a reward. Drag to see the verdict change.</p>
       </div>
@@ -372,7 +437,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
   <section class="sec dsw" id="system" aria-labelledby="b-h">
     <div class="wrap">
       <div class="head rv">
-        <span class="kick"><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-contract"/></svg></span>Design system</span>
+        <span class="kick"><span class="ib"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-contract"/></svg></span><b>05</b>Design system</span>
         <h2 id="b-h">Two sides at one table.</h2>
         <p>A green R and a mirrored indigo R overlap in violet: renter and landlord, meeting on fair ground.</p>
       </div>
@@ -459,21 +524,21 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
         </svg>
         <span class="sign">Staged &middot; not launched</span>
         <p>The app runs on a staging link for review. Renter-to-renter reports are planned, and switched off until shared storage and privacy rules are ready.</p>
+        <div class="ctas" style="justify-content:center;margin-top:8px"><a class="btn g" href="../fairent/" target="_blank" rel="noopener"><svg aria-hidden="true" viewBox="0 0 48 48"><use href="#fr-search"/></svg>Try the staged app</a></div>
       </div>
     </div>
   </section>
 
   <section class="cta wrap" aria-labelledby="c-h">
-    <span class="kick">Work with me</span>
+    <span class="kick">Your project</span>
     <h2 id="c-h">Have data people should be using?</h2>
     <p>Brand, product design and a working product, from one senior designer.</p>
     <div class="ctas">
-      <a class="btn v" href="mailto:dave@3shamrocks.com?subject=New%20project">Start a project</a>
-      <a class="btn g" href="../fairent/" target="_blank" rel="noopener">Try the staged app</a>
+      <a class="btn v" href="mailto:dave@3shamrocks.com?subject=New%20project">Let&rsquo;s talk</a>
+      <a class="btn o" href="../work-with-me.html">Find your fit &middot; 60 sec</a>
     </div>
-    <nav class="more" aria-label="More work"><a href="chore-royale.html">Chore Royale</a><a href="ezra.html">EZRA</a><a href="rk.html">R&amp;K</a><a href="milo.html">Milo</a><a href="shomer.html">SH✡MER</a><a href="lickpick.html">LickPick</a><a href="trashure-hunters.html">Trashure-Hunters</a></nav>
+    <nav class="more" aria-label="More work"><a href="../#work">&larr; All work</a><a href="chore-royale.html">Chore Royale</a><a href="ezra.html">EZRA</a><a href="rk.html">R&amp;K</a><a href="milo.html">Milo</a><a href="shomer.html">SH✡MER</a><a href="lickpick.html">LickPick</a><a href="trashure-hunters.html">Trashure-Hunters</a></nav>
   </section>
-  <p class="fit-line" style="margin:0;padding:22px 16px;text-align:center;font-size:14px;opacity:.78"><a href="../work-with-me.html" style="color:inherit;text-decoration:underline;text-underline-offset:4px">Find your fit · 60 sec</a></p>
   <footer><div class="wrap"><span>&copy; 2026 3Shamrocks Studio &middot; Dave Markovich</span><span><a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a> &middot; <a href="https://www.linkedin.com/in/davemarkovich/" target="_blank" rel="noopener">LinkedIn</a></span></div></footer>
 </main>
 <script>
