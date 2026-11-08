@@ -105,7 +105,7 @@ h1,h2,h3{font-weight:800;letter-spacing:-.022em;line-height:1.06}
 .tk .cd{text-align:left}
 .tr{display:flex;align-items:center;gap:10px;min-height:46px;margin-bottom:8px;padding:6px 10px;border-radius:14px;background:#fff;border:2px solid var(--sky);font-weight:800;font-size:1rem;color:var(--navy);text-align:left;line-height:1.15}
 .tr svg{width:28px;height:28px;flex:none;fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
-@media(max-width:600px){.x6{display:none}.dn{padding:30px 8px 10px}.dn p,.dn .lg,.dn .rw svg,.dn .rw small{display:none}.dn .rw{margin-top:10px;padding:8px;font-size:.875rem;text-align:center;justify-content:center}.tk b{font-size:.95rem;margin:4px 0 8px}.tr{min-height:40px;padding:4px 6px;gap:6px;font-size:.875rem;margin-bottom:6px}.tr svg{width:20px;height:20px}.dn b{font-size:.95rem}.dn .ck{width:44px;height:44px;margin:14px auto 12px}.dn .ck svg{width:26px;height:26px}.dn .bt{font-size:.875rem;padding:9px 4px}.dn .cd{font-size:.875rem;margin-top:6px}}
+@media(max-width:600px){.x6,.dn .rw.x6{display:none}.dn{padding:30px 8px 10px}.dn p,.dn .lg,.dn .rw svg,.dn .rw small{display:none}.dn .rw{margin-top:10px;padding:8px;font-size:.875rem;text-align:center;justify-content:center}.tk b{font-size:.95rem;margin:4px 0 8px}.tr{min-height:40px;padding:4px 6px;gap:6px;font-size:.875rem;margin-bottom:6px}.tr svg{width:20px;height:20px}.dn b{font-size:.95rem}.dn .ck{width:44px;height:44px;margin:14px auto 12px}.dn .ck svg{width:26px;height:26px}.dn .bt{font-size:.875rem;padding:9px 4px}.dn .cd{font-size:.875rem;margin-top:6px}}
 .dn .cd{font-size:.875rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue)}
 .concept{position:absolute;top:-6px;right:4%;background:var(--coral);color:var(--navy);font-weight:800;font-size:.875rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:999px;z-index:3}
 
@@ -137,6 +137,24 @@ h1,h2,h3{font-weight:800;letter-spacing:-.022em;line-height:1.06}
 .small .ok{color:var(--blue);border-top:1px dashed var(--line);padding-top:14px;transition:transform .3s}
 .small .ok:hover{transform:translateX(4px)}
 .small .ok svg{background:var(--sky)}
+.small .x{transition:color .5s}
+.small .x s{transition:color .5s,text-decoration-color .5s}
+.small .x svg{transition:filter .5s,opacity .5s,background .5s}
+.small .x::after{content:"Done";margin-left:auto;flex:none;background:#e3f7ec;color:#08754a;border-radius:999px;padding:2px 12px;font-size:.8rem;font-weight:800;opacity:0;transform:scale(.8);transition:opacity .4s,transform .4s}
+.small .x.got{color:var(--navy)}
+.small .x.got s{color:var(--navy);text-decoration-color:transparent}
+.small .x.got svg{filter:none;opacity:1;background:var(--sky)}
+.small .x.got::after{opacity:1;transform:none}
+.doit{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:72px;margin-top:6px;border:0;border-radius:22px;background:var(--blue);color:#fff;font:800 1.25rem var(--f);cursor:pointer;box-shadow:0 20px 36px -18px rgba(29,91,216,.85);transition:background .45s,color .45s,transform .2s,box-shadow .45s}
+.doit:hover{transform:translateY(-2px)}
+.doit:active{transform:scale(.98)}
+.doit i{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex:none}
+.doit i svg{width:20px;height:20px;padding:0;background:none;border-radius:0}
+.doit.busy{background:#174bb5}
+.doit.done{background:var(--done);color:var(--navy);box-shadow:0 20px 36px -18px rgba(18,183,106,.8)}
+.doit.done i{background:rgba(255,255,255,.4)}
+.small .hint{display:block;text-align:center;font-weight:600;font-size:.9rem;color:var(--slate)}
+.kick b{font-weight:800;color:var(--slate);letter-spacing:.06em}
 
 /* how */
 .steps{display:grid;gap:16px}
@@ -262,7 +280,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
       <i class="ring" style="width:100%;aspect-ratio:1;left:0;top:-4%" aria-hidden="true"></i>
       <i class="ring" style="width:80%;aspect-ratio:1;left:10%;top:10%;animation-delay:-3s" aria-hidden="true"></i>
       <span class="concept">Concept</span>
-      <div class="phone"><div class="dn" role="img" aria-label="Concept screen: Done. Your refill is ordered, ready Thursday after 10:00."><img class="lg" src="../assets/work/s16/ez-logo.webp" alt="" width="900" height="225"><span class="cd">Concept design</span><span class="ck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4.2 4L18.5 8" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Done. Your refill is ordered.</b><p lang="he" dir="rtl">בוצע. התרופה הוזמנה.</p><div class="rw"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ez-pharmacy"/></svg><span>Ready Thursday after 10:00<small>EZRA will remind you.</small></span></div><span class="bt">Read it to me</span></div></div>
+      <div class="phone"><div class="dn" role="img" aria-label="Concept screen: Done. Your refill is ordered, ready Thursday after 10:00."><img class="lg" src="../assets/work/s16/ez-logo.webp" alt="" width="900" height="225"><span class="cd">Concept design</span><span class="ck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4.2 4L18.5 8" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Done. Your refill is ordered.</b><p lang="he" dir="rtl">בוצע. התרופה הוזמנה.</p><div class="rw"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ez-pharmacy"/></svg><span>Ready Thursday after 10:00<small>EZRA will remind you.</small></span></div><div class="rw x6"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ez-call"/></svg><span>Dana knows too<small>A short message, sent for you.</small></span></div><span class="bt">Read it to me</span></div></div>
       <div class="phone"><div class="dn tk" role="img" aria-label="Concept screen: Everyday tasks, done for you, with large buttons for Pharmacy, Call family, Bills, Doctor visit, Book a ride and Scam check"><span class="cd">Concept design</span><b>Everyday tasks, done for you.</b><span class="tr"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ez-pharmacy"/></svg>Pharmacy</span><span class="tr"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ez-call"/></svg>Call family</span><span class="tr"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ez-bills"/></svg>Bills</span><span class="tr x6"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ez-doctor"/></svg>Doctor visit</span><span class="tr x6"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ez-ride"/></svg>Book a ride</span><span class="tr"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ez-shield"/></svg>Scam check</span><span class="bt">Talk to EZRA</span></div></div>
     </div>
   </div>
@@ -281,7 +299,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
   <section class="sec band-a" aria-labelledby="p-h"><div class="wrap">
     <div class="prob">
       <div class="rv">
-        <span class="kick">The problem</span>
+        <span class="kick"><b>01</b>The problem</span>
         <h2 id="p-h" style="font-size:clamp(2rem,4.8vw,3.1rem);margin:10px 0 14px">Small print, long menus, one wrong tap.</h2>
         <p style="color:var(--slate)">Refills, bills, rides and official letters keep moving into apps and phone menus. For many older adults each one is a small obstacle, and a scam call can look just like a real one.</p>
         <p style="color:var(--slate);margin-top:12px">EZRA's idea is simple: say what you need, and EZRA does the steps.</p>
@@ -290,15 +308,17 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
         <div class="x"><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-pharmacy"/></svg><span><s>Find the refill form, log in, choose a branch</s></span></div>
         <div class="x"><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-scan"/></svg><span><s>Read a long letter in small print</s></span></div>
         <div class="x"><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-ride"/></svg><span><s>Book a ride through three screens</s></span></div>
-        <div class="ok"><svg aria-hidden="true" viewBox="0 0 48 48" style="stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round"><use href="#ez-shield"/></svg><span>One button: “Do it for me.”</span></div>
+        <button class="doit" id="doit" type="button" aria-live="polite"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 3.5 8-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>Do it for me</span></button>
+        <span class="hint">One button instead of every step above. Tap it.</span>
       </div>
     </div>
   </div></section>
 
   <section class="sec band-b" aria-labelledby="h-h"><img class="wm" src="../assets/work/s16/ez-mark.webp" alt="" width="400" height="400" loading="lazy"><div class="wrap" style="position:relative">
     <div class="head rv">
-      <span class="kick">How it works · concept</span>
+      <span class="kick"><b>02</b>What I designed</span>
       <h2 id="h-h">Three calm steps.</h2>
+      <p>The whole product, reduced to one rhythm: ask, let EZRA do it, see that it is done.</p>
     </div>
     <div class="steps">
       <div class="step rv"><span class="n">1</span><h3>Tap one big button</h3><p>Ten everyday tasks on one screen. Large type, large targets, no menus.</p></div>
@@ -309,7 +329,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 
   <section class="sec band-c" id="tasks" aria-labelledby="t-h"><div class="wrap">
     <div class="head rv">
-      <span class="kick">Key moments</span>
+      <span class="kick"><b>03</b>The screens · key moments</span>
       <h2 id="t-h">Ten tasks, done for you.</h2>
       <p>The ten buttons from the concept screen. Tap one to read what it is designed to do.</p>
     </div>
@@ -342,7 +362,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 
   <section class="sec band-d tex" id="system" aria-labelledby="b-h"><div class="wrap">
     <div class="head rv">
-      <span class="kick">Design system</span>
+      <span class="kick"><b>04</b>Design system</span>
       <h2 id="b-h">One stem, read both ways.</h2>
       <p>The Hebrew ע and the Latin E share one upright stem. Hebrew reads right to left, English left to right. Steady blue for trust, coral for warmth.</p>
     </div>
@@ -379,6 +399,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
           <div><b style="font-size:1.6rem;color:var(--blue)" lang="he" dir="rtl">עזרא עושה את זה בשבילך</b><span>800 · 30</span></div>
           <div><span style="font-size:1.25rem;font-weight:700;color:var(--navy);white-space:normal">Your ride is booked for 10:00.</span><span>700 · 24</span></div>
           <div><span style="font-size:1.12rem;color:var(--slate);white-space:normal">Body text never goes below 22px.</span><span>400 · 22</span></div>
+          <div><span style="font-size:1.12rem;font-weight:800;color:var(--blue);white-space:normal">Do it for me</span><span>800 · 22 · buttons</span></div>
         </div>
       </div>
       <div class="tile rv">
@@ -410,7 +431,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     <div class="bp rv">
       <div class="body">
         <div>
-          <span class="kick">Status</span>
+          <span class="kick"><b>05</b>Where it stands</span>
           <h2 id="u-h">Still on the drawing board.</h2>
           <p>EZRA is a brand and design concept. The app is not built yet, and there is no public site.</p>
           <span class="stamp">Under construction</span>
@@ -434,13 +455,12 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
   </section>
 
   <section class="cta band-e" aria-labelledby="c-h"><div class="wrap">
-    <span class="kick" style="justify-content:center">Work with me</span>
+    <span class="kick" style="justify-content:center">Your project</span>
     <h2 id="c-h">Designing for people who need it most?</h2>
     <p>Brand, product design and a working product, from one senior designer.</p>
-    <div class="ctas"><a class="btn b" href="mailto:dave@3shamrocks.com?subject=New%20project">Start a project</a></div>
-    <nav class="more" aria-label="More work"><a href="chore-royale.html">Chore Royale</a><a href="fairent.html">FaiRent</a><a href="rk.html">R&amp;K</a><a href="milo.html">Milo</a><a href="shomer.html">SH✡MER</a><a href="lickpick.html">LickPick</a><a href="trashure-hunters.html">Trashure-Hunters</a></nav>
+    <div class="ctas"><a class="btn b" href="mailto:dave@3shamrocks.com?subject=New%20project">Let&rsquo;s talk</a><a class="btn w" href="../work-with-me.html">Find your fit &middot; 60 sec</a></div>
+    <nav class="more" aria-label="More work"><a href="concepts.html">Concept Lab</a><a href="chore-royale.html">Chore Royale</a><a href="fairent.html">FaiRent</a><a href="rk.html">R&amp;K</a><a href="milo.html">Milo</a><a href="shomer.html">SH✡MER</a><a href="lickpick.html">LickPick</a><a href="trashure-hunters.html">Trashure-Hunters</a></nav>
   </div></section>
-  <p class="fit-line" style="margin:0;padding:22px 16px;text-align:center;font-size:14px;opacity:.78"><a href="../work-with-me.html" style="color:inherit;text-decoration:underline;text-underline-offset:4px">Find your fit · 60 sec</a></p>
   <footer><div class="wrap"><span>&copy; 2026 3Shamrocks Studio · Dave Markovich</span><span><a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a> · <a href="https://www.linkedin.com/in/davemarkovich/" target="_blank" rel="noopener">LinkedIn</a></span></div></footer>
 </main>
 <script>
@@ -452,6 +472,16 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
     tm.push(setTimeout(function(){fl[0].className='on'},150));tm.push(setTimeout(function(){fl[1].className='on'},900));tm.push(setTimeout(function(){fl[2].className='done'},1700))}
   ts.forEach(function(b){b.addEventListener('click',function(){ts.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');pt.textContent=b.dataset.t;pd.textContent=b.dataset.d;run(b.dataset.f)})});
   run(ts[0].dataset.f);
+  var db=document.getElementById('doit'),dl=db.querySelector('span'),xs=[].slice.call(document.querySelectorAll('.small .x')),dt=[],played=0;
+  function doit(){dt.forEach(clearTimeout);dt=[];
+    if(db.classList.contains('done')){db.className='doit';dl.textContent='Do it for me';xs.forEach(function(x){x.classList.remove('got')});return}
+    played=1;
+    if(RM){xs.forEach(function(x){x.classList.add('got')});db.className='doit done';dl.textContent='Done. All three, for you.';return}
+    db.className='doit busy';dl.textContent='EZRA is on it\u2026';
+    xs.forEach(function(x,i){dt.push(setTimeout(function(){x.classList.add('got')},500+i*450))});
+    dt.push(setTimeout(function(){db.className='doit done';dl.textContent='Done. All three, for you.'},500+xs.length*450))}
+  db.addEventListener('click',doit);
+  if('IntersectionObserver' in window&&!RM){var dio=new IntersectionObserver(function(es){if(es[0].isIntersecting){dio.disconnect();setTimeout(function(){if(!played)doit()},900)}},{threshold:.9});dio.observe(db)}
   var hero=document.querySelector('.hero'),gl=document.getElementById('glow');
   if(!RM)hero.addEventListener('pointermove',function(e){var r=hero.getBoundingClientRect();gl.style.transform='translate('+(e.clientX-r.left-260)+'px,'+(e.clientY-r.top-260)+'px)'});
   var els=[].slice.call(document.querySelectorAll('.rv'));
