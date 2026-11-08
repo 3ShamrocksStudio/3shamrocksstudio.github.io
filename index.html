@@ -495,10 +495,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 
 /* CONTACT: the River of Three, and the 3S logo growing out of it */
 .contact{position:relative;padding:150px 0;overflow:hidden;isolation:isolate}
-.ct-bg{position:absolute;inset:0;z-index:-1}
 .ct-fx{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.ct-bg img{width:100%;height:100%;object-fit:cover;object-position:30% 55%;opacity:.92}
-.ct-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(52% 78% at 75% 52%,rgba(6,3,18,.9),rgba(6,3,18,.55) 60%,rgba(6,3,18,0) 100%),linear-gradient(180deg,#000 0%,rgba(0,0,0,.15) 16%,rgba(0,0,0,.15) 80%,#000 100%)}
 .ct-grid{display:grid;grid-template-columns:1fr 1fr;align-items:center}
 .ct-main{grid-column:2;display:flex;flex-direction:column;align-items:center;text-align:center}
 .ct-logo{width:150px;margin-bottom:26px;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -533,14 +530,28 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 .ct-cap{position:absolute;left:max(24px,calc(50% - 596px));bottom:22px;font:500 12.5px var(--font-b);color:rgba(236,232,255,.5)}
 @media(max-width:900px){
   .contact{padding:0 0 96px}
-  .ct-bg{--bw:min(100vw - 32px,720px);top:32px;bottom:auto;left:0;right:0;width:var(--bw);margin:0 auto;aspect-ratio:16/7;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px rgba(176,124,255,.14)}
-  .ct-bg img{object-position:0 56%;transform:scale(1.15);transform-origin:0 56%;opacity:.78}
-  .ct-bg::after{background:radial-gradient(120% 110% at 42% 52%,rgba(0,0,0,0) 45%,rgba(0,0,0,.55) 100%)}
   .ct-grid{grid-template-columns:1fr}
-  .ct-main{grid-column:1;padding-top:calc(min(100vw - 32px,720px)*7/16 + 92px)}
+  .ct-main{grid-column:1}
   .ct-cap{top:calc(min(100vw - 32px,720px)*7/16 + 42px);bottom:auto;left:0;right:0;text-align:center}
 }
 @media(max-width:600px){.ct-logo{width:118px}}
+/* FOREST: the River of Three as a full-bleed living scene behind the contact section (js/forest.js) */
+.ct-bg{position:absolute;inset:0;z-index:-1;overflow:hidden;--fx:40%;--fy:46%;--fk:1.04;-webkit-mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.55) 10%,#000 24%,#000 70%,rgba(0,0,0,.5) 86%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.55) 10%,#000 24%,#000 70%,rgba(0,0,0,.5) 86%,transparent 100%)}
+.ct-bg img,.fr-gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ct-bg img{object-fit:cover;object-position:var(--fx) var(--fy);transform:scale(var(--fk))}
+.fr-gl{opacity:0;transition:opacity .9s ease}
+.ct-bg.fr-on .fr-gl{opacity:1}
+.ct-bg::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(40% 58% at 71% 52%,rgba(4,2,14,.74),rgba(4,2,14,.42) 55%,rgba(4,2,14,0) 100%)}
+.fr-water{position:absolute;inset:0;opacity:0;mix-blend-mode:screen;background:repeating-linear-gradient(112deg,rgba(150,200,255,0) 0 18px,rgba(150,200,255,.2) 26px,rgba(150,200,255,0) 34px) 0 0/240px 240px;-webkit-mask:url(assets/studio/forest/forest-water.png) var(--fx) var(--fy)/cover no-repeat;mask:url(assets/studio/forest/forest-water.png) var(--fx) var(--fy)/cover no-repeat;transform:scale(var(--fk));animation:frFlow 4s linear infinite}
+.fr-2d.fr-on .fr-water{opacity:1}
+@keyframes frFlow{to{background-position:-240px 240px}}
+.ct-bg.fr-still::before{content:"";position:absolute;z-index:1;left:12%;top:20%;width:34%;height:46%;pointer-events:none;background:radial-gradient(closest-side,rgba(139,227,106,.2),rgba(47,183,201,.08) 60%,transparent);mix-blend-mode:screen}
+@media(max-width:900px){
+  .ct-bg{bottom:auto;height:min(150vw,760px);--fx:23%;--fy:50%;--fk:1.03;-webkit-mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.6) 8%,#000 18%,#000 56%,rgba(0,0,0,.45) 78%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,rgba(0,0,0,.6) 8%,#000 18%,#000 56%,rgba(0,0,0,.45) 78%,transparent 100%)}
+  .ct-bg::after{background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.35))}
+  .ct-main{padding-top:calc(min(150vw,760px)*.72)}
+  .ct-bg.fr-still::before{left:4%;width:66%;top:18%;height:42%}
+}
 
 /* FOOTER */
 footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px 0 36px;background:rgba(0,0,0,.6)}
@@ -1000,7 +1011,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
 
 <!-- CONTACT -->
 <section class="contact" id="contact" data-noburst>
-  <div class="ct-bg" aria-hidden="true"><img src="assets/studio/s7/river-of-three.webp" alt="" width="1280" height="720" loading="lazy"></div>
+  <div class="ct-bg" aria-hidden="true"><img src="assets/studio/forest/forest-2400.webp" srcset="assets/studio/forest/forest-1600.webp 1600w, assets/studio/forest/forest-2400.webp 2400w" sizes="(max-width:900px) 230vw, 130vw" alt="" width="2400" height="1600" loading="lazy" decoding="async"></div>
   <canvas class="ct-fx" id="ct-fx" aria-hidden="true"></canvas>
   <div class="wrap ct-grid">
     <div class="ct-main">
@@ -1357,5 +1368,6 @@ $$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttri
 <script src="assets/audio/s3-score.js?v=sc1" defer></script>
 <script src="js/studio-sound.js?v=sc1" defer></script>
 <script src="js/guide.js?v=g1" defer></script>
+<script src="js/forest.js?v=f1" defer></script>
 </body>
 </html>
