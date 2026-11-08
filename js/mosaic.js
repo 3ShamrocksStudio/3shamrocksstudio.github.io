@@ -3,6 +3,8 @@
    asset (assets/studio/mosaic/atlas.webp, built offline by assets/studio/mosaic/build.py), matched and tinted to
    the colour of that region of the photo. The photo itself is never redrawn: tiles sample its real pixels.
    Motion: tiles fly in and settle on scroll-in, then occasional tiles flip to another asset.
+   Two atlases share one slot grid: atlas.webp (small tiles, mipmapped) paints the portrait at rest; atlas-hi.webp
+   (larger tiles) loads on the first interaction and is what the magnifier and the exploded grid show.
    Interaction: a magnifier lens enlarges the tiles under the cursor or finger; click or tap names the tile and
    links to its product page; "Explode" (or double-tap) sorts every tile into a grid by product, then back.
    Nothing loads or touches WebGL until the section is near the viewport. Without JS or WebGL: the plain photo. */
@@ -14,8 +16,8 @@
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var HOVER = matchMedia('(hover:hover) and (pointer:fine)').matches;
   var BASE = 'assets/studio/mosaic/';
-  var ORDER = ['sh', 'lp', 'cr', 'th', 'j8', 'mi', 'rk', 'ez', 'fr', 'ap', 'vb', 'st'];
-  var NF = 24; /* floats per tile */
+  var ORDER = ['sh', 'lp', 'cr', 'th', 'mi', 'rk', 'ez', 'fr', 'ap', 'vb', 'st'];
+  var NF = 21; /* floats per tile */
 
   var io = new IntersectionObserver(function (es) {
     if (!es[0].isIntersecting) return;
@@ -34,21 +36,18 @@
     try { gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false }); } catch (e) {}
     var inst = gl && gl.getExtension('ANGLE_instanced_arrays');
     if (!gl || !inst) return;
-    Promise.all([fetch(BASE + 'layout.json?v=j8x1').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
-                 loadImg(BASE + 'atlas.webp?v=s23'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src),
-                 loadImg(BASE + 'atlas2.webp?v=j8x1').catch(function () { return null; })])  /* atlas2: current R&K pieces (rk_swap.py); the face keeps atlas.webp */
-      .then(function (r) { build(cv, gl, inst, r[0], r[1], r[2], r[3]); })
+    Promise.all([fetch(BASE + 'layout.json?v=m3').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
+                 loadImg(BASE + 'atlas.webp?v=m3'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src)])
+      .then(function (r) { build(cv, gl, inst, r[0], r[1], r[2]); })
       .catch(function () { /* keep the plain photo */ });
   }
 
-  function build(cv, gl, X, L, atlasImg, photoImg, atlas2Img) {
+  function build(cv, gl, X, L, atlasImg, photoImg) {
     var MOBILE = vis.clientWidth < 520 || matchMedia('(pointer:coarse)').matches;
     var src = MOBILE ? L.mobile : L.desktop, N = src.length, ASP = L.aspect;
-    var TL = L.tiles, SL = L.slot / L.atlas, PD = L.pad / L.atlas, G = L.grid;
-    /* swaps: retired pieces show their current replacement (atlas2) in the magnifier, the tag and the exploded grid only;
-       the portrait at rest keeps sampling atlas.webp, so its pixels never change */
-    var R = atlas2Img && L.r ? L.r : {}, T2 = L.tiles2 || [], SL2 = L.slot / (L.atlas2 || 1), PD2 = L.pad / (L.atlas2 || 1), G2 = L.grid2 || 1;
-    function rep(a) { var r = R[a]; return r == null ? -1 : r; }
+    var TL = L.tiles, G = L.cols;
+    function uvs(a) { return [a[2] / a[0], a[2] / a[1], a[3] / a[0], a[3] / a[1]]; } /* slot w/h, pad w/h in uv units */
+    var ULO = uvs(L.lo), UHI = uvs(L.hi), hiReady = 0, hiP = null;
 
     /* photo texture: the real cut-out photo over the section's own backdrop gradient (as the static version shows it) */
     var pc = document.createElement('canvas'); pc.width = photoImg.naturalWidth; pc.height = photoImg.naturalHeight;
@@ -58,8 +57,8 @@
 
     var VS = [
       'precision highp float;',
-      'attribute vec2 c;attribute vec3 tg,fr,gd;attribute float dl;attribute vec2 uv;attribute vec3 mn,cc;attribute float al,fl,id;attribute vec3 u2;',
-      'uniform vec2 res;uniform float W,t,ex,sel,asp,sc,mag,pass,sy;uniform vec4 lens;',
+      'attribute vec2 c;attribute vec3 tg,fr,gd;attribute float dl;attribute vec2 uv;attribute vec3 mn,cc;attribute float al,fl,id;',
+      'uniform vec2 res;uniform float W,t,ex,sel,asp,sc,mag,pass,sy,hr;uniform vec4 lens,ulo,uhi;',
       'varying vec2 vUv,vPh,vC,vP,vUv2;varying vec3 vMn,vCc;varying float vAl,vPx,vRaw,vOp,vSel,vSw;',
       'void main(){',
       ' float p=clamp((t-dl)/1.15,0.,1.);float e=1.-pow(1.-p,4.);',
@@ -73,9 +72,9 @@
       ' float f=clamp((t-fl)/.55,0.,1.);float sx=max(abs(cos(f*3.14159)),.04);',
       ' float q=pass>.5&&pass<1.5?s+1.:max(s-sc,1.);vec2 o=(c-.5)*vec2(q*sx,q);float cs=cos(rot),sn=sin(rot);o=vec2(o.x*cs-o.y*sn,o.x*sn+o.y*cs);',
       ' vec2 P=cen+o;vP=P;gl_Position=vec4(P.x/res.x*2.-1.,1.-P.y/res.y*2.,0.,1.);',
-      ' vUv=uv+c*'+(SL - 2 * PD).toFixed(6)+';vPh=(tg.xy+c*tg.z)/vec2(1.,asp);vC=c;vMn=mn;vCc=cc;vAl=al;vPx=q;vRaw=raw;',
+      ' vUv=uv*ulo.xy+ulo.zw+c*(ulo.xy-2.*ulo.zw);vPh=(tg.xy+c*tg.z)/vec2(1.,asp);vC=c;vMn=mn;vCc=cc;vAl=al;vPx=q;vRaw=raw;',
       ' vOp=smoothstep(0.,.3,p)*(1.-k*step(gd.z,0.));vSel=step(abs(id-sel),.5);',
-      ' vUv2=u2.xy+c*'+(SL2 - 2 * PD2).toFixed(6)+';vSw=u2.z*max(step(.5,pass),step(.5,k));}'
+      ' vUv2=uv*uhi.xy+uhi.zw+c*(uhi.xy-2.*uhi.zw);vSw=hr*max(step(.5,pass),step(.001,k));}'
     ].join('\n');
     var FS = [
       '#ifdef GL_FRAGMENT_PRECISION_HIGH\nprecision highp float;\n#else\nprecision mediump float;\n#endif',
@@ -98,7 +97,7 @@
     try { gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); } catch (e) { return; }
     gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
     gl.useProgram(pr);
-    var U = {}; ['res', 'W', 't', 'ex', 'sel', 'asp', 'sc', 'mag', 'pass', 'lens', 'at', 'ph', 'at2', 'K', 'dpr', 'sy', 'cut'].forEach(function (n) { U[n] = gl.getUniformLocation(pr, n); });
+    var U = {}; ['res', 'W', 't', 'ex', 'sel', 'asp', 'sc', 'mag', 'pass', 'lens', 'at', 'ph', 'at2', 'K', 'dpr', 'sy', 'cut', 'hr', 'ulo', 'uhi'].forEach(function (n) { U[n] = gl.getUniformLocation(pr, n); });
 
     function tex(im, mip) {
       var tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
@@ -112,7 +111,14 @@
     }
     gl.activeTexture(gl.TEXTURE0); tex(atlasImg, true); gl.uniform1i(U.at, 0);
     gl.activeTexture(gl.TEXTURE1); tex(pc, false); gl.uniform1i(U.ph, 1);
-    gl.activeTexture(gl.TEXTURE2); tex(atlas2Img || pc, !!atlas2Img); gl.uniform1i(U.at2, 2);
+    gl.activeTexture(gl.TEXTURE2); tex(pc, false); gl.uniform1i(U.at2, 2); /* placeholder until atlas-hi.webp loads */
+    gl.uniform4fv(U.ulo, ULO); gl.uniform4fv(U.uhi, UHI); gl.uniform1f(U.hr, 0);
+    function loadHi() {
+      if (hiP || gl.getParameter(gl.MAX_TEXTURE_SIZE) < Math.max(L.hi[0], L.hi[1])) return;
+      hiP = loadImg(BASE + 'atlas-hi.webp?v=m3').then(function (im) {
+        gl.activeTexture(gl.TEXTURE2); tex(im, false); gl.uniform1f(U.hr, 1); hiReady = 1; kick();
+      }).catch(function () { /* the small atlas stays */ });
+    }
 
     /* per-tile data */
     var D = new Float32Array(N * NF), cur = new Int32Array(N), alt = new Int32Array(N);
@@ -122,10 +128,8 @@
     function rnd(i, k) { var x = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return x - Math.floor(x); }
     function setTile(i, a) {
       var o = i * NF, m = TL[a];
-      D[o + 10] = (a % G) * SL + PD; D[o + 11] = Math.floor(a / G) * SL + PD;
+      D[o + 10] = a % G; D[o + 11] = Math.floor(a / G); /* slot column and row: the shader turns them into uvs per atlas */
       D[o + 12] = m[2]; D[o + 13] = m[3]; D[o + 14] = m[4];
-      var r = rep(a); D[o + 23] = r < 0 ? 0 : 1;
-      if (r >= 0) { D[o + 21] = (r % G2) * SL2 + PD2; D[o + 22] = Math.floor(r / G2) * SL2 + PD2; }
     }
     src.forEach(function (s, i) {
       var o = i * NF, ang = rnd(i, 1) * 6.283, rr = .55 + rnd(i, 2) * .9;
@@ -137,19 +141,23 @@
       cur[i] = s[3]; alt[i] = s[4]; setTile(i, s[3]);
     });
 
-    /* explode grid: per product, a labelled sample of up to 24 different pieces of its work, 8 to a row so each one
+    /* explode grid: per product, a labelled sample of up to 40 different tiles of its work, 8 to a row so each one
        reads; the band scrolls inside the frame, the other tiles fade out where they stand. L.g maps each atlas tile to
-       its piece (all crops of one asset, and assets that show the same artwork), so no piece shows twice */
-    var PER = 24, COLS = 8, GPAD = .04, LBL = .052, RES = 58; /* RES: px kept clear for the Reassemble button */
+       its piece (all crops of one asset, and assets that show the same artwork): every piece shows once first, then
+       other crops fill the rest, and no tile shows twice */
+    var PER = 40, COLS = 8, GPAD = .04, LBL = .052, RES = 58; /* RES: px kept clear for the Reassemble button */
     var labels = [], gridH = 1;
     function gridLayout() {
-      var groups = {}, seen = {}, PG = L.g || []; ORDER.forEach(function (k) { groups[k] = []; });
-      for (var i = 0; i < N; i++) {
-        var o = i * NF, a = cur[i], r = rep(a), g = groups[(r < 0 ? TL[a] : T2[r])[0]];
-        D[o + 6] = D[o] + D[o + 2] / 2; D[o + 7] = D[o + 1] + D[o + 2] / 2; D[o + 8] = 0;
-        var pk = r >= 0 ? 'n' + L.g2[r] : PG[a] != null ? PG[a] : 'a' + a;
-        if (g && g.length < PER && !seen[pk]) { seen[pk] = 1; g.push(i); }
+      var groups = {}, seen = {}, seenT = {}, PG = L.g || []; ORDER.forEach(function (k) { groups[k] = []; });
+      for (var i = 0; i < N; i++) { var o = i * NF; D[o + 6] = D[o] + D[o + 2] / 2; D[o + 7] = D[o + 1] + D[o + 2] / 2; D[o + 8] = 0; }
+      for (var pass = 0; pass < 2; pass++) {
+        for (i = 0; i < N; i++) {
+          var a = cur[i], g = groups[TL[a][0]], pk = PG[a] != null ? PG[a] : 'a' + a;
+          if (!g || g.length >= PER || seenT[a] || (seen[pk] || 0) > pass * 2) continue;   /* each piece once, then up to 3 crops */
+          seen[pk] = (seen[pk] || 0) + 1; seenT[a] = 1; g.push(i);
+        }
       }
+      ORDER.forEach(function (k) { groups[k].sort(function (x, y) { return x - y; }); });
       var ts = (1 - GPAD * 2) / COLS, gap = ts * .06, y = GPAD;
       labels = [];
       ORDER.forEach(function (k) {
@@ -173,7 +181,7 @@
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
     var lc = gl.getAttribLocation(pr, 'c'); gl.enableVertexAttribArray(lc); gl.vertexAttribPointer(lc, 2, gl.FLOAT, false, 0, 0);
     var ib = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, ib); gl.bufferData(gl.ARRAY_BUFFER, D, gl.DYNAMIC_DRAW);
-    [['tg', 3, 0], ['fr', 3, 3], ['gd', 3, 6], ['dl', 1, 9], ['uv', 2, 10], ['mn', 3, 12], ['cc', 3, 15], ['al', 1, 18], ['fl', 1, 19], ['id', 1, 20], ['u2', 3, 21]]
+    [['tg', 3, 0], ['fr', 3, 3], ['gd', 3, 6], ['dl', 1, 9], ['uv', 2, 10], ['mn', 3, 12], ['cc', 3, 15], ['al', 1, 18], ['fl', 1, 19], ['id', 1, 20]]
       .forEach(function (a) {
         var l = gl.getAttribLocation(pr, a[0]); if (l < 0) return;
         gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, a[1], gl.FLOAT, false, NF * 4, a[2] * 4); X.vertexAttribDivisorANGLE(l, 1);
@@ -260,7 +268,7 @@
     }
     function showTag(i, p) {
       if (i < 0) return hideTag();
-      selId = i; var r = rep(cur[i]), m = r < 0 ? TL[cur[i]] : T2[r], pr = L.products[m[0]];
+      selId = i; var m = TL[cur[i]], pr = L.products[m[0]];
       tag.href = pr.h; tag.innerHTML = '<b>' + esc(pr.n) + '</b><span> · ' + esc(m[1]) + '</span><i aria-hidden="true">&rarr;</i>';
       tag.setAttribute('aria-label', pr.n + ', ' + m[1] + '. Open the project');
       tag.classList.add('on');
@@ -272,7 +280,7 @@
     }
     function hideTag() { selId = -1; tag.classList.remove('on'); kick(); }
     function moveLens(p) {
-      lens.x = p.x; lens.y = p.y; lens.ta = exT ? 0 : 1;
+      loadHi(); lens.x = p.x; lens.y = p.y; lens.ta = exT ? 0 : 1;
       var R = lensR(), i = pick(p);
       /* zoom so the tile under the lens shows at about half the lens size: small face tiles get more zoom */
       if (i >= 0) lens.tm = Math.max(2.4, Math.min(9, R * .5 / (D[i * NF + 2] * w)));
@@ -292,7 +300,8 @@
       if (down && e.pointerId === down.id) { var p = local(e); if (Math.hypot(p.x - down.x, p.y - down.y) > 6) { down.moved = true; moveLens(p); } }
     });
     listen('pointerleave', function (e) { if (e.pointerType === 'mouse') dropLens(); });
-    listen('pointerdown', function (e) { var p = local(e); down = { id: e.pointerId, x: p.x, y: p.y, moved: false }; });
+    vis.addEventListener('pointerenter', loadHi);
+    listen('pointerdown', function (e) { loadHi(); var p = local(e); down = { id: e.pointerId, x: p.x, y: p.y, moved: false }; });
     listen('pointercancel', function () { down = null; });
     listen('pointerup', function (e) {
       var p = local(e), touch = e.pointerType !== 'mouse', moved = down && down.moved; down = null;
@@ -316,6 +325,7 @@
       sy = scr.scrollTop; lin.style.transform = 'translateY(' + (-sy).toFixed(1) + 'px)'; hideTag();
     }, { passive: true });
     function setExplode(on) {
+      loadHi();
       if (on) { finishFlips(); gridLayout(); scr.scrollTop = 0; sy = 0; lin.style.transform = ''; size(); }
       exFrom = explode; exStart = performance.now() / 1000 - T0;
       exT = on ? 1 : 0; vis.classList.toggle('mz-ex', on); vis.classList.add('mz-used');

@@ -1,21 +1,27 @@
-"""Builds the "Made of the work" photomosaic of Dave for the homepage "20 years" section (rebuilt 8 Nov 2026).
-Output: atlas.webp (every tile is a crop of a real piece of Dave's work: current brands, current app screens, and the
-best design work from the old 3shamrocks.com Wix site, src/legacy/) + layout.json (tile meta and the desktop/mobile
-mosaics: which tile sits where, matched to the colour of that region of Dave's photo).
-Rules baked in: no retired branding (old Milo bear, old R&K mascot, old J8NIX/FaiRent mockups, Nature), no tile or piece
-of work next to itself, and a hard cap on how often one tile (CAP_TILE) or one piece of work (CAP_PIECE) is reused.
-Run from the repo root:  python3 assets/studio/mosaic/build.py"""
-import json, os, math, random, heapq, glob
+"""Builds the "Made of the work" photomosaic of Dave for the homepage "20 years" section (v3, 8 Nov 2026).
+Every tile is a crop of a real piece of the studio's work: current brand marks, app icons, app screens, illustrations,
+brand sheets, HealthTech (AposHealth, VIBRANT) work, old 3shamrocks.com (Wix) work in src/legacy/ and brand palettes.
+Each source gives several distinct tiles (whole view, logo on dark and light, detail crops of the art, UI fragments),
+near-identical tiles are dropped, and one tile shows at most CAP_TILE times at rest and CAP_ALL times counting flips.
+Outputs: atlas.webp (small tiles, used at rest, mipmapped), atlas-hi.webp (same grid, larger tiles: the magnifier and the
+exploded grid, loaded lazily) and layout.json (tile meta and the desktop/mobile mosaics: which tile sits where, matched
+to the colour of that region of Dave's photo; the photo itself is never changed).
+Excluded on purpose: J8NIX (internal to-dos), Milo with chain or sunglasses, R&K pawn+king, SH✡MER Nature, people's
+faces and photos (the old-site 'shamrock keeper' and 'shamrock grove' portraits, the AposHealth model too), maps of real home areas, AI stock scenes, anything showing prices. Run from the repo root:  python3 assets/studio/mosaic/build.py"""
+import json, os, math, random, heapq, re
 import numpy as np
 from PIL import Image, ImageFilter
 
 OUT = 'assets/studio/mosaic'
-SLOT, PAD = 76, 3                       # atlas slot and inner padding (keeps mip levels clean)
-ATLAS = 2048; GRID = ATLAS // SLOT      # 26 x 26 slots in a power-of-two 2048 atlas, max 676 tiles
-CAP_TILE, CAP_PIECE = 10, 24            # max resting placements of one tile / of one piece of work (all its crops)
+COLS = 73                                # both atlases: 73 slots a row, same slot order
+LO_SLOT, LO_PAD = 28, 1                  # rest atlas: 2048 wide, power of two (mipmapped)
+HI_SLOT, HI_PAD = 48, 2                  # magnifier / exploded-grid atlas (loaded on first interaction)
+C = 56                                   # tiles are cut and colour-matched at this size, then scaled into both atlases
+MAXT = COLS * 72                         # lo atlas 2048 x 1024
+CAP_TILE, CAP_ALL, CAP_PIECE = 2, 3, 22  # max rest uses of one tile / rest + flip uses / rest uses of one piece of work
 PRODUCTS = {  # key: (display name, link)
   'sh': ('SH✡MER', 'work/shomer.html'), 'lp': ('LickPick', 'work/lickpick.html'),
-  'cr': ('Chore Royale', 'work/chore-royale.html'), 'j8': ('J8NIX', 'work/j8nix.html'),
+  'cr': ('Chore Royale', 'work/chore-royale.html'),
   'th': ('Trashure Hunters', 'work/trashure-hunters.html'), 'mi': ('Milo', 'work/milo.html'),
   'rk': ('Rookie & King', 'work/rk.html'), 'ez': ('EZRA', 'work/ezra.html'),
   'fr': ('FaiRent', 'work/fairent.html'), 'ap': ('AposHealth', '#experience'), 'vb': ('VIBRANT', '#experience'),
@@ -23,7 +29,7 @@ PRODUCTS = {  # key: (display name, link)
 }
 BV, W, S9, M, H = 'assets/brand-v3/', 'assets/work/', 'assets/studio/s9/', 'assets/studio/marks/', 'assets/studio/home/'
 TH, LG, MV = 'th-site/assets/img/', OUT + '/src/legacy/', 'assets/brand-proposals/milo-v2/'
-SRC = []  # (product, label, path, mode)   screen: square crops + whole view; logo: contain on dark + light; art: character on dark + light
+SRC = []  # (product, label, path, mode)
 def A(p, mode, *items):
   for it in items:
     SRC.append((p, it[0], it[1], it[2] if len(it) > 2 else mode))
@@ -67,12 +73,6 @@ A('th', 'dark', *[(l, LG + f + '.webp') for l, f in [ ('Aqua cyclops', 'th-blue'
   ('Bubble cyclops', 'th-bubble'), ('Sunny cyclops', 'th-yellow'), ('Water-gun cyclops', 'th-watergun'), ('Ranger cyclops', 'th-ranger')]])
 A('th', 'logo', ('logo', TH+'logo.webp'), ('app icon', TH+'th-icon.webp'), ('wordmark', LG+'th-wordmark.webp'), ('Air king', H+'th-king-air.webp', 'art'),
   ('Earth king', H+'th-king-earth.webp', 'art'), ('Fire king', H+'th-king-fire.webp', 'art'), ('Space king', H+'th-king-space.webp', 'art'), ('Water king', H+'th-king-water.webp', 'art'))
-# --- J8NIX (current command centre and brand)
-A('j8', 'screen', ('command centre', W+'j8nix/cc-overview.webp'), ('project detail', W+'j8nix/cc-detail.webp'), ('prompt forge', W+'j8nix/cc-forge.webp'),
-  ('focus view', W+'j8nix/cc-focus.webp'), ('mobile', W+'j8nix/cc-mobile.webp'), ('rail', W+'j8nix/cc-rail.webp'), ('waiting on you', W+'j8nix/cc-waiting.webp'),
-  ('forge, output', H+'j8-forge-out.webp'), ('forge, request', H+'j8-forge-req.webp'), ('help', H+'j8-help.webp'), ('brand card', BV+'j8nix/brand-card.png'), ('icon set', BV+'j8nix/icons.png'))
-A('j8', 'logo', ('glyph', BV+'j8nix/glyph-peach.png'), ('glyph navy', BV+'j8nix/glyph-navy.png'), ('logo', BV+'j8nix/logo.png'), ('logo on light', BV+'j8nix/logo-on-light.png'),
-  ('wordmark', BV+'j8nix/wordmark.png'), ('logo with tagline', 'assets/brand/j8nix-real/logo-tagline.png'))
 # --- Milo: only the current brand (pixel polar bear, no sunglasses)
 A('mi', 'detail', ('Milo, calm', MV+'character/milo-calm-nochain.png'), ('Milo, breathing', MV+'character/milo-breathe-nochain.png'), ('Milo, proud', MV+'character/milo-proud-nochain.png'))
 A('mi', 'square', ('avatar, calm', MV+'character/avatar-calm.png'), ('avatar, breathing', MV+'character/avatar-breathe.png'), ('avatar, proud', MV+'character/avatar-proud.png'),
@@ -98,8 +98,8 @@ A('fr', 'screen', ('home screen', W+'fairent/app-home.webp'), ('price result', W
 A('fr', 'square', ('app icon', BV+'fairent/app-icon.png'), ('brand card', BV+'fairent/brand-card.png'), ('light app icon', BV+'fairent/app-icon-light.png'))
 A('fr', 'logo', ('mark', BV+'fairent/logo-mark.png'), ('logo', BV+'fairent/logo.png'), ('logo on dark', BV+'fairent/logo-on-dark.png'))
 # --- AposHealth and VIBRANT (HealthTech case work) + the same brands from the old site
-A('ap', 'screen', *[('brand work', W+'healthtech/ap-%d.webp' % i) for i in (1, 2, 4, 5, 6)],
-  ('companion app', LG+'ap-app.webp'), ('brand system', LG+'ap-brand.webp'), ('website and app', LG+'ap-site.webp'), ('medical icons', LG+'ap-icons.webp'),
+A('ap', 'screen', *[('brand work', W+'healthtech/ap-%d.webp' % i) for i in (1, 2, 4, 6)],
+  ('companion app', LG+'ap-app.webp'), ('website and app', LG+'ap-site.webp'), ('medical icons', LG+'ap-icons.webp'),
   ('foot anatomy', LG+'ap-foot.webp'), ('gait cycle', LG+'ap-gait.webp'), ('logo variations', LG+'ap-marks.webp'), ('print collateral', LG+'ap-docs.webp'))
 A('ap', 'logo', ('logo', W+'healthtech/ap-logo.png'), ('logo', LG+'ap-logo.webp'))
 A('vb', 'screen', *[('brand work', W+'healthtech/vb-%d.webp' % i) for i in (1, 2, 3, 4, 5, 6)], ('brand book', LG+'vb-brandbook.webp'), ('logo spacing', LG+'vb-spacing.webp'))
@@ -107,14 +107,114 @@ A('vb', 'logo', ('logo', W+'healthtech/vb-logo.png'), ('logo', LG+'vb-logo.webp'
 # --- 3Shamrocks Studio: marks and design work from the old 3shamrocks.com
 A('st', 'logo', ('wordmark', LG+'st-wordmark.webp'), ('heart mark', LG+'st-heart.webp', 'art'), ('home icon', LG+'st-home-icon.webp', 'art'),
   ('Media Network mark', 'assets/studio/logos/media-network.png'), ('shamrock mark', 'assets/studio/heart-on-dark.png'))
-A('st', 'screen', ('studio site', LG+'st-laptop.webp'), ('shamrock keeper', LG+'st-forest.webp'), ('shamrock grove', LG+'st-mushroom.webp'),
+A('st', 'screen', ('studio site', LG+'st-laptop.webp'), 
   ("tee: On Slater's Mind", LG+'tee-face.webp'), ("tee: On Slater's Mind", LG+'tee-face-white.webp'), ('tee: galaxy', LG+'tee-galaxy.webp'), ('tee: ocean', LG+'tee-ocean.webp'),
   ('tee: surf', LG+'tee-surf.webp'), ('tee: sunset', LG+'tee-sunset.webp'), ('tee: bloom', LG+'tee-bloom.webp'))
-# pieces that are the same artwork under another file: one piece in the exploded grid (layout.json 'g')
-SAME = [[W+'shomer/badge.webp', 'assets/studio/logos/shomer.png'], [LG+'ap-logo.webp', W+'healthtech/ap-logo.png'],
-        [LG+'vb-logo.webp', W+'healthtech/vb-logo.png', M+'vibrant-white.png'], [LG+'st-heart.webp', 'assets/studio/heart-on-dark.png'], [LG+'ap-brand.webp', W+'healthtech/ap-5.webp'], [LG+'th-wordmark.webp', TH+'logo.webp']]
+# ===== v3 additions: every other usable studio asset already in the repo (checked by eye, 8 Nov 2026) =====
+SP, HW, MT, TP = 'assets/shomer-pilot/', 'assets/studio/s7/hw/', 'th-mvp/assets/assets/', 'th-mvp/assets/assets/trashures/'
+A('sh', 'screen', ('pilot: trusted circles', SP+'app-circles.webp'), ('pilot: map', SP+'app-map.webp'), ('pilot: circles screen', SP+'brand-app-circles.webp'),
+  ('pilot: first-aid guide', SP+'brand-app-guide.webp'), ('pilot: profile', SP+'brand-app-profile.webp'), ('pilot: live map', SP+'brand-app-map.webp'),
+  ('neighbourhood illustration', SP+'hero-neighbours.webp'), ('neighbourhood, mobile', SP+'hero-neighbours-m.webp'),
+  ('app screen', 'assets/real/shomer-screen1.jpg'), ('call screen', 'assets/studio/shomer-app-call.webp'), ('circles screen', 'assets/studio/shomer-app-circles.webp'),
+  ('map screen', 'assets/studio/shomer-app-map.webp'), ('clean map', 'assets/studio/shomer-app-map-clean.webp'), ('guide screen', 'assets/studio/shomer-app-guide.webp'),
+  ('map view', 'assets/studio/hero/shomer-map.webp'), ('near me', 'assets/studio/hero/shomer-near.webp'),
+  ('member card', 'assets/studio/hero/shomer-card.webp'), ('command centre', M+'shomer-command-sm.webp'), ('command centre, wide', 'assets/studio/pf/shomer-command.webp'),
+  ('app screen', 'assets/opt/shomer-screen.webp'), ('share card', 'assets/og/og-shomer.jpg'))
+A('sh', 'square', ('badge', SP+'shomer-badge.webp'), ('badge, brand sheet', SP+'brand-badge.webp'), ('app icon', 'assets/products/shomergency.png'), ('badge', 'assets/opt/shomer.webp'))
+A('lp', 'screen', ('cut screen', 'assets/studio/screens/lickpick-cut.webp'), ('pick screen', 'assets/studio/screens/lickpick-pick.webp'),
+  ('style screen', 'assets/studio/screens/lickpick-style.webp'), ('share screen', 'assets/studio/screens/lickpick-share.webp'),
+  ('welcome screen', 'assets/studio/screens/lickpick-welcome.webp'), ('share card', 'assets/og/og-lickpick.jpg'))
+A('lp', 'logo', ('app icon', 'assets/studio/logos/lickpick.png'), ('app icon, v3', 'lickpick/app/icon-192-v3.png'), ('maskable icon', 'lickpick/app/icon-maskable-512-v5.png'))
+A('cr', 'screen', ('spin screen', W+'chore-royale/scr-spin.jpg'), ('clan screen', W+'chore-royale/scr-clan.jpg'), ('chores list', W+'chore-royale/scr-chores.jpg'),
+  ('wheel screen', W+'chore-royale/scr-wheel.jpg'), ('check screen', W+'chore-wars/scr-check.jpg'), ('chores screen', W+'chore-wars/scr-chores.jpg'),
+  ('arena screen', W+'chore-wars/scr-arena.jpg'), ('wheel', 'assets/real/scr-chore.png'), ('hero', W+'s16/cr-hero.webp'), ('family show card', 'assets/screens/chore.png'),
+  ('chores', 'assets/studio/hero/cw-chores.webp'), ('power cards', 'assets/studio/hero/cw-cards.webp'), ('arena', 'assets/studio/hero/cw-arena.webp'),
+  ('share card', 'assets/og/og-chore-royale.jpg'))
+A('cr', 'logo', ('crown', 'assets/brand/chore-logo.png'), ('crest', 'assets/chore/crest-cutout.webp', 'art'), ('logo', BV+'chore-royale/logo.png'),
+  ('mark', BV+'chore-royale/logo-mark-512.webp'), ('stacked logo', BV+'chore-royale/logo-stacked-600.webp'), ('logo', W+'s16/cr-logo.webp'),
+  ('app icon', W+'s16/cr-app-icon.webp'), ('crest', W+'chore-royale/crest-400.jpg', 'square'), ('logo', 'assets/studio/logos/chore-royale.png'))
+A('th', 'screen', ('movie key art', 'assets/mockups/trashure-hunters-movie-keyart.png'), ('vibe board', 'assets/mockups/th-vibe.png'), ('hero team', 'assets/brand/th-hero-team.png'),
+  ('map screen', W+'trashure/screen-map.png'), ('choose your team', W+'trashure/chooseteam.jpg'), ('splash', W+'trashure/splashscreen.png'),
+  ('map', 'assets/opt/th-map.webp'), ('splash', 'assets/screens/th-splash.png'), ('live map', 'assets/studio/reels/th-live.webp'), ('team', TH+'team.webp'),
+  ('park', TH+'park-bg.webp'), ('AR view', TH+'ar.webp'), ('share card', TH+'og.jpg'), ('onboarding park', MT+'THonbrd_BG.a00e439882550b87b6a76c139edff3ed.png'),
+  ('share card', 'assets/og/og-trashure-hunters.jpg'))
+A('th', 'logo', ('wordmark', 'assets/brand/th-wordmark.png'), ('wordmark', W+'trashure-hunters/logo-wordmark-white.png'), ('app icon', 'assets/real/th-icon.png'),
+  ('logo', 'assets/products/trashure.png'), ('logo', 'assets/studio/logos/trashure-hunters.png'), ('app icon', TH+'apple-touch-icon.png'),
+  ('Trash-Cam button', MT+'trashcam.01b33dc66e6d37b765b3ee0b2356cf9e.png'), ('logo', MT+'TH_logo.a59b661f9ae3657e7e0682b052a0d2e5.png'),
+  ('wordmark', MT+'TH-text.f3a6e2ef300397aa01cfd9f8794af232.png'), ('Trashure Hunt button', MT+'trashure-hunt.dbf7d9b34686ab26980bbdaeb3c49a40.png'), ('home button', TH+'i-home.webp'))
+A('th', 'art', *[(n, MT + f) for n, f in [('Earth hatchling', 'earth_lvl1.c255d2fc0ff1d5de37ef24dc74a22698.png'), ('Space hatchling', 'space_lvl1.fa1018ed3ca3911797d3e4dd6dca1061.png'),
+  ('Water Elemonster', 'water_Elemonster.5d362d3d797a598ddb68311aaa4c4a87.png'), ('Water egg', 'water_lvl0.ee5630bcc6bc0686b452dcae52d27e1d.png'),
+  ('Air hatchling', 'air_lvl1.bc9baf41cc3a6a4b824b10111d9329be.png'), ('Water hatchling', 'water_lvl1.8843a87d223559c98140a0177207eab7.png'), ('Orbo', 'Orbo.e96ce0c19022fca6a535d79f74a615de.png'),
+  ('Air Elemonster', 'air_Elemonster.144a32c37cb85feea3353ca4aa9f0261.png'), ('King Grime', 'kingGrime.8b746ed5e419c61870ed7d7c84400049.png'), ('trash bag', 'trash.0662f1b2ed4462318554c37d1d6cc657.png'),
+  ('Space king', 'space_king.beb34e9333515009cc2d40b07ab8b665.png'), ('Earth Elemonster', 'earth_Elemonster.57272ef53ad9d89bfb93a513f90e72e6.png'), ('Fire hatchling', 'fire_lvl1.0c63636d35492000fe442976c5af7b54.png'),
+  ('Earth king', 'earth_king.e378264a64dce3e25c3181c850b801a6.png'), ('Water king', 'water_king.c18c620b1da7291e35953ecc3224be27.png'), ('Fire Elemonster', 'fire_Elemonster.9c46f75c3329ebf829b3367e2bb48b73.png'),
+  ('Air king', 'air_king.8c963d309413e5e6f63a978f6d31a7fb.png'), ('Space egg', 'space_lvl0.d2e60689d5ef13c82a87b33dbba46679.png'), ('Fire king', 'fire_king.6f2cd50324519e12dc651b8daf1540fc.png'),
+  ('Fire egg', 'fire_lvl0.26b259c23462cc66e747b3950b7246a5.png'), ('Space Elemonster', 'space_Elemonster.78ded492e6dc3c3b01ade7dc16ac7d5d.png'), ('Earth egg', 'earth_lvl0.98805b8855a544ee6922aebde789fd54.png'),
+  ('Air egg', 'air_lvl0.84e03a53440b1937d6d1a8e9e22273dc.png'), ('water gun', 'AR_game/watergun_1_icon.82e769a053de446ede8b7157b7341ffc.png'),
+  ('Leaf compo', 'Trashures PNG/compo_leaf_01.fd64c043dd3c586da43f35dd3af5ed33.png'), ('Cosmic compo', 'Trashures PNG/compo_cosmic_01.a82dc7ec239cb190182c349158a416e2.png'),
+  ('Fluff compo', 'Trashures PNG/compo_fluff_01.13b1d2edcfec5d9d9cc9ca68bcf06116.png'), ('Fluid compo', 'Trashures PNG/compo_fluid_01.c93c16b247c859e5f572b9a2a7182d57.png'),
+  ('space debris', 'Realms Assets/space_debris.65ff37d0c771af21b0d6a7968dfb17da.png'), ('bottle', 'Realms Assets/earth_bottle.9bf8eb48b3b539a16acdd841854b7f96.png'),
+  ('flame', 'Realms Assets/fire_flame.b11fffa1845c58f13b8f667c3a72c337.png'), ('light cell', 'Realms Assets/Light_cell.76f4f70a4314b05a11a3786d14de8886.png'),
+  ('Air Grime Zone', 'Realms Assets/GrimeZone_Air.45e37c24f9e8cc8f43e3d030ccfe519c.png'), ('charcoal', 'Realms Assets/fire_charcoal.be73a3f7174f237e6ebdb5269b4055a2.png'),
+  ('bubble', 'Realms Assets/water_bubble.208ac934828e02529476b5687764559c.png'), ('Space Grime Zone', 'Realms Assets/GrimeZone_Space.8bd6aea770d9545178406e5bea5d39e5.png'),
+  ('leaf', 'Realms Assets/earth_leaf.751a4e056b142e35f80986fd2a53d99d.png'), ('barrel', 'Realms Assets/fire_barrel.a0c50bfb58e24c54fe7caf3c4f182ca2.png'),
+  ('asteroid', 'Realms Assets/space_asteroid.315957cd1a112b0381a0b7404bfca160.png'), ('Fire Grime Zone', 'Realms Assets/GrimeZone_Fire.c0d79203ac8c2673f72f3ee1d614238b.png'),
+  ('Water Grime Zone', 'Realms Assets/GrimeZone_Water.b63647e5a4cb580dbc38507fa8b3c94c.png'), ('Earth Grime Zone', 'Realms Assets/GrimeZone_Earth.6c60d2d21819fb03d931027f12742796.png'),
+  ('wrapper', 'Realms Assets/earth_wrapper.f0bcf46437c3d8a2786028648b80d1c2.png'), ('cloud', 'Realms Assets/air_cloud.7697bcfe6dcfc746693610cae4fcd786.png')]],
+  *[(n, TH + f) for n, f in [('asteroid', 'rf-asteroid.webp'), ('bubble', 'rf-bubble.webp'), ('leaf', 'rf-leaf.webp'), ('flame', 'rf-flame.webp'), ('Space Grime', 'grime-space.webp'),
+  ('Water Grime', 'gz-water.webp'), ('cloud', 'rf-cloud.webp')]],
+  *[(n, M + f) for n, f in [('Air hatchling', 'th-air.webp'), ('Fire hatchling', 'th-fire.webp'), ('King Grime', 'th-grime.webp'), ('Water hatchling', 'th-water.webp'),
+  ('Earth hatchling', 'th-earth.webp'), ('Space hatchling', 'th-space.webp')]],
+  *[(n, W + 'trashure/' + f) for n, f in [('Earth hatchling', 'earth_lvl1.png'), ('Water hatchling', 'water_lvl1.png'), ('Fire hatchling', 'fire_lvl1.png'), ('King Grime', 'kingGrime.png'),
+  ('Space hatchling', 'space_lvl1.png'), ('Air hatchling', 'air_lvl1.png'), ('hero group', 'hero-group.png')]])
+A('th', 'square', *[('Trashure: ' + n, TP + f) for n, f in [('ember', 'ember_01.60979dd5e5e0bdf1b54855e33126c7dc.jpg'), ('cosmic', 'cosmic_03.ebd66a558b49bc149ee15d7d0fa43148.jpg'),
+  ('fluid', 'fluid_01.8710f6a1d339d331c2adca51db3c5676.jpg'), ('cosmic', 'cosmic_02.2020ada82078b916caec26aaba79dd38.jpg'), ('cosmic', 'cosmic_04.97e7c17e4caf9e200511e25e43d8dc73.jpg'),
+  ('metal', 'metal_03.89476cae360d559fb9774400a370cfb6.jpg'), ('fluff', 'fluff_01.4445b4abc35429b335bd21ae0e9cedcf.jpg'), ('scales', 'scales_01.ef93d5f3bb9e1e1e636c71289566bdfc.jpg'),
+  ('leaf', 'leaf_01.137472b8cafdf35e60d09d69478eef02.jpg'), ('crystal', 'crystal_01.f7ba46f244d7788639fb75079db8f7ff.jpg'), ('fluff', 'fluff_03.9d8d37da3b207376a0981c1709d8c31e.jpg'),
+  ('cosmic', 'cosmic_01.f9f3225675d68f2d1aa9003f06a8ff69.jpg'), ('metal', 'metal_04.e35c2650284ce4d4d6bded7222c75952.jpg'), ('ember', 'ember_03.dd36d9fdd6edc04086458d441275db83.jpg'),
+  ('metal', 'metal_02.96f651e4ad97aebd78758a1f71055e7e.jpg'), ('rainbow', 'rainbow_01.215739bb5eaf5ce1014eda469b51ed97.jpg'), ('leaf', 'leaf_02.cd53d3af056aab042ac1d72784bab76d.jpg'),
+  ('fluff', 'fluff_02.9ac2ba660c275885c62c719f58f17436.jpg')]])
+A('mi', 'square', ('calm face', W+'milo/milo-v2-calm-face.webp'), ('proud face', W+'milo/milo-v2-proud-face.webp'), ('avatar, breathing', W+'milo/milo-v2-av-breathe.webp'),
+  ('avatar, calm', W+'milo/milo-v2-av-calm.webp'), ('popsicle', W+'milo/milo-pop.webp'), ('app icon', MV+'logo/app-icon-180.png'), ('pixel eyes', MV+'character/eye-area-2x.png'))
+A('mi', 'logo', ('wordmark', W+'milo/milo-wordmark.png'))
+A('rk', 'logo', ('wordmark on light', BV+'rk/wordmark-on-light.png'), ('display wordmark on light', BV+'rk/wordmark-display-on-light.png'), ('favicon', BV+'rk/favicon-180.png'),
+  ('app icon', BV+'rk/app-icon-180.png'), ('stacked logo on light', BV+'rk/logo-stacked-on-light.png'), ('mark', W+'rk/rk-mark.webp'), ('logo', W+'rk/rk-logo.webp'))
+A('rk', 'screen', ('concept card', 'assets/studio/concepts/rk.webp'))
+A('ez', 'screen', ('concept card', 'assets/studio/concepts/ezra.webp'), ('tasks screen', S9+'ezra-tasks.webp'), ('voice screen', 'assets/screens/ezra.png'), ('share card', 'assets/og/og-ezra.jpg'))
+A('ez', 'square', ('helping hand', 'assets/brand/ezra-situational.jpg'), ('helping hand', 'assets/products/ezra.jpg'))
+A('ez', 'logo', ('mark', W+'s16/ez-mark.webp'), ('logo', W+'s16/ez-logo.webp'), ('logo on dark', W+'s16/ez-logo-dark.webp'), ('app icon', W+'s16/ez-app-icon.webp'),
+  ('hand mark', 'assets/studio/pf/ezra-mark.png'), ('hand mark', H+'ezra-mark.png'))
+A('fr', 'screen', ('overcharge flow', 'assets/mockups/fairent-hogen-overcharge-flow.png'), ('gauge screen', 'assets/real/scr-fairent.png'), ('message script', S9+'fr-script.webp'),
+  ('share card', 'assets/og/og-fairent.jpg'))
+A('fr', 'square', ('fair-rent scales', 'assets/concept/hogen.jpg'), ('iOS app icon', BV+'fairent/app-icon-ios-1024.png'))
+A('fr', 'logo', ('wordmark', 'assets/brand/fairent-wordmark-white.png'), ('mark', W+'s16/fr-mark.webp'), ('logo', W+'s16/fr-logo.webp'), ('logo on dark', W+'s16/fr-logo-dark.webp'),
+  ('app icon', W+'s16/fr-app-icon.webp'), ('logo', 'assets/studio/logos/fairent.png'))
+A('ap', 'screen', *[('brand work', W+'healthtech/ap-%d.webp' % i) for i in (1, 2, 4, 6)], *[('brand work', W+'aposhealth/screen-%d.png' % i) for i in (1, 2, 4, 6)],
+  ('gait study', 'assets/studio/apos-gait.webp'), ('app screen', M+'apos-screen.webp'), ('logo system', HW+'ap-logo.webp'), ('medical icons', HW+'ap-icons.webp'),
+  ('gait cycle', HW+'ap-gait.webp'), ('logo system', S9+'ap-logo.webp'), ('medical icons', S9+'ap-icons.webp'), ('gait cycle', S9+'ap-gait.webp'), ('HealthTech card', 'assets/og/og-healthtech.jpg'))
+A('ap', 'logo', ('logo', W+'aposhealth/logo.png'))
+A('vb', 'screen', *[('brand work', W+'vibrant/screen-%d.png' % i) for i in (1, 2, 3, 4, 5, 6)], ('brand book', 'assets/opt/vibrant.webp'),
+  ('icon set', HW+'vb-icons.webp'), ('app home', HW+'vb-app-home.webp'), ('app tour', HW+'vb-app-tour2.webp'), ('app tour, results', HW+'vb-app-tour3.webp'),
+  ('app tour, messages', HW+'vb-app-tour4.webp'), ('logo spacing', HW+'vb-logo.webp'), ('brand book', HW+'vb-brand.webp'), ('website', HW+'vb-web.webp'),
+  ('icon set', S9+'vb-icons.webp'), ('logo spacing', S9+'vb-logo.webp'), ('app screens', S9+'vb-app.webp'), ('brand book', S9+'vb-brand.webp'))
+A('vb', 'logo', ('logo', M+'vibrant.png'))
+A('st', 'logo', ('wordmark', 'assets/studio/3shamrocks.png'), ('wordmark on light', 'assets/studio/3shamrocks_black.png'), ('3S logo', 'assets/studio/3S_logo.png'),
+  ('heart mark on light', 'assets/studio/heart-on-light.png'), ('human-centred icon', 'assets/studio/icon-human.png'), ('systems icon', 'assets/studio/icon-systems.png'),
+  ('ops icon', 'assets/studio/icon-ops.png'), ('design system', 'assets/products/design-system.png'), ('wordmark', SP+'brand-3shamrocks.png'), ('wordmark', SP+'3shamrocks-studio.webp'),
+  ('wordmark', 'lickpick/assets/3shamrocks.png'), ('wordmark', TH+'studio.webp'),
+  ('client logo: Guberman', W+'clients/guberman.png'), ('client logo: Eldan', W+'clients/eldan.png'), ('client logo: Winplant', W+'clients/winplant.png'))
+A('st', 'screen', ('river of three', 'assets/studio/s7/river-of-three.webp'))
+
+# brand palettes (colour swatch tiles): the brand-v3 palette files where they exist, otherwise sampled from the brand's own marks
+PAL_SRC = {'cr': BV+'chore-royale/palette.json', 'ez': BV+'ezra/palette.json', 'fr': BV+'fairent/palette.json', 'rk': BV+'rk/palette.json',
+           'sh': [W+'shomer/badge.webp', S9+'sh-map.webp', SP+'brand-app-circles.webp'], 'lp': ['lickpick/app/icon-512-v5.png', S9+'lp-home.webp'],
+           'th': [TH+'logo.webp', TH+'team.webp', TH+'map-earth.webp'], 'mi': [MV+'logo/brand-card.png'], 'ap': [LG+'ap-logo.webp', W+'healthtech/ap-1.webp', LG+'ap-icons.webp'],
+           'vb': [LG+'vb-brandbook.webp', W+'healthtech/vb-1.webp'], 'st': ['assets/studio/heart-on-dark.png', LG+'st-wordmark.webp', LG+'st-laptop.webp']}
+
+SAME = [[W+'shomer/badge.webp', 'assets/studio/logos/shomer.png', SP+'shomer-badge.webp', SP+'brand-badge.webp', 'assets/opt/shomer.webp', 'assets/products/shomergency.png'],
+        [LG+'ap-logo.webp', W+'healthtech/ap-logo.png', W+'aposhealth/logo.png'], [LG+'vb-logo.webp', W+'healthtech/vb-logo.png', M+'vibrant-white.png', M+'vibrant.png'],
+        [LG+'st-heart.webp', 'assets/studio/heart-on-dark.png', 'assets/studio/heart-on-light.png'], [LG+'th-wordmark.webp', TH+'logo.webp']]
 PIECE = {q: g[0] for g in SAME for q in g}
-C = SLOT - 2 * PAD
 DARK, LIGHT = (16, 12, 30), (240, 238, 246)
 
 def on_bg(im, col):
@@ -132,73 +232,134 @@ def crops(im, n):
     out.append(im.crop((x, y, x + s, y + s)).resize((C, C), Image.LANCZOS))
   return out
 
+def windows(rgb, frac, k, steps=6):
+  """k detail crops (square, frac of the short side) from the busiest, mutually distant parts of the image"""
+  w, h = rgb.size; s = int(min(w, h) * frac)
+  if s < 40: return []
+  small = rgb.resize((max(1, w // 4), max(1, h // 4)), Image.BILINEAR); a = np.asarray(small, dtype=np.float32) / 255; L_ = a @ np.array([.299, .587, .114])
+  cand = []
+  for yy in np.linspace(0, h - s, steps).astype(int):
+    for xx in np.linspace(0, w - s, steps).astype(int):
+      sub = L_[yy // 4:(yy + s) // 4, xx // 4:(xx + s) // 4]
+      if sub.size: cand.append((float(sub.std()), xx, yy))
+  cand.sort(key=lambda c: -c[0]); out = []
+  for sc, xx, yy in cand:
+    if sc < .035: break
+    if all(abs(xx - px) + abs(yy - py) > s * .7 for _, px, py in out): out.append((sc, xx, yy))
+    if len(out) == k: break
+  return [rgb.crop((xx, yy, xx + s, yy + s)).resize((C, C), Image.LANCZOS) for _, xx, yy in out]
+
+def dark_windows(rgb, frac, k, steps=7):
+  """quiet dark close-ups of dark screens (fragments of the UI chrome, cards, map): the beard, suit and backdrop need
+  many more dark tiles than bright ones, and each tile may only show twice"""
+  w, h = rgb.size; s = int(min(w, h) * frac)
+  if s < 48: return []
+  small = rgb.resize((max(1, w // 4), max(1, h // 4)), Image.BILINEAR); L_ = (np.asarray(small, dtype=np.float32) / 255) @ np.array([.299, .587, .114])
+  cand = []
+  for yy in np.linspace(0, h - s, steps).astype(int):
+    for xx in np.linspace(0, w - s, steps).astype(int):
+      sub = L_[yy // 4:(yy + s) // 4, xx // 4:(xx + s) // 4]
+      if sub.size and sub.mean() < .22 and .025 < sub.std() < .2: cand.append((float(sub.std()), xx, yy))
+  cand.sort(key=lambda c: -c[0]); out = []
+  for sc, xx, yy in cand:
+    if all(abs(xx - px) + abs(yy - py) > s * .6 for _, px, py in out): out.append((sc, xx, yy))
+    if len(out) == k: break
+  return [rgb.crop((xx, yy, xx + s, yy + s)).resize((C, C), Image.LANCZOS) for _, xx, yy in out]
+
 def has_alpha(im): return im.getchannel('A').getextrema()[0] < 250
 
+def bbox_rgb(im, col):
+  b = im.getchannel('A').point(lambda v: 255 if v > 24 else 0).getbbox() if has_alpha(im) else None
+  rgb = on_bg(im, col); return rgb.crop(b) if b else rgb
+
 def tiles_of(path, mode):
-  im = Image.open(path).convert('RGBA'); im.thumbnail((1600, 1600), Image.LANCZOS)
+  im = Image.open(path).convert('RGBA'); im.thumbnail((1600, 1600), Image.LANCZOS); w, h = im.size
   if mode in ('logo', 'art', 'icon'):
     f = .86 if mode == 'logo' else .94
-    if has_alpha(im): return [contain(im, DARK, f), contain(im, LIGHT, f)]
-    return [contain(im, tuple(im.getpixel((2, 2))[:3]), f)]   # opaque artwork: pad with its own background colour
-  if mode == 'dark': return [contain(im, DARK, .94)]
-  if mode == 'square': return crops(on_bg(im, DARK), 1)
-  if mode == 'detail':  # whole character plus two close-ups (face, popsicle): three distinct tiles of one piece
-    rgb = on_bg(im, DARK); w, h = rgb.size
+    v = [contain(im, DARK, f), contain(im, LIGHT, f)] if has_alpha(im) else [contain(im, tuple(im.getpixel((2, 2))[:3]), f)]
+    if mode == 'icon' or min(w, h) < 160: return v
+    bb = bbox_rgb(im, DARK); bw, bh = bb.size
+    if mode == 'art':   # the character's face (upper middle) plus close-ups of its texture
+      s_ = int(min(bw, bh) * .62); x0 = (bw - s_) // 2; y0 = int(bh * .12)
+      v.append(bb.crop((x0, y0, x0 + s_, y0 + s_)).resize((C, C), Image.LANCZOS))
+      v += windows(bb, .42, 2)
+    else:               # logo lockups: a crop of the mark/letters
+      v += windows(bb, .55 if max(bw, bh) / max(1, min(bw, bh)) < 2 else .9, 1 if max(bw, bh) / max(1, min(bw, bh)) < 2 else 2)
+    return v
+  if mode == 'dark': return [contain(im, DARK, .94)] + windows(bbox_rgb(im, DARK), .5, 2)
+  rgb = on_bg(im, DARK)
+  if mode == 'square': return crops(rgb, 1) + windows(rgb, .5, 3) + windows(rgb, .3, 2) + dark_windows(rgb, .3, 3)
+  if mode == 'detail':  # whole character plus close-ups (face, popsicle)
     return [rgb.resize((C, C), Image.LANCZOS)] + [rgb.crop((int(w * a), int(h * b), int(w * c), int(h * d))).resize((C, C), Image.LANCZOS)
-                                                  for a, b, c, d in ((.14, .06, .70, .62), (.46, .38, 1., .94))]
-  rgb = on_bg(im, DARK); w, h = rgb.size; r = max(w, h) / min(w, h)
+                                                  for a, b, c, d in ((.14, .06, .70, .62), (.46, .38, 1., .94))] + windows(rgb, .3, 2)
+  r = max(w, h) / min(w, h)
   v = crops(rgb, 1 if r < 1.25 else 2 if r < 2 else 3 if r < 3 else 4)
   if r >= 1.25: v.append(contain(im, (22, 18, 38)))
-  if mode == 'screen' and float(np.asarray(rgb.resize((32, 32)), dtype=np.float32).mean() / 255) < .3:
-    # dark screens get two close-ups (2x zoom on the busiest quarters): the beard and suit need many quiet dark tiles
-    s_ = min(w, h) // 2; best = []
-    for yy in range(0, h - s_ + 1, max(1, (h - s_) // 3 or 1)):
-      for xx in range(0, w - s_ + 1, max(1, (w - s_) // 3 or 1)):
-        c = rgb.crop((xx, yy, xx + s_, yy + s_)).resize((C, C), Image.LANCZOS); a_ = np.asarray(c, dtype=np.float32) / 255
-        best.append((float(a_.std()) * (1 if a_.mean() < .35 else .3), xx, yy, c))
-    best.sort(key=lambda b_: -b_[0]); picked = []
-    for sc, xx, yy, c in best:
-      if all(abs(xx - px) + abs(yy - py) > s_ * .6 for _, px, py, _ in picked): picked.append((sc, xx, yy, c))
-      if len(picked) == 2: break
-    v += [c for _, _, _, c in picked]
+  v += windows(rgb, .5, 3)                               # UI fragments
+  if min(w, h) >= 420: v += windows(rgb, .28, 3)         # close-ups: icons, buttons, type
+  if float(np.asarray(rgb.resize((32, 32)), dtype=np.float32).mean() / 255) < .32:
+    v += dark_windows(rgb, .42, 4) + dark_windows(rgb, .26, 6) + dark_windows(rgb, .17, 6)
   return v
 
-def busy(t):  # share of pixels that differ from the tile's own background: whole-logo tiles that are mostly empty are dropped
+def busy(t):  # share of pixels that differ from the tile's own background
   a = np.asarray(t, dtype=np.int16); return float((np.abs(a - a[2, 2]).max(2) > 28).mean())
+
+def palette_of(p):
+  s = PAL_SRC[p]
+  if isinstance(s, str):
+    return [tuple(int(c['hex'][i:i + 2], 16) for i in (1, 3, 5)) for c in json.load(open(s))['palette']][:8]
+  ims = [Image.open(q).convert('RGB').resize((160, 160)) for q in s if os.path.exists(q)]
+  sheet = Image.new('RGB', (160 * len(ims), 160))
+  for i, q in enumerate(ims): sheet.paste(q, (160 * i, 0))
+  qz = sheet.quantize(12, method=Image.Quantize.MEDIANCUT); pal = qz.getpalette()[:36]; cnt = sorted(qz.getcolors(), reverse=True)
+  out = []
+  for n, i in cnt:
+    c = tuple(pal[i * 3:i * 3 + 3])
+    if all(sum(abs(a - b) for a, b in zip(c, o)) > 60 for o in out): out.append(c)
+  return out[:6]
+
+def swatches(cols):
+  n = len(cols); out = []
+  t = Image.new('RGB', (C, C)); [t.paste(c, (i * C // n, 0, (i + 1) * C // n, C)) for i, c in enumerate(cols)]; out.append(t)
+  t = Image.new('RGB', (C, C), cols[0]); [t.paste(c, (0, (i + 1) * C // (n + 1), C, (i + 2) * C // (n + 1))) for i, c in enumerate(cols[1:] + cols[:1])]; out.append(t)
+  t = Image.new('RGB', (C, C), cols[0]); h2 = C // 2
+  for i, c in enumerate(cols[1:4]): t.paste(c, ((i + 1) % 2 * h2, (i + 1) // 2 * h2, (i + 1) % 2 * h2 + h2, (i + 1) // 2 * h2 + h2))
+  out.append(t)
+  t = Image.new('RGB', (C, C), cols[-1]); k = min(n, 4)
+  for i, c in enumerate(cols[:k]): m = i * C // (2 * k + 1); t.paste(c, (m, m, C - m, C - m))
+  out.append(t)
+  return out
 
 tiles, missing, dropped = [], [], 0
 for p, label, path, mode in SRC:
   if not os.path.exists(path): missing.append(path); continue
   vs = tiles_of(path, mode)
   for t in vs:
-    if mode in ('logo', 'art', 'icon') and len(vs) > 1 and t is not vs[0] and busy(t) < .16: dropped += 1; continue   # keep the dark view of every piece
+    if mode in ('logo', 'art', 'icon') and len(vs) > 1 and t is not vs[0] and busy(t) < .16: dropped += 1; continue   # keep the first view of every piece
     tiles.append((p, label, t, PIECE.get(path, path)))
+for p in PAL_SRC:
+  for t in swatches(palette_of(p)): tiles.append((p, 'colour palette', t, 'palette:' + p))
 print('sources', len(SRC) - len(missing), 'missing', missing, 'tiles', len(tiles), 'mostly-empty dropped', dropped)
-if len(tiles) > GRID * GRID:  # too many: drop the extra whole-view variants first, from the busiest products
-  raise SystemExit('too many tiles %d > %d' % (len(tiles), GRID * GRID))
-# near-duplicate tiles (same pixels after the resize) are dropped
-seen, uniq = set(), []
-for tt in tiles:
-  k = np.asarray(tt[2].resize((12, 12), Image.BILINEAR)).tobytes()
-  if k in seen: continue
-  seen.add(k); uniq.append(tt)
-print('after de-dup', len(uniq)); tiles = uniq
+# near-duplicates (same art from another file or size, overlapping crops) are dropped: 8x8 colour signature distance
+sig = np.array([np.asarray(t[2].resize((8, 8), Image.BILINEAR), dtype=np.float32).ravel() / 255 for t in tiles])
+keep = []
+for i in range(len(tiles)):
+  thr = .018 + .027 * min(1., float(sig[i].mean()) / .3)     # dark tiles differ in smaller steps: finer threshold
+  if keep and np.abs(sig[keep] - sig[i]).mean(1).min() < thr: continue
+  if float(np.asarray(tiles[i][2], dtype=np.float32).std()) < 3: continue    # flat: nothing of the work shows
+  keep.append(i)
+tiles = [tiles[i] for i in keep]
+print('after de-dup', len(tiles))
+if len(tiles) > MAXT: raise SystemExit('too many tiles %d > %d' % (len(tiles), MAXT))
 from collections import Counter; print(dict(Counter(t[0] for t in tiles)))
 
-atlas = Image.new('RGB', (ATLAS, ATLAS), DARK)
 meta = []
-for i, (p, label, t, _) in enumerate(tiles):
-  x, y = (i % GRID) * SLOT, (i // GRID) * SLOT
-  edge = t.resize((SLOT, SLOT), Image.LANCZOS)          # bleed edge pixels into the padding
-  atlas.paste(edge, (x, y)); atlas.paste(t, (x + PAD, y + PAD))
+for p, label, t, _ in tiles:
   a = np.asarray(t, dtype=np.float32) / 255
   q = a.reshape(2, C // 2, 2, C // 2, 3).mean((1, 3)).reshape(4, 3)
   meta.append({'p': p, 'l': label, 'm': [round(float(c), 3) for c in a.reshape(-1, 3).mean(0)], 'q': q,
                'sd': float((a @ np.array([.299, .587, .114])).std())})
-atlas.save(OUT + '/atlas.webp', 'WEBP', quality=80, method=6)
-print('atlas kB', os.path.getsize(OUT + '/atlas.webp') // 1024)
 pieceid = {}; G = [pieceid.setdefault(t[3], len(pieceid)) for t in tiles]
-print('pieces', len(pieceid))
 
 # --- target: Dave's real photo (cut-out) over the section's own backdrop gradient ---
 cut = Image.open('assets/studio/dave-portrait-cut.webp').convert('RGBA'); PW, PH = cut.size
@@ -282,18 +443,18 @@ def layout(N, base_cols, min_div, seed):
       # dark tones: favour quiet tiles (their detail is what turns the beard and suit muddy)
       d = (((TQl - q) ** 2).sum((1, 2)) + 3 * ((TMl - mm) ** 2).sum(1) + (.02 + .5 * dk) * TS ** 2 + .04 * ua + rn * .006)
     if fig < .3:   # backdrop cells show the work in its own colours (dimmed), so spread them across every product
-      d = .03 * d + .004 * pused[TP] + .006 * ua + 1.2 * np.maximum(0, TL - .3) ** 2 + rn * .02   # keep the backdrop moody: pale tiles go to the face
+      d = .03 * d + .004 * pused[TP] + .006 * ua + 3 * np.maximum(0, TL - .22) ** 2 + rn * .02   # keep the backdrop moody: pale tiles go to the face
     def pick(extra_ban, cnt, cap):
-      ok = ~banned & ~extra_ban & (cnt < cap) & (up[TG] < CAP_PIECE) & (pc[TP] < PCAP)
-      if not ok.any(): ok = ~banned & ~extra_ban & (cnt < cap) & (up[TG] < CAP_PIECE)   # relax: product share, then piece cap
-      if not ok.any(): ok = ~banned & ~extra_ban & (cnt < cap)
+      ok = ~banned & ~extra_ban & (cnt < cap) & (ua + ub < CAP_ALL) & (up[TG] < CAP_PIECE) & (pc[TP] < PCAP)
+      if not ok.any(): ok = ~banned & ~extra_ban & (cnt < cap) & (ua + ub < CAP_ALL) & (up[TG] < CAP_PIECE)   # relax: product share, then piece cap
+      if not ok.any(): ok = ~banned & ~extra_ban & (cnt < cap) & (ua + ub < CAP_ALL)
       if not ok.any(): return None
       dd = np.where(ok, d, 1e9); return int(np.argmin(dd))
     a = pick(np.zeros(len(meta), bool), ua, CAP_TILE)
     if a is None: a = int(np.argmin(np.where(~banned, d, 1e9))); relaxed += 1
     xb = np.zeros(len(meta), bool); xb[a] = True; xb |= TG == TG[a]
     # the alternate (shown when the tile flips) is a good match too, but a different piece
-    top = np.argsort(np.where(~banned & ~xb & (ub < CAP_TILE), d, 1e9))[:3]
+    top = np.argsort(np.where(~banned & ~xb & (ua + ub < CAP_ALL), d, 1e9))[:3]
     b = int(top[rnd.randrange(len(top))])
     ua[a] += 1; ub[b] += 1; up[TG[a]] += 1; pc[TP[a]] += 1
     if fig < .3: pused[TP[a]] += 1
@@ -302,15 +463,31 @@ def layout(N, base_cols, min_div, seed):
   res.sort(key=lambda r: (r[1], r[0]))
   return res, ua, ub, up, relaxed
 
+
 desk, uad, ubd, upd, rl1 = layout(1400, 22, 4, 7); mob, uam, ubm, upm, rl2 = layout(950, 18, 4, 11)
 print('desktop cells', len(desk), 'mobile cells', len(mob), 'relaxed', rl1, rl2)
 for nm, ua_, ub_, up_ in (('desktop', uad, ubd, upd), ('mobile', uam, ubm, upm)):
-  print(nm, 'tiles at rest', int((ua_ > 0).sum()), 'tiles incl. flips', int(((ua_ + ub_) > 0).sum()), 'max tile use', int(ua_.max()), 'max flip use', int(ub_.max()), 'max piece use', int(up_.max()))
-used = set(r[3] for r in desk + mob) | set(r[4] for r in desk + mob)
-from collections import Counter; sh = Counter(meta[r[3]]['p'] for r in desk); print('desktop cell share by product', {k: round(v / len(desk), 2) for k, v in sh.items()})
-print('unique tiles used', len(used), 'unique pieces used', len(set(G[t] for t in used)))
-json.dump({'v': 2, 'atlas': ATLAS, 'aspect': PH / PW, 'slot': SLOT, 'pad': PAD, 'grid': GRID, 'cap': [CAP_TILE, CAP_PIECE],
-           'products': {k: {'n': v[0], 'h': v[1]} for k, v in PRODUCTS.items()},
+  print(nm, 'tiles at rest', int((ua_ > 0).sum()), 'tiles incl. flips', int(((ua_ + ub_) > 0).sum()), 'max rest use', int(ua_.max()),
+        'max rest+flip use', int((ua_ + ub_).max()), 'max piece use', int(up_.max()))
+assert rl1 == rl2 == 0 and max(uad.max(), uam.max()) <= CAP_TILE and max((uad + ubd).max(), (uam + ubm).max()) <= CAP_ALL
+used = sorted(set(r[3] for r in desk + mob) | set(r[4] for r in desk + mob))
+sh = Counter(meta[r[3]]['p'] for r in desk); print('desktop cell share by product', {k: round(v / len(desk), 2) for k, v in sh.items()})
+# only tiles the mosaics use go into the atlases (kept in product order), indices remapped
+used.sort(key=lambda i: (PK.index(meta[i]['p']), i)); nid = {o: k for k, o in enumerate(used)}
+for r in desk + mob: r[3], r[4] = nid[r[3]], nid[r[4]]
+tiles = [tiles[i] for i in used]; meta = [meta[i] for i in used]; gid = {}; G = [gid.setdefault(G[i], len(gid)) for i in used]
+print('unique tiles', len(tiles), 'unique pieces', len(gid))
+rows = math.ceil(len(tiles) / COLS); CL, CH = LO_SLOT - 2 * LO_PAD, HI_SLOT - 2 * HI_PAD
+atlas = Image.new('RGB', (2048, 1 << (rows * LO_SLOT - 1).bit_length()), DARK); hi = Image.new('RGB', (COLS * HI_SLOT, rows * HI_SLOT), DARK)
+for i, (p, label, t, _) in enumerate(tiles):
+  cx, cy = i % COLS, i // COLS
+  for im, sl, pd, c in ((atlas, LO_SLOT, LO_PAD, CL), (hi, HI_SLOT, HI_PAD, CH)):
+    im.paste(t.resize((sl, sl), Image.LANCZOS), (cx * sl, cy * sl)); im.paste(t.resize((c, c), Image.LANCZOS), (cx * sl + pd, cy * sl + pd))   # edge bleed, then tile
+atlas.save(OUT + '/atlas.webp', 'WEBP', quality=76, method=6)
+hi.save(OUT + '/atlas-hi.webp', 'WEBP', quality=66, method=6)
+print('atlas kB', os.path.getsize(OUT + '/atlas.webp') // 1024, atlas.size, 'hi kB', os.path.getsize(OUT + '/atlas-hi.webp') // 1024, hi.size)
+json.dump({'v': 3, 'cols': COLS, 'aspect': PH / PW, 'lo': [atlas.width, atlas.height, LO_SLOT, LO_PAD], 'hi': [hi.width, hi.height, HI_SLOT, HI_PAD],
+           'cap': [CAP_TILE, CAP_ALL, CAP_PIECE], 'products': {k: {'n': v[0], 'h': v[1]} for k, v in PRODUCTS.items()},
            'tiles': [[m['p'], m['l']] + m['m'] for m in meta], 'g': G,
            'desktop': desk, 'mobile': mob}, open(OUT + '/layout.json', 'w'), separators=(',', ':'), ensure_ascii=False)
 print('layout kB', os.path.getsize(OUT + '/layout.json') // 1024)
