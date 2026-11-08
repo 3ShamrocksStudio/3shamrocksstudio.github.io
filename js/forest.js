@@ -61,11 +61,14 @@
       /* curl of the stream function: divergence-free drift */
       var cx = (psi(X, Y + e, T) - psi(X, Y - e, T)) / (2 * e), cy = -(psi(X + e, Y, T) - psi(X - e, Y, T)) / (2 * e);
       var tx = cx * 22 * f.z, ty = cy * 16 * f.z - 3;
+      var pull = 0; f.n = Math.max(0, (f.n || 0) - dt * 2);
       if (active) {
-        var dx = ptr.x - f.x, dy = ptr.y - f.y, d = Math.sqrt(dx * dx + dy * dy) + 1, R = Math.max(220, W * 0.22);
-        if (d < R) { var a = 1 - d / R; tx += (dx / d) * 120 * a - (dy / d) * 150 * a; ty += (dy / d) * 120 * a + (dx / d) * 150 * a; if (d < 40) { tx -= dx * 2; ty -= dy * 2; } }
+        /* gather into an orbit around the pointer: steer toward a ring of radius r0, circling at ~260 px/s */
+        var dx = ptr.x - f.x, dy = ptr.y - f.y, d = Math.sqrt(dx * dx + dy * dy) + 1, R = Math.max(340, W * 0.4);
+        if (d < R) { pull = Math.min(1, 1.6 * (1 - d / R)); var r0 = 34 + f.z * 46, rad = Math.max(-1, Math.min(1, (d - r0) / 60)) * 300, tan = (i % 3 ? 1 : -1) * (200 + 90 * f.z);
+          tx += ((dx / d) * rad - (dy / d) * tan - tx) * pull; ty += ((dy / d) * rad + (dx / d) * tan - ty) * pull; f.n = Math.max(f.n, 1 - d / 180); }
       }
-      var k = Math.min(1, dt * 2.2); f.vx += (tx - f.vx) * k; f.vy += (ty - f.vy) * k;
+      var k = Math.min(1, dt * (2.2 + pull * 6)); f.vx += (tx - f.vx) * k; f.vy += (ty - f.vy) * k;
       f.x += f.vx * dt; f.y += f.vy * dt; f.f = Math.max(0, f.f - dt * 1.6);
       /* soft walls: drift back inside the scene */
       var m = 20; if (f.x < -m) f.x = W + m; else if (f.x > W + m) f.x = -m;
@@ -120,10 +123,10 @@
     ' float wat=m.r,fall=min(m.r,m.g)*1.6,leaf=clamp(m.g-m.r*2.,0.,1.),fol=m.b,t=uT;',
     /* shamrock: sway and breathe around the stem, flutter more under the pointer */
     ' vec2 q=(uv-uA)*vec2(1.5,1.);float L=length(q);',
-    ' float th=sin(t*.85)*.016+sin(t*1.9+1.)*.006+uH*sin(t*7.+q.x*18.)*.02;',
+    ' float th=sin(t*.85)*.016+sin(t*1.9+1.)*.006+uH*sin(t*8.+q.x*18.)*.034;',
     ' float br=1.+sin(t*1.25)*.01+uH*.012;',
     ' float c=cos(th),s=sin(th);vec2 qr=vec2(c*q.x+s*q.y,-s*q.x+c*q.y)/br;',
-    ' qr+=vec2(sin(t*2.3+q.y*16.),cos(t*2.+q.x*13.))*.0024*(1.+uH*2.5)*smoothstep(.02,.25,L);',
+    ' qr+=vec2(sin(t*2.3+q.y*16.),cos(t*2.+q.x*13.))*.0024*(1.+uH*5.)*smoothstep(.02,.25,L);',
     ' uv=mix(uv,uA+qr/vec2(1.5,1.),leaf);',
     /* moss and canopy: a slow breeze */
     ' uv+=fol*vec2(sin(t*1.1+uv.y*9.+uv.x*6.)*.0016,cos(t*.9+uv.x*7.)*.0008);',
@@ -134,27 +137,29 @@
     ' float sp=.035+clamp(fall,0.,1.)*.22;',
     ' vec2 wq=uv*vec2(34.,52.);vec2 fl=F*t*sp*vec2(34.,52.);',
     ' a1=fb(wq-fl);a2=fb(wq*1.7+vec2(5.2,1.3)-fl*1.6);',
-    ' wd=(vec2(a1,a2)-.5)*.0065*wat;',
+    ' wd=(vec2(a1,a2)-.5)*.0085*wat;',
+    ' }',
     /* ripples from taps */
-    ' for(int i=0;i<4;i++){vec4 r=uRp[i];if(r.w<=0.)continue;vec2 d=(uv-r.xy)*vec2(1.5,1.);float dl=length(d)+1e-4,ag=r.z,ring=ag*.11;',
-    '  float w=exp(-pow((dl-ring)*24.,2.))*exp(-ag*1.1)*r.w;wd+=d/dl*sin((dl-ring)*120.)*w*.009;rh+=w*max(0.,sin((dl-ring)*120.+1.2));}',
-    ' uv+=wd*smoothstep(.05,.5,wat);}',
+    ' for(int i=0;i<4;i++){vec4 r=uRp[i];if(r.w<=0.)continue;vec2 d=(uv-r.xy)*vec2(1.5,1.);float dl=length(d)+1e-4,k=r.z/1.2,ring=.015+k*.17,fd=pow(1.-k,1.5)*r.w;',
+    '  float w=exp(-pow((dl-ring)*130.,2.))*fd,w2=exp(-pow((dl-ring*.58)*170.,2.))*fd*.55;wd+=d/dl*(exp(-pow((dl-ring)*30.,2.))*sin((dl-ring)*90.)*fd*.012);rh+=w+w2+exp(-dl*dl*6000.)*pow(1.-k,4.)*1.2;}',
+    ' uv+=wd*(.3+.7*smoothstep(.05,.5,wat))*(1.-leaf);',
     ' vec3 col=texture2D(uI,uv).rgb;',
     ' float lum=dot(col,vec3(.3,.59,.11));',
     /* caustic shimmer and foam */
-    ' if(wat>.004){float cs=pow(1.-abs(sin((a1+a2)*6.+t*.4)),6.);',
-    ' col+=vec3(.55,.78,1.)*cs*wat*(.12+lum*.9)*.9;',
+    ' if(wat>.004){float cs=pow(1.-abs(sin((a1+a2)*5.+t*.4)),3.)*.55;',
+    ' col+=vec3(.55,.78,1.)*cs*wat*(.16+lum*.9)*1.2;',
     ' if(fall>.01){float fo=n(vec2(uv.x*170.,uv.y*22.-t*3.2))*n(vec2(uv.x*90.,uv.y*14.-t*2.1));',
     ' col+=vec3(.8,.92,1.)*smoothstep(.25,.6,fo)*clamp(fall,0.,1.)*(.18+lum*.6);}',
-    ' col+=vec3(.6,.85,1.)*rh*(.25+lum)*.9*smoothstep(.05,.5,wat);}',
+    '}',
+    ' if(rh>.001){float rg=(.7+.3*smoothstep(.0,.35,wat))*(1.-leaf);col+=vec3(.8,.9,1.)*rh*1.1*rg+vec3(1.)*rh*pow(n(uv*420.+t*2.),10.)*1.6*rg;}',
     /* the painted firefly orbs twinkle; the light breathes */
     ' float orb=smoothstep(.55,.85,lum)*(1.-wat)*(1.-leaf)*step(col.b,col.r);',
     ' col+=col*orb*(n(uv*28.+t*.35)-.35)*1.1;',
     ' col*=.965+.035*sin(t*.6)+.012*n(vec2(t*1.7,0.));',
     /* the shamrock glows when you come close */
-    ' if(uv.x>.08&&uv.x<.6&&uv.y>.2&&uv.y<.74){float hl=0.;for(int i=0;i<6;i++){float an=float(i)*1.047+t*.2;hl+=texture2D(uM,uv+vec2(cos(an),sin(an))*.028).g;}hl=hl/6.;',
+    ' if(uv.x>.08&&uv.x<.6&&uv.y>.2&&uv.y<.74){float hl=0.;for(int i=0;i<12;i++){float an=float(i)*2.4+t*.3;hl+=texture2D(uM,uv+vec2(cos(an),sin(an))*(.012+.0035*float(i))*(1.+.5*uH)).g;}hl=hl/12.;',
     ' float halo=clamp(hl-leaf*.7,0.,1.)*(1.-wat);',
-    ' col+=vec3(.55,1.,.5)*halo*(.06+uH*.32)+col*leaf*uH*.22;}',
+    ' vec3 au=mix(vec3(.5,1.,.45),vec3(.72,.42,1.),smoothstep(.45,.66,uv.y));col+=au*halo*(.08+uH*.65)+col*leaf*uH*.4+au*leaf*uH*.08;}',
     ' gl_FragColor=vec4(col,1.);',
     '}'].join('\n');
   var VSP = 'attribute vec4 a;uniform vec2 uR;varying float va;varying float vh;void main(){vec2 c=a.xy/uR*2.-1.;gl_Position=vec4(c.x,-c.y,0.,1.);gl_PointSize=a.z;va=fract(a.w);vh=floor(a.w)/1000.;}';
@@ -180,7 +185,7 @@
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, texM); gl.uniform1i(U1.uM, 1);
     gl.uniform2f(U1.uR, cv.width, cv.height); gl.uniform4f(U1.uMap, map[0] * dpr, map[1] * dpr, map[2] * dpr, map[3] * dpr);
     gl.uniform1f(U1.uT, T % 3600); gl.uniform1f(U1.uH, hov); gl.uniform2f(U1.uP, par[0], par[1]); gl.uniform2f(U1.uA, ANCHOR[0], ANCHOR[1]);
-    var rp = new Float32Array(16); for (var i = 0; i < 4; i++) { var r = ripples[i]; if (r && T - r[2] < 3.5) { rp[i * 4] = r[0]; rp[i * 4 + 1] = r[1]; rp[i * 4 + 2] = T - r[2]; rp[i * 4 + 3] = 1; } }
+    var rp = new Float32Array(16); for (var i = 0; i < 4; i++) { var r = ripples[i]; if (r && T - r[2] < 1.2) { rp[i * 4] = r[0]; rp[i * 4 + 1] = r[1]; rp[i * 4 + 2] = T - r[2]; rp[i * 4 + 3] = 1; } }
     gl.uniform4fv(U1.uRp, rp);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     /* fireflies, additive */
@@ -194,8 +199,8 @@
   }
   function eachFly(put) {
     for (var i = 0; i < flies.length; i++) {
-      var f = flies[i], tw = 0.5 + 0.5 * Math.sin(T * f.sp + f.ph), a = (0.18 + 0.82 * tw * tw) * (0.45 + 0.55 * f.z) + f.f * 0.6;
-      put(f.x + par[0] * (f.z - 0.4) * 30, f.y + par[1] * (f.z - 0.4) * 22, (10 + 20 * f.z) * (1 + f.f * 0.5), a, f.hue);
+      var f = flies[i], tw = 0.5 + 0.5 * Math.sin(T * f.sp + f.ph), a = (0.18 + 0.82 * tw * tw) * (0.45 + 0.55 * f.z) + f.f * 0.6 + (f.n || 0) * 0.9;
+      put(f.x + par[0] * (f.z - 0.4) * 30, f.y + par[1] * (f.z - 0.4) * 22, (10 + 20 * f.z) * (1 + f.f * 0.5 + (f.n || 0) * 0.6), a, f.hue);
     }
     for (var j = 0; j < sparks.length; j++) { var s = sparks[j]; put(s.x, s.y, 18 * s.z, Math.min(1, 1.4 * s.l / s.L), 0.6); }
   }

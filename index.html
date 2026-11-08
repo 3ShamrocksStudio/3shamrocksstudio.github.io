@@ -587,7 +587,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
 .gd-bub,.gd-panel,.gd-bar,.gd-toast{position:fixed;z-index:150;font-family:var(--font-b);color:var(--ink)}
 .gd-av{position:relative;flex:none;width:46px;height:46px;border-radius:50%;background:url(assets/studio/minime_nobg.webp) 50% 3%/158% auto no-repeat,radial-gradient(circle at 50% 35%,#3a1f73,#140c2c 70%);box-shadow:inset 0 0 0 2px var(--violet-2),0 0 18px -2px rgba(176,124,255,.7)}
 .gd-bub{right:20px;bottom:20px;display:flex;align-items:center;opacity:0;transform:translateY(16px) scale(.96);transition:opacity .35s var(--ease),transform .45s var(--ease),bottom .35s var(--ease);pointer-events:none}
-.gd-bub.in{opacity:1;transform:none;pointer-events:auto}.gd-bub.gd-hide{opacity:0;transform:translateY(10px);pointer-events:none}
+.gd-bub.in{opacity:1;transform:none;pointer-events:auto}.gd-bub.gd-hide,.gd-bub.gd-away{opacity:0;transform:translateY(10px);pointer-events:none}
 .gd-open{display:flex;align-items:center;gap:12px;padding:7px 46px 7px 7px;border:1px solid rgba(176,124,255,.45);border-radius:40px;background:rgba(14,9,30,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:inherit;font:inherit;text-align:left;cursor:pointer;box-shadow:0 14px 40px -14px rgba(130,57,234,.75),inset 0 1px 0 rgba(255,255,255,.06);transition:border-color .2s,transform .25s var(--ease)}
 .gd-open:hover{border-color:var(--violet-2);transform:translateY(-2px)}
 .gd-open .gd-av::after{content:"!";position:absolute;right:-3px;top:-3px;width:17px;height:17px;border-radius:50%;background:var(--green);color:#0b1a06;font:800 12px/17px var(--font-d);text-align:center;box-shadow:0 0 0 2px #0e091e,0 0 10px rgba(139,227,106,.8);animation:gdPing 2.4s ease-in-out infinite}
@@ -1368,7 +1368,7 @@ $$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttri
 <script>/* not-live devices open their branded pages too */document.querySelectorAll('.dev[data-href]').forEach(function(d){function go(){location.href=d.dataset.href}d.style.cursor='pointer';d.addEventListener('click',go);d.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();go()}})});</script>
 <script src="assets/audio/s3-score.js?v=sc2" defer></script>
 <script src="js/studio-sound.js?v=sc2" defer></script>
-<script src="js/guide.js?v=g1" defer></script>
-<script src="js/forest.js?v=f2" defer></script>
+<script src="js/guide.js?v=g2" defer></script>
+<script src="js/forest.js?v=f3" defer></script>
 </body>
 </html>

@@ -181,6 +181,9 @@
     }
   });
 
+  /* step aside while the contact forest is on screen, so the bubble never covers its text */
+  var ctSec = D.getElementById('contact');
+  if (ctSec && 'IntersectionObserver' in W) new IntersectionObserver(function (es) { bub.classList.toggle('gd-away', es[0].isIntersecting); }, { rootMargin: '0px 0px -20% 0px' }).observe(ctSec);
   var shown = false, timer = 0;
   function reveal() {
     if (shown) return; shown = true; clearTimeout(timer); removeEventListener('scroll', depth);
