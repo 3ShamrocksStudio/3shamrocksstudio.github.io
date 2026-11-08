@@ -34,9 +34,9 @@
     try { gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false }); } catch (e) {}
     var inst = gl && gl.getExtension('ANGLE_instanced_arrays');
     if (!gl || !inst) return;
-    Promise.all([fetch(BASE + 'layout.json?v=rk72').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
+    Promise.all([fetch(BASE + 'layout.json?v=j8x1').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
                  loadImg(BASE + 'atlas.webp?v=s23'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src),
-                 loadImg(BASE + 'atlas2.webp?v=rk72').catch(function () { return null; })])  /* atlas2: current R&K pieces (rk_swap.py); the face keeps atlas.webp */
+                 loadImg(BASE + 'atlas2.webp?v=j8x1').catch(function () { return null; })])  /* atlas2: current R&K pieces (rk_swap.py); the face keeps atlas.webp */
       .then(function (r) { build(cv, gl, inst, r[0], r[1], r[2], r[3]); })
       .catch(function () { /* keep the plain photo */ });
   }
