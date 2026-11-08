@@ -74,7 +74,7 @@ A('j8', 'screen', ('command centre', W+'j8nix/cc-overview.webp'), ('project deta
 A('j8', 'logo', ('glyph', BV+'j8nix/glyph-peach.png'), ('glyph navy', BV+'j8nix/glyph-navy.png'), ('logo', BV+'j8nix/logo.png'), ('logo on light', BV+'j8nix/logo-on-light.png'),
   ('wordmark', BV+'j8nix/wordmark.png'), ('logo with tagline', 'assets/brand/j8nix-real/logo-tagline.png'))
 # --- Milo: only the current brand (pixel polar bear, no sunglasses)
-A('mi', 'detail', ('Milo, calm', MV+'character/milo-calm.png'), ('Milo, breathing', MV+'character/milo-breathe.png'), ('Milo, proud', MV+'character/milo-proud.png'))
+A('mi', 'detail', ('Milo, calm', MV+'character/milo-calm-nochain.png'), ('Milo, breathing', MV+'character/milo-breathe-nochain.png'), ('Milo, proud', MV+'character/milo-proud-nochain.png'))
 A('mi', 'square', ('avatar, calm', MV+'character/avatar-calm.png'), ('avatar, breathing', MV+'character/avatar-breathe.png'), ('avatar, proud', MV+'character/avatar-proud.png'),
   ('app icon', MV+'logo/app-icon-1024.png'), ('brand card', MV+'logo/brand-card.png'))
 A('mi', 'logo', ('wordmark', MV+'logo/wordmark-pink.png'), ('wordmark on light', MV+'logo/wordmark-pink-deep.png'), ('lockup', MV+'logo/lockup-horizontal-on-dark.png'),
