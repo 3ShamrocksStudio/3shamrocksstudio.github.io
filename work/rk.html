@@ -47,6 +47,7 @@ h1,h2,h3{font-family:var(--disp);letter-spacing:-.02em;color:#fff}
 h1,h2{font-weight:800;line-height:1.08}
 h3{font-weight:700;line-height:1.25}
 .warm{color:var(--amber)}
+.act{color:var(--blue)}
 .cold{color:var(--steel)}
 .kick{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--steel)}
 .kick::before{content:"";width:10px;height:10px;border-radius:2px;background:linear-gradient(90deg,var(--blue) 0 45%,transparent 45% 55%,#fff 55%)}
@@ -152,7 +153,7 @@ h3{font-weight:700;line-height:1.25}
 .head h2{font-size:clamp(1.8rem,4vw,2.8rem);margin:14px 0 14px;letter-spacing:-.02em}
 .head p{color:var(--mut);font-size:1.05rem}
 
-/* problem: cold message (cool, muted) vs the R&K opener (warm outcome) */
+/* problem: cold message (cool, muted) vs the R&K opener (blue: an action; amber is kept for the handshake) */
 .vs2{display:grid;gap:16px}
 @media(min-width:860px){.vs2{grid-template-columns:1fr auto 1fr;align-items:center}}
 .vs2>*{min-width:0}
@@ -165,9 +166,9 @@ h3{font-weight:700;line-height:1.25}
 .bubble{background:#12286B;border-radius:16px 16px 16px 4px;padding:12px 14px;font-size:.95rem;margin-bottom:8px;color:var(--mut);width:fit-content;max-width:100%}
 .bubble.dim{opacity:.55}
 .seen{font-size:.78rem;color:var(--steel);text-align:right}
-.msg.win{border-color:rgba(245,158,11,.38);background:radial-gradient(90% 80% at 100% 0%,rgba(245,158,11,.10),transparent 60%),linear-gradient(180deg,var(--navy2),var(--navy))}
-.msg.win h3{color:var(--amber)}
-.msg.win .ic{color:var(--amber)}
+.msg.win{border-color:rgba(90,134,255,.4);background:radial-gradient(90% 80% at 100% 0%,rgba(31,91,255,.14),transparent 60%),linear-gradient(180deg,var(--navy2),var(--navy))}
+.msg.win h3{color:var(--sky)}
+.msg.win .ic{color:var(--sky)}
 .msg.win .bubble{background:var(--blue);color:#fff;border-radius:16px 16px 4px 16px;margin-left:auto}
 .msg.win .bubble.r{background:#1B3580;border-radius:16px 16px 16px 4px;margin-left:0}
 .msg.win .seen{color:var(--mut)}
@@ -352,7 +353,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
   <div class="wrap">
     <div>
       <img class="lock" src="../assets/work/rk/rk-logo.webp?v=rk7" alt="Rookie &amp; King" width="1200" height="605" fetchpriority="high">
-      <h1><span class="warm">One game</span> instead of a <span class="cold">cold message.</span></h1>
+      <h1><span class="act">One game</span> instead of a <span class="cold">cold message.</span></h1>
       <p class="lead">Rookie &amp; King turns “can I pick your brain?” into “one game of chess?”. Ten minutes on one board gives two professionals a reason to talk, then a handshake.</p>
       <div class="ctas">
         <a class="btn b" href="#play">Play a move</a>
@@ -627,7 +628,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 <script>
 (function(){if(!window.S3Audio)return;
 var A=S3Audio.create({base:'../assets/audio/',name:'rk',lead:0.1,loopLen:72,musicGain:0.5,sfxGain:0.7,store:{sfx:'s3_sfx'},sprite:{"deal":[1.6607,0.7978]},haptics:{deal:[30,40,30,40,80]}});
-var B=S3Audio.mount(A,{music:true,label:'Play theme'});B.style.cssText+='--s3a-bg:#0B1D55;--s3a-fg:#E8EDF8;--s3a-accent:#F59E0B;--s3a-font:Inter,system-ui,sans-serif;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 6px 20px rgba(0,0,0,.3)';
+var B=S3Audio.mount(A,{music:true,label:'Play theme'});B.style.cssText+='--s3a-bg:#0B1D55;--s3a-fg:#E8EDF8;--s3a-accent:#5A86FF;--s3a-font:Inter,system-ui,sans-serif;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 6px 20px rgba(0,0,0,.3)';
 /* sound only on the payoff: the pawn reaches the king and both sides shake hands */
 var hs=document.getElementById('hs'),mv=document.getElementById('mv');if(!hs||!mv)return;
 var was=hs.dataset.s;mv.addEventListener('pointerdown',function(){was=hs.dataset.s;});
