@@ -1,21 +1,161 @@
 {
   "name": "R&K (Rookie & King)",
-  "version": "6.0",
-  "source": "v6: puzzle-seam mark without the bridge bar, warmer amber, Inter Tight + Inter, 24 grid stroke icons",
-  "meaning": "Cool and neutral colours for cold, waiting and status; warm amber only for the win (the move, the handshake, the connection).",
+  "version": "7.0",
+  "source": "v7 (8 Nov 2026): built from Dave's own R&Klogo.ai. Core colours sampled from his file: artboard #06133F, blue rgb(31,91,255), white; Ice, Deep Blue and Graphite from his gradient stops.",
+  "meaning": "His palette leads: Navy, Electric Blue, White. Cool tones (Steel, Mist) carry cold, waiting and status. Warm Win Amber appears only for the win: the handshake, the connection, the level-up. Never in the logo.",
   "palette": [
-    {"name": "Ink", "hex": "#070D1C", "role": "Base canvas"},
-    {"name": "Board Navy", "hex": "#0F1E3F", "role": "Surfaces, cards"},
-    {"name": "Signal Blue", "hex": "#1F5BFF", "role": "The Rookie half, primary actions"},
-    {"name": "Sky Blue", "hex": "#5A97FF", "role": "Links, info, move indicators"},
-    {"name": "Steel", "hex": "#8B9AB8", "role": "Cold and neutral: cold outreach, status, labels"},
-    {"name": "Victory Amber", "hex": "#F59E0B", "role": "The King half, the win, success actions"},
-    {"name": "Amber Deep", "hex": "#B45309", "role": "Amber on light backgrounds"},
-    {"name": "White", "hex": "#FFFFFF", "role": "Text on dark"}
+    {
+      "name": "Navy",
+      "hex": "#06133F",
+      "role": "Dave's artboard. Base canvas, the board's frame"
+    },
+    {
+      "name": "Electric Blue",
+      "hex": "#1F5BFF",
+      "role": "The Rookie half, ROOKIE, primary actions (white text 5.25:1)"
+    },
+    {
+      "name": "White",
+      "hex": "#FFFFFF",
+      "role": "The King half, & KING, text on dark (17.9:1 on Navy)"
+    },
+    {
+      "name": "Ice",
+      "hex": "#B3C7FF",
+      "role": "Dave's highlight on the rook: glints, focus, light-square edge (10.7:1 on Navy)"
+    },
+    {
+      "name": "Deep Blue",
+      "hex": "#0F2D7E",
+      "role": "Dave's pawn shadow: pressed states, blue depth"
+    },
+    {
+      "name": "Graphite",
+      "hex": "#6F6F6F",
+      "role": "Dave's king shadow: piece shading only, never text"
+    },
+    {
+      "name": "Night",
+      "hex": "#030A24",
+      "role": "Deepest navy: page vignette, footer, behind the board"
+    },
+    {
+      "name": "Surface",
+      "hex": "#0B1D55",
+      "role": "Cards, panels"
+    },
+    {
+      "name": "Raised",
+      "hex": "#12286B",
+      "role": "Raised cards, hover, light squares (with blue)"
+    },
+    {
+      "name": "Sky",
+      "hex": "#5A86FF",
+      "role": "Links, info, move hints on Navy (5.36:1)"
+    },
+    {
+      "name": "Steel",
+      "hex": "#8B9AB8",
+      "role": "Cold and neutral: cold outreach, waiting, labels (6.3:1 on Navy)"
+    },
+    {
+      "name": "Mist",
+      "hex": "#A9B6D6",
+      "role": "Secondary text on Navy (8.8:1)"
+    },
+    {
+      "name": "Win Amber",
+      "hex": "#F59E0B",
+      "role": "The win only: the handshake, the connection, level up (8.3:1 on Navy; Navy text on it 8.3:1)"
+    },
+    {
+      "name": "Amber Deep",
+      "hex": "#B45309",
+      "role": "Amber on light backgrounds (5.0:1 on white)"
+    },
+    {
+      "name": "Paper",
+      "hex": "#F4F6FB",
+      "role": "Light background"
+    },
+    {
+      "name": "Alert",
+      "hex": "#FF5C6C",
+      "role": "Errors only, always with an icon and a word (6.0:1 on Navy)"
+    }
   ],
-  "type": {
-    "display": "Inter Tight 700-800; sentence case headlines, caps wordmark with amber ampersand",
-    "interface": "Inter 400-600; tagline Inter 600 caps, tracking .3em"
+  "scales": {
+    "blue": {
+      "50": "#EEF3FF",
+      "100": "#DCE6FF",
+      "200": "#B3C7FF",
+      "300": "#84A5FF",
+      "400": "#5A86FF",
+      "500": "#3A6CFF",
+      "600": "#1F5BFF",
+      "700": "#1747D6",
+      "800": "#1338A8",
+      "900": "#0F2D7E",
+      "950": "#0A1E57"
+    },
+    "navy": {
+      "950": "#030A24",
+      "900": "#06133F",
+      "800": "#0B1D55",
+      "700": "#12286B",
+      "600": "#1B3580",
+      "500": "#2A4596",
+      "400": "#4A5F9E"
+    },
+    "steel": {
+      "200": "#D3DAEA",
+      "300": "#A9B6D6",
+      "400": "#8B9AB8",
+      "500": "#6B7A99",
+      "600": "#4A5873"
+    },
+    "amber": {
+      "300": "#FCD34D",
+      "400": "#FBBF24",
+      "500": "#F59E0B",
+      "700": "#B45309"
+    }
   },
-  "icons": "24 grid, 1.75 stroke, round caps/joins, 2.5 radius, currentColor"
+  "semantic": {
+    "bg": "navy.900",
+    "bg-deep": "navy.950",
+    "surface": "navy.800",
+    "surface-raised": "navy.700",
+    "line": "rgba(179,199,255,.14)",
+    "line-strong": "rgba(179,199,255,.28)",
+    "text": "#FFFFFF",
+    "text-muted": "steel.300",
+    "text-cold": "steel.400",
+    "action": "blue.600",
+    "action-hover": "blue.500",
+    "action-pressed": "blue.900",
+    "link": "blue.400",
+    "focus": "blue.200",
+    "rookie": "blue.600",
+    "king": "#FFFFFF",
+    "win": "amber.500",
+    "win-on-light": "amber.700",
+    "cold": "steel.400",
+    "error": "#FF5C6C",
+    "board-light": "#1C3A8C",
+    "board-dark": "#0A1A4E",
+    "board-frame": "navy.950",
+    "move-hint": "blue.400",
+    "last-move": "rgba(31,91,255,.22)",
+    "trail": "blue.600 to blue.200",
+    "xp-track": "navy.700",
+    "xp-fill": "blue.600 to blue.400",
+    "xp-levelup": "amber.500"
+  },
+  "type": {
+    "display": "Poppins 800-900 (closest Google font to Dave's wordmark); headlines sentence case, -0.02em",
+    "interface": "Inter 400-600; labels Inter 600 caps .16em; numbers tabular"
+  },
+  "icons": "solid silhouettes, 24 grid, 2px knockouts, 2.5 corner radius, currentColor; Rookie/King/Connect use Dave's own vectors"
 }
