@@ -23,6 +23,8 @@ SWAP = [
    [('the board', S + 'rk-board-play.webp', 'screen'), ('board close-up', S + 'rk-board.webp', 'square'),
     ('hero', B + 'hero.png', 'screen'), ('brand card', B + 'brand-card.png', 'square'),
     ('app icon', B + 'app-icon.png', 'square'), ('logo', B + 'logo.png', 'dark'), ('logo', B + 'logo-on-light.png', 'light'), ('icon set', B + 'icons.png', 'screen')]),
+  ('sh', ('Nature badge',),  # SH✡MER Nature is not marketed yet (8 Nov 2026): show the SH✡MER badge instead
+   [('badge', 'assets/work/shomer/badge.webp', 'logo')]),
 ]
 
 def on_bg(im, col):
