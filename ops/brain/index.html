@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3S Brain control room</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3ff;--bg2:#e3ecff;--card:#fff;--ink:#12182b;--mut:#5c6882;--dim:#93a0bd;--line:#e4ebf7;
+--blu:#2f6bff;--vio:#7a5cff;--gold:#c9800c;--coral:#e8404f;--shadow:0 6px 24px rgba(40,70,140,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden}
+body{background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;padding:20px 16px 70px;overflow-x:hidden}
+.wrap{max-width:1040px;margin:0 auto}
+a{color:var(--blu)}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+h1{font-family:'Press Start 2P',monospace;font-size:13px;line-height:1.5;color:var(--ink)}
+.back{font-size:12px;color:var(--mut);text-decoration:none}
+.sub{font-size:12px;color:var(--dim);margin-top:4px}
+h2{font-family:'Press Start 2P',monospace;font-size:10px;line-height:1.5;margin:26px 0 11px;color:var(--blu);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+h2 .n{font-family:Inter,sans-serif;font-size:11px;font-weight:700;color:var(--dim)}
+.card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:13px 15px}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.tile{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:13px 15px;border-top:4px solid var(--ac,var(--blu));min-width:0}
+.tile .k{font-size:10.5px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.04em}
+.tile .v{font-size:20px;font-weight:800;margin-top:3px}
+.tile .s{font-size:12px;color:var(--mut);margin-top:3px}
+.ok{--ac:#1a9d6a}.ok .v{color:#177f56}.stale{--ac:var(--coral)}.stale .v{color:var(--coral)}.unk{--ac:var(--dim)}
+.sched{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.sched span{font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:7px;background:#eef1f8;color:var(--mut)}
+.sched span.nx{background:rgba(47,107,255,.14);color:var(--blu)}
+.sched .lbl{background:none;padding:3px 2px;color:var(--dim);font-weight:500}
+.row{background:var(--card);border-radius:12px;box-shadow:var(--shadow);margin-bottom:8px;overflow:hidden}
+.row>.hd{display:flex;gap:9px;align-items:center;padding:10px 13px;cursor:pointer;min-width:0}
+.row .t{flex:1;min-width:0;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row.open .t{white-space:normal}
+.row .meta{font-size:11px;color:var(--dim);white-space:nowrap}
+.row .det{display:none;padding:0 13px 12px;font-size:12.5px;color:var(--mut);border-top:1px dashed var(--line);padding-top:10px;line-height:1.5}
+.row.open .det{display:block}
+.det div{margin-bottom:5px;overflow-wrap:anywhere}.det b{color:var(--ink)}
+.chip{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:7px;white-space:nowrap;flex:0 0 auto}
+.s-open{background:#eef1f8;color:var(--mut)}.s-in_progress{background:rgba(47,107,255,.14);color:var(--blu)}
+.s-blocked_dave{background:rgba(232,64,79,.13);color:var(--coral)}.s-done{background:rgba(26,157,106,.14);color:#177f56}
+.m-haiku{background:rgba(15,182,207,.15);color:#0a8a9d}.m-sonnet{background:rgba(122,92,255,.14);color:var(--vio)}.m-opus{background:rgba(255,172,28,.2);color:#9a6208}.m-other{background:#eef1f8;color:var(--mut)}
+.pods{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:11px}
+.pod{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:12px 13px;min-width:0}
+.pod h3{font-size:13px;font-weight:800;display:flex;justify-content:space-between;gap:8px;margin-bottom:8px}
+.pod h3 span{font-weight:600;color:var(--dim);font-size:11.5px}
+.pod .row{box-shadow:none;border:1px solid var(--line);margin-bottom:6px}
+.pod .none{font-size:12px;color:var(--dim)}
+.ev a{display:inline-block;margin:0 6px 3px 0;font-size:11.5px}
+.steps{list-style:none;margin:6px 0 0}.steps li{margin-bottom:5px;overflow-wrap:anywhere}
+.empty{font-size:12.5px;color:var(--dim);padding:4px 2px}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+[dir=auto],.t,.det{unicode-bidi:plaintext}
+@media(max-width:700px){.strip{grid-template-columns:1fr}.row .meta.pr{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="top"><h1>BRAIN CONTROL ROOM</h1><a class="back" href="../">← Expedition timeline</a></div>
+ <div class="sub" id="stamp">loading…</div>
+ <div class="strip" id="strip"></div>
+
+ <h2>Waiting on Dave <span class="n" id="n-wait"></span></h2>
+ <div id="wait"></div>
+
+ <h2>Pods <span class="n" id="n-pods"></span></h2>
+ <div class="pods" id="pods"></div>
+
+ <h2>Live activity <span class="n">last 10 runs</span></h2>
+ <div id="runs"></div>
+
+ <h2>Decisions <span class="n">last 10</span></h2>
+ <div id="decs"></div>
+</div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function arr(x){return Array.isArray(x)?x:(x==null||x===''?[]:[x])}
+function str(x){if(x==null)return '';if(typeof x==='string')return x;if(typeof x==='number')return String(x);try{return x.text||x.title||x.step||x.name||JSON.stringify(x)}catch(e){return ''}}
+function pd(s){ // tolerant date parse
+ if(!s)return null; if(s instanceof Date)return s;
+ var t=String(s).trim();
+ if(/^\d{4}-\d\d-\d\d$/.test(t))t+='T00:00:00';
+ t=t.replace(/T(\d\d:\d\d)(?=[+-]\d\d:\d\d$|Z$|$)/,'T$1:00');
+ var d=new Date(t); return isNaN(d)?null:d;
+}
+var IL='Asia/Jerusalem';
+function ilParts(d){var p={};new Intl.DateTimeFormat('en-GB',{timeZone:IL,hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(d).forEach(function(x){p[x.type]=x.value});if(p.hour==='24')p.hour='00';return p}
+function ilDay(d){var p=ilParts(d);return p.year+'-'+p.month+'-'+p.day}
+function fmt(d){if(!d)return '';var p=ilParts(d);return p.day+'/'+p.month+' '+p.hour+':'+p.minute}
+function ago(d,now){var m=Math.round((now-d)/60000);if(m<1)return 'just now';if(m<60)return m+' min ago';var h=Math.floor(m/60);if(h<48)return h+' h ago';return Math.floor(h/24)+' days ago'}
+function links(s){var o=[],re=/https?:\/\/[^\s)"'<>\]]+/g,m;s=String(s||'');while((m=re.exec(s)))o.push(m[0].replace(/[.,;]+$/,''));return o}
+function safe(u){return /^https?:\/\//i.test(u)}
+function host(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return 'link'}}
+function linkHtml(u){return safe(u)?'<a href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+esc(host(u))+'</a>':''}
+function toggle(e){var r=e.currentTarget.parentNode;r.classList.toggle('open')}
+function wire(root){root.querySelectorAll('.row>.hd').forEach(function(h){h.addEventListener('click',toggle)})}
+var SL={open:'Open',in_progress:'In progress',blocked_dave:'Waiting on Dave',done:'Done'};
+
+function load(){
+ var cb='?cb='+Date.now();
+ return Promise.all([
+  fetch('./brain.json'+cb,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}),
+  fetch('../data.json'+cb,{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).catch(function(){return null})
+ ]);
+}
+
+function header(b,d,now,runs){
+ var g=b.goal||{}, ms=g.next_milestone||{}, booked=null;
+ if(typeof g.booked_usd==='number')booked=g.booked_usd;
+ else if(d&&Array.isArray(d.booked))booked=d.booked.reduce(function(s,x){return s+(+(x&&x.usd!=null?x.usd:x&&x.amount)||0)},0);
+ var h='';
+ // tile 1
+ var t1;
+ if(booked==null||!ms.usd){t1='<div class="tile unk"><div class="k">Booked vs next milestone</div><div class="v">no data</div></div>'}
+ else{
+  var md=pd(ms.date), left=md?Math.ceil((md-now)/864e5):null;
+  var ls=left==null?'':(left>0?left+' days left':(left===0?'due today':Math.abs(left)+' days overdue'));
+  t1='<div class="tile" style="--ac:'+(left!=null&&left<0?'var(--coral)':'var(--blu)')+'"><div class="k">Booked vs '+esc(ms.id||'milestone')+'</div><div class="v">$'+booked.toLocaleString('en-US')+' / $'+(+ms.usd).toLocaleString('en-US')+'</div><div class="s">'+esc(ls)+(md?' · by '+esc(ms.date):'')+'</div></div>';
+ }
+ // tile 2
+ var cands=[pd(b.last_run)].concat(runs.map(function(r){return r._t})).filter(Boolean);
+ var last=cands.length?new Date(Math.max.apply(null,cands)):null, t2;
+ if(!last)t2='<div class="tile unk"><div class="k">Last brain run</div><div class="v">unknown</div></div>';
+ else{var hrs=(now-last)/36e5, st=hrs>6;
+  t2='<div class="tile '+(st?'stale':'ok')+'"><div class="k">Last brain run</div><div class="v">'+esc(ago(last,now))+'</div><div class="s">'+(st?'Stale (over 6 h)':'Healthy')+' · '+esc(fmt(last))+' Israel</div></div>';}
+ // tile 3
+ var sched=[['08:30','stand-up'],['11:13'],['13:13'],['15:13'],['17:13'],['19:13'],['23:00','night'],['03:00','night']];
+ var p=ilParts(now), cur=(+p.hour)*60+(+p.minute), best=null,bd=1e9;
+ sched.forEach(function(s,i){var a=s[0].split(':'),m=(+a[0])*60+(+a[1]),dd=(m-cur+1440)%1440;if(dd<bd){bd=dd;best=i}});
+ var sh='<span class="lbl">stand-up</span>'+'';
+ sh='';
+ sched.forEach(function(s,i){sh+='<span'+(i===best?' class="nx"':'')+'>'+s[0]+(s[1]==='night'?' night':(s[1]?' '+s[1]:''))+'</span>'});
+ var t3='<div class="tile" style="--ac:var(--vio)"><div class="k">Next runs (Israel time)</div><div class="s">next: <b>'+esc(sched[best][0])+'</b> in '+Math.floor(bd/60)+'h '+(bd%60)+'m</div><div class="sched">'+sh+'</div></div>';
+ $('strip').innerHTML=t1+t2+t3;
+}
+
+function leRow(e,showProd){
+ var title=str(e.title)||str(e.id)||'(untitled)', st=e.status||'open';
+ var det='';
+ function L(k,v){if(v)det+='<div><b>'+k+':</b> '+esc(str(v))+'</div>'}
+ L('Next',e.next_action);L('Blocker',e.blocker);L('Owner',e.owner_seat);L('Product',e.product);L('Pod',e.pod);L('Updated',e.updated);
+ var ev=arr(e.evidence), evh='';
+ ev.forEach(function(x){var s=str(x);var ls=links(s);if(ls.length)ls.forEach(function(u){evh+=linkHtml(u)});else if(s)det+='<div><b>Evidence:</b> '+esc(s)+'</div>'});
+ if(evh)det+='<div class="ev"><b>Evidence:</b> '+evh+'</div>';
+ var short=e.next_action?'':'';
+ return '<div class="row"><div class="hd"><span class="t" dir="auto">'+esc(title)+'</span>'+(showProd&&e.product?'<span class="meta pr">'+esc(str(e.product))+'</span>':'')+'<span class="chip s-'+esc(st)+'">'+esc(SL[st]||st)+'</span></div><div class="det">'+(det||'<div>No more detail.</div>')+'</div></div>';
+}
+
+var PODS=[['revenue','Revenue'],['shomer','SH✡MER'],['studiobrand','Studio & brand'],['growth','Growth'],['grantslegal','Grants & legal'],['productslab','Products lab'],['ops','Ops']];
+function pk(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
+function podKey(s){var k=pk(s);if(!k)return null;if(k.indexOf('shomer')>-1||k.indexOf('shmer')>-1||k==='sh')return 'shomer';if(k.indexOf('grant')>-1||k.indexOf('legal')>-1)return 'grantslegal';if(k.indexOf('studio')>-1||k.indexOf('brand')>-1)return 'studiobrand';if(k.indexOf('lab')>-1||k.indexOf('product')>-1)return 'productslab';for(var i=0;i<PODS.length;i++)if(k===PODS[i][0])return k;return k}
+
+function render(b,d){
+ var now=new Date(), le=Array.isArray(b.loose_ends)?b.loose_ends:null;
+ // normalize runs
+ var runs=arr(b.runs).map(function(r){r=r||{};r._t=pd(r.time||r.at||r.when||r.started);return r});
+ header(b,d,now,runs);
+ $('stamp').textContent='Live from brain.json'+(b.updated?' · updated '+b.updated:'');
+
+ // waiting on Dave
+ if(!le){$('wait').innerHTML='<div class="empty">No loose-ends data in brain.json yet.</div>';$('n-wait').textContent='';$('pods').innerHTML='<div class="empty">No loose-ends data in brain.json yet.</div>'}
+ else{
+  var w=le.filter(function(e){return e&&e.status==='blocked_dave'});
+  $('n-wait').textContent=w.length?String(w.length):'';
+  $('wait').innerHTML=w.length?w.map(function(e){return leRow(e,true)}).join(''):'<div class="empty">Nothing waiting on Dave.</div>';
+  // pods
+  var today=ilDay(now), groups={}, order=PODS.map(function(p){return p[0]}), names={};
+  PODS.forEach(function(p){names[p[0]]=p[1];groups[p[0]]=[]});
+  le.forEach(function(e){if(!e)return;var k=podKey(e.pod)||'other';if(!groups[k]){groups[k]=[];names[k]=k==='other'?'Other':str(e.pod);order.push(k)}groups[k].push(e)});
+  var ph='',tot=0;
+  order.forEach(function(k){
+   var items=groups[k], act=[], doneT=[], doneOld=0;
+   items.forEach(function(e){
+    if(e.status==='done'){var u=pd(e.updated);if(u&&ilDay(u)===today)doneT.push(e);else doneOld++}
+    else act.push(e)});
+   var rank={blocked_dave:0,in_progress:1,open:2};
+   act.sort(function(a,b){return (rank[a.status]!=null?rank[a.status]:3)-(rank[b.status]!=null?rank[b.status]:3)});
+   tot+=act.length;
+   var body=act.concat(doneT).map(function(e){return leRow(e,false)}).join('');
+   if(!body)body='<div class="none">'+(items.length?'Nothing open.':'No loose ends.')+'</div>';
+   if(doneOld)body+='<div class="none" style="margin-top:4px">'+doneOld+' done earlier</div>';
+   ph+='<div class="pod"><h3><span style="color:var(--ink);font-weight:800" dir="auto">'+esc(names[k])+'</span><span>'+act.length+' open'+(doneT.length?' · '+doneT.length+' done today':'')+'</span></h3>'+body+'</div>';
+  });
+  $('pods').innerHTML=ph;$('n-pods').textContent=tot+' open';
+ }
+
+ // runs
+ var rs=runs.slice().sort(function(a,b){return (b._t||0)-(a._t||0)}).slice(0,10);
+ $('runs').innerHTML=rs.length?rs.map(runRow).join(''):'<div class="empty">No runs recorded.</div>';
+
+ // decisions
+ var ds=arr(b.decisions).filter(Boolean).slice().sort(function(a,b){var x=pd(a.date),y=pd(b.date);return (y||0)-(x||0)}).slice(0,10);
+ $('decs').innerHTML=ds.length?ds.map(decRow).join(''):'<div class="empty">No decisions recorded.</div>';
+ wire(document);
+}
+
+function modelChips(r){
+ var m=r.models!=null?r.models:(r.model_mix!=null?r.model_mix:r.model), out=[];
+ if(m==null)return '';
+ var list=[];
+ if(Array.isArray(m))m.forEach(function(x){list.push([typeof x==='string'?x:str(x.name||x.model),x&&x.count])});
+ else if(typeof m==='object')Object.keys(m).forEach(function(k){list.push([k,m[k]])});
+ else list.push([String(m),null]);
+ list.forEach(function(x){var n=String(x[0]||'').toLowerCase(),c=/haiku/.test(n)?'haiku':/sonnet/.test(n)?'sonnet':/opus/.test(n)?'opus':'other';
+  var lab=c==='other'?String(x[0]):c; out.push('<span class="chip m-'+c+'">'+esc(lab)+(x[1]!=null&&typeof x[1]!=='object'?' ×'+esc(x[1]):'')+'</span>')});
+ return out.join('');
+}
+
+function runRow(r){
+ var steps=arr(r.steps_done!=null?r.steps_done:(r.steps!=null?r.steps:r.done)), sh='', n=0;
+ steps.forEach(function(s){
+  var txt=typeof s==='object'&&s?str(s.text||s.step||s.title||s.what||s.name):str(s);
+  var ev=[];
+  if(s&&typeof s==='object'){arr(s.evidence).concat(arr(s.link),arr(s.links),arr(s.url)).forEach(function(x){links(str(x)).forEach(function(u){ev.push(u)})})}
+  links(txt).forEach(function(u){if(ev.indexOf(u)<0)ev.push(u)});
+  if(!txt&&!ev.length)return; n++;
+  sh+='<li dir="auto">'+esc(txt)+(ev.length?' <span class="ev">'+ev.map(linkHtml).join('')+'</span>':'')+'</li>';
+ });
+ var closed=arr(r.loose_ends_closed!=null?r.loose_ends_closed:(r.closed!=null?r.closed:r.closed_loose_ends)).map(str).filter(Boolean);
+ var skip=str(r.skipped_reason||r.skipped||r.skip_reason);
+ var title=str(r.seat||r.label||r.title)||'Brain run';
+ var sum=n?(n+' step'+(n>1?'s':'')+' done'):(skip?'Skipped':'No steps recorded');
+ var det='';
+ if(skip)det+='<div><b>Skipped:</b> '+esc(skip)+'</div>';
+ if(sh)det+='<ul class="steps">'+sh+'</ul>';
+ if(closed.length)det+='<div style="margin-top:6px"><b>Loose ends closed:</b> '+esc(closed.join(', '))+'</div>';
+ ['verifier','blocked','no_progress','note','flag'].forEach(function(k){if(r[k])det+='<div><b>'+k.replace('_',' ')+':</b> '+esc(str(r[k]))+'</div>'});
+ return '<div class="row"><div class="hd"><span class="meta" style="min-width:78px;display:inline">'+esc(fmt(r._t))+'</span><span class="t" dir="auto">'+esc(title)+' · '+esc(sum)+(closed.length?' · '+closed.length+' closed':'')+'</span><span class="chips">'+modelChips(r)+'</span></div><div class="det">'+(det||'<div>No more detail.</div>')+'</div></div>';
+}
+
+function decRow(x){
+ var main=str(x.decision||x.text||x.title), det='';
+ function L(k,v){if(v)det+='<div><b>'+k+':</b> '+esc(str(v))+'</div>'}
+ L('By',x.by);L('Why',x.rationale);L('Kill test',x.kill_test);L('Prediction',x.prediction);L('Calc',x.calc);L('Check on',x.check);
+ return '<div class="row"><div class="hd"><span class="meta" style="min-width:64px;display:inline">'+esc(str(x.date).slice(5))+'</span><span class="t" dir="auto">'+esc(main||'(no text)')+'</span></div><div class="det">'+(det||'<div>No more detail.</div>')+'</div></div>';
+}
+
+load().then(function(a){render(a[0]||{},a[1])}).catch(function(e){
+ $('stamp').textContent='Could not load brain.json';
+ $('strip').innerHTML='<div class="tile stale"><div class="k">Data</div><div class="v">unavailable</div></div>';
+});
+})();
+</script>
+</body>
+</html>
