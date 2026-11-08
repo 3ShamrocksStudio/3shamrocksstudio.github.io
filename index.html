@@ -88,6 +88,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 @keyframes sndEq{0%,100%{clip-path:inset(var(--o) 0 round 2px)}50%{clip-path:inset(0 0 round 2px)}}
 @media (prefers-reduced-motion:reduce){.snd[aria-pressed=true] .snd-eq i{animation:none}.snd[aria-pressed=true] .snd-eq i:nth-child(1){clip-path:inset(3px 0 round 2px)}.snd[aria-pressed=true] .snd-eq i:nth-child(2){clip-path:inset(0 0 round 2px)}.snd[aria-pressed=true] .snd-eq i:nth-child(3){clip-path:inset(2px 0 round 2px)}}
 @media(max-width:760px){.nav-links{gap:10px}.snd{width:36px;height:36px}}
+.snd{position:relative}.snd-hint{position:absolute;top:calc(100% + 9px);right:0;white-space:nowrap;pointer-events:none;font:600 12px/1 system-ui,sans-serif;letter-spacing:.01em;color:#fff;background:rgba(18,10,40,.94);border:1px solid rgba(176,124,255,.45);padding:7px 10px;border-radius:3px;box-shadow:0 8px 24px -10px rgba(0,0,0,.8);opacity:0;transform:translateY(-4px);transition:opacity .45s ease,transform .45s ease}.snd-hint.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.snd-hint{transition:none;transform:none}}
 
 /* HERO */
 .hero{min-height:100svh;display:flex;align-items:center;padding:112px 0 40px;overflow:hidden}
@@ -667,7 +668,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
       <a href="#identity" class="hm">Brands</a>
       <a href="#about" class="hm">Studio</a>
       <a href="work-with-me.html" class="hm nav-fit">Find your fit</a>
-      <button type="button" class="snd" id="snd" aria-pressed="false" aria-label="Sound off" title="Sound off"><span class="snd-eq" aria-hidden="true"><i></i><i></i><i></i></span></button>
+      <button type="button" class="snd" id="snd" aria-pressed="true" aria-label="Sound on" title="Sound on"><span class="snd-eq" aria-hidden="true"><i></i><i></i><i></i></span></button>
       <a href="mailto:dave@3shamrocks.com" class="nav-cta">Let's talk</a>
     </div>
   </div>
@@ -1365,8 +1366,8 @@ $$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttri
 })();
 </script>
 <script>/* not-live devices open their branded pages too */document.querySelectorAll('.dev[data-href]').forEach(function(d){function go(){location.href=d.dataset.href}d.style.cursor='pointer';d.addEventListener('click',go);d.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();go()}})});</script>
-<script src="assets/audio/s3-score.js?v=sc1" defer></script>
-<script src="js/studio-sound.js?v=sc1" defer></script>
+<script src="assets/audio/s3-score.js?v=sc2" defer></script>
+<script src="js/studio-sound.js?v=sc2" defer></script>
 <script src="js/guide.js?v=g1" defer></script>
 <script src="js/forest.js?v=f1" defer></script>
 </body>

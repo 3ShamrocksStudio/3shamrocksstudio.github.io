@@ -308,7 +308,7 @@ h1,h2{text-wrap:balance}
 </style>
 <script>document.documentElement.classList.add('js')</script>
 <script src="../js/hits.js" defer></script>
-<link rel="stylesheet" href="../assets/audio/snd.css?v=sc1">
+<link rel="stylesheet" href="../assets/audio/snd.css?v=sc2">
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false"><defs>
@@ -325,7 +325,7 @@ h1,h2{text-wrap:balance}
 
 <nav class="snav" aria-label="Studio"><div class="wrap">
   <a href="../" aria-label="3Shamrocks Studio home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="150" height="22"></a>
-  <span class="snd-r"><button type="button" class="snd" id="snd" aria-pressed="false" aria-label="Sound off" title="Sound off"><span class="snd-eq" aria-hidden="true"><i></i><i></i><i></i></span></button><a class="back" href="../#work">&larr; All work</a></span>
+  <span class="snd-r"><button type="button" class="snd" id="snd" aria-pressed="true" aria-label="Sound on" title="Sound on"><span class="snd-eq" aria-hidden="true"><i></i><i></i><i></i></span></button><a class="back" href="../#work">&larr; All work</a></span>
 </div></nav>
 
 <header class="hero court">
@@ -615,9 +615,9 @@ h1,h2{text-wrap:balance}
 </script>
 <script src="../js/guide.js?v=g1" defer></script>
 <!-- 3Shamrocks Studio sound: off by default, header toggle; this page's own loop from the studio theme family -->
-<script src="../assets/audio/s3-score.js?v=sc1" defer></script>
+<script src="../assets/audio/s3-score.js?v=sc2" defer></script>
 <script>addEventListener('DOMContentLoaded',function(){if(!window.S3Score)return;
-var A=S3Score.start({base:'../assets/audio/studio/pages/',loop:34.286,musicGain:0.4,sfxGain:0.7,stems:{theme:'chore-royale'},sfx:{url:'../lab/chore-wars/audio/cr-sfx',lead:0.1,cues:{"crown":[3.9547,2.0959]}}});
+var A=S3Score.start({base:'../assets/audio/studio/v2/',musicGain:0.45,sfxGain:0.7,zones:[{id:'page',file:'chore-royale',loop:30.0,bar:1.875}],stingers:[{sel:'.gd-toast',cue:'coin'},{sel:'.gd-panel',cue:'sparkle'}],sfx:[{url:'../assets/audio/studio/v2/sfx',cues:{"coin":[4.3813,0.4979],"sparkle":[6.7754,0.5984]}},{url:'../lab/chore-wars/audio/cr-sfx',lead:0.1,cues:{"crown":[3.9547,2.0959]}}]});
 /* one sound on this page: the crown card turns to its Sunday-ceremony side */
 document.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.card');if(c&&c.querySelector('use[href="#cr-crowns"]')&&c.getAttribute('aria-pressed')==='true')A.play('crown');});
 });</script>

@@ -34,3 +34,21 @@ Shared DNA: the three-leaf bell motif (root, third, fifth), the same synth palet
   rk 92 BPM A minor, keys + soft chess-clock tick.
 - Encode: stems `libopus -b:a 32k -vbr off` + `aac -b:a 40k`; pages `libopus -b:a 34k -vbr off` + `aac -b:a 44k`. Files hold the loop plus its first second; the player loops 0.5 s to 0.5 s + loop.
 - Player: `assets/audio/s3-score.js` (stems start in sync and crossfade with equal power over 2 s once scrolling settles for 0.8 s).
+
+## Score v2: "The Three Leaf Theme" game-world score (`score_v2.py`, `studio_sfx_v2.py`), generated 2026-11-08
+Supersedes the stem score above on the site. One 8-bar theme (bar 1 climbs root-third-fifth, a note per shamrock leaf) recurs in every zone,
+re-orchestrated; each zone is 16 bars: A = theme with countermelody, B = the motif sequenced over a new progression with a run back into A.
+Harmony uses borrowed chords (iv, bVII, bVI) and a different key per zone. Instruments, all synthesised: FM celesta, glockenspiel, music box,
+Karplus-Strong harp / pizzicato / guitar, a heroic two-saw synth lead, flute (filtered saw + breath + vibrato), detuned string pads, saw and
+round basses, marimba, brass stabs, punchy kick / gated snare / toms / hats / tambourine / crash. Kick-keyed sidechain on pads, humanised
+timing and velocity, convolution reverb and tempo-synced delays. Each part is balanced to a loudness role, then mastered.
+- Homepage zones (`assets/audio/studio/v2/`): hero D major 124 BPM overworld; work G major 132 level select; identity Bb major 116 playful;
+  experience Eb major 92 warm; about A minor 108 curious; forest Ab major 96 enchanted (celesta, harp triplets, epic toms); contact E major 128 level complete.
+- Product themes (also the carousel themes): shomer D 92, lickpick A minor 124, trashure-hunters D minor 112, chore-royale C 128, fairent F 100,
+  concepts B minor 108, j8nix F minor 104, healthtech G 92, ezra E minor 88, milo C 78 (no drums, soft), rk A minor 96.
+- Every loop is -16 LUFS; encoded true peak at most -1.5 dBTP (loops whose Opus encode overshot were re-mastered with a lower ceiling).
+- Files: last 0.5 s of the loop + loop + first 0.5 s; the player loops 0.5 s .. 0.5 s + loop and starts zones at 0.5 s (phrase start).
+- Encode: `libopus -b:a 32k -vbr off` and `aac -b:a 40k`; sprite `sfx` Opus 48k / AAC 64k mono.
+- SFX: product arrivals (radar ping, guitar stab, treasure jingle, arena horn, ka-ching, sci-fi shimmer, each <= 0.4 s), coin, level complete,
+  sparkle, mosaic explode / assemble, CTA click.
+- Run: `python3 score_v2.py home pages && python3 studio_sfx_v2.py && python3 score_v2.py demo`.
