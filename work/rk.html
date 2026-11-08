@@ -156,7 +156,8 @@ h3{font-weight:700;line-height:1.25}
 .built dt{font-weight:600;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--steel);margin-bottom:6px}
 .built dd{font-weight:500;font-size:.98rem;line-height:1.45;color:#fff}
 
-.sec{padding-top:96px;padding-bottom:96px}
+.sec{padding-top:88px;padding-bottom:88px}
+@media(max-width:700px){.sec{padding-top:64px;padding-bottom:64px}}
 .head{max-width:760px;margin-bottom:40px}
 .head h2{font-size:clamp(1.8rem,4vw,2.8rem);margin:14px 0 14px;letter-spacing:-.02em}
 .head p{color:var(--mut);font-size:1.05rem}
@@ -180,6 +181,18 @@ h3{font-weight:700;line-height:1.25}
 .msg.win .bubble{background:var(--blue);color:#fff;border-radius:16px 16px 4px 16px;margin-left:auto}
 .msg.win .bubble.r{background:#1B3580;border-radius:16px 16px 16px 4px;margin-left:0}
 .msg.win .seen{color:var(--mut)}
+.msg.win .hs{display:inline-flex;align-items:center;gap:8px;margin:4px 0 10px auto;width:fit-content;min-height:40px;padding:0 14px;border-radius:12px;font-family:var(--disp);font-weight:600;font-size:.95rem;color:var(--amber);background:rgba(245,158,11,.10);box-shadow:inset 0 0 0 1px rgba(245,158,11,.45)}
+.msg.win .hs::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.msg.win .hs{display:flex}
+.js .vs2 .msg.win .bubble,.js .vs2 .msg.win .hs{opacity:0;transform:translateY(10px) scale(.97);transition:opacity .5s ease,transform .5s var(--ease)}
+.js .vs2.on .msg.win .bubble,.js .vs2.on .msg.win .hs{opacity:1;transform:none}
+.js .vs2.on .msg.win .bubble:nth-of-type(1){transition-delay:.35s}
+.js .vs2.on .msg.win .bubble:nth-of-type(2){transition-delay:1.05s}
+.js .vs2.on .msg.win .bubble:nth-of-type(3){transition-delay:1.75s}
+.js .vs2.on .msg.win .hs{transition-delay:2.45s}
+.msg.win{transition:box-shadow .8s 2.45s}
+.js .vs2.on .msg.win{box-shadow:0 0 60px -20px rgba(245,158,11,.45)}
+.kick b{font-weight:600;color:var(--mut);letter-spacing:.08em;margin-right:2px}
 .vsx{font-family:var(--disp);font-weight:600;font-size:.9rem;letter-spacing:.14em;color:var(--steel);text-align:center;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;border:1px solid var(--line2);margin:0 auto}
 
 /* how */
@@ -285,7 +298,7 @@ h3{font-weight:700;line-height:1.25}
 
 /* design system */
 .ds{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
-@media(min-width:900px){.ds{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:900px){.ds{display:block;columns:2;column-gap:16px}.ds>.tile{break-inside:avoid;margin-bottom:16px}}
 .tile{background:linear-gradient(180deg,rgba(18,40,107,.7),rgba(11,29,85,.55));border:1px solid var(--line);border-radius:22px;padding:24px}
 .tile h3{font-family:var(--ui);font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--steel);margin-bottom:18px}
 .cons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;text-align:center}
@@ -345,6 +358,8 @@ h3{font-weight:700;line-height:1.25}
 .cta h2{font-size:clamp(1.8rem,4.4vw,2.9rem);max-width:20ch;margin:14px auto 14px}
 .cta p{color:var(--mut);margin-bottom:28px}
 .cta .ctas{justify-content:center}
+.cta .btn.o{background:#fff;color:#06133F;border-color:rgba(6,19,63,.18)}
+.cta .btn.o:hover{border-color:var(--blue)}
 .more{padding:36px 0 10px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .more a{border:1px solid var(--line);border-radius:10px;padding:9px 16px;font-weight:500;min-height:44px;display:inline-flex;align-items:center;color:var(--mut);transition:border-color .2s,color .2s}
 .more a:hover{border-color:var(--sky);color:#fff}
@@ -416,20 +431,20 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 
   <div class="band a"><section class="sec wrap" aria-labelledby="p-h">
     <div class="head rv">
-      <span class="kick">The problem</span>
+      <span class="kick"><b>01</b>The problem</span>
       <h2 id="p-h">The <span class="cold">cold message</span> stopped working.</h2>
       <p>Inboxes are full of pitches that open with flattery and end with a calendar link. At events, the networking hour is the part people dread. Neither gives two strangers a reason to talk.</p>
     </div>
     <div class="vs2 rv">
       <div class="msg cold-c"><h3><svg class="ic" aria-hidden="true"><use href="#rk-invite"/></svg>The cold DM</h3><div class="bubble">Hi! Loved your post. Can I pick your brain for 15 minutes?</div><div class="bubble dim">Just bumping this up ↑</div><div class="seen">Seen. No reply.</div></div>
       <div class="vsx" aria-hidden="true">VS</div>
-      <div class="msg win"><h3><svg class="ic" aria-hidden="true"><use href="#rk-handshake"/></svg>The R&amp;K opener</h3><div class="bubble">Rookie &amp; King: one game?</div><div class="bubble r">You're on. White or black?</div><div class="seen">Illustrative example</div></div>
+      <div class="msg win"><h3><svg class="ic" aria-hidden="true"><use href="#rk-handshake"/></svg>The R&amp;K opener</h3><div class="bubble">Rookie &amp; King: one game?</div><div class="bubble r">You're on. White or black?</div><div class="bubble">Good game. Shake hands?</div><div class="hs">Handshake &middot; connected</div><div class="seen">Illustrative example</div></div>
     </div>
   </section></div>
 
   <div class="band light"><section class="sec wrap" aria-labelledby="h-h">
     <div class="head rv">
-      <span class="kick">How it works · concept</span>
+      <span class="kick"><b>02</b>What I designed &middot; concept</span>
       <h2 id="h-h">Three moves to a real intro.</h2>
     </div>
     <div class="steps">
@@ -442,7 +457,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 
   <div class="band c tex"><section class="sec wrap" id="play" aria-labelledby="k-h">
     <div class="head rv">
-      <span class="kick">Key moment</span>
+      <span class="kick"><b>03</b>Key moment &middot; play it</span>
       <h2 id="k-h">At the board, a rookie can reach a king.</h2>
       <p>A junior founder can play a CEO as an equal for ten minutes. Make your move: tap the rook, a highlighted square or the button, and watch the line connect.</p>
     </div>
@@ -476,7 +491,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 
   <div class="band steel"><section class="sec wrap" id="system" aria-labelledby="b-h">
     <div class="head rv">
-      <span class="kick">Design system · brand v7</span>
+      <span class="kick"><b>04</b>Design system · brand v7</span>
       <h2 id="b-h">One piece, two players.</h2>
       <p>The mark is a rook and a king cut from one silhouette and split by a single line: the Rookie (the rook) and the King, one piece. The wordmark turns the OO of ROOKIE into an infinity loop, the network that keeps going after the game. Navy, blue and white lead. Cool steel carries the cold and the waiting; warm amber is kept for the win: the handshake, the connection.</p>
     </div>
@@ -557,7 +572,7 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
       <div class="rule" aria-hidden="true"></div>
       <div class="body">
         <div>
-          <span class="kick">Status</span>
+          <span class="kick"><b>05</b>Where it stands</span>
           <h2 id="u-h">Opening in preparation.</h2>
           <p>R&amp;K is a concept with a brand system and concept screens. The product is not built yet and there is no public site.</p>
           <span class="stamp">Concept · not built yet</span>
@@ -575,13 +590,12 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
   </section></div>
 
   <div class="band light cta-b"><section class="cta wrap" aria-labelledby="c-h">
-    <span class="kick" style="justify-content:center">Work with me</span>
+    <span class="kick" style="justify-content:center">Your project</span>
     <h2 id="c-h">Need a serious product with a playful edge?</h2>
     <p>Brand, product design and a working product, from one senior designer.</p>
-    <div class="ctas"><a class="btn b" href="mailto:dave@3shamrocks.com?subject=New%20project">Start a project</a></div>
-    <nav class="more" aria-label="More work"><a href="chore-royale.html">Chore Royale</a><a href="fairent.html">FaiRent</a><a href="ezra.html">EZRA</a><a href="milo.html">Milo</a><a href="shomer.html">SH✡MER</a><a href="lickpick.html">LickPick</a><a href="trashure-hunters.html">Trashure-Hunters</a></nav>
+    <div class="ctas"><a class="btn b" href="mailto:dave@3shamrocks.com?subject=New%20project">Let&rsquo;s talk</a><a class="btn o" href="../work-with-me.html">Find your fit &middot; 60 sec</a></div>
+    <nav class="more" aria-label="More work"><a href="concepts.html">Concept Lab</a><a href="chore-royale.html">Chore Royale</a><a href="fairent.html">FaiRent</a><a href="ezra.html">EZRA</a><a href="milo.html">Milo</a><a href="shomer.html">SH✡MER</a><a href="lickpick.html">LickPick</a><a href="trashure-hunters.html">Trashure-Hunters</a></nav>
   </section>
-  <p class="fit-line" style="margin:0;padding:22px 16px;text-align:center;font-size:14px;opacity:.78"><a href="../work-with-me.html" style="color:inherit;text-decoration:underline;text-underline-offset:4px">Find your fit · 60 sec</a></p>
   <footer><div class="wrap"><span>&copy; 2026 3Shamrocks Studio · Dave Markovich</span><span><a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a> · <a href="https://www.linkedin.com/in/davemarkovich/" target="_blank" rel="noopener">LinkedIn</a></span></div></footer></div>
 </main>
 <script>
