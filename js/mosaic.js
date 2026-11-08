@@ -14,7 +14,7 @@
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var HOVER = matchMedia('(hover:hover) and (pointer:fine)').matches;
   var BASE = 'assets/studio/mosaic/';
-  var ORDER = ['sh', 'lp', 'cr', 'th', 'j8', 'mi', 'rk', 'ez', 'fr', 'ap', 'vb'];
+  var ORDER = ['sh', 'lp', 'cr', 'th', 'j8', 'mi', 'rk', 'ez', 'fr', 'ap', 'vb', 'st'];
   var NF = 24; /* floats per tile */
 
   var io = new IntersectionObserver(function (es) {
@@ -34,9 +34,9 @@
     try { gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false }); } catch (e) {}
     var inst = gl && gl.getExtension('ANGLE_instanced_arrays');
     if (!gl || !inst) return;
-    Promise.all([fetch(BASE + 'layout.json?v=s22').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
-                 loadImg(BASE + 'atlas.webp'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src),
-                 loadImg(BASE + 'atlas2.webp?v=s21').catch(function () { return null; })])
+    Promise.all([fetch(BASE + 'layout.json?v=s23').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
+                 loadImg(BASE + 'atlas.webp?v=s23'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src),
+                 Promise.resolve(null)])  /* no second atlas: every tile is current (rebuilt 8 Nov 2026) */
       .then(function (r) { build(cv, gl, inst, r[0], r[1], r[2], r[3]); })
       .catch(function () { /* keep the plain photo */ });
   }
