@@ -68,6 +68,9 @@ h2 .n{font-family:Inter,sans-serif;font-size:11px;font-weight:700;color:var(--di
  <h2>Pods <span class="n" id="n-pods"></span></h2>
  <div class="pods" id="pods"></div>
 
+ <h2>Site visits <span class="n">last 7 days</span></h2>
+ <div class="card" id="visits" style="font-size:13px;line-height:1.7">loading…</div>
+
  <h2>Live activity <span class="n">last 10 runs</span></h2>
  <div id="runs"></div>
 
@@ -243,6 +246,20 @@ load().then(function(a){render(a[0]||{},a[1])}).catch(function(e){
  $('stamp').textContent='Could not load brain.json';
  $('strip').innerHTML='<div class="tile stale"><div class="k">Data</div><div class="v">unavailable</div></div>';
 });
+})();
+</script>
+<script>
+(function(){
+var el=document.getElementById('visits');
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function top(m,n){return Object.keys(m).sort(function(a,b){return m[b]-m[a]}).slice(0,n).map(function(k){return esc(k)+' ('+m[k]+')'}).join(', ')}
+fetch('https://otkvebgrdiayjnqrytrn.supabase.co/rest/v1/rpc/site_stats',{method:'POST',headers:{apikey:'sb_publishable_ZSMgkwuVwKwqrMgEIlG4Nw_-CmQ_Yct','Content-Type':'application/json'},body:'{"days":7}'})
+.then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(rows){
+var v=0,c=0,q=0,pg={},rf={};
+rows.forEach(function(r){var n=+r.n;if(r.evt=='view'){v+=n;pg[r.path]=(pg[r.path]||0)+n;rf[r.ref]=(rf[r.ref]||0)+n}else if(r.evt=='cta_click')c+=n;else if(r.evt=='quiz_open')q+=n});
+if(!rows.length){el.textContent='No visits recorded yet';return}
+el.innerHTML='<div><b>Views:</b> '+v+'</div><div><b>Top pages:</b> '+(top(pg,5)||'none')+'</div><div><b>Top referrers:</b> '+(top(rf,5)||'none')+'</div><div><b>CTA clicks:</b> '+c+'</div><div><b>Quiz opens:</b> '+q+'</div>'
+}).catch(function(){el.textContent='Visit stats unavailable'})
 })();
 </script>
 </body>
