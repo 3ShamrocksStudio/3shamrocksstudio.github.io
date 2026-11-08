@@ -85,7 +85,7 @@ A('rk', 'square', ('app icon', BV+'rk/app-icon.png'), ('brand card', BV+'rk/bran
 A('rk', 'screen', ('the board', OUT+'/src/rk-board-play.webp'), ('hero', BV+'rk/hero.png'), ('icon set', BV+'rk/icons.png'))
 A('rk', 'square', ('board close-up', OUT+'/src/rk-board.webp'))
 A('rk', 'logo', ('mark', BV+'rk/logo-mark.png'), ('logo', BV+'rk/logo.png'), ('logo on light', BV+'rk/logo-on-light.png'), ('stacked logo', BV+'rk/logo-stacked.png'),
-  ('mark, alt', BV+'rk/mark-alt.png'), ('mark, flat', BV+'rk/mark-flat.png'), ('rookie piece', BV+'rk/piece-rookie.png'), ('king piece', BV+'rk/piece-king.png'),
+  ('mark on light', BV+'rk/mark-on-light.png'), ('mark, flat', BV+'rk/mark-flat.png'), ('rookie piece', BV+'rk/piece-rookie.png'), ('king piece', BV+'rk/piece-king.png'),
   ('wordmark', BV+'rk/wordmark.png'), ('display wordmark', BV+'rk/wordmark-display.png'))
 # --- EZRA
 A('ez', 'screen', ('splash screen', S9+'ezra-splash.webp'), ('tasks screen', W+'s16/ez-tasks-v5.webp'), ('hero', BV+'ezra/hero.png'), ('icon set', BV+'ezra/icons.png'))
