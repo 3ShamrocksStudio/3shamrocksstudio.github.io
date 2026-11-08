@@ -78,7 +78,7 @@
       var f = flies[i], dx = f.x - x, dy = f.y - y, d = Math.sqrt(dx * dx + dy * dy) + 1;
       if (d < 280) { var a = (1 - d / 280) * 520; f.vx += dx / d * a; f.vy += dy / d * a; f.f = 1; }
     }
-    for (var k = 0; k < 14; k++) { var an = Math.random() * 6.28, v = 80 + Math.random() * 220; sparks.push({ x: x, y: y, vx: Math.cos(an) * v, vy: Math.sin(an) * v, l: 0.6 + Math.random() * 0.5, L: 1.1, z: 0.6 + Math.random() * 0.4 }); }
+    for (var k = 0; k < 22; k++) { var an = Math.random() * 6.28, v = 60 + Math.random() * 260; sparks.push({ x: x, y: y, vx: Math.cos(an) * v, vy: Math.sin(an) * v, l: 0.6 + Math.random() * 0.5, L: 1.1, z: 0.6 + Math.random() * 0.4 }); }
   }
   function sfx(n) { try { document.dispatchEvent(new CustomEvent('s3:sfx', { detail: n })); } catch (e) { /* no sound */ } }
 
@@ -137,7 +137,7 @@
     ' wd=(vec2(a1,a2)-.5)*.0065*wat;',
     /* ripples from taps */
     ' for(int i=0;i<4;i++){vec4 r=uRp[i];if(r.w<=0.)continue;vec2 d=(uv-r.xy)*vec2(1.5,1.);float dl=length(d)+1e-4,ag=r.z,ring=ag*.11;',
-    '  float w=exp(-pow((dl-ring)*38.,2.))*exp(-ag*1.3)*r.w;wd+=d/dl*sin((dl-ring)*140.)*w*.0055;rh+=w*max(0.,sin((dl-ring)*140.+1.2));}',
+    '  float w=exp(-pow((dl-ring)*24.,2.))*exp(-ag*1.1)*r.w;wd+=d/dl*sin((dl-ring)*120.)*w*.009;rh+=w*max(0.,sin((dl-ring)*120.+1.2));}',
     ' uv+=wd*smoothstep(.05,.5,wat);}',
     ' vec3 col=texture2D(uI,uv).rgb;',
     ' float lum=dot(col,vec3(.3,.59,.11));',
@@ -146,7 +146,7 @@
     ' col+=vec3(.55,.78,1.)*cs*wat*(.12+lum*.9)*.9;',
     ' if(fall>.01){float fo=n(vec2(uv.x*170.,uv.y*22.-t*3.2))*n(vec2(uv.x*90.,uv.y*14.-t*2.1));',
     ' col+=vec3(.8,.92,1.)*smoothstep(.25,.6,fo)*clamp(fall,0.,1.)*(.18+lum*.6);}',
-    ' col+=vec3(.6,.85,1.)*rh*.35*smoothstep(.05,.5,wat);}',
+    ' col+=vec3(.6,.85,1.)*rh*(.25+lum)*.9*smoothstep(.05,.5,wat);}',
     /* the painted firefly orbs twinkle; the light breathes */
     ' float orb=smoothstep(.55,.85,lum)*(1.-wat)*(1.-leaf)*step(col.b,col.r);',
     ' col+=col*orb*(n(uv*28.+t*.35)-.35)*1.1;',
@@ -197,7 +197,7 @@
       var f = flies[i], tw = 0.5 + 0.5 * Math.sin(T * f.sp + f.ph), a = (0.18 + 0.82 * tw * tw) * (0.45 + 0.55 * f.z) + f.f * 0.6;
       put(f.x + par[0] * (f.z - 0.4) * 30, f.y + par[1] * (f.z - 0.4) * 22, (10 + 20 * f.z) * (1 + f.f * 0.5), a, f.hue);
     }
-    for (var j = 0; j < sparks.length; j++) { var s = sparks[j]; put(s.x, s.y, 9 * s.z, s.l / s.L, 0.6); }
+    for (var j = 0; j < sparks.length; j++) { var s = sparks[j]; put(s.x, s.y, 18 * s.z, Math.min(1, 1.4 * s.l / s.L), 0.6); }
   }
 
   /* ---------- Canvas2D fallback ---------- */
