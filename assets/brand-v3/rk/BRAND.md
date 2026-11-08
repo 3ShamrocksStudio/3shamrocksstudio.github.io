@@ -37,7 +37,8 @@ The artboard (navy, Layer 2) held four overlapping drafts. Layer 1 (switched off
 | `mark-on-light.svg/.png`, `mark-mono-white.svg`, `mark-mono-navy.svg` | Light and one-colour versions |
 | `mark-alt.svg/.png` | Alternate rook + king |
 | `app-icon.svg/.png` (1024), `app-icon-180.png` | App icon, full bleed (platforms add the mask) |
-| `favicon.svg`, `favicon-32.png`, `favicon-180.png` | Favicon / touch icon |
+| `icon-small.svg`, `icon-64.png`, `icon-48.png`, `icon-40.png`, `favicon.svg`, `favicon-32.png`, `favicon-16.png` | **Small-size variant**, 64 px and under (favicon included) |
+| `favicon-180.png` | Touch icon (full mark) |
 | `pieces.svg` (`#rk-p-rookie`, `#rk-p-king`), `piece-*.svg/.png` | Game pieces |
 | `icons.svg`, `icons.png` | Icon sprite |
 | `palette.json`, `tokens.css` | Colour tokens |
@@ -45,6 +46,7 @@ The artboard (navy, Layer 2) held four overlapping drafts. Layer 1 (switched off
 
 ## Clear space and minimum size
 - **X = cap height of one wordmark line.** Keep ½X clear on every side. It's already built into every file.
+- **Small-size variant (64 px and under):** Dave's same paths, flat colours, a tighter crop (mark 90% of the tile height instead of 72%), hairline details thickened by a same-colour stroke, and the split line kept open at about 1 px. No shape is redrawn. Use it for favicons and all icon sizes up to 64 px. Above 64 px, use the full `app-icon.png`.
 - Minimum sizes: primary lockup 120 px / 30 mm · stacked 80 px / 20 mm · wordmark 96 px / 24 mm · display wordmark 320 px / 60 mm · shaded mark 48 px tall · flat mark 16 px tall.
 - **Never:** recolour or swap the halves, put amber in the logo, stretch, outline, add effects, box the mark on a page (app icons are the only tile), retype the wordmark in a font, or bring back the overlapping drafts.
 
