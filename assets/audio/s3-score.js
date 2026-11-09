@@ -69,6 +69,7 @@
       return get(EXT).catch(function (e) { if (EXT === 'ogg') { EXT = 'm4a'; return get('m4a'); } throw e; });
     }
     function load(name) {
+      if (o.music === false) return null; /* music paused: no downloads */
       var m = meta(name); if (!m || !ensure()) return null;
       if (bufs[name]) return Promise.resolve(bufs[name]);
       if (!loading[name]) loading[name] = fetchBuf(o.base + m.file).then(function (b) { bufs[name] = b; return b; }).catch(function () { loading[name] = null; });
