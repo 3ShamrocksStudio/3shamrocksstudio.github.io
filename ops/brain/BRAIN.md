@@ -131,3 +131,12 @@ https://3shamrocksstudio.github.io/ops/brain/ renders it. Evidence links must op
 - On every public asset, Nature shows **"coming soon"** until Dave approves marketing.
 - The live SH✡MER app and dashboard stay unchanged. Nothing from `nature-layer` merges without Dave's GO.
 - Nature outreach waits until Dave has tested Nature. SH✡MER discovery outreach can proceed once Dave approves it.
+
+## 16. Funnel (live pipeline, added 9 Nov 2026)
+`brain.json → funnel` feeds the LIVE FUNNEL panel at the top of ops/index.html (the 3S-TLDB). Counts only: never a prospect name, company or email here; names stay in the private lead files (Claude outputs/leads/).
+- **Sales tracks** (`services`, `shomer_muni`) are cumulative: each count = everyone who ever reached at least that stage.
+  - found: a sourced candidate that went through the fit check (kept or dropped) · ready_to_send: note/email drafted and checked, waiting for Dave · sent: Dave sent it (LinkedIn connect, DM or email) · accepted: LinkedIn connect accepted; for email, delivered without a bounce · replied: any answer from the person · call_booked: a dated call or demo · proposal_sent: a written offer with scope and price · won: signed or paid, with `booked_usd`.
+- **Content** (`content.channels[]`, one per channel: linkedin_dave, linkedin_studio, ig_<account>, youtube): drafted → approved (Dave OK) → scheduled → posted, for the current week; `followers` when read; `null` = not readable (shows "?").
+- **Products**: one line + next + owner per item.
+- Every track carries `updated`, `next_move` (short, starts with the owner) and `owner` (Dave or Claude). The panel highlights the biggest count stuck between two sales stages (from "ready" on) with that track's `next_move`; set `funnel.bottleneck` {track, stage, next, stuck, name, unlock} only to override it.
+- **Rule:** every scheduled run that touches a lead, a send, a reply, a post or a product status updates the funnel counts it touched plus `updated` in the same commit. Never raise a count without evidence (to-do tick, LinkedIn/Gmail read, file on disk). Keep `basis` saying where each number comes from.
