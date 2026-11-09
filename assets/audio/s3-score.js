@@ -1,4 +1,9 @@
-/* 3Shamrocks Studio Score v2 player: game-world zones, product themes, stingers, one header toggle.
+/* 3Shamrocks Studio score player: game-world zones, product themes, stingers, one header toggle.
+   - Score v3 (homepage, `stems` in the config): ONE song as sample-aligned stems on a single AudioContext clock. Every stem
+     loops the same window and starts at an offset computed from one shared start time, so they never drift. Zones change
+     the MIX (gain ramps that begin on the next bar); a product in focus swaps the melody stem on the next bar (~1 s fade)
+     while the bed keeps grooving. Product melody stems are fetched and decoded only once the portfolio is reached.
+   - Score v2 (product pages, one file per zone): unchanged behaviour below.
    - Sound is ON by default unless the visitor turned it off before (remembered across studio pages, try/catch).
    - Browsers block audible autoplay: one AudioContext is created on load (only when sound is on) and resume() is
      attempted; if the browser says no, music starts on the first pointerdown / keydown / touchend anywhere.
@@ -26,8 +31,17 @@
     var zones = o.zones, zi = 0, prod = null, desired = null, tracks = {}, bufs = {}, loading = {}, cur = null, switches = 0;
     var sprites = [], cueMap = {}, lastAt = {}, voices = 0, hintEl = null;
     var products = o.products || null;
+    var ST = o.stems || null, stems = {}, t0 = null, melCur = null, starting = false, focused = null;
     W.__s3score = { active: function () { return cur; }, zone: function () { return zones[zi] && zones[zi].id; }, ctx: function () { return ctx ? ctx.state : 'none'; },
                     loaded: function () { return Object.keys(bufs); }, switches: function () { return switches; }, playing: function () { return playing; }, on: function () { return on; } };
+    if (ST) {
+      W.__s3score.melody = function () { return melCur; };
+      W.__s3score.t0 = function () { return t0; };
+      W.__s3score.time = function () { return ctx ? ctx.currentTime : 0; };
+      W.__s3score.stems = function () {
+        var r = {}; Object.keys(stems).forEach(function (k) { var x = stems[k]; r[k] = { playing: !!x.s, gain: x.g ? Math.round(x.g.gain.value * 1000) / 1000 : 0, target: x.tg }; }); return r;
+      };
+    }
 
     function meta(name) { if (products && products.map[name]) return products.map[name]; for (var i = 0; i < zones.length; i++) if (zones[i].id === name) return zones[i]; return null; }
     function ensure() {
@@ -70,6 +84,7 @@
     }
     function go(first) {
       if (!playing) return;
+      if (ST) return goStems(first);
       var name = target(); desired = name;
       if (cur === name && tracks[name]) return;
       var p = load(name); if (!p) return;
@@ -106,8 +121,84 @@
         Object.keys(products.map).reduce(function (p, k) { return p.then(function () { return load(k); }); }, Promise.resolve());
       }
     }
+    /* ---------- v3: one song as sample-aligned stems ---------- */
+    function fileOf(k) { if (k.indexOf('mel:') !== 0) return k; var p = k.slice(4); return p === 'theme' ? ST.melody : products.map[p].file; }
+    function loadStem(k) {
+      if (!ensure()) return Promise.resolve(null);
+      if (bufs[k]) return Promise.resolve(bufs[k]);
+      if (!loading[k]) loading[k] = fetchBuf(o.base + fileOf(k)).then(function (b) { bufs[k] = b; return b; }).catch(function () { loading[k] = null; return null; });
+      return loading[k];
+    }
+    function stemOf(k) {
+      var x = stems[k];
+      if (!x) { x = stems[k] = { g: ctx.createGain(), s: null, tg: 0 }; x.g.gain.value = 0; x.g.connect(mBus); }
+      return x;
+    }
+    function nextBar(now) { var k = Math.ceil((now + 0.05 - t0) / ST.bar); return t0 + k * ST.bar; }
+    function startStem(k, when) { /* offset into the loop = where the shared clock is at `when` */
+      var x = stemOf(k); if (x.s || !bufs[k]) return;
+      var s = ctx.createBufferSource(); s.buffer = bufs[k]; s.loop = true; s.loopStart = ST.pad; s.loopEnd = ST.pad + ST.loop;
+      var off = ST.pad + (((when - t0) % ST.loop) + ST.loop) % ST.loop;
+      s.connect(x.g); s.start(when, off); x.s = s;
+    }
+    function ramp(x, tb, xf, v) {
+      var g = x.g.gain, now = ctx.currentTime, v0 = g.value;
+      try { g.cancelScheduledValues(now); g.setValueAtTime(v0, now); if (tb > now) g.setValueAtTime(v0, tb); g.linearRampToValueAtTime(v, Math.max(tb, now) + xf); }
+      catch (e) { g.value = v; }
+    }
+    function wantStems() {
+      var z = zones[zi], mix = z.mix || {}, inP = products && z.id === products.zone;
+      var mk = 'mel:' + (inP && prod ? prod : 'theme'), want = {};
+      ST.beds.forEach(function (b) { want[b] = mix[b] || 0; });
+      Object.keys(stems).forEach(function (k) { if (k.indexOf('mel:') === 0) want[k] = 0; });
+      want[mk] = mix.mel || 0;
+      return { want: want, mel: mk, name: inP && prod ? prod : z.id };
+    }
+    function goStems(first) {
+      var w = wantStems(), keys = Object.keys(w.want), melSwap = melCur !== null && w.mel !== melCur;
+      if (melSwap && t0 !== null && !bufs[w.mel] && bufs[melCur]) { /* keep the current melody until the new one is decoded */
+        var lv = w.want[w.mel]; w.want[w.mel] = 0; w.want[melCur] = lv;
+        loadStem(w.mel).then(function (b) { if (b && playing) go(); });
+        w.mel = melCur; melSwap = false;
+      }
+      cur = w.name; desired = w.name; melCur = w.mel; switches++;
+      if (t0 === null) { /* first start: the core stems start together on one clock, the rest join on the following bars */
+        if (starting) return; starting = true;
+        var need = (ST.core || ['keys', 'bass', 'drums']).filter(function (k) { return w.want[k] > 0; });
+        if (!need.length) need = keys.filter(function (k) { return w.want[k] > 0; });
+        Promise.all(need.map(loadStem)).then(function () {
+          starting = false; if (!playing) return;
+          var ww = wantStems(); t0 = ctx.currentTime + 0.08;
+          Object.keys(ww.want).forEach(function (k) { var x = stemOf(k); x.tg = ww.want[k]; if (x.tg > 0 && bufs[k]) { startStem(k, t0); ramp(x, t0, 0.05, x.tg); } });
+          cur = ww.name; melCur = ww.mel; prefetchStems();
+          goStems(false); /* anything that changed (or failed) while loading */
+        });
+        return;
+      }
+      keys.forEach(function (k) {
+        var x = stemOf(k), v = w.want[k], isMel = k.indexOf('mel:') === 0, xf = isMel && melSwap ? PXF : XF;
+        if (x.tg === v && (x.s || v === 0)) return;
+        x.tg = v;
+        if (x.s) { ramp(x, nextBar(ctx.currentTime), xf, v); return; }
+        if (v > 0) loadStem(k).then(function (b) { /* not running yet: join on the next bar, aligned to the shared clock */
+          if (!b || !playing || t0 === null || x.s || x.tg <= 0) return;
+          var tb = nextBar(ctx.currentTime); startStem(k, tb); ramp(x, tb, isMel ? PXF : Math.min(XF, 1.0), x.tg);
+        });
+      });
+      prefetchStems();
+    }
+    function prefetchStems() { /* then the rest of the bed, then (in the portfolio) the product melodies, one at a time */
+      var q = ST.beds.slice();
+      if (products && zones[zi] && zones[zi].id === products.zone) Object.keys(products.map).forEach(function (k) { q.push('mel:' + k); });
+      q.reduce(function (p, k) { return p.then(function () { return playing ? loadStem(k) : null; }); }, Promise.resolve());
+    }
     function stopAll() {
       if (!ctx) return; playing = false; var t = ctx.currentTime;
+      Object.keys(stems).forEach(function (k) {
+        var x = stems[k]; if (x.s) { try { x.s.stop(t + 0.65); } catch (e) { /* ignore */ } x.s = null; }
+        x.tg = 0; try { x.g.gain.cancelScheduledValues(0); x.g.gain.setValueAtTime(x.g.gain.value, t); x.g.gain.setValueAtTime(0, t + 0.66); } catch (e) { /* ignore */ }
+      });
+      t0 = null; melCur = null; starting = false;
       mBus.gain.cancelScheduledValues(0); mBus.gain.setValueAtTime(mBus.gain.value, t); mBus.gain.linearRampToValueAtTime(0, t + 0.6);
       Object.keys(tracks).forEach(function (n) { try { tracks[n].s.stop(t + 0.65); } catch (e) { /* ignore */ } delete tracks[n]; });
       cur = null; setTimeout(function () { if (!playing && ctx && ctx.state === 'running') ctx.suspend(); }, 800);
@@ -116,7 +207,7 @@
     if (zones.length > 1 && W.IntersectionObserver) {
       var els = zones.map(function (z) { return z.sel ? D.querySelector(z.sel) : null; }), hit = {}, deb = 0;
       function pick() { var best = -1; els.forEach(function (el, i) { if (hit[i]) best = i; }); return best; }
-      function settle() { clearTimeout(deb); deb = setTimeout(function () { var i = pick(); if (i >= 0 && i !== zi) { zi = i; if (!(products && zones[i].id === products.zone)) prod = null; arrive(); go(); } }, o.debounce || 600); }
+      function settle() { clearTimeout(deb); deb = setTimeout(function () { var i = pick(); if (i >= 0 && i !== zi) { zi = i; if (!(products && zones[i].id === products.zone)) prod = null; else if (!prod && focused) prod = focused(); arrive(); go(); } }, o.debounce || 600); }
       var io = new IntersectionObserver(function (es) { es.forEach(function (e) { var i = els.indexOf(e.target); if (i >= 0) hit[i] = e.isIntersecting; }); settle(); }, { rootMargin: '-50% 0px -50% 0px' });
       els.forEach(function (el) { if (el) io.observe(el); });
       W.addEventListener('scroll', function () { if (deb) settle(); }, { passive: true });
@@ -130,6 +221,7 @@
     if (products) {
       var devs = [].slice.call(D.querySelectorAll(products.sel)), pdeb = 0;
       function keyOf(d) { var h = d.getAttribute('href') || d.dataset.href || ''; for (var k in products.map) if (h.indexOf(products.map[k].match) >= 0) return k; return null; }
+      focused = function () { /* a card already in focus when the section is reached (mobile carousel) */ for (var i = 0; i < devs.length; i++) if (devs[i].classList.contains('on')) return keyOf(devs[i]); return null; };
       var mo = new MutationObserver(function (ms) {
         ms.forEach(function (m) {
           var d = m.target, k = keyOf(d), isOn = d.classList.contains('on'), was = (m.oldValue || '').split(/\s+/).indexOf('on') >= 0;
@@ -193,7 +285,7 @@
     });
     draw();
     if (on) { /* try now: some browsers allow it; otherwise the first tap starts it */
-      ensure(); if (ctx) { load(zones[zi].id); resume(); setTimeout(function () { if (!playing && on) hint(true); }, 400); }
+      ensure(); if (ctx) { if (ST) { var w0 = wantStems(); Object.keys(w0.want).forEach(function (k) { if (w0.want[k] > 0) loadStem(k); }); } else load(zones[zi].id); resume(); setTimeout(function () { if (!playing && on) hint(true); }, 400); }
     }
     return { play: sfx, on: function () { return on; } };
   }
