@@ -123,8 +123,8 @@
     }
     /* ---------- v3: one song as sample-aligned stems ---------- */
     function fileOf(k) { if (k.indexOf('mel:') !== 0) return k; var p = k.slice(4); return p === 'theme' ? ST.melody : products.map[p].file; }
-    function loadStem(k) {
-      if (!ensure()) return Promise.resolve(null);
+    function loadStem(k) { /* o.music === false: music paused (no stem downloads), sound effects still play */
+      if (o.music === false || !ensure()) return Promise.resolve(null);
       if (bufs[k]) return Promise.resolve(bufs[k]);
       if (!loading[k]) loading[k] = fetchBuf(o.base + fileOf(k)).then(function (b) { bufs[k] = b; return b; }).catch(function () { loading[k] = null; return null; });
       return loading[k];
