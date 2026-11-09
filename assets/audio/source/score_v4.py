@@ -671,9 +671,9 @@ def stems(d):
         ob, ab = ('40k', '64k') if name.startswith('mel-') else ('64k', '112k')
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', w, '-c:a', 'libopus', '-b:a', ob, '-vbr', 'constrained', '-application', 'audio',
                         os.path.join(REPO_OUT, name + '.ogg')], check=True)
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', w, '-c:a', 'aac', '-b:a', ab, '-movflags', '+faststart',
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', w, '-c:a', 'aac', '-b:a', ab, '-aac_pns', '0', '-movflags', '+faststart',
                         os.path.join(REPO_OUT, name + '.m4a')], check=True)
-        os.remove(w)
+        if not os.environ.get('S3_KEEP_WAV'): os.remove(w)
     cfg = {'stems': {'loop': round(L, 4), 'bar': round(BAR, 4), 'pad': PAD, 'beds': D['beds'], 'melody': 'mel-theme'},
            'zones': zones_out,
            'products': {k: {'match': 'work/%s.html' % k, 'file': 'mel-' + k} for k in PRODUCTS}}
