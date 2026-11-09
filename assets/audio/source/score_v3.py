@@ -24,7 +24,7 @@ from scipy import signal
 
 SF = os.environ.get('S3_SF2', '/home/claude/mrbumpy409/generaluser-gs/GeneralUser-GS.sf2')
 OUT = os.environ.get('S3_OUT', '/dev/shm/s3studio/v3')
-REPO_OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'studio', 'v3')
+REPO_OUT = os.environ.get('S3_REPO_OUT', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'studio', 'v3'))
 os.makedirs(OUT, exist_ok=True)
 SR = 44100
 BPM = 100.0
@@ -94,20 +94,21 @@ def last_idx(b): return len(THEME[b]) - 1
 # Each product variation: lead timbre, transpose, ornament style, the changed note(s).
 #   theme            flute (+ soft harp doubling), Celtic cuts on the leap notes
 #   shomer           French horns an octave down, legato, no ornaments; bar 4 resolves up to D instead of falling to A
-#   lickpick         clean electric guitar an octave down, a hammer-on into each leap; final note hangs on E
+#   lickpick         clean electric guitar an octave down, warm (dark tone, soft pick, more room), a hammer-on into each leap; final note hangs on E
 #   trashure-hunters ocarina, trills on the long leap notes; bar 12 climbs to A instead of settling on D
 #   chore-royale     pizzicato strings + a touch of glockenspiel, dotted "regal" leaves; final note lifts to high C#
 #   fairent          vibraphone, plain and even; bar 8 lands on E (an open question) instead of A
-#   concepts         fiddle with cuts and rolls; bar 4 ends on F instead of A
+#   concepts         fiddle on the theme's exact rhythm and cuts; one roll on the changed note: bar 4 ends on F instead of A
 VARIANTS = {
     'theme':            dict(prog=[(73, 0, 92)], double=[(46, -12, 50)], orn='cut', orn_bars={0, 4, 8, 10}, changes={}),
     'shomer':           dict(prog=[(60, -12, 96)], orn=None, legato=1.0, changes={(3, last_idx(3)): 74}),
-    'lickpick':         dict(prog=[(27, -12, 98)], eq=[pb.LowpassFilter(4200), pb.PeakFilter(2600, -3.0, 0.8)], orn='hammer', orn_bars={0, 4, 8, 12}, staccato=0.85, changes={(15, last_idx(15)): 76}),
+    'lickpick':         dict(prog=[(27, -12, 78)], eq=[pb.LowpassFilter(2600), pb.LowpassFilter(3200), pb.HighShelfFilter(2200, -6.0, 0.7), pb.PeakFilter(2600, -3.0, 0.8), pb.PeakFilter(300, 1.5, 0.8)],
+                             attack=0.012, wet=0.42, orn='hammer', orn_bars={0, 4, 8, 12}, staccato=0.85, changes={(15, last_idx(15)): 76}),
     'trashure-hunters': dict(prog=[(79, 0, 90)], orn='trill', orn_bars={0, 4, 8, 10}, changes={(11, last_idx(11)): 81}),
     'chore-royale':     dict(prog=[(45, 0, 104)], double=[(9, 0, 26)], double_bars={0, 4, 8, 10, 12}, orn='dotted', orn_bars={0, 4, 8, 12},
                              staccato=0.55, changes={(15, last_idx(15)): 85}),
     'fairent':          dict(prog=[(11, 0, 96)], orn=None, changes={(7, last_idx(7)): 76}),
-    'concepts':         dict(prog=[(110, 0, 84)], eq=[pb.PeakFilter(2900, -7.0, 0.6), pb.LowpassFilter(4500), pb.PeakFilter(700, 1.5, 0.8)], orn='cut', orn_bars={0, 1, 3, 4, 8, 10, 11, 13}, roll_bars={3, 11},
+    'concepts':         dict(prog=[(110, 0, 96)], eq=[pb.PeakFilter(2900, -7.0, 0.6), pb.LowpassFilter(4500), pb.PeakFilter(700, 1.5, 0.8)], orn='cut', orn_bars={0, 4, 8, 10}, roll_bars={3}, legato=0.86,
                              changes={(3, last_idx(3)): 77}),
 }
 
@@ -442,11 +443,14 @@ def process(name, x):
         x = send(x, IR, 0.5, hp=200, lp=7000)
     else:   # melody: mono, warm, under the bed
         m = x.mean(axis=0, keepdims=True)
-        m = fx(m, VARIANTS[name[4:]].get('eq', []) + [pb.HighpassFilter(220), pb.PeakFilter(3400, -4.5, 0.8), pb.HighShelfFilter(7000, -4.0), pb.PeakFilter(1200, -1.0, 1.0),
+        va = VARIANTS[name[4:]]
+        if va.get('attack'):   # soften the pick: a fast compressor that catches only the first ms of each note
+            m = fx(m, [pb.Compressor(-30, 3.0, va['attack'] * 1000 * 0.1, 60)])
+        m = fx(m, va.get('eq', []) + [pb.HighpassFilter(220), pb.PeakFilter(3400, -4.5, 0.8), pb.HighShelfFilter(7000, -4.0), pb.PeakFilter(1200, -1.0, 1.0),
                    pb.Compressor(-24, 2.5, 12, 180)])
         d = fx(m, [pb.Delay(BEAT * 0.75, 0.25, 1.0), pb.LowpassFilter(3500), pb.HighpassFilter(400)])
         m = m + 0.14 * d
-        x = send(m, IR_PLATE, 0.28, hp=350, lp=6500)   # mono plate keeps the stem mono
+        x = send(m, IR_PLATE, va.get('wet', 0.28), hp=350, lp=6500 if not va.get('attack') else 3500)   # mono plate keeps the stem mono
     role = name if name in LUFS_ROLE else 'mel'
     x = to_role(x, role)
     # cap each stem's crest (peaks no more than CREST dB above its loudness) so the summed zones keep true-peak headroom

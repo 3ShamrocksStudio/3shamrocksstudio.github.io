@@ -65,7 +65,7 @@
       } catch (e) { /* ignore */ }
     }
     function fetchBuf(url) {
-      function get(ext) { return fetch(url + '.' + ext).then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }).then(function (ab) { return new Promise(function (ok, no) { ctx.decodeAudioData(ab, ok, no); }); }); }
+      function get(ext) { return fetch(url + '.' + ext + (o.ver ? '?v=' + o.ver : '')).then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }).then(function (ab) { return new Promise(function (ok, no) { ctx.decodeAudioData(ab, ok, no); }); }); }
       return get(EXT).catch(function (e) { if (EXT === 'ogg') { EXT = 'm4a'; return get('m4a'); } throw e; });
     }
     function load(name) {
