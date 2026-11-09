@@ -1,7 +1,7 @@
 /* 3Shamrocks Studio score player: game-world zones, product themes, stingers, one header toggle.
    - Score v3 (homepage, `stems` in the config): ONE song as sample-aligned stems on a single AudioContext clock. Every stem
      loops the same window and starts at an offset computed from one shared start time, so they never drift. Zones change
-     the MIX (gain ramps that begin on the next bar); a product in focus swaps the melody stem on the next bar (~1 s fade)
+     the MIX (gain ramps that begin on the next bar); a product in focus swaps the melody stem with a fade that starts ~0.6 s before the next bar line
      while the bed keeps grooving. Product melody stems are fetched and decoded only once the portfolio is reached.
    - Score v2 (product pages, one file per zone): unchanged behaviour below.
    - Sound is ON by default unless the visitor turned it off before (remembered across studio pages, try/catch).
@@ -27,7 +27,7 @@
   function start(o) {
     var btn = D.getElementById(o.toggle || 'snd');
     var on = lsGet(KEY) !== '0', ctx = null, master = null, mBus = null, sBus = null, playing = false;
-    var MG = o.musicGain || 0.45, SG = o.sfxGain || 0.6, XF = o.xfade || 2.0, PXF = o.pxfade || 1.0;
+    var MG = o.musicGain || 0.45, SG = o.sfxGain || 0.6, XF = o.xfade || 2.0, PXF = o.pxfade || 1.0, MLEAD = o.mlead === undefined ? 0.6 : o.mlead;
     var zones = o.zones, zi = 0, prod = null, desired = null, tracks = {}, bufs = {}, loading = {}, cur = null, switches = 0;
     var sprites = [], cueMap = {}, lastAt = {}, voices = 0, hintEl = null;
     var products = o.products || null;
@@ -136,6 +136,7 @@
       return x;
     }
     function nextBar(now) { var k = Math.ceil((now + 0.05 - t0) / ST.bar); return t0 + k * ST.bar; }
+    function melAt(now) { return nextBar(now + MLEAD) - MLEAD; } /* a melody swap starts its fade MLEAD s before the bar line */
     function startStem(k, when) { /* offset into the loop = where the shared clock is at `when` */
       var x = stemOf(k); if (x.s || !bufs[k]) return;
       var s = ctx.createBufferSource(); s.buffer = bufs[k]; s.loop = true; s.loopStart = ST.pad; s.loopEnd = ST.pad + ST.loop;
@@ -177,13 +178,13 @@
         return;
       }
       keys.forEach(function (k) {
-        var x = stemOf(k), v = w.want[k], isMel = k.indexOf('mel:') === 0, xf = isMel && melSwap ? PXF : XF;
+        var x = stemOf(k), v = w.want[k], isMel = k.indexOf('mel:') === 0, swap = isMel && melSwap, xf = swap ? PXF : XF;
         if (x.tg === v && (x.s || v === 0)) return;
         x.tg = v;
-        if (x.s) { ramp(x, nextBar(ctx.currentTime), xf, v); return; }
-        if (v > 0) loadStem(k).then(function (b) { /* not running yet: join on the next bar, aligned to the shared clock */
+        if (x.s) { ramp(x, swap ? melAt(ctx.currentTime) : nextBar(ctx.currentTime), xf, v); return; }
+        if (v > 0) loadStem(k).then(function (b) { /* not running yet: join on the next bar (a melody: just before it), aligned to the shared clock */
           if (!b || !playing || t0 === null || x.s || x.tg <= 0) return;
-          var tb = nextBar(ctx.currentTime); startStem(k, tb); ramp(x, tb, isMel ? PXF : Math.min(XF, 1.0), x.tg);
+          var tb = isMel ? melAt(ctx.currentTime) : nextBar(ctx.currentTime); startStem(k, tb); ramp(x, tb, isMel ? PXF : Math.min(XF, 1.0), x.tg);
         });
       });
       prefetchStems();
