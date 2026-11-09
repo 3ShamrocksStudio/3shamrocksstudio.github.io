@@ -52,3 +52,20 @@ timing and velocity, convolution reverb and tempo-synced delays. Each part is ba
 - SFX: product arrivals (radar ping, guitar stab, treasure jingle, arena horn, ka-ching, sci-fi shimmer, each <= 0.4 s), coin, level complete,
   sparkle, mosaic explode / assemble, CTA click.
 - Run: `python3 score_v2.py home pages && python3 studio_sfx_v2.py && python3 score_v2.py demo`.
+
+## Score v3: "Three Leaves" (`score_v3.py`), generated 2026-11-09
+Supersedes Score v2 on the homepage (product pages still use the v2 files). Unlike everything above, v3 uses sampled instruments:
+the GeneralUser GS SoundFont v2.0.3 by S. Christian Collins (licence: free use in music, private or commercial; https://schristiancollins.com),
+rendered offline with tinysoundfont and mixed/mastered with pedalboard. The music itself (melody, harmony, arrangement) is original.
+- One song for the whole page: 100 BPM, D dorian, 16 bars = 38.4 s. Signature: three rising "leaves" D-E-F, then the leap to A.
+  Harmony Dm C G Dm | Dm C G A | F C G Dm | Bb C G A (the G major is the dorian, Celtic colour).
+- Stems, all the same length and sample-aligned: drums, bass, keys, pulse, texture, lift (stereo) + melody stems (mono):
+  mel-theme (flute + harp) and one per product: shomer (French horns, bar 4 resolves to D), lickpick (clean guitar, hammer-ons,
+  ends on E), trashure-hunters (ocarina, trills, bar 12 climbs to A), chore-royale (pizzicato + glockenspiel, dotted leaves,
+  ends on high C#), fairent (vibraphone, bar 8 lands on E), concepts (fiddle with cuts and rolls, bar 4 ends on F).
+- Zones change only the mix (gains in `js/studio-sound.js`, written by the script to mix.json). Measured with ffmpeg ebur128 on the
+  encoded stems: hero -16.0, work -16.3 to -16.5, identity -17.0, experience -17.6, about -17.0, forest -19.2, contact -15.3 LUFS;
+  true peak -2.0 dBTP or lower everywhere.
+- Files: last 0.5 s of the loop + loop + first 0.5 s; the player loops 0.5 .. 38.9 s on one shared clock.
+- Encode: beds Opus 64k / AAC 112k stereo, melodies Opus 40k / AAC 64k mono.
+- Run: `python3 score_v3.py` (render + master + encode), then `python3 score_v3.py demo` (70 s walk-through MP3).
