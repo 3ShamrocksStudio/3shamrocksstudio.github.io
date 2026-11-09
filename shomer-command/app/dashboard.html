@@ -850,8 +850,9 @@ async function boot(){
   else { DATA._custom={city:CLIENT.territory,lat:0,lng:0,total:null,cats:{},noData:true,intl:true,pending:true}; render(-1); setIntlTerritory(CLIENT.territory); }
 }
 function renderLegend(){ var el=document.getElementById('legend'); el.innerHTML=''; Object.keys(CAT_COL).forEach(function(k){ el.innerHTML+='<span><i style="background:'+CAT_COL[k]+'"></i>'+k+'</span>'; }); }
-/* approx CBS 2023 populations (public figures) for per-capita context */
-var POP={'תל אביב יפו':474000,'ירושלים':981000,'חיפה':285000,'ראשון לציון':254000,'פתח תקווה':248000,'אשדוד':225000,'נתניה':221000,'באר שבע':209000,'בני ברק':208000,'חולון':196000,'רמת גן':171000,'בית שמש':146000,'רחובות':149000,'אשקלון':144000,'בת ים':128000,'כפר סבא':100000,'חדרה':100000,'הרצליה':97000,'מודיעין':93000,'לוד':80000,'רמלה':77000,'רעננה':75000,'רהט':75000,'הוד השרון':65000,'גבעתיים':60000,'קרית גת':60000,'קרית אתא':58000,'נהריה':58000,'עפולה':56000,'אילת':52000,'עכו':49000,'טבריה':48000};
+/* CBS population, end of 2024: "קובץ יישובים 2024" (cbs.gov.il/he/publications/doclib/2019/ishuvim/bycode2024.xlsx, column סך הכל אוכלוסייה 2024).
+   Keyed by the crime-data city names; 'מודיעין' is an alias of מודיעין-מכבים-רעות. */
+var POP={'תל אביב יפו':494900,'ירושלים':1050151,'באר שבע':223587,'חיפה':297083,'אשדוד':228562,'ראשון לציון':259275,'נתניה':234812,'פתח תקווה':270403,'אשקלון':166865,'חולון':191829,'בת ים':129495,'רמת גן':172242,'אילת':56004,'רמלה':86052,'לוד':94189,'רחובות':155050,'חדרה':107974,'בני ברק':229995,'רהט':77996,'נצרת':75704,'כפר סבא':99410,'קרית גת':72139,'בית שמש':176786,'עפולה':66362,'טבריה':52122,'עכו':52884,'נוף הגליל':45805,'טמרה':36919,'טייבה':46870,'קרית אתא':62584,'ראש העין':79023,'דימונה':39590,'אום אל-פחם':60210,'שפרעם':43858,'הוד השרון':66398,'רעננה':82963,'מודיעין-מכבים-רעות':100052,'נתיבות':56019,'יבנה':58090,'גבעתיים':58600,'אור יהודה':41130,'שדרות':37239,'טירה':27680,'קרית מלאכי':27957,'קרית ים':41959,'אופקים':39894,'ערערה-בנגב':21259,'ערד':29505,'כרמיאל':47941,'פרדס חנה-כרכור':46601,'סח\'נין':33726,'קרית ביאליק':47072,'ג\'סר א זרקא':15823,'קרית מוצקין':51488,'רמת השרון':48860,'תל שבע':24781,'נס ציונה':47268,'קרית אונו':45048,'הרצליה':110885,'נהריה':67877,'מודיעין':100052};
 function perCap(x){ var p=POP[x.city]; return p?(x.total/p*1000):null; }
 function donutSVG(segs,center,sub){var tot=segs.reduce(function(s,x){return s+x.val;},0)||1,sz=150,r=sz/2-12,cx=sz/2,cy=sz/2,C=2*Math.PI*r,off=0;
  var arcs=segs.map(function(sg){var len=sg.val/tot*C;var el='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+sg.color+'" stroke-width="18" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 '+cx+' '+cy+')"/>';off+=len;return el;}).join('');
@@ -1717,7 +1718,7 @@ function buildReportHtml(){
  /* ---------- limitations ---------- */
  var lim=['נתוני המשטרה הם עבירות <b>שנרשמו</b> ברמת העיר לשנת 2025 בלבד; אין בהם נתוני שנה קודמת, פילוח לשכונות או עבירות שלא דווחו.',
   'הדירוג והממוצע הארצי מחושבים בין '+ncit+' הערים שבמאגר בלבד, לא בין כל הרשויות בישראל.',
-  'נתוני אוכלוסייה ("ל-1,000 תושבים") הם הערכת למ״ס מעוגלת, וקיימים ל-'+M.n+' מתוך '+ncit+' הערים.',
+  'נתוני אוכלוסייה ("ל-1,000 תושבים") הם נתוני הלמ״ס לסוף 2024 (קובץ היישובים), וקיימים ל-'+M.n+' מתוך '+ncit+' הערים.',
   'נתוני הרשת משקפים רק מכשירי SH✡MER מאומתים (גרסה v279 ומעלה, נספרים מאז 22.10.2026), אינם מדגם מייצג של התושבים, והמיקום מעוגל לכ-1 ק״מ. "מחובר" = דיווח מיקום ב-90 השניות האחרונות.',
   'מצב האירועים והערות התוצאה נשמרים בדפדפן שממנו הופק הדוח בלבד ואינם מסונכרנים בין מחשבים.',
   'אירועי דוגמה הוחרגו מהדוח'+(demo?'; בדוח הדגמה, אירועים המסומנים "הדגמה" הם מדומים':'')+'.',
@@ -2325,6 +2326,7 @@ function render(idx){
  var rbk=document.getElementById('recsback');if(rbk)rbk.style.display='none';
  fillTerrSel();
  var tn=document.getElementById('terr-name'); if(tn) tn.textContent=c.city;
+ if(CLIENT&&CLIENT.demo){ CLIENT.org=(c.city==='תל אביב יפו'?'עיריית תל אביב-יפו':c.city)+' · דמו'; var _on=document.getElementById('org-name'); if(_on) _on.textContent=CLIENT.org; } /* D5: demo header follows the chosen city */
  buildKPIs(idx);
  if(cityLayer){MAP.removeLayer(cityLayer);}cityLayer=L.layerGroup().addTo(MAP);if(!_boundVisible){MAP.removeLayer(cityLayer);}
  if(spreadLayer){MAP.removeLayer(spreadLayer);spreadLayer=null;var sp=document.getElementById('spread-btn');if(sp)sp.classList.remove('on');}
