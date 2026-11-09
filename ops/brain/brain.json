@@ -3154,5 +3154,15 @@
     "ops-control-room"
    ]
   }
+ ],
+ "night_notes": [
+  {
+   "date": "2026-11-09",
+   "run": "3s night shift (scheduled task, slots 23:00 and 03:00 Israel)",
+   "finding": "The 03:00 slot fired at 03:06:26 Israel (01:06:26Z) and ended at 03:07:18: 52 s, status SUCCEEDED, 0 commits in any repo, brain.json last_run unchanged at 2026-11-08T19:55. No night_notes, no data.json line, no ledger edit, nothing in /mnt/user-data/outputs from that session. The 8 Nov 23:00 slot left no trace either (all 23:17-00:27 commits came from the main session's site work, not the night run).",
+   "cause": "Unknown, run exited in 52 s. Facts that narrow it: (1) the task carries only connectors and no repository source, and its prompt starts with 'clone 3shamrocksstudio.github.io'; a run that cannot clone stops at step one with nothing to write; (2) the same scheduled-task class failed on usage limits on 8 Nov (08:30 stand-up and 08:22 board: ROUTINE_RUN_FAILURE_REASON_USAGE_LIMIT_REACHED), and a usage stop can end a run early while still reporting success; (3) its prompt still says BRAIN.md v2. The run's own transcript is not readable from here.",
+   "fix": "Watchdogs now exist in the main session for tonight (23:45 and 03:45): each checks for night commits and a fresh last_run and does the shift itself if the run did nothing. Next: give the night-shift task the github.io and 3s-status repos as sources and point its prompt at BRAIN.md v3 (COO, this session or the next shift that can edit scheduled tasks).",
+   "made_up_by": "Day shift 9 Nov (this run)"
+  }
  ]
 }
