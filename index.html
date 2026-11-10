@@ -88,7 +88,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
 @keyframes sndEq{0%,100%{clip-path:inset(var(--o) 0 round 2px)}50%{clip-path:inset(0 0 round 2px)}}
 @media (prefers-reduced-motion:reduce){.snd[aria-pressed=true] .snd-eq i{animation:none}.snd[aria-pressed=true] .snd-eq i:nth-child(1){clip-path:inset(3px 0 round 2px)}.snd[aria-pressed=true] .snd-eq i:nth-child(2){clip-path:inset(0 0 round 2px)}.snd[aria-pressed=true] .snd-eq i:nth-child(3){clip-path:inset(2px 0 round 2px)}}
 @media(max-width:760px){.nav-links{gap:10px}.snd{width:36px;height:36px}}
-.snd{position:relative}.snd-hint{position:absolute;top:calc(100% + 9px);right:0;white-space:nowrap;pointer-events:none;font:600 12px/1 system-ui,sans-serif;letter-spacing:.01em;color:#fff;background:rgba(18,10,40,.94);border:1px solid rgba(176,124,255,.45);padding:7px 10px;border-radius:3px;box-shadow:0 8px 24px -10px rgba(0,0,0,.8);opacity:0;transform:translateY(-4px);transition:opacity .45s ease,transform .45s ease}.snd-hint.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.snd-hint{transition:none;transform:none}}
+.snd{position:relative}.snd-hint{position:absolute;top:calc(100% + 9px);right:0;white-space:nowrap;pointer-events:none;font:600 12px/1 system-ui,sans-serif;letter-spacing:.01em;color:#fff;background:rgba(18,10,40,.94);border:1px solid rgba(176,124,255,.45);padding:7px 10px;border-radius:3px;box-shadow:0 8px 24px -10px rgba(0,0,0,.8);opacity:0;transform:translateY(-4px);transition:opacity .45s ease,transform .45s ease}.snd-hint.in{opacity:1;transform:none}@media(max-width:700px){nav.scrolled .snd-hint.in{opacity:0;transform:translateY(-4px)}}@media (prefers-reduced-motion:reduce){.snd-hint{transition:none;transform:none}}
 
 /* HERO */
 .hero{min-height:100svh;display:flex;align-items:center;padding:112px 0 40px;overflow:hidden}
@@ -708,7 +708,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
 .gd-bar{display:none}
 @media(max-width:700px){
   .gd-bub{right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px))}
-  .gd-bar-on .gd-bub{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .gd-bar-on .gd-bub{opacity:0;transform:translateY(10px);pointer-events:none} /* one fixed bottom layer at a time: the bar wins */
   .gd-open{gap:10px;padding:5px 42px 5px 5px}.gd-av{width:40px;height:40px}.gd-bub-tx b{font-size:14px}
   .gd-panel{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;max-width:none;max-height:calc(100vh - 96px)}
   .gd-toast{top:72px;left:16px;right:16px;width:auto}
