@@ -8,6 +8,8 @@
      mid-screen) is passed; thresholds are forced to rise in config order, so layers only ever add going down and drop going
      up. Section progress is watched with IntersectionObserver (+ a light scroll check); gain changes start on the next bar
      with `xfade` s ramps. `stems.fill` = a one-bar drum fill played once when the music starts, the groove lands after it.
+   - Score v6: optional `stems.loops` {file: seconds} gives every stem its own loop length (whole bars, multiples of the
+     8-bar progression) on the same clock, so the band only repeats as a whole after hundreds of bars.
    - Score v2 (product pages, one file per zone): unchanged behaviour below.
    - Sound is ON by default unless the visitor turned it off before (remembered across studio pages, try/catch).
    - Browsers block audible autoplay: one AudioContext is created on load (only when sound is on) and resume() is
@@ -144,10 +146,11 @@
     }
     function nextBar(now) { var k = Math.ceil((now + 0.05 - t0) / ST.bar); return t0 + k * ST.bar; }
     function melAt(now) { return nextBar(now + MLEAD) - MLEAD; } /* a melody swap starts its fade MLEAD s before the bar line */
-    function startStem(k, when) { /* offset into the loop = where the shared clock is at `when` */
+    function startStem(k, when) { /* offset into the loop = where the shared clock is at `when`; `stems.loops` = per-stem loop lengths (v6) */
       var x = stemOf(k); if (x.s || !bufs[k]) return;
-      var s = ctx.createBufferSource(); s.buffer = bufs[k]; s.loop = true; s.loopStart = ST.pad; s.loopEnd = ST.pad + ST.loop;
-      var off = ST.pad + (((when - t0) % ST.loop) + ST.loop) % ST.loop;
+      var LL = (ST.loops && ST.loops[fileOf(k)]) || ST.loop;
+      var s = ctx.createBufferSource(); s.buffer = bufs[k]; s.loop = true; s.loopStart = ST.pad; s.loopEnd = ST.pad + LL;
+      var off = ST.pad + (((when - t0) % LL) + LL) % LL;
       s.connect(x.g); s.start(when, off); x.s = s;
     }
     function ramp(x, tb, xf, v) {
