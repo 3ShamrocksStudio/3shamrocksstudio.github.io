@@ -1,4 +1,7 @@
-"""Builds the "Made of the work" photomosaic of Dave for the homepage "20 years" section (v4, 10 Nov 2026).
+"""v5 (10 Nov 2026): the tiles come only from the curated library (library.py: one copy of each artwork, the largest sharp
+version in the repo, quality bar applied, 640 px icon renders); each tile records its library piece, which the colour-family
+viewer opens. Atlases: 64 slots a row, 32 px rest tiles and 64 px hi tiles (sharper when zoomed in). Run audit.py, library.py, then this.
+Builds the "Made of the work" photomosaic of Dave for the homepage "20 years" section (v4, 10 Nov 2026).
 v4 (Dave, 10 Nov): every tile is a COMPLETE image, never a crop: the whole asset fitted into its square (letterboxed in its own
 edge colour, or, for cut-outs, set on dark, light and the brand's own colours). More variety: single icons from the icon sets
 (src/sets, rasterised from the brand sprites and the homepage brand sheets), more old 3shamrocks.com work and client logos
@@ -17,12 +20,12 @@ import numpy as np
 from PIL import Image, ImageFilter
 
 OUT = 'assets/studio/mosaic'
-COLS = 73                                # both atlases: 73 slots a row, same slot order
-LO_SLOT, LO_PAD = 28, 1                  # rest atlas: 2048 wide, power of two (mipmapped)
-HI_SLOT, HI_PAD = 48, 2                  # magnifier / exploded-grid atlas (loaded on first interaction)
-C = 56                                   # tiles are cut and colour-matched at this size, then scaled into both atlases
-MAXT = COLS * 72                         # lo atlas 2048 x 1024
-CAP_TILE, CAP_ALL, CAP_PIECE = 2, 4, 8  # max rest uses of one tile / rest + flip uses / rest uses of one piece of work
+COLS = 64                                # both atlases: 64 slots a row, same slot order
+LO_SLOT, LO_PAD = 32, 1                  # rest atlas: 2048 wide, power of two (mipmapped)
+HI_SLOT, HI_PAD = 64, 2                  # magnifier / exploded-grid atlas (loaded on first interaction)
+C = 64                                   # tiles are cut and colour-matched at this size, then scaled into both atlases
+MAXT = COLS * 64                         # lo atlas 2048 x 2048 at most
+CAP_TILE, CAP_ALL, CAP_PIECE = 2, 4, 6  # max rest uses of one tile / rest + flip uses / rest uses of one piece of work
 PRODUCTS = {  # key: (display name, link)
   'sh': ('SH✡MER', 'work/shomer.html'), 'lp': ('LickPick', 'work/lickpick.html'),
   'cr': ('Chore Royale', 'work/chore-royale.html'),
@@ -226,6 +229,12 @@ SAME = [[W+'shomer/badge.webp', 'assets/studio/logos/shomer.png', SP+'shomer-bad
         [LG+'ap-logo.webp', W+'healthtech/ap-logo.png', W+'aposhealth/logo.png'], [LG+'vb-logo.webp', W+'healthtech/vb-logo.png', M+'vibrant-white.png', M+'vibrant.png'],
         [LG+'st-heart.webp', 'assets/studio/heart-on-dark.png', 'assets/studio/heart-on-light.png'], [LG+'th-wordmark.webp', TH+'logo.webp']]
 PIECE = {q: g[0] for g in SAME for q in g}
+# v5: the library replaces the source list above (it was built from it); a piece of work = one library entry
+LIBJ = json.load(open(OUT + '/library.json'))
+SRC = [(a['p'], a['l'], a['path'], a['mode']) for a in LIBJ['assets'] if a['mode'] != 'palette']
+AID = {a['path']: i for i, a in enumerate(LIBJ['assets'])}
+AID.update({'palette:' + a['p']: i for i, a in enumerate(LIBJ['assets']) if a['mode'] == 'palette'})
+PIECE = {}
 DARK, LIGHT, NIGHT = (16, 12, 30), (240, 238, 246), (34, 21, 66)   # NIGHT: the backdrop gradient behind Dave
 
 def on_bg(im, col):
@@ -350,6 +359,7 @@ for p, label, path, mode in SRC:
   for t in tiles_of(path, mode, p): tiles.append((p, label, t, PIECE.get(path, path)))
 for p in PAL_SRC:
   for t in swatches(palette_of(p)): tiles.append((p, 'colour palette', t, 'palette:' + p))
+assert not missing, missing
 print('sources', len(SRC) - len(missing), 'missing', missing, 'tiles', len(tiles), 'mostly-empty dropped', dropped)
 # near-duplicates (same art from another file or size, overlapping crops) are dropped: 8x8 colour signature distance
 sig = np.array([np.asarray(t[2].resize((16, 16), Image.BILINEAR), dtype=np.float32).ravel() / 255 for t in tiles])   # v4: 16x16, only true duplicates go
@@ -475,7 +485,7 @@ def layout(N, base_cols, min_div, seed):
   return res, ua, ub, up, relaxed
 
 
-desk, uad, ubd, upd, rl1 = layout(1400, 22, 4, 7); mob, uam, ubm, upm, rl2 = layout(950, 18, 4, 11)
+desk, uad, ubd, upd, rl1 = layout(1100, 20, 4, 7); mob, uam, ubm, upm, rl2 = layout(760, 16, 4, 11)
 print('desktop cells', len(desk), 'mobile cells', len(mob), 'relaxed', rl1, rl2)
 for nm, ua_, ub_, up_ in (('desktop', uad, ubd, upd), ('mobile', uam, ubm, upm)):
   print(nm, 'tiles at rest', int((ua_ > 0).sum()), 'tiles incl. flips', int(((ua_ + ub_) > 0).sum()), 'max rest use', int(ua_.max()),
@@ -497,8 +507,8 @@ for i, (p, label, t, _) in enumerate(tiles):
 atlas.save(OUT + '/atlas.webp', 'WEBP', quality=76, method=6)
 hi.save(OUT + '/atlas-hi.webp', 'WEBP', quality=66, method=6)
 print('atlas kB', os.path.getsize(OUT + '/atlas.webp') // 1024, atlas.size, 'hi kB', os.path.getsize(OUT + '/atlas-hi.webp') // 1024, hi.size)
-json.dump({'v': 3, 'cols': COLS, 'aspect': PH / PW, 'lo': [atlas.width, atlas.height, LO_SLOT, LO_PAD], 'hi': [hi.width, hi.height, HI_SLOT, HI_PAD],
+json.dump({'v': 5, 'cols': COLS, 'aspect': PH / PW, 'lo': [atlas.width, atlas.height, LO_SLOT, LO_PAD], 'hi': [hi.width, hi.height, HI_SLOT, HI_PAD],
            'cap': [CAP_TILE, CAP_ALL, CAP_PIECE], 'products': {k: {'n': v[0], 'h': v[1]} for k, v in PRODUCTS.items()},
-           'tiles': [[m['p'], m['l']] + m['m'] for m in meta], 'g': G,
+           'tiles': [[m['p'], m['l']] + m['m'] + [AID[t[3]]] for m, t in zip(meta, tiles)], 'g': G, 'lib': 'library.json',
            'desktop': desk, 'mobile': mob}, open(OUT + '/layout.json', 'w'), separators=(',', ':'), ensure_ascii=False)
 print('layout kB', os.path.getsize(OUT + '/layout.json') // 1024)
