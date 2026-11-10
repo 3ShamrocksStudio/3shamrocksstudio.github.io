@@ -3,6 +3,11 @@
      loops the same window and starts at an offset computed from one shared start time, so they never drift. Zones change
      the MIX (gain ramps that begin on the next bar); a product in focus swaps the melody stem with a fade that starts ~0.6 s before the next bar line
      while the bed keeps grooving. Product melody stems are fetched and decoded only once the portfolio is reached.
+   - Score v5 story mode (`story: true`): zones are ordered STEPS of one arc (hero drums -> +bass -> +guitar -> ...). A step is
+     reached when its anchor (`scroll`: that fraction of a viewport scrolled; `sel`+`at`: that point of the element crossing
+     mid-screen) is passed; thresholds are forced to rise in config order, so layers only ever add going down and drop going
+     up. Section progress is watched with IntersectionObserver (+ a light scroll check); gain changes start on the next bar
+     with `xfade` s ramps. `stems.fill` = a one-bar drum fill played once when the music starts, the groove lands after it.
    - Score v2 (product pages, one file per zone): unchanged behaviour below.
    - Sound is ON by default unless the visitor turned it off before (remembered across studio pages, try/catch).
    - Browsers block audible autoplay: one AudioContext is created on load (only when sound is on) and resume() is
@@ -31,13 +36,15 @@
     var zones = o.zones, zi = 0, prod = null, desired = null, tracks = {}, bufs = {}, loading = {}, cur = null, switches = 0;
     var sprites = [], cueMap = {}, lastAt = {}, voices = 0, hintEl = null;
     var products = o.products || null;
-    var ST = o.stems || null, stems = {}, t0 = null, melCur = null, starting = false, focused = null;
+    var ST = o.stems || null, stems = {}, t0 = null, melCur = null, starting = false, focused = null, fills = 0;
     W.__s3score = { active: function () { return cur; }, zone: function () { return zones[zi] && zones[zi].id; }, ctx: function () { return ctx ? ctx.state : 'none'; },
                     loaded: function () { return Object.keys(bufs); }, switches: function () { return switches; }, playing: function () { return playing; }, on: function () { return on; } };
     if (ST) {
       W.__s3score.melody = function () { return melCur; };
       W.__s3score.t0 = function () { return t0; };
       W.__s3score.time = function () { return ctx ? ctx.currentTime : 0; };
+      W.__s3score.layers = function () { return ST.beds.filter(function (b) { return stems[b] && stems[b].tg > 0; }).concat(melCur && stems[melCur] && stems[melCur].tg > 0 ? [melCur] : []); };
+      W.__s3score.fills = function () { return fills; };
       W.__s3score.stems = function () {
         var r = {}; Object.keys(stems).forEach(function (k) { var x = stems[k]; r[k] = { playing: !!x.s, gain: x.g ? Math.round(x.g.gain.value * 1000) / 1000 : 0, target: x.tg }; }); return r;
       };
@@ -80,7 +87,7 @@
     function begin() {
       if (playing || !on || !ctx || ctx.state !== 'running') return;
       playing = true; lsSet(HINT, '1'); hint(false);
-      var t = ctx.currentTime; mBus.gain.cancelScheduledValues(0); mBus.gain.setValueAtTime(0, t); mBus.gain.linearRampToValueAtTime(MG, t + 1.5);
+      var t = ctx.currentTime; mBus.gain.cancelScheduledValues(0); mBus.gain.setValueAtTime(0, t); mBus.gain.linearRampToValueAtTime(MG, t + (ST && ST.fill ? 0.1 : 1.5));
       loadSprites(); go(true);
     }
     function go(first) {
@@ -168,9 +175,15 @@
         if (starting) return; starting = true;
         var need = (ST.core || ['keys', 'bass', 'drums']).filter(function (k) { return w.want[k] > 0; });
         if (!need.length) need = keys.filter(function (k) { return w.want[k] > 0; });
+        if (ST.fill) need = need.concat([ST.fill]);
         Promise.all(need.map(loadStem)).then(function () {
           starting = false; if (!playing) return;
-          var ww = wantStems(); t0 = ctx.currentTime + 0.08;
+          var ww = wantStems(), fb = ST.fill && bufs[ST.fill], tf = ctx.currentTime + 0.08; t0 = fb ? tf + ST.bar : tf;
+          if (fb) { /* the fill leads into the groove's first downbeat, at the level the drums will have */
+            var fg = ctx.createGain(), fs = ctx.createBufferSource(); fg.gain.value = ww.want.drums || (zones[zi].mix || {}).drums || 1;
+            fs.buffer = fb; fs.connect(fg); fg.connect(mBus); fs.start(tf); fills++;
+            fs.onended = function () { try { fg.disconnect(); } catch (e) { /* ignore */ } };
+          }
           Object.keys(ww.want).forEach(function (k) { var x = stemOf(k); x.tg = ww.want[k]; if (x.tg > 0 && bufs[k]) { startStem(k, t0); ramp(x, t0, 0.05, x.tg); } });
           cur = ww.name; melCur = ww.mel; prefetchStems();
           goStems(false); /* anything that changed (or failed) while loading */
@@ -206,7 +219,37 @@
       cur = null; setTimeout(function () { if (!playing && ctx && ctx.state === 'running') ctx.suspend(); }, 800);
     }
     /* ---------- zones in view ---------- */
-    if (zones.length > 1 && W.IntersectionObserver) {
+    if (o.story && zones.length > 1) {
+      var sEls = zones.map(function (z) { return z.sel ? D.querySelector(z.sel) : null; }), spend = 0, slast = 0;
+      var storyPick = function () {
+        var vh = W.innerHeight || 1, y = W.pageYOffset || D.documentElement.scrollTop || 0, prev = -1e9, best = 0;
+        var bottom = y + vh >= (D.documentElement.scrollHeight || D.body.scrollHeight) - 4;
+        zones.forEach(function (z, i) {
+          var t = z.scroll !== undefined ? z.scroll * vh : -1e9, el = sEls[i];
+          if (z.sel) { if (!el) return; var r = el.getBoundingClientRect(); t = Math.max(t, y + r.top + (z.at || 0) * r.height - vh * (o.line || 0.5)); }
+          t = Math.max(t, prev + 1); prev = t;
+          if (t <= y || bottom) best = i;
+        });
+        return best;
+      };
+      var storyGo = function () {
+        var i = storyPick(); if (i === zi) return;
+        zi = i; if (!(products && zones[i].id === products.zone)) prod = null; else if (!prod && focused) prod = focused();
+        arrive(); go();
+      };
+      var storyKick = function () { /* throttled: at most one check per `debounce` ms while scrolling, plus one after it stops */
+        if (spend) return; var gap = o.debounce || 150, wait = Math.max(0, gap - (Date.now() - slast));
+        spend = setTimeout(function () { spend = 0; slast = Date.now(); storyGo(); }, wait);
+      };
+      if (W.IntersectionObserver) {
+        var th = []; for (var q = 0; q <= 20; q++) th.push(q / 20);
+        var sio = new IntersectionObserver(storyKick, { threshold: th });
+        sEls.forEach(function (el) { if (el) sio.observe(el); });
+      }
+      W.addEventListener('scroll', storyKick, { passive: true });
+      W.addEventListener('resize', storyKick, { passive: true });
+      zi = storyPick();
+    } else if (zones.length > 1 && W.IntersectionObserver) {
       var els = zones.map(function (z) { return z.sel ? D.querySelector(z.sel) : null; }), hit = {}, deb = 0;
       function pick() { var best = -1; els.forEach(function (el, i) { if (hit[i]) best = i; }); return best; }
       function settle() { clearTimeout(deb); deb = setTimeout(function () { var i = pick(); if (i >= 0 && i !== zi) { zi = i; if (!(products && zones[i].id === products.zone)) prod = null; else if (!prod && focused) prod = focused(); arrive(); go(); } }, o.debounce || 600); }
