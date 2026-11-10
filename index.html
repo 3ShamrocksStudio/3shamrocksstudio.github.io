@@ -1360,26 +1360,65 @@ document.querySelectorAll('.phone').forEach(ph=>{ph.addEventListener('pointermov
 (function(){
   var btn=document.getElementById('snd'), lbl=document.getElementById('snd-label'), built=false, playing=false;
   function build(){
-    var reverb=new Tone.Reverb({decay:7,wet:0.42}).toDestination();
-    var master=new Tone.Volume(-15).connect(reverb);
-    var pad=new Tone.PolySynth(Tone.FMSynth,{harmonicity:1.4,modulationIndex:2.5,envelope:{attack:1.4,decay:0.3,sustain:0.7,release:3.5},volume:-9}).connect(master);
-    var pluck=new Tone.Synth({oscillator:{type:'triangle'},envelope:{attack:0.004,decay:0.35,sustain:0.08,release:0.5},volume:-15}).connect(master);
-    var bass=new Tone.Synth({oscillator:{type:'sine'},envelope:{attack:0.06,decay:0.2,sustain:0.6,release:0.7},volume:-11}).connect(master);
-    var chords=[['A3','C4','E4','G4'],['F3','A3','C4','E4'],['D3','F3','A3','C4'],['E3','G3','B3','D4']];
-    var bassN=['A1','F1','D1','E1'];
-    var bar=0, cur=chords[0], ai=0;
-    Tone.Transport.bpm.value=72;
-    new Tone.Loop(function(time){ cur=chords[bar%4]; pad.triggerAttackRelease(cur,'1m',time); bass.triggerAttackRelease(bassN[bar%4],'2n',time); bar++; },'1m').start(0);
-    new Tone.Loop(function(time){ var n=cur[ai%cur.length]; pluck.triggerAttackRelease(Tone.Frequency(n).transpose(12),'8n',time); ai++; },'4n').start('0:0:2');
+    var reverb=new Tone.Reverb({decay:2.6,wet:0.18}).toDestination();
+    var master=new Tone.Volume(-9).connect(reverb);
+    var delay=new Tone.FeedbackDelay("8n.",0.22); delay.wet.value=0.22; delay.connect(master);
+
+    // voices
+    var lead=new Tone.Synth({oscillator:{type:"square"},envelope:{attack:0.008,decay:0.16,sustain:0.25,release:0.18},volume:-13}).connect(delay);
+    var harm=new Tone.Synth({oscillator:{type:"triangle"},envelope:{attack:0.01,decay:0.2,sustain:0.2,release:0.2},volume:-22}).connect(delay);
+    var bass=new Tone.MonoSynth({oscillator:{type:"sawtooth"},envelope:{attack:0.01,decay:0.18,sustain:0.45,release:0.2},filterEnvelope:{attack:0.02,decay:0.2,baseFrequency:120,octaves:2.6},volume:-11}).connect(master);
+    var pad=new Tone.PolySynth(Tone.Synth,{oscillator:{type:"triangle"},envelope:{attack:0.7,decay:0.4,sustain:0.6,release:1.6},volume:-20}).connect(reverb);
+    var kick=new Tone.MembraneSynth({pitchDecay:0.03,octaves:5,envelope:{attack:0.001,decay:0.28,sustain:0},volume:-6}).connect(master);
+    var snare=new Tone.NoiseSynth({noise:{type:"white"},envelope:{attack:0.001,decay:0.14,sustain:0},volume:-16}).connect(master);
+    var hat=new Tone.NoiseSynth({noise:{type:"white"},envelope:{attack:0.001,decay:0.035,sustain:0},volume:-26});
+    hat.connect(new Tone.Filter(8000,"highpass").connect(master));
+
+    var prog=["A","F","C","G","A","F","D","E"];
+    var fifth={A:"E",F:"C",C:"G",G:"D",D:"A",E:"B"};
+    var chord={A:["A3","C4","E4"],F:["F3","A3","C4"],C:["C4","E4","G4"],G:["G3","B3","D4"],D:["D3","F3","A3"],E:["E3","G#3","B3"]};
+
+    // bass (8 eighths per bar): root . root fifth root . fifth root
+    var bassSeq=[]; var bp=[0,null,0,1,0,null,1,0];
+    for(var b=0;b<8;b++){var r=prog[b];for(var s=0;s<8;s++){var t=bp[s];bassSeq.push(t===null?null:((t===0?r:fifth[r])+"1"));}}
+
+    // catchy original lead melody (8 bars x 8 eighths)
+    var lead1=[
+      "E5",null,"A5",null,"G5","E5",null,"D5",
+      "C5",null,"F5",null,"E5",null,"D5","C5",
+      "E5",null,"G5",null,"C6",null,"G5","E5",
+      "D5",null,"G5","F5","G5",null,"D5","B4",
+      "E5",null,"A5",null,"G5","E5",null,"A5",
+      "C5",null,"F5","E5","F5",null,"A5","G5",
+      "F5",null,"D5","F5","A5",null,"G5","F5",
+      "E5",null,"B4","E5","G#5",null,"B5",null
+    ];
+    // soft harmony a third below on a few accents
+    var harm1=lead1.map(function(n,i){ return (n && i%4===2)? Tone.Frequency(n).transpose(-4).toNote() : null; });
+
+    var kp=[1,0,0,1,1,0,0,0], sp=[0,0,1,0,0,0,1,0], hp=[1,0,1,1,1,0,1,1];
+    var kick8=[],snare8=[],hat8=[];
+    for(var b2=0;b2<8;b2++){for(var s2=0;s2<8;s2++){kick8.push(kp[s2]);snare8.push(sp[s2]);hat8.push(hp[s2]);}}
+
+    new Tone.Sequence(function(t,n){ if(n) lead.triggerAttackRelease(n,"8n",t); }, lead1, "8n").start(0);
+    new Tone.Sequence(function(t,n){ if(n) harm.triggerAttackRelease(n,"8n",t); }, harm1, "8n").start(0);
+    new Tone.Sequence(function(t,n){ if(n) bass.triggerAttackRelease(n,"8n",t); }, bassSeq, "8n").start(0);
+    new Tone.Sequence(function(t,v){ if(v) kick.triggerAttackRelease("C1","8n",t); }, kick8, "8n").start(0);
+    new Tone.Sequence(function(t,v){ if(v) snare.triggerAttackRelease("16n",t); }, snare8, "8n").start(0);
+    new Tone.Sequence(function(t,v){ if(v) hat.triggerAttackRelease("32n",t); }, hat8, "8n").start(0);
+    var barI=0;
+    new Tone.Loop(function(t){ pad.triggerAttackRelease(chord[prog[barI%8]],"1m",t); barI++; },"1m").start(0);
+
+    Tone.Transport.bpm.value=112;
     built=true;
   }
-  if(btn) btn.addEventListener('click', async function(){
+  if(btn) btn.addEventListener("click", async function(){
     try{
-      if(typeof Tone==='undefined') return;
+      if(typeof Tone==="undefined") return;
       if(!built){ await Tone.start(); build(); }
       playing=!playing;
-      if(playing){ Tone.Transport.start(); btn.classList.add('on'); lbl.textContent='Sound on'; }
-      else { Tone.Transport.pause(); btn.classList.remove('on'); lbl.textContent='Sound off'; }
+      if(playing){ Tone.Transport.start(); btn.classList.add("on"); lbl.textContent="Sound on"; }
+      else { Tone.Transport.pause(); btn.classList.remove("on"); lbl.textContent="Sound off"; }
     }catch(e){}
   });
 })();
