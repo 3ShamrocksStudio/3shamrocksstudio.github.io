@@ -1173,7 +1173,8 @@ function onScroll(){const h=document.documentElement.scrollHeight-innerHeight;ba
 addEventListener('scroll',onScroll,{passive:true});onScroll();
 
 /* cursor */
-if(FINE&&!RM){document.documentElement.classList.add('has-cursor');const c=$('#cursor');let cx=ptr.x,cy=ptr.y;
+if(FINE&&!RM){const c=$('#cursor');let cx=ptr.x,cy=ptr.y;
+  addEventListener('pointermove',function first(e){if(e.pointerType!=='mouse'&&e.pointerType!=='pen')return;cx=e.clientX;cy=e.clientY;document.documentElement.classList.add('has-cursor');removeEventListener('pointermove',first)},{passive:true}); /* no dot until the mouse moves */
   (function loop(){cx+=(ptr.x-cx)*.3;cy+=(ptr.y-cy)*.3;c.style.transform='translate('+cx+'px,'+cy+'px)';requestAnimationFrame(loop)})();
   document.addEventListener('pointerover',e=>c.classList.toggle('hot',!!e.target.closest('a,button,[role=button],.dev')));
   document.addEventListener('mouseleave',()=>c.style.opacity=0);document.addEventListener('mouseenter',()=>c.style.opacity='');}
