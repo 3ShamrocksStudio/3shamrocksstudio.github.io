@@ -17,7 +17,7 @@
     'trashure-hunters': { bg: '#16163A', logo: 'assets/work/trashure-hunters/brand/logo-th26.webp', lw: 'min(40vmin,280px)', lv: 760, ar: 820 },
     'chore-royale':     { bg: '#1A0B3B', logo: 'assets/brand-v3/chore-royale/logo-stacked-600.webp', lw: 'min(42vmin,290px)', lv: 800, ar: 1500 },
     'fairent':          { bg: '#53D805', logo: 'assets/brand-v3/fairent/logo-on-green.webp', lw: 'min(38vmin,260px)', lv: 700, ar: 760 },
-    'milo':             { bg: '#FBE6C8', logo: 'assets/brand-v3/milo/logo-stacked.webp', lw: 'min(34vmin,230px)', lv: 860, ar: 900 },
+    'milo':             { bg: '#1A023B', logo: 'assets/work/milo/milo-v2-calm-face.webp?v=nc1', lw: 'min(34vmin,230px)', lv: 860, ar: 900 },
     'rk':               { bg: '#06133F', logo: 'assets/brand-v3/rk/logo-stacked.png', lw: 'min(30vmin,210px)', lv: 760, ar: 920 },
     'concepts':         { bg: '#1a023c', logo: '', lw: '0', lv: 760, ar: 920 },
     'healthtech':       { bg: '#0d3a9a', logo: 'assets/studio/marks/vibrant-white.png', lw: 'min(56vmin,360px)', lv: 740, ar: 800 }
@@ -117,8 +117,8 @@
     /* Milo: soft bubbles bloom in caramel, honey, blush and cream, like a breath */
     '.bt-milo .b{display:none}',
     '.bt-milo .u{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);border-radius:50%;background:var(--k)}',
-    '.bt-milo .u.z{--x:50%;--y:50%;--s:260vmax;--k:radial-gradient(closest-side,#FFFFFF,#FBF3E8 30%,#FBE6C8 60%)}',
-    '.bt-milo .c img{filter:drop-shadow(0 14px 22px rgba(201,106,43,.25))}',
+    '.bt-milo .u.z{--x:50%;--y:50%;--s:260vmax;--k:radial-gradient(closest-side,#3a0f72,#2a0a55 30%,#1A023B 60%)}',
+    '.bt-milo .c img{border-radius:50%;box-shadow:0 0 0 3px #1CBCF5,0 0 0 10px rgba(244,42,146,.25);filter:drop-shadow(0 14px 22px rgba(229,39,200,.35))}',
     '.lv.bt-milo .u{animation:btBloom .56s cubic-bezier(.35,0,.25,1) var(--w)}',
     '.lv.bt-milo .u.z{animation:btBloom .5s cubic-bezier(.4,0,.2,1) .3s}',
     '.lv.bt-milo .c img{animation:btBreath .4s ease-out .46s}',
@@ -181,7 +181,7 @@
     if (k === 'trashure-hunters') h += '<i class="p"></i>';
     if (k === 'fairent') h += '<i class="h l"></i><i class="h r"></i>';
     if (k === 'milo') {
-      [['30%', '38%', '46vmin', '#F2B544', 0], ['70%', '60%', '54vmin', '#E58A3C', .06], ['58%', '26%', '34vmin', '#F49A84', .12], ['38%', '72%', '40vmin', '#A8D8C2', .16]].forEach(function (u) {
+      [['30%', '38%', '46vmin', '#6C31B5', 0], ['70%', '60%', '54vmin', '#F42A92', .06], ['58%', '26%', '34vmin', '#1CBCF5', .12], ['38%', '72%', '40vmin', '#E527C8', .16]].forEach(function (u) {
         h += '<i class="u" style="--x:' + u[0] + ';--y:' + u[1] + ';--s:' + u[2] + ';--k:' + u[3] + ';--w:' + u[4] + 's"></i>';
       });
       h += '<i class="u z"></i>';
