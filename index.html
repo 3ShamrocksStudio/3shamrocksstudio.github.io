@@ -1039,7 +1039,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
         <h2 class="reveal">Product and brand leadership in HealthTech.</h2>
         <p class="lede reveal">In-house roles inside two medical companies, where I led the brand and the product experience.</p>
       </div>
-      <span class="hint reveal"><svg><use href="#i-app"/></svg><span><span class="h-fine">Hover a device to switch it on</span><span class="h-touch">Tap a screen to switch it on</span></span></span>
+      <span class="hint reveal"><svg><use href="#i-app"/></svg><span><span class="h-fine">Hover a device to switch it on</span><span class="h-touch">Tap a screen to switch it on, tap again for the gallery</span></span></span>
     </div>
     <div class="hw">
       <div class="hw-item hw-ap reveal" tabindex="0" role="button" aria-haspopup="dialog" data-gallery="assets/work/aposhealth/screen-1.png,assets/work/aposhealth/screen-2.png,assets/work/aposhealth/screen-3.png,assets/work/aposhealth/screen-4.png,assets/work/aposhealth/screen-5.png,assets/work/aposhealth/screen-6.png" data-title="AposHealth" aria-label="AposHealth: brand and product marketing. Open the gallery">
@@ -1242,7 +1242,7 @@ devs.forEach(d=>{
 (function(){
   const track=$('#work .devices');if(!track)return;const mq=matchMedia('(max-width:700px)');
   const dots=document.createElement('div');dots.className='car-dots';dots.setAttribute('aria-hidden','true');
-  let base=[],list=[],cur=-1,curDev=null,raf=0,settle=0,lastX=0;
+  let base=[],list=[],cur=-1,curDev=null,raf=0,settle=0,lastX=0,fresh=true;
   function build(){devs.forEach(d=>d.style.order='');
     base=devs.slice().sort((a,b)=>(+getComputedStyle(a).order||0)-(+getComputedStyle(b).order||0)||devs.indexOf(a)-devs.indexOf(b));list=base.slice();
     dots.innerHTML='';base.forEach(d=>{const b=document.createElement('button');b.tabIndex=-1;b.style.setProperty('--c',(d.style.getPropertyValue('--glow')||'rgba(176,124,255,.9)').replace(/[\d.]+\)$/,'1)'));b.addEventListener('click',()=>center(d));dots.appendChild(b)})}
@@ -1258,12 +1258,13 @@ devs.forEach(d=>{
       d.style.opacity=(.42+.58*k).toFixed(3)});
     cur=best;const d=list[cur];
     if(d!==curDev){const was=curDev;curDev=d;if(was)document.dispatchEvent(new CustomEvent('s3:sfx',{detail:'swipe'}));list.forEach(x=>x.classList.toggle('cur',x===d));[...dots.children].forEach((b,i)=>b.classList.toggle('on',base[i]===d))}
-    clearTimeout(settle);settle=setTimeout(()=>{const d=list[cur];if(!d)return;if(cur!==Math.floor(list.length/2)){arrange(d);frame()}if(!d.classList.contains('on'))d._on()},140);
+    clearTimeout(settle);settle=setTimeout(()=>{const d=list[cur];if(!d)return;if(cur)fresh=false;if(!fresh&&cur!==Math.floor(list.length/2)){arrange(d);frame()}if(!d.classList.contains('on'))d._on()},140);
     lastX=track.scrollLeft}
   const onScroll=()=>{if(!raf)raf=requestAnimationFrame(frame)};
   function tap(e){if(!mq.matches)return;const d=e.target.closest('.dev');if(!d)return;if(list.indexOf(d)!==cur){e.preventDefault();e.stopImmediatePropagation();center(d)}}
   function enable(){build();track.after(dots);track.addEventListener('scroll',onScroll,{passive:true});track.addEventListener('click',tap,true);addEventListener('resize',onScroll);
-    requestAnimationFrame(()=>{arrange(base[0]);center(base[0],true);frame()})}
+    /* first view: SH✡MER fully centred with only the next product peeking on the right; the ring wraps once the visitor swipes */
+    fresh=true;requestAnimationFrame(()=>{list=base.slice();list.forEach((x,i)=>x.style.order=i);center(base[0],true);cur=0;frame()})}
   function disable(){track.removeEventListener('scroll',onScroll);track.removeEventListener('click',tap,true);removeEventListener('resize',onScroll);dots.remove();cur=-1;curDev=null;clearTimeout(settle);
     devs.forEach(d=>{d.style.transform='';d.style.opacity='';d.style.order='';d.classList.remove('cur','bump');d._off&&d._off()})}
   if(mq.matches)enable();mq.addEventListener('change',()=>mq.matches?enable():disable());
@@ -1297,7 +1298,9 @@ $$('.hw-item').forEach(it=>{
   const stop=()=>{on=false;it.classList.remove('on');ds.forEach(d=>d.classList.remove('on'));pl.forEach(([m,p])=>p.stop())};
   it.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')go()});it.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')stop()});
   it.addEventListener('focus',()=>{if(it.matches(':focus-visible'))go()});it.addEventListener('blur',stop);
-  it.addEventListener('click',()=>{if(it.dataset.gallery)openLb(it)});
+  /* touch: the first tap switches the devices on and plays the real screens; a second tap opens the gallery */
+  let pt='';it.addEventListener('pointerdown',e=>{pt=e.pointerType});
+  it.addEventListener('click',()=>{const touch=pt?pt!=='mouse':!FINE;pt='';if(touch&&!on){$$('.hw-item.on').forEach(o=>o!==it&&o.blur());go();return}if(it.dataset.gallery)openLb(it)});
   it.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&it.dataset.gallery){e.preventDefault();openLb(it)}});
 });
 

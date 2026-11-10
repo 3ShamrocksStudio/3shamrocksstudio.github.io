@@ -182,8 +182,15 @@
   });
 
   /* step aside while the contact forest is on screen, so the bubble never covers its text */
-  var ctSec = D.getElementById('contact');
-  if (ctSec && 'IntersectionObserver' in W) new IntersectionObserver(function (es) { bub.classList.toggle('gd-away', es[0].isIntersecting); }, { rootMargin: '0px 0px -20% 0px' }).observe(ctSec);
+  /* same for the portfolio (#work) and in-house devices (#experience), so it never covers a device screen */
+  var awaySecs = ['work', 'experience', 'contact'].map(function (id) { return D.getElementById(id); }).filter(Boolean), awayVis = new Set();
+  if (awaySecs.length && 'IntersectionObserver' in W) {
+    var awayIo = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) awayVis.add(e.target); else awayVis.delete(e.target); });
+      bub.classList.toggle('gd-away', awayVis.size > 0);
+    }, { rootMargin: '0px 0px -20% 0px' });
+    awaySecs.forEach(function (s) { awayIo.observe(s); });
+  }
   var shown = false, timer = 0;
   function reveal() {
     if (shown) return; shown = true; clearTimeout(timer); removeEventListener('scroll', depth);
