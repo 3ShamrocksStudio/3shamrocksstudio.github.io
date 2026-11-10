@@ -295,66 +295,6 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
   .car-dots button.on{width:26px;background:var(--c)}
 }
 @media(min-width:701px){.car-dots{display:none}}
-/* PORTFOLIO BENTO (Dave, 10 Nov): every product in its own brand colour; each screen opens in its brand's own way */
-.tile{position:relative;isolation:isolate;overflow:hidden;background:var(--tb);border-radius:28px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 34px 70px -38px rgba(0,0,0,.9);transition:transform .5s var(--ease),box-shadow .5s var(--ease);outline-offset:4px}
-.tile::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(90% 55% at 18% 0%,rgba(255,255,255,.24),transparent 62%),radial-gradient(80% 60% at 100% 100%,rgba(0,0,0,.16),transparent 70%)}
-.tile .shade{background:radial-gradient(closest-side,rgba(0,0,0,.34),transparent);margin-top:20px}
-.tile .ph{box-shadow:inset 0 0 0 .6px rgba(255,255,255,.55),inset 0 0 0 1.6px rgba(0,0,0,.55),0 1px 1px rgba(0,0,0,.9),0 28px 46px -20px rgba(0,0,0,.7)}
-.tile .cap{min-height:0;margin-top:12px}
-.tile .cap b{color:var(--tk);font-size:18px}
-.tile .cap small{color:var(--ts);font-weight:600}
-.tile .cap .go{color:var(--tg)}
-.blurb{display:none}
-.t-sh{--tb:radial-gradient(120% 90% at 30% 8%,#1f3566,#0A1628 55%,#060F1E);--tk:#fff;--ts:#c3cde2;--tg:#E0A828;box-shadow:inset 0 0 0 1px rgba(224,168,40,.38),0 34px 70px -38px rgba(0,0,0,.9)}
-.t-lp{--tb:linear-gradient(150deg,#FFF04D,#FFE600 50%,#F5D400);--tk:#07060B;--ts:rgba(7,6,11,.7);--tg:#d81670}
-.t-th{--tb:linear-gradient(160deg,#FFA04A,#FF7A12 55%,#FF6C00);--tk:#16163A;--ts:rgba(22,22,58,.78);--tg:#16163A}
-.t-cr{--tb:linear-gradient(155deg,#3FE0CB,#14C2B0 50%,#0EA79F);--tk:#10233A;--ts:rgba(16,35,58,.76);--tg:#10233A}
-.t-fr{--tb:linear-gradient(155deg,#6EE628,#53D805 55%,#46C000);--tk:#1c0560;--ts:rgba(49,10,145,.82);--tg:#310A91}
-.t-mi{--tb:linear-gradient(150deg,#F2A25C,#E58A3C 50%,#D27530);--tk:#3A281F;--ts:rgba(58,40,31,.82);--tg:#3A281F}
-.t-rk{--tb:radial-gradient(120% 90% at 25% 0%,#4a7dff,#1F5BFF 45%,#0F2D7E);--tk:#fff;--ts:#dbe5ff;--tg:#fff}
-/* brand-own "screens opening": radar, fader, treasure pop, card flip, mirror split, a breath */
-@keyframes oSh{from{clip-path:circle(0% at 50% 40%);filter:brightness(1.5)}to{clip-path:circle(125% at 50% 40%);filter:none}}
-@keyframes oLp{0%{clip-path:inset(100% 0 0 0)}62%{clip-path:inset(0 0 0 0);transform:none}78%{transform:scaleY(1.03)}100%{transform:none}}
-@keyframes oTh{from{opacity:0;transform:scale(1.16) rotate(-4deg);filter:saturate(1.8) blur(3px)}to{opacity:1;transform:none;filter:none}}
-@keyframes oCr{from{transform:perspective(520px) rotateY(78deg);filter:brightness(1.35)}to{transform:none;filter:none}}
-@keyframes oFr{from{clip-path:inset(0 50% 0 50%)}to{clip-path:inset(0 0 0 0)}}
-@keyframes oMi{0%{opacity:0;transform:scale(.93)}60%{opacity:1;transform:scale(1.015)}100%{transform:none}}
-.tile.t-sh.on .media{animation:oSh .6s cubic-bezier(.2,.7,.2,1)}
-.tile.t-lp.on .media{transform-origin:50% 100%;animation:oLp .55s cubic-bezier(.3,.7,.2,1)}
-.tile.t-th.on .media{animation:oTh .55s cubic-bezier(.2,.8,.2,1.15)}
-.tile.t-cr.on .media{transform-origin:50% 50%;animation:oCr .55s cubic-bezier(.2,.8,.25,1)}
-.tile.t-fr.on .media{animation:oFr .5s cubic-bezier(.6,0,.2,1)}
-.tile.t-mi.on .media{animation:oMi .9s ease-in-out}
-@media (prefers-reduced-motion:reduce){.tile.on .media{animation:none}}
-@media(min-width:701px){
-  .bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;padding-bottom:16px}
-  .bento .tile{--pw:clamp(118px,10.6vw,150px);padding:34px 24px 24px;align-items:center}
-  .bento .tile .cap{align-self:stretch;text-align:left}
-  .bento .tl-big{grid-column:span 2;grid-row:span 2;--pw:clamp(180px,18vw,262px);padding:56px 40px 36px;justify-content:space-between}
-  .bento .tl-big .rig,.bento .tl-big .shade{margin-top:auto}
-  .bento .tl-wide{grid-column:span 2;flex-direction:row;align-items:center;gap:24px;padding:30px 48px 26px 40px}
-  .bento .tl-wide .cap{order:-1;flex:1;align-self:center;margin:0}
-  .bento .tl-wide .shade{position:absolute;right:48px;bottom:14px;width:var(--pw);margin:0}
-  .bento .tl-big .blurb,.bento .tl-wide .blurb{display:block;margin-top:12px;max-width:40ch;font:500 15px/1.55 var(--font-b);color:var(--ts)}
-  .bento .tl-big .cap b,.bento .tl-wide .cap b{font-size:24px}
-  .bento .tile .go{opacity:1;transform:none;margin-top:12px}
-}
-@media(hover:hover) and (min-width:701px){.bento .tile:hover,.bento .tile.on{transform:translateY(-4px)}}
-@media(min-width:701px) and (max-width:1060px){
-  .bento{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-  .bento .tile{--pw:clamp(120px,18vw,160px)}
-  .bento .tl-big{grid-row:span 1;flex-direction:row;align-items:center;gap:24px;--pw:clamp(130px,20vw,170px);padding:30px 40px 26px 36px}
-  .bento .tl-big .cap{order:-1;flex:1;align-self:center;margin:0}
-  .bento .tl-big .rig{margin-top:0}
-  .bento .tl-big .shade{position:absolute;right:40px;bottom:14px;width:var(--pw);margin:0}
-  .bento .tl-wide{padding:30px 40px 26px 36px}.bento .tl-wide .shade{right:40px}
-}
-@media(max-width:700px){
-  .bento{--cw:min(250px,68vw)}
-  .bento .tile{--pw:calc(var(--cw) - 84px);padding:28px 16px 18px;border-radius:24px;margin-inline:7px}
-  .bento .tile .shade{margin-top:14px}
-}
-
 /* BRAND SHOWCASE: one 3SDS sheet per brand, each in its own identity */
 .ident-head{margin-bottom:40px}
 /* brand deck: big flip cards. Tap a brand: it flips (levels up) to show its type, palette and one-line idea, and opens its sheet */
@@ -873,16 +813,17 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
       <span class="hint reveal"><svg><use href="#i-app"/></svg><span><span class="h-fine">Hover a device to switch it on</span><span class="h-touch">Tap a screen to switch it on, tap again to open</span></span></span>
     </div>
 
-    <div class="devices bento">
-      <a class="dev tile t-sh tl-big" href="work/shomer.html" data-shots="assets/work/shomer/app-map.webp,assets/work/shomer/app-route.webp,assets/work/shomer/app-circles.webp" style="--o:1;--d:-0.4s;--glow:rgba(224,168,40,.6)">
+    <div class="devices">
+      <div class="row">
+        <a class="dev" href="work/shomer.html" data-shots="assets/work/shomer/app-map.webp,assets/work/shomer/app-route.webp,assets/work/shomer/app-circles.webp" style="--o:1;--d:-0.4s;--glow:rgba(224,168,40,.6)">
           <div class="rig"><div class="ph"><div class="bez"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(120% 70% at 50% 30%,#243460,#0A1628 60%,#060F1E)"><img src="assets/studio/logos/shomer.png" alt="SH&#10017;MER badge" style="--lw2:62%" loading="lazy"></div>
             <div class="media"></div>
             <i class="glare"></i></div></div></div></div>
           <span class="shade"></span>
-          <span class="cap"><b>SH&#10017;MER</b><small>Community safety</small><span class="blurb">Citizens for citizens. One tap sends an SOS with your live location to the people you trust and to users nearby.</span><span class="go">Open &rsaquo;</span></span>
+          <span class="cap"><b>SH&#10017;MER</b><small>Community safety</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <a class="dev tile t-lp" href="work/lickpick.html" data-shots="assets/studio/s9/lp-pick.webp,assets/studio/s9/lp-home-m.webp,assets/studio/s9/lp-home.webp" style="--o:2;--d:-2.8s;--glow:rgba(255,46,136,.6)">
+        <a class="dev" href="work/lickpick.html" data-shots="assets/studio/s9/lp-pick.webp,assets/studio/s9/lp-home-m.webp,assets/studio/s9/lp-home.webp" style="--o:2;--d:-2.8s;--glow:rgba(255,46,136,.6)">
           <div class="rig"><div class="ph"><div class="bez"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(100% 65% at 50% 38%,#ff5aa2,#FF2E88 55%,#d81670)"><img src="assets/studio/logos/lickpick.png" alt="LickPick mark" style="--lw2:50%" loading="lazy"></div>
             <div class="media"></div>
@@ -890,7 +831,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
           <span class="shade"></span>
           <span class="cap"><b>LickPick</b><small>Music</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <a class="dev tile t-th" href="work/trashure-hunters.html" data-shots="assets/studio/s9/th-map-earth.webp,assets/studio/s9/th-found.webp,assets/studio/s9/th-reveal.webp" style="--o:3;--d:-5.2s;--glow:rgba(255,108,0,.6)">
+        <a class="dev" href="work/trashure-hunters.html" data-shots="assets/studio/s9/th-map-earth.webp,assets/studio/s9/th-found.webp,assets/studio/s9/th-reveal.webp" style="--o:3;--d:-5.2s;--glow:rgba(255,108,0,.6)">
           <div class="rig"><div class="ph"><div class="bez"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(120% 80% at 50% 36%,#2e2e7a,#16163A 55%,#0A0A2E)"><img src="assets/work/trashure-hunters/brand/logo-th26.webp" alt="Trashure-Hunters logo: the monster above the game name" style="--lw2:84%;max-height:56%" loading="lazy"></div>
             <div class="media"></div>
@@ -898,7 +839,9 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
           <span class="shade"></span>
           <span class="cap"><b>Trashure-Hunters</b><small>Kids' eco game</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <a class="dev tile t-cr" href="work/chore-royale.html" data-shots="assets/work/chore-royale/hp-arena.webp,assets/work/chore-royale/live-grab.webp,assets/work/chore-royale/live-duel.webp" style="--o:5;--d:-1.6s;--glow:rgba(20,194,176,.6)">
+      </div>
+      <div class="row">
+        <a class="dev" href="work/chore-royale.html" data-shots="assets/work/chore-royale/hp-arena.webp,assets/work/chore-royale/live-grab.webp,assets/work/chore-royale/live-duel.webp" style="--o:5;--d:-1.6s;--glow:rgba(20,194,176,.6)">
           <div class="rig"><div class="ph"><div class="bez"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(110% 70% at 50% 34%,#3FE0CB,#14C2B0 50%,#0B8C93)"><img src="assets/brand-v3/chore-royale/logo-stacked-600.webp" alt="Chore Royale logo" style="--lw2:80%" loading="lazy"></div>
             <div class="media"></div><span class="snap" aria-hidden="true">Sample data</span>
@@ -906,7 +849,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
           <span class="shade"></span>
           <span class="cap"><b>Chore Royale</b><small>Family game</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <a class="dev tile t-fr" href="work/fairent.html" data-shots="assets/work/fairent/hp-home.webp,assets/work/fairent/hp-cmp.webp" style="--o:6;--d:-4s;--glow:rgba(83,216,5,.6)">
+        <a class="dev" href="work/fairent.html" data-shots="assets/work/fairent/hp-home.webp,assets/work/fairent/hp-cmp.webp" style="--o:6;--d:-4s;--glow:rgba(83,216,5,.6)">
           <div class="rig"><div class="ph"><div class="bez"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(110% 70% at 50% 32%,#7BEA3A,#53D805 55%,#43B800)"><img src="assets/brand-v3/fairent/logo-on-green.webp" alt="FaiRent logo on its green brand colour" style="--lw2:70%" loading="lazy"></div>
             <div class="media"></div>
@@ -914,21 +857,22 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
           <span class="shade"></span>
           <span class="cap"><b>FaiRent</b><small>Rent fairness check</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <a class="dev tile t-mi tl-wide" href="work/milo.html" data-shots="assets/work/milo/app-hello.webp,assets/work/milo/app-braver.webp,assets/work/milo/app-breathe.webp" style="--o:4;--d:-3.4s;--glow:rgba(229,138,60,.6)">
+        <a class="dev" href="work/milo.html" data-shots="assets/work/milo/app-hello.webp,assets/work/milo/app-braver.webp,assets/work/milo/app-breathe.webp" style="--o:4;--d:-3.4s;--glow:rgba(229,138,60,.6)">
           <div class="rig"><div class="ph"><div class="bez"><div class="scr">
             <div class="splash" style="--sp:radial-gradient(110% 70% at 50% 34%,#FFFFFF,#FBF3E8 55%,#FBE6C8)"><img src="assets/brand-v3/milo/logo-stacked.webp" alt="Milo logo: the bear in sunglasses above the milo wordmark" style="--lw2:70%;max-height:52%" loading="lazy"></div>
             <div class="media"></div>
             <i class="glare"></i></div></div></div></div>
           <span class="shade"></span>
-          <span class="cap"><b>Milo</b><small>Kids' emotional support</small><span class="blurb">A friend who&rsquo;s got you. Kids aged 6&ndash;12 check in, breathe with Milo, then take one small brave step.</span><span class="go">Open &rsaquo;</span></span>
+          <span class="cap"><b>Milo</b><small>Kids' emotional support</small><span class="go">Open &rsaquo;</span></span>
         </a>
-        <a class="dev tile t-rk tl-wide concept" href="work/rk.html" style="--o:7;--d:-2.2s;--glow:rgba(31,91,255,.6)">
+        <a class="dev concept" href="work/rk.html" style="--o:7;--d:-2.2s;--glow:rgba(31,91,255,.6)">
           <div class="rig"><div class="ph"><div class="bez"><div class="scr">
             <div class="splash cs" style="--sp:radial-gradient(110% 70% at 50% 32%,#12286B,#06133F 60%,#020617)"><img src="assets/brand-v3/rk/logo-stacked.png" alt="Rookie &amp; King logo" style="--lw2:70%" loading="lazy"><i class="ban" style="--b1:#1F5BFF;--b2:#06133F;--bt:#fff;--bf:.078" aria-hidden="true">Concept</i></div>
             <i class="glare"></i></div></div></div></div>
           <span class="shade"></span>
-          <span class="cap"><b>Rookie &amp; King</b><small>Concept &middot; networking game</small><span class="blurb">Professional networking played as a game: one game of chess instead of a cold message.</span><span class="go">Open &rsaquo;</span></span>
+          <span class="cap"><b>Rookie &amp; King</b><small>Concept &middot; networking game</small><span class="go">Open &rsaquo;</span></span>
         </a>
+      </div>
     </div>
   </div>
 </section>
@@ -1242,7 +1186,7 @@ devs.forEach(d=>{
 (function(){
   const track=$('#work .devices');if(!track)return;const mq=matchMedia('(max-width:700px)');
   const dots=document.createElement('div');dots.className='car-dots';dots.setAttribute('aria-hidden','true');
-  let base=[],list=[],cur=-1,curDev=null,raf=0,settle=0,lastX=0,fresh=true;
+  let base=[],list=[],cur=-1,curDev=null,raf=0,settle=0,lastX=0;
   function build(){devs.forEach(d=>d.style.order='');
     base=devs.slice().sort((a,b)=>(+getComputedStyle(a).order||0)-(+getComputedStyle(b).order||0)||devs.indexOf(a)-devs.indexOf(b));list=base.slice();
     dots.innerHTML='';base.forEach(d=>{const b=document.createElement('button');b.tabIndex=-1;b.style.setProperty('--c',(d.style.getPropertyValue('--glow')||'rgba(176,124,255,.9)').replace(/[\d.]+\)$/,'1)'));b.addEventListener('click',()=>center(d));dots.appendChild(b)})}
@@ -1258,13 +1202,12 @@ devs.forEach(d=>{
       d.style.opacity=(.42+.58*k).toFixed(3)});
     cur=best;const d=list[cur];
     if(d!==curDev){const was=curDev;curDev=d;if(was)document.dispatchEvent(new CustomEvent('s3:sfx',{detail:'swipe'}));list.forEach(x=>x.classList.toggle('cur',x===d));[...dots.children].forEach((b,i)=>b.classList.toggle('on',base[i]===d))}
-    clearTimeout(settle);settle=setTimeout(()=>{const d=list[cur];if(!d)return;if(cur)fresh=false;if(!fresh&&cur!==Math.floor(list.length/2)){arrange(d);frame()}if(!d.classList.contains('on'))d._on()},140);
+    clearTimeout(settle);settle=setTimeout(()=>{const d=list[cur];if(!d)return;if(cur!==Math.floor(list.length/2)){arrange(d);frame()}if(!d.classList.contains('on'))d._on()},140);
     lastX=track.scrollLeft}
   const onScroll=()=>{if(!raf)raf=requestAnimationFrame(frame)};
   function tap(e){if(!mq.matches)return;const d=e.target.closest('.dev');if(!d)return;if(list.indexOf(d)!==cur){e.preventDefault();e.stopImmediatePropagation();center(d)}}
   function enable(){build();track.after(dots);track.addEventListener('scroll',onScroll,{passive:true});track.addEventListener('click',tap,true);addEventListener('resize',onScroll);
-    /* first view: SH✡MER fully centred with only the next product peeking on the right; the ring wraps once the visitor swipes */
-    fresh=true;requestAnimationFrame(()=>{list=base.slice();list.forEach((x,i)=>x.style.order=i);center(base[0],true);cur=0;frame()})}
+    requestAnimationFrame(()=>{arrange(base[0]);center(base[0],true);frame()})}
   function disable(){track.removeEventListener('scroll',onScroll);track.removeEventListener('click',tap,true);removeEventListener('resize',onScroll);dots.remove();cur=-1;curDev=null;clearTimeout(settle);
     devs.forEach(d=>{d.style.transform='';d.style.opacity='';d.style.order='';d.classList.remove('cur','bump');d._off&&d._off()})}
   if(mq.matches)enable();mq.addEventListener('change',()=>mq.matches?enable():disable());
