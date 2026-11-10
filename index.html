@@ -1385,7 +1385,7 @@ if(trk){const one=IC.map(n=>'<span><svg viewBox="0 0 48 48" aria-hidden="true"><
     raf=requestAnimationFrame(step)}
   /* premium idle loop (alpha webm). Safari and every iPhone/iPad browser cannot show webm alpha, so they get the same loop as an animated webp; if that fails they keep the still with live eyes. */
   const vid=$('#minime-vid'),ua=navigator.userAgent,IOS=/iP(hone|ad|od)/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),SAF=IOS||/Safari/.test(ua)&&!/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
-  if(vid&&!RM&&SAF&&vid.dataset.anim){
+  if(vid&&!RM&&SAF&&vid.dataset.anim&&!matchMedia('(max-width:760px)').matches){ /* iPhone: the 3.3 MB loop is skipped, the still with live eyes stays */
     addEventListener('load',()=>{const im=new Image();im.className='minime-vid';im.alt='';im.setAttribute('aria-hidden','true');
       im.onload=()=>{vid.replaceWith(im);requestAnimationFrame(()=>requestAnimationFrame(()=>{box.classList.add('vid');cancelAnimationFrame(raf);raf=null}))};im.src=vid.dataset.anim})}
   else if(vid&&!RM&&!SAF&&vid.canPlayType('video/webm; codecs="vp09.00.10.08"')){
