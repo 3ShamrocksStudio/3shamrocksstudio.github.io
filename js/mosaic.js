@@ -1,5 +1,5 @@
 /* 3Shamrocks Studio: "Made of the work" portrait for the "20 years" section.
-   Dave's real photo rebuilt as a living photomosaic of his real work: every tile is a crop of a real portfolio
+   Dave's real photo rebuilt as a living photomosaic of his real work: every tile is a complete real portfolio
    asset (assets/studio/mosaic/atlas.webp, built offline by assets/studio/mosaic/build.py), matched and tinted to
    the colour of that region of the photo. The photo itself is never redrawn: tiles sample its real pixels.
    Motion: tiles fly in and settle on scroll-in, then occasional tiles flip to another asset.
@@ -16,7 +16,7 @@
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var HOVER = matchMedia('(hover:hover) and (pointer:fine)').matches;
   var BASE = 'assets/studio/mosaic/';
-  var ORDER = ['sh', 'lp', 'cr', 'th', 'mi', 'rk', 'ez', 'fr', 'ap', 'vb', 'st'];
+  var ORDER = ['sh', 'lp', 'cr', 'th', 'mi', 'rk', 'fr', 'ap', 'vb', 'st'];
   var NF = 21; /* floats per tile */
 
   var io = new IntersectionObserver(function (es) {
@@ -36,8 +36,8 @@
     try { gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false }); } catch (e) {}
     var inst = gl && gl.getExtension('ANGLE_instanced_arrays');
     if (!gl || !inst) return;
-    Promise.all([fetch(BASE + 'layout.json?v=m3').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
-                 loadImg(BASE + 'atlas.webp?v=m3'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src)])
+    Promise.all([fetch(BASE + 'layout.json?v=m4').then(function (r) { if (!r.ok) throw 0; return r.json(); }),
+                 loadImg(BASE + 'atlas.webp?v=m4'), img.complete && img.naturalWidth ? img : loadImg(img.currentSrc || img.src)])
       .then(function (r) { build(cv, gl, inst, r[0], r[1], r[2]); })
       .catch(function () { /* keep the plain photo */ });
   }
@@ -115,7 +115,7 @@
     gl.uniform4fv(U.ulo, ULO); gl.uniform4fv(U.uhi, UHI); gl.uniform1f(U.hr, 0);
     function loadHi() {
       if (hiP || gl.getParameter(gl.MAX_TEXTURE_SIZE) < Math.max(L.hi[0], L.hi[1])) return;
-      hiP = loadImg(BASE + 'atlas-hi.webp?v=m3').then(function (im) {
+      hiP = loadImg(BASE + 'atlas-hi.webp?v=m4').then(function (im) {
         gl.activeTexture(gl.TEXTURE2); tex(im, false); gl.uniform1f(U.hr, 1); hiReady = 1; kick();
       }).catch(function () { /* the small atlas stays */ });
     }
