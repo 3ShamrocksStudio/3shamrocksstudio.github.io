@@ -12,9 +12,10 @@
      8-bar progression) on the same clock, so the band only repeats as a whole after hundreds of bars.
    - Score v2 (product pages, one file per zone): unchanged behaviour below.
    - Sound is ON by default unless the visitor turned it off before (remembered across studio pages, try/catch).
-   - Browsers block audible autoplay: one AudioContext is created on load (only when sound is on) and resume() is
-     attempted; if the browser says no, music starts on the first pointerdown / keydown / touchend anywhere.
-     A one-time hint near the toggle says so. Sound off = no AudioContext, no downloads, nothing plays.
+   - Browsers block audible autoplay, so nothing is created or downloaded on load (10 Nov 2026): the AudioContext and the
+     first stems start on the first pointerdown / keydown / touchend anywhere. Until then the toggle honestly shows
+     "Sound off" (not pressed); a one-time hint near it says "Tap anywhere for sound". Sound off = no AudioContext,
+     no downloads, nothing plays.
    - Zones follow the section crossing the middle of the viewport (debounced until scrolling settles) and change on the
      next bar with a ~2 s equal-power crossfade; the new zone enters at its phrase start.
    - In the products section, the product in focus (centred on mobile, hovered/focused on desktop) brings in its own
@@ -33,7 +34,7 @@
 
   function start(o) {
     var btn = D.getElementById(o.toggle || 'snd');
-    var on = lsGet(KEY) !== '0', ctx = null, master = null, mBus = null, sBus = null, playing = false;
+    var on = lsGet(KEY) !== '0', heard = false, ctx = null, master = null, mBus = null, sBus = null, playing = false;
     var MG = o.musicGain || 0.45, SG = o.sfxGain || 0.6, XF = o.xfade || 2.0, PXF = o.pxfade || 1.0, MLEAD = o.mlead === undefined ? 0.6 : o.mlead;
     var zones = o.zones, zi = 0, prod = null, desired = null, tracks = {}, bufs = {}, loading = {}, cur = null, switches = 0;
     var sprites = [], cueMap = {}, lastAt = {}, voices = 0, hintEl = null;
@@ -312,7 +313,7 @@
       }).observe(D.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
     }
     /* ---------- toggle, hint, gestures, visibility ---------- */
-    function draw() { if (!btn) return; btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.setAttribute('aria-label', on ? 'Sound on' : 'Sound off'); btn.title = on ? 'Sound on' : 'Sound off'; }
+    function draw() { if (!btn) return; var v = on && heard; btn.setAttribute('aria-pressed', v ? 'true' : 'false'); btn.setAttribute('aria-label', v ? 'Sound on' : 'Sound off'); btn.title = v ? 'Sound on' : 'Sound off'; }
     function hint(show) {
       if (!btn) return;
       if (show) {
@@ -322,19 +323,21 @@
       } else if (hintEl) { var h = hintEl; hintEl = null; h.classList.remove('in'); setTimeout(function () { if (h.parentNode) h.parentNode.removeChild(h); }, 500); }
     }
     if (btn) btn.addEventListener('click', function () {
-      on = !on; lsSet(KEY, on ? '1' : '0'); draw();
+      on = !(on && heard); heard = true; lsSet(KEY, on ? '1' : '0'); draw();
       if (on) resume(); else { hint(false); stopAll(); }
     });
-    function gesture() { if (on && !playing) resume(); }
+    function gesture(e) { /* a tap on the toggle itself is its click (below) */
+      if (!on || playing || (btn && e && e.target && btn.contains(e.target))) return;
+      if (!heard) { heard = true; draw(); }
+      resume();
+    }
     ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { W.addEventListener(ev, gesture, { capture: true, passive: true }); });
     D.addEventListener('visibilitychange', function () {
       if (!ctx) return;
       try { if (D.hidden) ctx.suspend(); else if (on && playing) ctx.resume(); } catch (e) { /* ignore */ }
     });
     draw();
-    if (on) { /* try now: some browsers allow it; otherwise the first tap starts it */
-      ensure(); if (ctx) { if (ST) { var w0 = wantStems(); Object.keys(w0.want).forEach(function (k) { if (w0.want[k] > 0) loadStem(k); }); } else load(zones[zi].id); resume(); setTimeout(function () { if (!playing && on) hint(true); }, 400); }
-    }
+    if (on) setTimeout(function () { if (!playing && on) hint(true); }, 400); /* the first tap anywhere starts it (and its downloads) */
     return { play: sfx, on: function () { return on; } };
   }
   W.S3Score = { start: start };
