@@ -69,3 +69,19 @@ rendered offline with tinysoundfont and mixed/mastered with pedalboard. The musi
 - Files: last 0.5 s of the loop + loop + first 0.5 s; the player loops 0.5 .. 38.9 s on one shared clock.
 - Encode: beds Opus 64k / AAC 112k stereo, melodies Opus 40k / AAC 64k mono.
 - Run: `python3 score_v3.py` (render + master + encode), then `python3 score_v3.py demo` (70 s walk-through MP3).
+
+## Score v6: "the long jam" (`score_v6.py`), generated 2026-11-10
+Supersedes Score v5 (`score_v5.py`, 98 BPM E dorian funk jam, 16-bar stems) on the homepage and product pages. Same SoundFont,
+same instruments and mix chains (it imports `score_v5.py`).
+- Opening untouched: bars 1-16 of each v5 bed are the v5 notes (captured from `score_v5.py` with its seed), level-matched to
+  the v5 files; the intro fill is the v5 file.
+- Every bed continues with new variation bars and loops at its own length (drums 32, bass 40, guitar 24, keys 40, organ 24,
+  horns 40 bars; all multiples of the 8-bar progression). The player reads `stems.loops` and keeps them on one clock.
+- New portfolio lead: tenor sax call / muted jazz guitar answer, 32 bars, laid back, low-passed ~4.5 kHz and de-essed;
+  products: same hook, own warm voice (French horn, wah guitar, baritone sax, organ, Rhodes, vibes, muted trumpet) + own endings.
+- New deep-page stems: `bdrums` (ride groove), `bbass` (sub bass), `bkeys` (dark Rhodes + organ), `bhorn` (low trombone /
+  baritone noir melody) on the bridge Em11 Fmaj7#11 Em11 Fmaj7#11 | Cmaj9 Am11 F#m7b5 B7#9; `shout` (horn shout chorus outro).
+- Story: hero drums, +bass, +guitar, +keys/organ, +horns, portfolio + lead, identity = breakdown (drums + bass),
+  experience = dark bridge, about = + horn melody, forest = no drums, contact = everything + horn shout.
+- Encode: beds Opus 48k (drums 56k) / AAC 80k (drums 96k) stereo, melodies Opus 40k / AAC 56k mono.
+- Run: `python3 score_v6.py all` (stems + mix.json in `assets/audio/studio/v6/`, demo MP3); `S3_REBUILD=mel,bkeys` re-renders only those.
