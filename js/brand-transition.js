@@ -114,7 +114,7 @@
     '@keyframes btFromL{from{transform:translateX(-101%)}to{transform:none}}',
     '@keyframes btFromR{from{transform:translateX(101%)}to{transform:none}}',
     '@keyframes btSeam{from{opacity:0;clip-path:inset(0 50% 0 50%)}to{opacity:1;clip-path:inset(0 0 0 0)}}',
-    /* Milo: soft bubbles bloom in caramel, honey, blush and cream, like a breath */
+    /* Milo: neon bubbles (violet, hot pink, ice cyan, magenta) bloom on night purple, like a breath */
     '.bt-milo .b{display:none}',
     '.bt-milo .u{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);border-radius:50%;background:var(--k)}',
     '.bt-milo .u.z{--x:50%;--y:50%;--s:260vmax;--k:radial-gradient(closest-side,#3a0f72,#2a0a55 30%,#1A023B 60%)}',
