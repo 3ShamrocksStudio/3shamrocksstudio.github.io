@@ -50,7 +50,7 @@ A('sh', 'screen', ('map', W+'shomer/app-map.webp'), ('around me', W+'shomer/app-
 A('sh', 'icon', *[('first-aid icon: ' + n, H + 'sh-guide-%s.webp' % n) for n in ['allergy', 'bleed', 'bone', 'burn', 'call', 'choke', 'cpr', 'heart']])
 # --- LickPick
 A('lp', 'screen', ('home screen', S9+'lp-home.webp'), ('pick screen', S9+'lp-pick.webp'), ('style screen', S9+'lp-style.webp'),
-  ('library', 'lickpick/assets/m_home.jpg'), ('pick a take', 'lickpick/assets/m_pick.jpg'), ('post screen', 'lickpick/assets/m_post.jpg'),
+  ('library', 'lickpick/assets/m_home.jpg'), ('pick screen', 'lickpick/assets/m_pick.jpg'), ('post screen', 'lickpick/assets/m_post.jpg'),
   ('band screen', 'lickpick/assets/m_band.jpg'), ('export screen', 'lickpick/assets/m_export.jpg'), ('landing page', 'lickpick/assets/og.jpg'),
   ('website', W+'lickpick/site-desktop.webp'), ('website, mobile', W+'lickpick/site-mobile.webp'))
 A('lp', 'logo', ('app icon', 'lickpick/app/icon-512-v5.png'), ('pick mark', 'lickpick/app/icon-192-v5.png'), ('lockup', 'assets/studio/logos/lickpick-lockup.png'))

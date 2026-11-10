@@ -18,7 +18,7 @@
   var img = vis.querySelector('img');
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var HOVER = matchMedia('(hover:hover) and (pointer:fine)').matches;
-  var BASE = 'assets/studio/mosaic/', VER = 'm5';
+  var BASE = 'assets/studio/mosaic/', VER = 'm6';
   var NF = 21; /* floats per tile */
   var EFFECTS = [['tornado', 'Tornado'], ['spectrum', 'Spectrum'], ['bigbang', 'Big bang'], ['ripple', 'Ripple']];
 
@@ -462,12 +462,7 @@
       lib.fams.forEach(function (f) { names[f[0]] = f[1]; });
       var list = A.map(function (a, i) { return i; }).filter(function (i) { return A[i].fam === base.fam && i !== aid; });
       list.sort(function (a, b) { return cdist(A[a].c, base.c) - cdist(A[b].c, base.c); });
-      list.unshift(A.indexOf(base));
-      if (list.length < 12) {   /* a small family is topped up with the nearest colours of the others */
-        var more = A.map(function (a, i) { return i; }).filter(function (i) { return list.indexOf(i) < 0; });
-        more.sort(function (a, b) { return cdist(A[a].c, base.c) - cdist(A[b].c, base.c); });
-        list = list.concat(more.slice(0, 12 - list.length));
-      }
+      list.unshift(A.indexOf(base));   /* only the family itself: no top-up from other families (it put green and navy pieces in Red) */
       fam.list = list; fam.i = -1;
       var r = famUI();
       r.style.setProperty('--fc', base.c);

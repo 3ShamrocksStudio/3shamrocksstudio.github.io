@@ -54,32 +54,44 @@ MANUAL_DROP = {
 }
 
 
-def dominant(path):
-  """dominant colour of the artwork: k-means (k=5, Lab) over its opaque pixels; clusters weighted by size and colourfulness,
-  so a bright brand colour beats a big plain backdrop unless the backdrop really dominates"""
-  im = Image.open(path).convert('RGBA'); im.thumbnail((160, 160))
-  a = np.asarray(im); m = a[..., 3] > 160
-  px = a[..., :3][m] if m.sum() > 50 else a[..., :3].reshape(-1, 3)
-  lab = cv2.cvtColor(px.reshape(-1, 1, 3).astype(np.uint8), cv2.COLOR_RGB2LAB).reshape(-1, 3).astype(np.float32)
-  k = min(5, len(lab))
-  _, lbl, cen = cv2.kmeans(lab, k, None, (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, .5), 3, cv2.KMEANS_PP_CENTERS)
-  cnt = np.bincount(lbl.ravel(), minlength=k) / len(lbl)
-  chroma = np.hypot(cen[:, 1] - 128, cen[:, 2] - 128)
-  w = cnt * (.25 + np.minimum(1, chroma / 40))
-  c = cen[int(np.argmax(w))]
-  rgb = cv2.cvtColor(c.reshape(1, 1, 3).astype(np.uint8), cv2.COLOR_LAB2RGB).reshape(3)
-  return [int(v) for v in rgb], float(np.hypot(c[1] - 128, c[2] - 128)), float(c[0] / 255 * 100)
+def dominant(path, palette=False):
+  """dominant colour of the artwork (v5.1, 10 Nov 2026): the most prominent saturated hue, so a small bright accent on a
+  big dark / white / grey backdrop does not decide the family, and a dark navy screen is not read as its red button.
+  Opaque pixels only. Near-black, near-white, greys and dull dark tones (navy, indigo outlines) never vote: a pixel votes
+  when it is tinted (S >= .2, chroma S*V >= .12, V >= .38). When tinted pixels cover less than 12% of the artwork (35%
+  when the artwork is mostly dark, e.g. a night-mode screen with a few coloured buttons; not for palette cards), it is a neutral piece:
+  'night' (Night / Mono) or 'light'. Otherwise a chroma-weighted hue histogram (10 degree bins, circularly smoothed)
+  picks the peak hue (vivid colour outweighs pastel); the colour is the weighted mean of the pixels within +-20 degrees
+  of it. Returns (rgb, hue or -1 when neutral, tinted share, mean lightness of the artwork 0..100)."""
+  im = Image.open(path).convert('RGBA'); im.thumbnail((200, 200))
+  a = np.asarray(im)
+  m = a[..., 3] > 160
+  if m.sum() < 50: m = np.ones(a.shape[:2], bool)
+  px = a[..., :3][m].astype(np.float32) / 255
+  hsv = cv2.cvtColor(px.reshape(-1, 1, 3), cv2.COLOR_RGB2HSV).reshape(-1, 3)   # H 0..360, S, V 0..1 for float input
+  H, S, V = hsv[:, 0], hsv[:, 1], hsv[:, 2]; C = S * V
+  L = float(cv2.cvtColor(px.reshape(-1, 1, 3), cv2.COLOR_RGB2LAB)[..., 0].mean())   # 0..100 for float input
+  sat = (S >= .2) & (C >= .12) & (V >= .38)
+  share = float(sat.mean()); dark = float((V < .3).mean())
+  if share < (.35 if dark >= .4 and not palette else .12):
+    rgb = px.mean(0) * 255
+    return [int(v) for v in rgb], -1., share, L
+  w = C[sat]
+  hist = np.bincount((H[sat] // 10).astype(int) % 36, weights=w, minlength=36)
+  sm = hist + .5 * np.roll(hist, 1) + .5 * np.roll(hist, -1)
+  pk = int(np.argmax(sm)) * 10 + 5
+  d = np.abs((H[sat] - pk + 180) % 360 - 180) <= 20
+  rgb = (px[sat][d] * w[d, None]).sum(0) / w[d].sum() * 255
+  return [int(v) for v in rgb], float(pk), share, L
 
 
 FAMS = [('red', 'Red'), ('orange', 'Orange'), ('yellow', 'Gold'), ('green', 'Green'), ('teal', 'Teal'), ('blue', 'Blue'),
-        ('purple', 'Purple'), ('pink', 'Pink'), ('night', 'Night'), ('light', 'Light'), ('grey', 'Grey')]
-def family(rgb, chroma, L):
-  if chroma < 14:
-    return 'night' if L < 30 else 'light' if L > 72 else 'grey'
-  h = colorsys.rgb_to_hsv(*[v / 255 for v in rgb])[0] * 360
-  if L < 18 and chroma < 24: return 'night'
+        ('purple', 'Purple'), ('pink', 'Pink'), ('night', 'Night / Mono'), ('light', 'Light')]
+def family(rgb, hue, share, L):
+  if hue < 0:
+    return 'light' if L > 65 else 'night'
   for lim, f in ((14, 'red'), (40, 'orange'), (68, 'yellow'), (155, 'green'), (195, 'teal'), (248, 'blue'), (292, 'purple'), (340, 'pink'), (361, 'red')):
-    if h < lim: return f
+    if hue < lim: return f
 
 
 def look(path, s):
@@ -92,7 +104,7 @@ def look(path, s):
 
 
 def export(job):
-  i, path, s = job
+  i, path, s, mode = job
   im = Image.open(path); im.load(); im = im.convert('RGBA') if im.mode in ('RGBA', 'LA', 'P') else im.convert('RGB')
   if s['cut'] and s['box']: im = im.crop(s['box'])
   out = []
@@ -103,7 +115,7 @@ def export(job):
     fp = path
   else:
     f = im.copy(); f.thumbnail((1800, 1800), Image.LANCZOS); fp = '%s/%03d-f.webp' % (LIB, i); f.save(fp, 'WEBP', quality=85, method=4)
-  return (out[0], out[1], fp) + tuple(dominant(out[0]))
+  return (out[0], out[1], fp) + tuple(dominant(out[0], mode == 'palette'))
 
 
 def main():
@@ -191,12 +203,12 @@ def main():
   if '--dry' in sys.argv:
     json.dump({'keep': keep, 'why': why}, open(OUT + '/.dry.json', 'w'), indent=1, ensure_ascii=False); return
   from multiprocessing import Pool
-  with Pool(8) as pool: outs = pool.map(export, [(i, u['path'], IDX[u['path']]) for i, u in enumerate(keep)])
+  with Pool(8) as pool: outs = pool.map(export, [(i, u['path'], IDX[u['path']], u['mode']) for i, u in enumerate(keep)])
   assets = []
-  for u, (tp, sp, fp, rgb, chroma, L) in zip(keep, outs):
+  for u, (tp, sp, fp, rgb, hue, share, L) in zip(keep, outs):
     s = IDX[u['path']]; bw, bh = eff_size(s)
     assets.append({'p': u['p'], 'l': u['l'], 't': tp, 's': sp, 'f': fp, 'w': bw, 'h': bh,
-                   'c': '#%02x%02x%02x' % tuple(rgb), 'fam': family(rgb, chroma, L), 'cut': bool(s['cut']), 'mode': u['mode'], 'path': u['path'],
+                   'c': '#%02x%02x%02x' % tuple(rgb), 'fam': family(rgb, hue, share, L), 'cut': bool(s['cut']), 'mode': u['mode'], 'path': u['path'],
                    'srcs': [u['src']] + u.get('also', [])})
     report['after'].append({'path': u['path'], 'p': u['p'], 'label': u['l'], 'art_px': [bw, bh], 'sharp': s['sharp'], 'thumb': tp, 'full': fp,
                             'replaces': [u['src']] + u.get('also', []), 'family': assets[-1]['fam'], 'colour': assets[-1]['c']})
@@ -211,5 +223,18 @@ def main():
   print('lib MB', round(tot / 1e6, 1), 'files', len(os.listdir(LIB)))
 
 
+def refam():
+  """--refam: recompute only the colour and family of every piece in library.json from its 640 px thumbnail (no re-export,
+  so the piece order, the files and layout.json's tile -> piece links stay as they are)"""
+  from collections import Counter
+  j = json.load(open(OUT + '/library.json'))
+  for a in j['assets']:
+    rgb, hue, share, L = dominant(a['t'], a['mode'] == 'palette')
+    a['c'] = '#%02x%02x%02x' % tuple(rgb); a['fam'] = family(rgb, hue, share, L)
+  j['fams'] = FAMS
+  print('families', dict(Counter(a['fam'] for a in j['assets'])))
+  json.dump(j, open(OUT + '/library.json', 'w'), separators=(',', ':'), ensure_ascii=False)
+
+
 if __name__ == '__main__':
-  main()
+  refam() if '--refam' in sys.argv else main()
