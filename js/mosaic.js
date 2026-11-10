@@ -18,7 +18,7 @@
   var img = vis.querySelector('img');
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var HOVER = matchMedia('(hover:hover) and (pointer:fine)').matches;
-  var BASE = 'assets/studio/mosaic/', VER = 'm7';
+  var BASE = 'assets/studio/mosaic/', VER = 'm8';
   var NF = 21; /* floats per tile */
   var EFFECTS = [['tornado', 'Tornado'], ['spectrum', 'Spectrum'], ['bigbang', 'Big bang'], ['ripple', 'Ripple']];
 
