@@ -46,7 +46,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 :focus-visible{outline:3px solid var(--g3);outline-offset:3px;border-radius:6px}
 .he{font-family:var(--body);direction:rtl}
 .g{background:var(--gold);-webkit-background-clip:text;background-clip:text;color:transparent}
-section{position:relative}
+section,header.hero{position:relative}
 .sec{padding:120px 0}
 @media(max-width:700px){.sec{padding:80px 0}}
 h1,h2,h3{font-family:var(--disp);font-weight:700;letter-spacing:-.01em;text-wrap:balance}
@@ -285,6 +285,22 @@ footer img{height:20px;width:auto}
 .js .rv{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
 .js .rv.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none}}
+/* shared · More work + footer (same block on every inner page; colours come from the page's --mw-* tokens) */
+.mw3{padding:64px 20px 56px;text-align:center;background:var(--mw-bg);color:var(--mw-fg)}
+.mw3-h{font:700 12px/1 var(--mw-font);letter-spacing:.2em;text-transform:uppercase;opacity:.72;margin:0 0 18px}
+.mw3-list{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:900px;margin:0 auto;padding:0;list-style:none}
+.mw3-list a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--mw-line);font:600 14px/1 var(--mw-font);color:inherit;text-decoration:none;transition:border-color .2s,background .2s,color .2s}
+.mw3-list a:hover{border-color:var(--mw-acc)}
+.mw3-list a[aria-current=page]{background:var(--mw-acc);border-color:var(--mw-acc);color:var(--mw-on)}
+.sf3{background:var(--mw-bg);color:var(--mw-fg);border-top:1px solid var(--mw-line);padding:20px 20px 32px;font:500 13px/1.4 var(--mw-font)}
+.sf3-in{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 24px}
+.sf3 img{height:20px;width:auto;display:block}
+.sf3 a{color:inherit;text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
+.sf3 nav{display:flex;flex-wrap:wrap;gap:0 20px}
+.sf3 nav a{text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;transition:text-decoration-color .2s}
+.sf3 nav a:hover,.sf3 nav a:focus-visible{text-decoration-color:currentColor}
+.sf3 .sf3-c{opacity:.72}
+:root{--mw-bg:var(--n0);--mw-fg:var(--tx1);--mw-line:var(--line);--mw-acc:var(--g3);--mw-on:#23170a;--mw-font:var(--body)}
 </style>
 <script src="../js/hits.js" defer></script>
 <link rel="stylesheet" href="../assets/audio/snd.css?v=sc2">
@@ -306,7 +322,7 @@ footer img{height:20px;width:auto}
 
 <nav class="studio" aria-label="3Shamrocks Studio"><div class="wrap">
  <a class="s-logo" href="../" aria-label="3Shamrocks Studio, home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="905" height="133"></a>
- <span class="snd-r"><button type="button" class="snd" id="snd" aria-pressed="true" aria-label="Sound on" title="Sound on"><span class="snd-eq" aria-hidden="true"><i></i><i></i><i></i></span></button><a class="back" href="../#work">&larr; All work</a></span>
+ <span class="snd-r"><button type="button" class="snd" id="snd" aria-pressed="false" aria-label="Sound off" title="Sound off"><span class="snd-eq" aria-hidden="true"><i></i><i></i><i></i></span></button><a class="back" href="../#work">&larr; All work</a></span>
 </div></nav>
 
 <main>
@@ -473,12 +489,13 @@ footer img{height:20px;width:auto}
   <p class="lede rv">Brand, app and network, designed end to end by 3Shamrocks Studio.</p>
   <div class="btns rv"><a class="btn gold" href="https://www.shomer-app.co.il/" target="_blank" rel="noopener">Visit shomer-app.co.il &#8599;</a><a class="btn line" href="mailto:dave@3shamrocks.com?subject=New%20project">Start a project</a></div>
   <div class="disc rv"><b>SH&#10017;MER is a community tool, not an emergency service.</b> In an emergency, call 100 &middot; 101 &middot; 102 first.<span class="he" lang="he">בחירום, חייגו קודם 100 · 101 · 102</span></div>
-  <nav class="more" aria-label="More work"><a href="../#work">&larr; All work</a><a href="healthtech.html">HealthTech</a><a href="lickpick.html">LickPick</a><a href="trashure-hunters.html">Trashure Hunters</a><a href="chore-royale.html">Chore Royale</a></nav>
  </div>
 </section>
 </main>
-<p class="fit-line" style="margin:0;padding:22px 16px;text-align:center;font-size:14px;opacity:.78"><a href="../work-with-me.html?lang=en" style="color:inherit;text-decoration:underline;text-underline-offset:4px">Find your fit · 60 sec</a></p>
-<footer><div class="wrap"><a href="../" aria-label="3Shamrocks Studio, home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="905" height="133" loading="lazy"></a><span>&copy; 2026 3Shamrocks Studio &middot; SH&#10017;MER</span><a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a></div></footer>
+<nav class="mw3" aria-labelledby="mw3-h"><p class="mw3-h" id="mw3-h">More work</p><ul class="mw3-list">
+ <li><a href="shomer.html" aria-current="page">SH&#10017;MER</a></li><li><a href="healthtech.html">HealthTech</a></li><li><a href="lickpick.html">LickPick</a></li><li><a href="trashure-hunters.html">Trashure Hunters</a></li><li><a href="chore-royale.html">Chore Royale</a></li><li><a href="fairent.html">FaiRent</a></li><li><a href="milo.html">Milo</a></li><li><a href="rk.html">R&amp;K</a></li><li><a href="../#work">All work &rarr;</a></li>
+</ul></nav>
+<footer class="sf3"><div class="sf3-in"><a href="../" aria-label="3Shamrocks Studio, home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="905" height="133" loading="lazy"></a><span class="sf3-c">&copy; 2026 3Shamrocks Studio &middot; Dave Markovich</span><nav aria-label="Contact"><a href="../work-with-me.html?lang=en">Find your fit &middot; 60 sec</a><a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a><a href="https://www.linkedin.com/in/davemarkovich/" target="_blank" rel="noopener">LinkedIn</a></nav></div></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
