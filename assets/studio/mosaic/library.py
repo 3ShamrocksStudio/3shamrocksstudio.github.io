@@ -52,6 +52,14 @@ MANUAL_KEEP = {'lickpick/app/icon-512-v5.png'}   # the LickPick app icon: its la
 MANUAL_DROP = {
   'assets/studio/mosaic/src/rk-board.webp': 'crop of the board, shown whole elsewhere',
 }
+# v5.2 (Dave, 10 Nov 2026): no LickPick screen with "take" / "takes" text and nothing built from the Wikimedia Commons
+# guitarist clips (s9 lp-pick / lp-style / lp-home / lp-home-m, every screen or page showing those video frames)
+LP_DROP = ['lickpick/assets/m_home.jpg', 'lickpick/assets/m_pick.jpg', 'lickpick/assets/m_post.jpg', 'lickpick/assets/m_band.jpg',
+           'lickpick/assets/m_export.jpg', 'lickpick/assets/og.jpg', 'assets/work/lickpick/site-desktop.webp', 'assets/work/lickpick/site-mobile.webp',
+           'assets/studio/screens/lickpick-cut.webp', 'assets/studio/screens/lickpick-pick.webp', 'assets/studio/screens/lickpick-style.webp',
+           'assets/studio/screens/lickpick-share.webp', 'assets/studio/screens/lickpick-welcome.webp', 'assets/og/og-lickpick.jpg',
+           'assets/studio/s9/lp-pick.webp', 'assets/studio/s9/lp-style.webp', 'assets/studio/s9/lp-home.webp', 'assets/studio/s9/lp-home-m.webp']
+MANUAL_DROP.update({q: 'LickPick: "take" text or Wikimedia Commons clip frames' for q in LP_DROP})
 
 
 def dominant(path, palette=False):
@@ -86,7 +94,16 @@ def dominant(path, palette=False):
 
 
 FAMS = [('red', 'Red'), ('orange', 'Orange'), ('yellow', 'Gold'), ('green', 'Green'), ('teal', 'Teal'), ('blue', 'Blue'),
-        ('purple', 'Purple'), ('pink', 'Pink'), ('night', 'Night / Mono'), ('light', 'Light')]
+        ('purple', 'Purple'), ('pink', 'Pink'), ('night', 'Night / Mono'), ('light', 'Light'), ('multi', 'Multi')]
+OVR = OUT + '/family-overrides.json'
+def curate(assets):
+  """v5.2: after the automatic hue pass, the hand-curated family of each piece listed in family-overrides.json (path -> family;
+  every family was checked piece by piece on contact sheets, since hue detection alone kept putting e.g. multicolour or
+  white-background pieces in a colour family), and no piece in LP_DROP"""
+  ovr = json.load(open(OVR))['fam']; names = {f for f, _ in FAMS}
+  for a in assets:
+    if a['path'] in ovr: assert ovr[a['path']] in names, a['path']; a['fam'] = ovr[a['path']]
+  return [a for a in assets if a['path'] not in LP_DROP and not set(a['srcs']) & set(LP_DROP)]
 def family(rgb, hue, share, L):
   if hue < 0:
     return 'light' if L > 65 else 'night'
@@ -212,6 +229,7 @@ def main():
                    'srcs': [u['src']] + u.get('also', [])})
     report['after'].append({'path': u['path'], 'p': u['p'], 'label': u['l'], 'art_px': [bw, bh], 'sharp': s['sharp'], 'thumb': tp, 'full': fp,
                             'replaces': [u['src']] + u.get('also', []), 'family': assets[-1]['fam'], 'colour': assets[-1]['c']})
+  assets = curate(assets)
   report['dropped'] = why
   from collections import Counter
   print('families', dict(Counter(a['fam'] for a in assets)))
@@ -224,13 +242,19 @@ def main():
 
 
 def refam():
-  """--refam: recompute only the colour and family of every piece in library.json from its 640 px thumbnail (no re-export,
+  """--refam: recompute only the colour and family (then the hand-curated overrides and drops, curate()) of every piece in library.json from its 640 px thumbnail (no re-export,
   so the piece order, the files and layout.json's tile -> piece links stay as they are)"""
   from collections import Counter
   j = json.load(open(OUT + '/library.json'))
   for a in j['assets']:
     rgb, hue, share, L = dominant(a['t'], a['mode'] == 'palette')
     a['c'] = '#%02x%02x%02x' % tuple(rgb); a['fam'] = family(rgb, hue, share, L)
+  keep = curate(j['assets'])
+  for a in j['assets']:   # files of dropped pieces go too (the other pieces keep their file names)
+    if a not in keep:
+      for q in {a['t'], a['s'], a['f']}:
+        if q.startswith(LIB + '/') and os.path.exists(q): os.remove(q)
+  j['assets'] = keep
   j['fams'] = FAMS
   print('families', dict(Counter(a['fam'] for a in j['assets'])))
   json.dump(j, open(OUT + '/library.json', 'w'), separators=(',', ':'), ensure_ascii=False)
