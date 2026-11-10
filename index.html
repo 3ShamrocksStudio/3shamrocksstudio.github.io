@@ -290,9 +290,10 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:7
   .cap b{font-size:17px}
   .dev.bump{animation:carBump .5s var(--ease)}
   @keyframes carBump{30%{translate:var(--bx,0) 0}100%{translate:0 0}}
-  .car-dots{display:flex;justify-content:center;align-items:center;gap:7px;margin-top:6px}
-  .car-dots button{width:7px;height:7px;padding:0;border:0;border-radius:4px;background:rgba(255,255,255,.22);transition:width .35s var(--ease),background .35s;cursor:pointer}
-  .car-dots button.on{width:26px;background:var(--c)}
+  .car-dots{display:flex;justify-content:center;align-items:center;gap:0;margin-top:0}
+  .car-dots button{position:relative;width:24px;height:24px;padding:0;border:0;background:none;transition:width .35s var(--ease);cursor:pointer} /* 24 px hit area, 7 px dot */
+  .car-dots button::before{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;transform:translate(-50%,-50%);border-radius:4px;background:rgba(255,255,255,.22);transition:width .35s var(--ease),background .35s}
+  .car-dots button.on{width:36px}.car-dots button.on::before{width:26px;background:var(--c)}
 }
 @media(min-width:701px){.car-dots{display:none}}
 /* BRAND SHOWCASE: one 3SDS sheet per brand, each in its own identity */
