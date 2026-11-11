@@ -1550,6 +1550,27 @@ body.bandplay .beatdot{animation:beatdot var(--beat,.7s) linear infinite}
 .chipset [data-bstyle] .protag{margin-left:5px;font-size:9px;padding:1px 4px;vertical-align:1px}.takerow .protag{margin-left:6px}
 .chipset button[aria-pressed=true] .protag{color:var(--ink);border-color:var(--ink)}
 
+/* Labs (11/2026): the band is an opt-in extra. Three preset cards + Just me in one grid, no sideways scroll */
+.lheard{font-size:13px;color:var(--dim);margin:0 0 10px}.lheard b{color:var(--cyan);font-weight:800}
+.labgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px}
+.lcard{position:relative;border:2px solid var(--line);background:var(--raise);border-radius:16px;padding:12px 12px 10px;min-height:118px;display:flex;flex-direction:column;gap:4px}
+.lcard .lsel{all:unset;display:flex;flex-direction:column;gap:4px;cursor:pointer;min-width:0}
+.lcard .lsel::after{content:"";position:absolute;inset:0;border-radius:14px}
+.lcard .lsel:focus-visible::after{outline:3px solid var(--cyan);outline-offset:2px}
+.lcard .nm{font:400 17px/1.1 var(--display);color:var(--text)}
+.lcard .who{font-size:12.5px;color:var(--dim);overflow-wrap:anywhere}
+.lcard .row{margin-top:auto;display:flex;align-items:center;gap:8px;position:relative;z-index:1}
+.lcard .lbplay{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;background:var(--panel);flex:none;padding:0;cursor:pointer}
+.lcard .lbplay svg.i{width:16px;height:16px;color:var(--volt)}
+.lcard .lbplay .ia{display:none}
+body.bandplay .lcard.on .lbplay{background:var(--volt);border-color:var(--ink)}body.bandplay .lcard.on .lbplay svg.i{color:var(--ink)}
+body.bandplay .lcard.on .lbplay .ip{display:none}body.bandplay .lcard.on .lbplay .ia{display:inline}
+.lcard .lsel:disabled,.lcard .lbplay:disabled{opacity:.4;cursor:default}
+.lcard.on{border-color:var(--volt);background:color-mix(in srgb,var(--volt) 10%,var(--raise));box-shadow:4px 4px 0 var(--hot)}
+.lcard.on .nm::after{content:" \2713";color:var(--volt)}
+.lcard.sugg{grid-column:1 / -1;min-height:0;border-color:var(--cyan)}.lcard.sugg.on{border-color:var(--volt)}
+.lcard .lbadge{align-self:flex-start;font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--cyan);border-radius:6px;padding:2px 6px}
+.lcard.off .nm{color:var(--dim)}
 /* 3.6 design pass: the Pick is a ticket, the timeline a film strip, the metronome a display, the band a stage.
    Same tokens, same type, same rules (one volt action per screen: the Save button). */
 /* the Pick card: cream ticket with a rubber stamp and tape corners; volt stays with Save */
@@ -5101,7 +5122,30 @@ const endDay = x => { const t = typeof x === "number" ? x : Date.parse(x); retur
 // free band: the Auto, Ballad and Rock bands with their own sounds save free (with the LickPick mark); every other
 // style, extra instrument and sound choice is Pro
 const FREE_STYLES = ["ballad", "rock"];
-function freeBand(c) { if (isPro() || !bandOn(c)) return false; const b = c.band || {}, A = bandA(c), st = bandStyleOf(c, A); const custom = Object.keys(b.set || {}).filter(k => b.set[k] != null && k !== "fills" && !(k === "arrange" && b.set[k] === "build") && !(k === "take" && !b.set[k])); return FREE_STYLES.includes(st) && !custom.length; }
+// Labs (refocus 11/2026): the band is an extra with three presets that hold up on a phone recording, and "Just me"
+// is the default. Real recorded instruments only (Salamander piano, VS Chamber strings, Virtuosity studio kit,
+// tonejs electric bass): no General MIDI organ or pad is ever heard. Drum groove only on steady timing (B2).
+const LABS = {
+  piano: { name: "Piano & strings", who: "Soft piano, strings and bass. No drums.", style: "ballad", set: { keys: "piano", play: "held", extra: "strings", line: "root", room: "hall", tempo: "follow" }, parts: { drums: false, bass: true, keys: true, extra: true } },
+  ambient: { name: "Ambient bed", who: "Held strings and a soft low note. No drums.", style: "ambient", set: { keys: "piano", play: "held", extra: "strings", line: "root", room: "hall", tempo: "follow" }, parts: { drums: false, bass: true, keys: false, extra: true } },
+  groove: { name: "Drum groove", who: "A real studio kit and bass on your beat.", style: "rock", set: { kit: "studio", bass: "finger", line: "root", keys: "piano", extra: "none", room: "room" }, parts: { drums: true, bass: true, keys: false, extra: false } },
+};
+const LABS_FREE = ["piano", "groove"];   // same as before: the Ballad and Rock bands saved free (with the mark)
+// the preset this band still is (null once the player changed anything under More)
+const labsOf = c => { const b = c.band, L = b && LABS[b.preset]; return L && b.style === L.style && JSON.stringify(b.set || {}) === JSON.stringify(L.set) && Object.keys(L.parts).every(k => !!b.parts?.[k] === L.parts[k]) ? b.preset : null; };
+function labsApply(c, id) { const L = LABS[id]; if (!L) return; const b = newBand(c); b.preset = id; b.style = L.style; b.set = { ...L.set }; b.parts = { ...L.parts }; b.touched = { drums: true, bass: true, keys: true, extra: true }; b.beatOK = true; }
+function labsBest(c) { const A = bandA(c); if (!A) return "piano"; if (!A.pulse) return "ambient"; if (bandLoose(c, A)) return "piano";
+  if (!c.band?.heard?.p) return "piano";   // until LickPick has heard what plays in the lick, the safe pick (no jump later for a solo lick)
+  const st = LickBand.heuristicStyle(c.raw, A, bandHeardCtx(c, A)); return st === "ambient" ? "ambient" : st === "ballad" ? "piano" : "groove"; }
+// after a pick, the other presets render in the background (one at a time) so comparing them by ear is instant (B6)
+function labsPrefetch(c) {
+  if (labsPrefetch.busy || !c?.raw?.chromaQ || !bandWindow(c)) return;
+  const b = newBand(c), keep = { preset: b.preset, style: b.style, set: b.set, parts: b.parts, touched: b.touched, beatOK: b.beatOK }, Ks = [];
+  try { for (const id of Object.keys(LABS)) { if (id === keep.preset || (id === "groove" && bandLoose(c, bandA(c)))) continue; labsApply(c, id); Ks.push(bandKey(c)); } }
+  catch { } finally { Object.assign(b, keep); if (keep.preset === undefined) delete b.preset; }
+  labsPrefetch.busy = true; (async () => { for (const K of Ks) { if (cur() !== c) break; await bandRenderK(c, K).catch(() => { }); } labsPrefetch.busy = false; })();
+}
+function freeBand(c) { if (isPro() || !bandOn(c)) return false; const lp = labsOf(c); if (lp) return LABS_FREE.includes(lp); const b = c.band || {}, A = bandA(c), st = bandStyleOf(c, A); const custom = Object.keys(b.set || {}).filter(k => b.set[k] != null && k !== "fills" && !(k === "arrange" && b.set[k] === "build") && !(k === "take" && !b.set[k])); return FREE_STYLES.includes(st) && !custom.length; }
 function proOK(what) { if (isPro() || lic.trial > 0) return true; openPro(what); return false; }
 function spendTrial() { if (isPro()) return; lic.trial = Math.max(0, lic.trial - 1); store.set("lp:trial", lic.trial); setTimeout(() => toast(lic.trial ? `${lic.trial} free Pro save${lic.trial > 1 ? "s" : ""} left` : "That was your last free Pro save. Pro keeps them coming, from about $1.25 a month.", { icon: "i-bolt", label: "Pro", run: () => openPro() }), 2800); }
 const proTag = () => isPro() ? "" : `<i class="protag">PRO</i>`;
@@ -6210,10 +6254,11 @@ function lookGroup(c, o, opt) {
 function lookLive(c) { const l = lookOf(c?.ex), v = video; if (!v) return; v.style.filter = l[0] === "studio" || l[2] === "none" ? "" : l[2]; const pv = v.closest(".pv"); if (pv) { pv.classList.toggle("vig", l[6] > 0); pv.style.setProperty("--vig", l[6] || 0); pv.classList.toggle("grain", l[5] > 0); } }
 
 // ---------- Studio 2.0: the player docked on top (always there), then the work in the order you do it, one step open at a time
-const STEPS = [["choose", "Cut", "i-star"], ["band", "Band", "i-drum"], ["look", "Style", "i-text"], ["post", "Share", "i-share"]];
+// Labs (11/2026): the band is a tab after Share, not a step on the way to it (Next skips it; Share stays the last step)
+const STEPS = [["choose", "Cut", "i-star"], ["look", "Style", "i-text"], ["post", "Share", "i-share"], ["band", "Labs", "i-drum"]];
 // the old step names (tests, saved state, deep links) land on the screen that now holds them
 const STEP_OF = { choose: "choose", fix: "choose", arrange: "choose", band: "band", sound: "band", layers: "band", look: "look", post: "post" };
-const STEP_TITLE = { choose: ["Pick your best lick", "Pick it. Fix it. Size it."], band: ["Add the band", "Lock the groove. Pick a style."], look: ["Style it", "Look, title, chords."], post: ["Share it", "Captions. Save. Post."] };
+const STEP_TITLE = { choose: ["Pick your best lick", "Pick it. Fix it. Size it."], band: ["Labs: add a band", "Optional. Just you unless you pick one."], look: ["Style it", "Look, title, chords."], post: ["Share it", "Captions. Save. Post."] };
 const bandish = () => ["band", "choose"].includes(state.step);
 function stepInfo(c, k) {
   const S = srcOf(c), pk = pickOf(c), o = exOpts(c);
@@ -6225,7 +6270,7 @@ function stepInfo(c, k) {
       return [[tt && "Tightened", f && `${f} fixed`, c.tune && tuneOff(c) && "Tuned"].filter(Boolean).join(" · ") || (n ? `${n} to check` : "Nothing off"), tt || f > 0 || !!c.tune || !n]; }
     case "arrange": { if (c.src === "mix" && mixSegs(c).length > 1) return [`Mix of ${mixSegs(c).length}`, true]; const n = loopN(c); return n > 1 && pk ? [`Loop ×${n} · ${fmt(S?.len || 0)}`, true] : ["As played", false]; }
     case "layers": { const n = layersOf(c).length; return [n ? `You + ${n} recording${n > 1 ? "s" : ""}` : "Just you", n > 0]; }
-    case "band": { if (!o.canBand) return ["Needs a lick", false]; const A = bandA(c); return [bandOn(c) ? `${LickBand.STYLES[bandStyleOf(newBand(c) && c, A)]?.name || "Band"} · on` : "Off", bandOn(c)]; }
+    case "band": { if (!o.canBand) return ["Needs a lick", false]; const A = bandA(c); return [bandOn(c) ? `${LABS[labsOf(c)]?.name || LickBand.STYLES[bandStyleOf(newBand(c) && c, A)]?.name || "Band"} · on` : "Just me", bandOn(c)]; }
     case "sound": return [fxLabel(c) || "As recorded", !!sndOf(c).fx];
     case "look": { const l = lookOf(o); return [[l[1], o.ovTitle && (o.title || "").trim() && "title", (o.ovChords || o.ovKey || o.ovNotes) && "chords"].filter(Boolean).join(" · "), l[0] !== "studio" || ovOn(o)]; }
     case "post": return [c.captions?.length ? `${c.captions.length} captions` : "Captions", !!c.captions?.length];
@@ -6346,7 +6391,7 @@ function soundPanel(c) {
     ${n.fx === "custom" ? eqPanel(c) : ""}
     <div class="sndcard"><div class="sndhead"><h3>${icon("i-sliders")}Mixer</h3></div>
       ${strip("take", "i-mic", "You", n.takeOn, n.take, false)}
-      ${b && bandOn(c) ? INSTS.map(([k, ic, l]) => strip(k, ic, k === "extra" ? EXTRA_NAME[set.extra] : l, !!b.parts[k] && !aiOff(k) && !(k === "extra" && set.extra === "none"), b.lv[k] ?? 1, k === "extra" && set.extra === "none")).join("") : `<p class="hint">Turn the band on (Band step, or the Band switch under the video) to mix drums, bass and keys.</p>`}
+      ${b && bandOn(c) ? INSTS.map(([k, ic, l]) => strip(k, ic, k === "extra" ? EXTRA_NAME[set.extra] : l, !!b.parts[k] && !aiOff(k) && !(k === "extra" && set.extra === "none"), b.lv[k] ?? 1, k === "extra" && set.extra === "none")).join("") : `<p class="hint">Pick a band in Labs to mix it under your lick.</p>`}
       <div class="status" id="bandStatus" aria-live="polite">${esc(c.bandStatus || "")}</div></div>`;
 }
 const optBtn = (k, on, ic, t, d, dis, extra = "") => `<button type="button" class="opt" role="switch" aria-checked="${on}" data-ex="${k}" ${dis ? "disabled" : ""}>${icon(ic)}<span class="grow"><strong>${t}${extra}</strong><em>${d}</em></span><span class="tgl"></span></button>`;
@@ -6357,7 +6402,7 @@ function lookPanel(c) {
 }
 // the bar at the bottom: back, next step, and Export always one tap away
 function renderNav(c) {
-  const nav = $("#sNav"); if (!nav || !c) return; const i = STEPS.findIndex(x => x[0] === state.step), next = STEPS[i + 1];
+  const nav = $("#sNav"); if (!nav || !c) return; const i = STEPS.findIndex(x => x[0] === state.step), next = STEPS.slice(i + 1).find(x => x[0] !== "band");
   nav.innerHTML = `<button class="btn ghost navb" type="button" data-act="step-back" aria-label="Back" ${i <= 0 ? "disabled" : ""}>${icon("i-back")}</button>${next ? `<button class="btn navn" type="button" data-act="step-next">${next[1]}<svg class="i"><use href="#i-back"/></svg></button>` : ""}`;
   $("#sBar")?.classList.toggle("last", !next);
 }
@@ -6391,9 +6436,7 @@ function suggestions(c) {
   if (other >= 0) out.push({ id: "alt" + other, ic: "i-star", c: "cyan", t: `Lick ${"ABC"[other]} scored almost the same as Lick ${"ABC"[sel]}.`, a: `Hear Lick ${"ABC"[other]}` });
   // 3) too long for Reels/TikTok
   if (state.pickLen === "auto" && pk.len > 34) out.push({ id: "len30", ic: "i-phone", c: "hot", t: `Your lick runs ${fmt(pk.len)}. Reels and TikTok hold attention best under 30 s.`, a: "Make it 30 s" });
-  // 4) a band that fits the groove it measured
-  if (A?.pulse && c.raw.chromaQ) { const st = LickBand.heuristicStyle(c.raw, A, bandHeardCtx(c, A)), nm = LickBand.STYLES[st]?.name;
-    if (nm) out.push({ id: "band:" + st, ic: "i-drum", c: "blaze", t: `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}${A.meter === 3 ? ", 3/4" : ""}${keyText(c) ? `, ${keyText(c)}` : ""}: that's a ${nm.toLowerCase()} groove.`, a: `Hear a ${nm.toLowerCase()} band` }); }
+  // 4) (Labs, 11/2026) no band suggestion on the Cut step: the band is an opt-in extra in the Labs tab
   return out.filter(x => !dis[x.id.split(":")[0]]).slice(0, 3);
 }
 function suggestHTML(c) {
@@ -6658,7 +6701,7 @@ function exportSheetHTML(c) {
     <div class="exgroup"><span>On the video</span><button type="button" class="opt" data-act="look-open" ${busy ? "disabled" : ""}>${icon("i-text")}<span class="grow"><strong>${esc(stepInfo(c, "look")[0])}</strong><em>Look, title, chords and tab. Tap to change.</em></span><span class="chev">›</span></button></div>
     ${o.canBand || o.canSep || S.kind === "mix" || o.canLayers ? `<div class="exgroup"><span>Extras</span>
       ${o.canLayers ? opt("layers", !!o.layers, "i-stack", "Layers, split screen", `You and ${layersOn(c).length} more recording${layersOn(c).length > 1 ? "s" : ""}, side by side, on one beat.`, false, proTag()) : ""}
-      ${o.canBand ? opt("band", o.band, "i-drum", "Backing band", "Drums, bass and keys on your beat.", false, freeBand(c) || !o.band ? "" : proTag()) : ""}
+      ${o.canBand ? opt("band", o.band, "i-drum", "Band (Labs)", "Piano & strings, ambient or drums, under your lick.", false, freeBand(c) || !o.band ? "" : proTag()) : ""}
       ${o.canSep ? opt("sep", o.sep, "i-stack", "One file per part", `${S.n} files instead of one.`, false, proTag()) : ""}
       ${S.kind === "mix" || o.band ? opt("alsoParts", !!o.alsoParts, "i-film", S.kind === "mix" ? "Also save each part on its own" : "Also save it without the band", S.kind === "mix" ? `Plus ${S.ranges.length} separate files of your original playing.` : "Plus a file with just your original playing.") : ""}
     </div>` : ""}
@@ -7385,12 +7428,14 @@ function bandPanel(c) {
   const aiOff = k => b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k];
   const plays = INSTS.map(([k, ic, l]) => { const has = !!b.parts[k] && !aiOff(k) && !(k === "drums" && A && !A.pulse) && !(k === "extra" && set.extra === "none"); return `<button type="button" data-bpart="${k}" aria-pressed="${has}">${k === "extra" ? (set.extra === "none" ? "Extra" : EXTRA_NAME[set.extra]) : l}</button>`; }).join("");
   const sub = (id, title, sum, body) => `<details class="bsub" data-bsub="${id}"${state.bsub === id ? " open" : ""}><summary><b>${title}</b><em>${sum}</em></summary><div class="bsubin">${body}</div></details>`;
-  return `${beatCard(c, A)}
-    <button type="button" class="opt bandsw" role="switch" aria-checked="${on}" data-act="band-use" ${o.canBand ? "" : "disabled"}>${icon("i-drum")}<span class="grow"><strong>Play with a band${freeBand(c) || !on ? "" : proTag()}</strong><em>${on ? "On. You hear it, and it saves." : "Drums, bass and keys on your beat."}</em></span><span class="tgl"></span></button>
-    ${on && A?.pulse && !b.beatOK ? beatCheck(c, A) : ""}
-    ${on ? `<div class="chipset styles" role="group" aria-label="Style"><button type="button" class="ai" data-bstyle="auto" aria-pressed="${b.style === "auto"}">${icon("i-bolt")}${sampler ? "AI pick" : "Auto"}</button>${Object.entries(styles).map(([k, v]) => `<button type="button" data-bstyle="${k}" aria-pressed="${b.style === k}">${v.name}${FREE_STYLES.includes(k) ? "" : proTag()}</button>`).join("")}</div>
-    ${b.style === "auto" ? `<div class="ai-why">${b.aiBusy ? "Thinking…" : b.ai ? `<b>${esc(styles[b.ai.style].name)}.</b> ${esc(b.ai.why || "")}` : `<b>${esc(styles[picked].name)}</b> suits ${A?.pulse ? `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}` : "free time"}.${sampler ? " Tap AI pick again for Claude's call." : ""}`}</div>` : ""}
-    <div class="chipset plays" role="group" aria-label="Instruments">${plays}</div>
+  const best = labsBest(c), sel = on ? labsOf(c) : "none", loose = bandLoose(c, A), steady = !!A?.pulse && !loose, ids = [best, ...Object.keys(LABS).filter(k => k !== best)];
+  const card = (id, nm, who, tag) => { const off = id === "groove" && !steady, chk = sel === id;
+    return `<div class="lcard${id === best ? " sugg" : ""}${id === "none" ? " off" : ""}${chk ? " on" : ""}">${id === best ? `<span class="lbadge">Best fit for this lick</span>` : ""}<button type="button" class="lsel" role="radio" aria-checked="${chk}" data-preset="${id}"${off ? " disabled" : ""}><span class="nm">${esc(nm)}</span><span class="who">${esc(off ? "Needs steady timing. Yours moves freely." : who)}</span></button><span class="row"><button type="button" class="lbplay" data-labsplay="${id}" aria-label="Hear ${esc(nm)}"${off ? " disabled" : ""}><span class="ip">${icon("i-play")}</span><span class="ia">${icon("i-pause")}</span></button>${tag}</span></div>`; };
+  return `<p class="lheard">${A ? `Heard: ${A.pulse ? `<b>${A.bpm} BPM</b> · ` : ""}${keyText(c) ? `<b>${esc(keyText(c))}</b> · ` : ""}${steady ? "steady beat" : "free feel"}` : ""}</p>
+    <div class="labgrid" role="radiogroup" aria-label="Band">${ids.map(id => card(id, LABS[id].name, LABS[id].who, LABS_FREE.includes(id) ? "" : proTag())).join("")}${card("none", "Just me", "No band. Your lick as you played it.", "")}</div>
+    <p class="hint keep">Labs is new: three bands that suit a phone recording, made on your phone. ${on ? "It plays when you hear the lick, and it saves with it." : "Off unless you pick one."}${A?.pulse ? ` <button class="linkbtn" type="button" data-act="labs-beat" aria-expanded="${!!state.labsBeat}">${on ? "Sounds off the beat?" : "Metronome"}</button>` : ""}</p>
+    ${A?.pulse && state.labsBeat ? beatCard(c, A) + (on ? beatCheck(c, A) : "") : ""}
+    ${on ? `<div class="chipset plays" role="group" aria-label="Instruments">${plays}</div>
     <p class="hint">${heardText(c)}</p>
     <div class="bandchart" id="bandChart">${bandChartHTML(c)}</div>
 ` : ""}
@@ -8353,7 +8398,7 @@ document.addEventListener("click", e => {
   if (d.act === "look-open") { $("#exportSheet").hidden = true; openStep(c, "look"); return; }
   if (d.tab) { stopBand(); state.tab = d.tab; state.step = "choose"; if (d.tab === "parts" && onParts(c).length) c.src = "clean"; renderStudio(); if (d.tab === "pick") { c.src = "pick"; player?.pause(); showPick(c); } return; }
   if (d.step) { openStep(c, d.step); return; }
-  if (d.act === "step-next" || d.act === "step-back") { const i = STEPS.findIndex(x => x[0] === state.step) + (d.act === "step-next" ? 1 : -1); if (i >= 0 && i < STEPS.length) openStep(c, STEPS[i][0]); return; }
+  if (d.act === "step-next" || d.act === "step-back") { const i0 = STEPS.findIndex(x => x[0] === state.step), nx = d.act === "step-next" ? STEPS.slice(i0 + 1).find(x => x[0] !== "band") : STEPS[i0 - 1]; if (nx) openStep(c, nx[0]); return; }
   if (d.zoom) { const v = viewOf(c), D = c.raw?.duration || 1, now = nowT(c), span = v.b - v.a; if (d.zoom === "fit") { c._view = null; drawWave(); return; } const ns = d.zoom === "in" ? span / 2 : span * 2, ctr = now >= v.a && now <= v.b ? now : (v.a + v.b) / 2; setZoom(c, ctr - ns / 2, ns); return; }
   if (d.act === "dock-band" || d.act === "band-use") { const o = exOpts(c); if (!o.canBand) { toast("The band plays with a lick."); return; } const was = bandPlaying; stopBand(); o.band = !o.band; if (o.band) { o.sep = false; const b = newBand(c); c.src = c.src === "mix" ? "pick" : c.src; if (!b.beatOK) { b.click = false; state.beatChk = null; if (state.step !== "band") state.step = "band"; } } persist(c); renderStudio(); renderExport(c); if (was || (o.band && d.act === "dock-band")) bandPreview(c); return; }
   if (d.act === "dock-layers") { const o = exOpts(c), was = bandPlaying; stopBand(); o.layers = o.layers === false; persist(c); renderStudio(); if (was) bandPreview(c); return; }
@@ -8373,7 +8418,7 @@ document.addEventListener("click", e => {
     const on = !!b.parts[k] && !(b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k]); b.touched = { ...(b.touched || {}), [k]: true }; b.parts[k] = !on; persist(c); renderStudio(); return; }
   if (d.groove) { const b = newBand(c), want = d.groove === "2"; stopBand(); if (!!b.fix?.shift !== want) { b.fix = { ...(b.fix || {}), shift: want }; c._bandA = null; c._tight = null; } b.click = false; persist(c); renderStudio(); bandPreview(c); return; }
   if (d.bchk) { const b = newBand(c), was = bandPlaying;
-    if (d.bchk === "yes") { b.beatOK = true; b.click = false; state.beatChk = null; stopBand(); persist(c); renderStudio(); { const bpm = bandA(c)?.bpm; toast(bpm ? `Band set to ${bpm} BPM.` : "Band set to your beat."); } if (was) bandPreview(c); return; }
+    if (d.bchk === "yes") { b.beatOK = true; b.click = false; state.beatChk = null; state.labsBeat = false; stopBand(); persist(c); renderStudio(); { const bpm = bandA(c)?.bpm; toast(bpm ? `Band set to ${bpm} BPM.` : "Band set to your beat."); } if (was) bandPreview(c); return; }
     if (d.bchk === "half") { stopBand(); b.fix = { ...(b.fix || {}), shift: !(b.fix?.shift) }; c._bandA = null; c._tight = null; b.click = true; persist(c); renderStudio(); bandPreview(c); toast("Moved half a beat. Listen again."); return; }
     if (d.bchk === "speed") { state.beatChk = "speed"; b.click = true; persist(c); renderStudio(); if (!was) bandPreview(c); return; } }
   if (d.balt) { const b = newBand(c), o = (c._alts?.out || []).find(x => x.bpm === +d.balt); if (!o) return; stopBand(); b.grid = { beats: o.beats }; delete b.fix; c._bandA = null; c._tight = null; b.click = true; persist(c); renderStudio(); bandPreview(c); return; }
@@ -8426,7 +8471,7 @@ document.addEventListener("click", e => {
   if (d.lenfit) { const L = +d.lenfit; state.pickLen = L; c.pickSel = 0; c.src = "pick"; syncRules(); render(); renderStudio(); showPick(c); const iv = setInterval(() => { if (!c._pickJob && pickOf(c)) { clearInterval(iv); renderExport(c); renderSrc(c); toast(`Licks are now ${L} s. Change it any time under Lick length.`); } }, 150); setTimeout(() => clearInterval(iv), 15000); return; }
   if (d.lay) { const [k, key, v] = d.lay.split(":"); setLay(c, k, key, key === "y" ? ({ top: { title: 0.08, key: 0.16, chords: 0.26, notes: 0.36 }[k], middle: 0.5, bottom: { title: 0.7, key: 0.72, chords: 0.78, notes: 0.89 }[k] })[v] : +v); renderExport(c); return; }
   if (d.ex && d.ex.startsWith("ov")) { const o = exOpts(c); o[d.ex] = !o[d.ex]; persist(c); renderExport(c); if (state.step === "look") renderStudio(); ovPreview(); return; }
-  if (d.ex) { const o = exOpts(c); if (d.ex.startsWith("fmt:")) o.fmt = d.ex.slice(4); else o[d.ex] = !o[d.ex]; if (d.ex === "sep" && o.sep) o.band = false; if (d.ex === "band" && o.band) o.sep = false; renderExport(c); return; }
+  if (d.ex) { const o = exOpts(c); if (d.ex.startsWith("fmt:")) o.fmt = d.ex.slice(4); else o[d.ex] = !o[d.ex]; if (d.ex === "sep" && o.sep) o.band = false; if (d.ex === "band" && o.band) { o.sep = false; const b0 = newBand(c); if (!b0.preset && b0.style === "auto" && !Object.keys(b0.set || {}).length) labsApply(c, labsBest(c)); } renderExport(c); return; }
   if (d.src) { stopBand(); if (!c.exporting) c.exStatus = ""; state.tab = d.src === "clean" ? "parts" : "pick"; if (d.src === "clean" || d.src === "mix") c.src = d.src; else { c.src = "pick"; const i = +d.src.split(":")[1]; if (i !== (c.pickSel || 0)) { c.pickSel = i; c._bandA = null; persist(c); } } renderStudio(); renderExport(c); showPick(c); const S = srcOf(c); if (S && (c.file || c.proxy) && $("#exportSheet").hidden) playRanges(c, S.ranges, S.label); return; }
   if (d.vote) { const all = store.get("lp:fb") || {}, pk = pickOf(c); if (pk && all[c.key]?.v !== d.vote) rateStretch(c, pk.s, pk.e, d.vote === "yes" ? 2 : -1, []); all[c.key] = { ...(all[c.key] || {}), v: d.vote, pick: pk ? [+pk.s.toFixed(1), +pk.e.toFixed(1)] : null, sel: c.pickSel || 0 }; store.set("lp:fb", all); diagLog(`vote ${d.vote}: ${c.name}`); renderStudio(); toast(d.vote === "yes" ? "Noted. Thanks!" : "Noted. Show me where your best part is."); return; }
   if (d.act === "mark-best") { const all = store.get("lp:fb") || {}; all[c.key] = { ...(all[c.key] || {}), at: +nowT(c).toFixed(1) }; store.set("lp:fb", all); renderStudio(); toast(`Marked ${fmt(nowT(c))}. It goes in your test report.`); return; }
@@ -8436,6 +8481,15 @@ document.addEventListener("click", e => {
       if (p.s + a.s < 0) a.s = -p.s; if (p.e + a.e > D) a.e = D - p.e; if ((p.e + a.e) - (p.s + a.s) < Math.max(3, L)) a[w] -= +n * L; c.pickAdj[k] = a; }
     c.src = "pick"; c._bandA = null; renderStudio(); showPick(c); const pk = pickOf(c); if (pk && (c.file || c.proxy)) { const edge = d.padj.startsWith("e") ? Math.max(pk.s, pk.e - 4) : pk.s; playRanges(c, [[edge, pk.e]], d.padj.startsWith("e") ? "End of lick" : `Lick ${"ABC"[c.pickSel || 0]}`); } return; }
   if (d.act === "pick-band") { openStep(c, "band"); return; }
+  if (d.preset || d.labsplay) { const o = exOpts(c), id = d.preset || d.labsplay, now = bandOn(c) ? labsOf(c) : "none", sy = $("#studio").scrollTop;
+    if (d.labsplay && bandPlaying && now === id) { stopBand(); return; }
+    if (id !== "none" && !o.canBand) { toast("The band plays with a lick. Choose one first."); return; }
+    const was = bandPlaying; stopBand();
+    if (id === "none") o.band = false; else { o.band = true; o.sep = false; if (now !== id) labsApply(c, id); if (c.src === "mix") c.src = "pick"; }
+    // only the cards' checked state and what's under them change: the grid itself never moves
+    persist(c); renderStudio(); renderExport(c); $("#studio").scrollTop = sy;
+    if (was || d.labsplay) bandPreview(c); else if (id !== "none") labsPrefetch(c); return; }
+  if (d.act === "labs-beat") { state.labsBeat = !state.labsBeat; renderStudio(); return; }
   if (d.cand != null) { stopBand(); c.pickSel = +d.cand; c._bandA = null; persist(c); renderStudio(); showPick(c); const pk = pickOf(c); if (pk && (c.file || c.proxy)) playRanges(c, pk.ranges, `Lick ${"ABC"[c.pickSel || 0]}`); return; }
   if (d.plen) { stopBand(); state.pickLen = d.plen === "auto" ? "auto" : +d.plen; c.pickSel = 0; syncRules(); render(); renderStudio(); showPick(c); return; }
   if (d.act === "forget") { const x = c; closeStudio(); forget(x); render(); renderBoxes(); toast("Removed from the list. The video is untouched."); return; }
