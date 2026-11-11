@@ -4225,7 +4225,8 @@ details.fold.more details.fold{margin-top:0}
   }
 
   // ------------------------------------------------------------- style choice
-  function heuristicStyle(raw, A) {
+  // H (optional): what LickPick heard { drums, bass, guitar, keys, vocals: true/false, loose: rubato timing }
+  function heuristicStyle(raw, A, H) {
     if (A && !A.pulse) return "ambient";
     const t = A?.bpm || raw.info?.tempo;
     if (!t) return "ambient";
@@ -4233,6 +4234,10 @@ details.fold.more details.fold{margin-top:0}
     // what the playing says: attacks per second and where they sit (on or off the beat), then the tempo
     const q = raw.onsetQ || [], fr = raw.frameRate || 21.5; let n = 0; for (let i = 1; i < q.length - 1; i++) if (q[i] > 80 && q[i] >= q[i - 1] && q[i] > q[i + 1]) n++;
     const dens = n / Math.max(1, q.length / fr), off = A?.offRatio || 0;
+    // what was heard decides first: loose timing, or one instrument alone (no drums, no bass) that isn't busy, gets
+    // held piano and strings (or an ambient bed when it's sparse), never a rock kit and organ
+    if (H?.loose) return dens < 1.5 ? "ambient" : "ballad";
+    if (H && !H.drums && !H.bass && (H.guitar || H.keys || H.vocals) && dens < 4.2) return "ballad";
     if (off > 1.25 && t >= 60 && t <= 100 && dens < 4) return "reggae";
     if (dens >= 4.2 && t >= 88 && t <= 125) return "funk";
     if (t < 104) return "ballad";
@@ -6385,7 +6390,7 @@ function suggestions(c) {
   // 3) too long for Reels/TikTok
   if (state.pickLen === "auto" && pk.len > 34) out.push({ id: "len30", ic: "i-phone", c: "hot", t: `Your lick runs ${fmt(pk.len)}. Reels and TikTok hold attention best under 30 s.`, a: "Make it 30 s" });
   // 4) a band that fits the groove it measured
-  if (A?.pulse && c.raw.chromaQ) { const st = LickBand.heuristicStyle(c.raw, A), nm = LickBand.STYLES[st]?.name;
+  if (A?.pulse && c.raw.chromaQ) { const st = LickBand.heuristicStyle(c.raw, A, bandHeardCtx(c, A)), nm = LickBand.STYLES[st]?.name;
     if (nm) out.push({ id: "band:" + st, ic: "i-drum", c: "blaze", t: `${A.bpm} BPM, ${A.swing > 0.58 ? "swung" : "straight"}${A.meter === 3 ? ", 3/4" : ""}${keyText(c) ? `, ${keyText(c)}` : ""}: that's a ${nm.toLowerCase()} groove.`, a: `Hear a ${nm.toLowerCase()} band` }); }
   return out.filter(x => !dis[x.id.split(":")[0]]).slice(0, 3);
 }
@@ -7129,7 +7134,9 @@ function newBand(c) {
   const my = store.get(MYBAND_KEY);
   return (c.band = { style: my?.style || "auto", set: { ...(my?.set || {}) }, parts: { drums: true, bass: true, keys: true, extra: true }, gain: 0.8, vertical: true, lv: { drums: 1, bass: 1, keys: 1, extra: 1, ...(my?.lv || {}) } });
 }
-const bandStyleOf = (c, A) => { const b = c.band; return b.style === "auto" ? (b.ai?.style || LickBand.heuristicStyle(c.raw, A)) : b.style; };
+const bandStyleOf = (c, A) => { const b = c.band; return b.style === "auto" ? (b.ai?.style || LickBand.heuristicStyle(c.raw, A, bandHeardCtx(c, A))) : b.style; };
+// what Auto knows about the lick besides tempo: the instruments heard in it (the player's corrections win) and loose timing (B2)
+const bandHeardCtx = (c, A) => ({ drums: heardOn(c, "drums"), bass: heardOn(c, "bass"), guitar: heardOn(c, "guitar"), keys: heardOn(c, "keys"), vocals: heardOn(c, "vocals"), loose: typeof bandLoose === "function" && bandLoose(c, A) });
 // singers start from a gentle piano bed
 const bandSet = (c, A) => { const b = c.band, set = { ...(isSinger(c) ? { groove: "simple", keys: "piano", play: "held" } : {}), ...b.set }; if (b.style === "auto" && b.ai?.extra && !set.extra) set.extra = b.ai.extra; if (bandLoose(c, A)) { set.tempo = set.tempo || "follow"; set.play = set.play || "held"; set.line = set.line || "root"; } return LickBand.settle(bandStyleOf(c, A), set); };
 const EXTRA_NAME = { strings: "Strings", brass: "Brass", gtr: "Electric gtr", nylon: "Nylon gtr", steel: "Steel gtr", choir: "Choir", vibes: "Vibes", sax: "Sax", synth: "Synth", none: "Extra" };
@@ -7368,7 +7375,7 @@ function bandPanel(c) {
   if (!w) return `<p class="hint keep">The band plays with a lick. Choose one first.</p>`;
   if (!c.raw.chromaQ) return `<p class="hint keep">This jam was scanned by an older LickPick. Remove it from the list and add it again so the band can hear your chords.</p>`;
   const b = newBand(c), o = exOpts(c), on = bandOn(c);
-  const A = bandA(c), styles = LickBand.STYLES, auto = LickBand.heuristicStyle(c.raw, A);
+  const A = bandA(c), styles = LickBand.STYLES, auto = LickBand.heuristicStyle(c.raw, A, bandHeardCtx(c, A));
   const picked = b.style === "auto" ? (b.ai?.style || auto) : b.style, set = bandSet(c, A);
   if (!b.heard || b.heard.key !== `${c.key}|${w.s.toFixed(2)}|${w.e.toFixed(2)}`) setTimeout(() => bandHear(c), 0);
   if (!b.ch?.mel || b.ch.mel.key !== `${c.key}|${w.s.toFixed(2)}|${w.e.toFixed(2)}`) setTimeout(() => bandMelody(c), 30);
