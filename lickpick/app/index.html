@@ -7131,7 +7131,7 @@ function newBand(c) {
 }
 const bandStyleOf = (c, A) => { const b = c.band; return b.style === "auto" ? (b.ai?.style || LickBand.heuristicStyle(c.raw, A)) : b.style; };
 // singers start from a gentle piano bed
-const bandSet = (c, A) => { const b = c.band, set = { ...(isSinger(c) ? { groove: "simple", keys: "piano", play: "held" } : {}), ...b.set }; if (b.style === "auto" && b.ai?.extra && !set.extra) set.extra = b.ai.extra; return LickBand.settle(bandStyleOf(c, A), set); };
+const bandSet = (c, A) => { const b = c.band, set = { ...(isSinger(c) ? { groove: "simple", keys: "piano", play: "held" } : {}), ...b.set }; if (b.style === "auto" && b.ai?.extra && !set.extra) set.extra = b.ai.extra; if (bandLoose(c, A)) { set.tempo = set.tempo || "follow"; set.play = set.play || "held"; set.line = set.line || "root"; } return LickBand.settle(bandStyleOf(c, A), set); };
 const EXTRA_NAME = { strings: "Strings", brass: "Brass", gtr: "Electric gtr", nylon: "Nylon gtr", steel: "Steel gtr", choir: "Choir", vibes: "Vibes", sax: "Sax", synth: "Synth", none: "Extra" };
 // what's already playing in the take: the band leaves those parts out (the player can correct it)
 const HEARD = [["drums", "Drums", 0.9], ["bass", "Bass", 0.6], ["guitar", "Guitar", 0.7], ["keys", "Keys", 0.75], ["strings", "Strings", 0.7], ["brass", "Horns", 0.85], ["vocals", "Vocals", 0.35]];
@@ -7203,9 +7203,23 @@ function applyHeard(c) {
 }
 const sndOf = c => c.snd || (c.snd = { fx: null, take: 1, takeOn: true });
 const takeGain = c => { const n = sndOf(c); return n.takeOn ? n.take : 0; };
+// A free, rubato lick: the player's attacks sit a median of more than BAND_LOOSE off one steady tempo. A grid band
+// flams against that (review 10 Nov: band vs player median 31 ms, p90 119 ms; Dave's Lick A attacks vs one tempo:
+// median 24 ms, p90 59 ms), so it gets no drums, held chords
+// and a band that follows the tracked beats. A metronome the player set, or a lick locked to the grid, is never loose.
+const BAND_LOOSE = 0.02, BAND_LOOSE_P90 = 0.05;   // tune on real licks: GuitarSet-steady players should stay under both
+function bandLoose(c, A) {
+  if (!A?.pulse || !c?.raw?.fluxA || metroManual(A) || tightOn(c)) return false;
+  if (c._loose?.A === A) return c._loose.v;
+  let v = false;
+  try { const L = LickBand.tightMap(A, 1, {}); if (L) { const B = []; for (let t = L.a; t <= A.beats[A.beats.length - 1] + L.p * 0.5; t += L.p) if (t >= A.beats[0] - L.p * 0.5) B.push(+t.toFixed(4));
+      const T = LickBand.snapMap(c.raw, { pulse: true, beats: B }); if (T?.knots?.length >= 6) { const d = T.knots.map(([s, u]) => Math.abs(u - s)).sort((x, y) => x - y); v = d[d.length >> 1] > BAND_LOOSE || d[Math.floor(d.length * 0.9)] > BAND_LOOSE_P90; } } } catch { }
+  c._loose = { A, v }; return v;
+}
 function stemGain(c, k) {
   const b = c.band; if (!b) return 0; const A = bandA(c);
   if (k === "drums" && A && !A.pulse) return 0;
+  if (k === "drums" && bandLoose(c, A) && !b.touched?.drums) return 0;
   if (b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k]) return 0;
   if (k === "extra" && bandSet(c, A).extra === "none") return 0;
   return b.parts[k] ? (b.lv?.[k] ?? 1) * b.gain * (c._btrim ?? 1) : 0;
