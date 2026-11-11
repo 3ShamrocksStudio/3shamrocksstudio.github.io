@@ -7316,7 +7316,7 @@ function followCard(c, A) {
   if (!A?.pulse) return "";
   const lock = tightOn(c), T = tightCalc(c), st = LickBand.STYLES[bandStyleOf(c, A)], feel = feelFor(c, A), auto = !c.tight?.user, ms = T ? Math.round(T.maxShift * 1000) : 0;
   const why = lock ? (T ? `On: every note you played lands on the metronome (${A.bpm} BPM). Biggest move ${ms} ms. Picture and sound move together; nothing is added.` : "On, but there's nothing to move here.")
-    : T ? (ms > LOCK_MAX * 1000 || T.maxStretch > LOCK_STRETCH ? `Off: some notes sit ${ms} ms off the metronome, so locking would be audible. Turn it on if you want them moved anyway.` : "Off: the band follows you instead, push and pull included.") : "Off: no attacks found near the metronome to move.";
+    : T ? (ms > LOCK_MAX * 1000 || T.maxStretch > LOCK_STRETCH ? `Off: some notes sit ${ms} ms off the metronome, so locking would be audible. Turn it on if you want them moved anyway.` : "Off: your notes stay where you played them.") : "Off: no attacks found near the metronome to move.";
   return `<div class="fixcard${lock ? " on" : ""}"><h4>${icon("i-bolt")}Your playing on the metronome</h4>
     <button type="button" class="opt" role="switch" aria-checked="${lock}" data-act="tight-toggle">${icon("i-clock")}<span class="grow"><strong>Lock my playing to the metronome${auto && lock ? " · auto" : ""}</strong><em>${why}</em></span><span class="tgl"></span></button>
     ${lock && T ? `<button type="button" class="opt" role="switch" aria-checked="${c.feel !== "mine"}" data-act="feel-toggle">${icon("i-loop")}<span class="grow"><strong>Play my off-beats in the ${esc(st?.name || "band")} feel</strong><em>${c.feel === "mine" ? "Off: your 8ths stay where you played them." : feel > 0.58 ? `Swung like the ${esc(st?.name || "band")}: your 8ths land on the shuffle.` : "Straight: your 8ths land halfway."}</em></span><span class="tgl"></span></button>` : ""}
@@ -7347,7 +7347,7 @@ function beatCard(c, A) {
   const by = !A?.pulse ? "no steady beat heard · tap one" : A.tapped ? "from your taps" : G.bpm || G.off ? "set by you" : fixed ? "corrected by you" : "heard in your playing";
   const ms = G.off ? ` · ${G.off > 0 ? "+" : "−"}${Math.round(Math.abs(G.off) * 1000)} ms` : "", more = !!state.metroMore;
   const lock = tightOn(c), T = tightCalc(c), mv = T ? Math.round(T.maxShift * 1000) : 0;
-  const lockWhy = lock ? (T ? `On · your notes land on it (biggest move ${mv} ms)` : "On") : T ? (mv > LOCK_MAX * 1000 || T.maxStretch > LOCK_STRETCH ? `Off · some notes are ${mv} ms away; locking would be audible` : "Off · the band follows you instead") : "Off · nothing to move";
+  const lockWhy = lock ? (T ? `On · your notes land on it (biggest move ${mv} ms)` : "On") : T ? (mv > LOCK_MAX * 1000 || T.maxStretch > LOCK_STRETCH ? `Off · some notes are ${mv} ms away; locking would be audible` : "Off · your notes stay where you played them") : "Off · nothing to move";
   return `<div class="metro2${b.click ? " clicking" : ""}" style="--beat:${A?.pulse ? (60 / A.bpm).toFixed(3) : 0.7}s">
     <div class="metrohead">
       <button type="button" class="metrotap" data-bpm="tap" aria-label="Tap along to set the tempo"><b>${A?.pulse ? A.bpm : "—"}</b><em>BPM${A?.pulse && A.halfTime ? " · ½×" : ""}${A?.meter === 3 ? " · 3/4" : ""}${A?.swing > 0.58 ? " · swung" : ""}</em><i class="beatdot" aria-hidden="true"></i></button>
@@ -8362,7 +8362,7 @@ document.addEventListener("click", e => {
     const on = !!b.parts[k] && !(b.style === "auto" && b.ai && b.ai[k] === false && !b.touched?.[k]); b.touched = { ...(b.touched || {}), [k]: true }; b.parts[k] = !on; persist(c); renderStudio(); return; }
   if (d.groove) { const b = newBand(c), want = d.groove === "2"; stopBand(); if (!!b.fix?.shift !== want) { b.fix = { ...(b.fix || {}), shift: want }; c._bandA = null; c._tight = null; } b.click = false; persist(c); renderStudio(); bandPreview(c); return; }
   if (d.bchk) { const b = newBand(c), was = bandPlaying;
-    if (d.bchk === "yes") { b.beatOK = true; b.click = false; state.beatChk = null; stopBand(); persist(c); renderStudio(); toast("Groove locked. The band follows your playing."); if (was) bandPreview(c); return; }
+    if (d.bchk === "yes") { b.beatOK = true; b.click = false; state.beatChk = null; stopBand(); persist(c); renderStudio(); { const bpm = bandA(c)?.bpm; toast(bpm ? `Band set to ${bpm} BPM.` : "Band set to your beat."); } if (was) bandPreview(c); return; }
     if (d.bchk === "half") { stopBand(); b.fix = { ...(b.fix || {}), shift: !(b.fix?.shift) }; c._bandA = null; c._tight = null; b.click = true; persist(c); renderStudio(); bandPreview(c); toast("Moved half a beat. Listen again."); return; }
     if (d.bchk === "speed") { state.beatChk = "speed"; b.click = true; persist(c); renderStudio(); if (!was) bandPreview(c); return; } }
   if (d.balt) { const b = newBand(c), o = (c._alts?.out || []).find(x => x.bpm === +d.balt); if (!o) return; stopBand(); b.grid = { beats: o.beats }; delete b.fix; c._bandA = null; c._tight = null; b.click = true; persist(c); renderStudio(); bandPreview(c); return; }
