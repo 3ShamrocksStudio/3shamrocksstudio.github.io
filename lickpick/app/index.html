@@ -1090,6 +1090,7 @@ input[type=range]{min-height:44px}
 .sdock{position:sticky;top:0;z-index:25;margin:0 -16px;padding:8px 16px 10px;background:var(--stage);border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 18px -12px rgba(0,0,0,.8)}
 .sdock .stage{box-shadow:3px 3px 0 var(--cyan);border-width:2px;border-radius:14px;margin-right:3px}
 .sdock .pv video{max-height:22vh}
+.sdock:not(.mini) .pv.tall video{max-height:32vh}
 .sdock .wave,#studio .sdock .wave{height:54px}
 .sdock .pbar{flex-wrap:nowrap;gap:2px;padding:2px 6px}
 .sdock .pbar .ptrack{order:0;flex:1 1 auto;margin:0 6px;height:8px}
@@ -5950,7 +5951,7 @@ class Seg {
     this.track.addEventListener("pointermove", e => { if (drag) seek(e); });
     this.track.addEventListener("pointerup", () => { drag = false; });
     this.v.addEventListener("play", () => this.ui()); this.v.addEventListener("pause", () => this.ui());
-    this.v.addEventListener("loadedmetadata", () => { this.goStart(); this.ui(); });
+    this.v.addEventListener("loadedmetadata", () => { this.host.querySelector(".pv")?.classList.toggle("tall", this.v.videoHeight > this.v.videoWidth * 1.1); this.goStart(); this.ui(); });
     this.v.addEventListener("seeked", () => { this.ui(); this.onTick(); });
   }
   load(url) { this.v.src = url; }
