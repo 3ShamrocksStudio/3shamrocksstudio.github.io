@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>3Shamrocks Studio — How We Work (Arcade)</title>
+<link rel="icon" href="assets/studio/3S_logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;background:#07070d;overflow:hidden}
+  .wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,#17122b,#07070d 75%)}
+  .screen{position:relative;width:min(96vw,960px);aspect-ratio:16/9;border-radius:14px;overflow:hidden;box-shadow:0 0 0 3px #2a2350,0 0 60px -8px #8239ea,0 30px 70px rgba(0,0,0,.6);background:#0a0a14}
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+  /* CRT overlay */
+  .crt{position:absolute;inset:0;pointer-events:none;z-index:5;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.18) 3px,rgba(0,0,0,0) 4px);
+    mix-blend-mode:multiply}
+  .crt::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 120% 120% at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%);animation:flick 5s steps(60) infinite}
+  @keyframes flick{0%,97%{opacity:.5}98%{opacity:.62}100%{opacity:.5}}
+  /* on-screen controls */
+  .pad{position:absolute;z-index:6;bottom:14px;right:16px;display:flex;gap:10px;font-family:'Press Start 2P',monospace}
+  .pad button{font-family:inherit;font-size:11px;color:#fff;background:#8239ea;border:3px solid #fff;border-radius:6px;padding:12px 16px;cursor:pointer;box-shadow:0 4px 0 #43206f;transition:transform .05s,box-shadow .05s;text-transform:uppercase;letter-spacing:1px}
+  .pad button:active{transform:translateY(3px);box-shadow:0 1px 0 #43206f}
+  .pad button.ghost{background:#141235;color:#b9a8ff;box-shadow:0 4px 0 #090720}
+  .hint{position:absolute;z-index:6;left:16px;bottom:16px;font-family:'Press Start 2P',monospace;font-size:8px;color:rgba(255,255,255,.4);line-height:1.8}
+  @media(max-width:600px){.pad button{font-size:10px;padding:11px 12px}.hint{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="screen">
+    <canvas id="game" width="320" height="180"></canvas>
+    <div class="crt"></div>
+    <div class="pad" id="pad"></div>
+    <div class="hint">← → / SPACE to move<br>ENTER to start</div>
+  </div>
+</div>
+<script>
+const cv=document.getElementById('game'), x=cv.getContext('2d'); x.imageSmoothingEnabled=false;
+const W=320,H=180;
+const PAL={ sky1:'#2a1a4e',sky2:'#140d2b',floor:'#1d1636',floor2:'#120d26',ink:'#0a0a14',
+  white:'#f4f1ff',green:'#3dcc6e',green2:'#6bef9a',purple:'#8239ea',purple2:'#b07cff',gold:'#ffcf4d',
+  skin:'#e8b98a',beard:'#5a3d2b',navy:'#14233f',red:'#ff5a7a',cyan:'#63d4e0' };
+
+/* ---- pixel sprite of Dave (minime): cap + beard + navy tee w/ green logo ---- */
+const DAVE=[
+ "....KKKKKK....",
+ "...KKKKKKKKK.K",
+ "..KKKKKKKKKKKK",
+ "..WSSSSSSSSW..",
+ "..SSEWSSWESSW.",
+ "..SSSSSSSSSS..",
+ "..SBBSSSSBBS..",
+ "..SBBBBBBBBS..",
+ "...BBBBBBBB...",
+ "....NNNNNN....",
+ "...NNNNNNNN...",
+ "..NNNGGGGNNN..",
+ "..NNGGGGGGNN..",
+ "..NNNGGGGNNN..",
+ "..NNNNNNNNNN..",
+ "..NNNNNNNNNN..",
+ "...NN....NN...",
+ "...NN....NN...",
+ "...KK....KK...",
+ "..KKK....KKK.."
+];
+const DMAP={K:'#1b1b1b',S:PAL.skin,E:'#120a06',B:PAL.beard,N:PAL.navy,G:PAL.green,W:'#00000000'};
+/* shamrock plant sprite */
+const PLANT=[
+ "...g.g...",
+ "..ggGgg..",
+ ".gGGGGGg.",
+ ".gGGGGGg.",
+ "..ggGgg..",
+ "...sGs...",
+ "...sss...",
+ "..ssSss.."
+];
+const PMAP={g:PAL.green,G:PAL.green2,s:'#2f7d52',S:'#1d5236'};
+
+function spr(data,map,px,py,s){
+ for(let r=0;r<data.length;r++)for(let c=0;c<data[r].length;c++){
+   const k=data[r][c]; if(k==='.'||k===' ')continue; const col=map[k]; if(!col||col==='#00000000')continue;
+   x.fillStyle=col; x.fillRect(px+c*s, py+r*s, s, s);
+ }
+}
+function text(t,px,py,col,sc){ x.fillStyle=col; x.font=(8*sc)+"px 'Press Start 2P'"; x.textBaseline='top'; x.fillText(t,px,py); }
+function ctext(t,py,col,sc){ x.font=(8*sc)+"px 'Press Start 2P'"; const w=x.measureText(t).width; text(t,(W-w)/2,py,col,sc); }
+
+/* ---- stages ---- */
+const STAGES=[
+ {n:'IDEA',  d:'Find the real problem worth solving.', ac:PAL.gold,  icon:'bulb'},
+ {n:'DESIGN',d:'Shape the brand, the look, the feel.', ac:PAL.cyan,  icon:'pen'},
+ {n:'BUILD', d:'Turn the design into a working app.',  ac:PAL.purple2,icon:'blocks'},
+ {n:'SHIP',  d:'Launch it, polish it, level it up.',   ac:PAL.green2, icon:'rocket'}
+];
+const STX=[58,130,202,274]; // station centers (logical px)
+
+/* station icon drawings (chunky pixel) */
+function icon(kind,cx,cy,t){
+ const s=2; const b=(n)=>Math.sin(t/16+n)*1|0;
+ if(kind==='bulb'){ x.fillStyle=PAL.gold; x.fillRect(cx-4,cy-8,8,8); x.fillStyle='#fff8d0'; x.fillRect(cx-2,cy-7,3,3); x.fillStyle='#8a6b14'; x.fillRect(cx-3,cy,6,3); x.fillStyle=PAL.gold; for(let i=-10;i<=10;i+=5){x.fillRect(cx+i,cy-13-b(i),2,3);} }
+ else if(kind==='pen'){ x.fillStyle=PAL.cyan; x.fillRect(cx-7,cy+3,14,3); x.save(); x.translate(cx,cy); x.rotate(-0.7); x.fillStyle=PAL.white; x.fillRect(-1,-9,3,12); x.fillStyle=PAL.purple; x.fillRect(-1,-9,3,3); x.restore(); }
+ else if(kind==='blocks'){ const p=[[-6,-2,PAL.green],[0,-2,PAL.purple2],[-6,4,PAL.red],[0,4,PAL.cyan]]; p.forEach(q=>{x.fillStyle=q[2];x.fillRect(cx+q[0],cy+q[1],6,6);}); }
+ else if(kind==='rocket'){ const o=b(0); x.fillStyle=PAL.white; x.fillRect(cx-3,cy-10+o,6,12); x.fillStyle=PAL.green2; x.fillRect(cx-3,cy-10+o,6,4); x.fillStyle=PAL.red; x.fillRect(cx-5,cy-1+o,2,4); x.fillRect(cx+3,cy-1+o,2,4); x.fillStyle=PAL.gold; x.fillRect(cx-2,cy+2+o,4,3+((t/4|0)%3)); }
+}
+
+/* ---- state ---- */
+let state='title', stage=0, dave=STX[0], target=STX[0], t=0, facing=1, xp=0, stars=[], blink=0;
+const sound=(f,d=0.08,ty='square')=>{try{const C=sound.c||(sound.c=new (window.AudioContext||window.webkitAudioContext)());const o=C.createOscillator(),g=C.createGain();o.type=ty;o.frequency.value=f;g.gain.value=0.05;o.connect(g).connect(C.destination);o.start();g.gain.exponentialRampToValueAtTime(0.0001,C.currentTime+d);o.stop(C.currentTime+d);}catch(e){}};
+
+function advance(){
+ if(state==='title'){ state='play'; stage=0; dave=target=STX[0]; xp=0; sound(440); render(); return; }
+ if(state==='win'){ state='title'; stage=0; dave=target=STX[0]; render(); return; }
+ if(stage<STAGES.length-1){ stage++; target=STX[stage]; facing=1; sound(520+stage*80); xp=(stage/(STAGES.length-1)); }
+ else { state='win'; sound(784,0.3); for(let i=0;i<40;i++)stars.push({x:Math.random()*W,y:Math.random()*H,vy:-(0.4+Math.random()),c:[PAL.gold,PAL.green2,PAL.purple2,PAL.white][i%4],l:60+Math.random()*40}); }
+}
+function back(){ if(state==='play'&&stage>0){stage--;target=STX[stage];facing=-1;xp=(stage/(STAGES.length-1));sound(300);} }
+
+/* ---- draw ---- */
+function bg(){
+ const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,PAL.sky1); g.addColorStop(1,PAL.sky2); x.fillStyle=g; x.fillRect(0,0,W,H);
+ // parallax studio windows
+ for(let i=0;i<7;i++){ x.fillStyle='rgba(130,57,234,.14)'; x.fillRect(12+i*46,24,30,34); x.fillStyle='rgba(61,204,110,.10)'; x.fillRect(16+i*46,28,22,8); }
+ // floor
+ x.fillStyle=PAL.floor; x.fillRect(0,132,W,H-132); x.fillStyle=PAL.floor2; for(let i=0;i<W;i+=16){x.fillRect(i,132,1,H-132);} x.fillStyle='rgba(255,255,255,.05)'; x.fillRect(0,132,W,2);
+ // stations
+ STAGES.forEach((s,i)=>{ const cx=STX[i],base=130; const on=(state==='play'&&i<=stage)||state==='win';
+   x.fillStyle=on?s.ac:'#2a2448'; x.fillRect(cx-16,base-2,32,4);
+   x.globalAlpha=on?1:0.4; icon(s.icon,cx,base-16,t); x.globalAlpha=1;
+   text((i+1)+'', cx-3, base+5, on?s.ac:'#4a4470', 0.9);
+ });
+}
+function daveDraw(){
+ // walk toward target
+ if(Math.abs(dave-target)>0.6){ dave+=Math.sign(target-dave)*1.6; }
+ const bob=Math.abs(dave-target)>0.6?Math.sin(t/4)*1:Math.sin(t/22)*0.6;
+ const s=2.0, w=14*s, px=Math.round(dave-w/2), py=Math.round(104+bob);
+ x.save(); if(facing<0){x.translate(px*2+w,0);x.scale(-1,1); spr(DAVE,DMAP,0-px,py,s);} else { spr(DAVE,DMAP,px,py,s); } x.restore();
+ // shadow
+ x.fillStyle='rgba(0,0,0,.35)'; x.fillRect(px+4,py+40,w-8,3);
+}
+function plantDraw(){ spr(PLANT,PMAP,12,122,2); }
+
+function render(){
+ t++; x.clearRect(0,0,W,H);
+ if(state==='title'){
+   bg(); plantDraw();
+   spr(DAVE,DMAP,Math.round(W/2-14), 96+Math.round(Math.sin(t/22)*1.2), 2.0);
+   ctext('3SHAMROCKS',30,PAL.green2,1.8); ctext('STUDIO',52,PAL.white,1.3);
+   text('HOW WE WORK',W/2-x.measureText('HOW WE WORK').width/2*0+96,74,PAL.purple2,0.8);
+   blink=(blink+1)%60; if(blink<38) ctext('▶ PRESS START',150,PAL.gold,1);
+   plantDraw();
+ } else if(state==='play'){
+   bg(); plantDraw(); daveDraw();
+   const s=STAGES[stage];
+   // caption panel
+   x.fillStyle='rgba(8,8,20,.82)'; x.fillRect(10,8,W-20,40); x.fillStyle=s.ac; x.fillRect(10,8,W-20,2); x.fillRect(10,46,W-20,2);
+   text('STAGE '+(stage+1)+'/4', 16, 14, 'rgba(255,255,255,.5)', 0.75);
+   text(s.n, 16, 26, s.ac, 1.1);
+   // desc wrapped-ish
+   x.font="8px 'Press Start 2P'"; x.fillStyle=PAL.white; wrap(s.d, 120, 20, 196, 11);
+   // XP bar
+   x.fillStyle='rgba(255,255,255,.15)'; x.fillRect(16,164,W-32,6); x.fillStyle=PAL.green; x.fillRect(16,164,(W-32)*xp,6); x.fillStyle=PAL.green2; x.fillRect(16,164,(W-32)*xp,2);
+   text('STUDIO XP', 16, 154, 'rgba(255,255,255,.4)', 0.7);
+ } else if(state==='win'){
+   bg(); plantDraw();
+   stars.forEach(p=>{p.y+=p.vy;p.l--;x.fillStyle=p.c;x.fillRect(p.x|0,p.y|0,2,2);}); stars=stars.filter(p=>p.l>0);
+   spr(DAVE,DMAP,Math.round(W/2-14),92+Math.round(Math.sin(t/14)*2),2.0);
+   ctext('LEVEL CLEAR ★',36,PAL.gold,1.5);
+   x.font="8px 'Press Start 2P'"; x.fillStyle=PAL.white; wrap('Idea to shipped product. That is how 3Shamrocks works.',40,70,240,12,true);
+   blink=(blink+1)%60; if(blink<38) ctext('▶ PLAY AGAIN',150,PAL.green2,0.95);
+ }
+ requestAnimationFrame(render);
+}
+function wrap(str,px,py,maxw,lh,center){
+ const words=str.split(' '); let line='',y=py;
+ for(const w of words){ const test=line?line+' '+w:w; if(x.measureText(test).width>maxw){ (center?ctext(line,y,PAL.white,1):text(line,px,y,PAL.white,1)); line=w; y+=lh; } else line=test; }
+ if(line)(center?ctext(line,y,PAL.white,1):text(line,px,y,PAL.white,1));
+}
+
+/* ---- input ---- */
+cv.addEventListener('click',advance);
+addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '||e.key==='ArrowRight'){e.preventDefault();advance();} else if(e.key==='ArrowLeft'){e.preventDefault();back();} });
+const pad=document.getElementById('pad');
+function mkbtn(label,fn,ghost){const b=document.createElement('button');b.textContent=label;if(ghost)b.className='ghost';b.addEventListener('click',fn);return b;}
+pad.appendChild(mkbtn('◀',()=>back(),true));
+pad.appendChild(mkbtn('NEXT ▶',()=>advance()));
+
+/* start once (guarded) so the loop never doubles; wait for font so text isn't invisible */
+let started=false; function start(){ if(started)return; started=true; render(); }
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(start);
+setTimeout(start,500);
+</script>
+</body>
+</html>
