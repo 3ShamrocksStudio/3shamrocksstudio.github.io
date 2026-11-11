@@ -4382,8 +4382,8 @@ details.fold.more details.fold{margin-top:0}
     ]);
     const rr = {};
     // a drum hit at a played strength (0..1): the matching velocity layer, the next round robin (no machine-gun repeats)
-    const hit = (name, v = 0.8) => { if (KP.vhits) { const V = KP.vhits[name] || KP.vhits.snare || KP.vhits.kick, li = Math.max(0, Math.min(V.length - 1, Math.floor(v * V.length * 0.999))), L = V[li]; const k = name + li; rr[k] = ((rr[k] || 0) + 1) % L.length; return L[rr[k]]; }
-      const L = KP.hits[name] || KP.hits.snare; rr[name] = ((rr[name] || 0) + 1) % L.length; return L[rr[name]]; };
+    const hit = (name, v = 0.8) => { if (KP.vhits) { const V = KP.vhits[name] || (name === "tom3" && KP.vhits.tom2) || KP.vhits.snare || KP.vhits.kick, li = Math.max(0, Math.min(V.length - 1, Math.floor(v * V.length * 0.999))), L = V[li]; const k = name + li; rr[k] = ((rr[k] || 0) + 1) % L.length; return L[rr[k]]; }
+      const L = KP.hits[name] || (name === "tom3" && KP.hits.tom2) || KP.hits.snare; rr[name] = ((rr[name] || 0) + 1) % L.length; return L[rr[name]]; };
     // a pitched note from a pack: the nearest sample, re-pitched (packs hold every 3rd semitone)
     // v2 packs: the velocity layer for this strength; layers are recorded louder, so the level evens out (vScale)
     const noteOf = (pk, m, v = 0.75) => { let best = pk.keys[0]; for (const k of pk.keys) if (Math.abs(k - m) < Math.abs(best - m)) best = k; const n = pk.notes[best];
