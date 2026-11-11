@@ -7710,11 +7710,20 @@ function bandKey(c) {
   const H2 = T && harmony ? harmony.map(h => ({ ...h, t0: W(h.t0), t1: W(h.t1) })) : harmony, set2 = T ? { ...set, tempo: "follow" } : set;
   return { w, rw, style, set: set2, parts, A: A2, harmony: H2, key: JSON.stringify([c.key || c.id, rw.s, rw.e, rw.endAt, style, parts, set2, (H2 || []).map(h => h.name + "@" + h.t0.toFixed(2)), A?.forced ? A.bpm : 0]) };
 }
+// The last few band renders, so switching back to a setting (or to a Labs preset rendered in the background) is instant.
+// Each holds the stems of one lick (about 25 MB for 20 s), so keep it small.
+const BAND_MEMO = 3, bandMemo = new Map();
+function bandRenderK(c, K) {
+  const hit = bandMemo.get(K.key); if (hit) { bandMemo.delete(K.key); bandMemo.set(K.key, hit); return hit; }
+  const p = LickBand.render(c.raw, K.rw.s, K.rw.e, { style: K.style, set: K.set, parts: K.parts, analysis: K.A, harmony: K.harmony, endAt: K.rw.endAt });
+  p.catch(() => { if (bandMemo.get(K.key) === p) bandMemo.delete(K.key); });
+  bandMemo.set(K.key, p); while (bandMemo.size > BAND_MEMO) bandMemo.delete(bandMemo.keys().next().value); return p;
+}
 // One render per setting, shared by prefetch, preview and save.
 function bandRender(c) {
   const { w, rw, style, set, parts, A, harmony, key } = bandKey(c);
   if (bandCache.key !== key) {
-    const p = LickBand.render(c.raw, rw.s, rw.e, { style, set, parts, analysis: A, harmony, endAt: rw.endAt }).then(res => { if (bandCache.key === key) { bandCache.res = res; const el = $("#bandChart"); if (el && state.openId === c.id) el.innerHTML = bandChartHTML(c); } if (res.sampled === false && !c._synthSaid) { c._synthSaid = true; toast("The band's real instruments couldn't load (no connection?), so this is the built-in synth. Reconnect and play again for the real sounds.", { icon: "i-drum", label: "OK", run: () => { }, sticky: true }); } return res; });
+    const p = bandRenderK(c, { rw, style, set, parts, A, harmony, key }).then(res => { if (bandCache.key === key) { bandCache.res = res; const el = $("#bandChart"); if (el && state.openId === c.id) el.innerHTML = bandChartHTML(c); } if (res.sampled === false && !c._synthSaid) { c._synthSaid = true; toast("The band's real instruments couldn't load (no connection?), so this is the built-in synth. Reconnect and play again for the real sounds.", { icon: "i-drum", label: "OK", run: () => { }, sticky: true }); } return res; });
     p.catch(() => { if (bandCache.key === key) bandCache = { key: "", res: null, p: null }; });
     bandCache = { key, res: null, p };
   }
