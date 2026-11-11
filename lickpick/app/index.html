@@ -8409,7 +8409,10 @@ document.addEventListener("click", e => {
   if (d.act === "forget") { const x = c; closeStudio(); forget(x); render(); renderBoxes(); toast("Removed from the list. The video is untouched."); return; }
   if (d.act === "playall") { c.src = "clean"; renderSrc(c); playRanges(c, onParts(c).map(p => [p.start, p.end]), "Clean cut"); return; }
   if (d.act === "rescue") { if (c.raw) rescue(c); return; }
-  if (d.bstyle) { stopBand(); c.band.style = d.bstyle; if (d.bstyle === "auto" && sampler && !c.band.ai) bandAi(c); else renderStudio(); return; }
+  if (d.bstyle) { const was = bandPlaying, row = t.closest(".chipset.styles"), sx = row ? row.scrollLeft : 0, sy = $("#studio").scrollTop; stopBand(); c.band.style = d.bstyle;
+    if (d.bstyle === "auto" && sampler && !c.band.ai) { bandAi(c); return; }
+    // the style row and the screen stay where they were (a full re-render used to snap the row back to Auto), and a playing preview carries on
+    renderStudio(); const row2 = document.querySelector(".chipset.styles"); if (row2) row2.scrollLeft = sx; $("#studio").scrollTop = sy; row2?.querySelector(`[data-bstyle="${d.bstyle}"]`)?.scrollIntoView({ block: "nearest", inline: "nearest" }); if (was) bandPreview(c); return; }
   if (d.chsel != null) { const ch = chOf(c), t = +d.chsel; ch.selT = ch.selT != null && Math.abs(ch.selT - t) < 0.02 ? null : t; renderStudio(); if (ch.selT != null) { const w = bandWindow(c); const h = bandChords(c).find(x => Math.abs(x.t0 - t) < 0.02); if (h && w) playRanges(c, [[Math.max(w.s, h.t0), Math.min(w.e, h.t1, h.t0 + 4)]], h.name); } return; }
   if (d.chsrc) { const ch = chOf(c); stopBand(); ch.src = d.chsrc; ch.selT = null; bandCache.key = ""; c._ov = null; persist(c); renderStudio(); return; }
   if (d.chscope) { chOf(c).scope = d.chscope; renderStudio(); return; }
