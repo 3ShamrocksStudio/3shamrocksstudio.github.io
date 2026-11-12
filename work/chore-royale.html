@@ -175,7 +175,7 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
 .wctl{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:22px}
 .wctl .btn{min-width:220px;font-size:20px;min-height:62px}
 .wctl small{font:800 13px var(--body);color:var(--tx2)}
-.wres{position:relative;margin-top:18px;width:min(440px,100%);min-height:118px}
+.wres{position:relative;margin-top:18px;width:min(440px,100%);min-height:118px;scroll-margin:72px 0 20px}
 .rcard{display:flex;align-items:center;gap:14px;background:var(--suds);color:var(--ink);border:4px solid var(--ink);border-radius:22px;padding:12px 14px;box-shadow:0 8px 0 var(--ink);opacity:0;transform:translateY(16px) scale(.9);transition:opacity .25s,transform .45s var(--pop)}
 .rcard.on{opacity:1;transform:none}
 .rcard .ri{flex:none;width:84px;height:84px;border-radius:18px;display:grid;place-items:center;background:var(--rc,var(--tA));border:3px solid var(--ink)}
@@ -190,13 +190,14 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
 
 /* 4 · CHORE WAR */
 .war{background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 22px,transparent 22px 44px),var(--tD);isolation:isolate}
-.board{position:relative;background:linear-gradient(180deg,color-mix(in oklab,var(--tA) 85%,#000 0%),color-mix(in oklab,var(--tD) 80%,#000));border:4px solid var(--ink);border-radius:30px;padding:16px;box-shadow:12px 14px 0 var(--ink),inset 0 0 0 3px rgba(255,227,138,.25);overflow:hidden}
+.board{position:relative;background:linear-gradient(180deg,color-mix(in oklab,var(--tA) 85%,#000 0%),color-mix(in oklab,var(--tD) 80%,#000));border:4px solid var(--ink);border-radius:30px;padding:16px;box-shadow:12px 14px 0 var(--ink),inset 0 0 0 3px rgba(255,227,138,.25);overflow:hidden;overflow:clip}
 .board.shake{animation:shake .45s}
 @keyframes shake{20%{transform:translate(-8px,3px) rotate(-.6deg)}40%{transform:translate(7px,-3px) rotate(.5deg)}60%{transform:translate(-5px,2px)}80%{transform:translate(3px,-1px)}}
 .arena{display:grid;grid-template-columns:1fr 190px 1fr;gap:12px;align-items:start}
 .arena>*{min-width:0}
 .ftr{position:relative;background:rgba(20,7,46,.55);border:3px solid rgba(238,246,255,.14);border-radius:22px;padding:12px;display:grid;gap:10px;transition:border-color .3s,box-shadow .3s}
 .ftr.lead{border-color:var(--gold);box-shadow:0 0 0 4px rgba(245,185,46,.25)}
+#f-nova{z-index:1}
 .ftr.hit{animation:hit .5s}
 @keyframes hit{0%,100%{transform:none}20%{transform:translateX(-10px) rotate(-2deg);background:rgba(255,59,127,.45)}50%{transform:translateX(8px) rotate(1deg)}}
 .who{display:flex;align-items:center;gap:10px}
@@ -285,7 +286,8 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
 .offer .btn{min-height:48px;font-size:15px;padding:0 16px}
 .cer{position:absolute;inset:0;z-index:10;display:grid;place-items:center;text-align:center;background:radial-gradient(60% 60% at 50% 45%,color-mix(in oklab,var(--tA) 90%,#000),rgba(20,7,46,.98));opacity:0;pointer-events:none;transition:opacity .35s}
 .cer.on{opacity:1;pointer-events:auto}
-.cer .rays{position:absolute;left:50%;top:42%;width:900px;height:900px;margin:-450px 0 0 -450px;background:repeating-conic-gradient(rgba(255,227,138,.16) 0 9deg,transparent 9deg 22deg);animation:rot 18s linear infinite;pointer-events:none}
+.cer .rays{position:absolute;left:50%;top:42%;width:900px;height:900px;margin:-450px 0 0 -450px;background:repeating-conic-gradient(rgba(255,227,138,.16) 0 9deg,transparent 9deg 22deg);pointer-events:none}
+.cer.on .rays{animation:rot 18s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
 .cer .in{position:relative;display:grid;justify-items:center;gap:10px;padding:20px}
 .cer .cw{position:relative;width:140px;height:150px}
@@ -418,7 +420,7 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
   </div>
   <div class="stage">
    <div class="rings" aria-hidden="true"><i></i><i></i><i></i></div>
-   <div class="phone"><div class="scr"><img src="../assets/work/chore-royale/hp-arena.webp" alt="Chore Royale Arena in the staging app: the weekly family leaderboard and a live duel between Zap and Nova" width="720" height="1558"></div></div>
+   <div class="phone"><div class="scr"><img src="../assets/work/chore-royale/hp-arena.webp" alt="Chore Royale Arena in the staging app: the weekly family leaderboard and Zap and Nova in a chore duel" width="720" height="1558"></div></div>
    <span class="tagf t1" aria-hidden="true"><svg><use href="#cr-steal"/></svg>Stolen!</span>
    <span class="tagf t2" aria-hidden="true"><svg><use href="#cr-duel"/></svg>Duel!</span>
    <span class="tagf t3" aria-hidden="true"><svg><use href="#cr-crowns"/></svg>+30</span>
@@ -510,7 +512,7 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
    <div class="boardcap"><span>Demo family. Points land only after the parent seals them.</span><button type="button" id="sunday" hidden>Skip to Sunday &rarr;</button></div>
    <div class="flash" id="flash"></div>
    <div class="bnrx" id="bnrx"></div>
-   <div class="offer" id="offer" role="dialog" aria-label="Zap counters your swap"><div class="who2"><svg aria-hidden="true"><use href="#av-shark"/></svg>ZAP COUNTERS</div><p id="offp">Add +10 and it&rsquo;s a deal.</p><div class="btns"><button type="button" class="btn z" id="deal">DEAL</button><button type="button" class="btn w" id="nodeal">NO</button></div></div>
+   <div class="offer" id="offer" role="dialog" aria-label="Zap counters your swap"><div class="who2"><svg aria-hidden="true"><use href="#av-shark"/></svg>ZAP COUNTERS</div><p id="offp">Make it +10, not +5, and it&rsquo;s a deal.</p><div class="btns"><button type="button" class="btn z" id="deal">DEAL</button><button type="button" class="btn w" id="nodeal">NO</button></div></div>
    <div class="cer" id="cer" aria-hidden="true"><div class="rays"></div><div class="conf" id="conf"></div><div class="in"><div class="cw"><svg class="av" aria-hidden="true"><use id="cerav" href="#av-cat"/></svg><svg class="cd" aria-hidden="true"><use href="#cr-crown"/></svg></div><h3 id="cerh">Nova takes <span class="gold">the crown!</span></h3><p id="cerp">The court bows.</p><button type="button" class="btn z" id="again">Play again</button></div></div>
   </div>
   <p class="shots-h"><svg class="ci" aria-hidden="true"><use href="#cr-proof"/></svg>THE REAL STAGING APP</p>
@@ -675,11 +677,13 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
     var defs=D.querySelector('body>svg defs');
     var src='<svg xmlns="http://www.w3.org/2000/svg" viewBox="-260 -260 520 520" width="1040" height="1040">'+(defs?defs.outerHTML:'')+'<defs><radialGradient id="wshade"><stop offset=".25" stop-color="#14072E" stop-opacity=".35"/><stop offset=".55" stop-color="#14072E" stop-opacity="0"/><stop offset=".92" stop-color="#14072E" stop-opacity="0"/><stop offset="1" stop-color="#14072E" stop-opacity=".3"/></radialGradient></defs>'+sy+h+'</svg>';
     src=fix(src);
-    var img=new Image();img.onload=function(){wctx.setTransform(1,0,0,1,0,0);wctx.clearRect(0,0,1040,1040);wctx.drawImage(img,0,0,1040,1040);
-      wctx.setTransform(2,0,0,2,520,520);wctx.textAlign='center';wctx.textBaseline='middle';wctx.lineJoin='round';
-      for(var i=0;i<12;i++){var t=T[i];wctx.save();wctx.rotate(i*Math.PI/6);wctx.translate(0,-98);wctx.rotate(-Math.PI/2);wctx.font='400 '+(t[2].length>6?15:17)+'px Bungee, system-ui, sans-serif';
-        if(t[4]==='#fff'){wctx.lineWidth=4;wctx.strokeStyle='#14072E';wctx.strokeText(t[2],0,1)}wctx.fillStyle=t[4];wctx.fillText(t[2],0,1);wctx.restore()}};
+    var img=new Image();img.onload=function(){wimg=img;paint()};
     img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(src)}
+  var wimg=null;
+  function paint(){if(!wimg)return;var th=W?W.th:0;wctx.setTransform(1,0,0,1,0,0);wctx.clearRect(0,0,1040,1040);wctx.drawImage(wimg,0,0,1040,1040);
+      wctx.setTransform(2,0,0,2,520,520);wctx.textAlign='center';wctx.textBaseline='middle';wctx.lineJoin='round';
+      for(var i=0;i<12;i++){var t=T[i],up=Math.cos((i*30+th-90)*Math.PI/180)<-.02;wctx.save();wctx.rotate(i*Math.PI/6);wctx.translate(0,-98);wctx.rotate(up?Math.PI/2:-Math.PI/2);wctx.font='400 '+(t[2].length>6?15:17)+'px Bungee, system-ui, sans-serif';
+        if(t[4]==='#fff'){wctx.lineWidth=4;wctx.strokeStyle='#14072E';wctx.strokeText(t[2],0,1)}wctx.fillStyle=t[4];wctx.fillText(t[2],0,1);wctx.restore()}}
   if(D.fonts&&D.fonts.load){D.fonts.load('400 17px Bungee').then(build,build)}else build();
   new MutationObserver(function(){setTimeout(build,750)}).observe(R,{attributes:true,attributeFilter:['data-banner']});
   $('hub').innerHTML='<path id="whl" d="M0 0L-58.5 -218.3A226 226 0 0 1 58.5 -218.3Z" fill="#fff" fill-opacity=".22" stroke="#FFE38A" stroke-width="7" stroke-linejoin="round" opacity="0"/><circle r="58" fill="#14072E"/><use href="#cr-crowns" x="-62" y="-62" width="124" height="124"/>';
@@ -711,7 +715,7 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
   wsvg.addEventListener('pointermove',function(e){if(!drag)return;var d=ang(e)-a0;if(d>180)d-=360;if(d<-180)d+=360;W.th=th0+d;a0=ang(e);th0=W.th;var pg=pegOf(W.th);if(pg!==W.peg){W.peg=pg;W.fv-=90;SND.tick(.2)}smp.push([performance.now(),W.th]);if(smp.length>12)smp.shift();setRot()});
   function up(){if(!drag)return;drag=false;wbox.classList.remove('drag');var n=performance.now(),s=smp.filter(function(p){return n-p[0]<300});
     if(s.length>1){var v=(s[s.length-1][1]-s[0][1])/((s[s.length-1][0]-s[0][0])/1000||1);if(Math.abs(v)>120){var sg=v<0?-1:1;go(sg*Math.max(800,Math.min(2200,Math.abs(v)*2)));return}}
-    if(Math.abs(W.th-smp[0][1])<3&&W.spins>0)go(1000+Math.random()*700)}
+    if(Math.abs(W.th-smp[0][1])<3&&W.spins>0)go(1000+Math.random()*700);else paint()}
   wsvg.addEventListener('pointerup',up);wsvg.addEventListener('pointercancel',up);
   wsvg.setAttribute('tabindex','0');wsvg.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go(1100+Math.random()*800)}});
   function pickChore(){var left=CH.filter(function(c){return W.used.indexOf(c[0])<0});if(!left.length){W.used=[];left=CH}var c=left[Math.floor(Math.random()*left.length)];W.used.push(c[0]);if(W.used.length>3)W.used.shift();return c}
@@ -731,7 +735,8 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
     else if(k==='trade'){card('swap','TRADE','Hand one of your quests to a sibling.',col)}
     else if(k==='escape'){W.skip++;card('ticket','SKIP TOKEN','Skip one chore. Guilt-free.',col)}
     else if(k==='season'){card('season','SEASON','Limited-time event tile.',col)}
-    SND.win();sfx('sparkle');draw()}
+    SND.win();sfx('sparkle');draw();paint();
+    var wr=D.querySelector('.wres'),rr=wr.getBoundingClientRect();if(rr.bottom>innerHeight-20||rr.top<64)wr.scrollIntoView({behavior:rm?'auto':'smooth',block:'nearest'})}
   rgo.addEventListener('click',function(){var c=W.quest;if(!c)return;W.quest=null;rgo.hidden=true;var p=c[2]*(W.x2?2:1);W.x2=0;SND.stamp();
     var ri=$('ri');var seal=D.createElementNS(NS,'svg');seal.setAttribute('class','fly');D.body.appendChild(seal);seal.innerHTML='<use href="#cr-seal"/>';var r=ri.getBoundingClientRect();
     if(!rm)seal.animate([{transform:'translate('+(r.left+r.width/2-40)+'px,'+(r.top-60)+'px) scale(2.2) rotate(-25deg)',opacity:0},{transform:'translate('+(r.left+r.width/2-20)+'px,'+(r.top+r.height/2-20)+'px) scale(1) rotate(-8deg)',opacity:1,offset:.45},{transform:'translate('+(r.left+r.width/2-20)+'px,'+(r.top+r.height/2-20)+'px) scale(1) rotate(-8deg)',opacity:1,offset:.8},{transform:'translate('+(r.left+r.width/2-20)+'px,'+(r.top+r.height/2-20)+'px) scale(1.2)',opacity:0}],{duration:900}).onfinish=function(){seal.remove()};else seal.remove();
@@ -789,8 +794,8 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
   MB.swap.addEventListener('click',function(){var mine=G.hand.nova.filter(function(c){return !(G.pend&&G.pend.c===c)})[0],his=G.hand.zap[0];
     if(!mine||!his){say(ic('swap')+(his?'You need a chore to offer.':'Zap has nothing to swap.'));return}
     var el=hn.querySelector('.cc[data-id="'+mine.id+'"]');fly('cr-swap',el||MB.swap,hz.querySelector('.cc')||hz,{size:52,arc:70,rot:0,dur:550},function(){
-      $('offp').innerHTML=mine.t+' for '+his.t+'? Add <b>+10</b> and it&rsquo;s a deal.';offer.classList.add('on');offer.dataset.m=mine.id;$('deal').focus({preventScroll:true});SND.tick(.5)});
-    say(ic('swap')+'Offer sent: '+mine.t+' + 5 for '+his.t)});
+      $('offp').innerHTML=mine.t+' for '+his.t+'? Make it <b>+10</b>, not +5, and it&rsquo;s a deal.';offer.classList.add('on');offer.dataset.m=mine.id;$('deal').focus({preventScroll:true});SND.tick(.5)});
+    say(ic('swap')+'Offer sent: '+mine.t+' +5 points for '+his.t)});
   $('deal').addEventListener('click',function(){offer.classList.remove('on');var mine=G.hand.nova.filter(function(c){return c.id===offer.dataset.m})[0],his=G.hand.zap[0];if(!mine||!his)return;
     if(G.nova<10){say(ic('crowns')+'Not enough points.');return}
     G.nova-=10;G.zap+=10;var a=hn.querySelector('.cc[data-id="'+mine.id+'"]').getBoundingClientRect(),b=hz.querySelector('.cc').getBoundingClientRect();
@@ -821,7 +826,7 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
     if(el&&!rm){setTimeout(function(){for(var n=0;n<5;n++)fly('cr-crowns',el,tgt,{delay:n*80,size:34,arc:70},n===4?land:null);el.style.transition='opacity .3s';el.style.opacity='0'},380)}else land()});
   no.addEventListener('click',function(){var p=G.pend;if(!p)return;G.pend=null;render();var el=hn.querySelector('.cc[data-id="'+p.c.id+'"]');if(el)re(el,'shk');say(ic('proof')+'Redo it. Snap a better photo.')});
   sun.addEventListener('click',function(){var win=G.nova>G.zap?'nova':'zap';G.done=true;
-    if(G.duel&&win==='nova')G.xp+=25;
+    if(G.duel&&win==='nova'){G.xp+=25;render(true)}
     $('cerav').setAttribute('href',win==='nova'?'#av-cat':'#av-shark');$('cerh').innerHTML=win==='nova'?'Nova takes <span class="gold">the crown!</span>':'Zap keeps <span class="gold">the crown.</span>';
     $('cerp').textContent=win==='nova'?(G.duel?'Duel won: +25 XP. The court bows.':'The court bows.'):'Next week, steal smarter.';
     var conf=$('conf'),cols=['#F5B92E','#FFE38A','#22E0C0','#EEF6FF','#FF3B7F'];conf.innerHTML='';
