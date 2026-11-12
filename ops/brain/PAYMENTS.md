@@ -11,6 +11,10 @@ Prices never go in a first message (BRAIN.md §2.8). Revenue booked so far: **�
 | **Morning (Green Invoice) + Grow digital payments** | Israeli B2B: studio deposits, Brand OS monthly, SH✡MER pilots, invoices | none on the Best plan (the studio is on Best, annual, since 29 Oct per Morning's own receipt in Gmail) | ₪1.2 + 1.4% (+0.3% Bit) ex VAT; card, Bit, Google Pay, Apple Pay; payment links and standing orders (הוראת קבע) on Best | to the bank on the 10th for the previous month [1][2] |
 | **Morning bank-transfer invoice** | Any invoice when Grow isn't connected yet | none | ₪0 | client pays the bank directly |
 | **Lemon Squeezy (merchant of record)** | Consumer digital/SaaS sold worldwide (LickPick Pro) | none | 5% + 50¢, +1.5% outside the US, +0.5% subscriptions, +1.5% PayPal; it handles global sales tax/VAT | Israel is on the bank-payout list; 1% per payout to non-US banks; payouts 1st and 15th, $50 minimum [3][4][5] |
+| **Paddle (merchant of record)** | Software subscriptions sold worldwide; **recommended primary for LickPick** | none | 5% + 50¢ (bespoke pricing on request for products under $10); handles global sales tax/VAT | Israel is not on Paddle's unsupported-countries list [6][7] |
+| **Gumroad (merchant of record since 1 Jan 2025)** | Fastest zero-spend fallback for digital products and memberships | none | 10% + 50¢ plus card processing (~2.9% + 30¢; PayPal 3.49% + 49¢); handles sales tax/VAT | weekly, $10 minimum; outside the US via PayPal [8] |
+
+**Lemon Squeezy risk (added 12 Nov, coordinator research, re-checked):** Lemon Squeezy (owned by Stripe) is moving its users to Stripe Managed Payments, which supports merchants in "35+ countries" [9]. Stripe's payment services are still not available in Israel (Globes, Oct 2026: Stripe is only recruiting an Israel country manager) [10][11]. So an Israeli seller may not be able to follow Lemon Squeezy into Managed Payments. Lemon Squeezy stays as the **backup** for LickPick (its checkout is already wired and its review is pending); Paddle becomes the primary path.
 
 Correction to the 8 Nov CFO note ("card links need Best plan + clearing add-on"): the studio already has Best, and on Best there is no extra monthly fee for Grow; only the one-time Grow connection (Dave's documents) is missing.
 
@@ -40,14 +44,14 @@ Correction to the 8 Nov CFO note ("card links need Best plan + clearing add-on")
 
 ### 4. LickPick · Pro subscription (consumer, worldwide)
 - **Model:** subscription. **Price (published on the landing page):** $2.99/month or $14.99/year.
-- **Provider:** Lemon Squeezy (store 3sstudio, products already created in test mode).
-- **Status (real):** checkout is wired in `lickpick/app/index.html` (`window.LP_PAY`, `mode: "test"`, live links empty), so the Pro sheet shows "Checkout opens soon" unless `?paytest=1`. Dave finished the identity step on 4 Nov. Gmail (markodave@gmail.com) holds **no Lemon Squeezy email at all** since the 17 Oct sign-in, so no approval and no rejection yet. Frozen in cash mode except this check.
-- **Claude did:** GO-LIVE patch dry-run PASS (`ops/brain/lp-golive-dryrun.md`); today re-checked the hook is still behind the flag.
-- **Dave only:** when Lemon Squeezy's "store activated" email arrives: app.lemonsqueezy.com → Settings → Payouts → add the business bank account (5 min; Israel is supported). Then Claude applies the 6-line patch and runs the $0-coupon test.
+- **Provider:** **Paddle as primary** (same 5% + 50¢ as Lemon Squeezy, no Stripe dependency, Israel not excluded; ask Paddle for its under-$10 rate). **Lemon Squeezy as backup** (store 3sstudio, products already in test mode). Gumroad only if both fail: on a $2.99 sale its ~10% + 50¢ + processing takes roughly 40%.
+- **Status (real):** the Lemon Squeezy checkout is wired in `lickpick/app/index.html` (`window.LP_PAY`, `mode: "test"`, live links empty), so the Pro sheet shows "Checkout opens soon" unless `?paytest=1`. Dave finished the Lemon Squeezy identity step on 4 Nov. Gmail (markodave@gmail.com) holds **no Lemon Squeezy email at all** since the 17 Oct sign-in: no approval, no rejection. No Paddle account exists. LickPick is frozen in cash mode, so no code was changed today.
+- **Claude did:** GO-LIVE patch dry-run PASS for Lemon Squeezy (`ops/brain/lp-golive-dryrun.md`); today re-checked the hook is still behind the flag; Paddle wiring plan: `LP_PAY.provider = "paddle"` with Paddle.js overlay checkout + Paddle price ids, Pro unlocked by the existing licence-key flow fed from Paddle's webhook (needs a small serverless endpoint; zero-spend option to be picked when the account exists).
+- **Dave only (account/KYC/bank):** sign up at paddle.com → "Get started" with dave@3shamrocks.com as 3Shamrocks Studio, complete business + identity verification and the payout bank (~20 min). Then write "Paddle in" and Claude does the product, prices, domain review and wiring. Lemon Squeezy: if its "store activated" email arrives first, app.lemonsqueezy.com → Settings → Payouts → add the business bank (5 min).
 
 ### 5. Chore Royale (frozen in cash mode)
 - **Model:** family subscription (proposal only). **Price:** Dave decides (₪19.90/mo · ₪149/yr was a proposal, never approved).
-- **Provider when it's time:** Lemon Squeezy (consumer, worldwide) or Google Play billing if it ships as an Android app.
+- **Provider when it's time:** Paddle (same rail as LickPick) or Google Play billing if it ships as an Android app.
 - **Status:** no paid tier in the code; the plan says a 10-family "would you pay?" test comes before any payment build. **Nothing wired on purpose.**
 
 ### 6. Trashure Hunters, Milo, FaiRent, R&K, EZRA, WH33LZ, J8NIX
@@ -59,3 +63,9 @@ Correction to the 8 Nov CFO note ("card links need Best plan + clearing add-on")
 3. Lemon Squeezy fees: https://docs.lemonsqueezy.com/help/getting-started/fees
 4. Lemon Squeezy supported countries (Israel in the bank-payout list): https://docs.lemonsqueezy.com/help/getting-started/supported-countries
 5. Lemon Squeezy payouts (schedule, $50 minimum, bank or PayPal): https://docs.lemonsqueezy.com/help/getting-started/getting-paid
+6. Paddle pricing (5% + 50¢, no monthly fee, under-$10 bespoke): https://www.paddle.com/pricing
+7. Paddle supported seller countries: https://www.paddle.com/help/start/account-verification/which-countries-are-supported-by-paddle
+8. Gumroad fees, MoR since 1 Jan 2025, payouts (third-party summary, updated June 2026; verify on gumroad.com before relying): https://checkoutpage.com/blog/gumroad-fees
+9. Lemon Squeezy 2026 update (move to Stripe Managed Payments, 35+ countries): https://www.lemonsqueezy.com/blog/2026-update
+10. Globes: Stripe struggling to get an Israeli clearing licence: https://en.globes.co.il/en/article-1001381078
+11. Placera/Globes, Oct 2026: Stripe recruiting an Israel country manager; services not yet available in Israel: https://www.placera.se/telegram/stripe-planerar-expansion-i-israel-soker-landschef-20261020
