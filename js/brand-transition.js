@@ -142,7 +142,6 @@
     '.lv.bt-concepts .t{animation:btFade .3s ease .36s}.ar.bt-concepts .t{animation:btFade .24s ease reverse}',
     '@keyframes btSquare{from{transform:perspective(400px) rotateY(90deg) scale(.6);opacity:0}to{transform:none;opacity:1}}',
     '@keyframes btRise{from{opacity:0;transform:translateY(30px) scale(.9)}to{opacity:1;transform:none}}',
-    /* HealthTech (VIBRANT): blue rises from the bottom, a heartbeat line draws across */
     /* HealthTech (12 Nov, Dave): light ground, the VIBRANT capsule from its pack with its own vibration arcs; it buzzes, the arcs pulse out */
     '.bt-healthtech .b{background:radial-gradient(70% 55% at 50% 42%,#E3F2FC,#F5F9FC 62%,#fff)}',
     '.bt-healthtech .c{padding-top:min(30vmin,210px)}',
@@ -153,23 +152,22 @@
     '.bt-healthtech .v .a{opacity:var(--o)}',
     '.lv.bt-healthtech .b{animation:btRiseIn .42s cubic-bezier(.65,0,.25,1)}',
     '.lv.bt-healthtech .v .p{animation:btCapIn .32s cubic-bezier(.3,1.45,.5,1) .2s}',
-    '.lv.bt-healthtech .v .q{animation:btBuzz .055s linear .48s 5}',
+    '.lv.bt-healthtech .v .q{animation:btBuzz .07s linear .46s 4}',
     '.lv.bt-healthtech .v .a{animation:btArcIn .42s ease-out calc(.4s + var(--d))}',
     '.lv.bt-healthtech .c img{animation:btRise .3s ease-out .4s}',
-    '.ar.bt-healthtech .v .q{animation:btBuzz .055s linear 6}',
+    '.ar.bt-healthtech .v .q{animation:btBuzz .07s linear 5}',
     '.ar.bt-healthtech .v .a{animation:btArcOut .46s ease-in var(--d)}',
     '.ar.bt-healthtech .v .p{animation:btCapOut .3s ease-in .3s}',
-    '.ar.bt-healthtech .c img{animation:btRise .26s ease-in .1s reverse}',
+    '.ar.bt-healthtech .c img{animation:btLogoOut .3s ease-in .34s}',
     '.ar.bt-healthtech .b{animation:btRiseOut .48s cubic-bezier(.65,0,.35,1) .3s}',
     '@keyframes btCapIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}',
     '@keyframes btCapOut{to{opacity:0;transform:scale(.85)}}',
-    '@keyframes btBuzz{0%,100%{transform:none}25%{transform:translate(-3px,1.4px) rotate(-1deg)}75%{transform:translate(3px,-1.4px) rotate(1deg)}}',
+    '@keyframes btLogoOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(14px) scale(.96)}}',
+    '@keyframes btBuzz{0%,100%{transform:none}25%{transform:translate(-7px,3px) rotate(-1.6deg)}75%{transform:translate(7px,-3px) rotate(1.6deg)}}',
     '@keyframes btArcIn{0%{opacity:0;transform:scale(.82)}55%{opacity:1;transform:scale(1.07)}100%{opacity:var(--o);transform:none}}',
     '@keyframes btArcOut{0%{opacity:var(--o);transform:none}40%{opacity:1;transform:scale(1.08)}100%{opacity:0;transform:scale(1.2)}}',
     '@keyframes btRiseIn{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}',
-    '@keyframes btRiseOut{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(0 0 100% 0)}}',
-    '@keyframes btDraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}',
-    '@keyframes btDrawOut{from{stroke-dashoffset:0}to{stroke-dashoffset:-1}}'
+    '@keyframes btRiseOut{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(0 0 100% 0)}}'
   ].join('\n');
 
   function css() {
