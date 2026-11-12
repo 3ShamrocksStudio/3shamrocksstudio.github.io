@@ -552,7 +552,7 @@ h2{font-size:clamp(36px,5.4vw,68px);line-height:1;margin-bottom:14px}
     tl.classList.add('run');res.textContent='Listening…';
     card.innerHTML='<i class="tape" aria-hidden="true"></i><p class="idle">Listening for tempo, key and bars…</p>';
     for(var i=0;i<N;i++)(function(i){timers.push(setTimeout(function(){bi[i].className='dim'},i*25*t))})(i);
-    [0,1,2].forEach(function(j){timers.push(setTimeout(function(){meta[j].classList.add('on')},(500+j*450)*t))});
+    meta.forEach(function(m,j){timers.push(setTimeout(function(){m.classList.add('on')},(500+j*450)*t))});
     timers.push(setTimeout(function(){tl.classList.remove('run');tl.classList.add('done');found=true;show(0);sel.tabIndex=0;pb.forEach(function(b){b.disabled=false});why.disabled=false;res.textContent='Found Lick A, plus two runners-up. Drag it.'},2400*t));
   });
   pb.forEach(function(b){b.addEventListener('click',function(){if(!b.disabled)show(+b.getAttribute('data-i'))})});
