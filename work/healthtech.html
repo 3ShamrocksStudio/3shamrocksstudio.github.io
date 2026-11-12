@@ -283,11 +283,11 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
 .gscroll{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#9AAAD8 transparent}
 .gstage{position:relative;aspect-ratio:16/9;min-width:640px;overflow:hidden;background:linear-gradient(180deg,#335CE7 0%,#335CE7 38.5%,#2A58DF 46.3%,#1C52D2 55.6%,#134ECA 63%,#0D4EC7 67%,#0048BD 100%)}
 .gfull{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.js .gstage .gfull{opacity:0;transition:opacity .8s ease}
-.js .gstage.done .gfull{opacity:1}
+.js .gstage .gfull{opacity:0;transition:none}
+.js .gstage.done .gfull{opacity:1;transition:opacity .8s ease}
 .gf{position:absolute;background-image:url(../assets/work/healthtech/ap-1.webp);background-repeat:no-repeat;transform-origin:50% 100%;
-  -webkit-mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent),linear-gradient(180deg,transparent,#000 6%,#000 88%,transparent);-webkit-mask-composite:source-in;
-  mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent) intersect,linear-gradient(180deg,transparent,#000 6%,#000 88%,transparent);opacity:0}
+  -webkit-mask:linear-gradient(90deg,transparent,#000 4px,#000 calc(100% - 4px),transparent),linear-gradient(180deg,transparent,#000 6%,#000 88%,transparent);-webkit-mask-composite:source-in;
+  mask:linear-gradient(90deg,transparent,#000 4px,#000 calc(100% - 4px),transparent) intersect,linear-gradient(180deg,transparent,#000 6%,#000 88%,transparent);opacity:0}
 .gstage.flip .gf{transform:translateX(var(--dx));transition:none}
 .gstage.flip .gf.on{opacity:1}
 .gstage.spread .gf{opacity:1;transform:none;transition:transform 1s cubic-bezier(.3,.7,.2,1) calc(var(--i)*65ms),opacity .35s ease calc(var(--i)*65ms)}
@@ -348,7 +348,7 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
 </style>
 <script src="../js/hits.js" defer></script>
 <link rel="stylesheet" href="../assets/audio/snd.css?v=sc2">
-<script src="../js/brand-transition.js?v=bt3"></script>
+<script src="../js/brand-transition.js?v=bt4"></script>
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -553,14 +553,15 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
 
   /* VIBRANT capsule: tap = the capsule vibrates at high frequency while its own vibration arcs pulse out, then it settles.
      Idle hint: a short, light buzz now and then while the capsule is on screen. Reduced motion: the arcs brighten, nothing moves. */
-  function shakeKF(n,amp){var k=[];for(var i=0;i<=n;i++){var t=i/n,a=amp*(t<.7?1:Math.max(0,(1-t)/.3)),s=i%2?1:-1;
-    k.push({transform:'translate('+(s*a).toFixed(2)+'px,'+(-s*a*.45).toFixed(2)+'px) rotate('+(s*a*.32).toFixed(2)+'deg)'})}
+  function shakeKF(n,amp,rot){var k=[];rot=rot===undefined?amp*.32:rot;for(var i=0;i<=n;i++){var t=i/n,e=t<.7?1:Math.max(0,(1-t)/.3),a=amp*e,s=i%2?1:-1;
+    k.push({transform:'translate('+(s*a).toFixed(2)+'px,'+(-s*a*.4).toFixed(2)+'px) rotate('+(s*rot*e).toFixed(2)+'deg)'})}
     k[n]={transform:'none'};return k}
   function vibrate(host,strong){
     var cap=host.querySelector('.cv-cap'),arcs=host.querySelectorAll('.cv-arc');if(!cap||!cap.animate)return;
     if(rm){arcs.forEach(function(a){var o=+a.style.opacity;a.animate([{opacity:o},{opacity:1,offset:.3},{opacity:o}],{duration:1200})});return}
-    var dur=strong?1400:300,n=strong?44:10,amp=strong?3.2:1.3;
-    cap.animate(shakeKF(n,amp),{duration:dur,easing:'linear'});
+    /* amplitude in viewBox units: 9.6 (about 2.3% of the drawing), so ~7px at 1440 and ~5.5px on a phone */
+    var dur=strong?1400:320,n=strong?36:8,amp=strong?9.6:2.6;
+    cap.animate(shakeKF(n,amp,strong?1.6:.6),{duration:dur,easing:'linear'});
     arcs.forEach(function(a){var o=+a.style.opacity,r=+a.getAttribute('data-r');
       a.animate([{opacity:o,transform:'scale(1)'},{opacity:1,transform:'scale('+(strong?1.09:1.04)+')',offset:.4},{opacity:o,transform:'scale(1)'}],
         {duration:strong?340:300,delay:r*85,iterations:strong?4:1,easing:'ease-out'})});
@@ -604,12 +605,12 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
   function countUp(el,to){if(rm){el.textContent=to+'%';return}var t0=performance.now();(function f(t){var k=Math.min(1,(t-t0)/1400),e=1-Math.pow(1-k,3);el.textContent=Math.round(to*e)+'%';if(k<1)requestAnimationFrame(f)})(t0)}
   if(IO){var co=new IntersectionObserver(function(es){if(es[0].isIntersecting){chart.classList.add('in');countUp(document.getElementById('n68'),68);countUp(document.getElementById('n34'),34);co.disconnect()}},{threshold:.4});co.observe(chart)}else chart.classList.add('in');
 
-  /* Gait cycle: the seven figures are cut from the explainer itself (ap-1, 960x540; head centre x, box 132x190 from y 172).
+  /* Gait cycle: the seven figures are cut from the explainer itself (ap-1, 960x540; head centre x; each crop is that figure plus its own muscle labels only, x0..x1 measured on ap-1, 190 high from y 172).
      1) flip-book: one pose at a time, in place, three strides; 2) the frames spread to their own place in the row;
      3) the full explainer (headings, labels, stance and swing bars) fades in under them. Scroll-triggered once, Replay button. */
-  var GP=[[84,'A] Heel strike','initial contact'],[219,'B] Loading response','foot flat'],[345.5,'C] Midstance','stance'],[476.5,'D] Terminal stance','heel off'],[609.5,'E] Preswing','toe off'],[738.5,'F] Initial and mid-swing','swing'],[870,'G] Terminal swing','swing']];
-  var gs=document.getElementById('gstage'),gsc=document.getElementById('gscroll'),gph=document.getElementById('gph'),gpn=document.getElementById('gpn'),gd=document.getElementById('gdots'),FW=132,FH=190,FY=172,frames=[],dots=[],gt=[],playing=false;
-  GP.forEach(function(g,i){var f=document.createElement('i'),x=g[0]-FW/2;f.className='gf';f.setAttribute('aria-hidden','true');
+  var GP=[[84,'A] Heel strike','initial contact',26,160],[219,'B] Loading response','foot flat',166,260],[345.5,'C] Midstance','stance',298,380],[476.5,'D] Terminal stance','heel off',410,530],[609.5,'E] Preswing','toe off',538,670],[738.5,'F] Initial and mid-swing','swing',672,808],[870,'G] Terminal swing','swing',809,936]];
+  var gs=document.getElementById('gstage'),gsc=document.getElementById('gscroll'),gph=document.getElementById('gph'),gpn=document.getElementById('gpn'),gd=document.getElementById('gdots'),FH=190,FY=172,frames=[],dots=[],gt=[],playing=false;
+  GP.forEach(function(g,i){var f=document.createElement('i'),x=g[3],FW=g[4]-g[3];f.className='gf';f.setAttribute('aria-hidden','true');
     f.style.cssText='left:'+(x/9.6)+'%;top:'+(FY/5.4)+'%;width:'+(FW/9.6)+'%;height:'+(FH/5.4)+'%;background-size:'+(960/FW*100)+'% '+(540/FH*100)+'%;background-position:'+(x/(960-FW)*100)+'% '+(FY/(540-FH)*100)+'%;--dx:'+((480-g[0])/FW*100)+'%;--i:'+i;
     gs.appendChild(f);frames.push(f);var d=document.createElement('i');gd.appendChild(d);dots.push(d)});
   function later(fn,ms){gt.push(setTimeout(fn,ms))}
