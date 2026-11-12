@@ -20,7 +20,7 @@
     'milo':             { bg: '#1A023B', logo: 'assets/work/milo/milo-v2-calm-face.webp?v=nc1', lw: 'min(34vmin,230px)', lv: 860, ar: 900 },
     'rk':               { bg: '#06133F', logo: 'assets/brand-v3/rk/logo-stacked.png?v=rk72', lw: 'min(30vmin,210px)', lv: 760, ar: 920 },
     'concepts':         { bg: '#1a023c', logo: '', lw: '0', lv: 760, ar: 920 },
-    'healthtech':       { bg: '#0d3a9a', logo: 'assets/studio/marks/vibrant-white.png', lw: 'min(56vmin,360px)', lv: 740, ar: 800 }
+    'healthtech':       { bg: '#F5F9FC', logo: 'assets/work/healthtech/vb-logo.png', lw: 'min(48vmin,300px)', lv: 760, ar: 820 }
   };
   var ALIAS = { 'shomer-nature': 'shomer', 'chore-wars': 'chore-royale' };
 
@@ -143,15 +143,29 @@
     '@keyframes btSquare{from{transform:perspective(400px) rotateY(90deg) scale(.6);opacity:0}to{transform:none;opacity:1}}',
     '@keyframes btRise{from{opacity:0;transform:translateY(30px) scale(.9)}to{opacity:1;transform:none}}',
     /* HealthTech (VIBRANT): blue rises from the bottom, a heartbeat line draws across */
-    '.bt-healthtech .b{background:linear-gradient(170deg,#2a8ff0,#0d3a9a)}',
-    '.bt-healthtech .k{position:absolute;left:0;top:calc(50% + min(10vmin,70px));width:100%;height:80px;z-index:4;overflow:visible}',
-    '.bt-healthtech .k path{fill:none;stroke:#fff;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;vector-effect:non-scaling-stroke}',
+    /* HealthTech (12 Nov, Dave): light ground, the VIBRANT capsule from its pack with its own vibration arcs; it buzzes, the arcs pulse out */
+    '.bt-healthtech .b{background:radial-gradient(70% 55% at 50% 42%,#E3F2FC,#F5F9FC 62%,#fff)}',
+    '.bt-healthtech .c{padding-top:min(30vmin,210px)}',
+    '#s3bt.bt-healthtech .c img{filter:none}',
+    '.bt-healthtech .v{position:absolute;left:50%;top:calc(50% - min(9vmin,62px));width:min(62vmin,400px);height:auto;z-index:6;overflow:visible;transform:translate(-50%,-50%) rotate(-16deg);color:#4A9EDD}',
+    '.bt-healthtech .v g,.bt-healthtech .v path{transform-box:view-box}',
+    '.bt-healthtech .v .p,.bt-healthtech .v .q{transform-origin:210px 120px}',
+    '.bt-healthtech .v .a{opacity:var(--o)}',
     '.lv.bt-healthtech .b{animation:btRiseIn .42s cubic-bezier(.65,0,.25,1)}',
-    '.lv.bt-healthtech .k path{animation:btDraw .48s ease-out .22s}',
-    '.lv.bt-healthtech .c img{animation:btRise .3s ease-out .42s}',
-    '.ar.bt-healthtech .k path{animation:btDrawOut .5s ease-in}',
-    '.ar.bt-healthtech .c img{animation:btRise .26s ease-in reverse}',
-    '.ar.bt-healthtech .b{animation:btRiseOut .48s cubic-bezier(.65,0,.35,1) .26s}',
+    '.lv.bt-healthtech .v .p{animation:btCapIn .32s cubic-bezier(.3,1.45,.5,1) .2s}',
+    '.lv.bt-healthtech .v .q{animation:btBuzz .055s linear .48s 5}',
+    '.lv.bt-healthtech .v .a{animation:btArcIn .42s ease-out calc(.4s + var(--d))}',
+    '.lv.bt-healthtech .c img{animation:btRise .3s ease-out .4s}',
+    '.ar.bt-healthtech .v .q{animation:btBuzz .055s linear 6}',
+    '.ar.bt-healthtech .v .a{animation:btArcOut .46s ease-in var(--d)}',
+    '.ar.bt-healthtech .v .p{animation:btCapOut .3s ease-in .3s}',
+    '.ar.bt-healthtech .c img{animation:btRise .26s ease-in .1s reverse}',
+    '.ar.bt-healthtech .b{animation:btRiseOut .48s cubic-bezier(.65,0,.35,1) .3s}',
+    '@keyframes btCapIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}',
+    '@keyframes btCapOut{to{opacity:0;transform:scale(.85)}}',
+    '@keyframes btBuzz{0%,100%{transform:none}25%{transform:translate(-3px,1.4px) rotate(-1deg)}75%{transform:translate(3px,-1.4px) rotate(1deg)}}',
+    '@keyframes btArcIn{0%{opacity:0;transform:scale(.82)}55%{opacity:1;transform:scale(1.07)}100%{opacity:var(--o);transform:none}}',
+    '@keyframes btArcOut{0%{opacity:var(--o);transform:none}40%{opacity:1;transform:scale(1.08)}100%{opacity:0;transform:scale(1.2)}}',
     '@keyframes btRiseIn{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}',
     '@keyframes btRiseOut{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(0 0 100% 0)}}',
     '@keyframes btDraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}',
@@ -189,7 +203,7 @@
     h += '<i class="b"></i>';
     if (k === 'shomer') h += '<i class="e"></i><i class="r"></i><i class="r"></i>';
     if (k === 'lickpick') h += '<svg class="s" viewBox="0 0 1000 120" preserveAspectRatio="none"><g><path d="M0 60 Q125 0 250 60 T500 60 T750 60 T1000 60"/><path d="M0 60 Q125 120 250 60 T500 60 T750 60 T1000 60"/></g></svg>';
-    if (k === 'healthtech') h += '<svg class="k" viewBox="0 0 1000 80" preserveAspectRatio="none"><path pathLength="1" d="M0 50 H380 L410 50 L430 14 L455 76 L478 4 L500 62 L515 50 H1000"/></svg>';
+    if (k === 'healthtech') h += '<svg class="v" viewBox="0 0 420 240"><defs><linearGradient id="s3btvb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".38" stop-color="#F3F4F5"/><stop offset=".78" stop-color="#C6CACE"/><stop offset="1" stop-color="#A4A9AE"/></linearGradient><linearGradient id="s3btvh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#52ADE5"/><stop offset="1" stop-color="#4590D6"/></linearGradient></defs><g fill="none" stroke="currentColor" stroke-linecap="round"><path class="a" style="transform-origin:162px 120px;--o:0.95;--d:0.00s" d="M114.0 181.5A78 78 0 0 1 114.0 58.5" stroke-width="6"/><path class="a" style="transform-origin:258px 120px;--o:0.95;--d:0.00s" d="M306.0 58.5A78 78 0 0 1 306.0 181.5" stroke-width="6"/><path class="a" style="transform-origin:162px 120px;--o:0.62;--d:0.08s" d="M98.6 201.2A103 103 0 0 1 98.6 38.8" stroke-width="4.6"/><path class="a" style="transform-origin:258px 120px;--o:0.62;--d:0.08s" d="M321.4 38.8A103 103 0 0 1 321.4 201.2" stroke-width="4.6"/><path class="a" style="transform-origin:162px 120px;--o:0.34;--d:0.16s" d="M82.0 222.4A130 130 0 0 1 82.0 17.6" stroke-width="3.4"/><path class="a" style="transform-origin:258px 120px;--o:0.34;--d:0.16s" d="M338.0 17.6A130 130 0 0 1 338.0 222.4" stroke-width="3.4"/></g><g class="p"><g class="q"><rect x="113" y="71" width="194" height="98" rx="49" fill="url(#s3btvh)"/><rect x="113" y="71" width="194" height="98" rx="49" fill="none" stroke="#fff" stroke-width="7" pathLength="100" stroke-dasharray="54 3 9 3 31" stroke-linecap="round"/><rect x="135" y="93" width="150" height="54" rx="27" fill="url(#s3btvb)"/><path d="M213 94.5v51" stroke="#B5BABF" stroke-width="1.2" opacity=".7"/><rect x="150" y="99" width="118" height="10" rx="5" fill="#fff" opacity=".85"/></g></g></svg>';
     if (k === 'rk' || k === 'concepts') {
       var cols = W.innerWidth > W.innerHeight ? 10 : 6, rows = Math.ceil(W.innerHeight / (W.innerWidth / cols)) + 1, g = '';
       for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) g += '<i class="' + ((r + c) % 2 ? 'd' : '') + '" style="--w:' + ((r + c) * 0.022).toFixed(3) + 's"></i>';
