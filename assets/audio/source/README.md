@@ -93,3 +93,12 @@ instead of brick-wall low-passes, CC11 expression (swells, lighter pickups, ampl
 scoops, occasional fall-offs, legato overlaps. Keys leads without pitch bends; guitars with less drive and a cabinet curve.
 Each new stem is level-matched to the v7 file it replaces (leads 1 dB under). No trumpet / brass program anywhere.
 Run: `S3_OLD=<copy of the v7 v6/ folder> python3 score_v8.py stems` (writes into assets/audio/studio/v6/; ver sc8).
+
+## Score v9: "a song per page" (`score_v9.py`, `studio_sfx_v9_riff.py`), generated 2026-11-12
+Score v8 band, groove, key, tempo, loop lengths and homepage build-up unchanged; only the melody stems (mel-*) are new. Each product
+page gets its own 16-bar song written from the homepage hook (A, B, two hybrids over the 32-bar loop) in its own voice: SH✡MER
+fretless bass, LickPick rock organ, Chore Royale pizzicato + marimba, R&K dark Rhodes (new `mel-rk`), Trashure Hunters marimba +
+pan flute, Milo vibraphone, FaiRent jazz guitar octaves, Concept Lab nylon guitar, EZRA clarinet (new `mel-ezra`); the homepage
+theme keeps its tenor sax call (darker EQ) with nylon guitar answers. Phrasing reference: Dave's own Spanish-guitar recordings.
+Each stem is level-matched to the v8 stem it replaces. `p_lickpick` in v2/sfx is now an electric-guitar riff (same slot, 0.62 s).
+Run: `S3_OLD=<copy of the v8 v6/ folder> python3 score_v9.py stems` and `python3 studio_sfx_v9_riff.py` (ver sc9).
