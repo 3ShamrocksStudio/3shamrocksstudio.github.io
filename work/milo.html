@@ -188,6 +188,9 @@ h2{font-size:clamp(32px,4.6vw,54px);line-height:1.1;margin-bottom:14px}
 .fl .gr{display:inline-block;align-self:flex-start;font:600 12px var(--disp);padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--c) 22%,transparent);color:#fff}
 .fl .src{margin-top:auto;font-size:12.5px;color:var(--ink3)}
 .fl .src a{color:var(--ink2);text-decoration:underline;text-underline-offset:3px}
+.srcs{margin-top:18px;font-size:12.5px;line-height:1.7;color:var(--ink3)}
+.srcs a{color:var(--ink2);text-decoration:underline;text-underline-offset:3px;display:inline-block;min-height:24px}
+.srcs a:hover{color:#fff}
 .honest{margin-top:22px;display:flex;gap:14px;align-items:flex-start;padding:18px 22px;border-radius:20px;background:rgba(28,188,245,.07);box-shadow:inset 0 0 0 1px rgba(28,188,245,.3);font-size:15px;color:var(--ink2)}
 .honest b{color:#fff}
 .honest svg{width:24px;height:24px;flex:none;color:var(--cyan);margin-top:2px}
@@ -204,7 +207,7 @@ h2{font-size:clamp(32px,4.6vw,54px);line-height:1.1;margin-bottom:14px}
 .who button img{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .3s}
 .who button img.on{opacity:1}
 .who small{font-size:13px;color:var(--ink3)}
-.sw{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sw{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .sw button{aspect-ratio:3/4;border-radius:16px;display:flex;flex-direction:column;justify-content:flex-end;padding:8px;font:600 11px/1.2 var(--disp);color:#fff;text-align:left;transition:transform .2s var(--pop)}
 .sw button:hover{transform:translateY(-4px)}
 .sw button span{opacity:.75;font-weight:500}
@@ -213,7 +216,7 @@ h2{font-size:clamp(32px,4.6vw,54px);line-height:1.1;margin-bottom:14px}
 .type p{font:500 16px var(--body);color:#fff;margin-top:12px}
 .type small{display:block;font-size:12px;color:var(--ink3);margin-top:4px}
 @media(max-width:900px){.bgrid{grid-template-columns:1fr 1fr}.bgrid .tile:nth-child(2){grid-column:span 2;order:3}}
-@media(max-width:560px){.bgrid{grid-template-columns:1fr}.bgrid .tile:nth-child(2){grid-column:auto}}
+@media(max-width:560px){.bgrid{grid-template-columns:1fr}.bgrid .tile:nth-child(2){grid-column:auto}.sw{gap:6px}.sw button{padding:6px 5px;font-size:10px}.sw button span{font-size:8.5px;overflow-wrap:anywhere}}
 .toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:10px 18px;border-radius:999px;background:var(--pink);color:#fff;font:600 15px var(--disp);transition:opacity .25s,transform .25s}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
@@ -334,12 +337,13 @@ h2{font-size:clamp(32px,4.6vw,54px);line-height:1.1;margin-bottom:14px}
   <div class="rv"><div class="eyebrow">Why it works this way</div><h2 id="w-h">Borrowed from <span class="cy">child psychology.</span></h2><p class="lede">Three ideas with research behind them. Tap a card for the source.</p></div>
   <div class="cards">
    <button type="button" class="fl rv" aria-pressed="false" style="--c:#FF2D95"><span class="in"><span class="fa"><span class="n">1</span><h3>Name it</h3><p>Putting a feeling into words is the first skill.</p><span class="tap">Tap for the research</span></span>
-    <span class="ba"><span class="gr">Moderate evidence</span>Labelling a feeling lowered the brain&rsquo;s alarm response in adults. In young children, more labelling went with faster recovery (a correlational study).<span class="src">Lieberman et al., <i>Psychol Sci</i> 2007 &middot; Zhu et al., <i>Child Dev</i> 2026</span></span></span></button>
+    <span class="ba"><span class="gr">Moderate evidence</span>Labelling a feeling lowered the brain&rsquo;s alarm response in adults. In young children, more labelling went with faster recovery (a correlational study).<span class="src">Lieberman et al., <i>Psychol Sci</i> 2007 &middot; Zhu et al., <i>Child Dev</i> 2026 (97:451)</span></span></span></button>
    <button type="button" class="fl rv" aria-pressed="false" style="--c:#1CBCF5"><span class="in"><span class="fa"><span class="n">2</span><h3>Breathe, then step</h3><p>Calm is the warm-up. The brave step is the workout.</p><span class="tap">Tap for the research</span></span>
     <span class="ba"><span class="gr">Strong in therapy &middot; untested in an app</span>Practising small, scary-but-safe steps is a core ingredient of CBT for anxious kids. Breathing on its own helped kids less clearly, so in Milo it opens the minute and never ends it.<span class="src">James et al., <i>Cochrane</i> 2020 &middot; Peris et al., <i>JCCP</i> 2015 &middot; Kramer et al., <i>JCCAP</i> 2023</span></span></span></button>
    <button type="button" class="fl rv" aria-pressed="false" style="--c:#E527C8"><span class="in"><span class="fa"><span class="n">3</span><h3>Do, then feel</h3><p>When a kid feels low, one small good thing comes first.</p><span class="tap">Tap for the research</span></span>
     <span class="ba"><span class="gr">Early evidence</span>Behavioural activation plans small rewarding activities instead of waiting to feel better. A review of 19 studies in young people found it promising, with evidence still limited.<span class="src">Martin &amp; Oliver, <i>Eur Child Adolesc Psychiatry</i> 2019</span></span></span></button>
   </div>
+  <p class="srcs rv">Sources: <a href="https://doi.org/10.1111/j.1467-9280.2007.01916.x" target="_blank" rel="noopener">Lieberman 2007</a> &middot; <a href="https://doi.org/10.1093/chidev/aacaf033" target="_blank" rel="noopener">Zhu 2026</a> &middot; <a href="https://doi.org/10.1002/14651858.CD013162.pub2" target="_blank" rel="noopener">James 2020</a> &middot; <a href="https://doi.org/10.1037/a0038402" target="_blank" rel="noopener">Peris 2015</a> &middot; <a href="https://doi.org/10.1080/15374416.2022.2084743" target="_blank" rel="noopener">Kramer 2023</a> &middot; <a href="https://doi.org/10.1007/s00787-018-1126-z" target="_blank" rel="noopener">Martin &amp; Oliver 2019</a></p>
   <p class="honest rv"><svg aria-hidden="true"><use href="#m-info"/></svg><span><b>A concept, not therapy.</b> Milo is not a treatment, a diagnosis or a crisis service, and makes no clinical claims. Its words have not been reviewed by a clinician yet; that review comes before any child uses it.</span></p>
  </div>
 </section>
