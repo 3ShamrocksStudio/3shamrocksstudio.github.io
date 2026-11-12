@@ -92,7 +92,7 @@ Kill rules: M2 <2 retainers → outbound at scale, product work to zero. M3 <$12
 6. Every Dave item is self-contained: who, why, exact text, link, what happens next. Never "see the other item".
 7. Independent verifier before anything is called done. Fix-loop cap 2, then stop and report.
 8. Outreach: no price in a first contact. Use Dave's approved templates (section 7). Current-role check within 7 days before any person reaches Dave's list.
-9. Dave's emails go from dave@3shamrocks.com (studio) or support@shomer-app.co.il (SH✡MER support), never markodave@gmail.com.
+9. Dave's emails go from dave@3shamrocks.com (studio) or support@shomer-app.co.il (SH✡MER support), never Dave's personal Gmail.
 10. **Israeli anti-spam law (Communications Law §30A, "חוק הספאם") — applies to B2B too.** Any commercial email (an offer, a pitch, "worth a chat about my services") to an Israeli person or business needs: subject starting with "פרסומת: "; the sender's name, postal address and contact details in the body; a working opt-out ("reply 'remove' / השיבו 'הסר'") honoured within 3 business days. Exempt: existing customers and people Dave already negotiated with (past clients), or ONE one-time email that only asks consent to receive offers (no pitch in it). Damages up to ₪1,000 per message without proof of harm (Tel Aviv ruling, Jan 2026: ₪750 per message and the CEO personally liable). Opt-outs: the inbox watcher records each removal request in J8NIX `optout/<address>` the same day and kills every pending/queued email to it; every arm checks `optout` before drafting or sending email. No email draft goes to `approvals` without these elements (or an exemption written in its `context`).
 
 ## 3. The loop (every run executes it)
