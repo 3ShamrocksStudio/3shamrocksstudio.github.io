@@ -149,7 +149,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;background:var(--red)
 .go svg{width:20px;height:20px}
 .pen{position:absolute;right:-8px;top:38%;transform:rotate(-8deg);pointer-events:none;opacity:0;transition:opacity .3s .25s;text-align:right;width:150px}
 .pen svg{width:64px;height:44px;margin:4px 0 0 auto;overflow:visible}
-.rc-wrap.over .pen{opacity:1}
+.rc-wrap.over.ready .pen{opacity:1}
 @media(min-width:1180px){.pen{right:-150px;top:41%}}
 @media(max-width:1179px){.pen{display:none}}
 .rc-src{margin-top:26px;font:500 12px/1.5 var(--mono);color:var(--pencil);text-align:center;letter-spacing:.01em}
@@ -390,7 +390,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;background:var(--red)
     rv.forEach(function(el){io.observe(el)});
   } else rv.forEach(function(el){el.classList.add('in')});
   /* the receipt prints in */
-  requestAnimationFrame(function(){requestAnimationFrame(function(){$('rc').classList.remove('pre')})});
+  requestAnimationFrame(function(){requestAnimationFrame(function(){$('rc').classList.remove('pre')})});setTimeout(function(){$('rc').classList.add('ready')},rm?0:1300);
 
   /* ===== FaiRent engine, copied from the app (Fairent engine v2) =====
      CBS Table 4.9, average monthly rent actually paid, Q2 2025, NIS. Per row: [1-2 rooms, 2.5-3, 3.5-4, 4.5-6]. null = CBS-suppressed cell. */
