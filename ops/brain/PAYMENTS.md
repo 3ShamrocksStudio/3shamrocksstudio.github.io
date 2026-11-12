@@ -22,21 +22,21 @@ Correction to the 8 Nov CFO note ("card links need Best plan + clearing add-on")
 
 ### 1. Studio services · AI-Ready Brand Sprint + Brand OS (cash mode, fastest money)
 - **Model:** fixed-price sprint, 50% upfront, 50% on delivery; then optional monthly retainer (recurring, Dave's preference).
-- **Price (decided):** Brand Sprint ₪9,800 (VAT wording still open: loose end `svc-vat-sprint`); Brand OS ₪3,900/month. Other packages (8 Nov): Package 1 ₪13,000/mo, Package 2 ₪24,000/mo, Package 3 ₪35,000 for 12 days, two-week redesign ₪32,000, all + VAT.
+- **Price (decided):** set by Dave; amounts are kept in the private J8NIX project notes, not in this public file. VAT wording still open (loose end `svc-vat-sprint`).
 - **Provider:** Morning. Deposit = Morning payment link; Brand OS = Morning standing order (monthly card charge, invoice auto-issued).
 - **Status (real):** no deposit link exists yet; Grow digital payments not connected (no Grow/clearing email in Gmail). Inquiry path staged.
 - **Claude did:** staged `sprint/` (noindex, not linked from the site): Brand Sprint inquiry flow (visitor's own email to dave@3shamrocks.com, nothing stored), "Pick a time" and "Pay the deposit" hooks behind `window.S3_SPRINT` that stay hidden until a real https link is set; deposit shows only on `sprint/#deposit` (the link Dave sends after a call). No price on the page. **NEEDS YOUR EYES** before it is linked anywhere.
 - **Dave only:** Morning → סליקה ותוספים → תשלומים דיגיטליים → חיבור → יצירת חשבון חדש (Grow), fill details and upload the documents it asks for (~10 min; active within ~24 h). Then Claude creates the deposit link + Brand OS standing-order template in a Chrome shift and pastes the link into `S3_SPRINT.depositUrl`.
 
 ### 2. VIBRANT · IFU edits (delivered 8 Nov)
-- **Model:** one-off freelance invoice. **Price:** ₪800 (₪700 older note still unconfirmed).
+- **Model:** one-off freelance invoice. **Price:** agreed with the client (kept private).
 - **Provider:** Morning invoice (bank transfer now; card link once Grow is connected).
 - **Status:** not invoiced; waiting on the client side's OK. Left untouched by this run on purpose.
 - **Dave only:** the existing to-do item (`cash12-vibrant`). Nothing new.
 
 ### 3. SH✡MER · councils and communities (B2B / B2B2C)
 - **Model:** 90-day paid pilot credited toward an annual council licence (recurring yearly). Residents use the app free.
-- **Price (decided 8 Nov, + VAT):** pilot Person ₪24,000 (50–100k residents); Nature ₪9,000; Combined ₪28,500 (₪19,500 for 20–50k). The pilot is 25% of the annual licence and is credited toward it; the ₪144k no-tender cap is still a CFO proposal waiting for Dave.
+- **Price (decided 8 Nov, + VAT):** pilot tiers by population; the pilot is credited toward the annual licence. Amounts are kept private (J8NIX), not in this public file.
 - **Provider:** Morning invoice (councils pay by bank transfer against a tax invoice; a card link is rarely usable for a council). Communities/donors: Morning payment link once Grow is connected.
 - **Status:** no pilot signed; pilot pages already route to a 15-minute call (mailto). No checkout belongs in the app.
 - **Claude did:** nothing in code (correct: a council buys by invoice after a call).
@@ -45,12 +45,12 @@ Correction to the 8 Nov CFO note ("card links need Best plan + clearing add-on")
 ### 4. LickPick · Pro subscription (consumer, worldwide)
 - **Model:** subscription. **Price (published on the landing page):** $2.99/month or $14.99/year.
 - **Provider:** **Paddle as primary** (same 5% + 50¢ as Lemon Squeezy, no Stripe dependency, Israel not excluded; ask Paddle for its under-$10 rate). **Lemon Squeezy as backup** (store 3sstudio, products already in test mode). Gumroad only if both fail: on a $2.99 sale its ~10% + 50¢ + processing takes roughly 40%.
-- **Status (real):** the Lemon Squeezy checkout is wired in `lickpick/app/index.html` (`window.LP_PAY`, `mode: "test"`, live links empty), so the Pro sheet shows "Checkout opens soon" unless `?paytest=1`. Dave finished the Lemon Squeezy identity step on 4 Nov. Gmail (markodave@gmail.com) holds **no Lemon Squeezy email at all** since the 17 Oct sign-in: no approval, no rejection. No Paddle account exists. LickPick is frozen in cash mode, so no code was changed today.
+- **Status (real):** the Lemon Squeezy checkout is wired in `lickpick/app/index.html` (`window.LP_PAY`, `mode: "test"`, live links empty), so the Pro sheet shows "Checkout opens soon" unless `?paytest=1`. Dave finished the Lemon Squeezy identity step on 4 Nov. The studio Gmail holds **no Lemon Squeezy email at all** since the 17 Oct sign-in: no approval, no rejection. No Paddle account exists. LickPick is frozen in cash mode, so no code was changed today.
 - **Claude did:** GO-LIVE patch dry-run PASS for Lemon Squeezy (`ops/brain/lp-golive-dryrun.md`); today re-checked the hook is still behind the flag; Paddle wiring plan: `LP_PAY.provider = "paddle"` with Paddle.js overlay checkout + Paddle price ids, Pro unlocked by the existing licence-key flow fed from Paddle's webhook (needs a small serverless endpoint; zero-spend option to be picked when the account exists).
 - **Dave only (account/KYC/bank):** sign up at paddle.com → "Get started" with dave@3shamrocks.com as 3Shamrocks Studio, complete business + identity verification and the payout bank (~20 min). Then write "Paddle in" and Claude does the product, prices, domain review and wiring. Lemon Squeezy: if its "store activated" email arrives first, app.lemonsqueezy.com → Settings → Payouts → add the business bank (5 min).
 
 ### 5. Chore Royale (frozen in cash mode)
-- **Model:** family subscription (proposal only). **Price:** Dave decides (₪19.90/mo · ₪149/yr was a proposal, never approved).
+- **Model:** family subscription (proposal only). **Price:** Dave decides.
 - **Provider when it's time:** Paddle (same rail as LickPick) or Google Play billing if it ships as an Android app.
 - **Status:** no paid tier in the code; the plan says a 10-family "would you pay?" test comes before any payment build. **Nothing wired on purpose.**
 
