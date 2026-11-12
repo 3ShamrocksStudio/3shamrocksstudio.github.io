@@ -1,0 +1,23 @@
+/* 3SDS shared layers for IG posts (1080x1350 canvas = 2x the 16px base scale).
+   Layer 0 primitives + Layer 2 semantic roles + Layer 3 post components.
+   Layer 1 (one block per brand) lives in brand-*.css. Nothing here is brand-specific. */
+:root{
+  /* L0 type scale: major third on a 32px poster base */
+  --text-xs:24px;--text-sm:28px;--text-base:32px;--text-lg:36px;--text-xl:40px;--text-2xl:48px;
+  --text-3xl:62px;--text-4xl:78px;--text-5xl:98px;--text-6xl:122px;--text-7xl:153px;
+  --lh-tight:1.04;--lh-snug:1.2;--lh-body:1.4;--track-tight:-.02em;--track-label:.14em;
+  /* L0 spacing: 4px ramp */
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-7:40px;--space-8:48px;--space-9:64px;--space-10:96px;
+  --gutter:88px; /* ~8% safe margin */
+  --success:#16a06a;--danger:#e5484d;--info:#19a8ff;--warning:#f0a030;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1350px;overflow:hidden;background:var(--bg)}
+body{font-family:var(--font-body);color:var(--text);-webkit-font-smoothing:antialiased;font-size:var(--text-base);line-height:var(--lh-body)}
+.post{position:relative;width:1080px;height:1350px;overflow:hidden;background:var(--bg);padding:var(--gutter);display:flex;flex-direction:column}
+.display{font-family:var(--font-display);letter-spacing:var(--track-tight);line-height:var(--lh-tight)}
+.label{font-family:var(--font-label);font-size:var(--text-xs);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--text-2)}
+.lead{font-size:var(--text-lg);line-height:var(--lh-body);color:var(--text-2)}
+.spacer{flex:1}
+.rtl{direction:rtl;text-align:right}
+bdi,.ltr{direction:ltr;unicode-bidi:isolate}
