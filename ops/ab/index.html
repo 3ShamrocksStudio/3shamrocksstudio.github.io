@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3S A/B Results</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#14192b;--mut:#566079;--line:#dfe3ee;--acc:#1f4fd8;--accbg:#e8eefc}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1220;--card:#181c30;--ink:#e8ebf7;--mut:#a3accb;--line:#2c3354;--acc:#8fb0ff;--accbg:#1d2546}}
+:root[data-theme="dark"]{--bg:#0f1220;--card:#181c30;--ink:#e8ebf7;--mut:#a3accb;--line:#2c3354;--acc:#8fb0ff;--accbg:#1d2546}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:900px;margin:0 auto;padding:16px}
+h1{font-size:24px;margin:8px 0 4px}
+h2{font-size:18px;margin:24px 0 6px}
+.mut{color:var(--mut);font-size:14px;margin:4px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:15px}
+th,td{text-align:right;padding:6px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal;overflow-wrap:anywhere}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:700}
+tr:last-child td{border-bottom:0}
+.lead td{background:var(--accbg)}
+h3{font-size:15px;margin:14px 0 4px}h3:first-child{margin-top:2px}
+@media (max-width:480px){table{font-size:13px}th{font-size:10px}th,td{padding:5px 4px}}
+select{font:inherit;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>A/B and outreach results</h1>
+<p class="mut">Daily aggregate counts from 3shamrocks.com. No IDs, no cookies; Do-Not-Track and GPC visitors are not counted. A variant needs roughly 100+ seen before the rates mean much.</p>
+<p class="mut"><label>Window <select id="d"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option></select></label> · <span id="u">Loading…</span></p>
+<h2>Site experiments</h2>
+<p class="mut">Seen = the button was on screen. Click = clicked that button. Reached = later opened work-with-me.html. Highlight = higher click rate.</p>
+<div class="card" id="ex"></div>
+<h2>Outreach links (UTM)</h2>
+<p class="mut">One row per channel:message. Landed = opened the site from that link.</p>
+<div class="card" id="ut"></div>
+</div>
+<script>
+(function(){
+var U='https://otkvebgrdiayjnqrytrn.supabase.co/rest/v1/rpc/ab_results',K='sb_publishable_ZSMgkwuVwKwqrMgEIlG4Nw_-CmQ_Yct';
+var NAMES={'home-hero-cta':'Home hero button · A "See the work" / B "See the brand systems I build"','ht-case-cta':'HealthTech end button · A "Let’s talk" / B "Tell me what you’re building"'};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function pct(v){return v==null?'–':v+'%'}
+function head(utm){return '<table><thead><tr><th>'+(utm?'Link':'Variant')+'</th><th>'+(utm?'Landed':'Seen')+'</th><th>Clicks</th><th>Click %</th><th>Reached</th><th>Reach %</th></tr></thead><tbody>'}
+function table(rows,utm){
+if(!rows.length)return '<p class="mut">No data yet.</p>';
+var h='',g=null;
+rows.forEach(function(r){
+if(r.experiment!==g){if(g!==null)h+='</tbody></table>';g=r.experiment;h+='<h3>'+esc(utm?'Campaign '+g.slice(4):(NAMES[g]||g))+'</h3>'+head(utm)}
+var name=utm?r.variant:r.variant.toUpperCase();
+h+='<tr'+(r.lead?' class="lead"':'')+'><td>'+esc(name)+'</td><td>'+r.exposures+'</td><td>'+r.clicks+'</td><td>'+pct(r.click_rate)+'</td><td>'+r.reaches+'</td><td>'+pct(r.reach_rate)+'</td></tr>';
+});
+return h+'</tbody></table>';
+}
+function load(){
+var d=+document.getElementById('d').value;
+document.getElementById('u').textContent='Loading…';
+fetch(U,{method:'POST',headers:{apikey:K,'Content-Type':'application/json'},body:JSON.stringify({days:d})}).then(function(r){if(!r.ok)throw r.status;return r.json()}).then(function(rows){
+var ex=rows.filter(function(r){return r.experiment.indexOf('utm:')!==0}),ut=rows.filter(function(r){return r.experiment.indexOf('utm:')===0});
+var best={};ex.forEach(function(r){if(r.click_rate==null)return;var b=best[r.experiment];if(!b||r.click_rate>b.v)best[r.experiment]={v:r.click_rate,r:r,tie:false};else if(r.click_rate===b.v)b.tie=true});
+ex.forEach(function(r){var b=best[r.experiment];r.lead=!!b&&b.r===r&&!b.tie&&r.click_rate>0});
+document.getElementById('ex').innerHTML=table(ex,false);
+document.getElementById('ut').innerHTML=table(ut,true);
+document.getElementById('u').textContent='Updated '+new Date().toLocaleString();
+}).catch(function(){document.getElementById('u').textContent='Could not load results. Try again in a minute.'});
+}
+document.getElementById('d').addEventListener('change',load);
+load();
+})();
+</script>
+</body>
+</html>
