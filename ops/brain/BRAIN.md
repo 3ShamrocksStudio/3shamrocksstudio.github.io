@@ -6,6 +6,12 @@ This repo (3shamrocksstudio.github.io) is the brain's home because every run can
 3s-status (org/ORG.md, roles, DECISIONS, LEARNINGS, STUDIO_BRAIN) stays the read-only history.
 Its hard rules still bind. If the two conflict, the stricter rule wins.
 
+## −5. NIGHT OF 12→13 NOV: CEO STANDING APPROVAL (Dave, 20:34)
+"Entering night shift I want ALL THINGS APPROVED for your workflows, so nothing gets stuck waiting for me while I'm sleeping. Expect real results and progress on all things as priorities command."
+- Every INTERNAL step is approved tonight: design picks, builds, staging deploys, fixes, research, drafting, data updates, J8NIX publishes. Do not stop to ask; decide, verify independently, ship to staging, log in J8NIX runs and brain.json.
+- Outgoing sends follow what Dave already decided in J8NIX (approved/edited items) and §−3 templates (T1 approved; T2–T5 killed by him). Legal and platform limits still bind: no LinkedIn automation, §30A for email, no spend, nothing goes public as "launched".
+- Morning: one short digest of what shipped, with links.
+
 ## −3. TEMPLATE APPROVAL (CEO decision 12 Nov) — binds every run, amends §2.1 and §−2 "approvals"
 Dave, 12 Nov 18:10, explicit answer to a direct question: per-item approval is replaced by template approval for the categories below. Dave approves each template once; after that, a message built from it counts as his OK on that exact content (§2.1), within the rules and guardrails here. Contract details: `ops/brain/ARMS-CONTRACT.md` §3a–3c.
 - **Auto after one template OK:** job applications scoring ≥80 fit, with the approved CV and letter template · LinkedIn connect notes · follow-up #1 and #2 to silent contacts · tester-recruitment posts on product accounts · scheduled posts from the approved calendar.
