@@ -15,6 +15,7 @@ J8NIX is the one point every scheduled task ("arm") reads and writes.
 | `todo` | `done`, `back`, `note`, `at` | nothing (read only) | write ticks for Dave |
 | `comments` | new docs `{p,text,at,status:'new',reply:''}` | `status`, `reply` | edit `text`, delete docs |
 | `approvals` | `status` (approved/edited/killed/pending), `edited_body`, `decided_at`; Kill on `queued` docs; approve/kill on `template` docs | new docs (status `pending`, or `queued` when built from an approved template, §3b); after sending: `status:'sent'`, `sent_at`, `result` | send anything whose status is not `approved`, `edited` or `queued`-past-hold (§3b); change `body` after Dave decided; edit an approved template |
+| `optout` | removal requests (optional) | new docs from removal replies (§3d) | delete or ignore a doc |
 | `control` | `main.paused`, `main.email_from_ok`, `main.caps` (via the page) | `main.updated`, `main.by` only when Dave asks in `comments` | flip `paused` or `email_from_ok` on their own |
 | `projects` | nothing | every field (merge with `update`) | delete a project (set `hidden:true` instead) |
 | `runs` | nothing | one new doc per run | rewrite old runs |
@@ -94,15 +95,17 @@ Dave approves each template once; messages built from it then go out without a p
 
 ## 3b. Drafts from an approved template: queued → hold → send
 
-- A draft built from an APPROVED template fills only the `{placeholders}` (each with a sourced fact checked within 7 days) and is created with `template_id`, `status:"queued"`, `queued_at`, `hold_until` = created/queued_at + 6 h.
+- A draft built from an APPROVED template fills only the `{placeholders}` (each with a sourced fact checked within 7 days) and, unless its channel is LinkedIn (then `pending` + `label:"Send by hand"`), is created with `template_id`, `status:"queued"`, `queued_at`, `hold_until` = created/queued_at + 6 h.
 - **Queue sweep:** at the start of every drafting arm (brain shift, revenue desk, morning plan, inbox watcher, night shift), every `pending` doc whose `template_id` points to an approved template and that has no `per_item:true` → `update {status:"queued", queued_at: now, hold_until: now + 6 h}` (with `ifVersion`). Drafts with a `template_id` whose template is still `pending` stay `pending`.
 - **Kill window:** until `hold_until` Dave can set a queued doc to `killed` (never send, never re-draft) or back to `pending` (then it waits for his per-item tap and gets `per_item:true`).
-- **Sender:** ONLY the scheduled task "3s sender arm (Mac · Chrome)" (Sun–Thu 09:41 and 15:41 Israel, on Dave's Mac, his logged-in Chrome) sends. Cloud arms never send LinkedIn messages, connect notes or job applications.
+- **LinkedIn = by hand only.** LinkedIn bans automation software and extensions, so no arm (Mac or cloud) ever sends a connect note, message, comment, post or LinkedIn Apply/Easy Apply. A LinkedIn draft from an approved template is created/kept as `status:"pending"`, `label:"Send by hand"` (never `queued`); Dave copies and sends it himself from J8NIX and marks it sent. The queue sweep skips every doc whose channel is LinkedIn.
+- **Sender:** ONLY the scheduled task "3s sender arm (Mac · Chrome)" (Sun–Thu 09:41 and 15:41 Israel, on Dave's Mac, his logged-in Chrome) sends, and only off LinkedIn: job applications on the company's own form, and email once `email_from_ok` is true. Cloud arms never send.
 - **Send a `queued` doc only if ALL hold, re-read right before the send:** now ≥ `hold_until` · the doc is still `queued` · its template is still `approved` · `control/main.paused == false` · today's cap for its `cap_key` has room · email: `control/main.email_from_ok == true` · follow-ups: the contact is still silent (re-read the thread; any reply → `status:"pending"`, `per_item:true`, warn "Replied: live conversation, needs your OK").
 - After sending: `{status:"sent", sent_at, result}` as in §3. Text to send = `body` (Dave can't edit a queued doc's text; editing = back to `pending`).
 - Template killed → every `queued` doc with that `template_id` → `status:"pending"`, warn "Template killed".
 - **Email sender rule (all email, template or per-item):** studio email goes only from dave@3shamrocks.com. The Gmail connector sends as markodave@gmail.com, so while `email_from_ok` is not `true` an arm never sends email: it leaves `status` as is and writes `result: "Waiting: dave@3shamrocks.com sending not connected"`.
-- **Caps:** per Israel calendar day and per `cap_key`, counting every send that day (template or per-item): `li_connect` 15, `li_followup` 10, `email` 20 (values from `control/main.caps`). Over cap → stays `queued` for the next day.
+- **Caps:** per Israel calendar day and per `cap_key`, counting every send that day (template or per-item): `li_connect` 15, `li_followup` 10 (Dave's by-hand LinkedIn sends), `email` 10 during the new-domain warm-up (2–4 weeks at 5–10/day; policy ceiling 20 once Dave raises it) (values from `control/main.caps`). Over cap → stays `queued` for the next day.
+- **Israeli anti-spam law (§30A, BRAIN §2.10):** every commercial email (template or per-item) has a subject starting "פרסומת: ", a footer with sender name, postal address and contact, and an opt-out line; removal requests are honoured within 3 business days. Exempt only: existing customers / past negotiations (say so in `context`) or one consent-only email with no pitch. Before drafting or sending any email, check `optout/<address>`; if present, don't draft, and kill pending/queued docs to it.
 - **Digest:** the 18:13 brain shift sends Dave one push line at 19:00 Israel with today's counts (sent / queued / waiting-on-Dave, plus held email or caps hit) and writes the same line as its `runs` summary.
 
 ## 3c. `control` = the switch board
@@ -110,12 +113,16 @@ Dave approves each template once; messages built from it then go out without a p
 Single doc `control/main`:
 ```
 { paused: false,                                   // true = no arm sends anything (drafting/queueing continue)
-  caps: { li_connect: 15, li_followup: 10, email: 20 },
+  caps: { li_connect: 15, li_followup: 10, email: 10 },   // email 10 during new-domain warm-up; ceiling 20
   digest_hour: 19,                                 // Israel time
   email_from_ok: false,                            // true only once dave@3shamrocks.com sending is connected
   updated: ISO, by: "who changed it" }
 ```
 Every sending arm reads it right before each send. Arms never flip `paused` or `email_from_ok` on their own.
+
+## 3d. `optout` = email removal list (§30A)
+
+Doc id = the lower-case email address. Shape: `{ email, at: ISO, source: "reply 'remove' in thread …" | "Dave", by }`. Written by the inbox watcher the same day a removal request arrives (or by Dave). Arms never delete these docs. Any email to an address in `optout` is never drafted or sent; existing pending/queued docs to it → `killed` with result "Opted out (§30A)".
 
 ## 4. `projects`
 
