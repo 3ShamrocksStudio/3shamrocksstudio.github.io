@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<title>Brand Sprint · 3Shamrocks Studio</title>
+<meta name="description" content="AI-Ready Brand Sprint by Dave Markovich, 3Shamrocks Studio. Seven working days: audit, refined identity, token system, an AI rulebook and 20 launch assets.">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&family=Heebo:wght@400;500;700;800&display=swap">
+<!--
+  PAYMENTS CONFIG (staged). Both stay "" until Dave has the real link.
+  bookingUrl: a scheduling link (e.g. a free Google Calendar booking page). Empty = the "Pick a time" button stays hidden.
+  depositUrl: the Morning (Grow) payment link for the 50% sprint deposit. Empty = no pay button anywhere.
+    Even when set, the deposit block shows only on sprint/#deposit, the link Dave sends after a call
+    (price is never shown before a reply or call). The amount lives on the Morning page, not here.
+-->
+<script>window.S3_SPRINT = { bookingUrl: "", depositUrl: "" };</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000;--surface:#0d0a17;--surface-2:#151024;
+  --ink:#f6f4ff;--ink-2:rgba(236,232,255,.76);--ink-3:rgba(236,232,255,.56);
+  --violet:#8239ea;--violet-2:#b07cff;--grape:#9b59f7;--teal:#2fb7c9;--green:#8be36a;
+  --line:rgba(255,255,255,.12);--rad:3px;
+  --font-d:'Bricolage Grotesque',system-ui,sans-serif;
+  --font-b:'Instrument Sans',system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  color-scheme:dark;
+}
+html[lang="he"]{--font-d:'Heebo','Bricolage Grotesque',system-ui,sans-serif;--font-b:'Heebo','Instrument Sans',system-ui,sans-serif}
+html:not([lang="he"]) [data-he]{display:none!important}
+html[lang="he"] [data-en]{display:none!important}
+html,body{background:var(--bg);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-b);font-size:16px;line-height:1.6}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--violet-2);outline-offset:3px;border-radius:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 max(24px,env(safe-area-inset-left,0px))}
+@media(max-width:600px){.wrap{padding:0 16px}}
+h1,h2,h3{font-family:var(--font-d);font-weight:800;letter-spacing:-.04em;line-height:1.02;text-wrap:balance}
+html[lang="he"] h1,html[lang="he"] h2,html[lang="he"] h3{letter-spacing:-.015em;line-height:1.1}
+h2{font-size:clamp(30px,4.6vw,52px)}
+.lede{font-size:18px;line-height:1.65;color:var(--ink-2);max-width:60ch;margin-top:16px;text-wrap:pretty}
+.dots{display:inline-flex;gap:5px;flex:none}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.dots i:nth-child(2){background:var(--teal)}
+.dots i:nth-child(3){background:var(--grape)}
+.eyebrow{display:flex;align-items:center;gap:12px;font:600 13px/1 var(--font-b);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:20px}
+html[lang="he"] .eyebrow{letter-spacing:.02em;font-size:15px}
+
+/* top */
+.top{border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;padding-bottom:18px}
+.logo img{height:24px;width:auto}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:var(--rad);padding:3px;gap:2px}
+.lang button{all:unset;box-sizing:border-box;cursor:pointer;min-width:44px;min-height:36px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;font:600 14px/1 var(--font-b);color:var(--ink-3);border-radius:2px}
+.lang button[data-l="he"]{font-family:'Heebo',system-ui,sans-serif}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* hero */
+.hero{padding:clamp(56px,9vw,112px) 0 clamp(56px,8vw,96px);border-bottom:1px solid var(--line);background:radial-gradient(70% 90% at 92% 0%,rgba(130,57,234,.30),transparent 70%)}
+html[dir="rtl"] .hero{background:radial-gradient(70% 90% at 8% 0%,rgba(130,57,234,.30),transparent 70%)}
+.tag{display:inline-flex;align-items:center;gap:10px;font:600 14px/1 var(--font-b);color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:8px 14px;margin-bottom:28px}
+h1{font-size:clamp(42px,8.4vw,92px);letter-spacing:-.045em;line-height:.95;max-width:17ch}
+html[lang="he"] h1{font-size:clamp(40px,7.6vw,82px);line-height:1.04;letter-spacing:-.02em}
+h1 .l2{display:block;color:var(--violet-2)}
+.sub{font-size:clamp(17px,2vw,20px);color:var(--ink-2);max-width:56ch;margin-top:24px;text-wrap:pretty}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-top:34px}
+.btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 28px;border-radius:var(--rad);font:700 16px/1 var(--font-b);letter-spacing:.01em;transition:transform .25s var(--ease),background .2s,box-shadow .25s,border-color .2s;text-align:center}
+.btn-primary{background:#fff;color:#14102a;box-shadow:0 10px 30px -12px rgba(176,124,255,.55)}
+.btn-primary:hover{background:#e6ffe0;transform:translateY(-2px);box-shadow:0 16px 36px -14px rgba(176,124,255,.8)}
+.btn-ghost{border:2px solid rgba(255,255,255,.34);color:var(--ink)}
+.btn-ghost:hover{border-color:#fff;transform:translateY(-2px)}
+.btn:focus-visible{outline:2px solid var(--violet-2);outline-offset:3px}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:40px}
+.facts span{font:600 14px/1 var(--font-b);color:var(--ink-2);border:1px solid var(--line);border-radius:var(--rad);padding:10px 12px;background:rgba(255,255,255,.03)}
+
+/* sections */
+.sec{padding:clamp(64px,8vw,104px) 0;border-bottom:1px solid var(--line)}
+.deliv{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:40px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.deliv div{background:var(--bg);padding:24px 22px;display:grid;gap:8px;align-content:start;transition:background .25s}
+.deliv div:hover{background:var(--surface)}
+.deliv b{font:800 30px/1 var(--font-d);letter-spacing:-.04em;color:var(--violet-2)}
+.deliv h3{font-size:19px;letter-spacing:-.02em;line-height:1.2}
+.deliv p{font-size:15px;color:var(--ink-2)}
+
+.track{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:40px}
+.day{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:10px;padding:14px 10px 12px;border:1px solid var(--line);border-radius:4px;text-align:center;transition:border-color .2s,background .2s}
+.day i{display:block;height:6px;border-radius:2px;background:var(--green)}
+.day:nth-child(n+3) i{background:var(--teal)}
+.day:nth-child(n+5) i{background:var(--grape)}
+.day:nth-child(7) i{background:#fff}
+.day span{font:800 22px/1 var(--font-d);color:var(--ink-3)}
+.day[aria-pressed="true"]{border-color:var(--violet-2);background:var(--surface)}
+.day[aria-pressed="true"] span{color:var(--ink)}
+.day:focus-visible{outline:2px solid var(--violet-2);outline-offset:2px}
+.day-out{margin-top:18px;min-height:96px;padding:22px 24px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.day-out h3{font-size:22px;letter-spacing:-.02em}
+.day-out p{color:var(--ink-2);margin-top:6px;max-width:62ch}
+.note{font:500 14px var(--font-b);color:var(--ink-3);margin-top:12px}
+
+/* start */
+.start .wrap{display:grid;gap:40px}
+@media(min-width:900px){.start .wrap{grid-template-columns:.9fr 1.1fr;gap:64px;align-items:start}}
+.steps{display:grid;gap:14px;margin-top:28px;counter-reset:s}
+.steps li{list-style:none;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;color:var(--ink-2)}
+.steps li::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);font:700 14px/1 var(--font-b);color:var(--ink)}
+.steps b{color:var(--ink);font-weight:600}
+form{display:grid;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:clamp(20px,3vw,32px)}
+label{display:grid;gap:8px;font:600 14px/1.3 var(--font-b);color:var(--ink-2)}
+label small{font-weight:500;color:var(--ink-3)}
+input,textarea,select{font:500 16px/1.4 var(--font-b);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--rad);padding:13px 14px;width:100%;min-height:48px}
+textarea{min-height:110px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--violet-2);box-shadow:0 0 0 3px rgba(176,124,255,.2)}
+.when{display:flex;flex-wrap:wrap;gap:8px}
+.when label{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;min-height:44px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--rad);font:600 14px/1 var(--font-b);color:var(--ink-2);transition:border-color .2s,background .2s,color .2s}
+.when input{position:absolute;opacity:0;width:1px;height:1px;min-height:0}
+.when label:has(input:checked){border-color:var(--violet-2);background:rgba(176,124,255,.12);color:var(--ink)}
+.when label:has(input:focus-visible){outline:2px solid var(--violet-2);outline-offset:2px}
+.form-foot{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.form-foot p{font-size:14px;color:var(--ink-3)}
+.err{font:600 14px var(--font-b);color:#ffb4c8}
+.sent{display:grid;gap:14px;background:var(--surface);border:1px solid var(--violet-2);border-radius:6px;padding:clamp(20px,3vw,32px)}
+.sent h3{font-size:26px}
+.sent p{color:var(--ink-2)}
+.sent pre{white-space:pre-wrap;font:500 14px/1.6 var(--font-b);color:var(--ink-2);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:14px;max-height:220px;overflow:auto;direction:ltr;text-align:left}
+html[lang="he"] .sent pre{direction:rtl;text-align:right}
+
+/* deposit (only on #deposit with a real link) */
+.deposit{padding:clamp(56px,7vw,88px) 0;border-bottom:1px solid var(--line);background:radial-gradient(60% 120% at 50% 0%,rgba(139,227,106,.12),transparent 70%)}
+.deposit .card{max-width:640px;display:grid;gap:16px}
+
+/* person */
+.me .wrap{display:grid;gap:28px;align-items:center}
+@media(min-width:760px){.me .wrap{grid-template-columns:180px 1fr;gap:40px}}
+.me img{width:180px;height:180px;object-fit:cover;border-radius:50%;border:1px solid var(--line);background:var(--surface)}
+.me p{color:var(--ink-2);max-width:62ch;font-size:18px}
+.me p b{color:var(--ink);font-weight:600}
+
+.foot{padding:40px 0 56px;font:500 14px var(--font-b);color:var(--ink-3)}
+.foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px}
+.foot a{color:var(--ink-2);text-decoration:underline;text-underline-offset:3px}
+
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.btn,.deliv div{transition:none}.btn:hover{transform:none}}
+@media(max-width:520px){.track{gap:4px}.day{padding:10px 4px}.day span{font-size:18px}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="../" aria-label="3Shamrocks Studio home"><img src="../assets/studio/3shamrocks.png" alt="3Shamrocks Studio" width="905" height="133"></a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-l="en" aria-pressed="true">EN</button>
+      <button type="button" data-l="he" aria-pressed="false">עברית</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap">
+    <span class="tag"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-en>AI-Ready Brand Sprint</span><span data-he>ספרינט מותג מוכן ל-AI</span></span>
+    <h1><span data-en>Sharpen the brand.<span class="l2">Teach the AI to keep it.</span></span><span data-he>מותג חד.<span class="l2">ו-AI שיודע לשמור עליו.</span></span></h1>
+    <p class="sub"><span data-en>In 7 working days I audit and refine your identity, turn it into a colour, type and token system, write the rulebook that keeps Claude and Figma on brand, and deliver 20 launch assets made with it.</span><span data-he>ב-7 ימי עבודה אני בודק ומחדד את הזהות שלכם, הופך אותה למערכת צבע, טיפוגרפיה וטוקנים, כותב את ספר החוקים שמשאיר את Claude ו-Figma בתוך המותג, ומספק 20 נכסי השקה שנבנו עליה.</span></p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#start"><span data-en>Start the Brand Sprint</span><span data-he>להתחיל את הספרינט</span></a>
+      <a class="btn btn-ghost" id="book" href="#" target="_blank" rel="noopener" hidden><span data-en>Pick a time to talk</span><span data-he>לבחור זמן לשיחה</span></a>
+    </div>
+    <div class="facts">
+      <span data-en>7 working days</span><span data-he>7 ימי עבודה</span>
+      <span data-en>Fixed price, no hourly billing</span><span data-he>מחיר קבוע, בלי חיוב לפי שעה</span>
+      <span data-en>50% to book, 50% on delivery</span><span data-he>50% בהזמנה, 50% במסירה</span>
+      <span data-en>Every file signed off by me</span><span data-he>כל קובץ באישור שלי</span>
+    </div>
+  </div>
+</section>
+
+<section class="deposit" id="deposit-sec" hidden>
+  <div class="wrap">
+    <div class="card">
+      <div class="eyebrow"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-en>Book your sprint</span><span data-he>שריון הספרינט</span></div>
+      <h2><span data-en>Pay the 50% deposit</span><span data-he>תשלום מקדמה של 50%</span></h2>
+      <p class="lede"><span data-en>The amount is the one we agreed on our call. Secure payment by card or Bit through Morning; the invoice reaches your inbox right after you pay. The other 50% is due on delivery, day 7.</span><span data-he>הסכום הוא מה שסיכמנו בשיחה. תשלום מאובטח באשראי או ב-Bit דרך מורנינג, והחשבונית מגיעה למייל מיד אחרי התשלום. 50% הנותרים במסירה, ביום 7.</span></p>
+      <div class="actions"><a class="btn btn-primary" id="pay" href="#" target="_blank" rel="noopener"><span data-en>Pay the deposit</span><span data-he>לתשלום המקדמה</span></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="eyebrow rv"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-en>What you get</span><span data-he>מה מקבלים</span></div>
+    <h2 class="rv"><span data-en>Five deliverables. One system behind all of them.</span><span data-he>חמישה תוצרים. מערכת אחת מאחורי כולם.</span></h2>
+    <div class="deliv rv">
+      <div><b>01</b><h3><span data-en>Brand audit</span><span data-he>אודיט מותג</span></h3><p><span data-en>Where the brand holds and where it breaks, with priorities.</span><span data-he>איפה המותג מחזיק ואיפה נשבר, עם סדרי עדיפויות.</span></p></div>
+      <div><b>02</b><h3><span data-en>Refined identity</span><span data-he>זהות מחודדת</span></h3><p><span data-en>Logo proportions, lockups, small sizes. Final files.</span><span data-he>פרופורציות, צירופי לוגו, גדלים קטנים. קבצים סופיים.</span></p></div>
+      <div><b>03</b><h3><span data-en>Token system</span><span data-he>מערכת טוקנים</span></h3><p><span data-en>Colour and type tokens for Figma variables and code.</span><span data-he>טוקנים לצבע וטיפוגרפיה, למשתני Figma ולקוד.</span></p></div>
+      <div><b>04</b><h3><span data-en>AI rulebook</span><span data-he>ספר חוקים ל-AI</span></h3><p><span data-en>Claude and Figma skills plus a prompt kit, so anyone stays on brand.</span><span data-he>סקילים ל-Claude ול-Figma וערכת פרומפטים, כדי שכולם יישארו במותג.</span></p></div>
+      <div><b>20</b><h3><span data-en>Launch assets</span><span data-he>נכסי השקה</span></h3><p><span data-en>Social, a deck and ad sets, built on the new system.</span><span data-he>רשתות, מצגת ומודעות, בנויים על המערכת החדשה.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="eyebrow rv"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-en>The plan</span><span data-he>התוכנית</span></div>
+    <h2 class="rv"><span data-en>Seven working days. Tap a day.</span><span data-he>שבעה ימי עבודה. לחצו על יום.</span></h2>
+    <div class="track rv" role="group" aria-label="Sprint days">
+      <button type="button" class="day" data-d="0" aria-pressed="true"><i></i><span>1</span></button>
+      <button type="button" class="day" data-d="1" aria-pressed="false"><i></i><span>2</span></button>
+      <button type="button" class="day" data-d="2" aria-pressed="false"><i></i><span>3</span></button>
+      <button type="button" class="day" data-d="3" aria-pressed="false"><i></i><span>4</span></button>
+      <button type="button" class="day" data-d="4" aria-pressed="false"><i></i><span>5</span></button>
+      <button type="button" class="day" data-d="5" aria-pressed="false"><i></i><span>6</span></button>
+      <button type="button" class="day" data-d="6" aria-pressed="false"><i></i><span>7</span></button>
+    </div>
+    <div class="day-out rv" aria-live="polite"><h3 id="day-h"></h3><p id="day-p"></p></div>
+    <p class="note"><span data-en>The planned schedule. Exact dates are set at kickoff.</span><span data-he>לוח הזמנים המתוכנן. התאריכים המדויקים נקבעים בפתיחה.</span></p>
+  </div>
+</section>
+
+<section class="sec start" id="start">
+  <div class="wrap">
+    <div class="rv">
+      <div class="eyebrow"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span data-en>Start</span><span data-he>מתחילים</span></div>
+      <h2><span data-en>Tell me about the launch.</span><span data-he>ספרו לי על ההשקה.</span></h2>
+      <ol class="steps">
+        <li><span data-en><b>You write.</b> Four short answers, sent from your own email.</span><span data-he><b>אתם כותבים.</b> ארבע תשובות קצרות, נשלחות מהמייל שלכם.</span></li>
+        <li><span data-en><b>I reply within one working day</b> with an honest read and a time for a 20-minute call.</span><span data-he><b>אני עונה תוך יום עבודה</b> עם הערכה כנה וזמן לשיחה של 20 דקות.</span></li>
+        <li><span data-en><b>If it fits,</b> you get the fixed price and dates in writing, and a secure deposit link.</span><span data-he><b>אם זה מתאים,</b> אתם מקבלים מחיר קבוע ותאריכים בכתב, וקישור מאובטח למקדמה.</span></li>
+      </ol>
+    </div>
+    <div class="rv">
+      <form id="f" novalidate>
+        <label><span data-en>Your name</span><span data-he>השם שלכם</span><input name="name" autocomplete="name" required></label>
+        <label><span data-en>Company and website</span><span data-he>חברה ואתר</span><input name="company" autocomplete="organization" required></label>
+        <label><span data-en>What are you launching?</span><span data-he>מה אתם משיקים?</span> <small data-en>Product, round, rebrand, new market...</small><small data-he>מוצר, סבב, ריברנד, שוק חדש...</small><textarea name="what" required></textarea></label>
+        <fieldset style="border:0;display:grid;gap:8px">
+          <legend style="font:600 14px/1.3 var(--font-b);color:var(--ink-2);margin-bottom:8px"><span data-en>When would you like to start?</span><span data-he>מתי תרצו להתחיל?</span></legend>
+          <div class="when">
+            <label><input type="radio" name="when" value="0"><span data-en>In the next 2 weeks</span><span data-he>בשבועיים הקרובים</span></label>
+            <label><input type="radio" name="when" value="1"><span data-en>This month</span><span data-he>החודש</span></label>
+            <label><input type="radio" name="when" value="2"><span data-en>Next month</span><span data-he>בחודש הבא</span></label>
+            <label><input type="radio" name="when" value="3"><span data-en>Just exploring</span><span data-he>רק בודקים</span></label>
+          </div>
+        </fieldset>
+        <p class="err" id="err" hidden><span data-en>Please fill in your name, company and what you're launching.</span><span data-he>נא למלא שם, חברה ומה אתם משיקים.</span></p>
+        <div class="form-foot">
+          <button type="submit" class="btn btn-primary"><span data-en>Write to Dave</span><span data-he>לכתוב לדייב</span></button>
+          <p><span data-en>Opens your email app, addressed to dave@3shamrocks.com. Nothing is stored here.</span><span data-he>נפתח במייל שלכם, ממוען ל-dave@3shamrocks.com. שום דבר לא נשמר כאן.</span></p>
+        </div>
+      </form>
+      <div class="sent" id="sent" hidden>
+        <h3><span data-en>Your email is ready.</span><span data-he>המייל שלכם מוכן.</span></h3>
+        <p><span data-en>Press send in your email app. If it didn't open, copy the text below and send it to dave@3shamrocks.com.</span><span data-he>לחצו "שלח" באפליקציית המייל. אם היא לא נפתחה, העתיקו את הטקסט ושלחו ל-dave@3shamrocks.com.</span></p>
+        <pre id="msg"></pre>
+        <div class="form-foot">
+          <button type="button" class="btn btn-ghost" id="copy"><span data-en>Copy text</span><span data-he>העתקת הטקסט</span></button>
+          <button type="button" class="btn btn-ghost" id="again"><span data-en>Edit answers</span><span data-he>עריכת התשובות</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec me">
+  <div class="wrap">
+    <img class="rv" src="../assets/studio/dave-portrait.webp" alt="Dave Markovich" width="180" height="180" loading="lazy">
+    <div class="rv">
+      <p><span data-en>I'm <b>Dave Markovich</b>. I've spent 20 years building brands and designing products. I led the design of <b>VIBRANT</b>'s therapy app and its brand (TIME Best Inventions 2023), and the brand for <b>AposHealth</b>. I review and sign off every deliverable myself.</span><span data-he>אני <b>דייב מרקוביץ'</b>. 20 שנה אני בונה מותגים ומעצב מוצרים. הובלתי את עיצוב אפליקציית הטיפול של <b>VIBRANT</b> ואת המותג שלה (רשימת ההמצאות הטובות של TIME ב-2023), ואת המותג של <b>AposHealth</b>. כל תוצר עובר אצלי לאישור אישי.</span></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>Dave Markovich · 3Shamrocks Studio · <a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a></span>
+    <a href="../"><span data-en>All work</span><span data-he>כל העבודות</span></a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var CFG = window.S3_SPRINT || {};
+  var ok = function(u){ return typeof u === "string" && /^https:\/\/\S+$/.test(u); };
+  var root = document.documentElement;
+  var DAYS = {
+    en: [["Kickoff and audit","A call to understand the business and the launch. You send what exists; I audit it across every touchpoint."],
+         ["Findings and direction","You get the audit report and the refinement direction. Together we agree what changes and what stays."],
+         ["Logo and identity","I refine the logo and identity and share it for your feedback by end of day."],
+         ["Colour, type and tokens","The palette, type scale and token system, set up in Figma and exported for code."],
+         ["AI rulebook and prompt kit","I write the rulebook, build the Claude and Figma skills and the prompt kit, then test them on real briefs."],
+         ["20 launch assets","Social, a deck and ads, produced on the system. One round of your feedback the same day."],
+         ["Final review and handover","I review every file myself, hand over the full package and walk your team through it."]],
+    he: [["פתיחה ואודיט","שיחה להבנת העסק וההשקה. אתם שולחים את מה שקיים, ואני בודק אותו בכל נקודות המגע."],
+         ["ממצאים וכיוון","אתם מקבלים את דוח האודיט ואת כיוון החידוד. מסכמים יחד מה משתנה ומה נשאר."],
+         ["לוגו וזהות","אני מחדד את הלוגו והזהות ושולח לפידבק שלכם עד סוף היום."],
+         ["צבע, טיפוגרפיה וטוקנים","הפלטה, סולם הטיפוגרפיה ומערכת הטוקנים, מוגדרים ב-Figma ומיוצאים לקוד."],
+         ["ספר חוקים ל-AI וערכת פרומפטים","אני כותב את ספר החוקים, בונה את הסקילים ל-Claude ול-Figma ואת ערכת הפרומפטים, ובודק אותם על בריפים אמיתיים."],
+         ["20 נכסי השקה","רשתות, מצגת ומודעות, מופקים על המערכת. סבב פידבק אחד שלכם באותו יום."],
+         ["סקירה סופית ומסירה","אני עובר בעצמי על כל קובץ, מוסר את החבילה המלאה ומדריך את הצוות איך לעבוד איתה."]]
+  };
+  var WHEN = { en: ["In the next 2 weeks","This month","Next month","Just exploring"], he: ["בשבועיים הקרובים","החודש","בחודש הבא","רק בודקים"] };
+  var day = 0;
+  function lang(){ return root.lang === "he" ? "he" : "en"; }
+  function showDay(i){
+    day = i;
+    document.querySelectorAll(".day").forEach(function(b){ b.setAttribute("aria-pressed", String(+b.dataset.d === i)); });
+    var d = DAYS[lang()][i];
+    document.getElementById("day-h").textContent = (lang()==="he" ? "יום " : "Day ") + (i+1) + " · " + d[0];
+    document.getElementById("day-p").textContent = d[1];
+  }
+  function setLang(l){
+    root.lang = l; root.dir = l === "he" ? "rtl" : "ltr";
+    document.querySelectorAll(".lang button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.l === l)); });
+    showDay(day);
+    try { localStorage.setItem("s3-sprint-lang", l); } catch(e){}
+  }
+  document.querySelectorAll(".lang button").forEach(function(b){ b.addEventListener("click", function(){ setLang(b.dataset.l); }); });
+  document.querySelectorAll(".day").forEach(function(b){ b.addEventListener("click", function(){ showDay(+b.dataset.d); }); });
+  var q = new URLSearchParams(location.search).get("lang"), saved = null;
+  try { saved = localStorage.getItem("s3-sprint-lang"); } catch(e){}
+  setLang(q === "he" || q === "en" ? q : (saved === "he" ? "he" : "en"));
+
+  // payment hooks: hidden unless a real https link is configured
+  if (ok(CFG.bookingUrl)) { var bk = document.getElementById("book"); bk.href = CFG.bookingUrl; bk.hidden = false; }
+  function deposit(){
+    var on = ok(CFG.depositUrl) && location.hash === "#deposit";
+    var sec = document.getElementById("deposit-sec");
+    sec.hidden = !on;
+    if (on) { document.getElementById("pay").href = CFG.depositUrl; sec.scrollIntoView({block:"start"}); }
+  }
+  deposit(); window.addEventListener("hashchange", deposit);
+
+  // inquiry: builds an email in the visitor's own mail app; nothing is sent or stored by this page
+  var f = document.getElementById("f"), sent = document.getElementById("sent"), err = document.getElementById("err"), msg = document.getElementById("msg");
+  f.addEventListener("submit", function(e){
+    e.preventDefault();
+    var v = function(n){ return (f.elements[n].value || "").trim(); };
+    var w = f.querySelector('input[name="when"]:checked');
+    if (!v("name") || !v("company") || !v("what")) { err.hidden = false; return; }
+    err.hidden = true;
+    var he = lang() === "he";
+    var subject = (he ? "ספרינט מותג · " : "Brand Sprint · ") + v("company");
+    var body = (he
+      ? "היי דייב,\n\nשם: " + v("name") + "\nחברה ואתר: " + v("company") + "\nמה אנחנו משיקים: " + v("what") + "\nמתי להתחיל: " + (w ? WHEN.he[+w.value] : "עוד לא יודעים") + "\n\nתודה,\n" + v("name")
+      : "Hi Dave,\n\nName: " + v("name") + "\nCompany and website: " + v("company") + "\nWhat we're launching: " + v("what") + "\nWhen to start: " + (w ? WHEN.en[+w.value] : "Not sure yet") + "\n\nThanks,\n" + v("name"));
+    msg.textContent = body;
+    f.hidden = true; sent.hidden = false;
+    location.href = "mailto:dave@3shamrocks.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  });
+  document.getElementById("again").addEventListener("click", function(){ sent.hidden = true; f.hidden = false; });
+  document.getElementById("copy").addEventListener("click", function(){
+    var t = "To: dave@3shamrocks.com\n\n" + msg.textContent, b = this;
+    var done = function(){ b.firstElementChild.textContent = "Copied"; b.lastElementChild.textContent = "הועתק"; };
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(done, function(){});
+  });
+
+  // reveal on scroll
+  var els = document.querySelectorAll(".rv");
+  if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    var io = new IntersectionObserver(function(es){ es.forEach(function(x){ if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }); }, {rootMargin:"0px 0px -8% 0px"});
+    els.forEach(function(el){ io.observe(el); });
+  } else { els.forEach(function(el){ el.classList.add("in"); }); }
+})();
+</script>
+</body>
+</html>
