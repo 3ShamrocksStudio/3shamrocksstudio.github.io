@@ -195,7 +195,7 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
 .tab[aria-selected=true] p{max-height:90px;opacity:1;margin-top:4px}
 .tab .prog{position:absolute;left:0;top:0;width:2px;height:0;background:linear-gradient(180deg,#1B8CC6,#1868D0)}
 .tab[aria-selected=true] .prog{animation:progv var(--dur,5s) linear forwards}
-.vib.paused .tab .prog{animation:none;height:100%}
+.vib.paused .tab .prog{animation:none}.vib.paused .tab[aria-selected=true] .prog{height:100%}
 @keyframes progv{to{height:100%}}
 @keyframes prog{to{width:100%}}
 .tphone{position:relative}
@@ -262,7 +262,7 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
  .tabs li{flex:none;scroll-snap-align:start}
  .tab{grid-template-columns:auto auto;gap:6px;align-items:center;padding:8px 6px 10px}
  .tab::before{top:auto;bottom:0;left:0;right:0;width:auto;height:2px}
- .tab .prog{top:auto;bottom:0;height:2px;width:0;background:var(--vbtx)}.tab[aria-selected=true] .prog{animation-name:prog}.vib.paused .tab .prog{width:100%;height:2px}
+ .tab .prog{top:auto;bottom:0;height:2px;width:0;background:var(--vbtx)}.tab[aria-selected=true] .prog{animation-name:prog}.vib.paused .tab[aria-selected=true] .prog{width:100%;height:2px}
  .tab .ic{width:24px;height:32px}.tab .ic svg{width:18px;height:18px}.tab b{font-size:15px;padding:0;white-space:nowrap}.tab p{display:none}
  .tmob{display:block}}
 
