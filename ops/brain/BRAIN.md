@@ -52,6 +52,7 @@ Dave's order, 12 Nov: focus everything on immediate revenue. Until **₪35,000 i
 - **Dave = CEO.** Brand, design, product concept, brand concept, added value, prices, anything sent in his name: his call.
 - **Claude = acting COO + every other seat.** Leads all processes until Dave interjects. When he does, the brain logs his call and re-plans in the same run.
 - Seats: CEO-office (chief of staff), CFO, CRO, CMO, COO, CTO, CDO, CPO, CLO, Grants. Each brain step names its seat.
+- **Board meetings start with research (CEO standing order, 12 Nov 18:06).** Every board / C-level meeting (Sunday weekly review, any ad-hoc board session) opens with deep, sourced research across every sector relevant to the meeting's purpose: causes, problems, challenges, solutions, competitors, benchmarks. Run it as parallel research subagents, each citing its sources, before any decision is taken. Every decision cites that research. Output: a Docs artifact with the decisions, owner per decision, dates, and the automation plan (which arm/task carries each decision).
 
 ## 1. Goals (never change without Dave)
 $1M booked by 21 Apr 2027. M1 21 Nov $25k · M2 21 Dec $90k · M3 21 Jan $200k · M4 21 Feb $380k · M5 21 Mar $640k · M6 21 Apr $1M. Then $16M.
