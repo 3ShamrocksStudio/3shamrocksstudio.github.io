@@ -17,7 +17,7 @@ Its hard rules still bind. If the two conflict, the stricter rule wins.
 - Dave's direct messages in J8NIX comments outrank cash-mode freezes for that product (he asked for it).
 
 ## −1. CASH MODE (from 12 Nov 2026, Dave's order) — overrides §3 scoring, §13 and every product queue
-Dave, 12 Nov: "Bank account is dry. Whatever you do must be focused on generating immediate revenue." Revenue is $0. Until **₪35,000 is collected**, every run follows this section first.
+Dave's order, 12 Nov: focus everything on immediate revenue. Until **₪35,000 is collected**, every run follows this section first.
 1. **Only money within 21 days.** A step qualifies only if it can put shekels in the bank within 21 days. Frozen until exit: LickPick polish, site arcade/music, all Instagram content accounts, Concept Lab, Trashure Hunters, WH33LZ, Chore Royale, Milo, R&K, FaiRent, SH✡MER Nature. SH✡MER: paid-pilot sales steps and live breakage only.
 2. **Order of work, every run:**
    1. Uncollected money: anything delivered gets an invoice drafted in Morning for Dave's OK (first: VIBRANT IFU edits, ₪800).
