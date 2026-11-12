@@ -1,6 +1,6 @@
 # R&K (Rookie & King) · Brand v7.1
 
-> **Update, 12 Nov 2026:** the logo files were replaced from Dave's new `R&Klogo.svg` (one logo: split rook/king piece, ROOKIE in #1F5BFF, &KING in white on navy #06133F, navy on light). The current file list is on `board.html`. The stacked, display-wordmark, alternate, flat and one-colour variants described below belong to the earlier v7 file.
+> **Update, 12 Nov 2026:** the logo files were replaced from Dave's new `R&Klogo.svg` (one logo: split rook/king piece, ROOKIE in #1F5BFF, &KING in white on navy #06133F, navy on light). The current file list is on `board.html`. The stacked, display-wordmark, alternate, flat and one-colour variants described below belong to the earlier v7 file; the alternate and one-colour files were removed.
 
 **Source:** Dave's own logo, `~/Desktop/3S Projects/R&K/R&Klogo.ai` (8 Nov 2026). Every logo, mark, wordmark, game piece and the Connect icon is one of his vectors, extracted from the file with PyMuPDF and never redrawn. v6 is archived in `assets/brand-proposals/rk-archive-2026-11-08/`.
 
@@ -44,8 +44,7 @@ Layer 2 of the artboard held four overlapping drafts. Layer 1 (switched off) was
 | `logo-stacked(-on-light).svg/.png` | Stacked lockup |
 | `wordmark(-on-light).svg/.png`, `wordmark-display(-on-light).svg/.png` | Wordmarks |
 | `mark.svg`, `logo-mark.png` (1024, transparent) | Rook + king mark with his shading |
-| `mark-flat.svg/.png`, `mark-on-light.svg/.png`, `mark-mono-white.svg`, `mark-mono-navy.svg` | Flat, light and one-colour versions |
-| `mark-alt.svg/.png` | Alternate: pawn + king |
+| `mark-flat.svg/.png`, `mark-on-light.svg/.png` | Same mark (the flat version is now the shaded mark) |
 | `app-icon.svg/.png` (1024), `app-icon-180.png`, `favicon-180.png` | App icon, full bleed on Night (platforms add the mask) |
 | `icon-small.svg`, `icon-64/48/40.png`, `favicon.svg`, `favicon-32.png`, `favicon-16.png` | **Small-size variant**, 64 px and under |
 | `pieces.svg` (`#rk-p-rook`, `#rk-p-king`, `#rk-p-pawn`, plus `-w` / `-b` colour swaps), `piece-rookie/king/pawn.svg/.png` | Game pieces |
