@@ -14,7 +14,7 @@ self.addEventListener('activate', function (e) {
 self.addEventListener('fetch', function (e) {
   var u = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
-  if (u.origin === location.origin && u.pathname.indexOf('/j8nix/app/') === 0) {
+  if (u.origin === location.origin && u.pathname.indexOf('/j8/') === 0) {
     // network first for the page itself, cache first for versioned assets
     if (e.request.mode === 'navigate') {
       e.respondWith(fetch(e.request).then(function (r) { var c = r.clone(); caches.open(CACHE).then(function (ca) { ca.put('index.html', c); }); return r; })
