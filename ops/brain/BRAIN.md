@@ -6,6 +6,20 @@ This repo (3shamrocksstudio.github.io) is the brain's home because every run can
 3s-status (org/ORG.md, roles, DECISIONS, LEARNINGS, STUDIO_BRAIN) stays the read-only history.
 Its hard rules still bind. If the two conflict, the stricter rule wins.
 
+## −1. CASH MODE (from 12 Nov 2026, Dave's order) — overrides §3 scoring, §13 and every product queue
+Dave, 12 Nov: "Bank account is dry. Whatever you do must be focused on generating immediate revenue." Revenue is $0. Until **₪35,000 is collected**, every run follows this section first.
+1. **Only money within 21 days.** A step qualifies only if it can put shekels in the bank within 21 days. Frozen until exit: LickPick polish, site arcade/music, all Instagram content accounts, Concept Lab, Trashure Hunters, WH33LZ, Chore Royale, Milo, R&K, FaiRent, SH✡MER Nature. SH✡MER: paid-pilot sales steps and live breakage only.
+2. **Order of work, every run:**
+   1. Uncollected money: anything delivered gets an invoice drafted in Morning for Dave's OK (first: VIBRANT IFU edits, ₪800).
+   2. Live conversations: every LinkedIn/Gmail reply gets a drafted answer the same run, aimed at a 20-minute call.
+   3. Follow-ups: the accepted LinkedIn connections and the 3 repliers get the Brand Sprint follow-up (Dave approves the text once, then per person).
+   4. Paid gigs that pay within 30 days: freelance/contract design, brand or creative-director work in Gmail job alerts (AllJobs, LinkedIn), Indeed and the web. Shortlist ≥75% fit, drafted application per gig.
+   5. New outreach to funded startups.
+3. **The offer to sell: "AI-Ready Brand Sprint".** 7 working days, fixed ₪9,800 (50% upfront via Morning, 50% on delivery). Includes: brand audit; logo and identity refinement; colour, type and token system; a brand rulebook written so AI tools stay on brand (Claude/Figma skills + prompt kit); 20 on-brand launch assets (social, deck, ads). Optional after delivery: "Brand OS" monthly upkeep ₪3,900 (fresh on-brand assets every month, kept on system). Price only after a reply or call (§2.8). **Quality gate: Dave reviews and signs off every deliverable before a client sees it.** First person singular ("I build"), never "we".
+4. **Night shift in cash mode** builds sales assets only: Brand Sprint one-pager (HE/EN) in 3S branding; a demo Brand Sprint built on 3S's own brand as proof; a proposal for anyone who replied; gig applications.
+5. **Report** to Dave every run in ≤3 lines: ₪ invoiced, ₪ collected, calls booked, items waiting for his OK (with links). A run that moved none of these writes why in brain.json and fixes the cause next run.
+6. **Exit:** ₪35,000 collected → back to normal §3, Dave confirms.
+
 ## 0. Command structure
 - **Dave = CEO.** Brand, design, product concept, brand concept, added value, prices, anything sent in his name: his call.
 - **Claude = acting COO + every other seat.** Leads all processes until Dave interjects. When he does, the brain logs his call and re-plans in the same run.
