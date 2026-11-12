@@ -3,12 +3,14 @@
 12 Nov 2026. Replaces v4 (the indigo and green RR mark), which is archived in `assets/brand-proposals/fairent-v4-archive-2026-11-12/`.
 Live board: `board.html` (this folder). Case study: `work/fairent.html`.
 
-**What FaiRent is:** a Hebrew-first mobile app for renters in Israel, in development (not launched). The renter enters city, rooms and the asking rent; the app compares it with what renters actually pay (CBS Table 4.9, paid rent, Q2 2025, by city and room band, district fallback where CBS suppresses a cell), adds 5.3% for a new lease (CBS CPI, Sept 2026), gives a verdict, and writes a negotiation message. A negotiation aid, not an appraisal. Renter-to-renter reports are off until shared storage and privacy rules are ready.
+**What FaiRent is (concept changed by Dave, 12 Nov 2026):** a community app, renters for renters, in development (not launched). Renters share what they really pay and their experiences, see what is fair for a given place, and act together, so rents become more transparent and pressure moves prices down. Israel first, built to go global. Hebrew first.
+
+The fair line starts from official data: CBS Table 4.9, paid rent, Q2 2025, by city and room band (district fallback where CBS suppresses a cell), plus 5.3% for a new lease (CBS CPI, Sept 2026). Shared rents would sharpen it. A shared benchmark, not an appraisal. The first prototype (`/fairent/`) covers the rent check only; sharing stays off until shared storage and privacy rules are ready.
 
 **Name:** always **FaiRent** (capital F, capital R).
 
 ## Strategy
-The landlord's number arrives on paper. FaiRent hands the renter the red pen: **strike** the overcharge, **highlight** the fair number, write the counter-offer in the margin. Calm, on the renter's side, never angry at landlords. Every number names its source.
+Rent arrives as a number on paper. FaiRent hands every renter the red pen, and renters pass it on: **strike** the overcharge, **highlight** the fair number, share it so the next renter knows. Calm, on the renter's side, never angry at landlords. Every number names its source.
 
 Brand line (from the hand-lettered original): *Stop paying more for less.*
 
