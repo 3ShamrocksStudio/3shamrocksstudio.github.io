@@ -14,7 +14,8 @@ J8NIX is the one point every scheduled task ("arm") reads and writes.
 |---|---|---|---|
 | `todo` | `done`, `back`, `note`, `at` | nothing (read only) | write ticks for Dave |
 | `comments` | new docs `{p,text,at,status:'new',reply:''}` | `status`, `reply` | edit `text`, delete docs |
-| `approvals` | `status` (approved/edited/killed/pending), `edited_body`, `decided_at` | new docs (status `pending`); after sending: `status:'sent'`, `sent_at`, `result` | send anything whose status is not `approved` or `edited`; change `body` after Dave decided |
+| `approvals` | `status` (approved/edited/killed/pending), `edited_body`, `decided_at`; Kill on `queued` docs; approve/kill on `template` docs | new docs (status `pending`, or `queued` when built from an approved template, §3b); after sending: `status:'sent'`, `sent_at`, `result` | send anything whose status is not `approved`, `edited` or `queued`-past-hold (§3b); change `body` after Dave decided; edit an approved template |
+| `control` | `main.paused`, `main.email_from_ok`, `main.caps` (via the page) | `main.updated`, `main.by` only when Dave asks in `comments` | flip `paused` or `email_from_ok` on their own |
 | `projects` | nothing | every field (merge with `update`) | delete a project (set `hidden:true` instead) |
 | `runs` | nothing | one new doc per run | rewrite old runs |
 | `money` | nothing | `summary` fields | write a number that isn't real; write a guess |
@@ -42,7 +43,7 @@ Arm duty every pass: query `status == "new"`, act, set `status:"routed"` with a 
 
 Doc id: `<kind-prefix>-<mmdd>-<slug>` (e.g. `app-1112-<company>`, `warm-1112-<contact>`, `igq-<old id>`). Shape:
 ```
-{ kind: "email"|"linkedin"|"application"|"post"|"invoice"|"other",
+{ kind: "email"|"linkedin"|"application"|"post"|"invoice"|"other"|"template",
   label?: "IG Comment" | "DM" | "Page edit" ...      // chip text override
   to: "Who / what, one line",                          // row title
   channel: "how it goes out, e.g. Email from dave@3shamrocks.com to x@y",
@@ -51,7 +52,8 @@ Doc id: `<kind-prefix>-<mmdd>-<slug>` (e.g. `app-1112-<company>`, `warm-1112-<co
   link: "" | "https://… (apply page, profile, post)",  link_text?: "Open apply page",
   product: "p-…",                                      // project id
   created: ISO,
-  status: "pending"|"approved"|"edited"|"killed"|"sent",
+  status: "pending"|"approved"|"edited"|"killed"|"sent"|"queued",   // queued = from an approved template, §3b
+  template_id?: "T1".."T5" …, queued_at?: ISO, hold_until?: ISO, per_item?: bool,   // §3a–3b
   edited_body?: "Dave's edited text",
   decided_at?: ISO|null, sent_at?: ISO, result?: "what happened / failure reason",
   warn?: "one short warning line shown in amber",
@@ -71,6 +73,49 @@ Rules:
 - New batch: give it a new `batch` + `batch_label`; the first pending batch (lowest rank) opens by default.
 
 Seeded 12 Nov: 13 pending in `revenue-1112` (8 applications from GIGS.md top 8, ranks 1–8; 5 warm messages from warm-reach.json, ranks 9–13, with "במשרה מלאה" removed and the check note as `warn`). 31 docs in `ig-queue` copied from the IG Engagement Queue (30 pending, 1 approved: `igq-li-3s-comment-01`, approved by Dave 8 Nov, not yet sent).
+
+## 3a. Templates (CEO decision 12 Nov · BRAIN.md §−3)
+
+Dave approves each template once; messages built from it then go out without a per-item tap, inside the guardrails below. A template is an `approvals` doc:
+```
+{ kind: "template",
+  template_id: "T1",                         // stable, referenced by drafts
+  covers: "job-application" | "li-connect" | "followup-1" | "followup-2" | "tester-post" | "calendar-post",
+  body: "template text with {placeholders}",  // fixed words + {placeholders}; variants may be separated by a "--- EN ---" / "--- HE ---" line
+  rules: { fit_min?: 80, cv?: "file name", max_chars?: 300, channel: "…", channels?: ["…"], cap_key?: "li_connect"|"li_followup"|"email",
+           silent_days?: n, notes?: "…" },
+  status: "pending" | "approved" | "killed",
+  decided_at?: ISO,
+  // plus the usual display fields: to, channel, product, created, rank, batch:"templates", batch_label:"Templates · approve once", context, warn, label:"Template" }
+```
+- In force only while `status == "approved"` and `decided_at` ≥ 2026-11-12. Arms never change `body` or `rules` of an approved template; a new version = a new template doc (`pending`), the old one stays until Dave kills it.
+- Per-item categories never use a template, whatever it says: any price, quote, contract or invoice · the first reply to a live prospect · anything to past clients, friends or family · any new public claim or number. Those drafts stay `status:"pending"` exactly as in §3, and get `per_item:true` if they carry a `template_id`.
+- Never: spending money · fake urgency or invented facts · posting on accounts outside the brand list.
+
+## 3b. Drafts from an approved template: queued → hold → send
+
+- A draft built from an APPROVED template fills only the `{placeholders}` (each with a sourced fact checked within 7 days) and is created with `template_id`, `status:"queued"`, `queued_at`, `hold_until` = created/queued_at + 6 h.
+- **Queue sweep:** at the start of every drafting arm (brain shift, revenue desk, morning plan, inbox watcher, night shift), every `pending` doc whose `template_id` points to an approved template and that has no `per_item:true` → `update {status:"queued", queued_at: now, hold_until: now + 6 h}` (with `ifVersion`). Drafts with a `template_id` whose template is still `pending` stay `pending`.
+- **Kill window:** until `hold_until` Dave can set a queued doc to `killed` (never send, never re-draft) or back to `pending` (then it waits for his per-item tap and gets `per_item:true`).
+- **Sender:** ONLY the scheduled task "3s sender arm (Mac · Chrome)" (Sun–Thu 09:41 and 15:41 Israel, on Dave's Mac, his logged-in Chrome) sends. Cloud arms never send LinkedIn messages, connect notes or job applications.
+- **Send a `queued` doc only if ALL hold, re-read right before the send:** now ≥ `hold_until` · the doc is still `queued` · its template is still `approved` · `control/main.paused == false` · today's cap for its `cap_key` has room · email: `control/main.email_from_ok == true` · follow-ups: the contact is still silent (re-read the thread; any reply → `status:"pending"`, `per_item:true`, warn "Replied: live conversation, needs your OK").
+- After sending: `{status:"sent", sent_at, result}` as in §3. Text to send = `body` (Dave can't edit a queued doc's text; editing = back to `pending`).
+- Template killed → every `queued` doc with that `template_id` → `status:"pending"`, warn "Template killed".
+- **Email sender rule (all email, template or per-item):** studio email goes only from dave@3shamrocks.com. The Gmail connector sends as markodave@gmail.com, so while `email_from_ok` is not `true` an arm never sends email: it leaves `status` as is and writes `result: "Waiting: dave@3shamrocks.com sending not connected"`.
+- **Caps:** per Israel calendar day and per `cap_key`, counting every send that day (template or per-item): `li_connect` 15, `li_followup` 10, `email` 20 (values from `control/main.caps`). Over cap → stays `queued` for the next day.
+- **Digest:** the 18:13 brain shift sends Dave one push line at 19:00 Israel with today's counts (sent / queued / waiting-on-Dave, plus held email or caps hit) and writes the same line as its `runs` summary.
+
+## 3c. `control` = the switch board
+
+Single doc `control/main`:
+```
+{ paused: false,                                   // true = no arm sends anything (drafting/queueing continue)
+  caps: { li_connect: 15, li_followup: 10, email: 20 },
+  digest_hour: 19,                                 // Israel time
+  email_from_ok: false,                            // true only once dave@3shamrocks.com sending is connected
+  updated: ISO, by: "who changed it" }
+```
+Every sending arm reads it right before each send. Arms never flip `paused` or `email_from_ok` on their own.
 
 ## 4. `projects`
 
