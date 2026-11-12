@@ -251,6 +251,34 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;background:var(--red)
 .js .rv{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .js .rv.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none}.js .rc-wrap.pre .receipt{clip-path:none}.hl::before{transform:skewX(-21deg)!important}}
+/* ══ 3SDSTM world · FaiRent (12 Nov 2026): no rounded boxes. The renter's ledger:
+   every cut leans at 21°, receipt paper and dashed tear lines, price tags for colour, a highlighter slab for the mark. ══ */
+.btn,.go,.copy{border-radius:0;clip-path:polygon(0 0,100% 0,calc(100% - 20px) 100%,0 100%);padding-right:36px}
+[dir=rtl] .btn,[dir=rtl] .go,[dir=rtl] .copy{clip-path:polygon(0 0,100% 0,100% 100%,20px 100%);padding-right:24px;padding-left:36px}
+.btn.ink,.go{box-shadow:inset 0 -5px 0 var(--red)}
+.btn.ink:hover,.go:hover{box-shadow:inset 0 -7px 0 var(--red)}
+.cta .btn.ink{box-shadow:inset 0 -5px 0 rgba(247,243,234,.25)}
+.btn.line,.btn.lt,.copy,[dir=rtl] .btn.line,[dir=rtl] .copy{clip-path:none;padding:0 24px;box-shadow:4px 4px 0 var(--red)}
+.btn.line:focus-visible,.btn.lt:focus-visible,.copy:focus-visible{outline-offset:3px}
+.cta .btn.line{box-shadow:4px 4px 0 var(--ink)}
+.btn:focus-visible,.go:focus-visible,.copy:focus-visible{outline:3px solid var(--red);outline-offset:-8px}
+.sel select,.seg,.seg button,.stamp{border-radius:0}
+.receipt{border-radius:0}
+.bubble{border-radius:0;clip-path:polygon(0 0,100% 0,100% 100%,14px 100%,0 calc(100% + 0px))}
+[dir=rtl] .bubble{border-radius:0}
+/* brand: a highlighter slab cut at 21°, then the ledger with dashed tear lines */
+.bgrid{gap:34px 26px}
+.tile{border-radius:0;overflow:visible}
+.t-mark{clip-path:polygon(0 0,calc(100% - 92px) 0,100% 36px,100% 100%,0 100%);transform:rotate(-1deg)}
+.t-mark:focus-visible{outline:3px solid var(--red);outline-offset:-10px}
+.tile:not(.t-mark){background:none;padding:24px 0 0;border-top:2px dashed rgba(247,243,234,.28)}
+.tile:not(.t-mark) h3{display:flex;align-items:center;gap:12px}
+.tile:not(.t-mark) h3::before{content:"";flex:none;width:26px;height:7px;background:var(--red);transform:rotate(-21deg)}
+.sw{gap:12px 14px}
+.sw button{border-radius:0;clip-path:polygon(0 0,calc(100% - 26px) 0,100% 50%,calc(100% - 26px) 100%,0 100%);padding-right:34px;
+ -webkit-mask:radial-gradient(circle 6px at calc(100% - 22px) 50%,transparent 5px,#000 6px);mask:radial-gradient(circle 6px at calc(100% - 22px) 50%,transparent 5px,#000 6px)}
+.sw button:focus-visible{outline:3px solid var(--hl);outline-offset:-7px}
+.icons span{border-radius:0;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 6px,100% 100%,0 100%)}
 </style>
 <script src="../js/hits.js" defer></script>
 <link rel="stylesheet" href="../assets/audio/snd.css?v=sc2">

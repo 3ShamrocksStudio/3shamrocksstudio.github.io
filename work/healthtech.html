@@ -436,6 +436,47 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
 .sf3 nav a:hover,.sf3 nav a:focus-visible{text-decoration-color:currentColor}
 .sf3 .sf3-c{opacity:.72}
 :root{--mw-bg:#F4F6F9;--mw-fg:#2F363E;--mw-line:#D5DCE4;--mw-acc:#6E2BD9;--mw-on:#fff;--mw-font:var(--body)}
+/* ══ 3SDSTM world · HealthTech (12 Nov 2026): no rounded boxes. Two worlds on one page:
+   VIBRANT = the capsule and its vibration rings (capsule bars, ring fields, free-standing numbers);
+   AposHealth = the stride (forward-leaning cuts and slanted bands, like the A mark and the gait). ══ */
+/* remits: VIBRANT radiates, Apos leans forward */
+.rc{border-radius:0;border:0;background:none;overflow:visible;padding:40px 8px 24px}
+.rc:hover{transform:none;box-shadow:none}
+.rc::after{width:120px;right:auto;height:12px;border-radius:999px;top:6px}
+.rc:not(.ap)::before{content:"";position:absolute;right:-10px;top:-30px;width:300px;height:300px;z-index:-1;pointer-events:none;
+ background:repeating-radial-gradient(circle at 100% 0,transparent 0 28px,rgba(76,170,228,.16) 28px 30px);-webkit-mask:radial-gradient(circle at 100% 0,#000 30%,transparent 72%);mask:radial-gradient(circle at 100% 0,#000 30%,transparent 72%)}
+.rc.ap{clip-path:polygon(28px 0,100% 0,calc(100% - 28px) 100%,0 100%);background:linear-gradient(115deg,rgba(1,71,186,.07),rgba(35,173,254,.04));padding:40px 48px 28px}
+.rc.ap::after{left:28px;width:auto;right:0;height:5px;border-radius:0;top:0;transform:none}
+.rc.ap:hover{box-shadow:none}
+/* hero bits */
+.stage .card{border-radius:0;border:0;clip-path:polygon(18px 0,100% 0,calc(100% - 18px) 100%,0 100%)}
+.time{border-radius:999px}
+.time i{border-radius:50%}
+/* VIBRANT capsule toy: a full ring field, no rounded frame */
+.cv{border-radius:0;box-shadow:none}
+/* companion tabs: capsule rail on the active line */
+.tab{border-radius:0;border:0;border-left:0}
+.tab .ic{border-radius:50%}
+.tab[aria-selected=true]{background:linear-gradient(90deg,rgba(76,170,228,.12),transparent 85%);box-shadow:inset 6px 0 0 #4386CE}
+@media(max-width:900px){.tab{border-radius:999px}.tab[aria-selected=true]{box-shadow:none;background:#fff}}
+/* proof: free-standing figures separated by a vibration line */
+.pc{border-radius:0;border:0;background:none;padding:28px 4px 8px;overflow:visible}
+.award{background:none}
+.pc::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:radial-gradient(circle at 50% 100%,transparent 6px,#4386CE 6px 7.5px,transparent 8px) 0 0/16px 10px repeat-x;opacity:.55}
+.award .cap img{border-radius:0}
+/* galleries: VIBRANT plates sit flat, Apos plates lean into the stride */
+.th{border-radius:0;border:0;background:none;overflow:visible}
+.th:hover{box-shadow:none}
+.th img{border-bottom:4px solid #4386CE}
+.th span{padding:12px 2px 4px}
+.ap-s .th img{clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%);border-bottom:0}
+.ap-s .th span{padding-left:14px;border-left:3px solid var(--ap);margin-top:10px}
+/* the gait explainer: a slanted band, the stride's own geometry */
+.gait{border-radius:0;border:0;clip-path:polygon(0 30px,100% 0,100% calc(100% - 30px),0 100%);padding:30px 0 34px;box-shadow:none;background:linear-gradient(180deg,#335CE7,#0048BD)}
+.gait .gbar,.gait .gbar *{color:#fff}
+.gait .gbar .gre{background:#fff;color:var(--ap)}.gait .gbar .gre *{color:var(--ap)}.gait .gbar .gre:hover{background:#E6ECFF}
+.gait .gbar .gre:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(max-width:900px){.tab{border:1px solid var(--line)}}
 </style>
 <script src="../js/hits.js" defer></script>
 <link rel="stylesheet" href="../assets/audio/snd.css?v=sc2">

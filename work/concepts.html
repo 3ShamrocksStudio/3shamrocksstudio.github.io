@@ -85,6 +85,39 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 footer img{height:20px;width:auto}
 footer a:hover{color:#fff}
 @media (prefers-reduced-motion:reduce){.card,.btn,.shot img{transition:none}.card:hover{transform:none}.card:hover .shot img{transform:translateY(-44.9%)}.js .rv{opacity:1;transform:none;transition:none}}
+/* ══ 3SDSTM (12 Nov 2026): no rounded tiles. Each concept opens in its own world, full width:
+   Milo on an aurora night with an ice-floe window and pixel-notched tags; R&K on the board, crisp, under a rook's battlements. ══ */
+.how{border:0;border-radius:0;background:none;gap:28px}
+.how div{background:none;padding:18px 0 0;border-top:3px solid var(--green)}
+.how div:nth-child(2){border-top-color:var(--teal)}.how div:nth-child(3){border-top-color:var(--grape)}
+.grid{grid-template-columns:minmax(0,1fr);gap:56px;padding:40px 0 96px}
+@media(max-width:900px){.grid{max-width:none}}
+.card{border:0;border-radius:0;background:none;overflow:visible;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:0;position:relative;isolation:isolate}
+.card:hover,.card:focus-visible{transform:none;box-shadow:none}
+.card:focus-visible{outline:3px solid var(--violet-2);outline-offset:8px}
+.card .shot{aspect-ratio:4/5}
+.card[href="milo.html"] .shot{max-width:440px}
+.card .body{padding:40px 44px}
+.card h2{font-size:clamp(40px,5vw,64px)}
+.card .go{font-size:17px}
+/* Milo: aurora night, ice-floe window, pixel-notched tags */
+.card[href="milo.html"]{background:radial-gradient(60% 90% at 80% 0%,rgba(229,39,200,.28),transparent 70%),radial-gradient(60% 80% at 100% 100%,rgba(28,188,245,.2),transparent 70%),linear-gradient(180deg,#1a023c,#12012B)}
+.card[href="milo.html"] .shot{clip-path:polygon(3% 4%,62% 0,97% 6%,100% 54%,95% 96%,40% 100%,2% 94%,0 46%);margin:28px 0 28px 28px}
+.card[href="milo.html"] .shot::after{display:none}
+.card[href="milo.html"] h2{font-family:'Poppins',var(--font-d);color:#FF2D95;letter-spacing:-.02em}
+.card[href="milo.html"] .tag,.card[href="milo.html"] .inside span{border:0;border-radius:0;background:#2E0F5E;color:#E9E0FA;box-shadow:0 -3px 0 0 #2E0F5E,0 3px 0 0 #2E0F5E,-3px 0 0 0 #2E0F5E,3px 0 0 0 #2E0F5E;margin:3px}
+.card[href="milo.html"] .go{color:#1CBCF5}
+/* R&K: the board, crisp squares, a rook's battlements on top, mirror layout */
+.card[href="rk.html"]{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);background:linear-gradient(180deg,#0B1D55,#020617);clip-path:polygon(0 14px,7% 14px,7% 0,14% 0,14% 14px,21% 14px,21% 0,28% 0,28% 14px,72% 14px,72% 0,79% 0,79% 14px,86% 14px,86% 0,93% 0,93% 14px,100% 14px,100% 100%,0 100%);padding-top:14px}
+.card[href="rk.html"] .shot{order:2;background:repeating-conic-gradient(#1A2D6C 0 25%,#09123A 0 50%) 0 0/25% 25%}
+.card[href="rk.html"] .shot::after{display:none}
+.card[href="rk.html"] .shot img{mix-blend-mode:screen}
+.card[href="rk.html"] .body{border-left:0}
+.card[href="rk.html"] .tag,.card[href="rk.html"] .inside span{border-radius:0;border-color:rgba(179,199,255,.35);color:#B3C7FF}
+.card[href="rk.html"] .go{color:#5A86FF}
+.card[href="rk.html"] .body::before{content:"";display:block;height:10px;margin:-6px 0 14px;background:repeating-linear-gradient(90deg,#1F5BFF 0 12px,transparent 12px 24px)}
+.btn{border-radius:0}
+@media(max-width:760px){.card,.card[href="rk.html"]{grid-template-columns:1fr}.card[href="rk.html"] .shot{order:0}.card .body{padding:26px 22px 30px}.card[href="milo.html"] .shot{margin:20px 20px 0}}
 </style>
 <link rel="stylesheet" href="../assets/audio/snd.css?v=sc2">
 <script>document.documentElement.classList.add('js')</script>

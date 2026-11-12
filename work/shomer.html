@@ -301,6 +301,61 @@ footer img{height:20px;width:auto}
 .sf3 nav a:hover,.sf3 nav a:focus-visible{text-decoration-color:currentColor}
 .sf3 .sf3-c{opacity:.72}
 :root{--mw-bg:var(--n0);--mw-fg:var(--tx1);--mw-line:var(--line);--mw-acc:var(--g3);--mw-on:#23170a;--mw-font:var(--body)}
+/* ══ 3SDSTM world · SH✡MER (12 Nov 2026): no rounded boxes. Badge geometry only:
+   chamfered badge plates, hex number plates, shield points, gold hairlines on navy. ══ */
+:root{--hex:polygon(14px 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,14px 100%,0 50%);
+ --hexagon:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%)}
+.btn,.demo svg.map,.browser,.disc{--cham:polygon(var(--c,16px) 0,calc(100% - var(--c,16px)) 0,100% var(--c,16px),100% calc(100% - var(--c,16px)),calc(100% - var(--c,16px)) 100%,var(--c,16px) 100%,0 calc(100% - var(--c,16px)),0 var(--c,16px))}
+.btn{border-radius:0;clip-path:var(--cham);--c:12px;padding:0 30px}
+.btn.gold{box-shadow:none}
+.btn.line{border:0;background:linear-gradient(var(--g3),var(--g3)) top/100% 1.5px no-repeat,linear-gradient(var(--g3),var(--g3)) bottom/100% 1.5px no-repeat,linear-gradient(var(--g3),var(--g3)) left/1.5px 100% no-repeat,linear-gradient(var(--g3),var(--g3)) right/1.5px 100% no-repeat,rgba(224,168,40,.06)}
+.btn.gold:focus-visible{outline:3px solid var(--n0);outline-offset:-7px}
+.btn.line:focus-visible{outline:3px solid var(--g4);outline-offset:-7px}
+.chip,.tagf,.watch li,.toast,.more a,.mw3-list a{border-radius:0;border:0;clip-path:var(--hex);padding-left:22px;padding-right:22px}
+.chip,.watch li{background:linear-gradient(90deg,rgba(224,168,40,.16),rgba(16,30,52,.9) 40%)}
+.tagf{background:rgba(10,22,40,.94)}
+.mw3-list a,.more a{background:rgba(131,146,171,.1)}
+.mw3-list a:hover,.more a:hover{background:rgba(224,168,40,.18)}
+.mw3-list a:focus-visible,.more a:focus-visible,.seg button:focus-visible,.tab:focus-visible,.sw button:focus-visible{outline:3px solid var(--g4);outline-offset:-6px}
+.mk-me{border-radius:0;clip-path:var(--hexagon);border:0;background:var(--g3);color:var(--n1)}
+.legend .mk-me{width:32px;height:30px}
+/* fact strip ends in a shield point */
+.facts{clip-path:polygon(0 0,100% 0,100% calc(100% - 22px),50% 100%,0 calc(100% - 22px));padding-bottom:22px;border-bottom:0}
+.facts .ic,.tab .ic{border:0;border-radius:0;clip-path:var(--hexagon);background:rgba(224,168,40,.16)}
+.facts .ic{width:46px;height:42px}
+/* one tap: the map sits on a badge plate with a shield point */
+.nums span{border:0;border-radius:0;clip-path:var(--hex);padding:10px 26px;background:linear-gradient(180deg,var(--n4),var(--n2))}
+.demo{border:0;border-radius:0;box-shadow:none;--c:30px;clip-path:polygon(30px 0,calc(100% - 30px) 0,100% 30px,100% calc(100% - 46px),50% 100%,0 calc(100% - 46px),0 30px);padding:22px 22px 64px;
+ background:linear-gradient(90deg,transparent 30px,var(--g3) 30px,var(--g3) calc(100% - 30px),transparent 0) top/100% 2px no-repeat,radial-gradient(120% 100% at 50% 0%,var(--n3),var(--n2))}
+.demo svg.map{border-radius:0;clip-path:var(--cham);--c:14px}
+.demo .cap{text-align:center;max-width:44ch;margin-left:auto;margin-right:auto}
+.meters{gap:0}
+.meters div{border:0;border-radius:0;background:none;border-left:2px solid var(--g2);padding:4px 14px}
+/* tour: tabs read like a duty roster, gold rule on the active line */
+.tab{border-radius:0;border:0;border-left:3px solid transparent;padding-left:18px}
+.tab:hover{background:linear-gradient(90deg,rgba(22,36,64,.6),transparent)}
+.tab[aria-selected=true]{background:linear-gradient(90deg,rgba(224,168,40,.12),transparent 80%);border-left-color:var(--g3)}
+.tab[aria-selected=true] .ic{background:var(--g3)}
+@media(max-width:900px){.tab{border-left:0;border-radius:0;clip-path:var(--hex);padding:8px 22px 8px 16px;background:var(--n2)}.tab[aria-selected=true]{background:rgba(224,168,40,.2)}}
+/* doors */
+.seg{border-radius:0;border:0;clip-path:var(--hex);padding:5px 18px;background:var(--n0)}
+.seg button{border-radius:0;clip-path:var(--hex);padding:0 26px}
+.browser{border-radius:0;border:0;clip-path:var(--cham);--c:22px;box-shadow:none}
+.browser .chrome span{border-radius:0;clip-path:var(--hex);padding:5px 18px}
+.tag{border-radius:0;border:0;clip-path:var(--hex);background:rgba(182,194,214,.14);padding:3px 14px}
+/* brand: no tiles, the badge stands free; colour as shields, map language on a gold rule */
+.bgrid{gap:44px 56px}
+.tile{background:none;border:0;border-radius:0;padding:28px 0 0;overflow:visible;border-top:1px solid rgba(224,168,40,.35)}
+.tile h3{display:flex;align-items:center;gap:10px;color:var(--g3)}
+.tile h3::before{content:"\2721";font-size:15px;letter-spacing:0;color:var(--g4)}
+.t-badge{border-top:0;background:radial-gradient(46% 42% at 50% 42%,rgba(46,64,112,.75),transparent 72%);padding-top:56px}
+.t-badge h3{left:0;top:0}
+.t-badge::before{content:"";position:absolute;left:50%;top:44%;width:min(420px,90%);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 46px,rgba(224,168,40,.14) 46px 47px);z-index:-1;pointer-events:none}
+.t-badge{isolation:isolate}
+.sw{gap:14px;filter:drop-shadow(0 0 1px rgba(224,168,40,.55))}
+.sw button{border-radius:0;border:0;clip-path:polygon(0 0,100% 0,100% 68%,50% 100%,0 68%);padding:20px 8px 46px;text-align:center;min-height:132px}
+.disc{border:0;border-radius:0;--c:14px;clip-path:var(--cham);background:linear-gradient(90deg,var(--g3),var(--g3)) left/3px 100% no-repeat,rgba(10,22,40,.75)}
+@media(max-width:860px){.t-badge{padding-top:56px}}
 </style>
 <script src="../js/hits.js" defer></script>
 <link rel="stylesheet" href="../assets/audio/snd.css?v=sc2">

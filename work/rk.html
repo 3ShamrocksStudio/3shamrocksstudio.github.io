@@ -384,6 +384,59 @@ footer .wrap{padding-top:22px;padding-bottom:36px;display:flex;flex-wrap:wrap;ju
 .sf3 nav a:hover,.sf3 nav a:focus-visible{text-decoration-color:currentColor}
 .sf3 .sf3-c{opacity:.72}
 :root{--mw-bg:var(--night);--mw-fg:var(--mut);--mw-line:var(--line);--mw-acc:var(--blue);--mw-on:#fff;--mw-font:inherit}
+/* ══ 3SDSTM world · R&K (12 Nov 2026): no rounded boxes. The board is the layout:
+   crisp squares, checker rank strips over each group, rook crenellations on the cards that matter,
+   icon and colour grids laid out as board squares, move notation on the steps. ══ */
+:root{--rank:repeating-linear-gradient(90deg,#1A2D6C 0 12px,#09123A 12px 24px);
+ --crenel:polygon(0 12px,10% 12px,10% 0,20% 0,20% 12px,30% 12px,30% 0,40% 0,40% 12px,60% 12px,60% 0,70% 0,70% 12px,80% 12px,80% 0,90% 0,90% 12px,100% 12px,100% 100%,0 100%)}
+.btn,.won,.stamp,.more a,.s2 .vs,.s2 .go,.mw3-list a{border-radius:0}
+.btn.o{box-shadow:inset 0 -3px 0 var(--blue)}
+/* fact strip: files, not chips */
+.built{gap:0}
+.built div{border-radius:0;border:0;background:none;backdrop-filter:none;border-left:2px solid var(--blue);padding:10px 18px;margin:6px 0}
+/* the problem: cold DM vs. opening move, no panels */
+.msg{border-radius:0;border:0;padding:20px 0 0;background:none!important;position:relative}
+.msg::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:repeating-linear-gradient(90deg,rgba(139,154,184,.35) 0 6px,transparent 6px 12px)}
+.msg.win::before{background:var(--rank);height:8px;box-shadow:0 0 18px rgba(31,91,255,.5)}
+.bubble,.msg.win .bubble,.msg.win .bubble.r{border-radius:0;clip-path:polygon(0 0,100% 0,100% 100%,12px 100%,0 calc(100% - 12px))}
+.msg.win .bubble{clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.msg.win .hs{border-radius:0}
+/* three moves: each step hangs under a rank strip, numbered like notation */
+.steps{gap:28px}
+.step,.mo{border-radius:0;border:0;background:none;padding:26px 0 0;overflow:visible}
+.step::before,.mo::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:var(--rank)}
+.mo{position:relative}
+.step:hover{transform:none}
+.step .n{position:static;display:block;font:800 2.6rem/1 var(--disp);color:transparent;-webkit-text-stroke:1.5px var(--sky);margin-bottom:12px;letter-spacing:-.02em}
+.step .ib,.mo .ib,.lounge .ib{border-radius:0;background:var(--blue);box-shadow:none;color:#fff}
+.step .ib.w,.mo .ib.w{background:#fff;color:var(--ink)}
+.lounge{border-radius:0;border:0;background:linear-gradient(90deg,rgba(31,91,255,.16),transparent 70%);border-left:4px solid var(--blue);padding:18px 22px}
+/* key moment: the board stands on its own, the challenge card is a rook tower */
+.play{border-radius:0;border:0;background:radial-gradient(60% 70% at 30% 40%,rgba(31,91,255,.16),transparent 70%);padding:0}
+.bd,.bd::before{border-radius:0}
+.cc{border-radius:0;clip-path:var(--crenel);padding-top:32px;border:0;box-shadow:none}
+.cc .mode{border-radius:0}
+/* design system: no tiles; every group opens with a rank strip, swatches and icons are board squares */
+.tile{border-radius:0;border:0;background:none;padding:28px 0 0;position:relative}
+.tile::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:var(--rank)}
+.band.steel .tile{background:none;border:0}
+@media(min-width:900px){.ds>.tile{margin-bottom:40px}}
+.band.light .step{background:none;box-shadow:none;border:0}
+.band.light .step .n{color:transparent;-webkit-text-stroke-color:var(--blue)}
+.band.light .lounge{background:linear-gradient(90deg,rgba(31,91,255,.1),transparent 70%)}
+.cons .c,.lockups div,.meaning div{border-radius:0}
+.cons .c{border:0;background:repeating-conic-gradient(#0B1A4A 0 25%,#020617 0 50%) 0 0/50% 50%}
+.sw{gap:0}
+.sw div{border-radius:0;min-height:104px}
+.meaning div{border:0;border-left:3px solid var(--steel)}
+.meaning .c2{border-left-color:var(--amber)}
+.icons{gap:0;outline:1px solid var(--line2)}
+.icons figure{border-radius:0;border:0;background:#09123A}
+.icons figure:nth-child(8n+2),.icons figure:nth-child(8n+4),.icons figure:nth-child(8n+5),.icons figure:nth-child(8n+7){background:#1A2D6C}
+.icons figure:hover{background:#12286B;box-shadow:inset 0 0 0 2px var(--sky)}
+/* where it stands: a rook tower */
+.uc{border-radius:0;border:0;clip-path:var(--crenel);padding-top:12px}
+.mw3-list a:focus-visible,.more a:focus-visible{outline-offset:-4px}
 </style>
 <script>document.documentElement.classList.add('js')</script>
 <script src="../js/hits.js" defer></script>
