@@ -1,5 +1,7 @@
 # R&K (Rookie & King) · Brand v7.1
 
+> **Update, 12 Nov 2026:** the logo files were replaced from Dave's new `R&Klogo.svg` (one logo: split rook/king piece, ROOKIE in #1F5BFF, &KING in white on navy #06133F, navy on light). The current file list is on `board.html`. The stacked, display-wordmark, alternate, flat and one-colour variants described below belong to the earlier v7 file.
+
 **Source:** Dave's own logo, `~/Desktop/3S Projects/R&K/R&Klogo.ai` (8 Nov 2026). Every logo, mark, wordmark, game piece and the Connect icon is one of his vectors, extracted from the file with PyMuPDF and never redrawn. v6 is archived in `assets/brand-proposals/rk-archive-2026-11-08/`.
 
 **v7.1 (Dave's corrections, 8 Nov):**
