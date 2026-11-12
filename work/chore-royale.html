@@ -522,10 +522,9 @@ svg.ic{width:22px;height:22px;flex:none}
 <!-- 3Shamrocks Studio sound: Score v4 night drive, gentle mix (experience zone) with this page's product melody where it has one -->
 <script src="../assets/audio/s3-score.js?v=sc7" defer></script>
 <script>addEventListener('DOMContentLoaded',function(){if(!window.S3Score)return;
-var A=S3Score.start({base:'../assets/audio/soft/',ver:'soft1',musicGain:0.42,sfxGain:0.5,xfade:2.0,pxfade:1.0,stems:{loop:32.0,bar:4.0,pad:0,beds:['pad','warm','shimmer'],melody:'mel',core:['pad']},zones:[{id:'page',mix:{pad:1.0,warm:0.8,shimmer:0.8,mel:0.8}}],stingers:[{sel:'.gd-toast',cue:'coin'},{sel:'.gd-panel',cue:'sparkle'}],sfx:[{url:'../assets/audio/soft/sfx',motion:{explode:1,assemble:1},cues:{"p_shomer":[0.0,0.42],"p_lickpick":[0.48,0.55],"p_trashure-hunters":[1.09,0.42],"p_chore-royale":[1.57,0.42],"p_fairent":[2.05,0.42],"p_milo":[2.53,0.5],"p_rk":[3.09,0.5],"p_concepts":[3.65,0.42],"coin":[4.13,0.5],"levelup":[4.69,1.4],"sparkle":[6.15,0.6],"explode":[6.81,0.7],"assemble":[7.57,0.8],"click":[8.43,0.18]}}]});
+var A=S3Score.start({base:'../assets/audio/studio/v6/',ver:'sc7',musicGain:0.45,sfxGain:0.7,pxfade:0.6,stems:{"loop":78.3673,"loops":{"drums":78.3673,"bass":97.9592,"gtr":58.7755,"keys":97.9592,"organ":58.7755,"horns":97.9592,"mel-chore-royale":78.3673},"bar":2.44898,"pad":0.5,"beds":["drums","bass","gtr","keys","organ","horns"],"melody":"mel-chore-royale"},zones:[{id:'page',mix:{"drums":0.8215,"bass":0.9665,"gtr":0.9665,"keys":0.9665,"organ":0.9665,"horns":0.5799,"mel":0.9665}}],stingers:[{sel:'.gd-toast',cue:'coin'},{sel:'.gd-panel',cue:'sparkle'}],sfx:[{url:'../assets/audio/studio/v2/sfx',cues:{"coin":[4.3813,0.4979],"sparkle":[6.7754,0.5984]}},{url:'../lab/chore-wars/audio/cr-sfx',lead:0.1,cues:{"crown":[3.9547,2.0959]}}]});
 /* one sound on this page: the crown card turns to its Sunday-ceremony side */
 document.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.card');if(c&&c.querySelector('use[href="#cr-crowns"]')&&c.getAttribute('aria-pressed')==='true')A.play('crown');});
 });</script>
 </body>
 </html>
-

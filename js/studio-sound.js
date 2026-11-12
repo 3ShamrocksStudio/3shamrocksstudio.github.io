@@ -1,43 +1,28 @@
-/* 3Shamrocks Studio homepage: Score "Calm" (soft ambient, ~60 BPM, C major — Cmaj7 Am7 Fmaj7 Gadd9 ...),
-   warm detuned pads + gentle sub + airy shimmer + sparse pentatonic bells, played as sample-aligned stems on one
-   clock (story mode) so it never drifts and loops seamlessly. Deliberately subtle and consonant — meant to soothe,
-   never compete with the content. Layers add gently going down the page and drop going back up; changes start on the
-   next bar with ~2 s equal-power fades.
-   hero = pad -> +warm sub -> +shimmer -> portfolio adds soft bells -> identity/experience breakdowns stay gentle ->
-   contact = full but still soft.
-   ON by default; the first tap starts it (browser autoplay rule). Engine: assets/audio/s3-score.js.
-   Music stems + SFX sprite: assets/audio/soft/ (render_soft.py / sfx_soft.py). ver 'soft1' busts the cache. */
+/* 3Shamrocks Studio homepage: Score v7 "sax & blues" (instrumental funk / neo-soul, 98 BPM, swung 16ths, E dorian,
+   Em9 A13 Em9 Cmaj9-B7#9) played as sample-aligned stems that tell a story with the scroll (story mode).
+   v7 = Score v6 with every trumpet / brass voice replaced: the horn section is a saxophone section (tenor, baritone, alto
+   only in its low-mid register), the trumpet answers are blues guitar. The opening is Score v5 note for note (the
+   horn stabs now played by the saxes); every stem then keeps going with new bars and has its own loop length
+   (16-40 bars), so the band never comes round as a short hold loop.
+   hero = drums (a one-bar fill on the first interaction) -> +bass -> +funk guitar -> +Rhodes/clav + organ -> +sax stabs ->
+   portfolio = band + the dark lead (tenor sax call, muted guitar answer; each product: same hook, own warm voice + changed
+   endings) -> identity = breakdown (drums + bass) -> experience = dark bridge (ride, sub bass, Rhodes, blues guitar fills;
+   Em11 Fmaj7#11 ...) -> about = + low sax melody answered by the blues guitar -> forest = back home, no drums ->
+   contact = everything + sax shout outro with blues guitar fills.
+   Layers only add going down and drop going back up; changes start on the next bar with 1 s fades.
+   ON by default; the first tap starts it (browser rule). Engine: assets/audio/s3-score.js.
+   Music: assets/audio/source/score_v7.py (stems + mix.json kept at assets/audio/studio/v6/; ver sc7 busts the cache).
+   Sounds: studio_sfx_v2.py, p_lickpick = electric guitar lick (studio_sfx_v5_lick.py). */
 (function () {
   'use strict';
   if (!window.S3Score) return;
   var S = S3Score.start({
-    base: 'assets/audio/soft/', ver: 'soft1', musicGain: 0.42, sfxGain: 0.5, xfade: 2.0, pxfade: 1.0, mlead: 0.6, complete: 'contact', story: true, debounce: 150,
-    stems: { loop: 32.0, bar: 4.0, pad: 0, beds: ['pad', 'warm', 'shimmer'], melody: 'mel', core: ['pad'] },
-    zones: [
-      { id: 'hero', scroll: 0, mix: { pad: 0.85, warm: 0, shimmer: 0, mel: 0 } },
-      { id: 'bass', sel: '.hero', at: 0.4, scroll: 0.12, mix: { pad: 1.0, warm: 0.8, shimmer: 0, mel: 0 } },
-      { id: 'guitar', sel: '.hero', at: 0.75, scroll: 0.3, mix: { pad: 1.0, warm: 0.85, shimmer: 0.5, mel: 0 } },
-      { id: 'keys', sel: '#work', at: 0.0, mix: { pad: 1.0, warm: 0.85, shimmer: 0.6, mel: 0 } },
-      { id: 'horns', sel: '#work .stage-head', at: 1.0, mix: { pad: 1.0, warm: 0.9, shimmer: 0.7, mel: 0 } },
-      { id: 'work', sel: '#work .devices', at: 0.12, mix: { pad: 1.0, warm: 0.85, shimmer: 0.7, mel: 1.0 } },
-      { id: 'identity', sel: '#identity', at: 0.0, mix: { pad: 0.8, warm: 1.0, shimmer: 0, mel: 0 } },
-      { id: 'experience', sel: '#experience', at: 0.0, mix: { pad: 0.7, warm: 0.9, shimmer: 0.8, mel: 0 } },
-      { id: 'about', sel: '#about', at: 0.0, mix: { pad: 0.9, warm: 0.8, shimmer: 0, mel: 0.7 } },
-      { id: 'forest', sel: '#contact', at: 0.0, mix: { pad: 1.0, warm: 0, shimmer: 0.9, mel: 0 } },
-      { id: 'contact', sel: '#contact .contact-inner', at: 0.0, mix: { pad: 1.0, warm: 0.85, shimmer: 0.8, mel: 0.8 } }
-    ],
-    products: { sel: '#work .dev', zone: 'work', map: {
-      "shomer": { "match": "work/shomer.html", "file": "mel" },
-      "lickpick": { "match": "work/lickpick.html", "file": "mel" },
-      "trashure-hunters": { "match": "work/trashure-hunters.html", "file": "mel" },
-      "chore-royale": { "match": "work/chore-royale.html", "file": "mel" },
-      "fairent": { "match": "work/fairent.html", "file": "mel" },
-      "milo": { "match": "work/milo.html", "file": "mel" },
-      "rk": { "match": "work/rk.html", "file": "mel" },
-      "concepts": { "match": "work/concepts.html", "file": "mel" }
-    } },
-    stingers: [{ sel: '.gd-toast', cue: 'coin' }, { sel: '.gd-panel', cue: 'sparkle' }],
-    sfx: [{ url: 'assets/audio/soft/sfx', motion: { "explode": 1, "assemble": 1, "p_shomer": 1, "p_lickpick": 1, "p_trashure-hunters": 1, "p_chore-royale": 1, "p_fairent": 1, "p_milo": 1, "p_rk": 1, "p_concepts": 1 }, cues: {"p_shomer": [0.0, 0.42], "p_lickpick": [0.48, 0.55], "p_trashure-hunters": [1.09, 0.42], "p_chore-royale": [1.57, 0.42], "p_fairent": [2.05, 0.42], "p_milo": [2.53, 0.5], "p_rk": [3.09, 0.5], "p_concepts": [3.65, 0.42], "coin": [4.13, 0.5], "levelup": [4.69, 1.4], "sparkle": [6.15, 0.6], "explode": [6.81, 0.7], "assemble": [7.57, 0.8], "click": [8.43, 0.18]} }]
+    base: 'assets/audio/studio/v6/', ver: 'sc7', musicGain: 0.45, sfxGain: 0.6, xfade: 1.0, pxfade: 0.6, mlead: 0.6, complete: 'contact', story: true, debounce: 150,
+    stems: {"loop":78.3673,"loops":{"drums":78.3673,"bass":97.9592,"gtr":58.7755,"keys":97.9592,"organ":58.7755,"horns":97.9592,"bdrums":39.1837,"bbass":58.7755,"bkeys":78.3673,"bhorn":58.7755,"bgtr":58.7755,"shout":39.1837,"mel-theme":78.3673,"mel-shomer":78.3673,"mel-lickpick":78.3673,"mel-trashure-hunters":78.3673,"mel-chore-royale":78.3673,"mel-fairent":78.3673,"mel-milo":78.3673,"mel-concepts":78.3673},"bar":2.44898,"pad":0.5,"beds":["drums","bass","gtr","keys","organ","horns","bdrums","bbass","bkeys","bhorn","bgtr","shout"],"melody":"mel-theme","fill":"fill","core":["drums"]},
+    zones: [{"id":"hero","scroll":0,"mix":{"drums":1.277,"bass":0.0,"gtr":0.0,"keys":0.0,"organ":0.0,"horns":0.0,"bdrums":0.0,"bbass":0.0,"bkeys":0.0,"bhorn":0.0,"bgtr":0.0,"shout":0.0,"mel":0.0}},{"id":"bass","sel":".hero","at":0.4,"scroll":0.12,"mix":{"drums":1.0696,"bass":1.0696,"gtr":0.0,"keys":0.0,"organ":0.0,"horns":0.0,"bdrums":0.0,"bbass":0.0,"bkeys":0.0,"bhorn":0.0,"bgtr":0.0,"shout":0.0,"mel":0.0}},{"id":"guitar","sel":".hero","at":0.75,"scroll":0.3,"mix":{"drums":1.0683,"bass":1.0683,"gtr":1.0683,"keys":0.0,"organ":0.0,"horns":0.0,"bdrums":0.0,"bbass":0.0,"bkeys":0.0,"bhorn":0.0,"bgtr":0.0,"shout":0.0,"mel":0.0}},{"id":"keys","sel":"#work","at":0.0,"mix":{"drums":1.0646,"bass":1.0646,"gtr":1.0646,"keys":1.0646,"organ":1.0646,"horns":0.0,"bdrums":0.0,"bbass":0.0,"bkeys":0.0,"bhorn":0.0,"bgtr":0.0,"shout":0.0,"mel":0.0}},{"id":"horns","sel":"#work .stage-head","at":1.0,"mix":{"drums":1.1097,"bass":1.1097,"gtr":1.1097,"keys":1.1097,"organ":1.1097,"horns":1.1097,"bdrums":0.0,"bbass":0.0,"bkeys":0.0,"bhorn":0.0,"bgtr":0.0,"shout":0.0,"mel":0.0}},{"id":"work","sel":"#work .devices","at":0.12,"mix":{"drums":1.0286,"bass":1.0286,"gtr":1.0286,"keys":1.0286,"organ":1.0286,"horns":1.0286,"bdrums":0.0,"bbass":0.0,"bkeys":0.0,"bhorn":0.0,"bgtr":0.0,"shout":0.0,"mel":1.0286}},{"id":"identity","sel":"#identity","at":0.0,"mix":{"drums":1.1376,"bass":1.3083,"gtr":0.0,"keys":0.0,"organ":0.0,"horns":0.0,"bdrums":0.0,"bbass":0.0,"bkeys":0.0,"bhorn":0.0,"bgtr":0.0,"shout":0.0,"mel":0.0}},{"id":"experience","sel":"#experience","at":0.0,"mix":{"drums":0.0,"bass":0.0,"gtr":0.0,"keys":0.0,"organ":0.0,"horns":0.0,"bdrums":1.1754,"bbass":1.1754,"bkeys":1.2342,"bhorn":0.0,"bgtr":0.6465,"shout":0.0,"mel":0.0}},{"id":"about","sel":"#about","at":0.0,"mix":{"drums":0.0,"bass":0.0,"gtr":0.0,"keys":0.0,"organ":0.0,"horns":0.0,"bdrums":1.0192,"bbass":1.0192,"bkeys":0.9173,"bhorn":1.0702,"bgtr":0.8663,"shout":0.0,"mel":0.0}},{"id":"forest","sel":"#contact","at":0.0,"mix":{"drums":0.0,"bass":1.1308,"gtr":0.6911,"keys":1.445,"organ":1.5078,"horns":0.0,"bdrums":0.0,"bbass":0.0,"bkeys":0.0,"bhorn":0.0,"bgtr":0.0,"shout":0.0,"mel":0.0}},{"id":"contact","sel":"#contact .contact-inner","at":0.0,"mix":{"drums":1.1351,"bass":1.0811,"gtr":1.0811,"keys":1.0811,"organ":1.0811,"horns":0.973,"bdrums":0.0,"bbass":0.0,"bkeys":0.0,"bhorn":0.0,"bgtr":0.0,"shout":1.1892,"mel":0.8108}}],
+    products: { sel: '#work .dev', zone: 'work', map: {"shomer":{"match":"work/shomer.html","file":"mel-shomer"},"lickpick":{"match":"work/lickpick.html","file":"mel-lickpick"},"trashure-hunters":{"match":"work/trashure-hunters.html","file":"mel-trashure-hunters"},"chore-royale":{"match":"work/chore-royale.html","file":"mel-chore-royale"},"fairent":{"match":"work/fairent.html","file":"mel-fairent"},"milo":{"match":"work/milo.html","file":"mel-milo"},"concepts":{"match":"work/concepts.html","file":"mel-concepts"},"rk":{"match":"work/rk.html","file":"mel-concepts"}} },
+    stingers:[{sel:'.gd-toast',cue:'coin'},{sel:'.gd-panel',cue:'sparkle'}],
+    sfx: [{url:'assets/audio/studio/v2/sfx',motion:{"explode":1,"assemble":1,"p_shomer":1,"p_lickpick":1,"p_trashure-hunters":1,"p_chore-royale":1,"p_fairent":1,"p_concepts":1},cues:{"explode":[7.6238,0.6975],"assemble":[8.5713,0.7977],"click":[9.6189,0.297],"coin":[4.3813,0.4979],"levelup":[5.1292,1.3963],"sparkle":[6.7754,0.5984],"p_shomer":[0.5,0.3921],"p_lickpick":[1.1421,0.6],"p_trashure-hunters":[1.79,0.3977],"p_chore-royale":[2.4377,0.3982],"p_fairent":[3.086,0.3974],"p_concepts":[3.7334,0.3979]}}]
   });
   document.addEventListener('click', function (e) {
     if (S.on() && e.target.closest && e.target.closest('.btn,.nav-cta')) S.play('click');
