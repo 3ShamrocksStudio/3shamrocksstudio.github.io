@@ -554,7 +554,7 @@ var P={
     li:[['סקירה של המוצר הקיים, עם מה לתקן קודם','A review of your current product, with what to fix first'],['כללי צבע, טיפוגרפיה ומרווחים, ורכיבים מוכנים','Colour, type and spacing rules, and ready-made parts'],['מוכן לשימוש של המפתחים, כך שהם בונים מהר יותר','Ready for your developers, so they build faster'],['מדריך קצר והדרכה לצוות','A short guide and a walkthrough for your team']]}
 };
 var ORDER=['lead','sprint','launch','system'];
-function mailFor(k){return 'mailto:dave@3shamrocks.com?subject='+encodeURIComponent(P[k].en)+'&body='+encodeURIComponent(L()==='he'?'היי Dave,\n\nמעניין אותי: '+P[k].he+'\n\nשם העסק:\nמה אנחנו עושים:\nמה הכי בוער:\nמתי רוצים להתחיל:\n':'Hi Dave,\n\nI\'m interested in: '+P[k].en+'\n\nBusiness:\nWhat we do:\nWhat hurts most right now:\nWhen we want to start:\n')}
+function mailFor(k){return 'mailto:dave@3shamrocks.com?subject='+encodeURIComponent(L()==='he'?P[k].he:P[k].en)+'&body='+encodeURIComponent(L()==='he'?'היי Dave,\n\nמעניין אותי: '+P[k].he+'\n\nשם העסק:\nמה אנחנו עושים:\nמה הכי בוער:\nמתי רוצים להתחיל:\n':'Hi Dave,\n\nI\'m interested in: '+P[k].en+'\n\nBusiness:\nWhat we do:\nWhat hurts most right now:\nWhen we want to start:\n')}
 var pk=$('#pk-grid');
 pk.innerHTML=ORDER.map(function(k,i){var p=P[k];return '<article class="pk reveal" data-pkg="'+k+'" style="--c:'+p.c+'" data-match="'+(L()==='he'?'ההתאמה שלכם':'Your fit')+'">'+
   '<span class="pk-ic"><svg viewBox="0 0 48 48"><use href="#'+p.ic+'"/></svg></span>'+
@@ -701,7 +701,7 @@ function brief(){
     ?'היי Dave,\n\nעשיתי את המשימה באתר.\n\n'+lines.join('\n')+'\n\nההתאמה שקיבלתי: '+P[res.first].he+(res.second?' (וגם: '+P[res.second].he+')':'')+'\n\nשם: '+nm+'\nהעסק / המוצר: '+pj+'\nבמשפט אחד: '+ln+'\nמתי נוח לדבר:\n'
     :'Hi Dave,\n\nI did the quest on your site.\n\n'+lines.join('\n')+'\n\nMy fit: '+P[res.first].en+(res.second?' (also: '+P[res.second].en+')':'')+'\n\nName: '+nm+'\nBusiness / product: '+pj+'\nIn one line: '+ln+'\nGood times to talk:\n';
 }
-function mailHref(){return 'mailto:dave@3shamrocks.com?subject='+encodeURIComponent('Quest brief: '+P[res.first].en)+'&body='+encodeURIComponent(brief())}
+function mailHref(){return 'mailto:dave@3shamrocks.com?subject='+encodeURIComponent(L()==='he'?'בריף מהמשימה: '+P[res.first].he:'Quest brief: '+P[res.first].en)+'&body='+encodeURIComponent(brief())}
 function refreshMail(){var m=$('#send');if(m&&res)m.href=mailHref();$$('.pk-mail').forEach(function(a){a.href=mailFor(a.getAttribute('data-k'))});$$('.pk').forEach(function(a){a.setAttribute('data-match',L()==='he'?'ההתאמה שלכם':'Your fit')})}
 
 function renderResult(){
@@ -802,7 +802,7 @@ function loop(t){if(!on)return;frame(t);requestAnimationFrame(loop)}requestAnima
 <script src="assets/audio/s3-score.js?v=sc7" defer></script>
 <script>addEventListener('DOMContentLoaded',function(){if(!window.S3Score)return;
 /* same band as the home page and product pages (Score v6 stems), one calm zone; quest SFX from the studio sprite, sent as s3:sfx events */
-var A=S3Score.start({base:'assets/audio/studio/v6/',ver:'sc8',musicGain:0.32,sfxGain:0.7,pxfade:0.6,stems:{"loop":78.3673,"loops":{"drums":78.3673,"bass":97.9592,"keys":97.9592,"organ":58.7755,"mel-theme":78.3673},"bar":2.44898,"pad":0.5,"beds":["drums","bass","keys","organ"],"melody":"mel-theme"},zones:[{id:'page',mix:{"drums":0.75,"bass":0.95,"keys":0.95,"organ":0.8,"mel":0.7}}],stingers:[],
+var A=S3Score.start({base:'assets/audio/studio/v6/',ver:'sc9',musicGain:0.32,sfxGain:0.7,pxfade:0.6,stems:{"loop":78.3673,"loops":{"drums":78.3673,"bass":97.9592,"keys":97.9592,"organ":58.7755,"mel-theme":78.3673},"bar":2.44898,"pad":0.5,"beds":["drums","bass","keys","organ"],"melody":"mel-theme"},zones:[{id:'page',mix:{"drums":0.75,"bass":0.95,"keys":0.95,"organ":0.8,"mel":0.7}}],stingers:[],
 sfx:[{url:'assets/audio/studio/v2/sfx',motion:{"p_shomer":1,"p_lickpick":1,"p_trashure-hunters":1,"p_chore-royale":1,"p_fairent":1,"p_concepts":1},cues:{"click":[9.6189,0.297],"coin":[4.3813,0.4979],"levelup":[5.1292,1.3963],"sparkle":[6.7754,0.5984],"p_shomer":[0.5,0.3921],"p_lickpick":[1.1421,0.6],"p_trashure-hunters":[1.79,0.3977],"p_chore-royale":[2.4377,0.3982],"p_fairent":[3.086,0.3974],"p_concepts":[3.7334,0.3979]}}]});
 document.addEventListener('click',function(e){if(A.on()&&e.target.closest&&e.target.closest('.nav-cta,.pk .btn'))A.play('click')},true);
 });</script>
