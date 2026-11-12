@@ -275,7 +275,8 @@ h2{font-size:clamp(36px,5.4vw,68px);line-height:1;margin-bottom:14px}
 .sw button{flex:1;border-radius:14px;border:3px solid var(--ink);display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:10px;font:700 12px/1.3 var(--body);color:var(--ink);transition:flex .45s var(--ease);overflow:hidden;min-width:0;text-align:left}
 .sw button:hover,.sw button:focus-visible{flex:2.6}
 .sw b{display:block;font:400 14px var(--display);white-space:nowrap}
-.sw span{font-family:ui-monospace,monospace;font-size:11px;white-space:nowrap}
+.sw span{font-family:ui-monospace,monospace;font-size:11px;white-space:nowrap;display:none}
+.sw button:hover span,.sw button:focus-visible span{display:block}
 .sw .lt{color:var(--text)}
 .icons{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 8px}
 .icons button{display:flex;flex-direction:column;align-items:center;gap:8px;font:700 13px var(--body);color:#4a4458}
@@ -369,47 +370,44 @@ h2{font-size:clamp(36px,5.4vw,68px);line-height:1;margin-bottom:14px}
  <div class="wrap top">
   <div class="lock"><svg viewBox="0 0 100 100" role="img" aria-label="LickPick logo: a yellow guitar pick with a play button"><use href="#logo"/></svg><span class="word" aria-hidden="true">Lick<b>Pick</b></span><span class="beta">BETA</span></div>
   <h1>Your best lick, <span class="f">found.</span></h1>
-  <p class="lede">Drop in a jam. Get back the best lick, ready to post.</p>
+  <p class="lede">Drop a jam. Get the lick.</p>
   <div class="btns" style="justify-content:center"><a class="btn ink" href="../lickpick/" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><use href="#i-play"/></svg>Visit LickPick &#8599;</a><a class="btn ghost" href="#find"><svg class="i" viewBox="0 0 24 24"><use href="#i-ear"/></svg>Find a lick</a></div>
-  <span class="chip"><i></i>Free beta &middot; Android and desktop Chrome</span>
  </div>
  <div class="fan" id="fan">
   <div class="phone p1"><div class="scr"><img src="../assets/work/lickpick/app-home.webp" alt="LickPick home: three jams to review, each with its best lick, key, tempo and length" width="720" height="1558" fetchpriority="high"></div></div>
   <div class="phone p2"><div class="scr"><img src="../assets/work/lickpick/app-pick.webp" alt="The lick screen: Lick A, 0:24, marked on the timeline of Sunday jam" width="720" height="1558" fetchpriority="high"></div></div>
   <div class="phone p3"><div class="scr"><img src="../assets/work/lickpick/app-export.webp" alt="The Export sheet: Lick A or the clean cut, for TikTok, Reels, Shorts or IG feed" width="720" height="1558"></div></div>
   <span class="stk s1" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><use href="#i-star"/></svg>Lick A &middot; 0:24</span>
-  <span class="stk s2" aria-hidden="true">A major &middot; 96 BPM</span>
   <span class="stk s3" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><use href="#i-check"/></svg>Ready to post</span>
  </div>
 </header>
 
 <!-- 2 · TICKER: the facts, on the move -->
 <section class="tick" aria-label="What I built"><div class="row">
- <ul><li><small>Role</small>Founder &middot; brand, product, app</li><li aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li><small>Platforms</small>Android + desktop Chrome</li><li aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li><small>Privacy</small>Jams stay on the phone</li><li aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li><small>Status</small>2026 &middot; free beta</li><li aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li></ul>
- <ul aria-hidden="true"><li><small>Role</small>Founder &middot; brand, product, app</li><li><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li><small>Platforms</small>Android + desktop Chrome</li><li><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li><small>Privacy</small>Jams stay on the phone</li><li><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li><small>Status</small>2026 &middot; free beta</li><li><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li></ul>
+ <ul><li>Brand + app</li><li aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li>Free beta</li><li aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li>Android + desktop</li><li aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li>Jams stay local</li><li aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li></ul>
+ <ul aria-hidden="true"><li>Brand + app</li><li><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li>Free beta</li><li><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li>Android + desktop</li><li><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li><li>Jams stay local</li><li><svg viewBox="0 0 100 100"><use href="#logo"/></svg></li></ul>
 </div></section>
 
 <!-- 3 · LICK FINDER: a full-width timeline to play with -->
 <section class="sec find" id="find" aria-labelledby="f-h">
  <div class="wrap">
-  <div class="ctr rv"><div class="eyebrow">Find the lick</div><h2 id="f-h">Every jam has <span class="g">a lick.</span></h2><p class="lede">Hit the button. Then drag the lick, or its edges.</p></div>
+  <div class="ctr rv"><h2 id="f-h">Every jam has <span class="g">a lick.</span></h2></div>
   <div class="rv">
-   <div class="jamtitle"><b><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#logo"/></svg>Sunday jam.mp4</b><div class="meta" id="meta" aria-hidden="true"><span>96 BPM</span><span>A major</span><span>12-bar blues</span></div></div>
+   <div class="jamtitle"><b><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#logo"/></svg>Sunday jam.mp4</b><div class="meta" id="meta" aria-hidden="true"><span>96 BPM</span><span>A major</span></div></div>
    <div class="tl" id="tl">
     <div class="bars" id="bars"></div>
     <svg class="map" id="map" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="mg" x1="0" x2="1"><stop offset="0" stop-color="#B47CFF"/><stop offset=".5" stop-color="#FFE600"/><stop offset="1" stop-color="#FF2E88"/></linearGradient></defs><path id="mapp" fill="rgba(180,124,255,.22)" stroke="url(#mg)" stroke-width="1.2" vector-effect="non-scaling-stroke"/></svg>
-    <span class="hint" aria-hidden="true">Sample jam &middot; 0:41</span>
+    <span class="hint" aria-hidden="true">Sample jam</span>
     <div class="sel" id="sel" role="slider" tabindex="-1" aria-label="Lick position, arrow keys nudge a bar" aria-valuemin="0" aria-valuemax="41" aria-valuenow="12"><span class="tag" id="tag">LICK A</span><span class="hd hl" data-h="l"></span><span class="hd hr" data-h="r"></span></div>
     <span class="ph"></span>
    </div>
-   <div class="tlx" aria-hidden="true"><span>0:00</span><span>0:41</span></div>
    <div class="ctrl">
     <button class="btn" id="go" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#i-ear"/></svg>Find my lick</button>
     <div class="tools"><div class="picks" role="group" aria-label="Licks found"><button type="button" data-i="0" aria-pressed="true" disabled>A</button><button type="button" data-i="1" aria-pressed="false" disabled>B</button><button type="button" data-i="2" aria-pressed="false" disabled>C</button></div><button type="button" class="why" id="why" aria-pressed="false" disabled>Why this part?</button></div>
-    <div class="card" id="card" aria-live="polite"><i class="tape" aria-hidden="true"></i><p class="idle">Your lick lands here, stamped.</p></div>
+    <div class="card" id="card" aria-live="polite"><i class="tape" aria-hidden="true"></i><p class="idle">Your lick lands here.</p></div>
    </div>
    <p class="res" id="res" aria-live="polite"></p>
-   <p class="cap ctr">Illustration modelled on the app&rsquo;s lick screen. Nothing is uploaded or analysed here.</p>
+   <p class="cap ctr">Illustration. Nothing is uploaded.</p>
   </div>
  </div>
 </section>
@@ -417,7 +415,7 @@ h2{font-size:clamp(36px,5.4vw,68px);line-height:1;margin-bottom:14px}
 <!-- 4 · STAMP GAME -->
 <section class="sec sort" aria-labelledby="s-h">
  <div class="wrap">
-  <div class="ctr rv"><h2 id="s-h">Keep. Review. <span>Trash.</span></h2><p class="lede">Every jam gets a stamp. Swipe one.</p></div>
+  <div class="ctr rv"><h2 id="s-h">Keep. Review. <span>Trash.</span></h2><p class="lede">Swipe one.</p></div>
   <div class="sortbox rv">
    <div class="bins2"><div class="bin t" id="bt"><span class="n">0</span>Trash</div></div>
    <div class="deck" id="deck">
@@ -426,22 +424,22 @@ h2{font-size:clamp(36px,5.4vw,68px);line-height:1;margin-bottom:14px}
    <div class="bins2"><div class="bin k" id="bk"><span class="n">0</span>Keep</div><div class="bin r" id="br"><span class="n">0</span>Review</div></div>
   </div>
   <div class="sortbtns"><button type="button" class="btn bt" data-v="t">&larr; Trash</button><button type="button" class="btn br" data-v="r">&uarr; Review</button><button type="button" class="btn bk" data-v="k">Keep &rarr;</button></div>
-  <p class="cap">Sample jams. LickPick never deletes a file: you get a cleanup list and delete originals yourself.</p>
+  <p class="cap">LickPick never deletes your files.</p>
  </div>
 </section>
 
 <!-- 5 · DRAG STRIP -->
 <section class="sec flow" id="tour" aria-labelledby="h-h">
- <div class="wrap ctr rv"><h2 id="h-h">Raw jam in. <span>Clip out.</span></h2><p class="lede">Drag through the real app.</p></div>
+ <div class="wrap ctr rv"><h2 id="h-h">Raw jam in. <span>Clip out.</span></h2></div>
  <div class="strip" id="strip" tabindex="0" aria-label="App screens, scroll sideways">
-  <figure class="it"><div class="phone"><div class="scr"><img src="../assets/work/lickpick/app-home.webp" alt="LickPick home: three jams to review, each with its best lick, key, tempo and length" width="720" height="1558" loading="lazy"></div></div><figcaption class="lab"><i>1</i>Sort <small>every jam</small></figcaption></figure>
-  <figure class="it"><div class="phone"><div class="scr"><img src="../assets/work/lickpick/app-pick.webp" alt="The lick screen: Lick A, 0:24, marked on the timeline of Sunday jam" width="720" height="1558" loading="lazy"></div></div><figcaption class="lab"><i>2</i>Pick <small>the lick</small></figcaption></figure>
-  <figure class="it"><div class="phone"><div class="scr"><img src="../assets/work/lickpick/app-style.webp" alt="The Style tab: eight Looks and a title for the video" width="720" height="1558" loading="lazy"></div></div><figcaption class="lab"><i>3</i>Style <small>8 Looks</small></figcaption></figure>
-  <figure class="it"><div class="phone"><div class="scr"><img src="../assets/work/lickpick/app-captions.webp" alt="The Share tab: a Hype vibe with captions written from the jam's key and tempo" width="720" height="1558" loading="lazy"></div></div><figcaption class="lab"><i>4</i>Caption <small>pick a vibe</small></figcaption></figure>
-  <figure class="it"><div class="phone"><div class="scr"><img src="../assets/work/lickpick/app-export.webp" alt="The Export sheet: Lick A or the clean cut, for TikTok, Reels, Shorts or IG feed" width="720" height="1558" loading="lazy"></div></div><figcaption class="lab"><i>5</i>Post <small>Reels, TikTok, Shorts</small></figcaption></figure>
+  <figure class="it"><div class="phone"><div class="scr"><img src="../assets/work/lickpick/app-home.webp" alt="LickPick home: three jams to review, each with its best lick, key, tempo and length" width="720" height="1558" loading="lazy"></div></div><figcaption class="lab"><i>1</i>Sort</figcaption></figure>
+  <figure class="it"><div class="phone"><div class="scr"><img src="../assets/work/lickpick/app-pick.webp" alt="The lick screen: Lick A, 0:24, marked on the timeline of Sunday jam" width="720" height="1558" loading="lazy"></div></div><figcaption class="lab"><i>2</i>Pick</figcaption></figure>
+  <figure class="it"><div class="phone"><div class="scr"><img src="../assets/work/lickpick/app-style.webp" alt="The Style tab: eight Looks and a title for the video" width="720" height="1558" loading="lazy"></div></div><figcaption class="lab"><i>3</i>Style</figcaption></figure>
+  <figure class="it"><div class="phone"><div class="scr"><img src="../assets/work/lickpick/app-captions.webp" alt="The Share tab: a Hype vibe with captions written from the jam's key and tempo" width="720" height="1558" loading="lazy"></div></div><figcaption class="lab"><i>4</i>Caption</figcaption></figure>
+  <figure class="it"><div class="phone"><div class="scr"><img src="../assets/work/lickpick/app-export.webp" alt="The Export sheet: Lick A or the clean cut, for TikTok, Reels, Shorts or IG feed" width="720" height="1558" loading="lazy"></div></div><figcaption class="lab"><i>5</i>Post</figcaption></figure>
  </div>
  <div class="snav"><button type="button" id="sp" aria-label="Previous screen"><svg class="i" viewBox="0 0 24 24"><use href="#i-back"/></svg></button><div class="dots" id="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><button type="button" id="sn" aria-label="Next screen"><svg class="i" viewBox="0 0 24 24" style="transform:scaleX(-1)"><use href="#i-back"/></svg></button></div>
- <p class="cap">Real screens from the current beta build, with a sample jam.</p>
+ <p class="cap">Real beta screens.</p>
 </section>
 
 <!-- 6 · CREDO -->
@@ -449,17 +447,17 @@ h2{font-size:clamp(36px,5.4vw,68px);line-height:1;margin-bottom:14px}
  <canvas class="field" aria-hidden="true"></canvas>
  <div class="wrap">
   <div class="l" id="credo">Keep the <button type="button" class="k" id="ck">licks.</button><br>Kill the <button type="button" class="fl" id="cf">flubs.</button></div>
-  <p>Tap them. Loud colour for licks, cool slate for flubs.</p>
+  <p>Tap them.</p>
  </div>
 </section>
 
 <!-- 7 · BRAND KIT -->
 <section class="sec brand" aria-labelledby="b-h">
  <div class="wrap">
-  <div class="rv"><div class="eyebrow">Brand</div><h2 id="b-h">A pick that <span>presses play.</span></h2></div>
+  <div class="rv"><h2 id="b-h">A pick that <span>presses play.</span></h2></div>
   <div class="bgrid">
-   <div class="tile t-logo rv"><h3>Logo &middot; flick it</h3><div class="bdg" id="bdg"><svg viewBox="0 0 100 100" role="img" aria-label="LickPick logo"><use href="#logo"/></svg></div><span class="word" aria-hidden="true">Lick<b>Pick</b></span><p>A guitar pick and a play button, one mark.</p></div>
-   <div class="tile rv"><h3>Colour &middot; tap to copy</h3>
+   <div class="tile t-logo rv"><h3>Flick it</h3><div class="bdg" id="bdg"><svg viewBox="0 0 100 100" role="img" aria-label="LickPick logo"><use href="#logo"/></svg></div><span class="word" aria-hidden="true">Lick<b>Pick</b></span></div>
+   <div class="tile rv"><h3>Tap to copy</h3>
     <div class="sw">
      <button type="button" data-hex="#FFE600" style="background:#FFE600"><b>Volt</b><span>#FFE600</span></button>
      <button type="button" data-hex="#FF2E88" style="background:#FF2E88"><b>Hot</b><span>#FF2E88</span></button>
@@ -468,12 +466,12 @@ h2{font-size:clamp(36px,5.4vw,68px);line-height:1;margin-bottom:14px}
      <button type="button" class="lt" data-hex="#0B0912" style="background:#0B0912"><b>Stage</b><span>#0B0912</span></button>
     </div>
    </div>
-   <div class="tile rv"><h3>Icons &middot; offset like the logo</h3>
+   <div class="tile rv"><h3>Icons</h3>
     <div class="icons">
-     <button type="button"><span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ear"/></svg></span>Listen</button>
-     <button type="button"><span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cut"/></svg></span>Cut</button>
-     <button type="button"><span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span>Lick</button>
-     <button type="button"><span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg></span>Share</button>
+     <button type="button" aria-label="Listen" title="Listen"><span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ear"/></svg></span></button>
+     <button type="button" aria-label="Cut" title="Cut"><span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cut"/></svg></span></button>
+     <button type="button" aria-label="Lick" title="Lick"><span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span></button>
+     <button type="button" aria-label="Share" title="Share"><span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-share"/></svg></span></button>
     </div>
     <div class="type"><span>Aa</span><small>Dela Gothic One &middot; Archivo</small></div>
    </div>
@@ -485,13 +483,8 @@ h2{font-size:clamp(36px,5.4vw,68px);line-height:1;margin-bottom:14px}
 <section class="cta" aria-labelledby="c-h">
  <canvas class="field" aria-hidden="true"></canvas>
  <div class="wrap">
-  <ul class="watch rv" aria-label="Where it stands">
-   <li><i class="d ok"></i><em>Android + desktop</em> free beta</li>
-   <li><i class="d wip"></i><em>iPhone</em> on the list</li>
-  </ul>
-  <h2 id="c-h" class="rv">Find the lick <span class="g">in your jams.</span></h2>
+  <h2 id="c-h" class="rv">Find <span class="g">your lick.</span></h2>
   <div class="btns rv"><a class="btn" href="../lickpick/" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><use href="#i-play"/></svg>Visit LickPick &#8599;</a><a class="btn ghost" href="../work-with-me.html?lang=en">Start a project</a></div>
-  <p class="cap">Brand, app and landing page, designed end to end by 3Shamrocks Studio.</p>
  </div>
 </section>
 </main>
@@ -580,7 +573,7 @@ h2{font-size:clamp(36px,5.4vw,68px);line-height:1;margin-bottom:14px}
 
   /* stamp game: swipe the jams into Keep, Review or Trash (sample jams, nothing is deleted) */
   var deck=document.getElementById('deck'),dm=deck.querySelector('.done-msg'),cnt={k:0,r:0,t:0},binEl={k:document.getElementById('bk'),r:document.getElementById('br'),t:document.getElementById('bt')},sbtn=document.querySelectorAll('.sortbtns button');
-  var J=[{n:'Sunday jam',l:'&#9733; 0:24',m:'A major &middot; 96 BPM &middot; 0:41'},{n:'Late night riff',l:'&#9733; 0:21',m:'E minor &middot; 108 BPM &middot; 0:28'},{n:'Phone check',l:'No lick',m:'Just talking &middot; 0:19',no:1},{n:'Pedal jam',l:'&#9733; 0:26',m:'D major &middot; 84 BPM &middot; 0:35'}];
+  var J=[{n:'Sunday jam',l:'&#9733; 0:24',m:''},{n:'Phone check',l:'No lick',m:'',no:1},{n:'Pedal jam',l:'&#9733; 0:26',m:''}];
   var MK={k:['KEEP','#C9A800'],r:['REVIEW','#0B9DB0'],t:['TRASH','#6E7798']};
   function deal(){deck.querySelectorAll('.jam').forEach(function(j){j.remove()});cnt={k:0,r:0,t:0};upd();
     J.forEach(function(j){var el=document.createElement('div');el.className='jam';el.innerHTML='<div class="vid'+(j.no?' nolick':'')+'"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#logo"/></svg></div><h3>'+j.n+'</h3><div class="ln"><b'+(j.no?' class="no"':'')+'>'+j.l+'</b><span>'+j.m+'</span></div><span class="mk"></span>';deck.insertBefore(el,dm)});
