@@ -193,8 +193,62 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
 @keyframes progv{to{height:100%}}
 @keyframes prog{to{width:100%}}
 .tphone{position:relative}
-.tphone .scr img{opacity:0;transform:scale(1.03);transition:opacity .55s,transform .8s var(--ease)}
-.tphone .scr img.on{opacity:1;transform:none}
+.tphone .scr{container-type:inline-size}
+.tphone .scr>.sh{position:absolute;inset:0;width:100%;height:100%;opacity:0;transform:scale(1.03);transition:opacity .55s,transform .8s var(--ease)}
+.tphone .scr>.sh:not(.on){pointer-events:none}
+.tphone .scr>.sh.on{opacity:1;transform:none}
+/* two VIBRANT app-tour screens (designed by Dave; vb-6), rebuilt in HTML so they can be tapped. Sizes in cqw of the phone screen */
+.vs{display:flex;flex-direction:column;padding:13cqw 7cqw 6cqw;color:#fff;font:400 3.7cqw/1.35 var(--vr);text-align:left;overflow:hidden}
+.vs-res{background:linear-gradient(180deg,#8D8DF3 0%,#5D96EF 40%,#12AEEC 100%)}
+.vs-sch{background:linear-gradient(180deg,#3C5DE0 0%,#2A88EC 50%,#0FB2EE 100%);padding-top:11cqw}
+.vs-h{display:grid;grid-template-columns:10cqw 1fr;gap:3cqw;align-items:start}
+.vs-h .ri{width:10cqw;height:10cqw;border:.6cqw solid #fff;border-radius:50%;display:grid;place-items:center}
+.vs-h .ri svg{width:5.4cqw;height:5.4cqw}
+.vs-h b{display:block;font:700 5.3cqw/1.12 var(--vq)}
+.vs-h small{display:block;font-size:3.5cqw;margin-top:1cqw;opacity:.95}
+.vs-c{background:#fff;color:#3C444C;border-radius:3cqw;box-shadow:0 2cqw 5cqw rgba(16,40,110,.25)}
+.vs-chart{margin-top:8cqw;padding:5cqw 4cqw 3cqw 9cqw}
+.vs-plot{position:relative;height:38cqw;border-left:.35cqw solid #C9D3DD;border-bottom:.35cqw solid #C9D3DD;display:flex;align-items:flex-end;gap:2.4cqw;padding:0 1.6cqw}
+.vs-plot .y{position:absolute;left:-4.6cqw;transform:translateY(50%);font-size:2.6cqw;color:#7A8591}
+.vs-bar{flex:1;height:calc(var(--v)/5*100%);background:#C7E7F8;border:.35cqw solid #8CCDF0;border-bottom:0;transform:scaleY(0);transform-origin:bottom;transition:transform .9s var(--ease) calc(.25s + var(--i)*90ms),background .2s,border-color .2s;position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sh.on .vs-bar{transform:none}
+.vs-bar.sel{background:#1B9BDB;border-color:#1B8CC6}
+.vs-bar em{position:absolute;bottom:calc(100% + 1cqw);left:50%;transform:translateX(-50%);font:700 3.6cqw var(--vq);font-style:normal;color:#1868D0;opacity:0;transition:opacity .25s}
+.vs-bar.sel em{opacity:1}
+.vs-bar:focus-visible{outline:.6cqw solid #252F62;outline-offset:.6cqw}
+.vs-bl{position:absolute;left:0;right:0;bottom:20%;border-top:.55cqw dotted #252F62;pointer-events:none}
+.vs-x{display:flex;gap:2.4cqw;padding:0 1.6cqw;margin-top:1.6cqw;font-size:2.3cqw;line-height:1.2;color:#7A8591;text-align:center}
+.vs-x span{flex:1}.vs-x span.sel{color:#1868D0;font-weight:700}
+.vs-base{margin-top:10cqw}
+.vs-ft{margin-top:auto;display:grid;justify-items:center;gap:3cqw}
+.vs-ft .nx{font:700 3.8cqw var(--vq);padding:2.4cqw 15cqw;border:.5cqw solid #fff;border-radius:99px}
+.vs-ft .sk{font:700 3.2cqw var(--vq);text-decoration:underline}
+.vs-ft .dt{display:flex;gap:2cqw}.vs-ft .dt i{width:1.6cqw;height:1.6cqw;border-radius:50%;border:.35cqw solid #fff}.vs-ft .dt i.on{background:#fff}
+.vs-arw{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.vs-arw path{fill:none;stroke:#1E2A5E;stroke-width:.75;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100 100;stroke-dashoffset:100;transition:stroke-dashoffset 1.1s var(--ease) .6s}
+.sh.on .vs-arw path{stroke-dashoffset:0}
+.vs-msg{margin-top:4cqw;padding:3.4cqw 4cqw;text-align:center;font-size:3.2cqw}
+.vs-msg b{display:block;font:700 3.9cqw/1.2 var(--vq);color:#252F62;margin-bottom:1cqw}
+.vs-msg u{color:#1868D0;font-weight:700}
+.vs-st{margin-top:3.4cqw;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:3cqw;font:500 2.6cqw/1.15 var(--vr);color:#5A626E;text-transform:uppercase}
+.vs-st b{font:400 8cqw/1 var(--vq);color:#1B8CC6;font-variant-numeric:tabular-nums;display:inline-block}
+.vs-st b small{font-size:.45em;color:#7A8591}
+.vs-st b.pop{animation:vpop .45s var(--ease)}
+@keyframes vpop{40%{transform:scale(1.25)}}
+.vs-st hr{width:.3cqw;height:8cqw;border:0;background:#D5DCE4}
+.vs-st .rp{color:#7C89FF}
+.vs-h.s2{margin-top:7cqw}
+.vs-wk{margin-top:4cqw;padding:3cqw 3cqw 0;text-align:center;overflow:hidden}
+.vs-wk>b{font:700 3.5cqw var(--vq);color:#3C444C}
+.vs-days{display:grid;grid-template-columns:repeat(7,1fr);margin:2.4cqw 0 3cqw}
+.vs-day{display:grid;justify-items:center;gap:.6cqw;font:700 2.7cqw var(--vq);color:#9AA4AE;padding:1cqw 0;border-radius:2cqw;-webkit-tap-highlight-color:transparent}
+.vs-day svg{width:8.6cqw;height:8.6cqw;overflow:visible}
+.vs-day .cb{fill:#fff;stroke:#1B8CC6;transition:fill .25s}
+.vs-day .ck{stroke:#fff;opacity:0;transition:opacity .2s}
+.vs-day.done{color:#1B8CC6}.vs-day.done .cb{fill:#1B8CC6}.vs-day.done .ck{opacity:1}
+.vs-day[disabled]{cursor:default}
+.vs-day:focus-visible{outline:.6cqw solid #1868D0}
+.vs-ed{margin:0 -3cqw;padding:2.4cqw;font-size:2.9cqw;color:#3C444C;background:#F3F5F7;border-top:.3cqw solid #E1E7EE}
 .tcap{font-size:12px;color:var(--ink3);margin-top:16px;text-align:center}
 .tmob{display:none;font-size:16px;color:var(--ink2);margin-top:18px;min-height:3.2em;text-align:center}
 @media(max-width:900px){.tour{grid-template-columns:1fr;gap:28px;margin-top:72px}.tphone{width:min(270px,70vw);margin:0 auto}
@@ -362,6 +416,7 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5z"/><path d="M8 15l2.5-3 2.5 2 3-4"/></symbol>
  <symbol id="i-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11h6M9 15h4"/></symbol>
  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+ <symbol id="i-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-35 12 12)"/><path d="M12 8.6v6.8" transform="rotate(-35 12 12)"/></symbol>
  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5zM20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></symbol>
  <symbol id="i-award" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5L7 21l5-2.5L17 21l-1.5-7.5"/></symbol>
  <symbol id="i-tap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.6a5 5 0 0 1-4-2L4.6 15.4a1.6 1.6 0 0 1 2.5-2L9 15.5"/></symbol>
@@ -441,20 +496,33 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
     <h3 class="rv">Treatment, made <span class="gv">easy to follow.</span></h3>
     <ul class="tabs" role="tablist" aria-label="VIBRANT Companion screens">
      <li><button class="tab" role="tab" id="vt0" aria-controls="vpanel" aria-selected="true"><span class="ic" aria-hidden="true"><svg><use href="#i-home"/></svg></span><span><b>This week</b><p>Capsules, reports and progress, at a glance.</p></span><i class="prog"></i></button></li>
-     <li><button class="tab" role="tab" id="vt1" aria-controls="vpanel" aria-selected="false"><span class="ic" aria-hidden="true"><svg><use href="#i-note"/></svg></span><span><b>Report</b><p>A short check-in, in plain words and pictures.</p></span><i class="prog"></i></button></li>
+     <li><button class="tab" role="tab" id="vt1" aria-controls="vpanel" aria-selected="false"><span class="ic" aria-hidden="true"><svg><use href="#i-note"/></svg></span><span><b>Report</b><p>Fill the daily report. See it against your baseline.</p></span><i class="prog"></i></button></li>
      <li><button class="tab" role="tab" id="vt2" aria-controls="vpanel" aria-selected="false"><span class="ic" aria-hidden="true"><svg><use href="#i-cal"/></svg></span><span><b>Calendar</b><p>Every capsule and report, day by day.</p></span><i class="prog"></i></button></li>
-     <li><button class="tab" role="tab" id="vt3" aria-controls="vpanel" aria-selected="false"><span class="ic" aria-hidden="true"><svg><use href="#i-book"/></svg></span><span><b>Learn</b><p>Articles and video about the condition.</p></span><i class="prog"></i></button></li>
+     <li><button class="tab" role="tab" id="vt3" aria-controls="vpanel" aria-selected="false"><span class="ic" aria-hidden="true"><svg><use href="#i-cap"/></svg></span><span><b>Schedule</b><p>See when the next capsule is due. Tap a day.</p></span><i class="prog"></i></button></li>
     </ul>
     <p class="tmob" id="vmob" aria-hidden="true"></p>
    </div>
    <div class="tphone rv" id="vpanel" role="tabpanel" aria-labelledby="vt0">
     <div class="phone"><div class="scr">
-     <img class="on" src="../assets/work/vibrant/play/home.webp" alt="VIBRANT Companion home: current week status, report chart, treatment schedule" width="720" height="1456" loading="lazy">
-     <img src="../assets/work/vibrant/play/report.webp" alt="VIBRANT Companion: new report form with date, time and simple illustrated choices" width="720" height="1456" loading="lazy">
-     <img src="../assets/work/vibrant/play/calendar.webp" alt="VIBRANT Companion: monthly calendar of capsules and reports" width="720" height="1456" loading="lazy">
-     <img src="../assets/work/vibrant/play/learn.webp" alt="VIBRANT Companion: articles and a video about chronic constipation" width="720" height="1456" loading="lazy">
+     <img class="sh on" src="../assets/work/vibrant/play/home.webp" alt="VIBRANT Companion home: current week status, report chart, treatment schedule" width="720" height="1456" loading="lazy">
+     <div class="sh vs vs-res" role="group" aria-label="VIBRANT app tour screen, rebuilt: See the results for yourself. Tap a week.">
+      <div class="vs-h"><span class="ri" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M6 19V12M10 19V7M14 19v-9M18 19V5"/></svg></span><div><b>See the results for yourself!</b><small>Fill the daily report and track your treatment progress compared to baseline. You can also share the report with your physician.</small></div></div>
+      <div class="vs-c vs-chart"><div class="vs-plot"><span class="y" style="bottom:0">0</span><span class="y" style="bottom:20%">1</span><span class="y" style="bottom:40%">2</span><span class="y" style="bottom:60%">3</span><span class="y" style="bottom:80%">4</span><span class="y" style="bottom:100%">5</span><button type="button" class="vs-bar" style="--v:4;--i:0" aria-label="May 4 to 11: 4"><em>4</em></button><button type="button" class="vs-bar sel" style="--v:2;--i:1" aria-label="May 12 to 19: 2"><em>2</em></button><button type="button" class="vs-bar" style="--v:4;--i:2" aria-label="May 20 to 27: 4"><em>4</em></button><button type="button" class="vs-bar" style="--v:3;--i:3" aria-label="May 28 to June 4: 3"><em>3</em></button><button type="button" class="vs-bar" style="--v:5;--i:4" aria-label="June 5 to 12: 5"><em>5</em></button><i class="vs-bl"></i></div><div class="vs-x" aria-hidden="true"><span>May 4&ndash;11</span><span class="sel">May 12&ndash;19</span><span>May 20&ndash;27</span><span>May 28&ndash;Jun 4</span><span>Jun 5&ndash;12</span></div></div>
+      <div class="vs-h vs-base"><span class="ri" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><circle cx="6.5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="17.5" cy="12" r="1.8"/></svg></span><div><b>Baseline =</b><small>Your weekly number of complete spontaneous bowel movements before Vibrant treatment.</small></div></div>
+      <div class="vs-ft" aria-hidden="true"><span class="nx">Next</span><span class="sk">Skip</span><span class="dt"><i></i><i class="on"></i><i></i><i></i></span></div>
+      <svg class="vs-arw" viewBox="0 0 100 202.2" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M7 30C1 42 1 56 6.5 64l-.4-3.8M6.5 64l-3.6-1.6"/><path pathLength="100" d="M13 103C11 95 13 87 19.5 80.5l-3.6 1M19.5 80.5l-.3 3.8"/></svg>
+     </div>
+     <img class="sh" src="../assets/work/vibrant/play/calendar.webp" alt="VIBRANT Companion: monthly calendar of capsules and reports" width="720" height="1456" loading="lazy">
+     <div class="sh vs vs-sch" role="group" aria-label="VIBRANT app tour screen, rebuilt: Personal messages and Stay consistent. Tap a day to check its capsule.">
+      <div class="vs-h"><span class="ri" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M12 19s-7-4.3-7-9.2A3.8 3.8 0 0 1 12 8a3.8 3.8 0 0 1 7 1.8C19 14.7 12 19 12 19z"/></svg></span><div><b>Personal messages</b><small>Relevant to your treatment progress</small></div></div>
+      <div class="vs-c vs-msg"><b>Good morning, Michelle</b>It looks like you forgot to take your capsule last night. It&rsquo;s ok, no harm done. To improve&hellip; <u>Read more</u></div>
+      <div class="vs-c vs-st"><span>Capsules<br>activated</span><b id="vsN">2<small>/5</small></b><hr><span>Submitted<br>reports</span><b class="rp">1</b></div>
+      <div class="vs-h s2"><span class="ri" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-cap" style="color:#fff"/></svg></span><div><b>Stay consistent &ndash;</b><small>Clearly see when you need to take a Vibrant capsule</small></div></div>
+      <div class="vs-c vs-wk"><b>Treatment Schedule</b><div class="vs-days"><button type="button" class="vs-day done" disabled aria-label="Mon: capsule taken"><svg viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(-35 12 12)"><rect class="cb" x="2.5" y="7.5" width="19" height="9" rx="4.5" stroke-width="1.7"/></g><path class="ck" d="M8.4 12.2l2.4 2.4 4.8-5" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Mon</button><button type="button" class="vs-day done" disabled aria-label="Tue: capsule taken"><svg viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(-35 12 12)"><rect class="cb" x="2.5" y="7.5" width="19" height="9" rx="4.5" stroke-width="1.7"/></g><path class="ck" d="M8.4 12.2l2.4 2.4 4.8-5" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Tue</button><span class="vs-day" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#B9C2CB" stroke-width="1.8" stroke-linecap="round"><path d="M6 9v6M9.5 6v12M13 8v8M16.5 10v4"/></svg>Wed</span><button type="button" class="vs-day" aria-label="Thu: capsule, tap when taken"><svg viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(-35 12 12)"><rect class="cb" x="2.5" y="7.5" width="19" height="9" rx="4.5" stroke-width="1.7"/></g><path class="ck" d="M8.4 12.2l2.4 2.4 4.8-5" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Thu</button><button type="button" class="vs-day" aria-label="Fri: capsule, tap when taken"><svg viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(-35 12 12)"><rect class="cb" x="2.5" y="7.5" width="19" height="9" rx="4.5" stroke-width="1.7"/></g><path class="ck" d="M8.4 12.2l2.4 2.4 4.8-5" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Fri</button><button type="button" class="vs-day" aria-label="Sat: capsule, tap when taken"><svg viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(-35 12 12)"><rect class="cb" x="2.5" y="7.5" width="19" height="9" rx="4.5" stroke-width="1.7"/></g><path class="ck" d="M8.4 12.2l2.4 2.4 4.8-5" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sat</button><span class="vs-day" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#B9C2CB" stroke-width="1.8" stroke-linecap="round"><path d="M6 9v6M9.5 6v12M13 8v8M16.5 10v4"/></svg>Sun</span></div><div class="vs-ed" aria-hidden="true">Edit Schedule &amp; Reminders</div></div>
+      <div class="vs-ft" aria-hidden="true"><span class="nx">Next</span><span class="dt"><i class="on"></i><i></i><i></i><i></i></span></div>
+     </div>
     </div></div>
-    <p class="tcap">Screens from the VIBRANT Companion listing on Google Play.</p>
+    <p class="tcap">Google Play screens, plus two app-tour screens I designed, rebuilt so you can tap them.</p>
    </div>
   </div>
  </div>
@@ -586,11 +654,11 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
   if(IO&&!rm)new IntersectionObserver(function(es,o){if(es[0].isIntersecting){setTimeout(function(){ripple(2,false)},500);o.disconnect()}},{threshold:.6}).observe(apr);
 
   /* VIBRANT tour: tabs swap one phone; each swap gives the phone a small capsule-like buzz */
-  var vib=document.getElementById('vibrant'),tabs=[].slice.call(vib.querySelectorAll('.tab')),shots=vib.querySelectorAll('.tphone .scr img'),panel=document.getElementById('vpanel'),vmob=document.getElementById('vmob'),tour=vib.querySelector('.tour'),cur=0,auto=!rm,tmr=0,inView=false,DUR=5000;
+  var vib=document.getElementById('vibrant'),tabs=[].slice.call(vib.querySelectorAll('.tab')),shots=vib.querySelectorAll('.tphone .scr>.sh'),panel=document.getElementById('vpanel'),vmob=document.getElementById('vmob'),tour=vib.querySelector('.tour'),cur=0,auto=!rm,tmr=0,inView=false,DUR=5000;
   vib.style.setProperty('--dur',DUR+'ms');
   function sel(i,user){cur=(i+tabs.length)%tabs.length;
     tabs.forEach(function(b,j){b.setAttribute('aria-selected',j===cur?'true':'false');b.tabIndex=j===cur?0:-1;var p=b.querySelector('.prog');p.style.animation='none';void p.offsetWidth;p.style.animation=''});
-    shots.forEach(function(s,j){s.classList.toggle('on',j===cur)});
+    shots.forEach(function(s,j){s.classList.toggle('on',j===cur);s.inert=j!==cur});
     panel.setAttribute('aria-labelledby',tabs[cur].id);vmob.textContent=tabs[cur].querySelector('p').textContent;
     var ph=panel.querySelector('.phone');if(!rm&&(user||inView)&&ph.animate)ph.animate(shakeKF(10,1.4),{duration:320,easing:'linear'});
     var l=tabs[cur].parentNode.parentNode;if(l.scrollWidth>l.clientWidth&&(user||inView))l.scrollTo({left:tabs[cur].getBoundingClientRect().left-l.getBoundingClientRect().left+l.scrollLeft-20,behavior:rm?'auto':'smooth'});
@@ -599,6 +667,16 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
   tabs.forEach(function(b,i){b.addEventListener('click',function(){sel(i,true)});
     b.addEventListener('keydown',function(e){var k=e.key;if(k==='ArrowRight'||k==='ArrowDown'){e.preventDefault();sel(cur+1,true);tabs[cur].focus()}else if(k==='ArrowLeft'||k==='ArrowUp'){e.preventDefault();sel(cur-1,true);tabs[cur].focus()}})});
   if(rm)vib.classList.add('paused');
+  /* the rebuilt app-tour screens: touching the phone stops the auto tour; tap a week bar to read it; tap a day to check its capsule (2/5 counts up) */
+  panel.addEventListener('pointerdown',function(){if(auto){auto=false;vib.classList.add('paused');clearTimeout(tmr)}});
+  var vbars=[].slice.call(panel.querySelectorAll('.vs-bar')),vxs=panel.querySelectorAll('.vs-x span');
+  vbars.forEach(function(b,i){b.addEventListener('click',function(){auto=false;vib.classList.add('paused');clearTimeout(tmr);vbars.forEach(function(o,j){o.classList.toggle('sel',j===i)});vxs.forEach(function(o,j){o.classList.toggle('sel',j===i)})})});
+  var vsN=document.getElementById('vsN');
+  panel.querySelectorAll('.vs-day:not([disabled])').forEach(function(d){d.addEventListener('click',function(){auto=false;vib.classList.add('paused');clearTimeout(tmr);
+    var on=!d.classList.contains('done');d.classList.toggle('done',on);d.setAttribute('aria-label',d.textContent+': capsule'+(on?' taken':', tap when taken'));
+    var n=panel.querySelectorAll('.vs-day.done').length;vsN.firstChild.nodeValue=n;
+    if(!rm){vsN.classList.remove('pop');void vsN.offsetWidth;vsN.classList.add('pop');var sv=d.querySelector('svg');if(sv.animate)sv.animate(shakeKF(8,1.6,6),{duration:300,easing:'linear'})}
+    if(on&&navigator.vibrate)try{navigator.vibrate(12)}catch(e){}})});
   if(IO)new IntersectionObserver(function(es){inView=es[0].isIntersecting;clearTimeout(tmr);if(inView&&auto)tmr=setTimeout(function(){sel(cur+1)},DUR)},{threshold:.35}).observe(tour);
   sel(0);
 
