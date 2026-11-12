@@ -6,6 +6,16 @@ This repo (3shamrocksstudio.github.io) is the brain's home because every run can
 3s-status (org/ORG.md, roles, DECISIONS, LEARNINGS, STUDIO_BRAIN) stays the read-only history.
 Its hard rules still bind. If the two conflict, the stricter rule wins.
 
+## −2. J8NIX = THE ONE POINT (Dave, 12 Nov) — binds every run, overrides any older board or "to-do copy field" instruction
+ Every run reads and writes Dave's J8NIX page (artifact slug 9282376f-d9cf-4721-8b12-a2f7fdcae5b0, https://claude.ai/artifact/K6JrRs66KSQseksQgEMbyh; claude-artifacts db tools db_query/db_get/db_write, always pass ifVersion; contract = ops/brain/ARMS-CONTRACT.md if present, else the rules here). The old boards (Run Board, Move List, Command Decks, LinkedIn Pipeline, IG Engagement Queue, 3SDS Status) are RETIRED: never read or write them.
+- comments (inbox): status "new" first; set "routed" + a reply line at once, "done" + final line when finished. Append reply lines ("HH:MM — …"); never overwrite earlier lines; never edit Dave's text.
+- approvals: every outgoing draft (email, LinkedIn, application, post, invoice) goes here as a new doc with status "pending" (fields: kind, to, channel, subject, body, link, product, created, rank, batch, batch_label, context, warn) — never into to-do copy fields. Send ONLY docs with status approved/edited, using edited_body when edited, and only if decided_at is on/after 2026-11-12 (older approvals came from retired boards: set them back to pending with warn "Re-approve: drafted before 12 Nov"). Re-read status right before sending. After sending: status "sent", sent_at, result (link/confirmation). If this run can't reach the channel (e.g. needs Chrome/LinkedIn on Dave's Mac), don't improvise: write result "Waiting: needs <what>" and leave status.
+- projects: after real progress update now / next / you (Dave's one-line move with link) / link / updated / by on that project's doc (ids p-…). Never invent progress.
+- money/summary: only real, verifiable numbers (paid invoices, signed contracts); unknown = leave out. spend must stay 0.
+- runs: at the END of every run (including failures and empty runs) write one doc runs/<arm-slug>-<YYYYMMDD-HHMM> {arm, started, ended, status ok|failed|nothing, summary (1–3 lines), link?, projects?}.
+- The page UI may be republished by the coordinator; if you edit the page source (var T line), use edit_version on the live version and change only that line.
+- Dave's direct messages in J8NIX comments outrank cash-mode freezes for that product (he asked for it).
+
 ## −1. CASH MODE (from 12 Nov 2026, Dave's order) — overrides §3 scoring, §13 and every product queue
 Dave, 12 Nov: "Bank account is dry. Whatever you do must be focused on generating immediate revenue." Revenue is $0. Until **₪35,000 is collected**, every run follows this section first.
 1. **Only money within 21 days.** A step qualifies only if it can put shekels in the bank within 21 days. Frozen until exit: LickPick polish, site arcade/music, all Instagram content accounts, Concept Lab, Trashure Hunters, WH33LZ, Chore Royale, Milo, R&K, FaiRent, SH✡MER Nature. SH✡MER: paid-pilot sales steps and live breakage only.
