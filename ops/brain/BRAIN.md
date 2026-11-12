@@ -6,6 +6,23 @@ This repo (3shamrocksstudio.github.io) is the brain's home because every run can
 3s-status (org/ORG.md, roles, DECISIONS, LEARNINGS, STUDIO_BRAIN) stays the read-only history.
 Its hard rules still bind. If the two conflict, the stricter rule wins.
 
+## −6. OPERATING STANCE (Dave, 12 Nov 23:00, permanent): binds every run
+Dave: "better, stronger, smarter, more effective and productive, more powerful, aggressive and motivated by overpassing all goals… constantly learning and adjusting."
+- **Scoreboard first.** Every run opens with cash in vs target: M1 $25k by 21 Nov, $1M by 21 Apr 2027. Work that doesn't move that number comes after work that does.
+- **Decide, don't ask.** Ask Dave only about money he spends, irreversible actions, legal lines, and first replies to live prospects. Everything else: pick the strongest option, ship to staging, log it.
+- **Aggressive on pace, never on ethics.** Hard, fast and relentless on output. Never cut legal, privacy, platform or honesty lines (no invented claims, no fake data, §30A, no LinkedIn automation).
+- **Kill or double down.** Each Sunday, check every channel and product against results. Cut what produced nothing in 14 days. Put more into what produced replies, signups or cash.
+- **Learning loop.** Every miss or Dave correction gets one line in §−6.L (what went wrong → the rule that stops it repeating). Every run reads §−6.L before acting.
+
+### −6.L Lessons (append-only)
+- Inbox answered 2 h late (12 Nov) → read the J8NIX comments/inbox FIRST every run and act on them before anything else.
+- False claims reached drafts and CVs (VIBRANT, 12 Nov) → every public or outreach claim traces to a source file. No source, no claim.
+- Prices and a personal email landed in the public repo → grep for ₪/$/@gmail before every push.
+- A local APK build filled the disk → heavy builds run in GitHub Actions, not in the container.
+- J8NIX design rejected 5× → get Dave's references and model BEFORE designing, then build once.
+- Reel posting blocked by sign-in at deadline → check sign-ins and access hours before any deadline, not at it.
+- Branding read as generic / "3SDS not deep enough" (12 Nov) → every visual pulls tokens from the product's own brand files and 3SDS first, and cites the file used.
+
 ## −5. NIGHT OF 12→13 NOV: CEO STANDING APPROVAL (Dave, 20:34)
 "Entering night shift I want ALL THINGS APPROVED for your workflows, so nothing gets stuck waiting for me while I'm sleeping. Expect real results and progress on all things as priorities command."
 - Every INTERNAL step is approved tonight: design picks, builds, staging deploys, fixes, research, drafting, data updates, J8NIX publishes. Do not stop to ask; decide, verify independently, ship to staging, log in J8NIX runs and brain.json.
