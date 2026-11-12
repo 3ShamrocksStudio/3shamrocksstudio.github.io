@@ -52,6 +52,7 @@ section,header.hero{position:relative}
 h1,h2,h3{font-family:var(--disp);font-weight:400;letter-spacing:0;text-wrap:balance}
 h2{font-size:clamp(32px,4.6vw,54px);line-height:1.08;margin-bottom:14px;text-shadow:0 4px 0 var(--ink)}
 .gold{color:var(--gold)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .eyebrow{font:400 13px/1 var(--ui);letter-spacing:.06em;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .eyebrow::before{content:"";width:22px;height:4px;border-radius:2px;background:var(--tL)}
 .lede{font-size:clamp(17px,1.5vw,19px);font-weight:700;color:var(--tx1);max-width:40ch}
@@ -154,7 +155,7 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
 .q-cap{font-size:12px;color:var(--tx2);margin-top:18px;text-align:center}
 .hud{position:absolute;z-index:3;display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border:4px solid var(--ink);border-radius:18px;background:var(--gold);color:var(--ink);font:400 16px/1 var(--ui);box-shadow:0 6px 0 var(--ink);white-space:nowrap;opacity:0;transform:scale(.4) rotate(-12deg);transition:opacity .25s,transform .5s var(--pop);pointer-events:none}
 .hud svg{width:40px;height:40px}
-.hud.h0{right:-56px;top:20%}.hud.h1{left:-64px;top:42%;background:var(--suds)}.hud.h2{right:-48px;top:58%;background:var(--goldl)}.hud.h3{left:-50px;top:26%;background:var(--suds)}.hud.h4{left:50%;top:-58px;margin-left:-44px;padding:4px;border-radius:50%;background:transparent;border:0;box-shadow:none}
+.hud.h0,.hud.h1,.hud.h2,.hud.h3{padding:6px}.hud.h0{right:-56px;top:20%}.hud.h1{left:-64px;top:42%;background:var(--suds)}.hud.h2{right:-48px;top:58%;background:var(--goldl)}.hud.h3{left:-50px;top:26%;background:var(--suds)}.hud.h4{left:50%;top:-58px;margin-left:-44px;padding:4px;border-radius:50%;background:transparent;border:0;box-shadow:none}
 .hud.h4 svg{width:88px;height:88px;filter:drop-shadow(0 8px 0 var(--ink))}
 .quest[data-step="0"] .h0,.quest[data-step="1"] .h1,.quest[data-step="2"] .h2,.quest[data-step="3"] .h3,.quest[data-step="4"] .h4{opacity:1;transform:none}
 @media(max-width:900px){
@@ -263,7 +264,9 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
 .cer.on .who svg.cdrop{animation:cdrop .7s var(--pop) .25s forwards}
 @keyframes cdrop{0%{opacity:0;transform:translateY(-120px) rotate(-30deg)}100%{opacity:1;transform:none}}
 .cer h3{font:400 clamp(24px,3vw,32px)/1.1 var(--disp);text-shadow:0 4px 0 var(--ink)}
-.cer p{font-size:15px;margin:6px 0 16px;color:var(--tx1)}
+/* text plaque: Royal Ink behind the line keeps gold and white text AA on every banner (ember/rose centres are light) */
+.cer .plq{display:block;width:fit-content;max-width:calc(100% - 32px);margin-left:auto;margin-right:auto;background:var(--ink);border:4px solid var(--gold);border-radius:18px;padding:14px 22px 6px;box-shadow:0 6px 0 rgba(20,7,46,.45);margin-bottom:16px}
+.cer p{font-size:15px;margin:6px 0 10px;color:var(--tx1)}
 .cer .conf{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .cer .conf i{position:absolute;top:-20px;width:10px;height:14px;border-radius:2px;border:2px solid var(--ink);animation:fall var(--t) linear var(--w) forwards}
 @keyframes fall{to{transform:translateY(560px) rotate(540deg)}}
@@ -304,7 +307,8 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
 .pal button{border-radius:12px;padding:30px 10px 8px;font:800 12px/1.25 var(--body);color:#fff;text-align:left;border:3px solid #000;transition:transform .2s var(--pop)}
 .pal button:hover{transform:translateY(-3px)}
 .pal b{display:block;font-size:13px}
-.pal span{opacity:.8;font-family:ui-monospace,monospace;font-size:11px}
+.pal span{opacity:.8;font-family:ui-monospace,monospace;font-size:11px;display:none}
+.pal button:hover span,.pal button:focus-visible span{display:block}
 .pal .dk{color:var(--ink)}
 .type{display:grid;gap:12px}
 .type div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:12px}
@@ -376,29 +380,28 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
    <div class="phone"><div class="scr"><img src="../assets/work/chore-royale/hp-arena.webp" alt="Chore Royale Arena: the weekly family leaderboard with Zap on 45 and Nova on 30, and a live duel" width="720" height="1558"></div></div>
    <span class="tagf t1" aria-hidden="true"><svg class="ci"><use href="#ci-trash"/></svg>+20 Trash out</span>
    <span class="tagf t2" aria-hidden="true"><svg class="ci"><use href="#ci-duel"/></svg>Duel!</span>
-   <span class="tagf t3" aria-hidden="true"><svg class="ci"><use href="#ci-crowns"/></svg>Weekly crown</span>
   </div>
  </div>
 </header>
 
 <!-- 2 · FACT STRIP -->
 <section class="facts" aria-label="What I built"><div class="wrap"><dl>
- <div class="f"><svg class="ci" aria-hidden="true"><use href="#ci-shield"/></svg><div><dt>Role</dt><dd>Founder. Brand, game, product</dd></div></div>
- <div class="f"><svg class="ci" aria-hidden="true"><use href="#ci-proof"/></svg><div><dt>Platform</dt><dd>Phone web app, no install</dd></div></div>
- <div class="f"><svg class="ci" aria-hidden="true"><use href="#ci-throne"/></svg><div><dt>Status</dt><dd>2026 &middot; in development</dd></div></div>
+ <div class="f"><svg class="ci" aria-hidden="true"><use href="#ci-shield"/></svg><div><dt class="sr">Role</dt><dd>Brand, game, app</dd></div></div>
+ <div class="f"><svg class="ci" aria-hidden="true"><use href="#ci-proof"/></svg><div><dt class="sr">Platform</dt><dd>Phone web app</dd></div></div>
+ <div class="f"><svg class="ci" aria-hidden="true"><use href="#ci-throne"/></svg><div><dt class="sr">Privacy</dt><dd>No kid emails</dd></div></div>
 </dl></div></section>
 
 <!-- 3 · THE QUEST (scroll) -->
 <section class="quest" id="quest" data-step="0" aria-labelledby="q-h">
  <div class="q-pin"><div class="wrap q-grid">
   <div>
-   <div class="q-head"><div class="eyebrow">The weekly quest</div><h2 id="q-h">Five moves <span class="gold">to the crown.</span></h2></div>
+   <div class="q-head"><h2 id="q-h">Five moves <span class="gold">to the crown.</span></h2></div>
    <div class="q-track"><span class="q-rail" aria-hidden="true"><i></i></span><ol class="q-path" id="qpath">
-    <li><button type="button" class="q-node on"><span class="q-med"><svg class="ci" aria-hidden="true"><use href="#ci-trash"/></svg></span><span class="q-tx"><b>Pick a chore</b><span>Big ones glow.</span></span></button></li>
-    <li><button type="button" class="q-node"><span class="q-med"><svg class="ci" aria-hidden="true"><use href="#ci-proof"/></svg></span><span class="q-tx"><b>Grab it. Prove it.</b><span>Done means a photo.</span></span></button></li>
-    <li><button type="button" class="q-node"><span class="q-med"><svg class="ci" aria-hidden="true"><use href="#ci-seal"/></svg></span><span class="q-tx"><b>A parent seals it</b><span>Approve or redo.</span></span></button></li>
-    <li><button type="button" class="q-node"><span class="q-med"><svg class="ci" aria-hidden="true"><use href="#ci-duel"/></svg></span><span class="q-tx"><b>Duel a sibling</b><span>Winner gets +25 XP.</span></span></button></li>
-    <li><button type="button" class="q-node"><span class="q-med"><svg class="ci" aria-hidden="true"><use href="#ci-throne"/></svg></span><span class="q-tx"><b>The week&rsquo;s crown</b><span>One champion a week.</span></span></button></li>
+    <li><button type="button" class="q-node on"><span class="q-med"><svg class="ci" aria-hidden="true"><use href="#ci-trash"/></svg></span><span class="q-tx"><b>Pick a chore</b></span></button></li>
+    <li><button type="button" class="q-node"><span class="q-med"><svg class="ci" aria-hidden="true"><use href="#ci-proof"/></svg></span><span class="q-tx"><b>Prove it</b></span></button></li>
+    <li><button type="button" class="q-node"><span class="q-med"><svg class="ci" aria-hidden="true"><use href="#ci-seal"/></svg></span><span class="q-tx"><b>Parent seals it</b></span></button></li>
+    <li><button type="button" class="q-node"><span class="q-med"><svg class="ci" aria-hidden="true"><use href="#ci-duel"/></svg></span><span class="q-tx"><b>Duel</b></span></button></li>
+    <li><button type="button" class="q-node"><span class="q-med"><svg class="ci" aria-hidden="true"><use href="#ci-throne"/></svg></span><span class="q-tx"><b>Crown</b></span></button></li>
    </ol></div>
    <p class="q-now" id="qnow" aria-live="polite"><b></b><span></span></p>
   </div>
@@ -411,12 +414,12 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
     <img src="../assets/work/chore-royale/live-duel.webp" alt="Pick a rival: the duel sheet over the Arena, most points this week wins 25 XP" width="440" height="952" loading="lazy">
     <img src="../assets/work/chore-royale/hp-arena.webp" alt="Arena: the weekly family leaderboard and a live duel between Zap and Nova" width="720" height="1558" loading="lazy">
    </div></div>
-   <span class="hud h0" aria-hidden="true"><svg class="ci"><use href="#ci-bath"/></svg>LEGEND 30</span>
-   <span class="hud h1" aria-hidden="true"><svg class="ci"><use href="#ci-proof"/></svg>SNAP!</span>
-   <span class="hud h2" aria-hidden="true"><svg class="ci"><use href="#ci-seal"/></svg>APPROVED</span>
-   <span class="hud h3" aria-hidden="true"><svg class="ci"><use href="#ci-duel"/></svg>+25 XP</span>
+   <span class="hud h0" aria-hidden="true"><svg class="ci"><use href="#ci-bath"/></svg></span>
+   <span class="hud h1" aria-hidden="true"><svg class="ci"><use href="#ci-proof"/></svg></span>
+   <span class="hud h2" aria-hidden="true"><svg class="ci"><use href="#ci-seal"/></svg></span>
+   <span class="hud h3" aria-hidden="true"><svg class="ci"><use href="#ci-duel"/></svg></span>
    <span class="hud h4" aria-hidden="true"><svg class="ci"><use href="#ci-crowns"/></svg></span>
-   <p class="q-cap">Real demo screens. Sample family.</p>
+   <p class="q-cap">Real demo screens.</p>
   </div>
  </div></div>
 </section>
@@ -425,14 +428,7 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
 <section class="sec play" id="play" aria-labelledby="p-h">
  <div class="wrap">
   <div class="rv">
-   <div class="eyebrow">Your move</div>
-   <h2 id="p-h">&ldquo;In a minute&rdquo; <span class="gold">means never.</span></h2>
-   <p class="lede">You&rsquo;re Nova. Catch Zap.</p>
-   <ul class="rules">
-    <li><svg class="ci" aria-hidden="true"><use href="#ci-proof"/></svg>Photo proof</li>
-    <li><svg class="ci" aria-hidden="true"><use href="#ci-seal"/></svg>Parent seals it</li>
-    <li><svg class="ci" aria-hidden="true"><use href="#ci-shield"/></svg>No kid emails</li>
-   </ul>
+   <h2 id="p-h">You&rsquo;re Nova. <span class="gold">Catch Zap.</span></h2>
   </div>
   <div class="board rv" id="board">
    <div class="bh"><h3>THIS WEEK</h3><div class="tools"><span class="hands" id="hands">HANDS 0/3</span><button type="button" class="x2" id="x2" aria-pressed="false" title="2X card: doubles your next approved chore"><svg class="ci" aria-hidden="true"><use href="#ci-card2x"/></svg><span>2X &times;1</span></button></div></div>
@@ -443,8 +439,8 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
    <div class="xp"><svg class="ci" aria-hidden="true"><use href="#ci-xp"/></svg><span class="bar"><i id="xpbar"></i></span><span id="xpt">160 / 300 XP</span></div>
    <div class="chores" id="chores"><div class="ch" data-k="bath" data-r="legend" data-pts="30" data-start="open" data-s="open"><span class="tier">LEGEND</span><svg class="it" aria-hidden="true"><use href="#ci-bath"/></svg><b>Bathroom</b><span class="pt"><svg aria-hidden="true"><use href="#ci-crowns"/></svg>30</span><button type="button" class="go">GRAB</button><svg class="owner" aria-hidden="true"><use href="#av-shark"/></svg><svg class="stamp" aria-hidden="true"><use href="#ci-seal"/></svg></div><div class="ch" data-k="trash" data-r="bounty" data-pts="20" data-start="open" data-s="open"><span class="tier">BOUNTY</span><svg class="it" aria-hidden="true"><use href="#ci-trash"/></svg><b>Trash out</b><span class="pt"><svg aria-hidden="true"><use href="#ci-crowns"/></svg>20</span><button type="button" class="go">GRAB</button><svg class="owner" aria-hidden="true"><use href="#av-shark"/></svg><svg class="stamp" aria-hidden="true"><use href="#ci-seal"/></svg></div><div class="ch" data-k="laundry" data-r="epic" data-pts="20" data-start="zwait" data-s="zwait"><span class="tier">EPIC</span><svg class="it" aria-hidden="true"><use href="#ci-laundry"/></svg><b>Laundry</b><span class="pt"><svg aria-hidden="true"><use href="#ci-crowns"/></svg>20</span><button type="button" class="go">GRAB</button><svg class="owner" aria-hidden="true"><use href="#av-shark"/></svg><svg class="stamp" aria-hidden="true"><use href="#ci-seal"/></svg></div><div class="ch" data-k="dishes" data-r="rare" data-pts="15" data-start="open" data-s="open"><span class="tier">RARE</span><svg class="it" aria-hidden="true"><use href="#ci-dishes"/></svg><b>Dishes</b><span class="pt"><svg aria-hidden="true"><use href="#ci-crowns"/></svg>15</span><button type="button" class="go">GRAB</button><svg class="owner" aria-hidden="true"><use href="#av-shark"/></svg><svg class="stamp" aria-hidden="true"><use href="#ci-seal"/></svg></div><div class="ch" data-k="pet" data-r="rare" data-pts="10" data-start="open" data-s="open"><span class="tier">RARE</span><svg class="it" aria-hidden="true"><use href="#ci-pet"/></svg><b>Feed pet</b><span class="pt"><svg aria-hidden="true"><use href="#ci-crowns"/></svg>10</span><button type="button" class="go">GRAB</button><svg class="owner" aria-hidden="true"><use href="#av-shark"/></svg><svg class="stamp" aria-hidden="true"><use href="#ci-seal"/></svg></div><div class="ch" data-k="bed" data-r="common" data-pts="5" data-start="open" data-s="open"><span class="tier">COMMON</span><svg class="it" aria-hidden="true"><use href="#ci-bed"/></svg><b>Make bed</b><span class="pt"><svg aria-hidden="true"><use href="#ci-crowns"/></svg>5</span><button type="button" class="go">GRAB</button><svg class="owner" aria-hidden="true"><use href="#av-shark"/></svg><svg class="stamp" aria-hidden="true"><use href="#ci-seal"/></svg></div></div>
    <div class="ref"><span class="who"><svg aria-hidden="true"><use href="#av-owl"/></svg>PARENT</span><span class="q" id="refq" aria-live="polite">Nothing to check yet.</span><span class="acts"><button type="button" class="ok" id="ok" disabled><svg class="ci" aria-hidden="true"><use href="#ci-seal"/></svg>APPROVE</button><button type="button" class="no" id="no" disabled>REDO</button></span></div>
-   <p class="cap">Demo rules, sample family. Points land only after a parent approves.</p>
-   <div class="cer" id="cer" aria-hidden="true"><div class="conf" id="conf"></div><div><div class="who"><svg class="avb" aria-hidden="true"><use id="cerav" href="#av-cat"/></svg><svg class="cdrop" aria-hidden="true"><use href="#ci-crowns"/></svg></div><h3 id="cerh">Nova takes <span class="gold">the crown!</span></h3><p id="cerp">The court bows.</p><button type="button" class="btn z" id="again">Play again</button></div></div>
+   <p class="cap">Demo. Points land after a parent approves.</p>
+   <div class="cer" id="cer" aria-hidden="true"><div class="conf" id="conf"></div><div><div class="who"><svg class="avb" aria-hidden="true"><use id="cerav" href="#av-cat"/></svg><svg class="cdrop" aria-hidden="true"><use href="#ci-crowns"/></svg></div><div class="plq"><h3 id="cerh">Nova takes <span class="gold">the crown!</span></h3><p id="cerp">The court bows.</p></div><button type="button" class="btn z" id="again">Play again</button></div></div>
   </div>
  </div>
 </section>
@@ -457,14 +453,14 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
 <!-- BRAND -->
 <section class="sec brand" aria-labelledby="b-h">
  <div class="wrap">
-  <div class="rv"><div class="eyebrow">Brand</div><h2 id="b-h">A knight <span class="gold">with a spoon.</span></h2></div>
+  <div class="rv"><h2 id="b-h">A knight <span class="gold">with a spoon.</span></h2></div>
   <div class="bgrid">
    <div class="tile t-logo rv" id="tilt"><h3>LOGO</h3><img class="bdg" id="bdg" src="../assets/brand-v3/chore-royale/logo-stacked-600.webp" alt="Chore Royale stacked logo" width="548" height="600" loading="lazy"></div>
-   <div class="tile t-arm rv"><h3>THE ARMOURY &middot; 16 ICONS, TAP ONE</h3>
+   <div class="tile t-arm rv"><h3>TAP AN ICON</h3>
     <div class="arm" id="arm"><button type="button" data-k="crowns" data-n="Crowns" data-d="Points you bank" aria-pressed="true" aria-label="Crowns: Points you bank" style="--i:0"><svg aria-hidden="true"><use href="#ci-crowns"/></svg></button><button type="button" data-k="xp" data-n="XP" data-d="Climbs your rank" aria-pressed="false" aria-label="XP: Climbs your rank" style="--i:1"><svg aria-hidden="true"><use href="#ci-xp"/></svg></button><button type="button" data-k="throne" data-n="Throne" data-d="The week's winner" aria-pressed="false" aria-label="Throne: The week's winner" style="--i:2"><svg aria-hidden="true"><use href="#ci-throne"/></svg></button><button type="button" data-k="proof" data-n="Proof" data-d="Snap it done" aria-pressed="false" aria-label="Proof: Snap it done" style="--i:3"><svg aria-hidden="true"><use href="#ci-proof"/></svg></button><button type="button" data-k="seal" data-n="Seal" data-d="Parent approves" aria-pressed="false" aria-label="Seal: Parent approves" style="--i:4"><svg aria-hidden="true"><use href="#ci-seal"/></svg></button><button type="button" data-k="duel" data-n="Duel" data-d="Top score wins +25 XP" aria-pressed="false" aria-label="Duel: Top score wins +25 XP" style="--i:5"><svg aria-hidden="true"><use href="#ci-duel"/></svg></button><button type="button" data-k="streak" data-n="Streak" data-d="Days in a row" aria-pressed="false" aria-label="Streak: Days in a row" style="--i:6"><svg aria-hidden="true"><use href="#ci-streak"/></svg></button><button type="button" data-k="shield" data-n="Shield" data-d="Blocks a steal" aria-pressed="false" aria-label="Shield: Blocks a steal" style="--i:7"><svg aria-hidden="true"><use href="#ci-shield"/></svg></button><button type="button" data-k="card2x" data-n="2X card" data-d="Doubles a chore" aria-pressed="false" aria-label="2X card: Doubles a chore" style="--i:8"><svg aria-hidden="true"><use href="#ci-card2x"/></svg></button><button type="button" data-k="bounty" data-n="Bounty" data-d="Extra on top" aria-pressed="false" aria-label="Bounty: Extra on top" style="--i:9"><svg aria-hidden="true"><use href="#ci-bounty"/></svg></button><button type="button" data-k="trash" data-n="Trash out" data-d="Chore, bounty on top" aria-pressed="false" aria-label="Trash out: Chore, bounty on top" style="--i:10"><svg aria-hidden="true"><use href="#ci-trash"/></svg></button><button type="button" data-k="dishes" data-n="Dishes" data-d="Rare chore, 15" aria-pressed="false" aria-label="Dishes: Rare chore, 15" style="--i:11"><svg aria-hidden="true"><use href="#ci-dishes"/></svg></button><button type="button" data-k="pet" data-n="Feed pet" data-d="Rare chore, 10" aria-pressed="false" aria-label="Feed pet: Rare chore, 10" style="--i:12"><svg aria-hidden="true"><use href="#ci-pet"/></svg></button><button type="button" data-k="bed" data-n="Make bed" data-d="Common chore, 5" aria-pressed="false" aria-label="Make bed: Common chore, 5" style="--i:13"><svg aria-hidden="true"><use href="#ci-bed"/></svg></button><button type="button" data-k="laundry" data-n="Laundry" data-d="Epic chore, 20" aria-pressed="false" aria-label="Laundry: Epic chore, 20" style="--i:14"><svg aria-hidden="true"><use href="#ci-laundry"/></svg></button><button type="button" data-k="bath" data-n="Bathroom" data-d="Legend chore, 30" aria-pressed="false" aria-label="Bathroom: Legend chore, 30" style="--i:15"><svg aria-hidden="true"><use href="#ci-bath"/></svg></button></div>
     <div class="readout" id="readout" aria-live="polite"><svg class="ci" aria-hidden="true"><use href="#ci-crowns"/></svg><div><b>Crowns</b><span>Points you bank</span></div></div>
    </div>
-   <div class="tile t-col rv"><h3>HOUSE COLOURS &middot; RAISE ONE</h3>
+   <div class="tile t-col rv"><h3>HOUSE COLOURS</h3>
     <div class="bnrs big" role="group" aria-label="Page colours"><button type="button" class="bnr" data-b="royal" aria-pressed="false" aria-label="Royal purple banner" style="--pf:#5B23C8"><svg viewBox="0 0 48 62" aria-hidden="true"><path d="M6 4 H42" stroke="#14072E" stroke-width="7" stroke-linecap="round"/><path d="M6 4 H42" stroke="#F5B92E" stroke-width="3.4" stroke-linecap="round"/><g class="flag"><path d="M10 6 H38 V50 L24 41 L10 50 Z" fill="#5B23C8" stroke="#14072E" stroke-width="3.5" stroke-linejoin="round"/><path d="M14 9 V40" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".55"/><path d="M15.5 30 L14.5 20 L19.5 23.5 L24 16.5 L28.5 23.5 L33.5 20 L32.5 30 Z" fill="#F5B92E" stroke="#14072E" stroke-width="2.6" stroke-linejoin="round"/></g></svg><i class="tick"></i></button><button type="button" class="bnr" data-b="spell" aria-pressed="false" aria-label="Spell teal banner" style="--pf:#12B39B"><svg viewBox="0 0 48 62" aria-hidden="true"><path d="M6 4 H42" stroke="#14072E" stroke-width="7" stroke-linecap="round"/><path d="M6 4 H42" stroke="#F5B92E" stroke-width="3.4" stroke-linecap="round"/><g class="flag"><path d="M10 6 H38 V50 L24 41 L10 50 Z" fill="#12B39B" stroke="#14072E" stroke-width="3.5" stroke-linejoin="round"/><path d="M14 9 V40" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".55"/><path d="M15.5 30 L14.5 20 L19.5 23.5 L24 16.5 L28.5 23.5 L33.5 20 L32.5 30 Z" fill="#F5B92E" stroke="#14072E" stroke-width="2.6" stroke-linejoin="round"/></g></svg><i class="tick"></i></button><button type="button" class="bnr" data-b="rose" aria-pressed="false" aria-label="Rose banner" style="--pf:#E0306C"><svg viewBox="0 0 48 62" aria-hidden="true"><path d="M6 4 H42" stroke="#14072E" stroke-width="7" stroke-linecap="round"/><path d="M6 4 H42" stroke="#F5B92E" stroke-width="3.4" stroke-linecap="round"/><g class="flag"><path d="M10 6 H38 V50 L24 41 L10 50 Z" fill="#E0306C" stroke="#14072E" stroke-width="3.5" stroke-linejoin="round"/><path d="M14 9 V40" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".55"/><path d="M15.5 30 L14.5 20 L19.5 23.5 L24 16.5 L28.5 23.5 L33.5 20 L32.5 30 Z" fill="#F5B92E" stroke="#14072E" stroke-width="2.6" stroke-linejoin="round"/></g></svg><i class="tick"></i></button><button type="button" class="bnr" data-b="ember" aria-pressed="false" aria-label="Ember banner" style="--pf:#E8731A"><svg viewBox="0 0 48 62" aria-hidden="true"><path d="M6 4 H42" stroke="#14072E" stroke-width="7" stroke-linecap="round"/><path d="M6 4 H42" stroke="#F5B92E" stroke-width="3.4" stroke-linecap="round"/><g class="flag"><path d="M10 6 H38 V50 L24 41 L10 50 Z" fill="#E8731A" stroke="#14072E" stroke-width="3.5" stroke-linejoin="round"/><path d="M14 9 V40" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".55"/><path d="M15.5 30 L14.5 20 L19.5 23.5 L24 16.5 L28.5 23.5 L33.5 20 L32.5 30 Z" fill="#F5B92E" stroke="#14072E" stroke-width="2.6" stroke-linejoin="round"/></g></svg><i class="tick"></i></button></div>
     <div class="pal">
      <button type="button" data-hex="#1A0B3B" style="background:#1A0B3B"><b>Night Court</b><span>#1A0B3B</span></button>
@@ -477,9 +473,9 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
    </div>
    <div class="tile rv"><h3>TYPE</h3>
     <div class="type">
-     <div><span style="font:400 32px/1 var(--disp);color:var(--gold)">Royale</span><small>Bevan &middot; logo, titles</small></div>
-     <div><span style="font:400 22px/1 var(--ui)">GRAB +20</span><small>Bungee &middot; game UI</small></div>
-     <div><span style="font:900 18px var(--body)">Nunito Black</span><small>Body</small></div>
+     <div><span style="font:400 32px/1 var(--disp);color:var(--gold)">Royale</span><small>Bevan</small></div>
+     <div><span style="font:400 22px/1 var(--ui)">GRAB +20</span><small>Bungee</small></div>
+     <div><span style="font:900 18px var(--body)">Aa</span><small>Nunito</small></div>
     </div>
    </div>
   </div>
@@ -492,7 +488,6 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
  <div class="wrap">
   <img class="mark rv" src="../assets/brand-v3/chore-royale/logo-mark-512.webp" alt="" width="512" height="512" loading="lazy">
   <h2 id="c-h" class="rv">The throne is <span class="gold">still being built.</span></h2>
-  <p class="lede rv">The demo plays on any phone.</p>
   <div class="btns rv"><a class="btn z" href="../lab/chore-wars/?demo" target="_blank" rel="noopener">Play the demo &#8599;</a><a class="btn t" href="../work-with-me.html?lang=en">Start a project</a></div>
  </div>
 </section>
@@ -560,7 +555,7 @@ svg.ci{width:28px;height:28px;flex:none;overflow:visible}
   function qset(s){if(s===qs)return;qs=s;q.setAttribute('data-step',s);
     nodes.forEach(function(n,i){n.classList.toggle('on',i===s);n.classList.toggle('done',i<s);n.setAttribute('aria-current',i===s?'step':'false')});
     qimg.forEach(function(m,i){m.classList.toggle('on',i===s)});
-    qnow.querySelector('b').textContent=nodes[s].querySelector('b').textContent;qnow.querySelector('span').textContent=nodes[s].querySelector('.q-tx>span').textContent;
+    qnow.querySelector('b').textContent=nodes[s].querySelector('b').textContent;
     if(s===4)sfx('sparkle')}
   function qtick(){var r=q.getBoundingClientRect(),tot=r.height-pin.offsetHeight,p=Math.min(1,Math.max(0,-r.top/tot));q.style.setProperty('--qp',p.toFixed(3));qset(Math.min(4,Math.floor(p*5)))}
   addEventListener('scroll',qtick,{passive:true});addEventListener('resize',qtick);qtick();
