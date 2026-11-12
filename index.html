@@ -807,7 +807,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:56px
       <div class="minime-stand">
         <div class="minime" id="minime">
           <img src="assets/studio/minime_nobg.webp" alt="Mini Dave, the 3Shamrocks Studio avatar" class="minime-img" width="445" height="1009">
-          <video class="minime-vid" id="minime-vid" muted playsinline loop preload="none" aria-hidden="true" data-src="assets/studio/s9/minime-idle-15s.webm?v=4" data-anim="assets/studio/s9/minime-idle-15s.webp?v=3" poster="assets/studio/s9/minime-idle-15s-poster.webp?v=3"></video>
+          <video class="minime-vid" id="minime-vid" muted playsinline loop preload="none" aria-hidden="true" data-src="assets/studio/s9/minime-loop-15s.webm?v=1" data-m="assets/studio/s9/minime-loop-15s-m.webm?v=1" data-ios="assets/studio/s9/minime-loop-15s-ios.mp4?v=1" data-anim="assets/studio/s9/minime-loop-15s.webp?v=1" poster="assets/studio/s9/minime-loop-15s-poster.webp?v=1"></video>
           <svg class="minime-eyes" id="minime-eyes" viewBox="0 0 445 1009" aria-hidden="true">
             <defs>
               <mask id="eyeMask" maskUnits="userSpaceOnUse" x="0" y="0" width="445" height="1009"><image href="assets/studio/home/minime-eyes-mask.png" x="101" y="152" width="182" height="63"/></mask>
@@ -1384,13 +1384,24 @@ if(trk){const one=IC.map(n=>'<span><svg viewBox="0 0 48 48" aria-hidden="true"><
     cur[0]+=(tgt[0]-cur[0])*.14;cur[1]+=(tgt[1]-cur[1])*.14;
     const tr='translate('+cur[0].toFixed(2)+' '+cur[1].toFixed(2)+')';iL.setAttribute('transform',tr);iR.setAttribute('transform',tr);
     raf=requestAnimationFrame(step)}
-  /* premium idle loop (alpha webm). Safari and every iPhone/iPad browser cannot show webm alpha, so they get the same loop as an animated webp; if that fails they keep the still with live eyes. */
+  /* premium idle loop (alpha webm, a lighter one on phones). Desktop Safari cannot show webm alpha, so it gets the same loop as an animated webp; iPhone/iPad gets it as a stacked-alpha mp4 drawn into a canvas. Any failure or reduced motion keeps the still with live eyes. */
   const vid=$('#minime-vid'),ua=navigator.userAgent,IOS=/iP(hone|ad|od)/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),SAF=IOS||/Safari/.test(ua)&&!/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua);
-  if(vid&&!RM&&SAF&&vid.dataset.anim&&!matchMedia('(max-width:760px)').matches){ /* iPhone: the 3.3 MB loop is skipped, the still with live eyes stays */
+  const PH=matchMedia('(max-width:760px)').matches,on=()=>{box.classList.add('vid');cancelAnimationFrame(raf);raf=null};
+  if(vid&&!RM&&SAF&&!PH&&vid.dataset.anim){
     addEventListener('load',()=>{const im=new Image();im.className='minime-vid';im.alt='';im.setAttribute('aria-hidden','true');
-      im.onload=()=>{vid.replaceWith(im);requestAnimationFrame(()=>requestAnimationFrame(()=>{box.classList.add('vid');cancelAnimationFrame(raf);raf=null}))};im.src=vid.dataset.anim})}
+      im.onload=()=>{vid.replaceWith(im);requestAnimationFrame(()=>requestAnimationFrame(on))};im.src=vid.dataset.anim})}
+  else if(vid&&!RM&&SAF&&PH&&vid.dataset.ios&&vid.canPlayType('video/mp4; codecs="avc1.4D401F"')){ /* iPhone: a light H.264 clip, colour on top and its alpha matte below, composited into a canvas */
+    addEventListener('load',()=>{const W=276,H=582,cv=document.createElement('canvas'),off=document.createElement('canvas'),cx=cv.getContext('2d'),ox=off.getContext('2d',{willReadFrequently:true});
+      cv.width=W;cv.height=H;off.width=W;off.height=H*2;cv.className='minime-vid';cv.setAttribute('aria-hidden','true');
+      vid.className='';vid.style.cssText='position:absolute;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none';vid.after(cv);
+      const fr=()=>{ox.drawImage(vid,0,0,W,H*2);const c=ox.getImageData(0,0,W,H),m=ox.getImageData(0,H,W,H).data,d=c.data;
+        for(let i=3;i<d.length;i+=4){const a=(m[i-3]-10)*1.06;d[i]=a<0?0:a>255?255:a}cx.putImageData(c,0,0)};
+      const tick=()=>{if(!vid.paused)fr();vid.requestVideoFrameCallback?vid.requestVideoFrameCallback(tick):requestAnimationFrame(tick)};
+      vid.addEventListener('playing',()=>{try{fr()}catch(e){cv.remove();return}on();tick()},{once:true});
+      vid.src=vid.dataset.ios;const pl=vid.play();if(pl&&pl.catch)pl.catch(()=>{box.classList.remove('vid')})});
+    new IntersectionObserver(es=>{if(!box.classList.contains('vid'))return;es[0].isIntersecting?vid.play().catch(()=>{}):vid.pause()}).observe(box)}
   else if(vid&&!RM&&!SAF&&vid.canPlayType('video/webm; codecs="vp09.00.10.08"')){
-    addEventListener('load',()=>{vid.src=vid.dataset.src;vid.addEventListener('playing',()=>{box.classList.add('vid');cancelAnimationFrame(raf);raf=null},{once:true});const pl=vid.play();if(pl&&pl.catch)pl.catch(()=>{box.classList.remove('vid')})});
+    addEventListener('load',()=>{vid.src=PH&&vid.dataset.m||vid.dataset.src;vid.addEventListener('playing',on,{once:true});const pl=vid.play();if(pl&&pl.catch)pl.catch(()=>{box.classList.remove('vid')})});
     new IntersectionObserver(es=>{if(!box.classList.contains('vid'))return;es[0].isIntersecting?vid.play().catch(()=>{}):vid.pause()}).observe(box)}
   if(RM){addEventListener('pointermove',()=>{aim();const tr='translate('+tgt[0].toFixed(2)+' '+tgt[1].toFixed(2)+')';iL.setAttribute('transform',tr);iR.setAttribute('transform',tr)},{passive:true});return}
   new IntersectionObserver(es=>{if(box.classList.contains('vid'))return;if(es[0].isIntersecting){if(!raf)raf=requestAnimationFrame(step)}else{cancelAnimationFrame(raf);raf=null}}).observe(box);
