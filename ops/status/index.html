@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3S Status 12 Nov</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#14192b;--mut:#566079;--line:#dfe3ee;--acc:#1f4fd8;--bad:#b3261e;--badbg:#fdecea;--ok:#1b6e3c;--okbg:#e6f4ec;--warn:#8a5a00;--warnbg:#fff4d6}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1220;--card:#181c30;--ink:#e8ebf7;--mut:#a3accb;--line:#2c3354;--acc:#8fb0ff;--bad:#ff9a92;--badbg:#3a1c1c;--ok:#7fd9a2;--okbg:#14301f;--warn:#ffd27a;--warnbg:#38290b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:900px;margin:0 auto;padding:16px}
+h1{font-size:24px;margin:8px 0 4px}
+h2{font-size:20px;margin:32px 0 8px;padding-top:8px;border-top:2px solid var(--line)}
+h3{font-size:17px;margin:0 0 8px}
+p{margin:6px 0}
+.mut{color:var(--mut);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+.card dl{margin:0}
+.card dt{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);margin-top:10px}
+.card dd{margin:2px 0 0}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;margin-right:6px;vertical-align:middle}
+.t-bad{background:var(--badbg);color:var(--bad)}
+.t-ok{background:var(--okbg);color:var(--ok)}
+.t-warn{background:var(--warnbg);color:var(--warn)}
+.eyes{background:var(--warnbg);color:var(--warn)}
+a{color:var(--acc);overflow-wrap:anywhere}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.k{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.k b{display:block;font-size:26px}
+.k span{font-size:13px;color:var(--mut)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:3px 0}
+.bluntbox{border-left:4px solid var(--bad);background:var(--badbg);padding:10px 12px;border-radius:6px;margin:12px 0}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>3Shamrocks Studio status</h1>
+<p class="mut">Updated 12 Nov 2026, 13:34 Israel. Staged page for Dave. Not public, not indexed. Facts come from ops/brain/brain.json (last_run 12 Nov 12:45), BRAIN.md and git logs. Nothing here is invented.</p>
+
+<div class="bluntbox">
+<p><b>Short version.</b> Dave is right. On SH✡MER, nothing new was built or sent in the last four days. The SH✡MER app repo has no product commit on main since 8 Nov (only an automatic APK publish on 11 Nov). The Nature branch has had no commit since 8 Nov. No message has gone to Chabad, HaShomer HaChadash or TJE. SH✡MER outreach sent: 0. Calls booked: 0. Money collected: ₪0.</p>
+<p>Two causes, stated plainly. (1) Every scheduled shift runs in the cloud with no access to Dave's LinkedIn or dave@3shamrocks.com mailbox, so approved sends cannot go out. (2) Since this morning, cash mode freezes Nature and everything that cannot bring money within 21 days.</p>
+</div>
+
+<h2 id="shomer">1. SH✡MER: straight answers</h2>
+<p class="mut">Tag <span class="tag eyes">NEEDS YOUR EYES</span> marks what only Dave can unblock.</p>
+
+<div class="card">
+<h3>Nature merge (Nature into SH✡MER)</h3>
+<span class="tag t-bad">NOT MERGED</span><span class="tag eyes">NEEDS YOUR EYES</span>
+<dl>
+<dt>What exists</dt><dd>Nature is built as a layer inside SH✡MER on the <code>nature-layer</code> branch of the shomer-app repo: 23 commits that are not on main, last one 8 Nov (<a href="https://github.com/3ShamrocksStudio/shomer-app/commit/1511390">1511390</a>). It includes layer routing with tests, a Nature report flow, Nature view on the dashboard (<a href="https://github.com/3ShamrocksStudio/shomer-app/commit/36264c6">36264c6</a>), updated privacy and terms text, and a rollout plan (docs/NATURE-LAYER-PLAN.md on that branch). On 8 Nov the separate Nature, Forest and Beach sites were redirected to a coming-soon page. Public SH✡MER site shows Nature as "coming soon" (checked now, HTTP 200: <a href="https://www.shomer-app.co.il/nature/">shomer-app.co.il/nature/</a>).</dd>
+<dt>What has not happened</dt><dd>No merge. No test by Dave. Nothing on the branch since 8 Nov.</dd>
+<dt>Why</dt><dd>Standing rule (BRAIN.md §15): nothing from nature-layer merges without Dave's GO, and Dave is the only tester. His test has not happened because the Nature dashboard pass was never marked verified and handed to him (loose end shm-nature-dashboard, in progress since 8 Nov). Since 12 Nov, cash mode (§−1) also freezes SH✡MER Nature.</dd>
+<dt>Next step</dt><dd>Dave: decide whether Nature stays frozen or is the exception. If unfrozen, Claude verifies the dashboard pass and sends one 5-step test item, then one GO question. Owner Dave. Decision check date already in the brain: 15 Nov.</dd>
+</dl>
+</div>
+
+<div class="card">
+<h3>Website</h3>
+<span class="tag t-warn">PUBLIC SITE UNCHANGED</span><span class="tag eyes">NEEDS YOUR EYES</span>
+<dl>
+<dt>What exists</dt><dd>Public SH✡MER site <a href="https://www.shomer-app.co.il/">shomer-app.co.il</a> answers HTTP 200 and serves version v332 (checked now). Studio site on 3shamrocks.com was moved off Wix on 11 Nov and answers 200 (<a href="https://3shamrocks.com/">3shamrocks.com</a>). SH✡MER Command pages are staged at <a href="https://3shamrocks.com/shomer-command/">/shomer-command/</a> and <a href="https://3shamrocks.com/shomer-command/demo/">/demo/</a> (both 200).</dd>
+<dt>What has not happened</dt><dd>No new SH✡MER website was built. The public site still uses the AI hero photos (loose end shm-ai-photos, open since 8 Nov). The Nature pages for the site exist only on the unmerged branch.</dd>
+<dt>Why</dt><dd>The photo question waits on Dave (keep or replace). Claude has not yet prepared the real-screens alternative on staging that the brain lists as the next step. That is a miss on our side. Under cash mode only paid-pilot sales steps and breakage fixes are allowed on SH✡MER.</dd>
+<dt>Next step</dt><dd>Claude: stage a real-screens hero next to the current one so Dave can choose side by side, only if Dave says it counts as pilot-sales work. Owner Dave for the choice. Proposed date: 13 Nov.</dd>
+</dl>
+</div>
+
+<div class="card">
+<h3>Nature dashboard</h3>
+<span class="tag t-warn">BUILT ON BRANCH, NOT SEEN BY DAVE</span><span class="tag eyes">NEEDS YOUR EYES</span>
+<dl>
+<dt>What exists</dt><dd>A Nature view for the SH✡MER Command dashboard: cases, field map, export (commit <a href="https://github.com/3ShamrocksStudio/shomer-app/commit/36264c6">36264c6</a>, plus a fix that loads it before boot, <a href="https://github.com/3ShamrocksStudio/shomer-app/commit/2ed2907">2ed2907</a>), all on nature-layer, 8 Nov. The Command demo itself is staged and its gaps D3 to D6 were closed on 9 Nov (<a href="https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/commit/71bcc12">71bcc12</a>).</dd>
+<dt>What has not happened</dt><dd>It is not in the staged Nature preview at <a href="https://3shamrocks.com/shomer-nature-preview/">/shomer-nature-preview/</a>. I found no dashboard page there. No verified test item reached Dave. That is why he saw nothing.</dd>
+<dt>Why</dt><dd>The "finish and verify" step in the brain has no update after 8 Nov. Frozen by cash mode since this morning.</dd>
+<dt>Next step</dt><dd>Same decision as the Nature merge. If Dave unfreezes Nature: Claude refreshes the preview with the dashboard page and sends the 5-step test item the same shift.</dd>
+</dl>
+</div>
+
+<div class="card">
+<h3>TJE</h3>
+<span class="tag t-bad">NOTHING SENT</span>
+<dl>
+<dt>What exists</dt><dd>An English tester-recruitment post for the TJE group, drafted and verified (Dave's 9 Nov call: English, the audience is mostly Anglo). Item s11b-shomer in Dave's private to-do.</dd>
+<dt>What has not happened</dt><dd>Not posted. Play closed test: 4 of 14 testers opted in at the last count (9 Nov); 12 are needed before the 14-day clock can run.</dd>
+<dt>Why</dt><dd>Dave gave a standing OK on 11 Nov 13:04. But the shifts that could send it run cloud-only: no Chrome, no Dave mailbox. The 11 Nov 18:13 shift logged this. The fix is one switch only Dave can flip: "Require this computer" on the brain-shift task (item cash12-switch).</dd>
+<dt>Next step</dt><dd>Dave flips the switch. Then the next shift posts the approved text and logs the time. Alternative: Dave posts it himself, one tap. Owner Dave. Date: today.</dd>
+</dl>
+</div>
+
+<div class="card">
+<h3>Chabad</h3>
+<span class="tag t-bad">NOTHING SENT</span>
+<dl>
+<dt>What exists</dt><dd>A first email to the Chabad Israel headquarters, org level, no personal intro (Dave's 10 Nov call). Drafted and checked by a verifier on 11 Nov. Source page: kfar-chabad.com.</dd>
+<dt>What has not happened</dt><dd>Not sent. No reply to read.</dd>
+<dt>Why</dt><dd>Same send-path block as TJE. Mail must go from dave@3shamrocks.com (rule 9), and no cloud shift can reach that mailbox. The Gmail connector is the wrong address by rule.</dd>
+<dt>Next step</dt><dd>Same switch as TJE. After the send, Claude checks for replies 48 hours later (brain step due 13 Nov) and drafts the answer the same shift.</dd>
+</dl>
+</div>
+
+<div class="card">
+<h3>HaShomer HaChadash</h3>
+<span class="tag t-bad">NOTHING SENT</span>
+<dl>
+<dt>What exists</dt><dd>A first email to the organisation's volunteer office address, org level only. Dave said on 9 Nov to leave the advisor out of it. Drafted and verified 11 Nov. Source: hashomer.org.il/volunteer.</dd>
+<dt>What has not happened</dt><dd>Not sent.</dd>
+<dt>Why</dt><dd>Same send-path block.</dd>
+<dt>Next step</dt><dd>Same switch, same send, same 48-hour reply check (13 Nov).</dd>
+</dl>
+</div>
+
+<div class="card">
+<h3>Marketing</h3>
+<span class="tag t-bad">NOTHING POSTED THIS WEEK</span><span class="tag eyes">NEEDS YOUR EYES</span>
+<dl>
+<dt>What exists</dt><dd>As of the 10 Nov funnel count: 3 LinkedIn posts for Dave and 1 for the studio page drafted, 0 approved, 0 posted. Instagram: all 6 accounts logged out at the last record, 19 reels on hold, and the SH✡MER account was on a 48-hour hold from 9 Nov. Staged link page: <a href="https://3shamrocks.com/links/">/links/</a>. Nature shows "coming soon" on every public asset (done 8 Nov).</dd>
+<dt>What has not happened</dt><dd>No new post went out. LinkedIn company pages for the studio and SH✡MER do not exist yet.</dd>
+<dt>Why</dt><dd>Dave's OK is needed on each post and on creating the company pages. Instagram needs Dave's logins. Cash mode now freezes all Instagram content accounts.</dd>
+<dt>Next step</dt><dd>Dave: OK or edit the post waiting at the top of the to-do. Claude then queues it for the day it is due. Owner Dave. Date: today.</dd>
+</dl>
+</div>
+
+<div class="card">
+<h3>Lead generation</h3>
+<span class="tag t-ok">LIST EXISTS</span>
+<dl>
+<dt>What exists</dt><dd>SH✡MER Command buyers (councils and cities): 58 found, 24 with a drafted letter ready, 0 sent. Design services: 127 found, 91 ready, 72 sent. Counts are from funnel in brain.json (12 Nov 12:45). Names stay in the private to-do.</dd>
+<dt>What has not happened</dt><dd>Lead lists are not the problem. Sending is.</dd>
+<dt>Why</dt><dd>City and council letters wait on the privacy fix (see Client acquisition). The services pipeline waits on the send path.</dd>
+<dt>Next step</dt><dd>Claude: keep the 10-new-contacts quota, services side first (cash mode). Owner Claude. Daily.</dd>
+</dl>
+</div>
+
+<div class="card">
+<h3>Client acquisition</h3>
+<span class="tag t-bad">ZERO CALLS, ZERO PROPOSALS</span><span class="tag eyes">NEEDS YOUR EYES</span>
+<dl>
+<dt>What exists</dt><dd>SH✡MER Command: staged demo, pilot tiers decided 8 Nov, council and city letters drafted and verified. Funnel for SH✡MER buyers: sent 0, replied 0, call booked 0, proposal 0, won 0. Booked revenue: $0.</dd>
+<dt>What has not happened</dt><dd>No letter to a council or city has gone out.</dd>
+<dt>Why</dt><dd>The council letters were held until the privacy fix is deployed: tightened database rules plus removing one old field. That needs Dave's explicit "yes Firebase" and a Firebase admin login that cloud shifts do not have (loose end shm-privacy-rules). Dave asked "yes to what?" on 9 Nov and it was re-asked in plain words. The 12 Nov shift notes that an interactive session is applying it; no result is recorded in brain.json yet. Please treat the status as unconfirmed.</dd>
+<dt>Next step</dt><dd>Claude: confirm whether the privacy rules are deployed, then release the 4 emailable council letters and 5 city letters for Dave's send. Owner Claude, then Dave. Date: 13 Nov. The brain's own kill rule: no demo booked by 13 Nov means cold council list only.</dd>
+</dl>
+</div>
+
+<div class="card">
+<h3>Outreach</h3>
+<span class="tag t-warn">SERVICES MOVING, SH✡MER AT ZERO</span><span class="tag eyes">NEEDS YOUR EYES</span>
+<dl>
+<dt>What exists</dt><dd>Design services on LinkedIn: 72 sent, 25 accepted, 3 replied, 0 calls. 10 welcome DMs went out on 11 Nov. 17 connect notes were rewritten on 12 Nov to Dave's wording. A Brand Sprint follow-up for the 9 accepted founders is drafted for Sun 15 Nov. 2 paid freelance gigs have drafted applications.</dd>
+<dt>What has not happened</dt><dd>SH✡MER outreach is at zero. The 17 notes, the follow-up and the gig applications are not sent.</dd>
+<dt>Why</dt><dd>Same send path. Plus Dave's OK on the follow-up text and the gig applications (items cash12-fu9, cash12-gigs).</dd>
+<dt>Next step</dt><dd>Dave: flip the switch, OK the follow-up text. Claude sends from a Mac-linked shift. Date: before Sun 15 Nov.</dd>
+</dl>
+</div>
+
+<h2 id="products">2. Products and projects</h2>
+<p class="mut">Source: brain.json products, loose_ends and git logs. "Frozen" means BRAIN.md §−1 cash mode (12 Nov). Stage names follow the brain scale: Concept, Build, Staged, Validate, Monetize, Paying.</p>
+<div class="tw"><table>
+<tr><th>Product</th><th>Stage</th><th>Status</th><th>Last real progress</th><th>Next step</th><th>Waiting on</th></tr>
+<tr><td>Design services (fractional + Brand Sprint)</td><td>Validate</td><td>Active, the cash engine</td><td>12 Nov: 17 notes rewritten, follow-up for 9 founders, gig applications drafted</td><td>Send 17 notes; follow-up Sun 15 Nov</td><td>Dave (send switch, text OK)</td></tr>
+<tr><td>VIBRANT small job</td><td>Build</td><td>Active</td><td>8 Nov: delivered, files sent. Not invoiced</td><td>Morning invoice draft and a backlog ask</td><td>Dave (amount, Morning login)</td></tr>
+<tr><td>Studio site and domain</td><td>Staged</td><td>Active</td><td>11 Nov: moved to 3shamrocks.com, redirect checked</td><td>Turn on HTTPS enforcement, fix share tags</td><td>Claude (needs a Chrome shift); Dave for the homepage mosaic</td></tr>
+<tr><td>SH✡MER (communities and councils)</td><td>Validate</td><td>Active: paid-pilot steps and breakage only</td><td>11 Nov: automatic APK publish, build 65. Last product commits 6 to 8 Nov (Nature coming-soon notes)</td><td>Confirm privacy fix, then release letters</td><td>Dave (Firebase yes, send); Claude (confirm)</td></tr>
+<tr><td>SH✡MER Command dashboard</td><td>Validate</td><td>Active</td><td>9 Nov: demo gaps D3 to D6 closed on staging</td><td>Plan lock behind a flag, off until Dave OK</td><td>Dave (demo GO or changes)</td></tr>
+<tr><td>SH✡MER Nature</td><td>Staged</td><td>Frozen by cash mode</td><td>8 Nov: dashboard view, report flow on nature-layer</td><td>Verify dashboard, 5-step test</td><td>Dave (unfreeze, test, GO)</td></tr>
+<tr><td>SH✡MER iOS</td><td>Build</td><td>Held (not a paid-pilot step)</td><td>3 Nov: Xcode project and runbook on ios-native</td><td>First TestFlight build after Apple enrolment</td><td>Dave (Apple enrolment)</td></tr>
+<tr><td>Tnufa grant</td><td>Validate</td><td>Active, watching</td><td>8 Nov: submitted by Dave; 9 Nov: intake confirmed. Answer expected about late Jan</td><td>Watch Gmail for the answer</td><td>Claude (waiting for the Authority)</td></tr>
+<tr><td>Grants and CSR</td><td>Build</td><td>Parked (not money within 21 days)</td><td>10 Nov: Google Cloud Early Stage programme checked and dropped</td><td>Refresh grants scan 15 Nov</td><td>Claude</td></tr>
+<tr><td>Marketing (LinkedIn)</td><td>Build</td><td>Active</td><td>9 to 11 Nov: post drafts and send packs</td><td>Queue approved posts</td><td>Dave (OK on posts, company pages)</td></tr>
+<tr><td>Instagram, 6 accounts</td><td>Build</td><td>Frozen</td><td>7 Nov: last engagement run, then logged out</td><td>None until cash mode ends</td><td>Dave (logins)</td></tr>
+<tr><td>LickPick</td><td>Staged</td><td>Frozen (polish); store review pending</td><td>11 Nov: staging fix pass; payment-store review still pending (last checked 8 Nov)</td><td>Check payment-store decision daily</td><td>Payment provider; Dave</td></tr>
+<tr><td>Trashure Hunters</td><td>Validate</td><td>Frozen</td><td>11 to 12 Nov: splash fix, in-place install page</td><td>None</td><td>Dave (migration approval)</td></tr>
+<tr><td>Chore Royale</td><td>Build</td><td>Frozen</td><td>5 Nov: original score and sound effects</td><td>Cleanup SQL, 10-family test</td><td>Dave ("OK cleanup", listen)</td></tr>
+<tr><td>Milo</td><td>Build</td><td>Frozen</td><td>8 Nov: value-proposition memo; app reset on grok-reset since 5 Nov</td><td>Brand v2 picks; professional check of crisis numbers</td><td>Dave</td></tr>
+<tr><td>Parked group: EZRA, FaiRent, R&amp;K, J8N.IX, WH33LZ and others</td><td>Build</td><td>Parked, revisit 21 Dec (FaiRent frozen)</td><td>11 to 12 Nov: FaiRent rent data update and a Pages fix</td><td>Board verdicts 21 Dec</td><td>Dave (portfolio calls)</td></tr>
+</table></div>
+
+<h2 id="ops">3. Studio operations</h2>
+
+<h3>Cash mode (from 12 Nov)</h3>
+<div class="grid">
+<div class="k"><b>₪0</b><span>invoiced</span></div>
+<div class="k"><b>₪0</b><span>collected, target ₪35,000</span></div>
+<div class="k"><b>0</b><span>calls booked</span></div>
+<div class="k"><b>5</b><span>items waiting for Dave</span></div>
+</div>
+<p class="mut">From the 12 Nov 12:45 run record (cash block). Waiting items: Brand Sprint one-pager, follow-up text, VIBRANT invoice, gig applications, the send switch. Booked revenue toward M1 (21 Nov, $25,000): $0.</p>
+
+<h3>Sales funnel (cumulative counts)</h3>
+<div class="tw"><table style="min-width:620px">
+<tr><th>Track</th><th>Found</th><th>Ready</th><th>Sent</th><th>Accepted</th><th>Replied</th><th>Call</th><th>Proposal</th><th>Won</th></tr>
+<tr><td>Design services</td><td>127</td><td>91</td><td>72</td><td>25</td><td>3</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>SH✡MER Command</td><td>58</td><td>24</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+</table></div>
+<p class="mut">Services: 25 drafted messages are ready but unsent. SH✡MER: all 24 ready letters are unsent.</p>
+
+<h3>Scheduled runs health</h3>
+<ul>
+<li>32 run records in brain.json. Latest: 12 Nov 12:45 (brain shift, cash mode). It was an 18-hour catch-up: the 12 Nov 08:30 stand-up and a morning interactive session wrote nothing to brain.json.</li>
+<li>Failures logged: 6 to 8 Nov runs failed on the usage limit (closed). 9 Nov 03:06 night shift ended after 52 seconds with no output and no known cause (still open). 10 Nov night shift ran in the main session after the scheduled one failed.</li>
+<li>Several shifts were skipped on purpose by the run lock (8 Nov, 9 Nov) to avoid duplicates.</li>
+<li>The ongoing problem: scheduled shifts are cloud-only. They cannot send LinkedIn messages or emails from Dave's mailbox (ops-send-path, blocked on Dave's switch).</li>
+<li>The 3s-status nightly watchtower has been running (last commit 12 Nov 09:39).</li>
+</ul>
+
+<h3>Loose ends (75 in total)</h3>
+<div class="grid">
+<div class="k"><b>32</b><span>blocked on Dave</span></div>
+<div class="k"><b>17</b><span>open</span></div>
+<div class="k"><b>6</b><span>in progress</span></div>
+<div class="k"><b>20</b><span>done</span></div>
+</div>
+
+<h3>Top 5 blockers</h3>
+<ol>
+<li><b>The send switch.</b> "Require this computer" on the brain-shift task. Blocks the 17 LinkedIn notes, TJE, Chabad, HaShomer HaChadash and the Brand Sprint follow-up. Only Dave can flip it. <span class="tag eyes">NEEDS YOUR EYES</span></li>
+<li><b>Firebase privacy "yes".</b> Blocks every council and city letter (24 ready). Status of the interactive fix is unconfirmed. <span class="tag eyes">NEEDS YOUR EYES</span></li>
+<li><b>The only money in sight.</b> The VIBRANT invoice needs Dave to confirm the amount and log into Morning. The brain notes two different amounts in older notes. <span class="tag eyes">NEEDS YOUR EYES</span></li>
+<li><b>Dave's OK on the sales texts.</b> Brand Sprint one-pager, follow-up message, gig applications, and whether the sprint price includes VAT. <span class="tag eyes">NEEDS YOUR EYES</span></li>
+<li><b>Android testers.</b> 4 of 14 opted in, 12 needed for the 14-day Play requirement. Waits on the TJE post and Dave's WhatsApp nudge.</li>
+</ol>
+
+<h3>Frozen by cash mode</h3>
+<p>LickPick polish, site arcade and music, all Instagram content accounts, Concept Lab, Trashure Hunters, WH33LZ, Chore Royale, Milo, R&amp;K, FaiRent, SH✡MER Nature. SH✡MER keeps paid-pilot sales steps and breakage fixes only. Exit when ₪35,000 is collected and Dave confirms.</p>
+
+<p class="mut" style="margin-top:28px">Staged only. Source of record: <a href="https://3shamrocks.com/ops/brain/">ops/brain</a>.</p>
+</div>
+</body>
+</html>
