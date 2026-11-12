@@ -142,7 +142,8 @@
     '.lv.bt-concepts .t{animation:btFade .3s ease .36s}.ar.bt-concepts .t{animation:btFade .24s ease reverse}',
     '@keyframes btSquare{from{transform:perspective(400px) rotateY(90deg) scale(.6);opacity:0}to{transform:none;opacity:1}}',
     '@keyframes btRise{from{opacity:0;transform:translateY(30px) scale(.9)}to{opacity:1;transform:none}}',
-    /* HealthTech (12 Nov, Dave): light ground, the VIBRANT capsule from its pack with its own vibration arcs; it buzzes, the arcs pulse out */
+    /* HealthTech (12 Nov, Dave): light ground, the VIBRANT capsule as a vector outline pill in the brand's line style (outer stroke + inner
+       concentric line, like the logo's parallel lines); it draws on, then buzzes while its own vibration arcs pulse out */
     '.bt-healthtech .b{background:radial-gradient(70% 55% at 50% 42%,#E3F2FC,#F5F9FC 62%,#fff)}',
     '.bt-healthtech .c{padding-top:min(30vmin,210px)}',
     '#s3bt.bt-healthtech .c img{filter:none}',
@@ -150,10 +151,13 @@
     '.bt-healthtech .v g,.bt-healthtech .v path{transform-box:view-box}',
     '.bt-healthtech .v .p,.bt-healthtech .v .q{transform-origin:210px 120px}',
     '.bt-healthtech .v .a{opacity:var(--o)}',
+    '.bt-healthtech .v .o{stroke-dasharray:100 100;stroke-dashoffset:0}',
+    '.lv.bt-healthtech .v .o{animation:btDraw .42s cubic-bezier(.6,0,.2,1) .14s}',
+    '.lv.bt-healthtech .v .o2{animation-delay:.22s}.lv.bt-healthtech .v .o3,.lv.bt-healthtech .v .o4{animation-duration:.24s;animation-delay:.4s}',
+    '@keyframes btDraw{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}',
     '.lv.bt-healthtech .b{animation:btRiseIn .42s cubic-bezier(.65,0,.25,1)}',
-    '.lv.bt-healthtech .v .p{animation:btCapIn .32s cubic-bezier(.3,1.45,.5,1) .2s}',
-    '.lv.bt-healthtech .v .q{animation:btBuzz .07s linear .46s 4}',
-    '.lv.bt-healthtech .v .a{animation:btArcIn .42s ease-out calc(.4s + var(--d))}',
+    '.lv.bt-healthtech .v .q{animation:btBuzz .07s linear .56s 3}',
+    '.lv.bt-healthtech .v .a{animation:btArcIn .36s ease-out calc(.5s + var(--d))}',
     '.lv.bt-healthtech .c img{animation:btRise .3s ease-out .4s}',
     '.ar.bt-healthtech .v .q{animation:btBuzz .07s linear 5}',
     '.ar.bt-healthtech .v .a{animation:btArcOut .46s ease-in var(--d)}',
@@ -201,7 +205,7 @@
     h += '<i class="b"></i>';
     if (k === 'shomer') h += '<i class="e"></i><i class="r"></i><i class="r"></i>';
     if (k === 'lickpick') h += '<svg class="s" viewBox="0 0 1000 120" preserveAspectRatio="none"><g><path d="M0 60 Q125 0 250 60 T500 60 T750 60 T1000 60"/><path d="M0 60 Q125 120 250 60 T500 60 T750 60 T1000 60"/></g></svg>';
-    if (k === 'healthtech') h += '<svg class="v" viewBox="0 0 420 240"><defs><linearGradient id="s3btvb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".38" stop-color="#F3F4F5"/><stop offset=".78" stop-color="#C6CACE"/><stop offset="1" stop-color="#A4A9AE"/></linearGradient><linearGradient id="s3btvh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#52ADE5"/><stop offset="1" stop-color="#4590D6"/></linearGradient></defs><g fill="none" stroke="currentColor" stroke-linecap="round"><path class="a" style="transform-origin:162px 120px;--o:0.95;--d:0.00s" d="M114.0 181.5A78 78 0 0 1 114.0 58.5" stroke-width="6"/><path class="a" style="transform-origin:258px 120px;--o:0.95;--d:0.00s" d="M306.0 58.5A78 78 0 0 1 306.0 181.5" stroke-width="6"/><path class="a" style="transform-origin:162px 120px;--o:0.62;--d:0.08s" d="M98.6 201.2A103 103 0 0 1 98.6 38.8" stroke-width="4.6"/><path class="a" style="transform-origin:258px 120px;--o:0.62;--d:0.08s" d="M321.4 38.8A103 103 0 0 1 321.4 201.2" stroke-width="4.6"/><path class="a" style="transform-origin:162px 120px;--o:0.34;--d:0.16s" d="M82.0 222.4A130 130 0 0 1 82.0 17.6" stroke-width="3.4"/><path class="a" style="transform-origin:258px 120px;--o:0.34;--d:0.16s" d="M338.0 17.6A130 130 0 0 1 338.0 222.4" stroke-width="3.4"/></g><g class="p"><g class="q"><rect x="113" y="71" width="194" height="98" rx="49" fill="url(#s3btvh)"/><rect x="113" y="71" width="194" height="98" rx="49" fill="none" stroke="#fff" stroke-width="7" pathLength="100" stroke-dasharray="54 3 9 3 31" stroke-linecap="round"/><rect x="135" y="93" width="150" height="54" rx="27" fill="url(#s3btvb)"/><path d="M213 94.5v51" stroke="#B5BABF" stroke-width="1.2" opacity=".7"/><rect x="150" y="99" width="118" height="10" rx="5" fill="#fff" opacity=".85"/></g></g></svg>';
+    if (k === 'healthtech') h += '<svg class="v" viewBox="0 0 420 240"><defs><linearGradient id="s3btvo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4CAAE4"/><stop offset=".5" stop-color="#1B8CC6"/><stop offset="1" stop-color="#1868D0"/></linearGradient></defs><g fill="none" stroke="currentColor" stroke-linecap="round"><path class="a" style="transform-origin:162px 120px;--o:0.95;--d:0.00s" d="M114.0 181.5A78 78 0 0 1 114.0 58.5" stroke-width="6"/><path class="a" style="transform-origin:258px 120px;--o:0.95;--d:0.00s" d="M306.0 58.5A78 78 0 0 1 306.0 181.5" stroke-width="6"/><path class="a" style="transform-origin:162px 120px;--o:0.62;--d:0.08s" d="M98.6 201.2A103 103 0 0 1 98.6 38.8" stroke-width="4.6"/><path class="a" style="transform-origin:258px 120px;--o:0.62;--d:0.08s" d="M321.4 38.8A103 103 0 0 1 321.4 201.2" stroke-width="4.6"/><path class="a" style="transform-origin:162px 120px;--o:0.34;--d:0.16s" d="M82.0 222.4A130 130 0 0 1 82.0 17.6" stroke-width="3.4"/><path class="a" style="transform-origin:258px 120px;--o:0.34;--d:0.16s" d="M338.0 17.6A130 130 0 0 1 338.0 222.4" stroke-width="3.4"/></g><g class="p"><g class="q" fill="none" stroke-linecap="round"><rect class="o" x="113" y="71" width="194" height="98" rx="49" stroke="url(#s3btvo)" stroke-width="7" pathLength="100"/><rect class="o o2" x="128" y="86" width="164" height="68" rx="34" stroke="#4CAAE4" stroke-width="3.4" pathLength="100" opacity=".8"/><path class="o o3" d="M210 86v68" stroke="#1B8CC6" stroke-width="3" pathLength="100" opacity=".55"/><path class="o o4" d="M150 106h38" stroke="#4CAAE4" stroke-width="4" pathLength="100" opacity=".6"/></g></g></svg>';
     if (k === 'rk' || k === 'concepts') {
       var cols = W.innerWidth > W.innerHeight ? 10 : 6, rows = Math.ceil(W.innerHeight / (W.innerWidth / cols)) + 1, g = '';
       for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) g += '<i class="' + ((r + c) % 2 ? 'd' : '') + '" style="--w:' + ((r + c) * 0.022).toFixed(3) + 's"></i>';
