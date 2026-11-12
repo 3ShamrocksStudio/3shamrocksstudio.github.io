@@ -85,3 +85,11 @@ same instruments and mix chains (it imports `score_v5.py`).
   experience = dark bridge, about = + horn melody, forest = no drums, contact = everything + horn shout.
 - Encode: beds Opus 48k (drums 56k) / AAC 80k (drums 96k) stereo, melodies Opus 40k / AAC 56k mono.
 - Run: `python3 score_v6.py all` (stems + mix.json in `assets/audio/studio/v6/`, demo MP3); `S3_REBUILD=mel,bkeys` re-renders only those.
+
+## Score v8: "better soloists" (`score_v8.py`), generated 2026-11-12
+Score v7 with only the 12 lead / solo stems re-rendered (horns, shout, bhorn, bgtr, mel-*): same notes, same 98 BPM groove,
+same loop lengths and file names, mix.json untouched. Saxes: no drive stage, de-nasal (1.1 kHz) and de-harsh (2.9 / 4.3 kHz) cuts
+instead of brick-wall low-passes, CC11 expression (swells, lighter pickups, amplitude vibrato), delayed natural vibrato, soft
+scoops, occasional fall-offs, legato overlaps. Keys leads without pitch bends; guitars with less drive and a cabinet curve.
+Each new stem is level-matched to the v7 file it replaces (leads 1 dB under). No trumpet / brass program anywhere.
+Run: `S3_OLD=<copy of the v7 v6/ folder> python3 score_v8.py stems` (writes into assets/audio/studio/v6/; ver sc8).
