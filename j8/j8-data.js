@@ -89,6 +89,15 @@ var J8 = (function () {
       store('j8v4:email', email); return true;
     },
     /* accepts the email link itself, or the address of the page the link opened */
+    /* the email's one-time code (6–8 digits), typed in the app: works inside an installed iPhone app */
+    verifyCode: async function (email, code) {
+      email = String(email || store('j8v4:email') || '').trim().toLowerCase();
+      code = String(code || '').replace(/\D/g, '');
+      if (!email || code.length < 6) return rej('bad_code');
+      var r = await sb.auth.verifyOtp({ email: email, token: code, type: 'email' });
+      if (r.error) return rej('bad_code', { message: r.error.message });
+      connecting = null; return connect();
+    },
     signInWithLink: async function (text) { var ok = await signInFromText(text); if (!ok) return rej('bad_link'); connecting = null; return connect(); },
     signOut: async function () { await sb.auth.signOut(); state.user = null; state.org = null; status({ connected: false, error: 'signed_out' }); (subs.auth || []).forEach(function (f) { f(null); }); }
   };

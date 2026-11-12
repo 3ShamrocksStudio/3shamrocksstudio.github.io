@@ -42,8 +42,10 @@
   $('#again').addEventListener('click', function () { store('j8v4:sent', ''); msg(''); authView(false); });
   $('#fPaste').addEventListener('submit', function (e) {
     e.preventDefault(); msg('Signing in…');
-    J8.auth.signInWithLink($('#pasteLink').value).then(function () { $('#pasteLink').value = ''; msg(''); readyView(); })
-      .catch(function () { msg('That link didn\'t work. Ask for a new one.', true); });
+    var code = $('#code').value.replace(/\D/g, ''), link = $('#pasteLink').value.trim();
+    var go = code.length >= 6 ? J8.auth.verifyCode(store('j8v4:email'), code) : link ? J8.auth.signInWithLink(link) : Promise.reject({ code: 'empty' });
+    go.then(function () { $('#pasteLink').value = ''; $('#code').value = ''; msg(''); readyView(); })
+      .catch(function (er) { msg(er.code === 'empty' ? 'Type the code from the email.' : 'That didn\'t work. Check the code, or ask for a new email.', true); });
   });
   $('#signOut').addEventListener('click', function () { J8.auth.signOut().then(function () { authView(false); }); });
   $('#orgSel').addEventListener('change', function (e) { J8.orgs.use(e.target.value).then(readyView); });
