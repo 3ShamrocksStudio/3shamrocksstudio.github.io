@@ -280,6 +280,19 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
 .js .rv{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease2),transform .8s var(--ease2)}
 .js .rv.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none}}
+/* 12 Nov: tighter rhythm, shorter page (same sections, same content) */
+.sec{padding:64px 0}
+@media(max-width:700px){.sec{padding:44px 0}}
+.hero{min-height:min(100svh,740px)}
+.realm{width:min(250px,64vw)}
+.kg{margin-top:36px}
+.kgv{width:min(240px,64vw)}
+.cta{padding-top:60px}
+@media(min-width:901px){.tour .wrap{grid-template-columns:1fr 280px}}
+@media(max-width:960px){.realm{width:min(200px,54vw)}.cast .wrap{gap:36px}}
+@media(max-width:900px){.tphone{width:min(200px,54vw)}}
+@media(max-width:860px){.hero .wrap{gap:34px;padding-bottom:40px}.stage{width:min(200px,52vw)}.hero .lede{margin-bottom:22px}.chips{margin-top:18px}}
+@media(max-width:560px){.hero .stage{display:none}.hero{min-height:0}.cta{padding-top:44px}.tour .wrap{gap:18px}.cast .wrap{gap:28px}.tphone{width:min(180px,48vw)}.realm{width:min(180px,48vw)}.kgv{width:min(200px,56vw)}.big{height:130px}.big img{max-height:120px}.card{padding:14px;gap:12px}.evo{margin-top:10px}.kg{padding:18px;gap:18px}.ui img{height:48px}.ui img.sq{height:54px}.bgrid{gap:12px}.tile{padding:18px}}
 </style>
 <script src="../js/hits.js" defer></script>
 <link rel="stylesheet" href="../assets/audio/snd.css?v=sc2">
@@ -306,9 +319,9 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
   <div>
    <img class="logo" src="../assets/work/trashure-hunters/brand/logo-th26.webp" alt="Trashure Hunters logo: the monster above the game name" width="800" height="859">
    <h1>Clean the World. <span class="o">Win the Game.</span></h1>
-   <p class="lede">An AR adventure for kids 8&ndash;14 and their families. Clean up real litter, and your Elemonster grows while a magical world heals.</p>
+   <p class="lede">AR game for kids 8&ndash;14: clean real litter, grow your Elemonster.</p>
    <div class="btns"><a class="btn btn-primary" href="#hunt">Play a Trashure-Hunt</a><a class="btn btn-purple" href="#cast">Meet the Elemonsters</a></div>
-   <div class="chips"><span class="chip"><i></i>In development &middot; private test build</span><span class="chip">My role: game world, characters, brand, app</span></div>
+   <div class="chips"><span class="chip"><i></i>In development</span><span class="chip">My role: world, characters, brand, app</span></div>
   </div>
   <div class="stage">
    <div class="rings" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -325,13 +338,12 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
 <section class="sec tour" id="tour" aria-labelledby="h-h">
  <div class="wrap">
   <div>
-   <div class="eyebrow">How it plays</div>
    <h2 id="h-h" class="rv">Clean. Prove. <span class="o">Grow. Hunt.</span></h2>
    <ul class="tabs" role="tablist" aria-label="The game loop">
-    <li><button class="tab" role="tab" id="tb0" aria-controls="tpanel" aria-selected="true" style="--c:var(--earth)"><span class="ic" aria-hidden="true"><svg class="gi"><use href="#ic-pin"/></svg></span><span><b><small>01</small>Find a Grime Zone</b><p>Zones spawn on the real map where real trash is. Clean nearby to capture them for your team.</p></span><i class="prog"></i></button></li>
-    <li><button class="tab" role="tab" id="tb1" aria-controls="tpanel" aria-selected="false" style="--c:var(--orange-l)"><span class="ic" aria-hidden="true"><svg class="gi"><use href="#ic-cam"/></svg></span><span><b><small>02</small>Prove it with Trash-Cam</b><p>A before photo, the cleanup, an after photo. AI checks it, then XP and Trash-Cash land.</p></span><i class="prog"></i></button></li>
-    <li><button class="tab" role="tab" id="tb2" aria-controls="tpanel" aria-selected="false" style="--c:var(--purple)"><span class="ic" aria-hidden="true"><svg class="gi"><use href="#ic-egg"/></svg></span><span><b><small>03</small>Grow your Elemonster</b><p>Every verified cleanup feeds your Elemonster, from egg to Realm Keeper.</p></span><i class="prog"></i></button></li>
-    <li><button class="tab" role="tab" id="tb3" aria-controls="tpanel" aria-selected="false" style="--c:var(--water)"><span class="ic" aria-hidden="true"><svg class="gi"><use href="#ic-gun"/></svg></span><span><b><small>04</small>Hunt Trashures in AR</b><p>Grime creatures appear through the camera. Hold to charge your Water Gun, release to fire.</p></span><i class="prog"></i></button></li>
+    <li><button class="tab" role="tab" id="tb0" aria-controls="tpanel" aria-selected="true" style="--c:var(--earth)"><span class="ic" aria-hidden="true"><svg class="gi"><use href="#ic-pin"/></svg></span><span><b><small>01</small>Find a Grime Zone</b><p>Spawn where trash is.</p></span><i class="prog"></i></button></li>
+    <li><button class="tab" role="tab" id="tb1" aria-controls="tpanel" aria-selected="false" style="--c:var(--orange-l)"><span class="ic" aria-hidden="true"><svg class="gi"><use href="#ic-cam"/></svg></span><span><b><small>02</small>Prove it with Trash-Cam</b><p>Photo proof, AI-checked.</p></span><i class="prog"></i></button></li>
+    <li><button class="tab" role="tab" id="tb2" aria-controls="tpanel" aria-selected="false" style="--c:var(--purple)"><span class="ic" aria-hidden="true"><svg class="gi"><use href="#ic-egg"/></svg></span><span><b><small>03</small>Grow your Elemonster</b><p>Seed or egg to Keeper.</p></span><i class="prog"></i></button></li>
+    <li><button class="tab" role="tab" id="tb3" aria-controls="tpanel" aria-selected="false" style="--c:var(--water)"><span class="ic" aria-hidden="true"><svg class="gi"><use href="#ic-gun"/></svg></span><span><b><small>04</small>Hunt Trashures in AR</b><p>Charge. Release. Splash.</p></span><i class="prog"></i></button></li>
    </ul>
    <p class="tmob" id="tmob" aria-hidden="true"></p>
   </div>
@@ -343,7 +355,7 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
     <img src="../assets/work/trashure-hunters/screens/play-profile.webp" alt="Hunter profile: a Bloop egg with XP, Trash-Cash, Compos and cleanups counted, and progress to the Baby stage" width="720" height="1302" loading="lazy">
     <img src="../assets/work/trashure-hunters/screens/ob-12-tut-hunt.webp" alt="Tutorial, Trashure-Hunt: Grime enemies through the camera and a charging Water Gun" width="720" height="1393" loading="lazy">
    </div></div>
-   <p class="tcap">Real screens from the private test build.</p>
+   <p class="tcap">Real test-build screens.</p>
   </div>
  </div>
 </section>
@@ -351,7 +363,7 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
 <!-- 3 · TRASHURE-HUNT, playable -->
 <section class="sec hunt" id="hunt" aria-labelledby="hu-h">
  <div class="wrap">
-  <div class="head rv"><div><div class="eyebrow">Try it</div><h2 id="hu-h">Hold. Charge. <span class="o">Wash it clean.</span></h2></div><p class="lede">Trashures are creatures buried in Grime. Wash one clean and the Compo inside is free.</p></div>
+  <div class="head rv"><div><h2 id="hu-h">Hold. Charge. <span class="o">Wash it clean.</span></h2></div><p class="lede">One charged shot frees the Compo inside.</p></div>
   <div class="ar rv" id="ar">
    <div class="arw">
     <img class="bg" src="../assets/work/trashure-hunters/screens/ar-hunt.webp" alt="" width="1600" height="720" loading="lazy">
@@ -360,11 +372,11 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
     <div class="tr" id="tr"><img src="../assets/work/trashure-hunters/wash/trashure-a.webp" alt="A Trashure covered in grime" width="425" height="440" loading="lazy"><img src="../assets/work/trashure-hunters/wash/trashure-b.webp" alt="" style="opacity:0" loading="lazy"><img src="../assets/work/trashure-hunters/wash/trashure-c.webp" alt="" style="opacity:0" loading="lazy"><img src="../assets/work/trashure-hunters/wash/trashure-d.webp" alt="" style="opacity:0" loading="lazy"></div>
     <svg class="jet" id="jet" viewBox="0 0 1600 720" preserveAspectRatio="none" aria-hidden="true"><path d="M905 505 Q 960 380 1010 365"/></svg>
    </div>
-   <div class="arhud" aria-live="polite"><span class="pill" id="arst">HOLD TO CHARGE</span><span class="pill" id="arhp">HP 3 / 3</span></div>
-   <button type="button" class="shoot" id="shoot" aria-label="Shoot: hold to charge your Water Gun, release to fire"><svg class="rg" viewBox="0 0 110 110" aria-hidden="true"><circle id="rgc" cx="55" cy="55" r="50"/></svg><svg class="gi" aria-hidden="true"><use href="#ic-gun"/></svg></button>
+   <div class="arhud" aria-live="polite"><span class="pill" id="arst">HOLD TO CHARGE</span></div>
+   <button type="button" class="shoot" id="shoot" aria-label="Water Gun: hold to charge, release to fire"><svg class="rg" viewBox="0 0 110 110" aria-hidden="true"><circle id="rgc" cx="55" cy="55" r="50"/></svg><svg class="gi" aria-hidden="true"><use href="#ic-gun"/></svg></button>
    <div class="arwin" id="arwin"><b>Compo freed!</b><div class="rw"><span><svg class="gi" aria-hidden="true"><use href="#ic-xp"/></svg>+30 XP</span><span><svg class="gi" aria-hidden="true"><use href="#ic-cash"/></svg>+3 Trash-Cash</span></div><button type="button" class="btn btn-primary" id="again">Hunt again</button></div>
   </div>
-  <p class="cap">A playable sketch on the real Trashure-Hunt screen. In the app the hunt runs through your phone&rsquo;s camera; rewards follow the game design.</p>
+  <p class="cap">Sketch on the real hunt screen.</p>
  </div>
 </section>
 
@@ -372,7 +384,7 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
 <section class="sec cast" id="cast" aria-labelledby="m-h">
  <div class="wrap">
   <div>
-   <div class="rv"><div class="eyebrow">The characters</div><h2 id="m-h">Five Elemonsters. <span class="o">Five realms.</span></h2><p class="lede">Pick a partner. Your cleanups grow it from egg to Realm Keeper.</p></div>
+   <div class="rv"><h2 id="m-h">Five Elemonsters. <span class="o">Five realms.</span></h2><p class="lede">Pick one.</p></div>
    <div class="mons rv" role="group" aria-label="Elemonsters">
     <button class="mon" type="button" aria-pressed="true" data-id="sproutz" style="--c:#2EBD8A"><img src="../assets/work/trashure-hunters/stages/earth-2.webp" alt="" loading="lazy"><b>Sproutz</b></button>
     <button class="mon" type="button" aria-pressed="false" data-id="bloop" style="--c:#4BA3E3"><img src="../assets/work/trashure-hunters/stages/water-2.webp" alt="" loading="lazy"><b>Bloop</b></button>
@@ -385,7 +397,7 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
     <div>
      <h3 id="d-n">Sproutz</h3>
      <p class="tl" id="d-t">Earth Guardian. Stubborn heart. Grows with you.</p>
-     <div class="ch"><span id="d-team">Earth Team</span><span id="d-el">Nature, growth, roots</span></div>
+     <div class="ch"><span id="d-team">Earth Team</span></div>
      <div class="evo" role="group" aria-label="Growth stages">
       <button type="button" class="st" aria-pressed="false" data-s="0"><b id="d-s0">Seed</b>0 XP</button>
       <button type="button" class="st" aria-pressed="false" data-s="1"><b>Baby</b>500 XP</button>
@@ -398,7 +410,7 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
   <figure class="realm rv">
    <span class="rname" id="rn">Green Lands</span>
    <div class="phone"><div class="scr"><img id="rimg" src="../assets/work/trashure-hunters/screens/map-earth.webp" alt="Green Lands realm map design" width="720" height="1560" loading="lazy"></div></div>
-   <figcaption class="rline"><span id="rd">Forests, soil and roots. Sproutz&rsquo;s home, and the realm that hurts most to see dying.</span><br><small class="cap">Realm map design. Names and timers are placeholders.</small></figcaption>
+   <figcaption class="rline"><small class="cap">Map design; placeholder names.</small></figcaption>
   </figure>
  </div>
  <div class="wrap kgw">
@@ -410,10 +422,9 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
     <input type="range" id="kgr" min="0" max="100" value="0" aria-label="Wash King Grime clean">
    </div>
    <div>
-    <div class="eyebrow">The villain</div>
     <h3 id="kg-h">King Grime</h3>
-    <p id="kg-p">Every bit of real-world trash feeds him. He isn&rsquo;t destroyed in the end. He&rsquo;s washed clean.</p>
-    <span class="hint" id="kg-hint"><svg class="gi" aria-hidden="true"><use href="#ic-gun"/></svg>Drag across him to wash</span>
+    <p id="kg-p">Trash feeds him. Wash him clean.</p>
+    <span class="hint" id="kg-hint"><svg class="gi" aria-hidden="true"><use href="#ic-gun"/></svg>Drag to wash</span>
    </div>
   </div>
  </div>
@@ -422,10 +433,10 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
 <!-- 5 · BRAND -->
 <section class="sec brand" aria-labelledby="g-h">
  <div class="wrap">
-  <div class="rv"><div class="eyebrow">Brand identity</div><h2 id="g-h">Loud colour. <span class="o">Rounded everything.</span></h2><p class="lede">A logo, five realm colours and a set of chunky, toy-like game pieces.</p></div>
+  <div class="rv"><h2 id="g-h">Loud colour. <span class="o">Rounded everything.</span></h2></div>
   <div class="bgrid">
    <div class="tile t-logo rv" id="tilt"><img id="tlogo" src="../assets/work/trashure-hunters/brand/logo-th26.webp" alt="Trashure Hunters logo" width="800" height="859" loading="lazy"></div>
-   <div class="tile rv"><h3>Colour &middot; tap to copy</h3>
+   <div class="tile rv"><h3>Tap to copy</h3>
     <div class="sw">
      <button type="button" data-hex="#2EBD8A" style="background:#2EBD8A">Earth</button>
      <button type="button" data-hex="#4BA3E3" style="background:#4BA3E3">Water</button>
@@ -437,7 +448,7 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
      <button type="button" data-hex="#FCD34D" style="background:#FCD34D">Reward</button>
     </div>
    </div>
-   <div class="tile rv"><h3>Type</h3><div class="type"><b>Trashure!</b><small>Fredoka Bold</small><span>Hold to charge. Release to fire.</span><small>Inter</small></div></div>
+   <div class="tile rv"><h3>Type</h3><div class="type"><b>Trashure!</b><small>Fredoka Bold</small><span>Hold to charge.</span><small>Inter</small></div></div>
    <div class="tile t-ui rv"><h3>Game pieces</h3>
     <div class="ui"><img src="../assets/work/trashure-hunters/brand/btn-trash-cam.webp" alt="Trash-Cam button" width="372" height="132" loading="lazy"><img src="../assets/work/trashure-hunters/brand/btn-trashure-hunt.webp" alt="Trashure-Hunt button" width="372" height="132" loading="lazy"><img class="sq" src="../assets/work/trashure-hunters/brand/trash-cash-coin.webp" alt="Trash-Cash coin" width="360" height="364" loading="lazy"><img class="sq" src="../assets/work/trashure-hunters/brand/water-gun.webp" alt="Water Gun" width="360" height="443" loading="lazy"><img class="sq" src="../assets/work/trashure-hunters/brand/badge-captured.webp" alt="Zone captured badge" width="400" height="404" loading="lazy"></div>
    </div>
@@ -451,7 +462,7 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
  <div class="wrap">
   <button type="button" class="egg rv" id="egg" aria-label="Tap the egg"><img id="eggi" src="../assets/work/trashure-hunters/brand/egg-awake.webp" alt="" width="360" height="458" loading="lazy"></button>
   <h2 id="ct-h" class="rv">This egg hasn&rsquo;t <span class="o">hatched yet.</span></h2>
-  <p class="lede rv">The world, the characters and the brand are designed. The app is in a private test build, not in the stores.</p>
+  <p class="lede rv">Private test build.</p>
   <div class="btns rv"><a class="btn btn-primary" href="https://www.trashure-hunters.com/" target="_blank" rel="noopener">Visit trashure-hunters.com &#8599;</a><a class="btn btn-purple" href="../work-with-me.html?lang=en">Start a project</a></div>
  </div>
 </section>
@@ -508,31 +519,30 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
   if('IntersectionObserver' in window)new IntersectionObserver(function(es){inView=es[0].isIntersecting;clearTimeout(tmr);if(inView&&auto)tmr=setTimeout(function(){selT(cur+1)},DUR)},{threshold:.35}).observe(tour);
   selT(0);
 
-  /* Trashure-Hunt sketch: hold Shoot to charge, release to fire (a quick tap does not fire, as in the app). Three full shots wash the Trashure clean. */
-  var ar=$('ar'),sh=$('shoot'),rg=$('rgc'),st=$('arst'),hpT=$('arhp'),hpB=$('hpb'),tr=$('tr'),fr=tr.querySelectorAll('img'),jet=$('jet'),win=$('arwin'),HOLD=800,hp=3,t0=0,ch=0,raf2=0,busy=false;
+  /* Trashure-Hunt sketch: hold the Water Gun to charge, release to fire (a quick tap does not fire, as in the app). One full charge washes the Trashure clean in a single shot. */
+  var ar=$('ar'),sh=$('shoot'),rg=$('rgc'),st=$('arst'),hpB=$('hpb'),tr=$('tr'),fr=tr.querySelectorAll('img'),jet=$('jet'),win=$('arwin'),HOLD=800,t0=0,ch=0,raf2=0,busy=false,clean=false;
   function setRing(k){rg.style.strokeDashoffset=(314*(1-k)).toFixed(1)}
   function tick(){ch=Math.min(1,(performance.now()-t0)/HOLD);setRing(ch);st.textContent=ch>=1?'READY! RELEASE TO FIRE':'CHARGING '+Math.round(ch*100)+'%';st.classList.toggle('warn',ch>=1);if(t0)raf2=requestAnimationFrame(tick)}
-  function down(e){if(busy||hp<=0||t0)return;if(e&&e.preventDefault)e.preventDefault();t0=performance.now();sh.classList.add('hold');if(rm){ch=1}tick()}
+  function down(e){if(busy||clean||t0)return;if(e&&e.preventDefault)e.preventDefault();t0=performance.now();sh.classList.add('hold');if(rm){ch=1}tick()}
   function up(){if(!t0)return;cancelAnimationFrame(raf2);var k=rm?1:Math.min(1,(performance.now()-t0)/HOLD);t0=0;sh.classList.remove('hold');setRing(0);
     if(k<1){st.textContent='HOLD LONGER TO CHARGE';st.classList.add('warn');return}
     fire()}
+  function splash(){var r=ar.getBoundingClientRect(),q=tr.getBoundingClientRect();
+    for(var i=0;i<12;i++){var d=document.createElement('i'),a=Math.random()*6.283,dd=40+Math.random()*60;d.className='drop';d.style.left=(q.left-r.left+q.width*(.3+Math.random()*.4))+'px';d.style.top=(q.top-r.top+q.height*(.3+Math.random()*.4))+'px';d.style.setProperty('--dx',(Math.cos(a)*dd).toFixed(0)+'px');d.style.setProperty('--dy',(Math.sin(a)*dd).toFixed(0)+'px');ar.appendChild(d);setTimeout(function(x){x.remove()}.bind(null,d),750)}}
   function fire(){busy=true;st.textContent='SPLASH!';st.classList.remove('warn');
     jet.classList.remove('on');void jet.getBoundingClientRect();jet.classList.add('on');
-    setTimeout(function(){hp--;tr.classList.remove('hit');void tr.offsetWidth;tr.classList.add('hit');
-      var r=ar.getBoundingClientRect(),q=tr.getBoundingClientRect();
-      if(!rm)for(var i=0;i<12;i++){var d=document.createElement('i'),a=Math.random()*6.283,dd=40+Math.random()*60;d.className='drop';d.style.left=(q.left-r.left+q.width*(.3+Math.random()*.4))+'px';d.style.top=(q.top-r.top+q.height*(.3+Math.random()*.4))+'px';d.style.setProperty('--dx',(Math.cos(a)*dd).toFixed(0)+'px');d.style.setProperty('--dy',(Math.sin(a)*dd).toFixed(0)+'px');ar.appendChild(d);setTimeout(function(x){x.remove()}.bind(null,d),750)}
-      fr.forEach(function(f,j){f.style.opacity=j===3-hp?'1':'0'});
-      hpB.style.width=(hp/3*100)+'%';hpT.textContent='HP '+hp+' / 3';
-      document.dispatchEvent(new CustomEvent('th:cleanup',{detail:{count:3-hp,done:hp===0}}));
-      if(hp===0){tr.classList.add('free');st.textContent='TRASHURE CLEAN';setTimeout(function(){win.classList.add('on');$('again').focus({preventScroll:true})},rm?0:500)}
-      else st.textContent='HOLD TO CHARGE';
-      busy=false},rm?0:300)}
+    /* one shot: the jet lands, then the grime washes off frame by frame while the health bar drains */
+    setTimeout(function(){tr.classList.remove('hit');void tr.offsetWidth;tr.classList.add('hit');hpB.style.width='0%';
+      [1,2,3].forEach(function(n,x){setTimeout(function(){if(!rm)splash();fr.forEach(function(f,j){f.style.opacity=j===n?'1':'0'})},rm?0:x*220)});
+      setTimeout(function(){clean=true;busy=false;tr.classList.add('free');st.textContent='TRASHURE CLEAN';
+        document.dispatchEvent(new CustomEvent('th:cleanup',{detail:{count:1,done:true}}));
+        setTimeout(function(){win.classList.add('on');$('again').focus({preventScroll:true})},rm?0:500)},rm?0:700)},rm?0:300)}
   sh.addEventListener('pointerdown',down);
   ['pointerup','pointerleave','pointercancel'].forEach(function(n){sh.addEventListener(n,up)});
   sh.addEventListener('keydown',function(e){if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();down()}});
   sh.addEventListener('keyup',function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();up()}});
   sh.addEventListener('contextmenu',function(e){e.preventDefault()});
-  $('again').addEventListener('click',function(){hp=3;win.classList.remove('on');tr.classList.remove('free');fr.forEach(function(f,j){f.style.opacity=j===0?'1':'0'});hpB.style.width='100%';hpT.textContent='HP 3 / 3';st.textContent='HOLD TO CHARGE';sh.focus({preventScroll:true})});
+  $('again').addEventListener('click',function(){clean=false;win.classList.remove('on');tr.classList.remove('free');fr.forEach(function(f,j){f.style.opacity=j===0?'1':'0'});hpB.style.width='100%';st.textContent='HOLD TO CHARGE';sh.focus({preventScroll:true})});
 
   /* Elemonsters: pick one, step through its four real stages; the phone shows its realm map. Lines from the game bible. */
   var B='../assets/work/trashure-hunters/stages/';
@@ -547,8 +557,8 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
     S.forEach(function(x){x.setAttribute('aria-pressed',+x.getAttribute('data-s')===stg?'true':'false')})}
   function pick(id){cid=id;var d=D[id];cast.style.setProperty('--mc',d[6]);
     M.forEach(function(x){x.setAttribute('aria-pressed',x.getAttribute('data-id')===id?'true':'false')});
-    $('d-n').textContent=d[0];$('d-t').textContent=d[5];$('d-team').textContent=d[2]+' Team';$('d-el').textContent=d[3];$('d-s0').textContent=d[4];
-    $('rn').textContent=d[7];$('rd').innerHTML=d[8];
+    $('d-n').textContent=d[0];$('d-t').textContent=d[5];$('d-team').textContent=d[2]+' Team';$('d-s0').textContent=d[4];
+    $('rn').textContent=d[7];
     rimg.classList.add('swap');clearTimeout(rt);rt=setTimeout(function(){rimg.src='../assets/work/trashure-hunters/screens/map-'+d[1]+'.webp';rimg.alt=d[7]+' realm map design';rimg.classList.remove('swap')},rm?0:180);
     draw(true)}
   M.forEach(function(b){b.addEventListener('click',function(){pick(b.getAttribute('data-id'))})});
@@ -559,8 +569,8 @@ h2{font-size:clamp(34px,5vw,56px);line-height:1.04;margin-bottom:14px}
   /* King Grime: drag the water line across him; Orbo is underneath */
   var kgv=$('kgv'),kgr=$('kgr'),said=false;
   function kgSet(v){kgv.style.setProperty('--x',(100-v)+'%');
-    if(v>60&&!said){said=true;$('kg-h').textContent='Orbo';$('kg-p').textContent='King Grime was Orbo all along, the keeper of creation, corrupted by years of pollution. No villains in this world. Only neglect.';$('kg-hint').textContent='Clean the world, free the light.'}
-    else if(v<30&&said){said=false;$('kg-h').textContent='King Grime';$('kg-p').textContent='Every bit of real-world trash feeds him. He isn’t destroyed in the end. He’s washed clean.'}}
+    if(v>60&&!said){said=true;$('kg-h').textContent='Orbo';$('kg-p').textContent='He was Orbo all along, corrupted by pollution. No villains. Only neglect.';$('kg-hint').textContent='Clean the world, free the light.'}
+    else if(v<30&&said){said=false;$('kg-h').textContent='King Grime';$('kg-p').textContent='Trash feeds him. Wash him clean.'}}
   kgr.addEventListener('input',function(){kgSet(+kgr.value)});kgSet(0);
 
   /* brand: logo tilts toward the pointer; swatches copy their hex */
