@@ -40,7 +40,7 @@ Arm duty every pass: query `status == "new"`, act, set `status:"routed"` with a 
 
 ## 3. `approvals` = everything that goes out in Dave's name
 
-Doc id: `<kind-prefix>-<mmdd>-<slug>` (e.g. `app-1112-helfy`, `warm-1112-ben-feldman`, `igq-<old id>`). Shape:
+Doc id: `<kind-prefix>-<mmdd>-<slug>` (e.g. `app-1112-<company>`, `warm-1112-<contact>`, `igq-<old id>`). Shape:
 ```
 { kind: "email"|"linkedin"|"application"|"post"|"invoice"|"other",
   label?: "IG Comment" | "DM" | "Page edit" ...      // chip text override
