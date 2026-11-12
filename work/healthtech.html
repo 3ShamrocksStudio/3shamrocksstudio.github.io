@@ -205,7 +205,7 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
 .tphone .scr>.sh.on{opacity:1;transform:none}
 /* two VIBRANT app-tour screens (designed by Dave; vb-6), rebuilt in HTML so they can be tapped. Sizes in cqw of the phone screen */
 .vs{display:flex;flex-direction:column;padding:13cqw 7cqw 6cqw;color:#fff;font:400 3.7cqw/1.35 var(--vr);text-align:left;overflow:hidden}
-.vs-res{background:linear-gradient(180deg,#8D8DF3 0%,#5D96EF 40%,#12AEEC 100%)}
+.vs-res{background:linear-gradient(180deg,#8D8DF3 0%,#5D96EF 40%,#12AEEC 100%);padding-top:24cqw}
 .vs-sch{background:linear-gradient(180deg,#3C5DE0 0%,#2A88EC 50%,#0FB2EE 100%);padding-top:11cqw}
 .vs-h{display:grid;grid-template-columns:10cqw 1fr;gap:3cqw;align-items:start}
 .vs-h .ri{width:10cqw;height:10cqw;border:.6cqw solid #fff;border-radius:50%;display:grid;place-items:center}
@@ -213,7 +213,7 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
 .vs-h b{display:block;font:700 5.3cqw/1.12 var(--vq)}
 .vs-h small{display:block;font-size:3.5cqw;margin-top:1cqw;opacity:.95}
 .vs-c{background:#fff;color:#3C444C;border-radius:3cqw;box-shadow:0 2cqw 5cqw rgba(16,40,110,.25)}
-.vs-chart{margin-top:8cqw;padding:5cqw 4cqw 3cqw 9cqw}
+.vs-chart{margin-top:14cqw;padding:5cqw 4cqw 3cqw 9cqw}
 .vs-plot{position:relative;height:38cqw;border-left:.35cqw solid #C9D3DD;border-bottom:.35cqw solid #C9D3DD;display:flex;align-items:flex-end;gap:2.4cqw;padding:0 1.6cqw}
 .vs-plot .y{position:absolute;left:-4.6cqw;transform:translateY(50%);font-size:2.6cqw;color:#7A8591}
 .vs-bar{flex:1;height:calc(var(--v)/5*100%);background:#C7E7F8;border:.35cqw solid #8CCDF0;border-bottom:0;transform:scaleY(0);transform-origin:bottom;transition:transform .9s var(--ease) calc(.25s + var(--i)*90ms),background .2s,border-color .2s;position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -225,7 +225,8 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
 .vs-bl{position:absolute;left:0;right:0;bottom:20%;border-top:.55cqw dotted #252F62;pointer-events:none}
 .vs-x{display:flex;gap:2.4cqw;padding:0 1.6cqw;margin-top:1.6cqw;font-size:2.3cqw;line-height:1.2;color:#7A8591;text-align:center}
 .vs-x span{flex:1}.vs-x span.sel{color:#1868D0;font-weight:700}
-.vs-base{margin-top:10cqw}
+.vs-base{margin-top:16cqw}
+.vs-res .vs-plot{height:44cqw}
 .vs-ft{margin-top:auto;display:grid;justify-items:center;gap:3cqw}
 .vs-ft .nx{font:700 3.8cqw var(--vq);padding:2.4cqw 15cqw;border:.5cqw solid #fff;border-radius:99px}
 .vs-ft .sk{font:700 3.2cqw var(--vq);text-decoration:underline}
@@ -514,7 +515,7 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.04;margin-bottom:16px}
       <div class="vs-c vs-chart"><div class="vs-plot"><span class="y" style="bottom:0">0</span><span class="y" style="bottom:20%">1</span><span class="y" style="bottom:40%">2</span><span class="y" style="bottom:60%">3</span><span class="y" style="bottom:80%">4</span><span class="y" style="bottom:100%">5</span><button type="button" class="vs-bar" style="--v:4;--i:0" aria-label="May 4 to 11: 4"><em>4</em></button><button type="button" class="vs-bar sel" style="--v:2;--i:1" aria-label="May 12 to 19: 2"><em>2</em></button><button type="button" class="vs-bar" style="--v:4;--i:2" aria-label="May 20 to 27: 4"><em>4</em></button><button type="button" class="vs-bar" style="--v:3;--i:3" aria-label="May 28 to June 4: 3"><em>3</em></button><button type="button" class="vs-bar" style="--v:5;--i:4" aria-label="June 5 to 12: 5"><em>5</em></button><i class="vs-bl"></i></div><div class="vs-x" aria-hidden="true"><span>May 4&ndash;11</span><span class="sel">May 12&ndash;19</span><span>May 20&ndash;27</span><span>May 28&ndash;Jun 4</span><span>Jun 5&ndash;12</span></div></div>
       <div class="vs-h vs-base"><span class="ri" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><circle cx="6.5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="17.5" cy="12" r="1.8"/></svg></span><div><b>Baseline =</b><small>Your weekly number of complete spontaneous bowel movements before Vibrant treatment.</small></div></div>
       <div class="vs-ft" aria-hidden="true"><span class="nx">Next</span><span class="sk">Skip</span><span class="dt"><i></i><i class="on"></i><i></i><i></i></span></div>
-      <svg class="vs-arw" viewBox="0 0 100 202.2" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M7 30C1 42 1 56 6.5 64l-.4-3.8M6.5 64l-3.6-1.6"/><path pathLength="100" d="M13 103C11 95 13 87 19.5 80.5l-3.6 1M19.5 80.5l-.3 3.8"/></svg>
+      <svg class="vs-arw" viewBox="0 0 100 207.4" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M7 41.5C1 55 1 72 6.5 81l-.4-3.8M6.5 81l-3.6-1.6"/><path pathLength="100" d="M13 132.2C11 121.4 13 110.6 19.5 101.8l-3.6 1M19.5 101.8l-.3 3.8"/></svg>
      </div>
      <img class="sh" src="../assets/work/vibrant/play/calendar.webp" alt="VIBRANT Companion: monthly calendar of capsules and reports" width="720" height="1456" loading="lazy">
      <div class="sh vs vs-sch" role="group" aria-label="VIBRANT app tour screen, rebuilt: Personal messages and Stay consistent. Tap a day to check its capsule.">
