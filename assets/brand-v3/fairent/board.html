@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FaiRent Brand Board</title>
+<meta name="description" content="FaiRent brand system v5, the renter's red pen: logo, mark, colour, type, icons, motion and voice. 3Shamrocks Studio.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1A1633">
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=IBM+Plex+Sans+Hebrew:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#1A1633;--ink2:#2A2550;--paper:#F7F3EA;--card:#FFFEFA;--red:#FF4A2B;--red-ink:#C8331A;--hl:#FFE53D;--pencil:#5E5974;--rule:#E3DCCB;
+ --disp:'Rubik',system-ui,sans-serif;--body:'IBM Plex Sans Hebrew',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;--note:'Caveat',cursive;--snap:cubic-bezier(.3,1.5,.5,1);--drop:cubic-bezier(.5,0,.9,.5)}
+html{overflow-x:clip}
+body{background:var(--paper);color:var(--ink);font:16px/1.6 var(--body);-webkit-font-smoothing:antialiased;overflow-x:clip}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+.w{max-width:1180px;margin:0 auto;padding:0 16px}
+@media(min-width:720px){.w{padding:0 28px}}
+.k{font:600 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--pencil)}
+h1,h2{font-family:var(--disp);font-weight:900;letter-spacing:-.035em;line-height:.95}
+h2{font-size:clamp(34px,5vw,56px);margin:8px 0 10px}
+h3{font:800 18px var(--disp);letter-spacing:-.01em}
+p.s{color:#3a3557;max-width:62ch}
+section{padding:72px 0;border-top:2px dashed var(--rule)}
+code{font:500 .86em var(--mono);background:rgba(26,22,51,.07);padding:1px 6px;border-radius:5px;word-break:break-word}
+.cur{font-family:var(--disp);font-weight:700}
+/* top */
+.top{background:var(--ink);color:var(--paper);padding:20px 0 0;overflow:hidden;position:relative}
+.top nav{display:flex;justify-content:space-between;align-items:center;gap:12px;font:600 14px var(--body)}
+.top nav a{min-height:44px;display:inline-flex;align-items:center;text-decoration:none;color:#E9E4F6}
+.top nav a:hover{color:var(--hl)}
+.top .hero{display:grid;gap:36px;padding:56px 0 72px;align-items:center}
+@media(min-width:900px){.top .hero{grid-template-columns:1.1fr .9fr}}
+.top h1{font-size:clamp(48px,8vw,104px)}
+.top h1 em{font-style:normal;color:var(--red)}
+.top .k{color:#B7B0CF}
+.top p{color:#D9D3EA;font-size:19px;max-width:44ch;margin-top:18px}
+.idea{background:var(--hl);color:var(--ink);border-radius:24px;padding:28px;transform:rotate(1.5deg)}
+.idea .note{font:700 34px/1 var(--note);color:var(--red-ink)}
+.idea ul{list-style:none;margin-top:14px;display:grid;gap:10px}
+.idea li{font:800 19px/1.25 var(--disp)}
+.idea li span{font:500 14px var(--body);display:block;color:#3a3557}
+.slash{position:absolute;right:-6vw;bottom:-10px;width:40vw;height:30px;background:var(--red);transform:rotate(-21deg);opacity:.9}
+/* grid cards */
+.g{display:grid;gap:16px;margin-top:28px}
+@media(min-width:760px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}}
+.c{background:var(--card);border-radius:20px;padding:22px;box-shadow:0 1px 0 var(--rule),0 14px 30px -22px rgba(26,22,51,.35)}
+.c.dk{background:var(--ink);color:var(--paper)}
+.c.yl{background:var(--hl)}
+.c .cap{font:500 13px var(--mono);color:var(--pencil);margin-top:14px}
+.c.dk .cap{color:#B7B0CF}
+.art{display:grid;place-items:center;min-height:200px}
+.art img{max-height:150px;width:auto}
+/* clear space */
+.cs{position:relative;display:inline-block;padding:28px;border:1.5px dashed var(--red);margin:10px auto}
+.cs::before{content:"x";position:absolute;top:4px;left:8px;font:600 12px var(--mono);color:var(--red-ink)}
+.mins{display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.mins figure{font:500 12px var(--mono);color:var(--pencil);text-align:center}
+.mins img{margin:0 auto 8px}
+/* colour */
+.sw{border-radius:18px;padding:18px;min-height:190px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:0;text-align:left;font:inherit;transition:transform .2s var(--snap)}
+.sw:hover{transform:translateY(-3px) rotate(-.6deg)}
+.sw b{font:900 22px var(--disp);letter-spacing:-.02em}
+.sw code{background:rgba(255,255,255,.35)}
+.sw small{display:block;font:500 13px/1.45 var(--body);margin-top:6px}
+.sub{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.sub span{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;border-radius:999px;background:var(--card);font:500 13px var(--mono)}
+.sub i{width:26px;height:26px;border-radius:50%}
+table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--rule)}
+th{font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--pencil)}
+.tw{overflow-x:auto}
+/* type */
+.spec{font-family:var(--disp);font-weight:900;font-size:clamp(54px,9vw,110px);line-height:.9;letter-spacing:-.04em}
+.he{font-family:var(--disp);font-weight:800;font-size:clamp(34px,5vw,56px);line-height:1.05}
+.mono{font:600 clamp(32px,5vw,52px)/1 var(--mono);letter-spacing:-.03em}
+.pen{font:700 clamp(36px,5vw,54px)/1 var(--note);color:var(--red-ink)}
+/* icons */
+.icons{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+@media(min-width:600px){.icons{grid-template-columns:repeat(6,1fr)}}
+.icons figure{background:var(--card);border-radius:18px;padding:16px 10px 12px;text-align:center;font:500 12px/1.3 var(--mono);color:var(--pencil);transition:transform .25s var(--snap)}
+.icons figure:hover{transform:rotate(-5deg) scale(1.05)}
+.icons svg{width:56px;height:56px;margin:0 auto 10px}
+/* motion */
+.mo .stage{height:150px;display:grid;place-items:center;background:var(--paper);border-radius:14px;margin-top:14px;overflow:hidden}
+.mo p{font-size:14px;color:#3a3557;margin-top:10px}
+.m-cut svg{width:96px;overflow:visible}
+.m-cut .ch{transform-box:fill-box;transform-origin:0 100%;animation:cut 2.6s var(--snap) infinite}
+@keyframes cut{0%,30%{transform:none}45%{transform:translate(-5px,-7px) rotate(-12deg)}62%{transform:translate(8px,38px) rotate(38deg);opacity:1}72%{opacity:0}80%{transform:none;opacity:0}100%{opacity:1}}
+.m-strike{position:relative;font:600 44px var(--mono);letter-spacing:-.04em}
+.m-strike svg{position:absolute;left:-8%;top:18%;width:116%;height:70%;overflow:visible}
+.m-strike path{fill:none;stroke:var(--red);stroke-width:7;stroke-linecap:round;stroke-dasharray:320;animation:strike 2.6s var(--drop) infinite}
+@keyframes strike{0%,25%{stroke-dashoffset:320}45%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:-320}}
+.m-swipe{position:relative;font:600 44px var(--mono);letter-spacing:-.04em;padding:0 8px;z-index:0}
+.m-swipe::before{content:"";position:absolute;z-index:-1;inset:16% -4px 0;background:var(--hl);transform:skewX(-21deg) scaleX(0);transform-origin:0 50%;animation:swipe 2.6s cubic-bezier(.2,.7,.2,1) infinite}
+@keyframes swipe{0%,25%{transform:skewX(-21deg) scaleX(0)}50%,88%{transform:skewX(-21deg) scaleX(1)}100%{transform:skewX(-21deg) scaleX(1);opacity:0}}
+.m-stamp{display:inline-flex;flex-direction:column;align-items:center;padding:6px 14px;border:4px solid var(--red);border-radius:8px;color:var(--red);font:900 15px/1.05 var(--disp);text-transform:uppercase;letter-spacing:.04em;animation:stp 2.6s var(--snap) infinite}
+.m-stamp b{font-size:30px;letter-spacing:-.02em}
+@keyframes stp{0%,30%{transform:rotate(-16deg) scale(1.8);opacity:0}45%,90%{transform:rotate(-7deg) scale(1);opacity:1}100%{opacity:0;transform:rotate(-7deg)}}
+/* voice */
+.vo{display:grid;gap:12px;margin-top:22px}
+@media(min-width:760px){.vo{grid-template-columns:1fr 1fr}}
+.vo>div{border-radius:16px;padding:16px 18px;background:var(--card)}
+.vo .no{background:transparent;border:2px dashed var(--rule)}
+.vo .no p{text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:3px;color:var(--pencil)}
+.vo .k{margin-bottom:6px}
+/* files */
+.files{columns:2 220px;gap:24px;margin-top:20px;list-style:none;font:500 14px/1.9 var(--mono)}
+.files a{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--rule)}
+.files a:hover{text-decoration-color:var(--red)}
+footer{background:var(--ink);color:#B7B0CF;padding:28px 0;font:500 13px var(--mono)}
+footer .w{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font:700 14px var(--body);transition:.25s;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false"><symbol id="fr-tag" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>Asking price</title><path d="M26 6h13a3 3 0 0 1 3 3v13L23 41a3 3 0 0 1-4.2 0L7 29.2A3 3 0 0 1 7 25z"/><circle cx="33" cy="15" r="3.2"/><path d="M11 33L33 21" stroke="#FF4A2B" stroke-width="5"/></symbol><symbol id="fr-receipt" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>What renters pay</title><rect x="12" y="21" width="24" height="7" rx="2" fill="#FFE53D" stroke="none"/><path d="M10 6h28v36l-4.7-3-4.6 3-4.7-3-4.6 3-4.7-3L10 42z"/><path d="M16 15h16M16 24.5h16M16 33h9"/></symbol><symbol id="fr-cut" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>Mark it down</title><path d="M6 17h22l-6 16H6z"/><path d="M32 17h10v16H26z" fill="#FF4A2B" stroke="none" transform="rotate(18 26 33) translate(2 5)"/></symbol><symbol id="fr-fair" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>Fair line</title><rect x="6" y="21" width="36" height="9" rx="2" fill="#FFE53D" stroke="none" transform="rotate(-3 24 25)"/><path d="M8 12h22M8 25.5h22M8 39h22"/><path d="M37 6v36" stroke-dasharray="2 6"/></symbol><symbol id="fr-city" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>City</title><path d="M24 43S10 31.5 10 20a14 14 0 0 1 28 0c0 11.5-14 23-14 23z"/><circle cx="24" cy="20" r="5" fill="#FFE53D"/></symbol><symbol id="fr-rooms" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>Rooms</title><rect x="10" y="22" width="13" height="16" fill="#FFE53D" stroke="none"/><path d="M6 6h36v36H6zM24 6v14M24 28v14M6 22h10M30 22h12"/></symbol><symbol id="fr-year" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>Per year</title><rect x="6" y="9" width="36" height="33" rx="4"/><path d="M6 19h36M15 5v8M33 5v8"/><path d="M27 26h9l-2.5 9H24z" fill="#FF4A2B" stroke="none"/></symbol><symbol id="fr-source" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>Source cited</title><rect x="8" y="20" width="32" height="9" fill="#FFE53D" stroke="none"/><path d="M8 6h32v36H8zM8 16h32M8 33h32M20 6v36"/></symbol><symbol id="fr-message" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>Message</title><path d="M42 21c0 8.3-7.6 15-17 15-2.9 0-5.6-.6-8-1.7L7 38l3-8.5C8 27.2 7 24.2 7 21 7 12.7 14.8 6 24.5 6S42 12.7 42 21z"/><path d="M16 18h17M16 25h10"/><path d="M29 22.5h7l-2 5h-7z" fill="#FF4A2B" stroke="none"/></symbol><symbol id="fr-send" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>Send</title><path d="M42 6L6 21l14 6 6 14z"/><path d="M42 6L20 27"/><path d="M20 27l6 14 4-10z" fill="#FFE53D" stroke-width="4"/></symbol><symbol id="fr-lease" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>Renter rights</title><path d="M12 5h17l9 9v27a3 3 0 0 1-3 3H12a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3zM29 5v9h9M15 21h15M15 28h10"/><path d="M15 37c3-3 5 2 8-1s4 1 6 0" stroke="#FF4A2B"/></symbol><symbol id="fr-shekel" viewBox="0 0 48 48" fill="none" stroke="#1A1633" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><title>Shekels</title><circle cx="24" cy="24" r="19" fill="#FFE53D" stroke="none"/><path d="M14 34V14h9a6 6 0 0 1 6 6v8M34 14v20h-9a6 6 0 0 1-6-6v-8"/></symbol></svg>
+
+<header class="top">
+ <div class="w">
+  <nav><a href="../../../work/fairent.html">&larr; FaiRent case study</a><a href="../../../">3Shamrocks Studio</a></nav>
+  <div class="hero">
+   <div>
+    <div class="k">FaiRent &middot; brand system v5 &middot; 12 Nov 2026</div>
+    <h1>The renter&rsquo;s <em>red pen.</em></h1>
+    <p>FaiRent puts the landlord&rsquo;s number on paper and lets the renter mark it up: strike the overcharge, highlight the fair price, write the counter-offer in the margin.</p>
+   </div>
+   <div class="idea">
+    <span class="note">the whole brand, in 3 marks:</span>
+    <ul>
+     <li>Strike<span>Red Pen through the asking rent. Only when it is above the fair band.</span></li>
+     <li>Highlight<span>Highlighter behind the fair number. The thing to remember.</span></li>
+     <li>Cut at 21&deg;<span>Every slash, chip and stamp leans the same way.</span></li>
+    </ul>
+   </div>
+  </div>
+ </div>
+ <i class="slash" aria-hidden="true"></i>
+</header>
+<main>
+<section id="logo"><div class="w">
+ <div class="k">01 &middot; Logo system</div><h2>Logo and mark</h2>
+ <p class="s">Hand-built from Rubik 800 outlines. The F&rsquo;s top bar ends in a 21&deg; cut, and the off-cut, in Red Pen, is the money the renter keeps. The same chip dots the i in the wordmark.</p>
+ <div class="g g2">
+  <div class="c"><div class="art"><img src="logo.svg" alt="FaiRent horizontal logo on Receipt Paper" width="400" height="92"></div><div class="cap">logo.svg &middot; logo.png &middot; primary, on light</div></div>
+  <div class="c dk"><div class="art"><img src="logo-on-dark.svg" alt="FaiRent horizontal logo on Ledger Ink" width="400" height="92"></div><div class="cap">logo-on-dark.svg &middot; .png</div></div>
+  <div class="c yl"><div class="art"><img src="logo-stacked.svg" alt="FaiRent stacked logo on Highlighter" width="300" height="220" style="max-height:200px"></div><div class="cap" style="color:var(--ink)">logo-stacked.svg &middot; splash, store art, transitions</div></div>
+  <div class="c"><div class="art" style="grid-template-columns:repeat(3,auto);gap:28px"><img src="mark.svg" alt="FaiRent mark" width="110" height="115" style="height:110px"><img src="mark-mono.svg" alt="FaiRent mark, one colour" width="110" height="115" style="height:110px"><span style="background:var(--ink);padding:14px;border-radius:14px"><img src="mark-on-dark.svg" alt="FaiRent mark on dark" width="82" height="86" style="height:82px"></span></div><div class="cap">mark.svg &middot; mark-mono.svg &middot; mark-on-dark.svg</div></div>
+ </div>
+ <div class="g g3" style="margin-top:16px">
+  <div class="c"><h3>App icon</h3><div class="art" style="grid-template-columns:repeat(3,auto);gap:18px;min-height:150px"><img src="app-icon.svg" alt="App icon, Highlighter" width="96" height="96" style="height:96px"><img src="app-icon-dark.svg" alt="App icon, Ledger Ink" width="96" height="96" style="height:96px"><img src="app-icon-light.svg" alt="App icon, Receipt Paper" width="96" height="96" style="height:96px"></div><div class="cap">Highlighter is the default. iOS: app-icon-ios-1024.png (full bleed).</div></div>
+  <div class="c"><h3>Clear space</h3><div class="art" style="min-height:150px"><span class="cs"><img src="logo.svg" alt="" width="200" height="46" style="width:200px"></span></div><div class="cap">x = the height of the i&rsquo;s chip, at least 2x on every side.</div></div>
+  <div class="c"><h3>Minimum size</h3><div class="art" style="min-height:150px"><div class="mins"><figure><img src="logo.svg" alt="" width="96" height="22" style="width:96px">96 px</figure><figure><img src="mark.svg" alt="" width="20" height="21" style="width:20px">20 px</figure><figure><img src="favicon.svg" alt="" width="16" height="16" style="width:16px">16 px</figure></div></div><div class="cap">Below 20 px use favicon.svg (mark on a Highlighter tile).</div></div>
+ </div>
+</div></section>
+
+<section id="colour"><div class="w">
+ <div class="k">02 &middot; Colour &middot; tap to copy</div><h2>Paper, ink, pen, highlighter</h2>
+ <p class="s">Four colours from a renter&rsquo;s desk. Red only ever means &ldquo;this is too much&rdquo;. Yellow only ever means &ldquo;this is fair&rdquo;.</p>
+ <div class="g g4">
+  <button class="sw" data-hex="#1A1633" style="background:#1A1633;color:#F7F3EA"><span><b>Ledger Ink</b><small>Text, the mark, dark canvas</small></span><code style="background:rgba(255,255,255,.12)">#1A1633</code></button>
+  <button class="sw" data-hex="#F7F3EA" style="background:#F7F3EA;color:#1A1633;box-shadow:inset 0 0 0 2px #E3DCCB"><span><b>Receipt Paper</b><small>The light canvas</small></span><code>#F7F3EA</code></button>
+  <button class="sw" data-hex="#FF4A2B" style="background:#FF4A2B;color:#1A1633"><span><b>Red Pen</b><small>The overcharge: strikes, chips, stamps. Shapes and type 24 px and up</small></span><code>#FF4A2B</code></button>
+  <button class="sw" data-hex="#FFE53D" style="background:#FFE53D;color:#1A1633"><span><b>Highlighter</b><small>The fair number, app icon, splash. A background, never text on paper</small></span><code>#FFE53D</code></button>
+ </div>
+ <div class="sub"><span><i style="background:#C8331A"></i>Red Ink #C8331A &middot; red text under 24 px</span><span><i style="background:#5E5974"></i>Pencil #5E5974 &middot; secondary text</span><span><i style="background:#E3DCCB"></i>Rule #E3DCCB &middot; hairlines</span><span><i style="background:#FFFEFA;box-shadow:inset 0 0 0 1px #E3DCCB"></i>Card #FFFEFA &middot; the receipt</span></div>
+ <div class="tw"><table>
+  <tr><th>Pair</th><th>Contrast</th><th>Use</th></tr>
+  <tr><td>Ledger Ink on Receipt Paper</td><td>15.7 : 1</td><td>All body text</td></tr>
+  <tr><td>Ledger Ink on Highlighter</td><td>13.7 : 1</td><td>Fair number, buttons, app icon</td></tr>
+  <tr><td>Pencil on Receipt Paper</td><td>6.0 : 1</td><td>Labels, captions</td></tr>
+  <tr><td>Ledger Ink on Red Pen</td><td>5.2 : 1</td><td>Text on red blocks</td></tr>
+  <tr><td>Red Ink on Receipt Paper</td><td>4.8 : 1</td><td>Small red text, the margin note</td></tr>
+  <tr><td>Red Pen on Receipt Paper</td><td>3.0 : 1</td><td>Large only (24 px+), strikes and shapes</td></tr>
+ </table></div>
+</div></section>
+
+<section id="type"><div class="w">
+ <div class="k">03 &middot; Typography &middot; Hebrew first</div><h2>Four voices</h2>
+ <div class="g g2">
+  <div class="c"><div class="spec">Is it fair?</div><div class="cap">Rubik 900 / 800 &middot; display, Latin and Hebrew &middot; tight, &minus;3.5% tracking</div></div>
+  <div class="c"><div class="he" lang="he" dir="rtl">האם שכר הדירה שלך הוגן?</div><div class="cap">Rubik 800 &middot; the same family carries the Hebrew app</div></div>
+  <div class="c"><div class="mono"><span class="cur">&#8362;</span>7,346 &middot; +14%</div><div class="cap">IBM Plex Mono 600 &middot; every figure, like a receipt. The &#8362; sign is set in Rubik.</div></div>
+  <div class="c"><div class="pen">ask for <span class="cur" style="font-family:var(--note)">&#8362;</span>7,350</div><div class="cap">Caveat 700 &middot; the red-pen margin note. Latin only, short lines only.</div></div>
+ </div>
+ <p class="s" style="margin-top:18px">Body: <b>IBM Plex Sans Hebrew</b> 400&ndash;600 for both scripts. <bdi lang="he">שכר דירה ממוצע ששולם בפועל</bdi></p>
+</div></section>
+
+<section id="icons"><div class="w">
+ <div class="k">04 &middot; Iconography</div><h2>Renter icons</h2>
+ <p class="s">48 grid, 4 px round strokes in Ledger Ink. One accent each: a red cut for &ldquo;too much&rdquo;, a highlighter block for &ldquo;fair&rdquo;. <code>icons.svg</code> (sprite) &middot; <code>icons.png</code></p>
+ <div class="icons"><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-tag"/></svg>Asking price</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-receipt"/></svg>What renters pay</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-cut"/></svg>Mark it down</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-fair"/></svg>Fair line</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-city"/></svg>City</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-rooms"/></svg>Rooms</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-year"/></svg>Per year</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-source"/></svg>Source cited</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-message"/></svg>Message</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-send"/></svg>Send</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-lease"/></svg>Renter rights</figure><figure><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#fr-shekel"/></svg>Shekels</figure></div>
+</div></section>
+
+<section id="motion"><div class="w">
+ <div class="k">05 &middot; Motion</div><h2>Four moves, one angle</h2>
+ <p class="s">Fast in, settle with a small overshoot. Nothing floats or loops in the product: each move answers something the renter did.</p>
+ <div class="g g4">
+  <div class="c mo"><h3>The cut</h3><div class="stage m-cut"><svg viewBox="4 0 96 100" aria-hidden="true"><path d="M19 12H66L59 30H32V46H54a5 5 0 0 1 5 5v6a5 5 0 0 1-5 5H32V83a5 5 0 0 1-5 5h-8a5 5 0 0 1-5-5V17a5 5 0 0 1 5-5z" fill="#1A1633"/><g transform="rotate(16 64 30) translate(1 3)"><g class="ch"><path d="M71 12H83a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H64z" fill="#FF4A2B"/></g></g></svg></div><p>The off-cut drops: the price comes down. Logo intro, success.</p></div>
+  <div class="c mo"><h3>The strike</h3><div class="stage"><span class="m-strike"><span class="cur">&#8362;</span>8,400<svg viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true"><path d="M4 40C60 30 110 33 160 26S250 18 296 14"/></svg></span></div><p>Red Pen through an asking rent above the fair band. 450 ms, ease-in.</p></div>
+  <div class="c mo"><h3>The swipe</h3><div class="stage"><span class="m-swipe"><span class="cur">&#8362;</span>7,346</span></div><p>Highlighter behind the fair number, left to right at 21&deg;.</p></div>
+  <div class="c mo"><h3>The stamp</h3><div class="stage"><span class="m-stamp"><b>+14%</b>A bit above</span></div><p>The verdict lands at &minus;7&deg; with a snap. Red when over, ink when fair.</p></div>
+ </div>
+ <p class="s" style="margin-top:16px">Easing: <code>--fr-snap cubic-bezier(.3,1.5,.5,1)</code> for landings, <code>--fr-drop cubic-bezier(.5,0,.9,.5)</code> for strikes. Page transition: two Highlighter halves meet on a red seam. All motion stops under reduced motion.</p>
+</div></section>
+
+<section id="voice"><div class="w">
+ <div class="k">06 &middot; Voice</div><h2>A friend with the numbers</h2>
+ <p class="s">Calm, on the renter&rsquo;s side, never angry at landlords. Every number names its source. A negotiation aid, never an appraisal.</p>
+ <div class="vo">
+  <div><div class="k">Say</div><p>&ldquo;Renters in Tel Aviv&ndash;Yafo pay about <span class="cur">&#8362;</span>6,976 for 2.5&ndash;3 rooms (CBS, Q2 2025).&rdquo;</p></div>
+  <div class="no"><div class="k">Not</div><p>&ldquo;Your landlord is ripping you off!&rdquo;</p></div>
+  <div><div class="k">Say</div><p>&ldquo;Is there room to set the rent at <span class="cur">&#8362;</span>7,350?&rdquo;</p></div>
+  <div class="no"><div class="k">Not</div><p>&ldquo;Guaranteed savings on every lease.&rdquo;</p></div>
+ </div>
+ <p class="s" style="margin-top:18px">Brand line, from the hand-lettered original: <span style="font:700 28px var(--note);color:var(--red-ink)">Stop paying more for less.</span></p>
+</div></section>
+
+<section id="files"><div class="w">
+ <div class="k">07 &middot; Files</div><h2>Download</h2>
+ <ul class="files">
+  <li><a href="logo.svg">logo.svg</a> / <a href="logo.png">.png</a></li>
+  <li><a href="logo-on-dark.svg">logo-on-dark.svg</a> / <a href="logo-on-dark.png">.png</a></li>
+  <li><a href="logo-stacked.svg">logo-stacked.svg</a> / <a href="logo-stacked.png">.png</a></li>
+  <li><a href="logo-stacked-on-dark.svg">logo-stacked-on-dark.svg</a> / <a href="logo-stacked-on-dark.png">.png</a></li>
+  <li><a href="logo-on-green.webp">logo-on-green.webp</a> (splash art, legacy name)</li>
+  <li><a href="mark.svg">mark.svg</a> / <a href="logo-mark.png">logo-mark.png</a></li>
+  <li><a href="mark-mono.svg">mark-mono.svg</a> &middot; <a href="mark-on-dark.svg">mark-on-dark.svg</a></li>
+  <li><a href="app-icon.svg">app-icon.svg</a> / <a href="app-icon.png">.png</a></li>
+  <li><a href="app-icon-ios-1024.png">app-icon-ios-1024.png</a></li>
+  <li><a href="app-icon-dark.svg">app-icon-dark.svg</a> &middot; <a href="app-icon-light.svg">app-icon-light.svg</a></li>
+  <li><a href="favicon.svg">favicon.svg</a> &middot; <a href="favicon-32.png">32</a> &middot; <a href="favicon-180.png">180</a></li>
+  <li><a href="icons.svg">icons.svg</a> / <a href="icons.png">icons.png</a></li>
+  <li><a href="tokens.css">tokens.css</a> &middot; <a href="palette.json">palette.json</a></li>
+  <li><a href="BRAND.md">BRAND.md</a></li>
+ </ul>
+</div></section>
+</main>
+<footer><div class="w"><span>FaiRent brand v5 &middot; 3Shamrocks Studio &middot; &copy; 2026</span><span>In development. Not launched.</span></div></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){var t=document.getElementById('toast'),tt=0;
+document.querySelectorAll('.sw').forEach(function(b){b.addEventListener('click',function(){var h=b.getAttribute('data-hex');function ok(){t.textContent='Copied '+h;t.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on')},1500)}
+try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(h).then(ok,ok);return}}catch(e){}ok()})})})();
+</script>
+</body>
+</html>

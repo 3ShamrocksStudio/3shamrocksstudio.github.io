@@ -1,35 +1,56 @@
-# FaiRent · Brand v4
+# FaiRent · Brand v5 · "The renter's red pen"
 
-**Idea:** power back to renters. Stop paying more for less.
-**Name:** always **FaiRent** (capital F, capital R). It is a **mobile app**.
+12 Nov 2026. Replaces v4 (the indigo and green RR mark), which is archived in `assets/brand-proposals/fairent-v4-archive-2026-11-12/`.
+Live board: `board.html` (this folder). Case study: `work/fairent.html`.
 
-## Source
-- `Fairent/Brand/Fairent_icon.svg`: the RR mark. A green R and a mirrored indigo R overlap in violet: two sides at one table. v4 keeps the exact geometry and colours.
-- `Fairent.ai`: Dave's tagline "Stop Paying More For Less", hand-lettered. v4 keeps it as the brand voice line.
+**What FaiRent is:** a Hebrew-first mobile app for renters in Israel, in development (not launched). The renter enters city, rooms and the asking rent; the app compares it with what renters actually pay (CBS Table 4.9, paid rent, Q2 2025, by city and room band, district fallback where CBS suppresses a cell), adds 5.3% for a new lease (CBS CPI, Sept 2026), gives a verdict, and writes a negotiation message. A negotiation aid, not an appraisal. Renter-to-renter reports are off until shared storage and privacy rules are ready.
+
+**Name:** always **FaiRent** (capital F, capital R).
+
+## Strategy
+The landlord's number arrives on paper. FaiRent hands the renter the red pen: **strike** the overcharge, **highlight** the fair number, write the counter-offer in the margin. Calm, on the renter's side, never angry at landlords. Every number names its source.
+
+Brand line (from the hand-lettered original): *Stop paying more for less.*
 
 ## Logo system
-- **Wordmark:** "FaiRent" in Fredoka 700. "Fai" is Signal Green and "Rent" is Deep Indigo (white on dark). Fredoka's round terminals match Dave's chunky logotype, and it spells the name correctly.
-- `logo.png`: the complete logo. The RR mark with "FaiRent" set underneath in Fredoka 700 ("Fai" Signal Green, "Rent" Deep Indigo), on a transparent background.
-- `logo-on-dark.png`: the same lockup for dark backgrounds ("Rent" and the mirrored R in white).
-- The Kalam tagline "Stop paying more for less" is used beside the logo, not inside it.
-- `logo-mark.png`, `mark.svg`, `mark-on-dark.svg`: the RR mark.
-- **App icons:** `app-icon.png` (rounded, dark indigo glow, white mirrored R), `app-icon-ios-1024.png` (full-bleed for the stores), `app-icon-light.png` (white tile, original colours).
-- `hero.png`: the app's "Is your rent fair?" screen with a fairness meter. It shows no numbers; real figures must always cite their source.
+- **Mark** (`mark.svg`, `mark-mono.svg`, `mark-on-dark.svg`, `logo-mark.png`): an F outlined from Rubik 800, its top bar cut at 21°. The off-cut, in Red Pen, is the money the renter keeps.
+- **Wordmark / horizontal logo** (`logo.svg` / `.png`, `logo-on-dark.svg` / `.png`): "FaiRent" in Ledger Ink, the i dotted with the same red chip.
+- **Stacked** (`logo-stacked*.svg` / `.png`): splash, store art, page transitions. `logo-on-green.webp` keeps its legacy file name (the homepage card and the brand transition load it) but is now the stacked v5 logo, shown on Highlighter yellow.
+- **App icons:** `app-icon.svg` / `.png` (Highlighter, default), `app-icon-dark.svg`, `app-icon-light.svg`, `app-icon-ios-1024.png` (full bleed), `favicon.svg`, `favicon-32.png`, `favicon-180.png`.
+- Clear space: 2x the height of the i's chip. Minimum: logo 96 px wide, mark 20 px; below that use `favicon.svg`.
 
-## Icons
-`icons.svg` / `icons.png`: 10 renter icons (My home, Compare, Verified, Community, Area, Lease, Overcharge, Ask renters, Fair price, Check a flat). Chunky 4.5 px indigo strokes with one solid green shape, like the two Rs.
-
-## Palette (the real four, plus two tints)
+## Colour
 | Name | Hex | Use |
 |---|---|---|
-| Deep Indigo | `#310A91` | Primary, "Rent", mirrored R |
-| Electric Violet | `#6550FF` | The overlap, energy |
-| Signal Green | `#53D805` | "Fai", the fair R, verified, CTAs on dark |
-| Ink Black | `#050511` | Text, dark canvas |
-| Lavender | `#B9AEFF` | Text on dark |
-| Cloud | `#F4F2FF` | Light canvas |
+| Ledger Ink | `#1A1633` | Text, the mark, dark canvas |
+| Receipt Paper | `#F7F3EA` | Light canvas |
+| Red Pen | `#FF4A2B` | The overcharge: strikes, chips, stamps. Shapes and type 24 px and up |
+| Highlighter | `#FFE53D` | The fair number, app icon, splash. Background only, never text on paper |
+| Red Ink | `#C8331A` | Red text under 24 px (4.8:1 on Paper) |
+| Pencil | `#5E5974` | Secondary text (6.0:1 on Paper) |
+| Rule | `#E3DCCB` | Hairlines, receipt rules |
 
-Never put green text on white.
+Red only ever means "too much". Yellow only ever means "fair". Tokens: `tokens.css`, `palette.json`.
 
 ## Type
-- Display, Hebrew and Latin: **Fredoka 600–700**. Body: **Assistant**. Voice line: **Kalam 700**.
+- Display, Latin and Hebrew: **Rubik 800–900**, tracking −3.5%.
+- Body, both scripts: **IBM Plex Sans Hebrew 400–600**.
+- Figures: **IBM Plex Mono 500–600** (receipt numbers). Set the ₪ sign in Rubik.
+- Margin notes: **Caveat 700**, red, Latin only, short lines.
+
+## Icons
+`icons.svg` (sprite, 12 symbols, explicit colours), `icons-current.svg` (same, currentColor), `icons.png`. 48 grid, 4 px round strokes in Ledger Ink, one accent each: a red cut for "too much", a highlighter block for "fair".
+
+## Motion: four moves, one angle (21°)
+- **The cut:** the off-cut chip drops (logo intro, success).
+- **The strike:** Red Pen through an asking rent above the fair band, 450 ms ease-in.
+- **The swipe:** Highlighter behind the fair number, left to right.
+- **The stamp:** the verdict lands at −7° with a snap; red when over, ink when fair.
+- Page transition: two Highlighter halves meet on a red seam.
+- Easing: `--fr-snap cubic-bezier(.3,1.5,.5,1)`, `--fr-drop cubic-bezier(.5,0,.9,.5)`. Everything stops under reduced motion.
+
+## Rasters
+`hero.png` (case-study hero with the live receipt), `brand-card.png`, `icons.png` are v5 renders.
+
+## Not yet done
+The staging app (`/fairent/`) still runs the v4 look; its screens in `assets/work/fairent/` (also used on the homepage) are real v4 captures.
