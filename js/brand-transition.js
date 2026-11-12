@@ -18,7 +18,7 @@
     'chore-royale':     { bg: '#1A0B3B', logo: 'assets/brand-v3/chore-royale/logo-stacked-600.webp', lw: 'min(42vmin,290px)', lv: 800, ar: 1500 },
     'fairent':          { bg: '#53D805', logo: 'assets/brand-v3/fairent/logo-on-green.webp', lw: 'min(38vmin,260px)', lv: 700, ar: 760 },
     'milo':             { bg: '#1A023B', logo: 'assets/work/milo/milo-v2-calm-face.webp?v=nc1', lw: 'min(34vmin,230px)', lv: 860, ar: 900 },
-    'rk':               { bg: '#06133F', logo: 'assets/brand-v3/rk/logo-stacked.png', lw: 'min(30vmin,210px)', lv: 760, ar: 920 },
+    'rk':               { bg: '#06133F', logo: 'assets/brand-v3/rk/logo-stacked.png?v=rk72', lw: 'min(30vmin,210px)', lv: 760, ar: 920 },
     'concepts':         { bg: '#1a023c', logo: '', lw: '0', lv: 760, ar: 920 },
     'healthtech':       { bg: '#0d3a9a', logo: 'assets/studio/marks/vibrant-white.png', lw: 'min(56vmin,360px)', lv: 740, ar: 800 }
   };
