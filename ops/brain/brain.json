@@ -1,7 +1,7 @@
 {
  "version": 3,
- "updated": "2026-11-13T18:44+02:00",
- "last_run": "2026-11-13T18:44+02:00",
+ "updated": "2026-11-13T23:23+02:00",
+ "last_run": "2026-11-13T23:23+02:00",
  "goal": {
   "target_usd": 1000000,
   "deadline": "2027-04-21",
@@ -721,6 +721,13 @@
      "due": "10 Nov",
      "done_when": "ledger lines DONE or reopened with evidence",
      "added": "2026-11-09"
+    },
+    {
+     "step": "Dave's n11-site rest: product brand identity + inner-page experience; pick one inner page per shift once cash mode allows (studio site is priority 4)",
+     "seat": "CDO",
+     "due": "after cash mode",
+     "done_when": "one page passes Dave",
+     "added": "2026-11-13"
     }
    ],
    "dave": [],
@@ -1013,7 +1020,9 @@
      "seat": "CTO",
      "due": "12 Nov",
      "done_when": "staging diff + emulator PASS",
-     "added": "2026-11-09"
+     "added": "2026-11-09",
+     "done": "2026-11-13",
+     "evidence": "Branch subjuid-step1 (1c0aba7 + e867126, not merged): subjTag + private pasubj write (max 1.5 s wait, never blocks the alert), database.rules.json.SUBJUID-PROPOSED, emulator 15/15 PASS, opus verifier PASS. https://github.com/3ShamrocksStudio/shomer-app/tree/subjuid-step1"
     },
     {
      "step": "On 'GO shake': merge shake-control (resolve the renderCountdown conflict per SHAKE-CONTROL.md), bump version, Android build",
@@ -1055,6 +1064,13 @@
      "seat": "CRO",
      "due": "2026-11-14",
      "done_when": "draft pending in J8NIX approvals",
+     "added": "2026-11-13"
+    },
+    {
+     "step": "Before publishing SUBJUID-PROPOSED rules: decide if the pasubj 'palerts must not exist yet' condition should be relaxed (a pasubj write slower than 1.5 s would leave the subject unable to stand down); add a rules test for that order",
+     "seat": "CTO",
+     "due": "with the 'yes Firebase' batch",
+     "done_when": "rules test covers late pasubj",
      "added": "2026-11-13"
     }
    ],
@@ -1324,7 +1340,9 @@
      "seat": "Grants",
      "due": "11 Nov",
      "done_when": "answer logged or a status email drafted for Dave",
-     "added": "2026-11-09"
+     "added": "2026-11-09",
+     "done": "2026-11-13",
+     "evidence": "Night 13 Nov: email text found in Dave's to-do note t12-tnufa: evaluator call for request 95432, 12 Nov 14:00–14:45 (Teams). Not in Gmail (other inbox). J8NIX message p-tnufa closed"
     },
     {
      "step": "List the post-approval steps (business bank account clause 3.4.1, reporting) as one Dave item, only if approved",
@@ -1332,6 +1350,13 @@
      "due": "on approval",
      "done_when": "to-do item ready",
      "added": "2026-11-09"
+    },
+    {
+     "step": "If Dave writes the evaluator's follow-up asks (request 95432) in J8NIX, prepare each file the same shift",
+     "seat": "Grants",
+     "due": "on Dave",
+     "done_when": "files ready in J8NIX",
+     "added": "2026-11-13"
     }
    ],
    "dave": [
@@ -1930,7 +1955,9 @@
      "step": "Tour pass at 1366/1440/1920: no tip covers its target (same per-step side override if needed)",
      "seat": "CDO",
      "due": "2026-11-05",
-     "done_when": "overlap 0 at 4 widths, screenshots"
+     "done_when": "overlap 0 at 4 widths, screenshots",
+     "done": "2026-11-13",
+     "evidence": "Night 13 Nov: https://3shamrocks.com/shomer-command/demo/ walked 9 steps x 1366/1440/1920 with Playwright: 0 tip/target overlaps, 0 page errors, no tip off-screen; no change needed (sonnet scan)"
     },
     {
      "step": "City-specific demo links for the 5 discovery letters (?demo=1&terr=<city>), checked at 390 + 1440",
@@ -4518,6 +4545,68 @@
     }
    ],
    "verifier": "opus verifier (separate agent): 3/3 PASS — Hevel Yavne contact + email decoded from phonebook page, patrol quote verbatim on security page, §30A elements, not previously contacted; sprint diff text-only, scripts identical, no visible price, 3 stats re-fetched and not overstated, EN=HE; gig skips re-checked on Indeed."
+  },
+  {
+   "at": "2026-11-13T23:23+02:00",
+   "seat": "Night build shift 23:00 (CTO, CDO, CPO, CLO) · CASH MODE",
+   "models": {
+    "haiku": "none",
+    "sonnet": "subjUid step-1 worker; Command tour scan",
+    "opus": "orchestration, homepage fix, pasubj ordering fix, independent verifier (2 + 1 follow-up PASS)"
+   },
+   "dave_input_since_last": "None new: J8NIX messages 0 new (6 routed); to-do no ticks since 12 Nov 10:45; control paused=false",
+   "steps": [
+    {
+     "text": "CTO/Grants: J8NIX Tnufa message closed with the email's real content (from to-do t12-tnufa)",
+     "seat": "Grants",
+     "model": "opus",
+     "evidence": "https://3shamrocks.com/j8/ (message p-tnufa-1794473989980)"
+    },
+    {
+     "text": "CDO: homepage mobile level bar sits above the minime (Dave n11-site)",
+     "seat": "CDO",
+     "model": "opus",
+     "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/commit/1f65fc3"
+    },
+    {
+     "text": "CTO/CLO: SH✡MER subjUid privacy fix step 1 on staging branch, rules emulator 15/15",
+     "seat": "CTO",
+     "model": "sonnet+opus",
+     "evidence": "https://github.com/3ShamrocksStudio/shomer-app/tree/subjuid-step1"
+    },
+    {
+     "text": "CDO: Command demo tour check 1366/1440/1920, 0 overlaps",
+     "seat": "CDO",
+     "model": "sonnet",
+     "evidence": "https://3shamrocks.com/shomer-command/demo/"
+    },
+    {
+     "text": "COO: Gmail drafts 0 (Dave t12-from)",
+     "seat": "COO",
+     "model": "opus",
+     "evidence": "Gmail drafts list read 21:15Z + 21:20Z"
+    }
+   ],
+   "loose_ends_closed": [
+    "site-mobile-xpbar",
+    "gmail-drafts-cleanup"
+   ],
+   "loose_ends_advanced": [
+    "shm-subjuid",
+    "grants-iia-manual"
+   ],
+   "skipped": [
+    {
+     "what": "IG posts, Grow connect, LinkedIn",
+     "why": "need Dave's Mac session / his OK"
+    },
+    {
+     "what": "J8NIX UI changes",
+     "why": "waits on Dave's test of the rebuild; lesson −6.L: no redesign without his references"
+    }
+   ],
+   "verifier": "opus independent: homepage PASS, subjUid step 1 PASS, follow-up e867126 PASS",
+   "cash": "₪0 invoiced, ₪0 collected, 0 calls booked; waiting on Dave: 1 per-item council email + LinkedIn by-hand notes in J8NIX approvals"
   }
  ],
  "morning_note": {
@@ -4587,8 +4676,8 @@
    "next_action": "One his-login step: create a service-account key (Realtime Database Admin) in a Mac/Chrome shift and store it as repo secret FIREBASE_SERVICE_ACCOUNT; then build step 1 on subjuid-plan and deploy rules via the workflow",
    "owner_seat": "CTO",
    "blocker": "Rules-deploy workflow has no FIREBASE_TOKEN / FIREBASE_SERVICE_ACCOUNT secret (runs 41178168663, 42110076645 failed at 'No credential')",
-   "evidence": "https://github.com/3ShamrocksStudio/shomer-app/blob/subjuid-plan/docs/SUBJUID-PLAN.md (644ca91)",
-   "updated": "2026-11-12T23:50+02:00"
+   "evidence": "https://github.com/3ShamrocksStudio/shomer-app/blob/subjuid-plan/docs/SUBJUID-PLAN.md (644ca91) | 13 Nov night: step 1 on branch subjuid-step1 (1c0aba7, e867126), emulator 15/15, opus PASS; live untouched",
+   "updated": "2026-11-13"
   },
   {
    "id": "shm-nature-preview",
@@ -5172,11 +5261,11 @@
    "pod": "Grants and legal",
    "title": "Innovation Authority open-calls list unreadable from the cloud (blocked); Tkuma-region startups call + local-authority pilots track need a manual read",
    "status": "open",
-   "next_action": "Read both calls in a Chrome shift; add rows to grants-30d.md | 12 Nov night: Dave says an Innovation Authority email came; not in his Gmail (spam/trash checked). Waiting on him to forward it (J8NIX p-tnufa) | 13 Nov 03:20: Gmail re-checked (3 days, trash incl.): still nothing; Lemon Squeezy: no mail either",
+   "next_action": "Read both calls in a Chrome shift; add rows to grants-30d.md | 12 Nov night: Dave says an Innovation Authority email came; not in his Gmail (spam/trash checked). Waiting on him to forward it (J8NIX p-tnufa) | 13 Nov 03:20: Gmail re-checked (3 days, trash incl.): still nothing; Lemon Squeezy: no mail either | 13 Nov: the 12 Nov IIA email = evaluator call for Tnufa 95432 (from Dave's to-do note), closed in J8NIX",
    "owner_seat": "Grants",
    "blocker": "No Chrome in cloud shifts",
    "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/blob/main/ops/brain/grants-30d.md",
-   "updated": "2026-11-13T03:20+02:00"
+   "updated": "2026-11-13"
   },
   {
    "id": "svc-inbound-cofounder-t",
@@ -5513,6 +5602,30 @@
    "blocker": "Dave's switch (arms never flip email_from_ok)",
    "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/blob/main/ops/brain/EMAIL-SENDER.md",
    "updated": "2026-11-13T13:25+02:00"
+  },
+  {
+   "id": "site-mobile-xpbar",
+   "product": "studio-site",
+   "pod": "Studio and brand",
+   "title": "Dave n11-site: mobile XP bar far under the minime",
+   "status": "done",
+   "next_action": "none; watch Dave's next site note",
+   "owner_seat": "CDO",
+   "blocker": null,
+   "evidence": "site 1f65fc3, live md5 = repo, opus verifier PASS",
+   "updated": "2026-11-13"
+  },
+  {
+   "id": "gmail-drafts-cleanup",
+   "product": "ops",
+   "pod": "Ops",
+   "title": "Dave t12-from: 54 unknown Gmail drafts",
+   "status": "done",
+   "next_action": "none; arms never create Gmail drafts (approvals live in J8NIX)",
+   "owner_seat": "COO",
+   "blocker": null,
+   "evidence": "Gmail drafts list = 0, read twice 13 Nov 21:15Z/21:20Z",
+   "updated": "2026-11-13"
   }
  ],
  "pods": [
@@ -5649,6 +5762,16 @@
    "blocked": "subjUid fix (Firebase credential); Innovation Authority email still not in Gmail; IG drafts wait on Dave",
    "note": "Local github.io main has unrelated history; worked on branch 'night' tracking origin/main and pushed HEAD:main",
    "made_up_by": "Night shift 13 Nov (scheduled run)"
+  },
+  {
+   "date": "2026-11-13",
+   "run": "3s night shift (scheduled, 23:00 Israel slot)",
+   "start": "23:08 Israel (21:08Z)",
+   "end": "23:23 Israel",
+   "done": "J8NIX: Tnufa message closed (email text was in Dave's to-do t12-tnufa: evaluator call, request 95432); homepage mobile XP bar moved up to the minime (site 1f65fc3, live); Gmail drafts confirmed 0 (t12-from); SH✡MER subjUid step 1 on staging branch subjuid-step1 (1c0aba7+e867126, emulator 15/15, not merged); Command demo tour 0 overlaps at 3 sizes; ledger 3 → DONE (3s-status 92afd70); opus verifier PASS on all code",
+   "blocked": "subjUid live rules (Firebase credential); IG drafts, Grow, J8NIX test wait on Dave; queue sweep found 0 to move",
+   "note": "github.io local main has unrelated history again; worked on detached origin/main and pushed HEAD:main",
+   "made_up_by": "Night shift 13 Nov 23:00 (scheduled run)"
   }
  ],
  "funnel": {
