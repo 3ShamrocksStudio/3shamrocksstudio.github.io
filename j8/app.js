@@ -20,7 +20,7 @@ function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'
 function fdate(s){var t=new Date(String(s).slice(0,10)+'T12:00:00');return isNaN(t)?'':t.getDate()+' '+MON[t.getMonth()]+(t.getFullYear()!==new Date().getFullYear()?' '+t.getFullYear():'');}
 function ago(iso){if(!iso)return '';var t=new Date(iso);if(isNaN(t))return '';var m=Math.round((Date.now()-t)/6e4);if(m<1)return 'just now';if(m<60)return m+' min ago';var h=Math.round(m/60);if(h<36)return h+' h ago';return Math.round(h/24)+' days ago';}
 function hhmm(iso){var t=new Date(iso);if(isNaN(t))return '';if(ymd(t)===ymd(new Date()))return t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});return t.getDate()+' '+MON[t.getMonth()];}
-function cut(s,n){s=String(s==null?'':s).replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n-1)+'…':s;}
+function cut(s,n){s=String(s==null?'':s).replace(/\s+/g,' ').trim();if(s.length<=n)return s;var c=s.slice(0,n-1),i=c.lastIndexOf(' ');return (i>n*0.6?c.slice(0,i):c).replace(/[\s,;:—-]+$/,'')+'…';}
 function ls(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||'null');localStorage.setItem(k,JSON.stringify(v));}catch(_){return null;}}
 function tag(txt,cls){return '<span class="tag '+cls+'">'+esc(txt)+'</span>';}
 var tt=null,undoFn=null;
@@ -97,7 +97,7 @@ function rows(){var R=[];
   R.push({key:'mv-'+p.id,g:g,st:pk?'park':y?'wait':'prog',title:y?shortWhat(y):p.name,sub:y?p.name+(stageName(p.stage)?' · '+stageName(p.stage):''):cut(shortWhat(p.now||''),70)||stageName(p.stage),full:y,own:y?'dave':dept(p),why:whyMove(p),p:p,move:!!y});});
  batches().forEach(function(b){if(b.items.length===1&&b.items[0].kind==='invoice')return;var ds=b.items.map(dueOf).filter(Boolean).sort(function(x,y){return x-y;});
   R.push({key:'b-'+b.id,g:'approve',st:'wait',since:b.items.map(function(a){return a.created?new Date(a.created):null;}).filter(function(d){return d&&!isNaN(d);}).sort(function(x,y){return x-y;})[0]||null,title:b.items.length+' '+nounOf(b.items)+' to send',sub:b.label,own:'dave',due:ds[0]||null,batch:b});});
- held().forEach(function(h){R.push({key:h.key,g:'team',st:h.dave?'wait':'stuck',title:h.dave?cap1(cut(h.why,80)):h.items.length+' approved '+nounOf(h.items)+' held',sub:h.dave?h.items.length+' approved '+nounOf(h.items)+' wait for this':cap1(cut(h.why,70)),own:h.dave?'dave':'Team',held:h});});
+ held().forEach(function(h){R.push({key:h.key,g:'team',st:h.dave?'wait':'stuck',title:h.dave?cap1(cut(h.why,80)):h.items.length+' approved '+nounOf(h.items)+' held',sub:h.dave?h.items.length+' approved '+nounOf(h.items)+(h.items.length===1?' waits':' wait')+' for this':cap1(cut(h.why,70)),own:h.dave?'dave':'Team',held:h});});
  J8.inbox.list().forEach(function(x){var a=isAsk(x),st=a?'wait':x.status==='done'?'done':'prog';
   R.push({key:'c-'+x.p+'-'+String(x.at),g:'team',st:st,title:a?cut(askLine(x),90):pname(x.p)+(st==='done'?' · done':' · with the team'),sub:a?pname(x.p)+' team asks':cut(J8.inbox.lastReply(x).replace(/^\s*\d{1,2}:\d\d\s*[—-]\s*/,''),80),own:a?'dave':dept(PR[x.p]||{}),c:x,ask:a,at:x.at,since:x.at?new Date(x.at):null});});
  var ot=oldTasks();if(ot.length)R.push({key:'old',g:'later',st:'park',title:ot.length+' older to-do items',sub:'From 3–11 Nov. Tick what is done.',own:'dave',tasks:ot});
