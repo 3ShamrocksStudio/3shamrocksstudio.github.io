@@ -6,61 +6,136 @@
 <meta name="robots" content="noindex,nofollow">
 <title>J8NIX</title>
 <meta name="description" content="J8NIX · Smart Operations OS, only smarter">
-<meta name="theme-color" content="#586475">
+<meta name="theme-color" content="#F2C194">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="J8NIX">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600&family=Jost:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="shell.css?v=4.2.1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Assistant:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="app.css?v=5.0.0">
 </head>
 <body>
-<!-- J8NIX v4 PWA shell. Screens come from the new UI; data comes from window.J8 (j8-data.js). -->
-<header class="hero">
-  <img src="icons/wm-slate.svg" alt="J8NIX" width="160" height="56">
-  <p>Smart Operations OS, only smarter</p>
-</header>
+<!-- J8NIX PWA 5.0.0: the approved v8 screens on live data (window.J8 in j8-data.js). Sign-in, alerts and install live in shell.js. -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="i-os" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10.5C8.1 9.3 7.6 7.9 7.6 6.3V5c2.9-1.1 5.9-1.1 8.8 0v1.3c0 2.6-1.5 4-3.7 5.5-2.4 1.6-5.1 2.9-5.1 6v1.2c2.9 1.1 5.9 1.1 8.8 0v-1.2c0-1.6-.5-3-1.4-4.2"/></symbol>
+<symbol id="i-tasks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.2l1.7 1.7 3.1-3.2"/><path d="M4 15.2l1.7 1.7 3.1-3.2"/><path d="M12.2 7.6h7.8M12.2 15.6h7.8"/></symbol>
+<symbol id="i-projects" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8 3.8 8.1 12 12.4l8.2-4.3z"/><path d="M3.8 12.1 12 16.4l8.2-4.3"/><path d="M3.8 16 12 20.3l8.2-4.3"/></symbol>
+<symbol id="i-clients" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3.3"/><path d="M3.5 19.5c.5-3.3 2.7-5.2 5.5-5.2s5 1.9 5.5 5.2"/><path d="M15.4 5.4a3.3 3.3 0 0 1 0 6.2"/><path d="M17.2 14.6c1.8.6 3 2.3 3.3 4.9"/></symbol>
+<symbol id="i-owner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.6-3.8 3.4-6.2 7-6.2s6.4 2.4 7 6.2"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.2" width="16.8" height="15.2" rx="2.6"/><path d="M3.6 9.8h16.8M8.2 3.4v3.6M15.8 3.4v3.6"/><rect x="13.4" y="13.2" width="3.6" height="3.6" rx=".9"/></symbol>
+<symbol id="i-deadline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.2" r="7.2"/><path d="M10 3.4h4M12 3.4v2.6"/><path d="M12 9.6v3.6l2.4 1.6"/><path d="M18.3 6.9l1.2-1.2"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3.2 2.2"/></symbol>
+<symbol id="i-approve" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4l2.3 1.7 2.8-.1.9 2.7 2.3 1.6-.9 2.7.9 2.7-2.3 1.6-.9 2.7-2.8-.1L12 20.6l-2.3-1.7-2.8.1-.9-2.7-2.3-1.6.9-2.7-.9-2.7L6 7.6l.9-2.7 2.8.1z"/><path d="M9.1 12.2l2 2 3.9-4.1"/></symbol>
+<symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 13.4 6.1 6.5A2.2 2.2 0 0 1 8.2 5h7.6a2.2 2.2 0 0 1 2.1 1.5l2.5 6.9"/><path d="M3.6 13.4v4.8c0 1.2 1 2.2 2.2 2.2h12.4c1.2 0 2.2-1 2.2-2.2v-4.8h-4.7l-1.3 2.6h-4.8l-1.3-2.6z"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3.4" width="6" height="10.6" rx="3"/><path d="M5.6 11a6.4 6.4 0 0 0 12.8 0"/><path d="M12 17.4v3.2"/></symbol>
+<symbol id="i-voice" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.4v3.2M7.2 7.6v8.8M10.4 4.4v15.2M13.6 7.6v8.8M16.8 9.8v4.4M20 11.2v1.6"/></symbol>
+<symbol id="i-reminder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16.4V11a6 6 0 0 0-12 0v5.4l-1.6 2.2h15.2z"/><path d="M10 21h4"/></symbol>
+<symbol id="i-audit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.6" cy="10.6" r="6.8"/><path d="M15.6 15.6 20.4 20.4"/><path d="M7.9 10.7l1.8 1.8 3.3-3.4"/></symbol>
+<symbol id="i-risk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4.4a2 2 0 0 1 3.4 0l7 12.3a2 2 0 0 1-1.7 3H5a2 2 0 0 1-1.7-3z"/><path d="M12 9.6v3.8"/><path d="M12 16.6v.1"/></symbol>
+<symbol id="i-money" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="6.4" width="17.2" height="11.2" rx="2.4"/><circle cx="12" cy="12" r="2.6"/><path d="M6.6 12h.1M17.3 12h.1"/></symbol>
+<symbol id="i-pipeline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.8" y="4" width="4.4" height="16" rx="1.4"/><rect x="9.8" y="4" width="4.4" height="11" rx="1.4"/><rect x="15.8" y="4" width="4.4" height="6.4" rx="1.4"/></symbol>
+<symbol id="i-agent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12.6" r="2.7"/><circle cx="12" cy="4.6" r="1.4"/><circle cx="5.2" cy="18" r="1.4"/><circle cx="18.8" cy="18" r="1.4"/><path d="M12 6v3.9M6.3 17.1l3.5-2.8M17.7 17.1l-3.5-2.8"/></symbol>
+<symbol id="i-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 12.4h3.6l2.1-4.8 4 9.6 2.5-6.2 1.4 1.4h3.2"/></symbol>
+<symbol id="i-mentor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M15.4 8.6l-1.9 4.9-4.9 1.9 1.9-4.9z"/></symbol>
+<symbol id="i-next" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h10.6"/><path d="M10.8 7.8 15 12l-4.2 4.2"/><path d="M19.6 5v14"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.4h8.4M16.4 7.4H20M4 16.6h3.6M11.6 16.6H20"/><circle cx="14.4" cy="7.4" r="2"/><circle cx="9.6" cy="16.6" r="2"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 3.6 10.7 13.3"/><path d="M20.4 3.6 14.6 20.2l-3.9-6.9-6.9-3.9z"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 19.8v-3.9L15.5 4.6a2.1 2.1 0 0 1 3 0l.9.9a2.1 2.1 0 0 1 0 3L8.1 19.8z"/><path d="M13.6 6.5l3.9 3.9"/></symbol>
+<symbol id="i-kill" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M9 9l6 6"/><path d="M15.2 8.8 13.8 10.2M10.2 13.8 8.8 15.2"/></symbol>
+<symbol id="i-done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M8.4 12.3l2.4 2.4 4.8-5"/></symbol>
+<symbol id="i-attach" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 11.4l-7.4 7.4a4.8 4.8 0 0 1-6.8-6.8l7.9-7.9a3.2 3.2 0 0 1 4.5 4.5l-7.6 7.6a1.6 1.6 0 0 1-2.3-2.3l7-7"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.2c4.6 0 8.2 3.2 8.2 7.3s-3.6 7.3-8.2 7.3c-1.2 0-2.4-.2-3.4-.6l-4.4 1.4 1.3-3.8a6.9 6.9 0 0 1-1.7-4.3c0-4.1 3.6-7.3 8.2-7.3z"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.6" cy="10.6" r="6.8"/><path d="M15.6 15.6 20.4 20.4"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 20.6V4"/><path d="M5.6 4.6h11.6l-2.6 4.1 2.6 4.1H5.6"/></symbol>
+<symbol id="i-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13.8 3.6H7.6a2 2 0 0 0-2 2v12.8a2 2 0 0 0 2 2h8.8a2 2 0 0 0 2-2V8.2z"/><path d="M13.8 3.6v4.6h4.6"/><path d="M9 12.6h6M9 16h3.8"/></symbol>
+<symbol id="i-loop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 12a7.6 7.6 0 0 1 13.1-5.2"/><path d="M17.8 3.6v3.6h-3.6"/><path d="M19.6 12a7.6 7.6 0 0 1-13.1 5.2"/><path d="M6.2 20.4v-3.6h3.6"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.2 13.8a3.9 3.9 0 0 0 5.5 0l3-3a3.9 3.9 0 0 0-5.5-5.5l-1.1 1.1"/><path d="M13.8 10.2a3.9 3.9 0 0 0-5.5 0l-3 3a3.9 3.9 0 0 0 5.5 5.5l1.1-1.1"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-progress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4" opacity=".35"/><path d="M12 3.6a8.4 8.4 0 0 1 7.3 12.6"/></symbol>
+<symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h.1M12 12h.1M18 12h.1" stroke-width="2.6"/></symbol>
+<symbol id="wm" viewBox="46 21 136 48"><path style="fill:var(--wm-l)" d="M 66.171875 65.199219 L 55.910156 65.199219 C 51.523438 65.199219 47.96875 61.644531 47.96875 57.261719 L 47.96875 54.273438 C 47.96875 53.804688 48.21875 53.347656 48.648438 53.164062 C 49.507812 52.804688 50.332031 53.429688 50.332031 54.242188 L 50.332031 57.261719 C 50.332031 60.339844 52.832031 62.839844 55.910156 62.839844 L 66.171875 62.839844 C 69.253906 62.839844 71.75 60.339844 71.75 57.261719 L 71.75 32.730469 C 71.75 29.65625 69.25 27.15625 66.179688 27.152344 C 65.683594 27.152344 65.214844 26.84375 65.058594 26.375 C 64.785156 25.554688 65.390625 24.792969 66.171875 24.792969 C 70.550781 24.792969 74.113281 28.351562 74.113281 32.730469 L 74.113281 57.261719 C 74.113281 61.644531 70.558594 65.199219 66.171875 65.199219 "/><path style="fill:var(--wm-l)" d="M 132.601562 65.199219 C 132.199219 65.199219 131.820312 64.996094 131.597656 64.644531 L 110.003906 30.089844 L 110.003906 62.835938 L 115.246094 62.835938 C 115.710938 62.835938 116.171875 63.085938 116.351562 63.515625 C 116.710938 64.375 116.089844 65.199219 115.277344 65.199219 L 108.820312 65.199219 C 108.167969 65.199219 107.640625 64.671875 107.640625 64.019531 L 107.640625 25.972656 C 107.640625 25.445312 107.988281 24.980469 108.496094 24.835938 C 109 24.691406 109.542969 24.898438 109.824219 25.347656 L 131.417969 59.898438 L 131.417969 32.730469 C 131.417969 29.65625 128.921875 27.15625 125.847656 27.152344 C 125.355469 27.152344 124.882812 26.84375 124.726562 26.375 C 124.453125 25.554688 125.058594 24.792969 125.839844 24.792969 C 130.21875 24.792969 133.78125 28.351562 133.78125 32.730469 L 133.78125 64.019531 C 133.78125 64.546875 133.433594 65.007812 132.925781 65.15625 C 132.820312 65.183594 132.707031 65.199219 132.601562 65.199219 "/><path style="fill:var(--wm-l)" d="M 146.617188 65.097656 C 146.1875 64.914062 145.941406 64.453125 145.941406 63.988281 L 145.941406 32.730469 C 145.941406 29.65625 143.441406 27.15625 140.371094 27.152344 C 139.875 27.152344 139.40625 26.847656 139.25 26.375 C 138.972656 25.554688 139.578125 24.789062 140.363281 24.789062 C 144.742188 24.789062 148.304688 28.351562 148.304688 32.730469 L 148.304688 64.019531 C 148.304688 64.832031 147.476562 65.457031 146.617188 65.097656 "/><path style="fill:var(--wm-l)" d="M 154.886719 65.199219 C 154.425781 65.199219 153.972656 64.933594 153.800781 64.507812 C 153.453125 63.652344 154.074219 62.839844 154.882812 62.839844 C 158.332031 62.839844 161.363281 60.515625 162.261719 57.1875 L 169.003906 32.191406 C 170.179688 27.835938 174.148438 24.792969 178.660156 24.792969 C 179.121094 24.792969 179.574219 25.054688 179.746094 25.484375 C 180.09375 26.339844 179.472656 27.152344 178.664062 27.152344 C 175.21875 27.152344 172.183594 29.476562 171.285156 32.804688 L 164.542969 57.800781 C 163.367188 62.15625 159.398438 65.199219 154.886719 65.199219 "/><path style="fill:var(--wm-l)" d="M 178.664062 65.199219 L 177.5625 65.199219 C 174.683594 65.199219 172.113281 63.390625 171.140625 60.679688 L 168.984375 54.667969 C 168.828125 54.226562 168.90625 53.710938 169.25 53.394531 C 169.941406 52.769531 170.925781 53.078125 171.199219 53.84375 L 173.363281 59.882812 C 174 61.65625 175.679688 62.839844 177.5625 62.839844 L 178.632812 62.839844 C 179.097656 62.839844 179.558594 63.085938 179.738281 63.515625 C 180.101562 64.375 179.476562 65.199219 178.664062 65.199219 "/><path style="fill:var(--wm-l)" d="M 163.460938 36.929688 C 162.972656 36.929688 162.519531 36.628906 162.347656 36.148438 L 160.183594 30.109375 C 159.546875 28.335938 157.867188 27.152344 155.984375 27.152344 L 154.914062 27.152344 C 154.449219 27.152344 153.988281 26.90625 153.808594 26.476562 C 153.449219 25.617188 154.070312 24.792969 154.882812 24.792969 L 155.984375 24.792969 C 158.863281 24.792969 161.433594 26.601562 162.40625 29.3125 L 164.558594 35.316406 C 164.71875 35.757812 164.640625 36.277344 164.296875 36.59375 C 164.042969 36.828125 163.746094 36.929688 163.460938 36.929688 "/><path style="fill:var(--wm-8)" d="M 100.554688 64.019531 L 100.554688 58.773438 C 100.554688 55.09375 99.308594 51.472656 97.042969 48.570312 C 96.765625 48.210938 96.289062 48.015625 95.851562 48.132812 C 94.972656 48.367188 94.691406 49.3125 95.132812 49.957031 C 96.886719 52.523438 98.191406 55.367188 98.191406 58.476562 L 98.191406 63.308594 C 95.863281 64.242188 93.398438 64.71875 90.855469 64.71875 C 88.316406 64.71875 85.851562 64.242188 83.523438 63.308594 L 83.523438 59.015625 C 83.523438 53.597656 86.449219 48.488281 91.308594 46.089844 C 97.007812 43.277344 100.554688 37.570312 100.554688 31.21875 L 100.554688 26.164062 C 100.671875 25.628906 100.402344 25.066406 99.882812 24.832031 C 97.035156 23.558594 94 22.910156 90.855469 22.910156 C 87.726562 22.910156 84.699219 23.554688 81.859375 24.820312 C 81.40625 25.023438 81.144531 25.476562 81.164062 25.945312 C 81.160156 25.953125 81.160156 25.964844 81.160156 25.972656 L 81.160156 31.21875 C 81.160156 34.859375 82.386719 38.453125 84.609375 41.339844 C 84.839844 41.640625 85.191406 41.800781 85.542969 41.800781 C 85.953125 41.800781 86.367188 41.589844 86.609375 41.144531 C 86.835938 40.738281 86.734375 40.230469 86.453125 39.863281 C 84.5625 37.394531 83.523438 34.324219 83.523438 31.21875 L 83.523438 26.683594 C 85.851562 25.746094 88.316406 25.273438 90.855469 25.273438 C 93.398438 25.273438 95.863281 25.746094 98.191406 26.683594 L 98.191406 30.976562 C 98.191406 36.394531 95.261719 41.503906 90.40625 43.902344 C 84.707031 46.714844 81.160156 52.421875 81.160156 58.773438 L 81.160156 64.019531 C 81.160156 64.027344 81.160156 64.039062 81.164062 64.046875 C 81.144531 64.515625 81.40625 64.96875 81.859375 65.171875 C 84.699219 66.4375 87.726562 67.082031 90.855469 67.082031 C 93.988281 67.082031 97.015625 66.4375 99.851562 65.171875 C 100.308594 64.96875 100.570312 64.515625 100.550781 64.046875 C 100.550781 64.035156 100.554688 64.027344 100.554688 64.019531 "/></symbol><symbol id="eight" viewBox="79 21 24 48"><path fill="currentColor" d="M 100.554688 64.019531 L 100.554688 58.773438 C 100.554688 55.09375 99.308594 51.472656 97.042969 48.570312 C 96.765625 48.210938 96.289062 48.015625 95.851562 48.132812 C 94.972656 48.367188 94.691406 49.3125 95.132812 49.957031 C 96.886719 52.523438 98.191406 55.367188 98.191406 58.476562 L 98.191406 63.308594 C 95.863281 64.242188 93.398438 64.71875 90.855469 64.71875 C 88.316406 64.71875 85.851562 64.242188 83.523438 63.308594 L 83.523438 59.015625 C 83.523438 53.597656 86.449219 48.488281 91.308594 46.089844 C 97.007812 43.277344 100.554688 37.570312 100.554688 31.21875 L 100.554688 26.164062 C 100.671875 25.628906 100.402344 25.066406 99.882812 24.832031 C 97.035156 23.558594 94 22.910156 90.855469 22.910156 C 87.726562 22.910156 84.699219 23.554688 81.859375 24.820312 C 81.40625 25.023438 81.144531 25.476562 81.164062 25.945312 C 81.160156 25.953125 81.160156 25.964844 81.160156 25.972656 L 81.160156 31.21875 C 81.160156 34.859375 82.386719 38.453125 84.609375 41.339844 C 84.839844 41.640625 85.191406 41.800781 85.542969 41.800781 C 85.953125 41.800781 86.367188 41.589844 86.609375 41.144531 C 86.835938 40.738281 86.734375 40.230469 86.453125 39.863281 C 84.5625 37.394531 83.523438 34.324219 83.523438 31.21875 L 83.523438 26.683594 C 85.851562 25.746094 88.316406 25.273438 90.855469 25.273438 C 93.398438 25.273438 95.863281 25.746094 98.191406 26.683594 L 98.191406 30.976562 C 98.191406 36.394531 95.261719 41.503906 90.40625 43.902344 C 84.707031 46.714844 81.160156 52.421875 81.160156 58.773438 L 81.160156 64.019531 C 81.160156 64.027344 81.160156 64.039062 81.164062 64.046875 C 81.144531 64.515625 81.40625 64.96875 81.859375 65.171875 C 84.699219 66.4375 87.726562 67.082031 90.855469 67.082031 C 93.988281 67.082031 97.015625 66.4375 99.851562 65.171875 C 100.308594 64.96875 100.570312 64.515625 100.550781 64.046875 C 100.550781 64.035156 100.554688 64.027344 100.554688 64.019531 "/></symbol></svg>
+<div id="auth" hidden>
+ <header class="band">
+  <span class="av" aria-hidden="true"><svg><use href="#eight"/></svg></span>
+  <div class="hd"><h1>J8NIX</h1><p>Smart Operations OS, only smarter</p></div>
+ </header>
+ <main>
+  <form id="fEmail" class="step">
+   <label for="email">Your work email</label>
+   <input id="email" type="email" inputmode="email" autocomplete="email" required placeholder="you@company.com">
+   <button class="pri" type="submit">Email me a sign-in link</button>
+  </form>
+  <form id="fPaste" class="step" hidden>
+   <p class="lead">Check your email.</p>
+   <label for="code">Code from the email</label>
+   <input id="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]*" maxlength="11" placeholder="123456">
+   <button class="pri" type="submit">Sign in</button>
+   <details class="alt"><summary>No code? Paste the link instead</summary>
+    <p class="hint">Press and hold the link in the email → Copy → paste here, then Sign in.</p>
+    <textarea id="pasteLink" rows="3" placeholder="Paste the link" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+   </details>
+   <button class="plain" type="button" id="again">Use another email</button>
+  </form>
+  <p class="ios" id="iosHint" hidden>iPhone: tap Share → <b>Add to Home Screen</b> first, then open J8NIX from there.</p>
+  <p class="amsg" id="amsg" role="status"></p>
+ </main>
+</div>
+<div id="app" hidden>
+ <header class="band">
+  <button class="av" data-go="chat" aria-label="J8NIX chat"><svg aria-hidden="true"><use href="#eight"/></svg></button>
+  <div class="hd"><h1 id="hdT">J8NIX</h1><p><span id="hdS">your business manager</span> · <span class="ch-st" id="j8cState">Sending —</span></p></div>
+  <nav class="dnav" aria-label="Sections">
+   <button data-go="chat">Chat</button>
+   <button data-go="next">Next<b class="cnt" id="nN"></b></button>
+   <button data-go="list">List</button>
+   <button data-go="stats">Stats</button>
+  </nav>
+  <button class="gear" id="gear" aria-label="Settings" aria-expanded="false"><svg class="ico" aria-hidden="true"><use href="#i-settings"/></svg></button>
+ </header>
+ <div class="conn" id="status" hidden></div>
+ <main class="views">
 
-<main>
-  <section id="vAuth" hidden>
-    <form id="fEmail" class="step">
-      <label for="email">Your work email</label>
-      <input id="email" type="email" inputmode="email" autocomplete="email" required placeholder="you@company.com">
-      <button class="btn blue" type="submit">Email me a sign-in link</button>
-    </form>
-    <form id="fPaste" class="step" hidden>
-      <p class="lead">Check your email.</p>
-      <label for="code">Code from the email</label>
-      <input id="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]*" maxlength="11" placeholder="123456">
-      <button class="btn blue" type="submit">Sign in</button>
-      <details class="alt"><summary>No code? Paste the link instead</summary>
-        <p class="hint">Press and hold the link in the email → Copy → paste here, then Sign in.</p>
-        <textarea id="pasteLink" rows="3" placeholder="Paste the link" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
-      </details>
-      <button class="btn plain" type="button" id="again">Use another email</button>
-    </form>
-    <p class="ios" id="iosHint" hidden>iPhone: tap Share → <b>Add to Home Screen</b> first, then open J8NIX from there.</p>
+  <section class="v" id="chat" aria-label="J8NIX chat">
+   <div class="ch-scroll" id="chScroll">
+    <div class="ch-old" id="j8cOld"></div>
+    <div class="daychip"><span>Today</span></div>
+    <div class="brief" id="brief" aria-live="polite"></div>
+    <div class="ch-log" id="j8cLog" aria-live="polite"></div>
+   </div>
+   <aside class="ch-side" id="j8cSide" hidden></aside>
+   <div class="ch-strip" id="j8cStrip" aria-label="Quick replies"></div>
+   <form class="ch-cmp" id="j8cForm" autocomplete="off"><textarea id="j8cIn" rows="1" placeholder="Message the team" aria-label="Message the team" dir="auto"></textarea><button type="button" class="ch-mic" id="j8cMic" aria-label="Speak to J8NIX" hidden><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></button><button type="submit" class="ch-go" id="j8cGo" aria-label="Send to the team"><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg><span>Send</span></button></form>
+   <div class="ch-note" id="j8cNote"></div>
   </section>
 
-  <section id="vReady" hidden>
-    <p class="lead" id="hello"></p>
-    <ul class="facts" id="facts"></ul>
-    <p class="hint">New screens are on the way. Your data is live and safe here.</p>
-    <label class="row" id="orgRow" hidden><span>Business</span><select id="orgSel"></select></label>
-    <div class="row"><span>Alerts on this phone</span><button class="btn small" id="pushBtn">Turn on</button></div>
-    <div class="row"><span id="who"></span><button class="btn small plain" id="signOut">Sign out</button></div>
-  </section>
-
-  <p class="msg" id="msg" role="status"></p>
-</main>
-
+  <section class="v" id="v-next" aria-label="What to do next"></section>
+  <section class="v" id="v-list" aria-label="List"></section>
+  <section class="v" id="v-stats" aria-label="Stats"></section>
+ </main>
+ <nav class="dock" id="dock" aria-label="Sections">
+  <button data-go="chat"><svg class="ico"><use href="#i-chat"/></svg>Chat</button>
+  <button data-go="next"><svg class="ico"><use href="#i-mentor"/></svg>Next<b class="cnt" id="dN"></b></button>
+  <button data-go="list"><svg class="ico"><use href="#i-tasks"/></svg>List</button>
+  <button data-go="stats"><svg class="ico"><use href="#i-progress"/></svg>Stats</button>
+ </nav>
+ <div class="scrim" id="scrim" hidden></div>
+ <div class="sheet" id="sheet" role="dialog" aria-label="Settings" hidden>
+  <div class="sh-row"><div><b>Sending by the AI team</b><span id="seatTxt">—</span></div><button class="seat" id="seat">Pause sending</button></div>
+  <div class="sh-row"><div><b>Alerts on this phone</b><span>Team replies, finished work, drafts to OK.</span></div><button class="seat" id="pushBtn">Turn on</button></div>
+  <label class="sh-row" id="orgRow" hidden><div><b>Business</b></div><select id="orgSel"></select></label>
+  <div class="sh-row"><div><b>Signed in</b><span id="who"></span></div><button class="txtb" id="signOut">Sign out</button></div>
+  <div class="sh-row"><div><b>Live data</b><span id="connTxt">Connecting…</span></div></div>
+ </div>
+</div>
+<div class="toast" id="toast" role="status"><span id="toastMsg"></span><button id="undo" hidden>Undo</button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=4.2.1"></script>
-<script src="shell.js?v=4.2.1"></script>
+<script src="j8-data.js?v=5.0.0"></script>
+<script src="app.js?v=5.0.0"></script>
+<script src="shell.js?v=5.0.0"></script>
 </body>
 </html>

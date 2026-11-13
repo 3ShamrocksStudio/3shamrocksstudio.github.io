@@ -1,31 +1,29 @@
-/* J8NIX v4 shell: sign-in, install, alerts. All data goes through window.J8 (j8-data.js). */
+/* J8NIX PWA shell: sign-in, install, alerts, business switch. The screens (app.js) read data only through window.J8. */
 (function () {
   'use strict';
   var $ = function (s) { return document.querySelector(s); };
-  function msg(t, err) { var m = $('#msg'); m.textContent = t || ''; m.classList.toggle('err', !!err); }
+  function msg(t, err) { var m = $('#amsg'); m.textContent = t || ''; m.classList.toggle('err', !!err); }
+  function note(t) { if (window.toast) window.toast(t); else msg(t); }
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
   var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 
   function authView(paste) {
-    $('#vReady').hidden = true; $('#vAuth').hidden = false;
+    $('#app').hidden = true; $('#auth').hidden = false;
     $('#fEmail').hidden = !!paste; $('#fPaste').hidden = !paste;
     $('#iosHint').hidden = !(ios && !standalone);
     $('#email').value = store('j8v4:email') || '';
   }
   function readyView() {
-    var st = J8.status(), o = J8.orgs.current();
-    $('#vAuth').hidden = true; $('#vReady').hidden = false;
-    if (!o) { $('#hello').textContent = 'No business yet.'; $('#facts').innerHTML = ''; msg('Ask your workspace owner to invite ' + (st.user ? st.user.email : 'you') + '.'); return; }
-    $('#hello').textContent = o.name;
-    var f = [[J8.approvals.pending().length, 'waiting for your OK'], [J8.projects.list().length, 'projects'], [J8.inbox.list().length, 'messages with the team']];
-    $('#facts').innerHTML = f.map(function (x) { return '<li><b>' + x[0] + '</b><span>' + x[1] + '</span></li>'; }).join('');
+    var st = J8.status(), o = J8.orgs.current(), bar = $('#status');
+    $('#auth').hidden = true; $('#app').hidden = false; msg('');
+    if (!o) { bar.hidden = false; bar.textContent = 'No business yet. Ask your workspace owner to invite ' + (st.user ? st.user.email : 'you') + '.'; }
     var orgs = J8.orgs.list();
     $('#orgRow').hidden = orgs.length < 2;
-    $('#orgSel').innerHTML = orgs.map(function (x) { return '<option value="' + x.id + '"' + (x.id === o.id ? ' selected' : '') + '>' + x.name.replace(/</g, '&lt;') + '</option>'; }).join('');
-    $('#who').textContent = (st.user ? st.user.email : '') + ' · ' + (st.role || '');
-    msg(st.connected ? '' : 'Offline. Showing the last copy.');
+    $('#orgSel').innerHTML = orgs.map(function (x) { return '<option value="' + x.id + '"' + (o && x.id === o.id ? ' selected' : '') + '>' + String(x.name).replace(/</g, '&lt;') + '</option>'; }).join('');
+    $('#who').textContent = (st.user ? st.user.email : '') + (st.role ? ' · ' + st.role : '');
     pushLabel();
+    if (window.renderAll) window.renderAll();
   }
   async function pushLabel() {
     var b = $('#pushBtn');
@@ -52,11 +50,11 @@
   $('#pushBtn').addEventListener('click', function () {
     var b = this; b.disabled = true;
     J8.push.enable().then(function () {
-      navigator.serviceWorker.ready.then(function (r) { r.showNotification('J8NIX alerts are on', { body: 'Approvals, replies and failed runs land here.', icon: 'icons/icon-192.png', badge: 'icons/badge-96.png', tag: 'j8-test' }); });
-      msg('Alerts on for this phone.');
-    }).catch(function (er) { msg('Couldn\'t turn on alerts (' + er.code + ').', true); }).then(pushLabel);
+      navigator.serviceWorker.ready.then(function (r) { r.showNotification('J8NIX alerts are on', { body: 'Team replies, finished work and drafts to OK land here.', icon: 'icons/icon-192.png', badge: 'icons/badge-96.png', tag: 'j8-test' }); });
+      note('Alerts on for this phone.');
+    }).catch(function (er) { note('Couldn\'t turn on alerts (' + er.code + ').'); }).then(pushLabel);
   });
-  ['approvals', 'projects', 'comments', 'status'].forEach(function (c) { J8.on(c, function () { if (!$('#vReady').hidden) readyView(); }); });
+  J8.on('status', function (st) { if (st.error === 'signed_out' && !st.user) authView(false); });
 
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {});
 
