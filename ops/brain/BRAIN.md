@@ -22,6 +22,7 @@ Dave: "better, stronger, smarter, more effective and productive, more powerful, 
 - J8NIX design rejected 5× → get Dave's references and model BEFORE designing, then build once.
 - Reel posting blocked by sign-in at deadline → check sign-ins and access hours before any deadline, not at it.
 - Branding read as generic / "3SDS not deep enough" (12 Nov) → every visual pulls tokens from the product's own brand files and 3SDS first, and cites the file used.
+- J8NIX sign-in reported "fixed" while the email still pointed to localhost (13 Nov) → test any login/notification flow end to end (real email → real tap → signed in) before telling Dave it works.
 
 ## −5. NIGHT OF 12→13 NOV: CEO STANDING APPROVAL (Dave, 20:34)
 "Entering night shift I want ALL THINGS APPROVED for your workflows, so nothing gets stuck waiting for me while I'm sleeping. Expect real results and progress on all things as priorities command."
