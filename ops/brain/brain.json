@@ -1,7 +1,7 @@
 {
  "version": 3,
- "updated": "2026-11-13T09:05+02:00",
- "last_run": "2026-11-13T09:05+02:00",
+ "updated": "2026-11-13T13:25+02:00",
+ "last_run": "2026-11-13T13:25+02:00",
  "goal": {
   "target_usd": 1000000,
   "deadline": "2027-04-21",
@@ -403,6 +403,20 @@
      "due": "11 Nov",
      "done_when": "list of 15 with last-touch date + drafts in to-do",
      "added": "2026-11-10"
+    },
+    {
+     "step": "Sun 15 Nov Mac sender: submit Fiverr + eyesAtop T1 applications (queued 13 Nov, hold to 19:10) on company forms; log result",
+     "seat": "CRO",
+     "due": "2026-11-15",
+     "done_when": "status sent + confirmation in J8NIX",
+     "added": "2026-11-13"
+    },
+    {
+     "step": "Once Dave switches studio email on: self-test from dave@3shamrocks.com, then send held emails 5–10/day; add DKIM + DMARC p=none per EMAIL-SENDER.md",
+     "seat": "CTO",
+     "due": "2026-11-16",
+     "done_when": "headers show spf=pass; email_from_ok true",
+     "added": "2026-11-13"
     }
    ],
    "dave": [
@@ -1901,6 +1915,20 @@
      "due": "11 Nov",
      "done_when": "5 links verified, listed in the letters item",
      "added": "2026-11-09"
+    },
+    {
+     "step": "Megiddo council (security head) first-contact email: Dave's OK in J8NIX approvals (org-1113-megiddo); send after privacy fix + studio email",
+     "seat": "CRO",
+     "due": "2026-11-17",
+     "done_when": "approved or killed by Dave",
+     "added": "2026-11-13"
+    },
+    {
+     "step": "Next council not yet on any list: source one public security-dept contact + one true fact; draft per §7",
+     "seat": "CRO",
+     "due": "2026-11-15",
+     "done_when": "pending draft with source URLs",
+     "added": "2026-11-13"
     }
    ],
    "dave": [
@@ -2711,6 +2739,22 @@
    "decision": "FIRE: Brand Sprint LinkedIn post tailored to post-round pains (off-brand AI content, content volume, slow rebrands), pending Dave for Sun 15 Nov",
    "why": "Dave asked for it 12 Nov. $: reach to ~1st-degree network incl. 25 accepted founders; P(reply→call) low (~3%), cost ₪0, days to cash ~14. Kill-test: no reactions, wrong audience, reads generic; cheapest disproof: 0 DMs/comments from founders by 22 Nov. Sources: Optimizely/Savanta 2026 (25% knowingly publish off-brand AI content), Adobe 2025 (71% expect 5x content demand), Molten Ventures (Series A rebrands slow).",
    "check": "2026-11-22"
+  },
+  {
+   "date": "2026-11-13",
+   "seat": "CTO",
+   "decision": "Studio email path: Mac sender arm sends from Gmail web as dave@3shamrocks.com (keeps the Gmail connector on Dave's own inbox). Dave's only step: Chrome signed in as dave@3shamrocks.com + switch email_from_ok on. DKIM/DMARC to add during warm-up.",
+   "why": "DNS 13 Nov (dns.google): MX Google, SPF include:_spf.google.com, NS Wix, no DMARC, no DKIM. Connector send_message has no From field, so switching the connector would cost the brain Dave's inbox. $: unblocks 14 approved emails; check 2026-11-16.",
+   "check": "2026-11-16",
+   "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/blob/main/ops/brain/EMAIL-SENDER.md"
+  },
+  {
+   "date": "2026-11-13",
+   "seat": "CRO",
+   "decision": "Queue 2 new T1 applications (Fiverr Senior Product Designer fit 83; eyesAtop Lead UI/UX fit 88); drop Kela (77) and 6 closed/unverifiable roles",
+   "why": "Cash mode §−1 step 4 / jobs. Live-checked 13 Nov by worker + independent verifier. Kill-test: IC level below Dave's titles (Fiverr), possibly refreshed old posting + defense advantages (eyesAtop), CV access still blocked on Mac. Check 2026-11-20 for any reply.",
+   "check": "2026-11-20",
+   "evidence": "https://claude.ai/artifact/K6JrRs66KSQseksQgEMbyh"
   }
  ],
  "learnings": [
@@ -2870,6 +2914,14 @@
   {
    "date": "2026-11-13",
    "text": "Dave's 12 Nov late-morning to-do notes were acted on in J8NIX but never logged in brain.json, and the night 'prices out of public files' pass missed the decisions list. Rule: stand-up diffs to-do `at` > last shift's dave_input cutoff, and the price grep covers every array, not just products."
+  },
+  {
+   "date": "2026-11-13",
+   "text": "Method research 13 Nov (Belkins 2026 LinkedIn study, belkins.io/blog/linkedin-outreach-study: personalized note 8.2% vs 5.3% reply) targets accepted→reply, where we're already at 12% (3/25). Fails the kill-test for our weakest metric (reply→call, 0/3). Next research must target reply→call specifically (e.g. what the 3 repliers said)."
+  },
+  {
+   "date": "2026-11-13",
+   "text": "The 08:30 stand-up couldn't push (repo not authorized for that task) and parked its brain.json patch in J8NIX runs.brain_patch; the 12:13 shift applied it with git am. Rule: any arm that can't push stores a git-format patch in its runs doc; the next pushing arm applies it first."
   }
  ],
  "runs": [
@@ -4295,6 +4347,78 @@
     }
    ],
    "verifier": "pending"
+  },
+  {
+   "at": "2026-11-13T13:25+02:00",
+   "seat": "Brain shift 12:13 (CRO, CTO, CMO, COO via workers) · CASH MODE",
+   "models": {
+    "haiku": "method research (Belkins)",
+    "sonnet": "gig scan + T1 drafts; email-sender DNS research",
+    "opus": "orchestration, SH✡MER council draft, independent verifier (4/4 PASS)"
+   },
+   "dave_input_since_last": "None: J8NIX comments 0 new (21 total, routed/done); to-do: no ticks since 12 Nov 10:45 UTC; approvals: no decisions since 12 Nov 22:50. Gmail: no prospect replies; job alerts only. Linear: no change.",
+   "catch_up": "Applied the 08:30 stand-up's unpushed brain.json/data.json patch (git am) first; last_run was its 09:05.",
+   "steps": [
+    {
+     "text": "CRO: gig scan (Gmail alerts, Indeed, web; 11 roles checked); 2 new ≥80-fit roles drafted from T1 and queued (hold to 19:10, Mac sender Sunday): Fiverr Sr Product Designer (83), eyesAtop Lead UI/UX (88, NEEDS YOUR EYES on recency)",
+     "seat": "CRO",
+     "model": "sonnet",
+     "evidence": "https://claude.ai/artifact/K6JrRs66KSQseksQgEMbyh (app-1113-fiverr, app-1113-eyesatop)"
+    },
+    {
+     "text": "CTO: email-sender unblock: DNS read (Google mailbox, SPF ok, no DKIM/DMARC); path decided: Mac arm sends from Gmail web; Dave's 2 steps + optional DKIM/DMARC brief",
+     "seat": "CTO",
+     "model": "sonnet",
+     "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/blob/main/ops/brain/EMAIL-SENDER.md"
+    },
+    {
+     "text": "CRO (SH✡MER buyer step): Megiddo regional council security-head first-contact email (Hebrew, §7, §30A subject + opt-out, no price; contact + 2 goals sourced from council page) → approvals pending, per-item",
+     "seat": "CRO",
+     "model": "opus",
+     "evidence": "https://claude.ai/artifact/K6JrRs66KSQseksQgEMbyh (org-1113-megiddo)"
+    },
+    {
+     "text": "COO: 08:30 stand-up patch applied (it was refused push); price-redacted, verified JSON",
+     "seat": "COO",
+     "model": "opus",
+     "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/commit/56bf928"
+    },
+    {
+     "text": "CMO (improve): reply-rate method research (Belkins 2026); failed kill-test for reply→call, logged as learning, no step added",
+     "seat": "CMO",
+     "model": "haiku",
+     "evidence": "https://belkins.io/blog/linkedin-outreach-study"
+    }
+   ],
+   "loose_ends_closed": [],
+   "loose_ends_advanced": [
+    "shm-org-contacts",
+    "svc-standing-ok",
+    "ops-email-sender"
+   ],
+   "skipped": [
+    {
+     "what": "Sends",
+     "why": "cloud run; sender arm is Mac Sun–Thu; email_from_ok false"
+    },
+    {
+     "what": "Frozen products (LickPick, Nature, IG, TH, Chore…)",
+     "why": "BRAIN.md §−1 cash mode"
+    },
+    {
+     "what": "ops/index.html",
+     "why": "no stage change"
+    },
+    {
+     "what": "J8NIX var T line",
+     "why": "no new to-do item; Dave's moves live on projects.you"
+    },
+    {
+     "what": "Throughput 4–8",
+     "why": "5 steps; no revenue landed (₪0 invoiced/collected, 0 calls): all money paths wait on Mac sender or Dave's switch"
+    }
+   ],
+   "verifier": "opus verifier (separate agent): 4/4 PASS — T1 word-for-word + live postings (Fiverr 200, Comeet updated 12 Nov), Megiddo email decoded from page + goals quoted verbatim + §30A elements + no dup, DNS re-queried, no @gmail/₪ in outputs. Fixes applied: Fiverr opening wording; brief step order; Megiddo address line."
   }
  ],
  "morning_note": {
@@ -5069,11 +5193,11 @@
    "pod": "Revenue",
    "title": "First org contacts: HaShomer HaChadash + Chabad Israel HQ emails, TJE tester post",
    "status": "open",
-   "next_action": "First Chrome-linked shift sends the exact approved texts, checks each thread first, logs every time in the to-do; Dave's one toggle \"Require this computer\" on the brain-shift task makes every shift able to do this",
+   "next_action": "First Chrome-linked shift sends the exact approved texts, checks each thread first, logs every time in the to-do; Dave's one toggle \"Require this computer\" on the brain-shift task makes every shift able to do this | 13 Nov: +1 council draft (Megiddo security head, pending, per-item)",
    "owner_seat": "CRO",
    "blocker": "Standing OK given 11 Nov 13:04. Sends need a session linked to Dave's Mac (LinkedIn in his Chrome, dave@3shamrocks.com mailbox); brain shifts run cloud-only",
    "evidence": "https://claude.ai/artifact/K6JrRs66KSQseksQgEMbyh (item s11b-shomer); sources hashomer.org.il/volunteer, kfar-chabad.com",
-   "updated": "2026-11-11T18:40+02:00"
+   "updated": "2026-11-13T13:25+02:00"
   },
   {
    "id": "svc-standing-ok",
@@ -5278,6 +5402,18 @@
    "blocker": "",
    "evidence": "this run's commit",
    "updated": "2026-11-13T09:05+02:00"
+  },
+  {
+   "id": "ops-email-sender",
+   "product": "services",
+   "pod": "Revenue",
+   "title": "Approved studio emails held: no way to send as dave@3shamrocks.com",
+   "status": "blocked_dave",
+   "next_action": "Dave: Chrome on Mac signed in as dave@3shamrocks.com + J8NIX Control 'studio email OK' on; then Claude self-tests and sends 5–10/day",
+   "owner_seat": "CTO",
+   "blocker": "Dave's switch (arms never flip email_from_ok)",
+   "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/blob/main/ops/brain/EMAIL-SENDER.md",
+   "updated": "2026-11-13T13:25+02:00"
   }
  ],
  "pods": [
