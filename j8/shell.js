@@ -62,6 +62,7 @@
 
   (async function boot() {
     var h = location.hash;
+    if (/[?&]token_hash=/.test(location.search)) { try { await J8.auth.signInWithLink(location.href); } catch (e) { msg('That sign-in link has expired. Ask for a new one.', true); } history.replaceState(null, '', location.pathname); }
     if (h.indexOf('refresh_token=') > -1) { try { await J8.auth.signInWithLink(location.href); } catch (e) { msg('That sign-in link has expired. Ask for a new one.', true); } history.replaceState(null, '', location.pathname); }
     var ok = await J8.connect();
     if (J8.status().user) return readyView();
