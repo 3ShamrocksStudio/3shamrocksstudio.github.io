@@ -56,7 +56,25 @@
   });
   J8.on('status', function (st) { if (st.error === 'signed_out' && !st.user) authView(false); });
 
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {});
+  /* 6.1.2: the installed app updates itself. A phone app resumed from the background never reloads, so check for a new
+     version whenever it comes to the front; when the new version takes over, reload once (or, if Dave is typing, show a bar). */
+  if ('serviceWorker' in navigator) {
+    var hadSW = !!navigator.serviceWorker.controller, swDone = false;
+    navigator.serviceWorker.register('sw.js', { scope: './' }).then(function (reg) {
+      var chk = function () { if (document.visibilityState === 'visible') reg.update().catch(function () {}); };
+      document.addEventListener('visibilitychange', chk); setInterval(chk, 30 * 60 * 1000);
+    }).catch(function () {});
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (!hadSW || swDone) return; swDone = true;
+      var ae = document.activeElement, busy = (ae && /^(TEXTAREA|INPUT)$/.test(ae.tagName)) || [].some.call(document.querySelectorAll('textarea'), function (t) { return String(t.value || '').trim(); });
+      if (!busy) { location.reload(); return; }
+      if (document.getElementById('updbar')) return;
+      var b = document.createElement('div'); b.id = 'updbar'; b.className = 'updbar'; b.setAttribute('role', 'status');
+      b.innerHTML = '<span>New version of J8NIX</span><button type="button">Tap to update</button>';
+      b.querySelector('button').addEventListener('click', function () { location.reload(); });
+      document.body.appendChild(b);
+    });
+  }
 
   (async function boot() {
     var h = location.hash;

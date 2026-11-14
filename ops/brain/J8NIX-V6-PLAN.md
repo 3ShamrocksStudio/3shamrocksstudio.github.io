@@ -345,3 +345,19 @@ sed -i 's/app\.css?v=6\.1\.1/app-6.1.0.css/;s/app\.js?v=6\.1\.1/app-6.1.0.js/' j
 ```
 DB: the note check only refuses a row the app never writes; nothing to undo.
 
+
+## 6.1.2 Hotfix (Dave 14 Nov 20:09: "approve section only has send, edit and kill, no comment")
+- Why he didn't see Comment: the installed app was still running an older version. A phone app resumed from the
+  background never reloads, and nothing told it a new version existed. Comment has been on every draft card since 6.1.0.
+- Self-updating app: shell.js checks for a new version each time the app comes to the front (and every 30 min); when the
+  new version takes over it reloads once, or, if Dave is typing, shows "New version of J8NIX · Tap to update".
+  sw.js fetches the page itself with no-cache so the update is not held back by the browser cache.
+- Draft actions on phones (≤420 px): Send · Edit / Kill · Comment as a 2×2 grid, 48 px targets, icon + label.
+- Templates (Control): Comment next to Approve/Kill; the note carries approval_id = the template; team's latest reply under it.
+- Control schedule rows: "Last run" read from the run log (j8_runs), same as Teams; the schedule snapshot only as fallback.
+- Held / queued drafts show as a list of names (no actions), and Next points to the cards, so no 3-button surface is left.
+
+### 6.1.2 Revert (to 6.1.1; `app-6.1.1.js` / `app-6.1.1.css` kept)
+```
+sed -i 's/app\.css?v=6\.1\.2/app-6.1.1.css/;s/app\.js?v=6\.1\.2/app-6.1.1.js/' j8/index.html && sed -i "s/j8nix-v6\.1\.2'/j8nix-v6.1.2-revert'/" j8/sw.js
+```

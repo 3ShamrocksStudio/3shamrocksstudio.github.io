@@ -1,6 +1,6 @@
 /* J8NIX v6 service worker: offline shell + web push. Never caches API data. */
-var CACHE = 'j8nix-v6.1.1';
-var SHELL = ['./', 'index.html', 'app.css?v=6.1.1', 'app.js?v=6.1.1', 'shell.js?v=6.1.1', 'j8-data.js?v=6.1.1', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
+var CACHE = 'j8nix-v6.1.2';
+var SHELL = ['./', 'index.html', 'app.css?v=6.1.2', 'app.js?v=6.1.2', 'shell.js?v=6.1.2', 'j8-data.js?v=6.1.2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/j8nix.png', 'brand/studio.png',
   'icons/wm-slate.svg', 'icons/icon.svg', 'icons/icon-192.png', 'icons/badge-96.png', 'icons/apple-touch-icon.png'];
 
@@ -19,7 +19,7 @@ self.addEventListener('fetch', function (e) {
     // network first for the page itself, cache first for versioned assets
     if (e.request.mode === 'navigate') {
       var home = u.pathname === '/j8/' || u.pathname === '/j8/index.html';
-      e.respondWith(fetch(e.request).then(function (r) { if (home && r.ok) { var c = r.clone(); caches.open(CACHE).then(function (ca) { ca.put('index.html', c); }); } return r; })
+      e.respondWith(fetch(home ? new Request(e.request.url, { cache: 'no-cache', credentials: 'same-origin' }) : e.request).then(function (r) { if (home && r.ok) { var c = r.clone(); caches.open(CACHE).then(function (ca) { ca.put('index.html', c); }); } return r; })
         .catch(function () { return caches.match('index.html'); }));
       return;
     }

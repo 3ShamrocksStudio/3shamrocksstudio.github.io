@@ -280,7 +280,7 @@ function apCard(a,pre){var id=a.id,ed=editing===id,o=openRow[(pre||'cb')+id],txt
   +(ed?'<textarea class="aed" id="ed-'+esc(id)+'" dir="auto" aria-label="Edit the text">'+esc(txt)+'</textarea>':'')
   +(o&&a.warn?'<p class="warn" dir="auto">'+esc(cut(a.warn,220))+'</p>':'')+(o&&a.link?'<a class="lnk" href="'+esc(a.link)+'" target="_blank" rel="noopener">'+esc(a.link_text||'Open the link')+'</a>':'')
   +'<time>'+esc(tm(a.created))+'</time>'
-  +'<div class="btns">'+(ed?'<button class="s" data-apsave="'+esc(id)+'">Save and send</button><button data-apcancel="'+esc(id)+'">Cancel</button>'
+  +'<div class="btns'+(ed?'':' b4')+'">'+(ed?'<button class="s" data-apsave="'+esc(id)+'">Save and send</button><button data-apcancel="'+esc(id)+'">Cancel</button>'
     :'<button class="s" data-apsend="'+esc(id)+'">'+ic('send')+'Send</button><button data-apedit="'+esc(id)+'">'+ic('edit')+'Edit</button><button data-apkill="'+esc(id)+'">'+ic('kill')+'Kill</button><button data-apnote="'+esc(id)+'" aria-expanded="'+(openRow['apn'+id]?'true':'false')+'">'+ic('chat')+'Comment</button>')+'</div>'
   +(!ed&&openRow['apn'+id]?apNoteBox(a):'')+apReply(a)+'</div>';}
 /* 6.1 a note on a draft (Dave, 14 Nov 18:48): goes to the team tagged with the draft; the draft's status is untouched,
@@ -663,7 +663,7 @@ function seatTap(){if(!CTRL){toast('Not connected yet. Try again in a moment.');
  else{seatAsk=Date.now()+5000;renderSeat();setTimeout(renderSeat,5100);}}
 
 /* ===== 5.3 Control: run the team from the phone. Lives in the settings sheet; #control opens it. Admins change, everyone else reads. ===== */
-var J8V='6.1.1',ctlOn=false,ctlAsk=null,ctlOpen={};
+var J8V='6.1.2',ctlOn=false,ctlAsk=null,ctlOpen={};
 var COVERS={'job-application':'Job applications','li-connect':'LinkedIn connect notes','followup-1':'First follow-up','followup-2':'Second follow-up','tester-post':'Tester sign-up post'};
 var LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="6" y="11" width="12" height="9"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg>';
 function ilHM(ms){var p=ilParts(ms);return String(p.hour).padStart(2,'0')+':'+String(p.minute).padStart(2,'0');}
@@ -672,9 +672,13 @@ function ilWhen(iso){var t=pd(iso);if(isNaN(t)||!ILF)return '';var d=ilDay(t);if
  var p=ilParts(t);return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(Date.UTC(p.year,p.month-1,p.day)).getUTCDay()]+' '+p.day+' '+MON[p.month-1]+' '+ilHM(t);}
 function sw(on,cx,label,dis,extra){return '<button type="button" class="sw" role="switch" aria-checked="'+(on?'true':'false')+'" aria-label="'+esc(label)+'" data-cx="'+cx+'" data-fk="'+esc(cx+(extra||''))+'"'+(extra?' data-id="'+esc(extra)+'"':'')+(dis?' disabled':'')+'></button>';}
 function runPend(s){var a=pd(s.run_now_at),d=pd(s.run_now_done_at);return !isNaN(a)&&(isNaN(d)||a>d)?a:null;}
-function schRow(s,ro){var st=s.last_status||'none',dot={ok:'g',failed:'o',running:'b'}[st]||'n',word={ok:'worked',failed:'failed',running:'running now'}[st]||'',on=s.want_enabled!=null?!!s.want_enabled:!!s.enabled,rp=runPend(s),p='';
+/* 6.1.2: Control reads the last run from the run log (j8_runs), the same way Teams does; the schedule row's own
+   last_run_at is only a snapshot and is used when the log has nothing newer. */
+function lastRunOf(s){var k=armKey(s.name),r=null;J8.runs.list().forEach(function(x){if(armKey(x.arm)!==k)return;var t=pd(x.ended||x.started);if(!isNaN(t)&&(!r||t>r.t))r={t:t,st:x.status==='started'?'running':x.status};});
+ var t0=pd(s.last_run_at);if(!isNaN(t0)&&(!r||t0>r.t))r={t:t0,st:s.last_status};return r;}
+function schRow(s,ro){var lr=lastRunOf(s),st=(lr&&lr.st)||'none',dot={ok:'g',failed:'o',running:'b'}[st]||'n',word={ok:'worked',failed:'failed',running:'running now'}[st]||'',on=s.want_enabled!=null?!!s.want_enabled:!!s.enabled,rp=runPend(s),p='';
  if(s.want_enabled!=null&&!!s.want_enabled!==!!s.enabled)p='<span class="cx-p">'+(s.want_enabled?'Turning on… (within the hour)':'Pausing… (within the hour)')+'</span>';
- var last=s.last_run_at?'Last run '+ago(s.last_run_at)+(word?' · '+word:''):'Not run yet',nr=nextRun(s),nx=s.enabled&&!isNaN(nr)?'Next '+ilWhen(new Date(nr).toISOString()):s.enabled?'':'Off';
+ var last=lr?'Last run '+ago(new Date(lr.t).toISOString())+(word?' · '+word:''):'Not run yet',nr=nextRun(s),nx=s.enabled&&!isNaN(nr)?'Next '+ilWhen(new Date(nr).toISOString()):s.enabled?'':'Off';
  return '<div class="sh-row cx-s"><div><b dir="auto">'+esc(s.name||'Team task')+'</b><span dir="auto">'+esc(s.when_text||'')+'</span>'
   +'<span class="cx-m"><i class="sd sd-'+dot+'" aria-hidden="true"></i><span>'+esc(last)+(nx?' · '+esc(nx):'')+'</span></span>'+p
   +(s.note?'<small dir="auto">'+esc(s.note)+'</small>':'')
@@ -683,10 +687,12 @@ function schRow(s,ro){var st=s.last_status||'none',dot={ok:'g',failed:'o',runnin
 function tplRow(a,ro){var st=a.status||'pending',cls={approved:'done',edited:'done',killed:'kill',sent:'done'}[st]||'wait',pr=PR[a.product]&&PR[a.product].name,k='t'+a.id,body=J8.approvals.textOf(a);
  return '<div class="cx-t"><div class="cx-tt"><span class="pill s-'+cls+'">'+esc(STW[st]||'Waiting')+'</span><b dir="auto">'+esc(COVERS[a.covers]||(a.covers?cap1(String(a.covers).replace(/[-_]+/g,' ')):'Template'))+'</b>'+(pr?'<small dir="auto">'+pm(a.product)+esc(pr)+'</small>':'')+'</div>'
   +(body?'<details data-k="'+esc(k)+'"'+(ctlOpen[k]?' open':'')+'><summary>Show the text</summary><p class="cx-body" dir="auto">'+esc(body)+'</p></details>':'')
-  +(ro?'':'<div class="acts">'+(st!=='approved'&&st!=='edited'?'<button type="button" class="s" data-cx="tok" data-id="'+esc(a.id)+'" data-fk="tok'+esc(a.id)+'">'+ic('done')+'Approve</button>':'')+(st!=='killed'?'<button type="button" data-cx="tkill" data-id="'+esc(a.id)+'" data-fk="tkill'+esc(a.id)+'">'+ic('kill')+'Kill</button>':'')+'</div>')+'</div>';}
+  +(ro?'':'<div class="acts">'+(st!=='approved'&&st!=='edited'?'<button type="button" class="s" data-cx="tok" data-id="'+esc(a.id)+'" data-fk="tok'+esc(a.id)+'">'+ic('done')+'Approve</button>':'')+(st!=='killed'?'<button type="button" data-cx="tkill" data-id="'+esc(a.id)+'" data-fk="tkill'+esc(a.id)+'">'+ic('kill')+'Kill</button>':''))+(ro?'<div class="acts">':'')
+  +'<button type="button" data-tnote="'+esc(a.id)+'" data-fk="tn'+esc(a.id)+'" aria-expanded="'+(ctlOpen['tn'+a.id]?'true':'false')+'">'+ic('chat')+'Comment</button></div>'
+  +(ctlOpen['tn'+a.id]?'<form class="ans apn" data-ans="'+esc(a.product||'p-general')+'" data-ap="'+esc(a.id)+'"><textarea rows="1" dir="auto" placeholder="Note on this template" aria-label="Note on this template"></textarea><button type="submit" aria-label="Send the note">'+ic('send')+'</button></form>':'')+apReply(a)+'</div>';}
 function askBox(k){var t={email:['Turn on email sending?','Approved emails start going out from dave@3shamrocks.com on my next run.'],brain:['Turn on live AI answers?','I answer your chat at once, and each answer costs paid AI.']}[k];
  return '<div class="cx-ask" role="group" aria-label="'+esc(t[0])+'"><p>'+esc(t[0])+'</p><span>'+esc(t[1])+'</span><div><button type="button" class="seat" data-cx="yes" data-fk="yes">Yes, turn on</button><button type="button" class="txtb" data-cx="no" data-fk="no">Cancel</button></div></div>';}
-function renderCtl(){var el=$('ctlBody');if(!el||!ctlOn)return;var c=J8.control.get(),ro=!J8.orgs.can('admin'),h='',ae=document.activeElement,fk=ae&&ae.dataset?ae.dataset.fk:null,iv=$('ooIn')?$('ooIn').value:'',inF=ae&&ae.id==='ooIn';
+function renderCtl(){var el=$('ctlBody');if(!el||!ctlOn)return;if(document.activeElement&&el.contains(document.activeElement)&&document.activeElement.tagName==='TEXTAREA')return;var c=J8.control.get(),ro=!J8.orgs.can('admin'),h='',ae=document.activeElement,fk=ae&&ae.dataset?ae.dataset.fk:null,iv=$('ooIn')?$('ooIn').value:'',inF=ae&&ae.id==='ooIn';
  if(ro)h+='<p class="cx-ro" role="note">You can see everything here; only an admin of this business can change it.</p>';
  /* 1 sending */
  h+='<section class="cx-g" aria-labelledby="cxg1"><h3 id="cxg1">Sending</h3><p class="cx-d">What I may send, and the switch that stops everything.</p>'
@@ -797,6 +803,7 @@ document.addEventListener('click',function(e){
  t=e.target.closest('[data-cat]');if(t){lcat=t.dataset.cat;renderList();$('v-list').scrollTop=0;return;}
  t=e.target.closest('[data-pin]');if(t){pinAll=!pinAll;renderPin();return;}
  t=e.target.closest('[data-open]');if(t){var k=t.dataset.open;openRow[k]=!openRow[k];renderView(view);if(view==='chat')renderPin();return;}
+ t=e.target.closest('[data-tnote]');if(t){var tn=t.dataset.tnote;ctlOpen['tn'+tn]=!ctlOpen['tn'+tn];renderCtl();setTimeout(function(){var f=document.querySelector('#ctlBody form.apn[data-ap="'+(window.CSS&&CSS.escape?CSS.escape(tn):tn)+'"] textarea');if(f)f.focus();},30);return;}
  t=e.target.closest('[data-apnote]');if(t){var an=t.dataset.apnote;openRow['apn'+an]=!openRow['apn'+an];renderView(view);setTimeout(function(){var f=document.querySelector('form.apn[data-ap="'+(window.CSS&&CSS.escape?CSS.escape(an):an)+'"] textarea');if(f)f.focus();},40);return;}
  t=e.target.closest('[data-apnd]');if(t){var aid=t.dataset.id,how=t.dataset.apnd,cd=t.closest('.card'),ta=cd&&cd.querySelector('form.apn textarea'),nv=String(ta&&ta.value||'').trim(),a0=AP[aid]||{};
   if(!nv){toast('Write the note first.');if(ta)ta.focus();return;}if(!J8.status().connected){toast('Not connected. Try again in a moment.');return;}
