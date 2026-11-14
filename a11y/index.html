@@ -132,6 +132,8 @@ summary{cursor:pointer;font-weight:700;font-size:17px}
 details p{margin-top:10px;color:var(--ink-2)}
 .src{font-size:14px;color:var(--ink-3)}
 .studio{color:var(--ink-2)}
+.guides-list{padding-inline-start:20px;color:var(--ink-2)}
+.guides-list li{margin:6px 0}
 footer.site{border-top:1px solid var(--line);padding:30px 0 40px;color:var(--ink-3);font-size:14px}
 footer.site .wrap{display:flex;gap:18px;justify-content:space-between;flex-wrap:wrap}
 footer.site a{color:var(--ink-2)}
@@ -139,7 +141,7 @@ footer.site a{color:var(--ink-2)}
 @media (prefers-reduced-motion:no-preference){.btn,.lang-btn{transition:background .15s,border-color .15s}}
 @media print{
   body{background:#fff;color:#000;font-size:12pt}
-  header.top,footer.site,.hero,.no-print,#about,#faq,#studio,.cta,.lic,.skip{display:none!important}
+  header.top,footer.site,.hero,.no-print,#about,#faq,#studio,#guides,.cta,.lic,.skip{display:none!important}
   section.block{border:0;padding:0}
   .panel,.issue,.fact{background:#fff;border:1px solid #bbb;color:#000;break-inside:avoid}
   .issue p,.meta,.fact,.counts li{color:#000}
@@ -264,6 +266,18 @@ footer.site a{color:var(--ink-2)}
       <p class="studio"><a href="mailto:dave@3shamrocks.com?subject=Accessibility%20fixes" data-i18n="studioLink">כתבו לי: dave@3shamrocks.com</a></p>
     </div>
   </section>
+
+  <section class="block" id="guides" aria-labelledby="guides-title">
+    <div class="wrap">
+      <h2 id="guides-title" data-i18n="guidesTitle">מדריכים</h2>
+      <ul class="guides-list">
+        <li><a href="accessibility-statement-guide.html" data-href-he="accessibility-statement-guide.html" data-href-en="accessibility-statement-guide-en.html" data-i18n="g1">איך כותבים הצהרת נגישות לאתר</a></li>
+        <li><a href="accessibility-widget.html" data-href-he="accessibility-widget.html" data-href-en="accessibility-widget-en.html" data-i18n="g2">תוסף נגישות לאתר: האם זה מספיק?</a></li>
+        <li><a href="free-accessibility-check.html" data-href-he="free-accessibility-check.html" data-href-en="free-accessibility-check-en.html" data-i18n="g3">מה בדיקת נגישות אוטומטית מוצאת, ומה לא</a></li>
+        <li><a href="website-accessibility-law-israel.html" data-href-he="website-accessibility-law-israel.html" data-href-en="website-accessibility-law-israel-en.html" data-i18n="g4">מי חייב להנגיש אתר בישראל, ומי פטור</a></li>
+      </ul>
+    </div>
+  </section>
 </main>
 
 <footer class="site">
@@ -294,7 +308,7 @@ q4:"ובארצות הברית?",a4:"בארה\"ב הוגשו ב-2025 כ-5,000 ת�
 q5:"יש לי תוסף נגישות. זה לא מספיק?",a5:"לא. תוסף (וידג'ט) משנה את התצוגה, אבל לא מתקן את הקוד שמתחת: תמונה בלי alt או טופס בלי תוויות נשארים כאלה. ב-2025 רשות הסחר הפדרלית בארה\"ב (FTC) חייבה את accessiBe לשלם מיליון דולר על טענות מטעות שהכלי שלה הופך כל אתר לעומד בהנחיות WCAG.",
 q6:"האם הבדיקה הזו היא אישור שהאתר שלי עומד בחוק?",a6:"לא. היא מראה מה הבדיקות האוטומטיות מצאו בעמוד אחד, ועוזרת לתעדף תיקונים. היא לא מחליפה בדיקה ידנית מלאה, ולא ייעוץ משפטי.",
 srcLabel:"מקור:",newTab:" (נפתח בחלון חדש)",studioTitle:"צריכים מישהו שיתקן?",studioText:"ב-3Shamrocks Studio אני מתקן נגישות מהשורש: ברכיבים ובמערכת העיצוב של המוצר, כך שהתיקון לא נשבר בגרסה הבאה.",
-studioLink:"כתבו לי: dave@3shamrocks.com",privacy:"אני שומר את שם האתר שנבדק והציון. כדי להגביל את מספר הבדיקות אני שומר גם גיבוב (hash) חד-כיווני עם מלח של כתובת ה-IP, לכ-3 ימים. למי שקנה דוח אני שומר גיבוב של מפתח הרישיון ואת האתר שהוא משויך אליו. למנויי המעקב אני שומר גם את כתובת העמוד שבמעקב, ובכל בדיקה רק תאריך, ציון, מספר הבעיות מכל סוג וגרסת הבודק. את מפתח המנוי אני שומר מוצפן, רק כדי לוודא מול Gumroad שהמנוי עדיין פעיל, ומוחק אותו בבדיקה השבועית הראשונה אחרי שהמנוי מסתיים; ההיסטוריה נמחקת 90 יום אחרי סוף המנוי. בלי שמות ובלי כתובות מייל.",stmtLink:"הצהרת נגישות",
+studioLink:"כתבו לי: dave@3shamrocks.com",guidesTitle:"מדריכים",g1:"איך כותבים הצהרת נגישות לאתר",g2:"תוסף נגישות לאתר: האם זה מספיק?",g3:"מה בדיקת נגישות אוטומטית מוצאת, ומה לא",g4:"מי חייב להנגיש אתר בישראל, ומי פטור",privacy:"אני שומר את שם האתר שנבדק והציון. כדי להגביל את מספר הבדיקות אני שומר גם גיבוב (hash) חד-כיווני עם מלח של כתובת ה-IP, לכ-3 ימים. למי שקנה דוח אני שומר גיבוב של מפתח הרישיון ואת האתר שהוא משויך אליו. למנויי המעקב אני שומר גם את כתובת העמוד שבמעקב, ובכל בדיקה רק תאריך, ציון, מספר הבעיות מכל סוג וגרסת הבודק. את מפתח המנוי אני שומר מוצפן, רק כדי לוודא מול Gumroad שהמנוי עדיין פעיל, ומוחק אותו בבדיקה השבועית הראשונה אחרי שהמנוי מסתיים; ההיסטוריה נמחקת 90 יום אחרי סוף המנוי. בלי שמות ובלי כתובות מייל.",stmtLink:"הצהרת נגישות",
 monTitle:"מעקב נגישות חודשי",monPrice:"12 דולר לחודש לאתר אחד. אפשר לבטל בכל זמן.",monL1:"כל מה שיש בדוח המלא, לאותו אתר",monL2:"פעם בשבוע אני בודק שוב את העמוד שלכם, אוטומטית, מהשרת שלי",monL3:"״האתר שלכם לאורך זמן״: הציון בכל בדיקה, ומה תוקן ומה חדש",monL4:"בלי מיילים: כדי לראות את ההיסטוריה חוזרים לדף הזה ובודקים את האתר עם המפתח",monBtn:"להרשמה למעקב החודשי",
 monHint:"המעקב עוקב אחרי עמוד אחד (העמוד הראשון שתבדקו עם המפתח), באותן בדיקות אוטומטיות ועם אותן מגבלות. זה לא ייעוץ משפטי ולא אישור עמידה בתקן.",licHintMon:"Gumroad שולח לכם את המפתח במייל אחרי הרכישה, של הדוח או של המעקב. מפתח אחד מתאים לאתר אחד.",
 histTitle:"האתר שלכם לאורך זמן",histWatch:"העמוד שאני עוקב אחריו:",histNext:"הבדיקה האוטומטית הבאה: בסביבות",histNoEmail:"אני לא שולח מיילים: כדי לראות את ההיסטוריה, חזרו לדף הזה ובדקו את האתר עם המפתח.",
@@ -336,7 +350,7 @@ q4:"And in the US?",a4:"About 5,000 digital accessibility lawsuits were filed un
 q5:"I have an accessibility widget. Isn't that enough?",a5:"No. A widget changes the display but doesn't fix the code underneath: an image without alt or a form without labels stays that way. In 2025 the US FTC ordered accessiBe to pay $1M over misleading claims that its tool makes any website WCAG compliant.",
 q6:"Is this check proof that my site complies?",a6:"No. It shows what automated checks found on one page and helps you prioritise fixes. It doesn't replace a full manual review or legal advice.",
 srcLabel:"Source:",newTab:" (opens in a new tab)",studioTitle:"Need someone to fix it?",studioText:"At 3Shamrocks Studio I fix accessibility at the source: in the product's components and design system, so the fix doesn't break in the next release.",
-studioLink:"Email me: dave@3shamrocks.com",privacy:"I store the checked site's host name and score. For rate limiting I also keep a salted, one-way hash of your IP for about 3 days. For buyers I keep a hash of the license key and the site it's tied to. For monitor subscribers I also keep the address of the watched page and, per check, only the date, score, number of issues of each type and the checker version. I keep the subscription key encrypted, only to confirm with Gumroad that the subscription is still active, and delete it at the first weekly check after the subscription ends; the history is deleted 90 days after it ends. No names or emails.",stmtLink:"Accessibility statement",
+studioLink:"Email me: dave@3shamrocks.com",guidesTitle:"Guides",g1:"How to write a website accessibility statement",g2:"Is an accessibility widget enough?",g3:"What automated accessibility checks find, and what they miss",g4:"Who must make their website accessible in Israel",privacy:"I store the checked site's host name and score. For rate limiting I also keep a salted, one-way hash of your IP for about 3 days. For buyers I keep a hash of the license key and the site it's tied to. For monitor subscribers I also keep the address of the watched page and, per check, only the date, score, number of issues of each type and the checker version. I keep the subscription key encrypted, only to confirm with Gumroad that the subscription is still active, and delete it at the first weekly check after the subscription ends; the history is deleted 90 days after it ends. No names or emails.",stmtLink:"Accessibility statement",
 monTitle:"Accessibility Monitor",monPrice:"US$12 a month for one site. Cancel any time.",monL1:"Everything in the full report, for the same site",monL2:"Once a week I re-check your page automatically, from my server",monL3:"\"Your site over time\": the score of every check, and what got fixed and what's new",monL4:"No emails: to see the history, come back to this page and check your site with your key",monBtn:"Start the monthly monitor",
 monHint:"The monitor watches one page (the first page you check with the key), with the same automated checks and the same limits. Not legal advice and not a compliance certificate.",licHintMon:"Gumroad emails you the key after purchase, for the report or the monitor. One key covers one site.",
 histTitle:"Your site over time",histWatch:"The page I watch:",histNext:"Next automatic check: around",histNoEmail:"I don't send emails: to see the history, come back to this page and check your site with your key.",
@@ -373,6 +387,7 @@ function applyLang(l){
   d.lang=l; d.dir=l==="he"?"rtl":"ltr";
   document.querySelectorAll("[data-i18n]").forEach(function(el){var v=T[l][el.getAttribute("data-i18n")]; if(typeof v==="string") el.textContent=v;});
   document.querySelectorAll("[data-i18n-attr]").forEach(function(el){el.getAttribute("data-i18n-attr").split(";").forEach(function(p){var kv=p.split(":"); el.setAttribute(kv[0],T[l][kv[1]]);});});
+  document.querySelectorAll("[data-href-en]").forEach(function(a){a.setAttribute("href",a.getAttribute("data-href-"+l));});
   var b=$("lang-btn"); b.textContent=l==="he"?"English":"עברית"; b.lang=l==="he"?"en":"he";
   document.title=l==="he"?"בדיקת נגישות לאתר — חינם, תוך 20 שניות | 3Shamrocks":"Website accessibility check — free, in 20 seconds | 3Shamrocks";
   $("url").placeholder=l==="he"?"example.co.il":"example.com";
@@ -531,7 +546,7 @@ function genStatement(j){
 }
 window.addEventListener("afterprint",function(){document.body.className="";});
 var pref=store("a11y-lang"); if(pref==="en") applyLang("en");
-var qs=new URLSearchParams(location.search); if(qs.get("url")){ $("url").value=qs.get("url"); }
+var qs=new URLSearchParams(location.search); if(qs.get("lang")==="en") applyLang("en"); if(qs.get("url")){ $("url").value=qs.get("url"); }
 })();
 </script>
 </body>
