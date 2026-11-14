@@ -2,7 +2,7 @@
 // Pure: takes a parsed Document (deno-dom) and returns findings. No network.
 // deno-lint-ignore-file no-explicit-any
 
-export const ENGINE_VERSION = "1.0.0";
+export const ENGINE_VERSION = "1.0.1";
 
 type L = { he: string; en: string };
 export type Severity = "critical" | "serious" | "moderate" | "minor";
@@ -1249,7 +1249,15 @@ export function runChecks(doc: any, rawHtml: string, pageUrl: string, lang: "he"
     const h = (attr(a, "href") || "").trim();
     if (!h || h === "#" || /^javascript:/i.test(h)) continue;
     const n = norm(accName(ctx, a).name);
-    if (STMT.test(n) || /accessib|negishut|nagishut|negishot|%d7%a0%d7%92%d7%99%d7%a9%d7%95%d7%aa|נגישות|barrierefrei/i.test(h)) {
+    let sameSite = true;
+    try {
+      const lh = new URL(h, pageUrl).hostname.replace(/^www\./, "");
+      const ph = new URL(pageUrl).hostname.replace(/^www\./, "");
+      const root = (x: string) => x.split(".").slice(-2).join(".");
+      sameSite = lh === ph || root(lh) === root(ph) || lh.endsWith("." + ph) || ph.endsWith("." + lh);
+    } catch { /* relative or odd href: treat as same site */ }
+    const explicit = /הצהרת\s*(ה)?נגישות|accessibility statement|erklärung zur barrierefreiheit|déclaration d.accessibilité|declaración de accesibilidad|dichiarazione di accessibilità|toegankelijkheidsverklaring/i.test(n);
+    if (explicit || (sameSite && (STMT.test(n) || /accessib|negishut|nagishut|negishot|%d7%a0%d7%92%d7%99%d7%a9%d7%95%d7%aa|נגישות|barrierefrei/i.test(h)))) {
       statement = { found: true, href: h.slice(0, 200), text: n.slice(0, 80) };
       break;
     }
