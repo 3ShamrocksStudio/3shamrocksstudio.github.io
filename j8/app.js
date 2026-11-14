@@ -34,7 +34,14 @@ function sevChip(v){return v&&SEV[v]?'<span class="sv sv-'+v+'">'+SEV[v][0]+' '+
 function pd(s){if(!s)return NaN;var t=new Date(String(s).trim().replace(' ','T').replace(/([+-]\d\d)$/,'$1:00'));return t.getTime();}
 var tt=null,undoFn=null;
 function toast(msg,undo){$('toastMsg').textContent=msg;var u=$('undo');u.hidden=!undo;undoFn=undo||null;$('toast').classList.add('on');clearTimeout(tt);tt=setTimeout(function(){$('toast').classList.remove('on');undoFn=null;},undo?8000:4000);}
-function scrollToEl(id,block){setTimeout(function(){var e=$(id);if(e)e.scrollIntoView({behavior:'smooth',block:block||'start'});},40);}
+function scrollToEl(id,block){var moved=false,box0=$(id)&&$(id).closest('.v'),stop=function(){moved=true;};
+ if(box0){box0.addEventListener('touchstart',stop,{once:true,passive:true});box0.addEventListener('wheel',stop,{once:true,passive:true});}
+ var fit=function(smooth){if(moved)return;var e=$(id);if(!e)return;var box=e.closest('.v');
+  if(box&&box.id==='v-list'&&(block||'start')==='start'){var bar=box.querySelector('.cats'),bh=bar?bar.getBoundingClientRect().height:0;box.style.setProperty('--catsH',bh+'px');
+   var y=Math.max(0,e.getBoundingClientRect().top-box.getBoundingClientRect().top+box.scrollTop-bh-10);if(Math.abs(y-box.scrollTop)>2)box.scrollTo({top:y,behavior:smooth?'smooth':'auto'});return;}
+  e.scrollIntoView({behavior:smooth?'smooth':'auto',block:block||'start'});};
+ setTimeout(function(){fit(!matchMedia('(prefers-reduced-motion:reduce)').matches);},40);
+ [700,1200].forEach(function(ms){setTimeout(function(){fit(false);},ms);}); /* the list can re-render while it scrolls: land exactly, unless Dave has scrolled himself */}
 /* ===== to-do (var T, ticks in db "todo") [chat]: openItems, dayStats (kept from v6) ===== */
 var GOF={};T.forEach(function(g){g.items.forEach(function(i){GOF[i.id]=g;});});
 function all(){var a=[];T.forEach(function(g){g.items.forEach(function(i){a.push(i);});});return a;}
