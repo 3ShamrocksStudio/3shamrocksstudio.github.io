@@ -1,5 +1,5 @@
 /* J8NIX v5 service worker: offline shell + web push. Never caches API data. */
-var CACHE = 'j8nix-v5.3.0';
+var CACHE = 'j8nix-v5.3.1';
 var SHELL = ['./', 'index.html', 'app.css?v=5.3.0', 'app.js?v=5.3.0', 'shell.js?v=5.3.0', 'j8-data.js?v=5.3.0', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'icons/wm-slate.svg', 'icons/icon.svg', 'icons/icon-192.png', 'icons/badge-96.png', 'icons/apple-touch-icon.png'];
 
@@ -17,7 +17,8 @@ self.addEventListener('fetch', function (e) {
   if (u.origin === location.origin && u.pathname.indexOf('/j8/') === 0) {
     // network first for the page itself, cache first for versioned assets
     if (e.request.mode === 'navigate') {
-      e.respondWith(fetch(e.request).then(function (r) { var c = r.clone(); caches.open(CACHE).then(function (ca) { ca.put('index.html', c); }); return r; })
+      var home = u.pathname === '/j8/' || u.pathname === '/j8/index.html';
+      e.respondWith(fetch(e.request).then(function (r) { if (home && r.ok) { var c = r.clone(); caches.open(CACHE).then(function (ca) { ca.put('index.html', c); }); } return r; })
         .catch(function () { return caches.match('index.html'); }));
       return;
     }
