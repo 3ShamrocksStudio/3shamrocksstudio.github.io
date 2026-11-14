@@ -400,7 +400,7 @@ function render(j, relang){
   if(relang && j.lang!==lang) h+='<p class="hint">'+esc(L.langNote)+'</p>';
   h+='<div class="panel"><div class="res-head"><div>';
   if(j.score===null||j.score===undefined){h+='<p class="score">'+esc(L.noScore)+'</p>';}
-  else{h+='<p class="score" aria-label="'+esc(L.score+" "+j.score+" "+L.of100)+'">'+j.score+'<small>'+L.of100+'</small></p><div class="bar" aria-hidden="true"><span style="width:'+Math.max(0,Math.min(100,j.score))+'%"></span></div>';}
+  else{h+='<p class="score" role="img" aria-label="'+esc(L.score+" "+j.score+" "+L.of100)+'">'+j.score+'<small>'+L.of100+'</small></p><div class="bar" aria-hidden="true"><span style="width:'+Math.max(0,Math.min(100,j.score))+'%"></span></div>';}
   h+='</div><div><p><strong>'+esc(L.scanned)+'</strong> <span dir="ltr">'+esc(j.url)+'</span>'+(j.paid?' · <span class="sev minor">'+esc(L.paidBadge)+'</span>':'')+'</p>';
   h+='<p><bdi>'+j.checks_run+'</bdi> '+esc(L.checksRun)+' · <bdi>'+(j.passed_count||0)+'</bdi> '+esc(L.passed)+' · '+esc(L.found)+' <bdi>'+j.total_findings+'</bdi> '+esc(L.issuesKinds)+'</p>';
   h+='<ul class="counts">';["critical","serious","moderate","minor"].forEach(function(s){h+='<li>'+esc(sevLabel(s))+': <bdi>'+(j.counts[s]||0)+'</bdi></li>';});h+='<li>'+esc(L.advisory)+': <bdi>'+(j.advisory_count||0)+'</bdi></li></ul></div></div>';
