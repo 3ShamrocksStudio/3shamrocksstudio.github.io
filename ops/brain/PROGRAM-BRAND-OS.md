@@ -24,7 +24,7 @@ Every run reads this file right after BRAIN.md §−6. It is the #1 product prio
 Free "How AI sees your brand" audit (entry, /audit/) → **AI-Ready Brand Sprint** (one-time setup of the genome and first assets) → **Brand OS subscription** (two tiers, monthly; quarterly prepay discount). Recurring revenue is the goal (Dave's preference).
 
 ## 5. Niche
-Funded Israeli startups, Seed to Series B, HealthTech first (proof: TIME 2023 Best Invention companion app, doubled patient retention). Second ring: Israeli SaaS. The P0 research may move this; the research file decides.
+Funded Israeli startups, Seed to Series B, HealthTech first (proof: companion app for the VIBRANT capsule, which TIME named a Best Invention of 2023; doubled patient retention). Second ring: Israeli SaaS. The P0 research may move this; the research file decides.
 
 ## 6. Phases, owners, dates, gates
 | Phase | Output | Seats | Due | Done when |
@@ -48,3 +48,4 @@ Real data only, every claim sourced. Demo brands are 3S itself or clearly fictio
 ## 9. Log (append one line per run: date · run · what shipped · link)
 - 2026-11-14 · main session · Program created; P0 research started.
 - 2026-11-14 · research agent · P0 research done · ops/brain/brandos/RESEARCH.md
+- 2026-11-14 · weekend shift 19:43 · P1 definition drafted (name check, positioning, spec, offer copy HE/EN) · ops/brain/brandos/P1-DEFINITION.md
