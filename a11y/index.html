@@ -104,6 +104,14 @@ pre{direction:ltr;text-align:left;background:#0d0c13;border:1px solid var(--line
 .cta{margin-top:24px;background:linear-gradient(135deg,#1d1530,#14121c);border:1px solid #4b3a74;border-radius:16px;padding:22px}
 .cta ul{margin:10px 0 16px;padding-inline-start:22px;color:var(--ink-2)}
 .lic{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+.offers{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.offers{grid-template-columns:1fr}}
+.offer{border:1px solid #4b3a74;border-radius:12px;padding:16px}
+.hist h4{font-size:17px;margin:18px 0 6px;font-family:var(--font-b)}
+.hist-list{list-style:none;display:grid;gap:8px;margin-top:8px}
+.hist-list li{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:15px;color:var(--ink-2)}
+.mini{display:inline-block;width:56px;height:6px;background:#2a2638;border-radius:99px;overflow:hidden;vertical-align:middle;margin-inline-end:8px}
+.mini span{display:block;height:100%;background:var(--violet-2)}
 .lic label{display:block;font-weight:500;margin-bottom:8px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:640px){.grid2{grid-template-columns:1fr}}
@@ -260,7 +268,7 @@ footer.site a{color:var(--ink-2)}
 
 <footer class="site">
   <div class="wrap">
-    <p>&copy; 2026 <a href="https://3shamrocks.com/">3Shamrocks Studio</a> · <span data-i18n="privacy">אני שומר את שם האתר שנבדק והציון. כדי להגביל את מספר הבדיקות אני שומר גם גיבוב (hash) חד-כיווני עם מלח של כתובת ה-IP, לכ-3 ימים. למי שקנה דוח אני שומר גיבוב של מפתח הרישיון ואת האתר שהוא משויך אליו. בלי שמות ובלי כתובות מייל.</span></p>
+    <p>&copy; 2026 <a href="https://3shamrocks.com/">3Shamrocks Studio</a> · <span data-i18n="privacy">אני שומר את שם האתר שנבדק והציון. כדי להגביל את מספר הבדיקות אני שומר גם גיבוב (hash) חד-כיווני עם מלח של כתובת ה-IP, לכ-3 ימים. למי שקנה דוח אני שומר גיבוב של מפתח הרישיון ואת האתר שהוא משויך אליו. למנויי המעקב אני שומר גם את כתובת העמוד שבמעקב, ובכל בדיקה רק תאריך, ציון, מספר הבעיות מכל סוג וגרסת הבודק. את מפתח המנוי אני שומר מוצפן, רק כדי לוודא מול Gumroad שהמנוי עדיין פעיל, ומוחק אותו כשהמנוי מסתיים; ההיסטוריה נמחקת 90 יום אחרי סוף המנוי. בלי שמות ובלי כתובות מייל.</span></p>
     <p><a href="accessibility-statement.html" data-i18n="stmtLink">הצהרת נגישות</a></p>
   </div>
 </footer>
@@ -286,7 +294,14 @@ q4:"ובארצות הברית?",a4:"בארה\"ב הוגשו ב-2025 כ-5,000 ת�
 q5:"יש לי תוסף נגישות. זה לא מספיק?",a5:"לא. תוסף (וידג'ט) משנה את התצוגה, אבל לא מתקן את הקוד שמתחת: תמונה בלי alt או טופס בלי תוויות נשארים כאלה. ב-2025 רשות הסחר הפדרלית בארה\"ב (FTC) חייבה את accessiBe לשלם מיליון דולר על טענות מטעות שהכלי שלה הופך כל אתר לעומד בהנחיות WCAG.",
 q6:"האם הבדיקה הזו היא אישור שהאתר שלי עומד בחוק?",a6:"לא. היא מראה מה הבדיקות האוטומטיות מצאו בעמוד אחד, ועוזרת לתעדף תיקונים. היא לא מחליפה בדיקה ידנית מלאה, ולא ייעוץ משפטי.",
 srcLabel:"מקור:",newTab:" (נפתח בחלון חדש)",studioTitle:"צריכים מישהו שיתקן?",studioText:"ב-3Shamrocks Studio אני מתקן נגישות מהשורש: ברכיבים ובמערכת העיצוב של המוצר, כך שהתיקון לא נשבר בגרסה הבאה.",
-studioLink:"כתבו לי: dave@3shamrocks.com",privacy:"אני שומר את שם האתר שנבדק והציון. כדי להגביל את מספר הבדיקות אני שומר גם גיבוב (hash) חד-כיווני עם מלח של כתובת ה-IP, לכ-3 ימים. למי שקנה דוח אני שומר גיבוב של מפתח הרישיון ואת האתר שהוא משויך אליו. בלי שמות ובלי כתובות מייל.",stmtLink:"הצהרת נגישות",
+studioLink:"כתבו לי: dave@3shamrocks.com",privacy:"אני שומר את שם האתר שנבדק והציון. כדי להגביל את מספר הבדיקות אני שומר גם גיבוב (hash) חד-כיווני עם מלח של כתובת ה-IP, לכ-3 ימים. למי שקנה דוח אני שומר גיבוב של מפתח הרישיון ואת האתר שהוא משויך אליו. למנויי המעקב אני שומר גם את כתובת העמוד שבמעקב, ובכל בדיקה רק תאריך, ציון, מספר הבעיות מכל סוג וגרסת הבודק. את מפתח המנוי אני שומר מוצפן, רק כדי לוודא מול Gumroad שהמנוי עדיין פעיל, ומוחק אותו כשהמנוי מסתיים; ההיסטוריה נמחקת 90 יום אחרי סוף המנוי. בלי שמות ובלי כתובות מייל.",stmtLink:"הצהרת נגישות",
+monTitle:"מעקב נגישות חודשי",monPrice:"12 דולר לחודש לאתר אחד. אפשר לבטל בכל זמן.",monL1:"כל מה שיש בדוח המלא, לאותו אתר",monL2:"פעם בשבוע אני בודק שוב את העמוד שלכם, אוטומטית, מהשרת שלי",monL3:"״האתר שלכם לאורך זמן״: הציון בכל בדיקה, ומה תוקן ומה חדש",monL4:"בלי מיילים: כדי לראות את ההיסטוריה חוזרים לדף הזה ובודקים את האתר עם המפתח",monBtn:"להרשמה למעקב החודשי",
+monHint:"המעקב עוקב אחרי עמוד אחד (העמוד הראשון שתבדקו עם המפתח), באותן בדיקות אוטומטיות ועם אותן מגבלות. זה לא ייעוץ משפטי ולא אישור עמידה בתקן.",licHintMon:"Gumroad שולח לכם את המפתח במייל אחרי הרכישה, של הדוח או של המעקב. מפתח אחד מתאים לאתר אחד.",
+histTitle:"האתר שלכם לאורך זמן",histWatch:"העמוד שאני עוקב אחריו:",histNext:"הבדיקה האוטומטית הבאה: בסביבות",histNoEmail:"אני לא שולח מיילים: כדי לראות את ההיסטוריה, חזרו לדף הזה ובדקו את האתר עם המפתח.",
+histAutoFail:"הבדיקה השבועית האחרונה לא הצליחה לקרוא את העמוד (למשל כי האתר חסם אותה). אנסה שוב בתוך יום.",histLicFail:"בבדיקה השבועית האחרונה לא הצלחתי לאמת את המנוי מול Gumroad. אנסה שוב בעוד כמה שעות.",
+histOther:"הבדיקה הזו הייתה על עמוד אחר באתר, ולכן היא לא נשמרה בהיסטוריה. ההיסטוריה עוקבת אחרי עמוד אחד.",histNone:"עוד אין בדיקות בהיסטוריה.",histFirst:"זו הבדיקה הראשונה בהיסטוריה. מהבדיקה הבאה תראו כאן מה תוקן ומה חדש.",
+histLatest:"מאז הבדיקה הקודמת",histFixed:"תוקנו",histNew:"חדשות",histFixedNote:"״תוקנו״ הן סוגי בעיות שהבדיקה האוטומטית כבר לא מוצאת בעמוד; ״חדשות״ הן סוגי בעיות שלא היו בבדיקה הקודמת.",histSame:"אין שינוי בסוגי הבעיות מאז הבדיקה הקודמת.",
+histEngine:"הבודק עודכן בין שתי הבדיקות, אז חלק מהשינויים יכולים לנבוע מהעדכון ולא מהאתר.",histAll:"כל הבדיקות",histAuto:"בדיקה שבועית",histYou:"בדיקה שלכם",histErr:"לא הצלחתי לטעון את ההיסטוריה כרגע. הדוח המלא תקין; נסו שוב מאוחר יותר.",
 scanning:"בודקים את העמוד… זה לוקח בדרך כלל 5 עד 20 שניות.",done:"הבדיקה הסתיימה. התוצאות למטה.",needUrl:"הזינו כתובת אתר, למשל example.co.il",
 score:"ציון",of100:"/100",noScore:"אין ציון",noScoreWhy:"העמוד נבנה כמעט כולו ב-JavaScript, ולכן הבדיקה ראתה רק שלד ריק. כדי לא להטעות, לא נתתי ציון.",
 found:"נמצאו",issuesKinds:"סוגי בעיות",checksRun:"בדיקות הורצו",passed:"עברו",sev:{critical:"קריטי",serious:"חמור",moderate:"בינוני",minor:"קל"},
@@ -321,7 +336,14 @@ q4:"And in the US?",a4:"About 5,000 digital accessibility lawsuits were filed un
 q5:"I have an accessibility widget. Isn't that enough?",a5:"No. A widget changes the display but doesn't fix the code underneath: an image without alt or a form without labels stays that way. In 2025 the US FTC ordered accessiBe to pay $1M over misleading claims that its tool makes any website WCAG compliant.",
 q6:"Is this check proof that my site complies?",a6:"No. It shows what automated checks found on one page and helps you prioritise fixes. It doesn't replace a full manual review or legal advice.",
 srcLabel:"Source:",newTab:" (opens in a new tab)",studioTitle:"Need someone to fix it?",studioText:"At 3Shamrocks Studio I fix accessibility at the source: in the product's components and design system, so the fix doesn't break in the next release.",
-studioLink:"Email me: dave@3shamrocks.com",privacy:"I store the checked site's host name and score. For rate limiting I also keep a salted, one-way hash of your IP for about 3 days. For buyers I keep a hash of the license key and the site it's tied to. No names or emails.",stmtLink:"Accessibility statement",
+studioLink:"Email me: dave@3shamrocks.com",privacy:"I store the checked site's host name and score. For rate limiting I also keep a salted, one-way hash of your IP for about 3 days. For buyers I keep a hash of the license key and the site it's tied to. For monitor subscribers I also keep the address of the watched page and, per check, only the date, score, number of issues of each type and the checker version. I keep the subscription key encrypted, only to confirm with Gumroad that the subscription is still active, and delete it when the subscription ends; the history is deleted 90 days after it ends. No names or emails.",stmtLink:"Accessibility statement",
+monTitle:"Accessibility Monitor",monPrice:"US$12 a month for one site. Cancel any time.",monL1:"Everything in the full report, for the same site",monL2:"Once a week I re-check your page automatically, from my server",monL3:"\"Your site over time\": the score of every check, and what got fixed and what's new",monL4:"No emails: to see the history, come back to this page and check your site with your key",monBtn:"Start the monthly monitor",
+monHint:"The monitor watches one page (the first page you check with the key), with the same automated checks and the same limits. Not legal advice and not a compliance certificate.",licHintMon:"Gumroad emails you the key after purchase, for the report or the monitor. One key covers one site.",
+histTitle:"Your site over time",histWatch:"The page I watch:",histNext:"Next automatic check: around",histNoEmail:"I don't send emails: to see the history, come back to this page and check your site with your key.",
+histAutoFail:"The last weekly check couldn't read the page (for example because the site blocked it). I'll try again within a day.",histLicFail:"In the last weekly check I couldn't confirm the subscription with Gumroad. I'll try again in a few hours.",
+histOther:"This check was on a different page of the site, so it isn't saved in the history. The history follows one page.",histNone:"No checks in the history yet.",histFirst:"This is the first check in the history. From the next one you'll see what got fixed and what's new here.",
+histLatest:"Since the previous check",histFixed:"Fixed",histNew:"New",histFixedNote:"\"Fixed\" are issue types the automated check no longer finds on the page; \"New\" are issue types that weren't there in the previous check.",histSame:"No change in issue types since the previous check.",
+histEngine:"The checker was updated between these two checks, so some changes may come from the update, not from the site.",histAll:"All checks",histAuto:"Weekly check",histYou:"Your check",histErr:"I couldn't load the history right now. The full report is fine; try again later.",
 scanning:"Checking the page… this usually takes 5 to 20 seconds.",done:"Check finished. Results below.",needUrl:"Enter a website address, e.g. example.com",
 score:"Score",of100:"/100",noScore:"No score",noScoreWhy:"The page is built almost entirely by JavaScript, so the check saw only an empty shell. To avoid misleading you, I didn't give a score.",
 found:"Found",issuesKinds:"issue types",checksRun:"checks run",passed:"passed",sev:{critical:"Critical",serious:"Serious",moderate:"Moderate",minor:"Minor"},
@@ -408,6 +430,7 @@ function render(j, relang){
   var jsH=!!(j.stats&&j.stats.jsHeavy), stU=!!(j.statement&&j.statement.unverified);
   h+='<div class="facts"><div class="fact"><strong>'+(j.overlays&&j.overlays.length?esc(L.overlayYes+j.overlays.join(", ")):esc(jsH?L.overlayNoJs:L.overlayNo))+'</strong>'+esc(j.overlays&&j.overlays.length?L.overlayNote:jsH?L.jsCheck:L.overlayNoNote)+'</div>';
   h+='<div class="fact"><strong>'+esc(j.statement&&j.statement.found?L.stmtYes:stU?L.stmtNoJs:L.stmtNo)+'</strong>'+(j.statement&&j.statement.found?'<span dir="auto">'+esc(j.statement.text||j.statement.href||"")+'</span>':esc(stU?L.jsCheck:L.stmtNoNote))+'</div></div></div>';
+  if(j.paid&&j.monitor) h+=renderHistory(j.monitor);
   if(!j.findings.length){h+='<p class="panel" style="margin-top:16px">'+esc(L.noIssues)+'</p>';}
   else{
     h+='<h3 style="margin-top:28px">'+esc(j.paid?L.allIssues:L.topIssues)+'</h3><ol class="issues">';
@@ -424,13 +447,17 @@ function render(j, relang){
     h+='</ol>';
   }
   if(!j.paid){
-    h+='<div class="cta"><h3>'+esc(L.ctaTitle)+'</h3>';
+    var on=j.paid_enabled&&j.buy_url, mon=!!(on&&j.monitor_enabled&&j.monitor_buy_url);
+    h+='<div class="cta">'+(mon?'<div class="offers"><div class="offer">':'')+'<h3>'+esc(L.ctaTitle)+'</h3>';
     if(j.hidden_findings>0) h+='<p>'+esc(L.moreHidden(j.hidden_findings))+'</p>';
     h+='<p><strong>'+esc(L.ctaPrice)+'</strong></p><ul><li>'+esc(L.ctaL1)+'</li><li>'+esc(L.ctaL2)+'</li><li>'+esc(L.ctaL3)+'</li><li>'+esc(L.ctaL4)+'</li></ul>';
-    var on=j.paid_enabled&&j.buy_url;
     if(on) h+='<a class="btn" href="'+esc(j.buy_url)+'" target="_blank" rel="noopener">'+esc(L.ctaBtn)+'<span class="sr-only">'+esc(L.newTab)+'</span></a>';
     else h+='<p class="hint">'+esc(L.ctaSoon)+'</p>';
-    if(on) h+='<form class="lic" id="lic-form" novalidate><label for="lic">'+esc(L.licLabel)+'</label><div class="row"><input type="text" id="lic" autocomplete="off" spellcheck="false" dir="ltr" aria-describedby="lic-hint lic-msg"><button class="btn ghost" type="submit">'+esc(L.licBtn)+'</button></div><p class="hint" id="lic-hint">'+esc(L.licHint)+'</p><p class="msg" id="lic-msg" role="status" aria-live="polite"></p></form>';
+    if(mon){
+      h+='</div><div class="offer"><h3>'+esc(L.monTitle)+'</h3><p><strong>'+esc(L.monPrice)+'</strong></p><ul><li>'+esc(L.monL1)+'</li><li>'+esc(L.monL2)+'</li><li>'+esc(L.monL3)+'</li><li>'+esc(L.monL4)+'</li></ul>';
+      h+='<a class="btn" href="'+esc(j.monitor_buy_url)+'" target="_blank" rel="noopener">'+esc(L.monBtn)+'<span class="sr-only">'+esc(L.newTab)+'</span></a><p class="hint">'+esc(L.monHint)+'</p></div></div>';
+    }
+    if(on) h+='<form class="lic" id="lic-form" novalidate><label for="lic">'+esc(L.licLabel)+'</label><div class="row"><input type="text" id="lic" autocomplete="off" spellcheck="false" dir="ltr" aria-describedby="lic-hint lic-msg"><button class="btn ghost" type="submit">'+esc(L.licBtn)+'</button></div><p class="hint" id="lic-hint">'+esc(mon?L.licHintMon:L.licHint)+'</p><p class="msg" id="lic-msg" role="status" aria-live="polite"></p></form>';
     h+='</div>';
   }else{
     h+='<div class="actions no-print"><button type="button" class="btn ghost" id="print-report">'+esc(L.printReport)+'</button></div>';
@@ -439,6 +466,33 @@ function render(j, relang){
   var lf=$("lic-form"); if(lf) lf.addEventListener("submit",onLicense);
   var pr=$("print-report"); if(pr) pr.addEventListener("click",function(){document.body.className="print-report";window.print();});
   if(j.paid&&j.statement_draft) renderStmtForm(j); else {$("stmt-wrap").hidden=true;$("stmt-wrap").innerHTML="";}
+}
+function fmtDate(s){try{return new Date(s).toLocaleDateString(lang==="he"?"he-IL":"en-GB",{day:"numeric",month:"short",year:"numeric"});}catch(e){return String(s);}}
+function renderHistory(m){
+  var L=T[lang], h='<section class="panel hist" style="margin-top:28px" aria-labelledby="hist-title"><h3 id="hist-title">'+esc(L.histTitle)+'</h3>';
+  if(m.error) return h+'<p class="hint">'+esc(L.histErr)+'</p></section>';
+  var name=function(id){var x=m.titles&&m.titles[id];return x?x.title:id;};
+  var list=function(title,ids){return '<div><p><strong>'+esc(title)+' (<bdi>'+ids.length+'</bdi>)</strong></p>'+(ids.length?'<ul>'+ids.map(function(id){return '<li>'+esc(name(id))+'</li>';}).join("")+'</ul>':'<p class="hint">—</p>')+'</div>';};
+  h+='<p><strong>'+esc(L.histWatch)+'</strong> <span dir="ltr">'+esc(m.watched_url)+'</span></p>';
+  h+='<p class="hint">'+esc(L.histNext)+' <bdi>'+esc(fmtDate(m.next_check_at))+'</bdi>. '+esc(L.histNoEmail)+'</p>';
+  if(m.last_auto_status&&m.last_auto_status!=="ok") h+='<p class="hint">'+esc(m.last_auto_status==="license_check_failed"?L.histLicFail:L.histAutoFail)+'</p>';
+  if(!m.this_check_saved) h+='<p class="hint">'+esc(L.histOther)+'</p>';
+  var hs=m.history||[];
+  if(!hs.length) return h+'<p>'+esc(L.histNone)+'</p></section>';
+  var top=hs[0];
+  if(top.compared){
+    h+='<h4>'+esc(L.histLatest)+'</h4>';
+    if(top.engine_changed) h+='<p class="hint">'+esc(L.histEngine)+'</p>';
+    h+=(!top.fixed.length&&!top.new.length)?'<p>'+esc(L.histSame)+'</p>':'<div class="cols">'+list(L.histFixed,top.fixed)+list(L.histNew,top.new)+'</div><p class="hint">'+esc(L.histFixedNote)+'</p>';
+  }else h+='<p>'+esc(L.histFirst)+'</p>';
+  h+='<h4>'+esc(L.histAll)+'</h4><ol class="hist-list">';
+  hs.forEach(function(e){
+    var sc=e.score==null?null:Math.max(0,Math.min(100,e.score));
+    h+='<li>'+(sc==null?'':'<span class="mini" aria-hidden="true"><span style="width:'+sc+'%"></span></span>')+'<bdi>'+esc(fmtDate(e.at))+'</bdi> · '+esc(L.score)+' <bdi>'+(sc==null?"—":sc)+'</bdi> · <bdi>'+(e.issues|0)+'</bdi> '+esc(L.issuesKinds);
+    if(e.compared) h+=' · '+esc(L.histFixed)+' <bdi>'+e.fixed.length+'</bdi> · '+esc(L.histNew)+' <bdi>'+e.new.length+'</bdi>';
+    h+=' · '+esc(e.auto?L.histAuto:L.histYou)+'</li>';
+  });
+  return h+'</ol></section>';
 }
 function onLicense(e){
   e.preventDefault();
