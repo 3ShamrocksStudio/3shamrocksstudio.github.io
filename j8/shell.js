@@ -66,7 +66,7 @@
     }).catch(function () {});
     navigator.serviceWorker.addEventListener('controllerchange', function () {
       if (!hadSW || swDone) return; swDone = true;
-      var ae = document.activeElement, busy = (ae && /^(TEXTAREA|INPUT)$/.test(ae.tagName)) || [].some.call(document.querySelectorAll('textarea'), function (t) { return String(t.value || '').trim(); });
+      var ae = document.activeElement, busy = (ae && /^(TEXTAREA|INPUT)$/.test(ae.tagName)) || [].some.call(document.querySelectorAll('textarea, input[type=email], input[type=text], input:not([type])'), function (t) { return String(t.value || '').trim(); });
       if (!busy) { location.reload(); return; }
       if (document.getElementById('updbar')) return;
       var b = document.createElement('div'); b.id = 'updbar'; b.className = 'updbar'; b.setAttribute('role', 'status');
