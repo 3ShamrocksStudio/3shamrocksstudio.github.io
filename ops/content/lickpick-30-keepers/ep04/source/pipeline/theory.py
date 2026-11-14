@@ -223,7 +223,11 @@ def lesson_layers(ep, dots, lick, pcs, spell):
         out['status'] = [{'t': T(a), 't_end': T(z), 'text': txt, 'col': col} for (a, z, txt, col) in ep['status']]
         for st in out['status']:
             check(not any(w in st['text'].lower().split() for w in ('take', 'takes', 'launched', 'live')), f"{ep['id']}: label '{st['text']}' follows the wording rules")
-    for k in ('stamp_xy', 'card_sub', 'gprog'):
+    if ep.get('all_badges'):
+        rep = {}
+        for l in lick: rep.setdefault((l['s'], l['f']), []).append(l['i'])
+        check(all(len(v) <= 2 for v in rep.values()), f"{ep['id']}: no dot is played more than twice, so 2 badges show every lick number {sorted(rep.values())}")
+    for k in ('stamp_xy', 'card_sub', 'gprog', 'all_badges'):
         if k in ep: out[k] = ep[k]
     return out
 
@@ -301,7 +305,7 @@ EPS.append(dict(
     lick=[(2, 8, 16, .5), (3, 7, 16.5, 1, {'bend': 2, 'up': .35}), (2, 5, 17.5, .5), (3, 7, 18, .5), (3, 5, 18.5, .5), (4, 7, 19, 2.5)],
     payoff="Bend to a note\nthat's in the box.", next='Tomorrow · ASK: licks are sentences',
     phases=dict(board=1.5, box=2.6, chips=12, caption=13.5, kicker=14.5, stamp=21.6, payoff=22, wipe=25, end=26, replay=27),
-    dur=22.4, gprog=29, card_sub='<b>Best</b> · clean and confident, flubs cut',
+    dur=22.4, gprog=29, all_badges=True, card_sub='<b>Best</b> · clean and confident, flubs cut',
     groove=dict(style='straight', timeline=[(0, 'Am7', AM7, 45), (12, 'Dm7', DM7, 50), (16, 'Am7', AM7, 45), (20, 'Dm7', DM7, 50), (24, 'Am7', AM7, 45)]),
     claims={'the bend target E (G string fret 9) is the same pitch as B string fret 5, inside the box': lambda d, l: midi(3, 9) == midi(2, 5) and (2, 5) in box(5),
             'the bent note is D (G string fret 7), a whole step (2 frets) under E': lambda d, l: [x for x in l if 'bend' in x][0]['n'] == 'D' and midi(3, 9) - midi(3, 7) == 2,
@@ -355,6 +359,7 @@ EPS.append(dict(
             'chips LOW / MID / MID / HIGH match A2, A3, A3, A4 in lesson order': lambda d, l: [midi(4, 7) - 12, midi(4, 7), midi(5, 12), midi(5, 12) + 12] == [45, 57, 57, 69] and [midi(6, 5), midi(3, 14)] == [45, 69],
             'every A on strings 6-3 between frets 4 and 15 is shown (none missing)': lambda d, l: sorted((s, f) for s in (3, 4, 5, 6) for f in range(4, 16) if pc(s, f) == 9) == sorted((x['s'], x['f']) for x in d),
             'caption.txt note: from the G string the shape stretches to 3 frets (G f14 -> e f17, D f7 -> B f10)': lambda d, l: midi(1, 17) - midi(3, 14) == 12 and midi(2, 10) - midi(4, 7) == 12,
+            'caption.txt: the 2-fret shape holds from the low E and A strings; from the D and G strings it takes 3 frets': lambda d, l: all(midi(s - 2, f + 2) - midi(s, f) == 12 for s in (6, 5) for f in range(0, 15)) and all(midi(s - 2, f + 3) - midi(s, f) == 12 for s in (4, 3) for f in range(0, 15)),
             'lick: A2, A3, the same A3 on another string, A4': lambda d, l: [x['m'] for x in l] == [45, 57, 57, 69]},
 ))
 

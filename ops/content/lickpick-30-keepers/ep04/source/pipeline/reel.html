@@ -246,6 +246,13 @@ const PH1 = E.lick.some(l => l.ph === 1) ? E.lick.find(l => l.ph === 1).t : null
 const lickIdx = {};
 E.lick.forEach(l => { const k = l.s + ':' + l.f; (lickIdx[k] = lickIdx[k] || []).push(l.i); });
 for (const k in lickIdx) DOT[k].bt.textContent = lickIdx[k][0];
+// a dot played twice in the lick gets a second badge, up-right of the first, so every number stays visible
+if (E.all_badges) for (const k in lickIdx) if (lickIdx[k].length > 1) {
+  const b2 = el('g', { class: 'badge', opacity: 0 }, badgeG);
+  el('circle', { cx: 46, cy: -40, r: 17, fill: '#07060B', stroke: '#FFE600', 'stroke-width': 2.5 }, b2);
+  const t2 = el('text', { x: 46, y: -39 }, b2); t2.textContent = lickIdx[k][1];
+  DOT[k].badge2 = b2;
+}
 // path segments
 const segs = [];
 for (let i = 1; i < E.lick.length; i++) {
@@ -371,6 +378,7 @@ window.seek = function (t) {
     o.g.setAttribute('transform', `translate(${noteX(d.f) + shift},${SY(d.s) + dy}) scale(${sc})`);
     o.ring.setAttribute('opacity', ringO); o.ring.setAttribute('r', ringR);
     o.badge.setAttribute('transform', `translate(${noteX(d.f) + shift},${SY(d.s) + dy})`);
+    if (o.badge2) { o.badge2.setAttribute('transform', `translate(${noteX(d.f) + shift},${SY(d.s) + dy})`); o.badge2.setAttribute('opacity', eo(pr(t, P.kicker + .35 * B + (lickIdx[k][1] - 1) * .06, .2))); }
     if (PH1 !== null) {   // question / answer: badges number the notes of the phrase being played
       const ph = t >= PH1 - .05 ? 1 : 0;
       const jq = E.lick.filter(l => l.ph === 0).findIndex(l => l.s === d.s && l.f === d.f);
