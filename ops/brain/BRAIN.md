@@ -24,6 +24,7 @@ Dave: "better, stronger, smarter, more effective and productive, more powerful, 
 - Branding read as generic / "3SDS not deep enough" (12 Nov) → every visual pulls tokens from the product's own brand files and 3SDS first, and cites the file used.
 - J8NIX sign-in reported "fixed" while the email still pointed to localhost (13 Nov) → test any login/notification flow end to end (real email → real tap → signed in) before telling Dave it works.
 - Tnufa reply (13 Nov night) first gave the call date from a 12 Nov to-do note while the J8NIX project card already held a newer date → before replying on a product message, read that product's J8NIX project card (now/next/you) and use the newest source.
+- Weekend 13–14 Nov was thin (only short night runs + hourly inbox checks; small fixes, no pipeline) → Fri/Sat now have 3 dedicated weekend build shifts (10:43, 14:43, 19:43) that must ship pipeline, content or product steps; a weekend shift with no real output is a failure.
 
 ## −5. NIGHT OF 12→13 NOV: CEO STANDING APPROVAL (Dave, 20:34)
 "Entering night shift I want ALL THINGS APPROVED for your workflows, so nothing gets stuck waiting for me while I'm sleeping. Expect real results and progress on all things as priorities command."
