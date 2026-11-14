@@ -29,7 +29,15 @@ function sevOf(s){var m=String(s||'').match(/^\s*(?:\d{1,2}:\d\d(?:\s*\([^)]*\))
 function sevStrip(s){return String(s==null?'':s).replace(/^\s*(?:🔴|🟠|🟢)\s*[:·—-]?\s*/u,'');}
 function sevLegacy(s){return /NEEDS YOUR EYES|WHAT YOU DO/i.test(String(s||''))?'o':null;} /* old untagged lines */
 function sevRank(v){return v in SEVO?SEVO[v]:1;}
-function sevChip(v){return v&&SEV[v]?'<span class="sv sv-'+v+'">'+SEV[v][0]+' '+esc(SEV[v][1])+'</span>':'';}
+function sevChip(v){return v&&SEV[v]?'<span class="sv sv-'+v+'"><i class="sd sd-'+v+'" aria-hidden="true"></i>'+esc(SEV[v][1])+'</span>':'';}
+/* ===== 5.2 product colours: [main, second] from each product's own brand file (ds/*.md); missing ids fall back to j8_projects.color ===== */
+var PCOL={'p-shomer':['#E0A828','#0C1B3A'],'p-ios':['#E0A828','#0C1B3A'],'p-tnufa':['#E0A828','#0C1B3A'],'p-command':['#FC9918','#0C1B3A'],'p-nature':['#2F8540','#F5C840'],
+ 'p-lickpick':['#FF2E88','#FFE600'],'p-site':['#8239EA','#3DCC6E'],'p-services':['#0F1035','#8239EA'],'p-payments':['#3DCC6E','#0F1035'],'p-csr':['#B7860B','#0F1035'],
+ 'p-th':['#FF6C00','#0A0A2E'],'p-chore':['#6A21C4','#F59E0B'],'p-fairent':['#6550FF','#53D805'],'p-j8nix':['#F2C194','#586475'],'p-general':['#9AA6BF','#9AA6BF']};
+function pcol(id){if(!id)return null;if(PCOL[id])return PCOL[id];var c=(PR[id]||{}).color;return /^#[0-9a-f]{3,8}$/i.test(String(c||''))?[c,c]:null;}
+function pm(id){var c=pcol(id);return c?'<i class="pm" style="--pc:'+c[0]+';--pc2:'+c[1]+'" aria-hidden="true"></i>':'';}
+function pcStyle(id){var c=pcol(id);return c?';--pc:'+c[0]:'';}
+var SEVC={r:'var(--r)',o:'var(--o)',g:'var(--ok)'};
 /* timestamps arrive as ISO, ISO+offset or Postgres text ("2026-11-14 07:56:07.3+00") */
 function pd(s){if(!s)return NaN;var t=new Date(String(s).trim().replace(' ','T').replace(/([+-]\d\d)$/,'$1:00'));return t.getTime();}
 var tt=null,undoFn=null;
@@ -78,7 +86,7 @@ function linkBtn(u,t,cls){if(!u)return '';if(u.charAt(0)==='#'){var j=u.slice(1)
 
 
 /* ===== derived data: one source for Chat, Next, List and Stats ===== */
-var GR=[['money','Money','#A8703A'],['approve','Approve','#1563FF'],['projects','Projects','#586475'],['team','Team','#26303C'],['later','Later','#9FB0C4']];
+var GR=[['money','Money','#9A5B00'],['approve','Approve','#1F5BFF'],['projects','Projects','#3A4766'],['team','Team','#0F7FA8'],['later','Later','#5F6B88']]; /* 5.2: all AA as text on white */
 var GC={};GR.forEach(function(g){GC[g[0]]=g;});
 var ST={wait:'Waiting on you',prog:'In progress',done:'Done',stuck:'Stuck',park:'Parked',kill:'Killed'};
 var NOUN={application:'applications',email:'emails',linkedin:'LinkedIn notes',post:'posts',invoice:'invoices',template:'templates',other:'drafts'};
@@ -110,6 +118,8 @@ function lastClean(x){return sevStrip(J8.inbox.lastReply(x).replace(/^\s*\d{1,2}
 function askLine(x){var r=String(x.reply||''),m=r.match(/(NEEDS YOUR EYES|WHAT YOU DO)\s*:\s*([^\n]+)/);if(m&&!sevOf(J8.inbox.lastReply(x)))return m[2];return lastClean(x);}
 function whyMove(p){var n=String(p.next||'').trim(),m=n.match(/^(Concept|Build|Staged|Validate|Monetize|Paying)\s*:\s*(.+)$/i);
  if(m)return 'Moves '+p.name+' to '+m[1]+': '+m[2].replace(/\.$/,'');return n?cut(n,110):'Keeps '+p.name+' moving.';}
+/* the one product a row is about (for its colour marker), or null */
+function rowPid(i){if(i.p)return i.p.id;if(i.c)return i.c.p;if(i.ap)return i.ap.product;var L=i.batch?i.batch.items:i.held?i.held.items:null;if(!L||!L.length)return null;var p=L[0].product;return L.every(function(a){return a.product===p;})?p:null;}
 function oldTasks(){return openItems('today').concat(openItems('week'),openItems('later'));}
 var ORD={wait:0,stuck:1,prog:2,park:3,done:4};
 
@@ -153,10 +163,10 @@ function renderNext(){var el=$('v-next');if(!el)return;
  if(!cur){el.innerHTML='<div class="nx-wrap">'+(L.length?strip:'')+'<div class="empty">'+eight('big')+'<b>'+(L.length?'Today’s '+L.length+' are handled.':'Nothing waits on you today.')+'</b>'+(P.Q.length?'<p>'+P.Q.length+' more wait in your list.</p><button class="pri" data-plan="1">Plan the next '+Math.min(5,P.Q.length)+'</button>':'<p>Ask J8NIX what to push next.</p><button class="pri" data-go="chat">Open the chat</button>')+'</div></div>';return;}
  var i=cur.row,n=nextOf(i),g=GC[i.g],rest=P.Q.filter(function(q){return P.p.k.indexOf(q.key)<0;}).length;
  el.innerHTML='<div class="nx-wrap">'+strip
-  +'<article class="ncard" style="--gc:'+g[2]+'"><div class="nc-top"><span class="gname">'+esc(g[1])+'</span><span class="nc-r">'+sevChip(i.sev)+pill(i.st)+'</span></div>'
+  +'<article class="ncard" style="--gc:'+g[2]+(SEVC[i.sev]?';--sc:'+SEVC[i.sev]:'')+'"><div class="nc-top"><span class="gname">'+esc(g[1])+'</span><span class="nc-r">'+sevChip(i.sev)+pill(i.st)+'</span></div>'
   +'<h2 dir="auto">'+esc(n.what)+'</h2><p class="why" dir="auto">'+esc(n.why)+'</p>'
   +(i.full&&shortWhat(i.full)!==i.full.trim()?'<details class="how"><summary>Show the steps</summary><p dir="auto">'+esc(i.full)+'</p></details>':'')
-  +'<dl class="meta"><div><dt>Project</dt><dd><span>'+esc(i.p?i.p.name:i.c?pname(i.c.p):i.batch?i.batch.label:i.held?pname((i.held.items[0]||{}).product):'Studio')+'</span></dd></div>'+(i.due?'<div><dt>Due</dt><dd><span>'+dshort(i.due)+'</span></dd></div>':'')+'</dl>'
+  +'<dl class="meta"><div><dt>Project</dt><dd>'+pm(rowPid(i))+'<span>'+esc(i.p?i.p.name:i.c?pname(i.c.p):i.batch?i.batch.label:i.held?pname((i.held.items[0]||{}).product):'Studio')+'</span></dd></div>'+(i.due?'<div><dt>Due</dt><dd><span>'+dshort(i.due)+'</span></dd></div>':'')+'</dl>'
   +actBtn(n,'pri')
   +'<div class="sec">'+(i.batch?'':'<button data-ndone="'+esc(i.key)+'">'+ic('done')+'Done, next</button>')+'<button data-nlater="'+esc(i.key)+'">Later</button></div></article>'
   +'<p class="more">'+(rest?rest+' more after today':'Nothing else waits after these')+'</p></div>';}
@@ -169,7 +179,7 @@ function markDone(k){var i=rows().filter(function(x){return x.key===k;})[0];snoo
 function pvText(t,n){var L=String(t||'').split('\n').map(function(x){return x.replace(/\s+/g,' ').trim();}).filter(Boolean),o=[],c=0;for(var k=0;k<L.length&&c<(n||160);k++){var x=L[k].slice(0,(n||160)-c);if(x.length<L[k].length)x+='…';o.push(x);c+=x.length;}return o.join('\n');}
 function tm(iso){var t=iso?new Date(iso):new Date();return isNaN(t)?'':(ymd(t)===ymd(new Date())?t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):t.getDate()+' '+MON[t.getMonth()]);}
 function apCard(a,pre){var id=a.id,ed=editing===id,o=openRow[(pre||'cb')+id],txt=J8.approvals.textOf(a);
- return '<div class="msg in card" id="'+(pre||'cb')+'-'+esc(id)+'"><div class="c-top">'+pill('wait')+'<span dir="auto">'+esc(apKind(a))+' · '+esc(pname(a.product))+'</span></div>'
+ return '<div class="msg in card" id="'+(pre||'cb')+'-'+esc(id)+'"><div class="c-top">'+pill('wait')+pm(a.product)+'<span dir="auto">'+esc(apKind(a))+' · '+esc(pname(a.product))+'</span></div>'
   +'<button class="c-main" data-open="'+(pre||'cb')+esc(id)+'"><b dir="auto">'+esc(apWho(a))+'</b>'
   +(ed?'':'<span class="pv'+(o?' full':'')+'" dir="auto">'+esc(o?txt:pvText(txt,150))+'</span>')+'</button>'
   +(ed?'<textarea class="aed" id="ed-'+esc(id)+'" dir="auto" aria-label="Edit the text">'+esc(txt)+'</textarea>':'')
@@ -183,7 +193,7 @@ function renderBrief(){var el=$('brief');if(!el)return;if(document.activeElement
  h+='<div class="msg in"><p dir="auto">'+(pend.length?(pend.length===1?'One draft waits for your Send.':pend.length+' drafts wait for your Send. The top '+top.length+':'):'Nothing waits for your Send.')+'</p><time>'+now+'</time></div>';
  h+=top.map(function(a){return apCard(a,'cb');}).join('');
  if(pend.length>top.length)h+='<div class="msg in card slim"><p>'+(pend.length-top.length)+' more drafts are in your list.</p><time>'+now+'</time><div class="btns"><button class="s" data-jump="list-approve">Open the list</button></div></div>';
- if(mv){var n=nextOf(mv);h+='<div class="msg in card"><div class="c-top">'+pill('wait')+'<span>Your move · '+esc(mv.p?mv.p.name:GC[mv.g][1])+'</span></div><div class="c-main"><b dir="auto">'+esc(n.what)+'</b><span class="pv" dir="auto">'+esc(cut(n.why,120))+'</span></div><time>'+now+'</time><div class="btns"><button class="s" data-go="next">Do it</button><button data-blater="'+esc(mv.key)+'">Later</button></div></div>';}
+ if(mv){var n=nextOf(mv);h+='<div class="msg in card"><div class="c-top">'+pill('wait')+pm(rowPid(mv))+'<span>Your move · '+esc(mv.p?mv.p.name:GC[mv.g][1])+'</span></div><div class="c-main"><b dir="auto">'+esc(n.what)+'</b><span class="pv" dir="auto">'+esc(cut(n.why,120))+'</span></div><time>'+now+'</time><div class="btns"><button class="s" data-go="next">Do it</button><button data-blater="'+esc(mv.key)+'">Later</button></div></div>';}
  el.innerHTML=h;}
 function renderApprovals(){renderBrief();if(view==='list')renderList();} /* [chat] */
 
@@ -222,18 +232,23 @@ function dupMove(i,R){if(!i.p||!i.move)return false;var y=youRaw(i.p),ak=actKey(
 function needs(){var o={money:0,team:1,approve:2,projects:4},w=function(i){return i.held?3:o[i.g];},R=rows().filter(function(i){return i.st==='wait'&&o[i.g]!=null&&!snoozed(i.key);});
  return R.filter(function(i){return !dupMove(i,R);}).sort(function(a,b){return sevRank(a.sev)-sevRank(b.sev)||w(a)-w(b);});}
 function ndHref(i){var u=i.p&&i.p.you_link||'';return /^https?:\/\//.test(u)&&!/3shamrocks\.com\/j8\/?(#.*)?$/.test(u)?u:null;}
-function ndItem(i){var v=SEV[i.sev]?i.sev:'o',u=ndHref(i),inner='<span class="e" role="img" aria-label="'+esc(SEV[v][1])+'">'+SEV[v][0]+'</span><span class="t" dir="auto">'+esc(cap1(i.title))+(i.sub?' <small>· '+esc(i.sub)+'</small>':'')+'</span>';
- return '<li>'+(u?'<a class="ni" href="'+esc(u)+'" target="_blank" rel="noopener">'+inner+ic('link')+'</a>':'<button class="ni" data-jump="list-'+esc(i.key)+'">'+inner+'</button>')+'</li>';}
+function ndItem(i){var v=SEV[i.sev]?i.sev:'o',u=ndHref(i),inner='<span class="e" role="img" aria-label="'+esc(SEV[v][1])+'"><i class="sd sd-'+v+'"></i></span><span class="t" dir="auto">'+esc(cap1(i.title))+(i.sub?' <small>· '+pm(rowPid(i))+esc(i.sub)+'</small>':'')+'</span>';
+ return '<li'+(NEWK[i.key]?' class="nw"':'')+'>'+(u?'<a class="ni" href="'+esc(u)+'" target="_blank" rel="noopener">'+inner+ic('link')+'</a>':'<button class="ni" data-jump="list-'+esc(i.key)+'">'+inner+'</button>')+'</li>';}
+/* 5.2 motion that informs: a new Needs-you item flashes once; the count bumps when it changes. Nothing on the first paint. */
+var NEEDK=null,NEWK={},NEEDN=null;
+function bump(el){if(!el)return;el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');}
 function renderPin(){var el=$('j8Pin');if(!el)return;if(!connected){el.hidden=true;return;}el.hidden=false;
  var N=needs(),r=N.filter(function(i){return i.sev==='r';}).length,show=pinAll?N:N.slice(0,3),h='<p class="since" id="j8Since">'+esc(sinceLine())+'</p>';
+ var K={};N.forEach(function(i){K[i.key]=1;});NEWK={};if(NEEDK)N.forEach(function(i){if(!NEEDK[i.key])NEWK[i.key]=1;});NEEDK=K;
  if(!N.length)h+='<div class="nd-h"><b>Needs you</b></div><p class="nd-0">Nothing needs you right now.</p>';
- else h+='<div class="nd-h"><b>Needs you</b><span>'+N.length+(r?' · '+r+' now':'')+'</span>'+(N.length>3?'<button data-pin="1" aria-expanded="'+pinAll+'">'+(pinAll?'Show less':'All '+N.length)+'</button>':'')+'</div><ul class="nd">'+show.map(ndItem).join('')+'</ul>';
- el.innerHTML=h;}
+ else h+='<div class="nd-h"><b>Needs you</b><span class="nc" id="ndN">'+N.length+(r?'<em><i class="sd sd-r" aria-hidden="true"></i>'+r+' now</em>':'')+'</span>'+(N.length>3?'<button data-pin="1" aria-expanded="'+pinAll+'">'+(pinAll?'Show less':'All '+N.length)+'</button>':'')+'</div><ul class="nd">'+show.map(ndItem).join('')+'</ul>';
+ el.innerHTML=h;
+ if(NEEDN!==null&&NEEDN!==N.length)bump($('ndN'));NEEDN=N.length;}
 
 /* ===== List: a board, one coloured group per category ===== */
 function rowHTML(i){var o=openRow[i.key],g=GC[i.g];
- var h='<div class="brow'+(o?' open':'')+'" id="'+esc(i.batch?'approvals-'+i.batch.id:'r-'+i.key)+'" style="--gc:'+g[2]+'">'
-  +'<button class="bmain" data-open="'+esc(i.key)+'" aria-expanded="'+(o?'true':'false')+'">'+pill(i.st)+'<span class="bt"><b dir="auto">'+esc(i.title)+'</b><span dir="auto">'+esc(i.sub||'')+'</span></span>'+owner(i.own)+'<span class="bd'+(i.due?'':' sn')+'">'+(i.due?dshort(i.due):i.since?dshort(i.since):'')+'</span></button>';
+ var h='<div class="brow'+(o?' open':'')+'" id="'+esc(i.batch?'approvals-'+i.batch.id:'r-'+i.key)+'" style="--gc:'+g[2]+pcStyle(rowPid(i))+'">'
+  +'<button class="bmain" data-open="'+esc(i.key)+'" aria-expanded="'+(o?'true':'false')+'">'+pill(i.st)+'<span class="bt"><b dir="auto">'+esc(i.title)+'</b><span dir="auto">'+pm(rowPid(i))+esc(i.sub||'')+'</span></span>'+owner(i.own)+'<span class="bd'+(i.due?'':' sn')+'">'+(i.due?dshort(i.due):i.since?dshort(i.since):'')+'</span></button>';
  if(o){h+='<div class="bx">';
   if(i.p){var p=i.p,u=p.you_link||p.link;h+=(i.full?'<p dir="auto">'+esc(i.full)+'</p>':'<p dir="auto">'+esc(p.now||'')+'</p>')+'<p class="why">'+esc(i.why)+'</p><div class="acts">'
     +(u?(u.charAt(0)==='#'?'<button class="s" data-jump="'+esc(u.slice(1))+'">'+esc(p.you_link_text||'Open it')+'</button>':'<a class="s" href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(p.you_link?(p.you_link_text||'Open it'):(p.link_text||'Open it'))+'</a>'):'')
@@ -288,7 +303,7 @@ function donut(parts,label,center){var tot=parts.reduce(function(s,p){return s+p
  parts.forEach(function(p){if(!p.v)return;var L=C*p.v/tot,g=nz>1?2:0;segs+='<circle r="'+R+'" cx="56" cy="56" fill="none" stroke="'+p.c+'" stroke-width="18" stroke-dasharray="'+Math.max(0,L-g)+' '+(C-Math.max(0,L-g))+'" stroke-dashoffset="'+(-o)+'" transform="rotate(-90 56 56)"><title>'+esc(p.k+': '+p.v)+'</title></circle>';o+=L;});
  return '<svg class="dn" viewBox="0 0 112 112" role="img" aria-label="'+esc(label)+'">'+segs+'<text x="56" y="62" text-anchor="middle" class="pt">'+(center!=null?center:tot)+'</text></svg>'
   +'<ul class="lg">'+parts.filter(function(p){return p.v||p.keep;}).map(function(p){return '<li><i style="background:'+p.c+'"></i><span>'+esc(p.k)+'</span><b>'+p.v+'</b></li>';}).join('')+'</ul>';}
-function activity(){var days=[],by={},S3=[['Drafts made','#9FB0C4'],['Your decisions','#A8703A'],['Team runs','#1563FF']];
+function activity(){var days=[],by={},S3=[['Drafts made','#A9BCFF'],['Your decisions','#FFB03A'],['Team runs','#1F5BFF']];
  for(var k=6;k>=0;k--){var d=new Date(Date.now()-k*864e5);days.push(ymd(d));by[ymd(d)]=[0,0,0];}
  var add=function(iso,j){if(!iso)return;var t=new Date(iso);if(isNaN(t))return;var key=ymd(t);if(by[key])by[key][j]++;};
  J8.approvals.list().forEach(function(a){add(a.created,0);add(a.decided_at,1);});J8.runs.list().forEach(function(r){add(r.ended||r.started,2);});
@@ -300,16 +315,16 @@ function renderStats(){var el=$('v-stats');if(!el)return;if(!connected){el.inner
  var m=J8.money.summary()||{},b=isNum(m.booked_usd)?m.booked_usd:0,d1=J8.money.daysTo(m.m1_date),Ap=J8.approvals.list(),cnt=function(f){return Ap.filter(f).length;},
   wt=cnt(function(a){return !a.status||a.status==='pending';}),ap=cnt(function(a){return a.status==='approved'||a.status==='edited';}),sn=cnt(function(a){return a.status==='sent';}),kl=cnt(function(a){return a.status==='killed';});
  var h='<div class="kpis"><div class="kpi gold"><span>Booked</span><b>'+usd(b)+'</b><small>of '+usd(m.m1_usd||25000)+' for M1</small></div>'
-  +'<div class="kpi"><span>Days to M1</span><b>'+(d1!==null?Math.max(0,d1):'—')+'</b><small>'+esc(fdate(m.m1_date||'2026-11-21'))+'</small></div>'
-  +'<div class="kpi"><span>Waiting on you</span><b>'+wt+'</b><small>drafts</small></div>'
-  +'<div class="kpi"><span>Sent</span><b>'+sn+'</b><small>'+ap+' approved, not out yet</small></div></div>';
+  +'<div class="kpi" style="--kc:var(--cyan)"><span>Days to M1</span><b>'+(d1!==null?Math.max(0,d1):'—')+'</b><small>'+esc(fdate(m.m1_date||'2026-11-21'))+'</small></div>'
+  +'<div class="kpi" style="--kc:var(--o)"><span>Waiting on you</span><b>'+wt+'</b><small>drafts</small></div>'
+  +'<div class="kpi" style="--kc:var(--ok)"><span>Sent</span><b>'+sn+'</b><small>'+ap+' approved, not out yet</small></div></div>';
  var t0=new Date(START+'T12:00:00').getTime(),t1=new Date(MS[5][1]+'T12:00:00').getTime(),x=function(d){return Math.max(0,Math.min(100,(new Date(d+'T12:00:00').getTime()-t0)/(t1-t0)*100));},tn=Math.max(0,Math.min(100,(Date.now()-t0)/(t1-t0)*100)),nx=MS.filter(function(s){return b<s[2];})[0];
  h+='<section class="st"><h2>Milestones</h2><div class="tl"><div class="tr"><i style="width:'+tn+'%"></i></div><s class="today" style="left:'+tn+'%"><em>Today</em></s>'
   +MS.map(function(s){return '<div class="ms'+(b>=s[2]?' r':'')+(nx&&nx[0]===s[0]?' nx':'')+'" style="left:'+x(s[1])+'%">'+eight()+'<b>'+s[0]+'</b><span>'+usd(s[2])+'</span><span>'+fdate(s[1]).replace(' 2027','')+'</span></div>';}).join('')+'</div></section>';
- var P=projList().filter(function(p){return p.id!=='p-general';}),SC=['#CCD8E5','#9FB0C4','#7A8BA0','#586475','#2F3A47','#A8703A'],stg=J8.projects.STAGES.map(function(s,i){return {k:s,v:P.filter(function(p){return p.stage===i+1;}).length,c:SC[i]};});
- var ns=P.filter(function(p){return !isNum(p.stage);}).length;if(ns)stg.push({k:'No stage',v:ns,c:'#E8EEF5'});
+ var P=projList().filter(function(p){return p.id!=='p-general';}),SC=['#C9D6FF','#8FA8FF','#5B7FFF','#1F5BFF','#FFB03A','#C2410C'],stg=J8.projects.STAGES.map(function(s,i){return {k:s,v:P.filter(function(p){return p.stage===i+1;}).length,c:SC[i]};});
+ var ns=P.filter(function(p){return !isNum(p.stage);}).length;if(ns)stg.push({k:'No stage',v:ns,c:'#E1E7F2'});
  h+='<div class="pair"><section class="st"><h2>Projects by stage</h2>'+donut(stg,'Projects by stage')+'</section>'
-  +'<section class="st"><h2>Drafts</h2>'+donut([{k:'Waiting',v:wt,c:'#A8703A',keep:1},{k:'Approved',v:ap,c:'#1563FF',keep:1},{k:'Sent',v:sn,c:'#26303C',keep:1},{k:'Killed',v:kl,c:'#CCD8E5',keep:1}],'Drafts by status')+'</section></div>';
+  +'<section class="st"><h2>Drafts</h2>'+donut([{k:'Waiting',v:wt,c:'#F06400',keep:1},{k:'Approved',v:ap,c:'#1F5BFF',keep:1},{k:'Sent',v:sn,c:'#12A26A',keep:1},{k:'Killed',v:kl,c:'#D9E1F0',keep:1}],'Drafts by status')+'</section></div>';
  h+='<section class="st"><h2>Activity, last 7 days</h2>'+activity()+'</section>';
  var A=achievements(),on=A.filter(function(a){return a.on;}).length;
  h+='<section class="st"><h2>Achievements <span>'+on+' of '+A.length+'</span></h2><div class="badges">'+A.sort(function(p,q){return (q.on?1:0)-(p.on?1:0);}).map(function(a){
@@ -354,7 +369,7 @@ function chatBottom(){var s=$('chScroll');if(s)s.scrollTop=s.scrollHeight;}
 function setZone(z){if(z==='sign'){lcat='approve';if(selAp){var a=AP[selAp];if(a){openRow['b-'+(a.batch||'other')]=1;openRow['ap'+selAp]=1;}}}go(z==='sign'||z==='proj'||z==='inbox'?'list':z==='health'?'stats':z==='chat'?'chat':z,{keep:true});} /* [chat] */
 function renderView(v){if(v==='chat')renderBrief();if(v==='next')renderNext();if(v==='list')renderList();if(v==='stats')renderStats();}
 var booted=false;
-function renderAll(){var q=connected?plan(false,true).L.filter(function(x){return x.open;}).length:0;['nN','dN'].forEach(function(k){var e=$(k);if(e){e.textContent=q?q:'';e.hidden=!q;}});renderSeat();renderHead();renderPin();renderBrief();renderView(view);
+function renderAll(){var q=connected?plan(false,true).L.filter(function(x){return x.open;}).length:0;['nN','dN'].forEach(function(k){var e=$(k);if(e){var was=e.textContent;e.textContent=q?q:'';e.hidden=!q;if(q&&was&&was!==String(q))bump(e);}});renderSeat();renderHead();renderPin();renderBrief();renderView(view);
  if(connected&&!booted&&view==='chat'){booted=true;setTimeout(chatBottom,60);}}
 var rq=null;function soon(){if(rq)return;rq=setTimeout(function(){rq=null;renderAll();},30);}
 
@@ -441,7 +456,7 @@ var J8C=(function(){
   h=h.replace(/\[([^\]\n]{1,120})\]\((#[A-Za-z0-9_\-]+|https?:\/\/[^\s)]+)\)/g,function(_,t,u){return u.charAt(0)==='#'?'<button type="button" class="lk" data-jump="'+u.slice(1)+'">'+t+'</button>':'<a class="lk ext" href="'+u+'" target="_blank" rel="noopener">'+t+'</a>';});
   h=h.replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g,function(_,p,u){return p+'<a class="lk ext" href="'+u+'" target="_blank" rel="noopener">'+cut(u.replace(/^https?:\/\//,''),48)+'</a>';});
   return h.replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>');}
- function msgHTML(x){var st=SW[x.status]?x.status:'new',about=x.p&&x.p!=='p-general'?'<span class="ab" dir="auto">'+esc(pname(x.p))+'</span>':'';
+ function msgHTML(x){var st=SW[x.status]?x.status:'new',about=x.p&&x.p!=='p-general'?'<span class="ab" dir="auto">'+pm(x.p)+esc(pname(x.p))+'</span>':'';
   var h='<div class="cm u" id="m-'+esc(x.id)+'">'+about+'<p dir="auto">'+esc(x.text)+'</p><time>'+esc(hm(x.at))+' · <b class="cst cst-'+st+'">'+SW[st]+'</b></time></div>';
   lines(x.reply).forEach(function(l){var v=sevOf(l.x)||sevLegacy(l.x);h+='<div class="cm a'+(v?' lv-'+v:'')+'">'+sevChip(v)+'<div class="tx" dir="auto">'+md(sevStrip(l.x))+'</div>'+(l.t?'<time>'+esc(l.t)+'</time>':'')+'</div>';});
   return h;}
