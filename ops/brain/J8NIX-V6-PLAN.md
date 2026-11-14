@@ -411,3 +411,21 @@ cp j8/index-6.1.2.html j8/index.html && sed -i "s/j8nix-v7\.1\.0'/j8nix-v7.1.0-r
 ```
 (6.1.2's index.html loads `app.css?v=6.1.2`/`app.js?v=6.1.2`; the revert copy points those at `app-6.1.2.css` /
 `app-6.1.2.js` so the 7.1 files can stay.) DB: nothing to drop; 6.1.2 never reads j8_later.
+
+## 7.1-D QA (14 Nov, harness /mnt/user-data/outputs/j8nix-v6/harness/qa.js; 6.1.2 harness kept as qa-6.1.2.js)
+- Regression + v7.1 behaviour: 103 / 103 local and 103 / 103 against the deployed files (QA-org fixture data only).
+  This covers the ranking parity with SQL, chain, cycle and done blocker, plus:
+  - task, draft and template notes with routing (task_id / approval_id / unit)
+  - Approve + note and Kill + note
+  - Mark done → Done today → Undo; untick from the project
+  - Later → Planned → Now; Not needed for a task, a project line and a whole batch
+  - Draft Send / Undo / Edit / Kill → all decided
+  - Talk answer and composer
+  - Flow sections, the 6.1.1 Teams cron and the done project folded away
+  - Control, Text size, Hebrew RTL, the light default and dark navy
+- Matrix: 14 screens × 360 / 390 / 1280 × light / dark × EN / HE = 168 runs. Results: axe (WCAG 2.2 AA) 0, JS errors 0, sideways scroll 0, text under 16 px 0, targets under 44 px 0.
+- First paint, median of 3 (CPU ×4, 150 ms API delay). 6.1.2: 1195 ms first visit and 346 ms repeat. 7.1.0: 1254 ms first visit and 317 ms repeat.
+- RLS on j8_later (impersonated QA user, rolled back):
+  - A viewer sees 0 studio rows and cannot insert.
+  - A member can insert and update their own org only.
+  - Writes to another org, a spoofed "by" and deletes are all refused.
