@@ -1,0 +1,143 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex">
+<link rel="stylesheet" href="fonts.css"><link rel="stylesheet" href="lp.css">
+<style>
+#wm .lt{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .01em .08em}
+#wm .lt>span{display:inline-block}
+</style>
+<script src="lp.js"></script></head><body>
+<div class="frame" id="fr">
+  <div id="ampI" class="amp" style="transform-origin:540px 0"></div>
+  <div id="intro" class="layer"></div>
+  <svg id="irisHot" width="1080" height="1920" style="position:absolute;inset:0;display:none"><path fill="#FF2E88"/></svg>
+  <div id="outClip" class="layer" style="display:none;background:var(--stage)"><div id="outIn" class="layer"></div></div>
+  <svg id="irisTop" width="1080" height="1920" style="position:absolute;inset:0;display:none">
+    <g id="irisFill"><path id="irisBody" fill="#FFE600"/><path id="irisTri" fill="#07060B"/></g>
+    <path id="irisInk" fill="none" stroke="#07060B"/><path id="irisRim" fill="none" stroke="#FFE600"/></svg>
+  <div id="gr"></div>
+</div>
+<script>
+const {C, PK, TRI, tfPath, logoSVG, outro} = LP;
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const oExpo = x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x);
+const oCubic = x => 1 - Math.pow(1 - x, 3);
+const ioCubic = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const ioQuart = x => x < .5 ? 8 * x ** 4 : 1 - Math.pow(-2 * x + 2, 4) / 2;
+const iCubic = x => x * x * x;
+const spring = (t, f = 14, d = 7) => t <= 0 ? 0 : 1 - Math.exp(-d * t) * Math.cos(f * t);
+const lerp = (a, b, x) => a + (b - a) * x;
+
+// ---- layout constants
+const LX = 540, LY = 720, LSIZE = 330;          // logo centre and svg size
+const U = LSIZE / 116;                          // px per logo unit (viewBox 116)
+const T_HIT = 1.35, T_IRIS = 3.35, T_IRIS_END = 4.2;
+
+const intro = document.getElementById('intro');
+const streakCols = [C.hot, C.blaze, C.volt, C.cyan], streakY = [-78, -26, 26, 78];
+intro.innerHTML = `
+  ${streakCols.map((c, i) => `<div class="stk" style="position:absolute;left:0;top:0;height:10px;border-radius:5px;background:linear-gradient(90deg,transparent,${c})"></div>`).join('')}
+  <div id="ring" style="position:absolute;border-radius:50%;border:5px solid ${C.volt}"></div>
+  <div id="lockup" class="layer" style="transform-origin:${LX}px ${LY}px">
+    <div id="lgWrap" style="position:absolute;left:${LX - LSIZE / 2}px;top:${LY - LSIZE / 2}px;width:${LSIZE}px;height:${LSIZE}px">${logoSVG(LSIZE, 'lg')}</div>
+    <div id="wmRow" style="position:absolute;left:0;right:0;top:${LY + 200}px;display:flex;justify-content:center">
+      <div style="display:flex;align-items:flex-start;gap:14px;font-size:118px">
+        <span class="word" id="wm">${[...'Lick'].map(l => `<span class="lt"><span>${l}</span></span>`).join('')}<b style="display:inline-flex">${[...'Pick'].map(l => `<span class="lt"><span>${l}</span></span>`).join('')}</b><span class="tm" id="tm">™</span></span>
+        <span class="betatag" id="beta" style="margin-top:14px;display:inline-block">Beta</span>
+      </div>
+    </div>
+    <div id="kick" style="position:absolute;left:0;right:0;top:${LY + 400}px;display:flex;flex-direction:column;align-items:center;gap:26px">
+      <span class="kicker" style="transform:rotate(-3deg);font-size:40px">30 KEEPERS</span>
+      <span style="font:800 40px/1.2 var(--body);color:var(--dim)">One lick a day worth keeping.</span>
+    </div>
+  </div>`;
+const stk = [...intro.querySelectorAll('.stk')], ring = document.getElementById('ring');
+const lg = document.getElementById('lg'), lgWrap = document.getElementById('lgWrap');
+const gHot = lg.querySelector('.lg-hot'), gBody = lg.querySelector('.lg-body'), gTri = lg.querySelector('.lg-tri'), pDraw = lg.querySelector('.lg-draw');
+const PL = pDraw.getTotalLength();
+pDraw.style.strokeDasharray = PL;
+const letters = [...document.querySelectorAll('#wm .lt>span')];
+const tm = document.getElementById('tm'), beta = document.getElementById('beta'), kick = document.getElementById('kick'), wmRow = document.getElementById('wmRow');
+const lockup = document.getElementById('lockup'), ampI = document.getElementById('ampI');
+const irisHot = document.getElementById('irisHot'), outClip = document.getElementById('outClip'), outIn = document.getElementById('outIn');
+const irisTop = document.getElementById('irisTop');
+const [irisBody, irisTri, irisInk, irisRim] = ['irisBody', 'irisTri', 'irisInk', 'irisRim'].map(i => document.getElementById(i));
+const irisFill = document.getElementById('irisFill'), gr = document.getElementById('gr');
+
+function render(t, frameNo) {
+  // ---------- streaks converge (0.10 – 1.05)
+  stk.forEach((el, i) => {
+    const a = .1 + i * .07, b = a + .85, x = oExpo(seg(t, a, b));
+    const head = lerp(-120, LX - 120, x), len = lerp(520, 40, x) ;
+    const y = LY + streakY[i] * (1 - .85 * x);
+    el.style.left = (head - len) + 'px'; el.style.top = (y - 5) + 'px'; el.style.width = len + 'px';
+    el.style.opacity = (seg(t, a, a + .12) * (1 - seg(t, b - .3, b))).toFixed(3);
+  });
+  // ---------- outline draw (0.75 – 1.33) then body hit
+  const dr = ioCubic(seg(t, .72, 1.32));
+  pDraw.style.strokeDashoffset = PL * (1 - dr);
+  pDraw.setAttribute('opacity', t < T_HIT ? clamp(seg(t, .72, .8)) : 1 - seg(t, T_HIT, T_HIT + .12));
+  const h = t - T_HIT, sp = spring(h, 16, 8), sp2 = spring(h - .05, 13, 7);
+  gBody.style.opacity = t >= T_HIT ? 1 : 0;
+  gHot.style.opacity = t >= T_HIT ? 1 : 0;
+  gHot.setAttribute('transform', `translate(${-7 * (1 - sp2)} ${-5 * (1 - sp2)})`);
+  const ts = t >= T_HIT + .07 ? spring(h - .07, 18, 9) : 0;
+  gTri.setAttribute('transform', `translate(54 44) scale(${ts}) translate(-54 -44)`);
+  const bodyScale = t >= T_HIT ? lerp(.82, 1, sp) : 1;
+  const rot = t >= T_HIT ? lerp(-20, -8, spring(h, 11, 6)) : -20 + 4 * dr;
+  lgWrap.style.transform = `rotate(${rot}deg) scale(${bodyScale})`;
+  // ring shockwave
+  const rk = oCubic(seg(t, T_HIT, T_HIT + .7)), rr = lerp(140, 360, rk);
+  ring.style.left = (LX - rr) + 'px'; ring.style.top = (LY - rr) + 'px'; ring.style.width = ring.style.height = 2 * rr + 'px';
+  ring.style.opacity = t < T_HIT ? 0 : (.55 * (1 - rk)).toFixed(3); ring.style.borderWidth = lerp(7, 1.5, rk) + 'px';
+  // amp strip draws out from centre at the hit
+  ampI.style.transform = `scaleX(${ioCubic(seg(t, T_HIT, T_HIT + .55))})`;
+  // ---------- wordmark letters (1.52 – 2.2)
+  letters.forEach((el, i) => {
+    const x = oCubic(seg(t, 1.52 + i * .035, 1.52 + i * .035 + .5));
+    el.style.transform = `translateY(${(1 - x) * 105}%)`;
+  });
+  tm.style.opacity = seg(t, 1.95, 2.2);
+  const bs = t >= 2.15 ? spring(t - 2.15, 20, 9) : 0;
+  beta.style.transform = `scale(${bs})`; beta.style.opacity = bs > 0 ? 1 : 0;
+  // kicker
+  const kx = oCubic(seg(t, 2.3, 2.8));
+  // exit of text before iris
+  const ex = iCubic(seg(t, T_IRIS - .1, T_IRIS + .25));
+  kick.style.transform = `translateY(${(1 - kx) * 40 + ex * 60}px)`; kick.style.opacity = (kx * (1 - ex)).toFixed(3);
+  wmRow.style.transform = `translateY(${ex * 50}px)`; wmRow.style.opacity = (1 - ex).toFixed(3);
+  // slow push-in
+  lockup.style.transform = `scale(${1 + .03 * ioCubic(seg(t, T_HIT, T_IRIS + .3))})`;
+
+  // ---------- pick iris (3.35 – 4.2)
+  if (t >= T_IRIS) {
+    lgWrap.style.visibility = 'hidden';
+    const z = ioQuart(seg(t, T_IRIS, T_IRIS_END));
+    const pushS = 1 + .03 * ioCubic(seg(t, T_HIT, T_IRIS + .3));
+    const k0 = U * pushS, k1 = 46;
+    const k = k0 * Math.pow(k1 / k0, z);
+    const deg = lerp(-8, -16, z), cx = lerp(LX, 560, z), cy = lerp(LY, 1020, z);
+    const P = tfPath(PK, k, deg, cx, cy, 52, 52);
+    irisHot.style.display = irisTop.style.display = 'block';
+    const so = Math.min(1, k0 / k * 2.2) ;
+    irisHot.firstElementChild.setAttribute('d', tfPath(PK, k, deg, cx, cy, 52 - 7 * so, 52 - 5 * so));
+    outClip.style.display = 'block'; outClip.style.clipPath = z < 1 ? `path('${P}')` : 'none';
+    irisBody.setAttribute('d', P);
+    irisTri.setAttribute('d', tfPath(TRI, k, deg, cx, cy, 52, 52));
+    irisFill.style.opacity = (1 - ioCubic(seg(t, T_IRIS + .02, T_IRIS + .32))).toFixed(3);
+    const sw = Math.min(4 * k, 14);
+    irisRim.setAttribute('d', P); irisRim.setAttribute('stroke-width', sw * (1 - seg(t, T_IRIS_END - .2, T_IRIS_END)));
+    irisInk.setAttribute('d', P); irisInk.setAttribute('stroke-width', (sw + 10) * (1 - seg(t, T_IRIS_END - .2, T_IRIS_END)));
+    irisRim.style.opacity = irisInk.style.opacity = 1;
+    if (z >= 1) { irisHot.style.display = irisTop.style.display = 'none'; intro.style.display = 'none'; }
+    // outro content: parallax settle
+    const os = lerp(1.14, 1, oCubic(seg(t, T_IRIS, T_IRIS_END + .35)));
+    const play = seg(t, 4.35, 6.05), press = Math.sin(Math.PI * seg(t, 4.78, 5.06));
+    outIn.innerHTML = `<div class="amp"></div><div class="ghostnum">08</div>${outro({play, press})}`;
+    outIn.style.transform = `scale(${os})`;
+  }
+  // ---------- grain, new seed every output frame
+  gr.innerHTML = LP.grain(1 + (frameNo || 0) % 47);
+}
+window.render = render;
+document.fonts.ready.then(() => { render(0, 0); document.body.dataset.ready = 1; });
+</script></body></html>

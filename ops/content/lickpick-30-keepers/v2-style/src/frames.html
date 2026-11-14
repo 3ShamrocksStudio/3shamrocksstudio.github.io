@@ -1,0 +1,57 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex">
+<link rel="stylesheet" href="fonts.css"><link rel="stylesheet" href="lp.css">
+<script src="lp.js"></script></head><body><div id="root"></div>
+<script>
+const F = +(new URLSearchParams(location.search).get('f') || 1);
+const {C, PK, tfPath, logoSVG, wordmark, grain, fretboard, tab, outro} = LP;
+
+function lessonHTML() {
+  return `
+  <div class="amp"></div>
+  <div class="ghostnum">08</div>
+  <div style="position:absolute;left:84px;top:200px;display:flex;align-items:center;gap:22px">
+    <div style="transform:rotate(-8deg)">${logoSVG(66)}</div>
+    <span class="chip" style="font-size:28px">Keeper 08<span class="of">/30</span></span>
+  </div>
+  <div class="hookword" style="position:absolute;left:84px;top:290px;font-size:150px;text-shadow:8px 7px 0 var(--hot)">SLIDE</div>
+  <div style="position:absolute;right:84px;top:322px;text-align:right;font:800 32px/1.25 var(--body);color:var(--dim)">Note 3 of 7<br><span style="color:var(--text)">G string <span style="color:var(--volt)">7 → 9</span></span></div>
+  ${fretboard({active: 3})}
+  ${tab({active: 3})}
+  <div style="position:absolute;left:0;right:0;top:1660px;text-align:center;font:800 40px/1.25 var(--body);color:var(--dim)">Slide <b style="color:var(--volt)">D up to E</b>. You're now in box 2.</div>`;
+}
+
+function introHTML() {
+  const cx = 540, cy = 470;
+  const streak = (y, col, x2, len, op) => `<div style="position:absolute;left:${x2 - len}px;top:${cy + y - 5}px;width:${len}px;height:10px;border-radius:5px;background:linear-gradient(90deg,transparent,${col});opacity:${op}"></div>`;
+  return `
+  <div class="amp"></div>
+  <div class="ghostnum">08</div>
+  ${streak(-66, C.hot, 330, 300, .55)}${streak(-22, C.blaze, 360, 420, .7)}${streak(22, C.volt, 350, 360, .65)}${streak(66, C.cyan, 320, 260, .5)}
+  <div style="position:absolute;left:${cx - 205}px;top:${cy - 205}px;width:410px;height:410px;border-radius:50%;border:4px solid ${C.volt};opacity:.22"></div>
+  <div style="position:absolute;left:${cx - 150}px;top:${cy - 150}px;transform:rotate(-8deg)">${logoSVG(300)}</div>
+  <div style="position:absolute;left:0;right:0;top:690px;display:flex;justify-content:center">${wordmark(108)}</div>
+  <div style="position:absolute;left:0;right:0;top:880px;display:flex;justify-content:center;align-items:center;gap:20px">
+    <span class="chip" style="transform:rotate(-2deg)">Keeper 08<span class="of">/30</span></span>
+    <span style="font:800 30px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)">30 licks worth keeping</span>
+  </div>
+  <div class="hookword" style="position:absolute;left:0;right:0;top:985px;text-align:center">SLIDE</div>
+  <div style="position:absolute;left:0;right:0;top:1250px;text-align:center;font:800 66px/1.1 var(--body);letter-spacing:-.01em">Stop getting stuck<br>in one box.</div>
+  <div style="position:absolute;left:0;right:0;top:1440px;text-align:center;font:700 34px/1.3 var(--body);color:var(--dim)">One slide links two boxes. 7 notes.</div>`;
+}
+
+function outroHTML(o) { return `<div class="amp"></div><div class="ghostnum">08</div>${outro(o)}`; }
+
+function transitionHTML() {
+  const k = 11.5, tx = 520, ty = 900, deg = -8;
+  const p = tfPath(PK, k, deg, tx, ty), ph = tfPath(PK, k, deg, tx + 30, ty + 24);
+  return `
+  <div class="layer" style="filter:blur(7px) brightness(.45);transform:scale(1.1)">${lessonHTML()}</div>
+  <svg width="1080" height="1920" style="position:absolute;inset:0"><path d="${ph}" fill="${C.hot}"/></svg>
+  <div class="layer" style="clip-path:path('${p}');background:var(--stage)"><div class="layer" style="transform:scale(1.07);filter:blur(1.2px)">${outroHTML({play:0})}</div></div>
+  <svg width="1080" height="1920" style="position:absolute;inset:0"><path d="${p}" fill="none" stroke="${C.ink}" stroke-width="22"/><path d="${p}" fill="none" stroke="${C.volt}" stroke-width="12"/></svg>`;
+}
+
+const html = {1: introHTML, 2: lessonHTML, 3: transitionHTML, 4: () => outroHTML({play: .62})}[F]();
+document.getElementById('root').innerHTML = `<div class="frame">${html}${grain(F)}</div>`;
+document.fonts.ready.then(() => document.body.dataset.ready = 1);
+</script></body></html>
