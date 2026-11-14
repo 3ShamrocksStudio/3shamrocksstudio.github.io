@@ -346,12 +346,12 @@ async function monitorOnScan(keyHash: string, key: string, domain: string, final
   await rest("rpc/a11y_mon_key_put", { method: "POST", body: JSON.stringify({ p_key_hash: keyHash, p_key: key }) });
   let m = (await rest(`a11y_monitors?key_hash=eq.${keyHash}&select=*`))?.[0];
   if (!m) {
-    m = { key_hash: keyHash, domain, page_url: pageKey(new URL(finalUrl)), active: true, next_check_at: isoIn(7 * DAY_MS) };
+    m = { key_hash: keyHash, domain, page_url: pageKey(new URL(finalUrl)), lang, active: true, next_check_at: isoIn(7 * DAY_MS) };
     await rest("a11y_monitors", { method: "POST", headers: { Prefer: "return=minimal,resolution=ignore-duplicates" }, body: JSON.stringify(m) });
     m = (await rest(`a11y_monitors?key_hash=eq.${keyHash}&select=*`))?.[0] || m;
   } else if (!m.active) {
-    m = { ...m, active: true, ended_at: null, next_check_at: isoIn(7 * DAY_MS) };
-    await patchMonitor(keyHash, { active: true, ended_at: null, next_check_at: m.next_check_at });
+    m = { ...m, active: true, ended_at: null, last_auto_status: null, next_check_at: isoIn(7 * DAY_MS) };
+    await patchMonitor(keyHash, { active: true, ended_at: null, last_auto_status: null, next_check_at: m.next_check_at });
   }
   const saved = m.domain === domain && samePage(m.page_url, finalUrl);
   if (saved) await recordHistory(keyHash, domain, r, false);
@@ -381,12 +381,14 @@ async function recheckMonitor(m: any, productId: string): Promise<string> {
     return await end("bad_url");
   }
   if (baseHost(target.hostname) !== m.domain) return await end("license_other_domain");
-  const page = await fetchPage(target, "en"); // checkTarget() runs on every hop
+  const lang: "he" | "en" = m.lang === "en" ? "en" : "he"; // the language of the buyer's first check
+  const page = await fetchPage(target, lang); // checkTarget() runs on every hop
   if ("error" in page) return await retry(page.error, DAY_MS);
-  if (baseHost(new URL(page.finalUrl).hostname) !== m.domain) return await retry("license_other_domain", DAY_MS);
+  // redirected to another page, language version or host: don't record it as the watched page
+  if (!samePage(m.page_url, page.finalUrl)) return await retry("moved", DAY_MS);
   const g = gatePage(page.html);
   if ("error" in g) return await retry(g.error, DAY_MS);
-  const r = runChecks(g.doc, page.html, page.finalUrl, "en");
+  const r = runChecks(g.doc, page.html, page.finalUrl, lang);
   await recordHistory(m.key_hash, m.domain, r, true);
   await patchMonitor(m.key_hash, { next_check_at: isoIn(7 * DAY_MS), last_auto_at: new Date().toISOString(), last_auto_status: "ok" });
   return "ok";
@@ -412,7 +414,7 @@ async function runMonitorBatch(): Promise<{ ran: number; results: string[] }> {
   const pid = cfg.gumroad_monitor_product_id;
   if (!pid) return { ran: 0, results: [] };
   const started = Date.now();
-  const due: any[] = (await rest(`a11y_monitors?active=is.true&next_check_at=lte.${encodeURIComponent(new Date().toISOString())}&select=key_hash,domain,page_url&order=next_check_at.asc&limit=${MON_BATCH}`)) || [];
+  const due: any[] = (await rest(`a11y_monitors?active=is.true&next_check_at=lte.${encodeURIComponent(new Date().toISOString())}&select=key_hash,domain,page_url,lang&order=next_check_at.asc&limit=${MON_BATCH}`)) || [];
   const results: string[] = [];
   for (const m of due) {
     if (Date.now() - started > 90_000) break;
