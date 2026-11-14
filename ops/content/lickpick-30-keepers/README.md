@@ -116,3 +116,18 @@ Then mux with ffmpeg (`-c:v copy -c:a aac -b:a 192k -ar 48000 -movflags +faststa
 - Ep 5's lick card says "a complete phrase, bar to bar", from landing step 2.
 
 **NEEDS YOUR EYES:** the same 4 items as above (account, comment-to-DM, the "Pro free for life" claim, posting slot) still apply before anything goes out.
+
+---
+
+# Reels 7–8 (14 Nov 2026)
+
+**Status:** drafts only. Nothing posted or sent, nothing spent. Same pipeline, brand and specs as reels 1–6. Finished files: `ops/content/2026-11-14/lickpick-ep07/` and `lickpick-ep08/` (mp4, cover, caption).
+
+| Reel | File | Length | The one message |
+|---|---|---|---|
+| 07 · NEXT | `lickpick-keeper-07-next-9x16.mp4` | 22.0 s | Box 2 of A minor pentatonic, frets 7–10, next to the HOME box. The two boxes share 6 notes on frets 7–8 (cyan). A is on the D string f7 and the B string f10. The 8-note lick runs high e f10 down to D string f7 and lands on A. |
+| 08 · SLIDE | `lickpick-keeper-08-slide-9x16.mp4` | 22.0 s | Slide the G string from f7 (D) to f9 (E) to cross from box 1 into box 2 mid-lick. The 7-note lick starts on A (D string f7) and lands on A an octave up (B string f10). |
+
+**Checks:** `theory.py` runs 654 checks, all PASS. Sync: worst offset 20 ms (ep07) and 18 ms (ep08). Slides measured in the rendered audio (`bend_check.py`): −1 cent from the fretted E. Loudness −14.0 LUFS on both; true peak −2.1 / −2.7 dBTP. The ep08 lick card uses the landing page's "two runners-up".
+
+**NEEDS YOUR EYES:** the same 4 items as above still apply before anything goes out.
