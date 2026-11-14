@@ -372,7 +372,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;background:var(--red)
     </div>
    </div>
    <div class="tile rv"><h3>Type &middot; Hebrew first</h3>
-    <div class="typo"><span class="aa">Aa</span><span class="he" lang="he" dir="rtl">הוגן</span><span class="mn"><span class="cur">&#8362;</span>7,346</span><span class="nt">fair!</span></div>
+    <div class="typo"><span class="aa">Aa</span><span class="he" lang="he" dir="rtl">שכירות</span><span class="mn"><span class="cur">&#8362;</span>7,346</span><span class="nt">fair!</span></div>
     <p>Rubik, IBM Plex Sans Hebrew, IBM Plex Mono for every figure, Caveat for the pen.</p>
    </div>
    <div class="tile rv" style="grid-column:span 1"><h3>Icons</h3>
@@ -438,9 +438,9 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;background:var(--red)
    en:{title:'My rent',city:'City',rooms:'Rooms',asking:'I pay, a month',paid:'Renters pay',fair:'Fair line, new lease',fairs:'+5.3% for a new tenant',month:'Me vs fair, a month',year:'Over a year',write:'Share my rent',hide:'Hide the card',copy:'Copy',msgnote:'Preview only · nothing is sent',copied:'Card copied',
      scopeC:'CBS average, Q2 2025',scopeD:function(d){return 'CBS, '+d+', Q2 2025'},v:{below:'Below market',fair:'Fair price',warn:'A bit above',high:'Above market',alert:'Well above'},pen:function(t){return 'fair is '+t},
      card:function(o){return 'Anonymous renter · '+o.city+'\n'+o.band+' rooms · <b>'+o.ask+'</b> a month\n'+(o.k==='over'?o.pct+'% above the fair line':o.k==='fair'?'Close to the fair line':o.pct+'% below the fair line')+' (<b>'+o.fair+'</b>).\nEvery rent shared makes the fair line clearer for the next renter.'}},
-   he:{title:'השכירות שלי',city:'עיר',rooms:'חדרים',asking:'אני משלם/ת, לחודש',paid:'משלמים בפועל',fair:'קו הוגן, חוזה חדש',fairs:'\u2066+5.3%\u2069 לדייר חדש',month:'אני מול ההוגן, בחודש',year:'בשנה',write:'שתפו את השכירות שלי',hide:'הסתרת הכרטיס',copy:'העתקה',msgnote:'תצוגה בלבד · שום דבר לא נשלח',copied:'הכרטיס הועתק',
-     scopeC:'ממוצע הלמ״ס, רבעון 2 2025',scopeD:function(d){return 'הלמ״ס, '+d+', רבעון 2 2025'},v:{below:'מתחת לשוק',fair:'מחיר הוגן',warn:'מעט מעל השוק',high:'גבוה מהשוק',alert:'גבוה משמעותית'},pen:function(t){return t},
-     card:function(o){return 'שוכר/ת אנונימי/ת · '+o.city+'\nדירת \u2066'+o.band+'\u2069 חדרים · <b>'+o.ask+'</b> לחודש\n'+(o.k==='over'?'\u2066'+o.pct+'%\u2069 מעל הקו ההוגן':o.k==='fair'?'קרוב לקו ההוגן':'\u2066'+o.pct+'%\u2069 מתחת לקו ההוגן')+' (<b>'+o.fair+'</b>).\nכל שכירות ששותפה מחדדת את הקו ההוגן לשוכר/ת הבא/ה.'}}
+   he:{title:'השכירות שלי',city:'עיר',rooms:'חדרים',asking:'אני משלם/ת, לחודש',paid:'משלמים בפועל',fair:'קו סביר, חוזה חדש',fairs:'\u2066+5.3%\u2069 לדייר חדש',month:'אני מול הסביר, בחודש',year:'בשנה',write:'שתפו את השכירות שלי',hide:'הסתרת הכרטיס',copy:'העתקה',msgnote:'תצוגה בלבד · שום דבר לא נשלח',copied:'הכרטיס הועתק',
+     scopeC:'ממוצע הלמ״ס, רבעון 2 2025',scopeD:function(d){return 'הלמ״ס, '+d+', רבעון 2 2025'},v:{below:'מתחת לשוק',fair:'מחיר סביר',warn:'מעט מעל השוק',high:'גבוה מהשוק',alert:'גבוה משמעותית'},pen:function(t){return t},
+     card:function(o){return 'שוכר/ת אנונימי/ת · '+o.city+'\nדירת \u2066'+o.band+'\u2069 חדרים · <b>'+o.ask+'</b> לחודש\n'+(o.k==='over'?'\u2066'+o.pct+'%\u2069 מעל הקו הסביר':o.k==='fair'?'קרוב לקו הסביר':'\u2066'+o.pct+'%\u2069 מתחת לקו הסביר')+' (<b>'+o.fair+'</b>).\nכל שכירות ששותפה מחדדת את הקו הסביר לשוכר/ת הבא/ה.'}}
   };
   function classify(d){return d<-0.08?'below':d<=0.07?'fair':d<=0.18?'warn':d<=0.35?'high':'alert'}
   function nis(n,l){return '₪'+Math.round(Math.abs(n)).toLocaleString(l==='he'?'he-IL':'en-US')}
