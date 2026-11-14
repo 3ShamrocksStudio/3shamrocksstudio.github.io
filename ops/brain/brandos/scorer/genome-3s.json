@@ -1,0 +1,62 @@
+{
+  "brand": "3Shamrocks Studio",
+  "version": "0.1.0",
+  "derived": "2026-11-14, only from files in this repo; every token carries its source",
+  "palette": [
+    {"name": "bg",        "hex": "#000000", "role": "page background",      "sources": ["sprint/index.html:26", "audit/index.html:17"]},
+    {"name": "surface",   "hex": "#0d0a17", "role": "card / panel surface", "sources": ["sprint/index.html:26"]},
+    {"name": "surface-2", "hex": "#151024", "role": "raised surface",       "sources": ["sprint/index.html:26"]},
+    {"name": "ink",       "hex": "#f6f4ff", "role": "primary text",         "sources": ["sprint/index.html:27", "audit/index.html:17"]},
+    {"name": "violet",    "hex": "#8239ea", "role": "brand accent",         "sources": ["sprint/index.html:28", "audit/index.html:17"]},
+    {"name": "violet-2",  "hex": "#b07cff", "role": "accent light / links", "sources": ["sprint/index.html:28", "audit/index.html:17"]},
+    {"name": "grape",     "hex": "#9b59f7", "role": "accent mid",           "sources": ["sprint/index.html:28"]},
+    {"name": "teal",      "hex": "#2fb7c9", "role": "secondary accent",     "sources": ["sprint/index.html:28"]},
+    {"name": "green",     "hex": "#8be36a", "role": "success / highlight",  "sources": ["sprint/index.html:28", "audit/index.html:17"]}
+  ],
+  "neutral_allowances": [
+    {"hex": "#ffffff", "note": "Used as a button fill in sprint/index.html:76 but not declared as a token. Allowed as pure neutral. NEEDS YOUR EYES: confirm or remove.", "sources": ["sprint/index.html:76"]}
+  ],
+  "color_tolerance": {"metric": "CIEDE2000", "max_delta_e": 6.0, "note": "Anything farther than this from every palette colour is off-palette. Alpha is ignored (rgba(236,232,255,.76) is judged as its RGB)."},
+  "fonts": {
+    "allowed": ["Bricolage Grotesque", "Instrument Sans", "Heebo"],
+    "generic_allowed": ["system-ui", "sans-serif", "serif", "monospace", "inherit", "initial"],
+    "roles": {"display": "Bricolage Grotesque", "body": "Instrument Sans", "hebrew": "Heebo"},
+    "sources": ["sprint/index.html:30-31", "sprint/index.html:35", "audit/index.html:18"]
+  },
+  "contrast": {
+    "min_ratio_body": 4.5,
+    "min_ratio_large": 3.0,
+    "large_text_px": 24,
+    "sources": ["DS-COMPLIANCE-SNAPSHOT.md section 4 (body text >= 4.5:1, large text and UI >= 3:1)"]
+  },
+  "voice": {
+    "person": "first person singular",
+    "banned_pronouns": ["we", "we're", "we've", "we'll", "we'd", "our", "ours", "us"],
+    "preferred": "I",
+    "banned_words": ["revolutionary", "revolutionize", "game-changing", "game changer", "world-class", "best-in-class", "guaranteed", "cutting-edge", "unparalleled", "next-level"],
+    "fake_urgency_patterns": ["only \\d+ (left|remaining|spots?|seats?|places?)", "limited[- ]time", "act now", "hurry", "last chance", "don'?t miss out", "ends (today|tonight|soon)", "while (supplies|stocks) last"],
+    "sources": ["ops/brain/BRAIN.md:83 (First person singular, never we)", "ops/brain/LEADGEN.md:38 (First person singular. No fake scarcity.)", "banned word list: CTO assignment brief for Brand OS scorer, 2026-11-14. NEEDS YOUR EYES: confirm list."]
+  },
+  "claims": {
+    "rule": "Any number-with-percent, multiplier, #1 / TIME-style award, count of customers, or 'doubled/tripled/halved' claim must carry a source marker in the same block: a data-source attribute on the element or an ancestor, or a [source: ...] tag in the same paragraph.",
+    "source_markers": ["data-source attribute", "[source: ...] tag"],
+    "sources": ["ops/brain/PROGRAM-BRAND-OS.md section 3 (approved claims with sources) and section 8 (every claim sourced)"]
+  },
+  "logo": {
+    "approved_files": ["assets/studio/3shamrocks.png", "assets/studio/3shamrocks_black.png"],
+    "approved_dirs": ["assets/studio/logos/"],
+    "alt_required": true,
+    "sources": ["DS-COMPLIANCE-SNAPSHOT.md section 5 (real studio logo only: 3shamrocks.png / 3shamrocks_black.png)", "assets/studio/logos/ (product logos present in repo)", "sprint/index.html:161 (alt='3Shamrocks Studio')"]
+  },
+  "scoring": {
+    "pass_threshold": 85,
+    "checks": {
+      "colour":   {"penalty_per_violation": 16, "cap": 32},
+      "font":     {"penalty_per_violation": 18, "cap": 30},
+      "contrast": {"penalty_per_violation": 16, "cap": 32},
+      "voice":    {"penalty_per_violation": 16, "cap": 30},
+      "claims":   {"penalty_per_violation": 16, "cap": 30},
+      "logo":     {"penalty_per_violation": 18, "cap": 30}
+    }
+  }
+}
