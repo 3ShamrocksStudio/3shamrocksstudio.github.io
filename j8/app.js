@@ -88,9 +88,14 @@ function dueOf(a){var m=String((a&&a.warn)||'').match(/\b(?:Sun|Mon|Tue|Wed|Thu|
 function dshort(d){return d?d.getDate()+' '+MON[d.getMonth()]:'';}
 function batches(){var by={},L=[];apPending().forEach(function(a){var b=a.batch||'other';if(!by[b]){by[b]={id:b,label:a.batch_label||'Other drafts',items:[]};L.push(by[b]);}by[b].items.push(a);});return L;}
 function nounOf(items){var c={};items.forEach(function(a){c[a.kind]=(c[a.kind]||0)+1;});var k=Object.keys(c).sort(function(x,y){return c[y]-c[x];});var n=k.length===1?(NOUN[k[0]]||'drafts'):'drafts';return items.length===1?n.replace(/s$/,''):n;}
+/* 5.1.1: one row per action Dave must take; reasons in plain words, never team-internal ones */
+var ACTS=[['cv',/CV access/i,'Allow CV access on the Mac'],['li-hand',/LinkedIn (Easy )?Apply|send (it |them |these )?by hand/i,'LinkedIn: you send these by hand'],['gofractional',/GoFractional/i,'GoFractional: sign up there to apply'],['mail',/sending not connected|studio (e-?mail|mailbox)/i,'Studio email sending isn’t connected yet']];
+function actKey(t){t=String(t||'');for(var i=0;i<ACTS.length;i++)if(ACTS[i][1].test(t))return ACTS[i][0];return null;}
+function plainWhy(t){var k=actKey(t);if(k)for(var i=0;i<ACTS.length;i++)if(ACTS[i][0]===k)return ACTS[i][2];
+ return cap1(String(t||'').replace(/\bno arms? sends?\b[^,;.]*/gi,'the team can’t send it').replace(/\b(the |an? )?arms?\b/gi,'the team').trim());}
 function held(){var by={},L=[];J8.approvals.list().forEach(function(a){if(a.status!=='approved'&&a.status!=='edited')return;var r=String(a.result||'');if(!/^Waiting/i.test(r))return;
-  var dave=/needs Dave/i.test(r),m=r.match(/\(([^)]*)\)/),why=(m&&dave?m[1]:r.replace(/^Waiting:\s*/i,'').replace(/\s*\(\d\d:\d\d\)\s*$/,'')).split(/;|, so | \(/)[0].trim();
-  var k=(dave?'d:':'t:')+why;if(!by[k]){by[k]={key:'held-'+k.replace(/[^a-z0-9]+/gi,'-').slice(0,48),dave:dave,why:why,items:[]};L.push(by[k]);}by[k].items.push(a);});
+  var dave=/needs Dave/i.test(r),m=r.match(/\(([^)]*)\)/),why=(m&&dave?m[1]:r.replace(/^Waiting:\s*/i,'').replace(/\s*\(\d\d:\d\d\)\s*$/,'')).split(/;|, so | \(/)[0].trim(),ak=actKey(why),label=plainWhy(why);
+  var k=(dave?'d:':'t:')+(ak||label.toLowerCase());if(!by[k]){by[k]={key:'held-'+k.replace(/[^a-z0-9]+/gi,'-').slice(0,48),dave:dave,why:label,act:ak,items:[]};L.push(by[k]);}by[k].items.push(a);});
  return L.sort(function(x,y){return (y.dave?1:0)-(x.dave?1:0)||y.items.length-x.items.length;});}
 function isAsk(x){if(x.status==='done')return false;var v=sevOf(J8.inbox.lastReply(x));if(v)return v!=='g'; /* a tagged last line decides */
  return x.status==='routed'&&/NEEDS YOUR EYES|WHAT YOU DO|\?|Forward it|reply '|paste its/i.test(String(x.reply||''));}
@@ -108,16 +113,16 @@ function rows(){var R=[];
   R.push({key:'mv-'+p.id,g:g,st:pk?'park':y?'wait':'prog',sev:y?sevOf(p.you)||'o':null,title:y?shortWhat(y):p.name,sub:y?p.name+(stageName(p.stage)?' · '+stageName(p.stage):''):cut(shortWhat(p.now||''),70)||stageName(p.stage),full:y,own:y?'dave':dept(p),why:whyMove(p),p:p,move:!!y});});
  batches().forEach(function(b){if(b.items.length===1&&b.items[0].kind==='invoice')return;var ds=b.items.map(dueOf).filter(Boolean).sort(function(x,y){return x-y;});
   R.push({key:'b-'+b.id,g:'approve',st:'wait',sev:ds[0]&&ds[0]<=eod()?'r':'o',since:b.items.map(function(a){return a.created?new Date(a.created):null;}).filter(function(d){return d&&!isNaN(d);}).sort(function(x,y){return x-y;})[0]||null,title:b.items.length+' '+nounOf(b.items)+' to send',sub:b.label,own:'dave',due:ds[0]||null,batch:b});});
- held().forEach(function(h){R.push({key:h.key,g:'team',st:h.dave?'wait':'stuck',sev:h.dave?'o':null,title:h.dave?cap1(cut(h.why,80)):h.items.length+' approved '+nounOf(h.items)+' held',sub:h.dave?h.items.length+' approved '+nounOf(h.items)+(h.items.length===1?' waits':' wait')+' for this':cap1(cut(h.why,70)),own:h.dave?'dave':'Team',held:h});});
+ held().forEach(function(h){var n=h.items.length+' '+nounOf(h.items);R.push({key:h.key,g:'team',st:h.dave?'wait':'stuck',sev:h.dave?'o':null,title:h.dave?cut(h.why,70)+' ('+n+')':n.replace(/^(\d+) /,'$1 approved ')+' held',sub:h.dave?'Approved; '+(h.items.length===1?'it goes':'they go')+' out once you do this':cut(h.why,70),own:h.dave?'dave':'Team',held:h});});
  J8.inbox.list().forEach(function(x){var a=isAsk(x),st=a?'wait':x.status==='done'?'done':'prog';
-  R.push({key:'c-'+x.p+'-'+String(x.at),g:'team',st:st,sev:a?sevOf(J8.inbox.lastReply(x))||'o':null,title:a?cut(askLine(x),90):pname(x.p)+(st==='done'?' · done':' · with the team'),sub:a?pname(x.p)+' team asks':cut(lastClean(x),80),own:a?'dave':dept(PR[x.p]||{}),c:x,ask:a,at:x.at,since:x.at?new Date(x.at):null});});
+  R.push({key:'c-'+x.p+'-'+String(x.at),g:'team',st:st,sev:a?sevOf(J8.inbox.lastReply(x))||'o':null,title:a?cap1(cut(askLine(x),90)):pname(x.p)+(st==='done'?' · done':' · with the team'),sub:a?pname(x.p)+' team asks':cut(lastClean(x),80),own:a?'dave':dept(PR[x.p]||{}),c:x,ask:a,at:x.at,since:x.at?new Date(x.at):null});});
  var ot=oldTasks();if(ot.length)R.push({key:'old',g:'later',st:'park',title:ot.length+' older to-do items',sub:'From 3–11 Nov. Tick what is done.',own:'dave',tasks:ot});
  return R.sort(function(a,b){return GR.map(function(g){return g[0];}).indexOf(a.g)-GR.map(function(g){return g[0];}).indexOf(b.g)||ORD[a.st]-ORD[b.st];});}
 
 /* ===== Next: today's plan, one card at a time ===== */
 function snoozed(k){var z=ls('j8-snooze')||{};return z[k]&&z[k]>Date.now();}
 function snooze(k,h){var z=ls('j8-snooze')||{};z[k]=Date.now()+h*36e5;ls('j8-snooze',z);}
-function queue(){var o={money:0,team:1,projects:2,approve:3};return rows().filter(function(i){return i.st==='wait'&&o[i.g]!=null&&!snoozed(i.key);}).sort(function(a,b){return sevRank(a.sev)-sevRank(b.sev)||o[a.g]-o[b.g];});}
+function queue(){return needs();} /* 5.1.1: Next and "Needs you" share one list and one order */
 function eod(){var d=new Date();d.setHours(23,59,59,999);return d;}
 function today(){return queue().slice(0,5);}
 function nextOf(i){
@@ -186,14 +191,29 @@ var ACK=/Got it — the team picks this up within the hour\.?\s*$/;
 function sinceCounts(b){var c={ok:0,bad:0,dr:0,rp:0};
  J8.runs.list().forEach(function(r){if(!(pd(r.ended)>b))return;if(r.status==='failed')c.bad++;else if(r.status&&['nothing','running','started'].indexOf(r.status)<0)c.ok++;});
  J8.approvals.list().forEach(function(a){if(pd(a.created)>b)c.dr++;});
- J8.inbox.list().forEach(function(x){var l=J8.inbox.lastReply(x);if(pd(x.updated_at)>b&&l&&!ACK.test(l))c.rp++;});
+ J8.inbox.list().forEach(function(x){var L=replyTimes(x);if(L===null){var l=J8.inbox.lastReply(x);if(pd(x.updated_at)>b&&l&&!ACK.test(l))c.rp++;return;}
+  L.forEach(function(t){if(t>b)c.rp++;});});
  return c;}
+/* reply lines carry Israel time "HH:MM — " (sometimes "HH:MM (13 Nov) — "): date each line from the message day, rolling to the next day when the clock goes back. null = no line could be dated. */
+var ILF=window.Intl?new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Jerusalem',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}):null;
+function ilParts(ms){var o={};ILF.formatToParts(new Date(ms)).forEach(function(p){o[p.type]=+p.value;});return o;}
+function ilMs(y,mo,d,h,mi){var g=Date.UTC(y,mo,d,h,mi),q=ilParts(g),off=Date.UTC(q.year,q.month-1,q.day,q.hour,q.minute)-g;return g-off;}
+function replyTimes(x){if(!ILF)return null;var t0=pd(x.at);if(isNaN(t0))return null;var p=ilParts(t0),y=p.year,mo=p.month-1,d=p.day,prev=p.hour*60+p.minute,out=[],any=false;
+ String(x.reply||'').split('\n').forEach(function(l){var m=l.match(/^\s*(\d{1,2}):(\d\d)(?:\s*\((\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\))?\s*[—-]\s*(.*)$/);if(!m)return;any=true;
+  var mins=+m[1]*60+(+m[2]);if(m[3]){d=+m[3];mo=MON.indexOf(m[4]);}else if(mins<prev){var nd=new Date(Date.UTC(y,mo,d+1));y=nd.getUTCFullYear();mo=nd.getUTCMonth();d=nd.getUTCDate();}
+  prev=mins;if(!ACK.test(l))out.push(ilMs(y,mo,d,+m[1],+m[2]));});
+ return any?out:null;}
 function sinceLine(){var b=SEEN,lbl;if(!isNum(b)){b=Date.now()-864e5;lbl='In the last 24 h';}else lbl='Since you last looked ('+hhmm(new Date(b).toISOString())+')';
  var c=sinceCounts(b),P=[],pl=function(n,one,many){return n+' '+(n===1?one:many);};
  if(c.ok)P.push(pl(c.ok,'run done','runs done'));if(c.bad)P.push(c.bad+' failed');if(c.dr)P.push(pl(c.dr,'new draft','new drafts'));if(c.rp)P.push(pl(c.rp,'reply','replies'));
  return lbl+': '+(P.length?P.join(' · '):'nothing new')+'.';}
-function needs(){var o={money:0,team:1,approve:2,projects:4},w=function(i){return i.held?3:o[i.g];}; /* money, team questions, drafts, held sends, project moves */
- return rows().filter(function(i){return i.st==='wait'&&o[i.g]!=null&&(i.sev==='r'||!snoozed(i.key));}).sort(function(a,b){return sevRank(a.sev)-sevRank(b.sev)||w(a)-w(b);});}
+/* order: severity, then money, team questions, drafts, held sends, project moves. A project move that repeats a listed draft batch or held send is left out. */
+function dupMove(i,R){if(!i.p||!i.move)return false;var y=youRaw(i.p),ak=actKey(y);
+ if(ak&&R.some(function(h){return h.held&&h.held.dave&&h.held.act===ak;}))return true;
+ if(/\bApprove\b/.test(y)&&!/\(2\)/.test(y)&&R.some(function(b){return b.batch&&b.batch.items.some(function(a){return a.product===i.p.id;});}))return true;
+ return false;}
+function needs(){var o={money:0,team:1,approve:2,projects:4},w=function(i){return i.held?3:o[i.g];},R=rows().filter(function(i){return i.st==='wait'&&o[i.g]!=null&&!snoozed(i.key);});
+ return R.filter(function(i){return !dupMove(i,R);}).sort(function(a,b){return sevRank(a.sev)-sevRank(b.sev)||w(a)-w(b);});}
 function ndHref(i){var u=i.p&&i.p.you_link||'';return /^https?:\/\//.test(u)&&!/3shamrocks\.com\/j8\/?(#.*)?$/.test(u)?u:null;}
 function ndItem(i){var v=SEV[i.sev]?i.sev:'o',u=ndHref(i),inner='<span class="e" role="img" aria-label="'+esc(SEV[v][1])+'">'+SEV[v][0]+'</span><span class="t" dir="auto">'+esc(cap1(i.title))+(i.sub?' <small>· '+esc(i.sub)+'</small>':'')+'</span>';
  return '<li>'+(u?'<a class="ni" href="'+esc(u)+'" target="_blank" rel="noopener">'+inner+ic('link')+'</a>':'<button class="ni" data-jump="list-'+esc(i.key)+'">'+inner+'</button>')+'</li>';}
@@ -401,7 +421,7 @@ new MutationObserver(function(){if(view==='chat')chatBottom();}).observe($('j8cL
    the team adds reply lines, and status moves new → routed → done. All of it updates live.
    Live AI answers stay off until control.brain_enabled (Dave's paid OK): no fake typing. ===== */
 var J8C=(function(){
- var QUICK=['What is the one move that brings money fastest?','What is waiting on me right now?','Which arms failed or went quiet?','One line on every project'];
+ var QUICK=['What is the one move that brings money fastest?','What is waiting on me right now?','Which teams failed or went quiet?','One line on every project'];
  var MAX=60,lastOld='',lastNew='',sending=false;
  var SW={new:'Sent',routed:'With the team',done:'Done'};
  function g(id){return document.getElementById(id);}
