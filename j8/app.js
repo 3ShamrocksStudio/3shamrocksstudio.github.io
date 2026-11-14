@@ -1,4 +1,4 @@
-/* J8NIX PWA screens 5.0.0: the approved v8 UI (Chat · Next · List · Stats), ported from the claude.ai artifact.
+/* J8NIX PWA screens 5.0.0 (5.3.0 adds Control in the settings sheet): the approved v8 UI (Chat · Next · List · Stats), ported from the claude.ai artifact.
    Live data only, through window.J8 (j8-data.js, Supabase). No static copies of tasks or projects: empty data shows an empty state. */
 var T=[],P=[];
 /* ===== J8NIX UI v7 (12 Nov): Chat · Next · List · Stats. Reads and writes only through window.J8 (above) and control/main.
@@ -343,15 +343,104 @@ function renderHead(){var t={chat:'J8NIX',next:'Next',list:'List',stats:'Stats'}
 
 /* ===== settings sheet ===== */
 function openSheet(){$('sheet').hidden=false;$('scrim').hidden=false;$('gear').setAttribute('aria-expanded','true');}
-function closeSheet(){var s=$('sheet');if(s&&!s.hidden){s.hidden=true;$('scrim').hidden=true;$('gear').setAttribute('aria-expanded','false');}}
+function closeSheet(){var s=$('sheet');if(s&&!s.hidden){s.hidden=true;$('scrim').hidden=true;$('gear').setAttribute('aria-expanded','false');if(ctlOn)ctlShow(false);if(location.hash==='#control')history.replaceState(null,'',location.pathname+location.search);}}
 function renderSeat(){var b=$('seat');if(!b)return;var p=CTRL&&CTRL.paused,ask=seatAsk>Date.now();
  b.classList.toggle('off',!!p);b.textContent=p?(ask?'Tap again to resume':'Resume sending'):'Pause sending';
  $('seatTxt').textContent=!CTRL?'Not loaded yet.':p?'Paused. Nothing goes out.':'On. Approved drafts go out on the next run.';
- $('connTxt').textContent=connected?(J8.status().connected?'Connected. Updates live.':'Offline. Showing the last copy.'):'Connecting…';}
+ $('connTxt').textContent=connected?(J8.status().connected?'Connected. Updates live.':'Offline. Showing the last copy.'):'Connecting…';
+ var c=$('seatC');if(c){c.className=b.className;c.textContent=b.textContent;c.disabled=!J8.orgs.can('admin');}var ct=$('seatCTxt');if(ct)ct.textContent=$('seatTxt').textContent;}
 function seatTap(){if(!CTRL){toast('Not connected yet. Try again in a moment.');return;}var p=CTRL&&CTRL.paused;
  if(!p){J8.control.setPaused(true).then(function(){toast('Sending paused. The team sends nothing until you resume.');},function(e){toast('Couldn’t pause ('+(e&&e.code||'error')+'). Try again.');});return;}
  if(seatAsk>Date.now()){seatAsk=0;J8.control.setPaused(false).then(function(){toast('Sending resumed.');},function(e){toast('Couldn’t resume ('+(e&&e.code||'error')+').');});}
  else{seatAsk=Date.now()+5000;renderSeat();setTimeout(renderSeat,5100);}}
+
+/* ===== 5.3 Control: run the team from the phone. Lives in the settings sheet; #control opens it. Admins change, everyone else reads. ===== */
+var J8V='5.3.0',ctlOn=false,ctlAsk=null,ctlOpen={};
+var COVERS={'job-application':'Job applications','li-connect':'LinkedIn connect notes','followup-1':'First follow-up','followup-2':'Second follow-up','tester-post':'Tester sign-up post'};
+var LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="6" y="11" width="12" height="9"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg>';
+function ilHM(ms){var p=ilParts(ms);return String(p.hour).padStart(2,'0')+':'+String(p.minute).padStart(2,'0');}
+function ilDay(ms){var p=ilParts(ms);return p.year*1e4+p.month*100+p.day;}
+function ilWhen(iso){var t=pd(iso);if(isNaN(t)||!ILF)return '';var d=ilDay(t);if(d===ilDay(Date.now()))return 'today '+ilHM(t);if(d===ilDay(Date.now()+864e5))return 'tomorrow '+ilHM(t);
+ var p=ilParts(t);return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(Date.UTC(p.year,p.month-1,p.day)).getUTCDay()]+' '+p.day+' '+MON[p.month-1]+' '+ilHM(t);}
+function sw(on,cx,label,dis,extra){return '<button type="button" class="sw" role="switch" aria-checked="'+(on?'true':'false')+'" aria-label="'+esc(label)+'" data-cx="'+cx+'" data-fk="'+esc(cx+(extra||''))+'"'+(extra?' data-id="'+esc(extra)+'"':'')+(dis?' disabled':'')+'></button>';}
+function runPend(s){var a=pd(s.run_now_at),d=pd(s.run_now_done_at);return !isNaN(a)&&(isNaN(d)||a>d)?a:null;}
+function schRow(s,ro){var st=s.last_status||'none',dot={ok:'g',failed:'r',running:'b'}[st]||'n',word={ok:'worked',failed:'failed',running:'running now'}[st]||'',on=s.want_enabled!=null?!!s.want_enabled:!!s.enabled,rp=runPend(s),p='';
+ if(s.want_enabled!=null&&!!s.want_enabled!==!!s.enabled)p='<span class="cx-p">'+(s.want_enabled?'Turning on… (within the hour)':'Pausing… (within the hour)')+'</span>';
+ var last=s.last_run_at?'Last run '+ago(s.last_run_at)+(word?' · '+word:''):'Not run yet',nx=s.enabled&&s.next_run_at?'Next '+ilWhen(s.next_run_at):s.enabled?'':'Off';
+ return '<div class="sh-row cx-s"><div><b dir="auto">'+esc(s.name||'Team task')+'</b><span dir="auto">'+esc(s.when_text||'')+'</span>'
+  +'<span class="cx-m"><i class="sd sd-'+dot+'" aria-hidden="true"></i><span>'+esc(last)+(nx?' · '+esc(nx):'')+'</span></span>'+p
+  +(s.note?'<small dir="auto">'+esc(s.note)+'</small>':'')
+  +(rp?'<span class="cx-p">Run requested '+esc(ilHM(rp))+' · starts within the hour</span>':s.locked||ro?'':'<button type="button" class="cx-b" data-cx="run" data-id="'+esc(s.id)+'" data-fk="run'+esc(s.id)+'" aria-label="Run '+esc(s.name||'this')+' now">Run now</button>')+'</div>'
+  +(s.locked?'<span class="cx-lk" title="Always on">'+LOCK+sw(true,'sch',(s.name||'Team task')+' (always on)',true,s.id)+'</span>':sw(on,'sch',s.name||'Team task',ro,s.id))+'</div>';}
+function tplRow(a,ro){var st=a.status||'pending',cls={approved:'done',edited:'done',killed:'kill',sent:'done'}[st]||'wait',pr=PR[a.product]&&PR[a.product].name,k='t'+a.id,body=J8.approvals.textOf(a);
+ return '<div class="cx-t"><div class="cx-tt"><span class="pill s-'+cls+'">'+esc(STW[st]||'Waiting')+'</span><b dir="auto">'+esc(COVERS[a.covers]||(a.covers?cap1(String(a.covers).replace(/[-_]+/g,' ')):'Template'))+'</b>'+(pr?'<small dir="auto">'+pm(a.product)+esc(pr)+'</small>':'')+'</div>'
+  +(body?'<details data-k="'+esc(k)+'"'+(ctlOpen[k]?' open':'')+'><summary>Show the text</summary><p class="cx-body" dir="auto">'+esc(body)+'</p></details>':'')
+  +(ro?'':'<div class="acts">'+(st!=='approved'&&st!=='edited'?'<button type="button" class="s" data-cx="tok" data-id="'+esc(a.id)+'" data-fk="tok'+esc(a.id)+'">'+ic('done')+'Approve</button>':'')+(st!=='killed'?'<button type="button" data-cx="tkill" data-id="'+esc(a.id)+'" data-fk="tkill'+esc(a.id)+'">'+ic('kill')+'Kill</button>':'')+'</div>')+'</div>';}
+function askBox(k){var t={email:['Turn on email sending?','Approved emails start going out from dave@3shamrocks.com on my next run.'],brain:['Turn on live AI answers?','I answer your chat at once, and each answer costs paid AI.']}[k];
+ return '<div class="cx-ask" role="group" aria-label="'+esc(t[0])+'"><p>'+esc(t[0])+'</p><span>'+esc(t[1])+'</span><div><button type="button" class="seat" data-cx="yes" data-fk="yes">Yes, turn on</button><button type="button" class="txtb" data-cx="no" data-fk="no">Cancel</button></div></div>';}
+function renderCtl(){var el=$('ctlBody');if(!el||!ctlOn)return;var c=J8.control.get(),ro=!J8.orgs.can('admin'),h='',ae=document.activeElement,fk=ae&&ae.dataset?ae.dataset.fk:null,iv=$('ooIn')?$('ooIn').value:'',inF=ae&&ae.id==='ooIn';
+ if(ro)h+='<p class="cx-ro" role="note">You can see everything here; only an admin of this business can change it.</p>';
+ /* 1 sending */
+ h+='<section class="cx-g" aria-labelledby="cxg1"><h3 id="cxg1">Sending</h3><p class="cx-d">What I may send, and the switch that stops everything.</p>'
+  +'<div class="sh-row"><div><b>Sending by the AI team</b><span id="seatCTxt">'+esc($('seatTxt').textContent)+'</span></div><button class="seat" id="seatC" data-fk="seatC">Pause sending</button></div>'
+  +'<div class="sh-row"><div><b id="cxEm">Email sending</b><span>Studio email goes out only from dave@3shamrocks.com; turn on once it’s connected.</span></div>'+sw(c&&c.email_from_ok,'email','Email sending',ro||!c)+'</div>'
+  +(ctlAsk==='email'?askBox('email'):'')
+  +'<div class="sh-row"><div><b>Live AI answers</b><span>Uses paid AI per answer.</span></div>'+sw(c&&c.brain_enabled,'brain','Live AI answers',ro||!c)+'</div>'
+  +(ctlAsk==='brain'?askBox('brain'):'')+'</section>';
+ /* 2 daily limits */
+ var caps=(c&&c.caps)||{},cap=function(k,t,sub){var n=isNum(+caps[k])&&caps[k]!=null?+caps[k]:0;
+  return '<div class="sh-row"><div><b id="cap-'+k+'">'+esc(t)+'</b><span>'+esc(sub)+'</span></div><div class="stp" role="group" aria-labelledby="cap-'+k+'">'
+   +'<button type="button" data-cx="cap" data-key="'+k+'" data-d="-1" data-fk="capm'+k+'" aria-label="One fewer '+esc(t.toLowerCase())+'"'+(ro||!c||n<=0?' disabled':'')+'>−</button><output aria-live="polite">'+n+'</output>'
+   +'<button type="button" data-cx="cap" data-key="'+k+'" data-d="1" data-fk="capp'+k+'" aria-label="One more '+esc(t.toLowerCase())+'"'+(ro||!c||n>=50?' disabled':'')+'>+</button></div></div>';};
+ h+='<section class="cx-g" aria-labelledby="cxg2"><h3 id="cxg2">Daily limits</h3><p class="cx-d">The most I do in one day (0 to 50 each).</p>'
+  +cap('email','Email','Emails a day. None go out while email sending is off.')+cap('li_connect','LinkedIn connects','New people a day.')+cap('li_followup','LinkedIn follow-ups','Follow-ups a day.')
+  +'<p class="cx-d cx-n">LinkedIn is always sent by you by hand; this only limits how many I put on your list.</p></section>';
+ /* 3 schedule */
+ var S3=J8.schedule.list();
+ h+='<section class="cx-g" aria-labelledby="cxg3"><h3 id="cxg3">Team schedule</h3><p class="cx-d">When I work (Israel time). A pause or a “Run now” takes effect within the hour.</p>'
+  +(S3.length?S3.map(function(s){return schRow(s,ro);}).join(''):'<p class="cx-d cx-n">Not loaded yet.</p>')+'</section>';
+ /* 4 templates */
+ var TP=J8.approvals.templates();
+ h+='<section class="cx-g" aria-labelledby="cxg4"><h3 id="cxg4">Templates</h3><p class="cx-d">I write drafts only from approved templates. Killed ones I don’t use.</p>'
+  +(TP.length?TP.map(function(a){return tplRow(a,ro);}).join(''):'<p class="cx-d cx-n">No templates yet.</p>')+'</section>';
+ /* 5 do-not-contact */
+ var OO=J8.optout.list();
+ h+='<section class="cx-g" aria-labelledby="cxg5"><h3 id="cxg5">Do-not-contact list</h3><p class="cx-d">I never write to these addresses. '+(OO.length===1?'1 address.':OO.length+' addresses.')+'</p>'
+  +(OO.length?'<details class="cx-l" data-k="oo"'+(ctlOpen.oo?' open':'')+'><summary>Show the '+(OO.length===1?'address':OO.length+' addresses')+'</summary><ul>'+OO.map(function(o){return '<li dir="auto">'+esc(o.email||o.id)+'</li>';}).join('')+'</ul></details>':'')
+  +(ro?'':'<form class="cx-f" id="ooF" novalidate><label for="ooIn">Add an address</label><div><input id="ooIn" type="email" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="name@company.com" aria-describedby="ooErr"><button class="seat" type="submit">Add</button></div><p class="cx-e" id="ooErr" role="status"></p></form>')+'</section>';
+ /* 6 app */
+ var u=J8.status().user;
+ h+='<section class="cx-g" aria-labelledby="cxg6"><h3 id="cxg6">App</h3>'
+  +'<div class="sh-row"><div><b>Android app</b><span>J8NIX as an app on your phone.</span></div><a class="seat" href="app/" target="_blank" rel="noopener">Get the Android app</a></div>'
+  +'<div class="sh-row"><div><b>Version</b><span>'+esc(J8V)+'</span></div></div>'
+  +'<div class="sh-row"><div><b>Signed in</b><span class="cx-who">'+esc(u?u.email:'Not signed in')+'</span></div>'+(u?'<button type="button" class="txtb" data-cx="signout" data-fk="signout">Sign out</button>':'')+'</div></section>';
+ el.innerHTML=h;renderSeat();
+ if($('ooIn'))$('ooIn').value=iv;
+ if(inF&&$('ooIn')){$('ooIn').focus();}else if(fk){var f=el.querySelector('[data-fk="'+(window.CSS&&CSS.escape?CSS.escape(fk):fk)+'"]');if(f&&!f.disabled)f.focus();}}
+function ctlShow(on){ctlOn=on;ctlAsk=null;var s=$('sheet');s.classList.toggle('ctl',on);s.setAttribute('aria-label',on?'Control':'Settings');if(on){renderCtl();s.scrollTop=0;var t=$('ctlT');if(t)t.focus();}}
+function openCtl(){if($('sheet').hidden){renderSeat();openSheet();}ctlShow(true);}
+function ctlErr(e){toast(e&&e.code==='denied'?'Couldn’t save: this account isn’t allowed to change that yet.':e&&e.code==='conflict'?'Something changed at the same time. Try again.':'Couldn’t save ('+(e&&e.code||'error')+'). Try again.');renderCtl();}
+function ctlAct(t){var k=t.dataset.cx,id=t.dataset.id,c=J8.control.get();
+ if(k==='open'){openCtl();return;}
+ if(k==='back'){ctlShow(false);var b=$('ctlBtn');if(b)b.focus();return;}
+ if(k==='signout'){$('signOut').click();return;}
+ if(!J8.orgs.can('admin')){toast('Only an admin of this business can change this.');return;}
+ if(k==='email'||k==='brain'){if(!c)return;var cur=k==='email'?c.email_from_ok:c.brain_enabled;
+  if(cur){(k==='email'?J8.control.setEmail(false):J8.control.setBrain(false)).then(function(){toast(k==='email'?'Email sending off. I send no email.':'Live AI answers off.');renderCtl();},ctlErr);}
+  else{ctlAsk=k;renderCtl();var y=$('ctlBody').querySelector('[data-cx="yes"]');if(y)y.focus();}return;}
+ if(k==='no'){var w=ctlAsk;ctlAsk=null;renderCtl();var sb=$('ctlBody').querySelector('[data-fk="'+w+'"]');if(sb)sb.focus();return;}
+ if(k==='yes'){var a=ctlAsk;ctlAsk=null;(a==='email'?J8.control.setEmail(true):J8.control.setBrain(true)).then(function(){toast(a==='email'?'Email sending on. Approved emails go out on my next run.':'Live AI answers on.');renderCtl();},ctlErr);renderCtl();var f=$('ctlBody').querySelector('[data-fk="'+a+'"]');if(f)f.focus();return;}
+ if(k==='cap'){if(!c)return;var n=(+((c.caps||{})[t.dataset.key])||0)+(+t.dataset.d);if(n<0||n>50)return;J8.control.setCap(t.dataset.key,n).then(renderCtl,ctlErr);renderCtl();return;}
+ if(k==='sch'){var s=J8.schedule.get(id);if(!s||s.locked)return;var on=!(s.want_enabled!=null?s.want_enabled:s.enabled);
+  J8.schedule.setEnabled(id,on).then(function(){toast(on?'Asked: '+s.name+' turns on within the hour.':'Asked: '+s.name+' pauses within the hour.');},ctlErr);renderCtl();return;}
+ if(k==='run'){var r=J8.schedule.get(id);J8.schedule.runNow(id).then(function(){toast('Asked: '+(r?r.name:'it')+' starts within the hour.');},ctlErr);renderCtl();return;}
+ if(k==='tok'||k==='tkill'){(k==='tok'?J8.approvals.approve(id):J8.approvals.kill(id)).then(function(){toast(k==='tok'?'Template approved. I write drafts from it.':'Template killed. I stop using it.',function(){J8.approvals.undo(id).then(function(){toast('Back to waiting.');});});renderCtl();},ctlErr);return;}}
+document.addEventListener('toggle',function(e){var d=e.target;if(d&&d.dataset&&d.dataset.k)ctlOpen[d.dataset.k]=d.open;},true);
+document.addEventListener('submit',function(e){if(!e.target||e.target.id!=='ooF')return;e.preventDefault();var i=$('ooIn'),m=$('ooErr'),v=String(i.value||'').trim().toLowerCase();
+ if(!J8.optout.valid(v)){m.textContent='That doesn’t look like an email address.';i.setAttribute('aria-invalid','true');i.focus();return;}
+ if(J8.optout.has(v)){m.textContent='Already on the list.';i.focus();return;}
+ m.textContent='';i.removeAttribute('aria-invalid');i.value='';
+ J8.optout.add(v).then(function(){toast(v+' is on the do-not-contact list. I never write to it.');renderCtl();},function(er){i.value=v;ctlErr(er);});renderCtl();});
 
 /* ===== decisions ===== */
 function decide(id,how){var run=function(){var p=how==='send'?J8.approvals.approve(id):J8.approvals.kill(id);
@@ -374,7 +463,7 @@ function renderAll(){var q=connected?plan(false,true).L.filter(function(x){retur
 var rq=null;function soon(){if(rq)return;rq=setTimeout(function(){rq=null;renderAll();},30);}
 
 function jump(t){
- if(!t)return;if(t==='chat'&&window.J8C){J8C.show();return;}
+ if(!t)return;if(t==='control'){openCtl();return;}if(t==='chat'&&window.J8C){J8C.show();return;}
  if(t.indexOf('ap-')===0&&window.J8C){J8C.openAp(t.slice(3));return;}
  if(t==='approvals'||t==='approve'||t==='list-approve'){lcat='approve';go('list');return;}
  if(t.indexOf('list-')===0){var k=t.slice(5),i=rows().filter(function(x){return x.key===k;})[0];lcat=i?i.g:'all';if(i)openRow[k]=1;go('list');scrollToEl(i&&i.batch?'approvals-'+i.batch.id:'r-'+k,'start');return;}
@@ -392,6 +481,7 @@ document.addEventListener('click',function(e){
  var t=e.target.closest('a');if(t)return;
  t=e.target.closest('#gear');if(t){if($('sheet').hidden){renderSeat();openSheet();}else closeSheet();return;}
  t=e.target.closest('#scrim');if(t){closeSheet();return;}
+ t=e.target.closest('[data-cx]');if(t){if(!t.disabled)ctlAct(t);return;}
  t=e.target.closest('[data-go]');if(t){go(t.dataset.go);return;}
  t=e.target.closest('[data-jump]');if(t){jump(t.dataset.jump);return;}
  t=e.target.closest('[data-cat]');if(t){lcat=t.dataset.cat;renderList();$('v-list').scrollTop=0;return;}
@@ -409,7 +499,7 @@ document.addEventListener('click',function(e){
  t=e.target.closest('[data-apcancel]');if(t){editing=null;if(document.activeElement)document.activeElement.blur();renderView(view);return;}
  t=e.target.closest('[data-apsave]');if(t){var sid=t.dataset.apsave,v=String(($('ed-'+sid)||{}).value||'').trim();if(!v){toast('The text is empty. Write it or Kill it.');return;}
   if(document.activeElement)document.activeElement.blur();J8.approvals.edit(sid,v).then(function(){editing=null;toast('Your text is approved. It goes out on the team’s next run.',function(){J8.approvals.undo(sid);});renderAll();},function(er){toast('Couldn’t save ('+(er&&er.code||'error')+').');});return;}
- t=e.target.closest('#seat');if(t){seatTap();return;}
+ t=e.target.closest('#seat,#seatC');if(t){seatTap();return;}
  t=e.target.closest('#undo');if(t){if(undoFn)undoFn();$('toast').classList.remove('on');return;}
 });
 document.addEventListener('submit',function(e){var f=e.target;if(!f.dataset||!f.dataset.ans)return;e.preventDefault();var ta=f.querySelector('textarea'),v=String(ta.value||'').trim();if(!v)return;
@@ -435,7 +525,8 @@ new MutationObserver(function(){if(view==='chat')chatBottom();}).observe($('j8cL
  J8.on('runs',function(d){RUNS=d;soon();});
  J8.on('money',function(d){MONEY=d;soon();});
  J8.on('todo',function(d){S=Object.assign({},d);soon();});
- J8.on('control',function(d){CTRL=d&&d.main?d.main:null;renderSeat();});
+ J8.on('control',function(d){CTRL=d&&d.main?d.main:null;renderSeat();renderCtl();});
+ J8.on('schedule',function(){renderCtl();});J8.on('optout',function(){renderCtl();});J8.on('approvals',function(){renderCtl();});J8.on('status',function(){renderCtl();});
 })();
 
 /* ===== J8NIX chat (PWA, 13 Nov): Dave writes to the studio team through J8.inbox.

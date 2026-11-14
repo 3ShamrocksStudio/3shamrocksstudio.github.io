@@ -404,3 +404,67 @@ body[data-view=chat] #chat{display:flex;flex-direction:column;overflow:hidden}
 /* rows opened from "Needs you" land fully below the sticky filter bar (app.js also measures the bar at runtime) */
 #v-list .brow,#v-list .grp{scroll-margin-top:calc(var(--catsH,52px) + 10px)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}.sd-r::after{display:none}}
+
+/* ---------- 5.3 Control (14 Nov): inside the settings sheet (app.js renderCtl); added only, nothing above restyled ---------- */
+.sheet.ctl{max-height:88vh;max-height:88dvh;overflow-y:auto;overscroll-behavior:contain;padding-top:0}
+.sheet.ctl>.sh-row{display:none}
+.sheet:not(.ctl) #ctl{display:none}
+.cx-h{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:10px;margin:0 calc(-1 * var(--g));padding:4px var(--g);background:#fff;border-bottom:1px solid var(--fog)}
+.cx-h h2{font:600 19px/1.2 var(--jost);outline:none}
+.cx-back{min-height:44px;padding-inline-end:6px;display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--blue)}
+.cx-back span{font-size:22px;line-height:1}
+.cx-ro{margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--blue-w);color:var(--ink);font-size:14px}
+.cx-g{padding:16px 0 4px;border-bottom:1px solid var(--fog)}
+.cx-g:last-child{border-bottom:0}
+.cx-g h3{font:600 17px/1.2 var(--jost)}
+.cx-d{font-size:14px;color:var(--slate);margin-top:2px}
+.cx-n{padding:8px 0 10px}
+.cx-g .sh-row{padding:12px 0}
+.cx-g .sh-row:last-child{border-bottom:0}
+.sh-row .cx-p{color:var(--o-t);font-weight:600}
+.sh-row small{display:block;font-size:13px;color:var(--slate-l);margin-top:2px}
+.sh-row .cx-m{display:flex;align-items:flex-start;gap:7px}.cx-m .sd{width:9px;height:9px;margin-top:6px}.cx-m>span{flex:1;min-width:0}
+.sd-b{background:var(--blue)}.sd-n{background:var(--slate-l)}
+.sw{position:relative;flex:none;width:58px;height:44px;border-radius:22px}
+.sw::before{content:"";position:absolute;left:5px;top:9px;width:48px;height:26px;border-radius:13px;background:var(--slate-l);transition:background .15s}
+.sw::after{content:"";position:absolute;left:8px;top:12px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(20,28,51,.35);transition:transform .15s var(--e)}
+.sw[aria-checked=true]::before{background:var(--blue)}
+.sw[aria-checked=true]::after{transform:translateX(22px)}
+.sw:disabled{cursor:not-allowed;opacity:.55}
+.cx-lk{display:flex;align-items:center;flex:none;color:var(--slate-l)}
+.cx-lk svg{width:18px;height:18px}
+.cx-b{min-height:44px;font-weight:600;font-size:15px;color:var(--blue)}
+.stp{display:flex;align-items:center;flex:none}
+.stp button{width:44px;height:44px;border-radius:8px;border:1.5px solid var(--ink);font:500 22px/1 var(--jost);display:flex;align-items:center;justify-content:center;text-align:center}
+.stp button:disabled{opacity:.4;cursor:not-allowed}
+.stp output{min-width:38px;text-align:center;font:500 20px/1 var(--jost)}
+.cx-ask{margin:0 0 12px;padding:12px 14px;background:var(--gold-w);border-inline-start:4px solid var(--gold-d);border-radius:0 8px 8px 0;color:var(--gold-t)}
+.cx-ask p{font-weight:600;color:var(--ink)}
+.cx-ask span{font-size:14px}
+.cx-ask div{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin-top:8px}
+.cx-ask .seat{background:var(--blue);border-color:var(--blue);color:#fff}
+.cx-t{padding:12px 0;border-bottom:1px solid var(--fog-l)}
+.cx-t:last-child{border-bottom:0}
+.cx-tt{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+.cx-tt b{font-weight:600}
+.cx-tt small{font-size:13px;color:var(--slate)}
+.cx-t summary,.cx-l summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;font-size:14.5px}
+.cx-body{white-space:pre-wrap;unicode-bidi:plaintext;overflow-wrap:anywhere;font-size:14px;padding:10px 12px;background:var(--mist);border-radius:8px;max-height:300px;overflow-y:auto}
+.cx-t .acts button{min-height:44px}
+.cx-l ul{list-style:none;font-size:14.5px;max-height:240px;overflow-y:auto}
+.cx-l li{padding:8px 0;border-top:1px solid var(--fog-l);overflow-wrap:anywhere}
+.cx-f{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;padding:8px 0 4px}
+.cx-f label{font:600 14px/1.2 var(--jost);color:var(--slate)}
+.cx-f div{display:flex;gap:8px}
+.cx-f input{flex:1;min-width:0;min-height:44px;padding:0 12px;border:1.5px solid var(--slate-l);border-radius:8px;background:#fff;font-size:16px;outline:none}
+.cx-f input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(31,91,255,.15)}
+.cx-f input[aria-invalid=true]{border-color:var(--r-s)}
+.cx-e{font-size:14px;color:var(--r-t)}
+.cx-e:empty{display:none}
+a.seat{display:inline-flex;align-items:center;justify-content:center;text-align:center;flex:none;max-width:48%}
+.cx-who{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (min-width:1000px){.sheet.ctl{max-height:calc(100vh - 96px)}}
+.sh-row>.stp{flex:none}.sh-row .cx-lk{display:flex}
+.cx-t summary::after,.cx-l summary::after{content:"";width:7px;height:7px;margin-inline-start:9px;margin-top:-3px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .15s}
+.cx-t details[open]>summary::after,.cx-l[open]>summary::after{transform:rotate(225deg);margin-top:4px}
+.cx-t summary::-webkit-details-marker,.cx-l summary::-webkit-details-marker{display:none}
