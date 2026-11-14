@@ -24,7 +24,7 @@ Correction to the 8 Nov CFO note ("card links need Best plan + clearing add-on")
 - **Model:** fixed-price sprint, 50% upfront, 50% on delivery; then optional monthly retainer (recurring, Dave's preference).
 - **Price (decided):** set by Dave; amounts are kept in the private J8NIX project notes, not in this public file. VAT wording still open (loose end `svc-vat-sprint`).
 - **Provider:** Morning. Deposit = Morning payment link; Brand OS = Morning standing order (monthly card charge, invoice auto-issued).
-- **Status (real):** no deposit link exists yet; Grow digital payments not connected (no Grow/clearing email in Gmail). Inquiry path staged.
+- **Status (real):** no deposit link exists yet. Grow digital payments: Dave reports the connection done (14 Nov 2026, J8NIX message); activation usually within ~24 h, no Grow email in the readable Gmail yet. Inquiry path staged.
 - **Claude did:** staged `sprint/` (noindex, not linked from the site): Brand Sprint inquiry flow (visitor's own email to dave@3shamrocks.com, nothing stored), "Pick a time" and "Pay the deposit" hooks behind `window.S3_SPRINT` that stay hidden until a real https link is set; deposit shows only on `sprint/#deposit` (the link Dave sends after a call). No price on the page. **NEEDS YOUR EYES** before it is linked anywhere.
 - **Dave only:** Morning → סליקה ותוספים → תשלומים דיגיטליים → חיבור → יצירת חשבון חדש (Grow), fill details and upload the documents it asks for (~10 min; active within ~24 h). Then Claude creates the deposit link + Brand OS standing-order template in a Chrome shift and pastes the link into `S3_SPRINT.depositUrl`.
 
