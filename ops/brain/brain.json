@@ -1,7 +1,7 @@
 {
  "version": 3,
- "updated": "2026-11-14T15:25+02:00",
- "last_run": "2026-11-14T15:25+02:00",
+ "updated": "2026-11-14T18:40+02:00",
+ "last_run": "2026-11-14T18:40+02:00",
  "goal": {
   "target_usd": 1000000,
   "deadline": "2027-04-21",
@@ -544,7 +544,24 @@
     "booked_usd": 0,
     "finding": "Israeli Seed-B rounds announced since 10 Sep with a real product UI are already in the pipeline; 30 new in-window targets do not exist in public sources. Next volume source: re-qualify the 31 'researched' rows in the private leads db.",
     "where": "private file in Claude outputs (names not in this repo)"
-   }
+   },
+   "next": [
+    {
+     "step": "Resolve the 11 unconfirmed Sunday profiles from company team/about pages and press (not search snippets); clear each warn only with exact name+company match",
+     "seat": "CRO",
+     "due": "2026-11-15 08:00",
+     "done_when": "warn cleared or kept per row, verifier PASS",
+     "added": "2026-11-14"
+    },
+    {
+     "step": "Founder DM (approved template §7) to every accepted connection within 24 h of accept — speed-to-follow-up idea from Belkins 2026 LinkedIn response-time study",
+     "seat": "CRO",
+     "due": "2026-11-15",
+     "done_when": "accepted list read from LinkedIn on Dave's Mac and DMs drafted Send by hand",
+     "added": "2026-11-14",
+     "source": "https://belkins.io/blog/linkedin-response-time-study"
+    }
+   ]
   },
   {
    "id": "vibrant",
@@ -2962,6 +2979,13 @@
    "by": "Dave (J8NIX message)",
    "decision": "Never send any message to anyone on Shabbat or weekends (Fri–Sat Israel; recipients abroad: their Sat/Sun). Permanent.",
    "where": "BRAIN.md §2.11, §−3.4; ARMS-CONTRACT §3, §3b"
+  },
+  {
+   "at": "2026-11-14T18:40+02:00",
+   "by": "Brain (verifier)",
+   "decision": "Aidoc application not auto-queued: posting needs 3+ yrs managing designers, not shown in Dave's sourced facts → per-item pending for Dave's OK.",
+   "where": "J8NIX app-1115-aidoc",
+   "check": "2026-11-16"
   }
  ],
  "learnings": [
@@ -3133,6 +3157,10 @@
   {
    "date": "2026-11-13",
    "text": "Most Israeli council sites block cloud fetches (403); Hevel Yavne, Shlomi and Emek Lod load with curl (cookie jar needed). Pick council targets from sites that load, so drafts stay sourced."
+  },
+  {
+   "date": "2026-11-14",
+   "text": "WebSearch here returns titles+URLs only, so LinkedIn profiles can't be matched to a company from search; use company team pages and press bylines to confirm a profile instead."
   }
  ],
  "runs": [
@@ -5010,6 +5038,64 @@
     }
    ],
    "verifier": "opus x5, separate contexts"
+  },
+  {
+   "at": "2026-11-14T18:40+02:00",
+   "seat": "Brain shift 18:13 (CRO lead, Grants/CLO, COO) · Sat evening · CASH MODE",
+   "models": {
+    "haiku": "none",
+    "sonnet": "3 workers: Sunday-note profile check, job-alert sweep, council email check",
+    "opus": "orchestration + 1 independent verifier"
+   },
+   "dave_input_since_last": "None: 0 new J8NIX messages, 0 to-do changes, no prospect replies in Gmail since 15:25 (only job alerts and Gumroad $0 test orders)",
+   "steps": [
+    {
+     "text": "CRO: job-alert + web sweep (~20 roles): 1 fit — Aidoc Director of Product Design (Tel Aviv), drafted from T1; verifier flagged the 3+ yrs people-management requirement, so moved to pending/per-item for Dave's own OK (not auto-queued)",
+     "seat": "CRO",
+     "model": "sonnet+opus",
+     "evidence": "J8NIX approvals app-1115-aidoc (private); posting https://job-boards.eu.greenhouse.io/aidocmedical/jobs/4951044101"
+    },
+    {
+     "text": "CRO: Sunday batch pipeline-1115 profile check: 0 of 11 people-search/flagged profiles could be confirmed from search results; each of the 11 now carries one plain 'search LinkedIn for <name> <company>' warn so Dave can send without guessing; 6 direct profiles unchanged",
+     "seat": "CRO",
+     "model": "sonnet+opus",
+     "evidence": "J8NIX approvals batch pipeline-1115 (private); ops/brain/pipeline-1115.md"
+    },
+    {
+     "text": "CLO/CRO (SH✡MER buyer step): 2 council emails re-checked: §30A subject + opt-out OK, recipients still published on council pages, links 200; missing street postal address → new Dave task t-postal-address (1 min) blocking both drafts",
+     "seat": "CLO",
+     "model": "sonnet+opus",
+     "evidence": "https://www.megiddo.org.il/%D7%91%D7%99%D7%98%D7%97%D7%95%D7%9F/ · https://www.hevel-yavne.org.il/phonebook/ · J8NIX tasks t-postal-address"
+    },
+    {
+     "text": "CFO/COO: 19:00 digest: 0 sent today (Shabbat rule), 2 queued (Fiverr, eyesAtop; Sun), 80 approved held (16 on studio email, rest by-hand LinkedIn/CV access), 61 pending your OK",
+     "seat": "COO",
+     "model": "opus",
+     "evidence": "J8NIX approvals counts 14 Nov 18:35"
+    }
+   ],
+   "loose_ends_closed": [],
+   "loose_ends_advanced": [
+    "svc-pipeline-1115",
+    "le-1115-postal-address",
+    "le-1115-aidoc"
+   ],
+   "skipped": [
+    {
+     "what": "LickPick ep09/10, IG reels",
+     "why": "cash mode freeze; reels-v2 brief needs Dave review first"
+    },
+    {
+     "what": "Any send",
+     "why": "Fri–Sat no-send rule until 23:59; cloud arms never send"
+    },
+    {
+     "what": "Tnufa prep refresh",
+     "why": "own scheduled refresh Sun 07:45; card already links the prep page"
+    }
+   ],
+   "verifier": "1 opus verifier, separate context: B PASS, C PASS, A FAIL on fit (management years) → applied: Aidoc to pending/per_item",
+   "throughput_note": "4 steps; 0 profiles resolved (search tool gives titles only, no snippets) — next run: resolve the 11 via company team pages/press photos instead of search"
   }
  ],
  "morning_note": {
@@ -6052,6 +6138,30 @@
    "blocker": null,
    "evidence": "commits bda88d7 0442372 3236493 79204e8 9b1c0fc; edge a11y-scan v5 (engine 1.2.0); verifier PASS a–h",
    "updated": "2026-11-14T15:25+02:00"
+  },
+  {
+   "id": "le-1115-postal-address",
+   "product": "command-dashboard",
+   "pod": "Grants and legal",
+   "title": "§30A postal address missing in council emails (city only)",
+   "status": "blocked_dave",
+   "next_action": "Dave sends the address (J8NIX task t-postal-address); then add it to both council drafts' signature as a per-item change",
+   "owner_seat": "CLO",
+   "blocker": "Dave: address",
+   "evidence": "J8NIX tasks t-postal-address",
+   "updated": "2026-11-14T18:40+02:00"
+  },
+  {
+   "id": "le-1115-aidoc",
+   "product": "services",
+   "pod": "Revenue",
+   "title": "Aidoc Director of Product Design application (per-item)",
+   "status": "blocked_dave",
+   "next_action": "Dave OK or Kill in J8NIX Approve; if OK, sender arm submits on Greenhouse with CV",
+   "owner_seat": "CRO",
+   "blocker": "Dave OK",
+   "evidence": "https://job-boards.eu.greenhouse.io/aidocmedical/jobs/4951044101",
+   "updated": "2026-11-14T18:40+02:00"
   }
  ],
  "pods": [
