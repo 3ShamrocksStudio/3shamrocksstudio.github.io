@@ -34,11 +34,21 @@ function sevLegacy(s){return /NEEDS YOUR EYES|WHAT YOU DO/i.test(String(s||''))?
 function sevRank(v){return v in SEVO?SEVO[v]:1;}
 function sevChip(v){return v&&SEV[v]?'<span class="sv sv-'+v+'"><i class="sd sd-'+v+'" aria-hidden="true"></i>'+esc(SEV[v][1])+'</span>':'';}
 /* ===== 5.2 product colours: [main, second] from each product's own brand file (ds/*.md); missing ids fall back to j8_projects.color ===== */
-var PCOL={'p-shomer':['#E0A828','#0C1B3A'],'p-ios':['#E0A828','#0C1B3A'],'p-tnufa':['#E0A828','#0C1B3A'],'p-command':['#FC9918','#0C1B3A'],'p-nature':['#2F8540','#F5C840'],
- 'p-lickpick':['#FF2E88','#FFE600'],'p-site':['#8239EA','#3DCC6E'],'p-services':['#0F1035','#8239EA'],'p-payments':['#3DCC6E','#0F1035'],'p-csr':['#B7860B','#0F1035'],
+/* 6.1: every colour cited from its brand file (/mnt/user-data/outputs/ds/*.md, assets/brand-v3/j8nix/BRAND.md, a11y/index.html :root).
+   Studio-run projects (site, services, payments, grants/CSR, LinkedIn, HealthTech page, the accessibility checker) wear the studio brand.
+   No brand file → no entry (falls back to j8_projects.color). Badges: real PNG logos, resized only (j8/brand/). */
+var PCOL={'p-shomer':['#E0A828','#0C1B3A'],'p-ios':['#E0A828','#0C1B3A'],'p-tnufa':['#E0A828','#0C1B3A'],'p-command':['#FC9918','#0C1B3A'],'p-nature':['#2F8540','#4FA85C'],
+ 'p-lickpick':['#FFE600','#FF2E88'],'p-site':['#8239EA','#3DCC6E'],'p-services':['#8239EA','#3DCC6E'],'p-payments':['#8239EA','#3DCC6E'],'p-csr':['#8239EA','#3DCC6E'],
+ 'p-linkedin':['#8239EA','#3DCC6E'],'p-healthtech':['#8239EA','#3DCC6E'],'p-a11y':['#8239EA','#B07CFF'],
  'p-th':['#FF6C00','#0A0A2E'],'p-chore':['#6A21C4','#F59E0B'],'p-fairent':['#6550FF','#53D805'],'p-j8nix':['#F2C194','#586475'],'p-general':['#9AA6BF','#9AA6BF']};
-function pcol(id){if(!id)return null;if(PCOL[id])return PCOL[id];var c=(PR[id]||{}).color;return /^#[0-9a-f]{3,8}$/i.test(String(c||''))?[c,c]:null;}
-function pm(id){var c=pcol(id);return c?'<i class="pm" style="--pc:'+c[0]+';--pc2:'+c[1]+'" aria-hidden="true"></i>':'';}
+var PBADGE={'p-shomer':'shomer','p-ios':'shomer','p-tnufa':'shomer','p-command':'shomer','p-nature':'nature','p-lickpick':'lickpick','p-th':'th','p-chore':'chore','p-milo':'milo','p-ig':'media','p-j8nix':'j8nix',
+ 'p-site':'studio','p-services':'studio','p-payments':'studio','p-csr':'studio','p-linkedin':'studio','p-healthtech':'studio','p-a11y':'studio'};
+function lum(h){var m=String(h).replace('#','');if(m.length!==6)return .5;return [0,2,4].map(function(i){var c=parseInt(m.substr(i,2),16)/255;return c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4);}).reduce(function(s,c,i){return s+c*[.2126,.7152,.0722][i];},0);}
+/* 6.1: a stripe must show on its background: when the brand's first colour is too faint for this theme, its second colour leads */
+function pcol(id){var c=pcolRaw(id);if(!c)return null;var dk=document.documentElement.dataset.theme==='dark'||(document.documentElement.dataset.theme==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches);
+ if(!dk&&lum(c[0])>.6&&c[1]&&lum(c[1])<=.6)return [c[1],c[0]];if(dk&&lum(c[0])<.04&&c[1]&&lum(c[1])>=.04)return [c[1],c[0]];return c;}
+function pcolRaw(id){if(!id)return null;if(PCOL[id])return PCOL[id];var c=(PR[id]||{}).color;return /^#[0-9a-f]{3,8}$/i.test(String(c||''))?[c,c]:null;}
+function pm(id){var b=id&&PBADGE[id];if(b)return '<img class="pb" src="brand/'+b+'.png" alt="" width="18" height="18" loading="lazy" decoding="async">';var c=pcol(id);return c?'<i class="pm" style="--pc:'+c[0]+';--pc2:'+c[1]+'" aria-hidden="true"></i>':'';}
 function pcStyle(id){var c=pcol(id);return c?';--pc:'+c[0]:'';}
 var SEVC={r:'var(--r)',o:'var(--o)',g:'var(--ok)'};
 /* timestamps arrive as ISO, ISO+offset or Postgres text ("2026-11-14 07:56:07.3+00") */
@@ -264,14 +274,22 @@ function markDone(k){var i=rows().filter(function(x){return x.key===k;})[0];
 function pvText(t,n){var L=String(t||'').split('\n').map(function(x){return x.replace(/\s+/g,' ').trim();}).filter(Boolean),o=[],c=0;for(var k=0;k<L.length&&c<(n||160);k++){var x=L[k].slice(0,(n||160)-c);if(x.length<L[k].length)x+='…';o.push(x);c+=x.length;}return o.join('\n');}
 function tm(iso){var t=iso?new Date(iso):new Date();return isNaN(t)?'':(ymd(t)===ymd(new Date())?t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):t.getDate()+' '+MON[t.getMonth()]);}
 function apCard(a,pre){var id=a.id,ed=editing===id,o=openRow[(pre||'cb')+id],txt=J8.approvals.textOf(a);
- return '<div class="msg in card" id="'+(pre||'cb')+'-'+esc(id)+'"><div class="c-top">'+pill('wait')+pm(a.product)+'<span dir="auto">'+esc(apKind(a))+' · '+esc(pname(a.product))+'</span></div>'
+ return '<div class="msg in card'+(pcol(a.product)?' brand':'')+'" id="'+(pre||'cb')+'-'+esc(id)+'"'+(pcol(a.product)?' style="--pc:'+pcol(a.product)[0]+'"':'')+'><div class="c-top">'+pill('wait')+pm(a.product)+'<span dir="auto">'+esc(apKind(a))+' · '+esc(pname(a.product))+'</span></div>'
   +'<button class="c-main" data-open="'+(pre||'cb')+esc(id)+'"><b dir="auto">'+esc(apWho(a))+'</b>'
   +(ed?'':'<span class="pv'+(o?' full':'')+'" dir="auto">'+esc(o?txt:pvText(txt,150))+'</span>')+'</button>'
   +(ed?'<textarea class="aed" id="ed-'+esc(id)+'" dir="auto" aria-label="Edit the text">'+esc(txt)+'</textarea>':'')
   +(o&&a.warn?'<p class="warn" dir="auto">'+esc(cut(a.warn,220))+'</p>':'')+(o&&a.link?'<a class="lnk" href="'+esc(a.link)+'" target="_blank" rel="noopener">'+esc(a.link_text||'Open the link')+'</a>':'')
   +'<time>'+esc(tm(a.created))+'</time>'
   +'<div class="btns">'+(ed?'<button class="s" data-apsave="'+esc(id)+'">Save and send</button><button data-apcancel="'+esc(id)+'">Cancel</button>'
-    :'<button class="s" data-apsend="'+esc(id)+'">'+ic('send')+'Send</button><button data-apedit="'+esc(id)+'">'+ic('edit')+'Edit</button><button data-apkill="'+esc(id)+'">'+ic('kill')+'Kill</button>')+'</div></div>';}
+    :'<button class="s" data-apsend="'+esc(id)+'">'+ic('send')+'Send</button><button data-apedit="'+esc(id)+'">'+ic('edit')+'Edit</button><button data-apkill="'+esc(id)+'">'+ic('kill')+'Kill</button><button data-apnote="'+esc(id)+'" aria-expanded="'+(openRow['apn'+id]?'true':'false')+'">'+ic('chat')+'Comment</button>')+'</div>'
+  +(!ed&&openRow['apn'+id]?apNoteBox(a):'')+apReply(a)+'</div>';}
+/* 6.1 a note on a draft (Dave, 14 Nov 18:48): goes to the team tagged with the draft; the draft's status is untouched,
+   unless Dave picks Approve + note or Kill + note. Under the card: the team's latest reply, one line, tap for all. */
+function apNoteBox(a){return '<form class="ans apn" data-ans="'+esc(a.product||'p-general')+'" data-ap="'+esc(a.id)+'"><textarea rows="1" dir="auto" placeholder="Note to the team (the draft stays as it is)" aria-label="Note on the draft to '+esc(apWho(a))+'"></textarea><button type="submit" aria-label="Send the note">'+ic('send')+'</button></form>'
+ +'<div class="apn-act"><button data-apnd="send" data-id="'+esc(a.id)+'">Approve + note</button><button data-apnd="kill" data-id="'+esc(a.id)+'">Kill + note</button></div>';}
+function apReply(a){var x=J8.inbox.forApproval?J8.inbox.forApproval(a.id)[0]:null;if(!x)return '';var R=String(x.reply||'').split('\n').filter(function(l){return l.trim();});if(!R.length)return '';var k='apr-'+a.id,o=openRow[k];
+ return '<button class="trp'+(o?' open':'')+'" data-open="'+esc(k)+'" aria-expanded="'+(o?'true':'false')+'"><span class="trl" dir="auto">'+sevChip(sevOf(J8.inbox.lastReply(x)))+esc(lastClean(x))+'</span></button>'
+  +(o?'<div class="trx" dir="auto">'+R.map(function(l){return esc(sevStrip(l.replace(/^\s*\d{1,2}:\d\d(?:\s*\([^)]*\))?\s*[—-]\s*/,'')));}).join('<br>')+'</div>':'');}
 function renderBrief(){var el=$('brief');if(!el)return;if(document.activeElement&&el.contains(document.activeElement)&&document.activeElement.tagName==='TEXTAREA')return;
  if(!connected){el.innerHTML='<div class="msg in"><p>Loading your board…</p></div>';return;}
  var pend=apPending(),top=pend.slice(0,3),Q=queue(),mv=Q.filter(function(i){return !i.batch;})[0],now=tm(),h='';
@@ -367,7 +385,7 @@ function projRow(p,mine){var k='pj-'+p.id,o=openRow[k],T=tasksAll().filter(funct
  var tot=T.length+A.length,dn=T.filter(function(t){return t.status==='done';}).length+A.filter(function(a){return a.status==='sent';}).length,pct=tot?Math.round(dn/tot*100):0;
  var sn=stageName(p.stage),nx=isNum(p.stage)&&p.stage<6?J8.projects.STAGES[p.stage]:'',pk=p.status==='parked',own=mine.length?'dave':dept(p);
  var h='<div class="brow pj'+(o?' open':'')+'" id="pj-'+esc(p.id)+'" style="--gc:#3A4766'+pcStyle(p.id)+'"><button class="pmain" data-open="'+esc(k)+'" aria-expanded="'+(o?'true':'false')+'">'
-  +'<span class="bt"><b dir="auto">'+esc(p.name)+'</b><span>'+(pk?'Parked · ':'')+(sn?esc(sn)+(nx?' → '+esc(nx):''):'No stage yet')+(mine.length?' · <em class="wy">'+mine.length+' wait on you</em>':'')+'</span></span>'+owner(own)
+  +'<span class="bt"><b dir="auto">'+pm(p.id)+' '+esc(p.name)+'</b><span>'+(pk?'Parked · ':'')+(sn?esc(sn)+(nx?' → '+esc(nx):''):'No stage yet')+(mine.length?' · <em class="wy">'+mine.length+' wait on you</em>':'')+'</span></span>'+owner(own)
   +'<span class="pgw"><span class="pg" role="img" aria-label="'+(tot?dn+' of '+tot+' done':'Nothing counted yet')+'"><i style="width:'+pct+'%"></i></span><span class="pgt">'+(tot?dn+' of '+tot+' done':'Nothing counted yet')+'</span></span></button>';
  if(o){var team=T.filter(function(t){return t.status!=='done'&&t.owner!=='dave';}),D=T.filter(function(t){return t.status==='done';}).sort(function(a,b){return String(b.done_at||'').localeCompare(String(a.done_at||''));}),
    pend=A.filter(function(a){return !a.status||a.status==='pending';}),bk=pend.length?'list-b-'+(pend[0].batch||'other'):'',wo=openBlk(p.id);
@@ -454,7 +472,7 @@ function flowHTML(){var now=Date.now(),W=7*864e5,T=flowWin(now-W,now),L=flowWin(
   +tile('Median wait',hrsTxt(T.med),hrsTxt(L.med))
   +tile('Blockers removed',T.track?String(T.rm):null,L.track?String(L.rm):null,'from 14 Nov')
   +'</div><p class="src">Drafts: made → your decision. Your tasks: made → done. Counted live from the board.</p></section>';}
-function renderStats(){var el=$('v-stats');if(!el)return;if(!connected){el.innerHTML='<div class="empty"><b>Loading your numbers…</b></div>';return;}
+function renderNumbers(){var el=$('v-stats');if(!el)return;if(!connected){el.innerHTML='<div class="empty"><b>Loading your numbers…</b></div>';return;}
  var m=J8.money.summary()||{},b=isNum(m.booked_usd)?m.booked_usd:0,d1=J8.money.daysTo(m.m1_date),Ap=J8.approvals.list(),cnt=function(f){return Ap.filter(f).length;},
   wt=cnt(function(a){return !a.status||a.status==='pending';}),ap=cnt(function(a){return a.status==='approved'||a.status==='edited';}),sn=cnt(function(a){return a.status==='sent';}),kl=cnt(function(a){return a.status==='killed';});
  var h=flowHTML()+'<div class="kpis"><div class="kpi gold"><span>Booked</span><b>'+usd(b)+'</b><small>of '+usd(m.m1_usd||25000)+' for M1</small></div>'
@@ -473,10 +491,139 @@ function renderStats(){var el=$('v-stats');if(!el)return;if(!connected){el.inner
  h+='<section class="st"><h2>Achievements <span>'+on+' of '+A.length+'</span></h2><div class="badges">'+A.sort(function(p,q){return (q.on?1:0)-(p.on?1:0);}).map(function(a){
    return '<div class="bdg '+(a.on?'on':'lk')+'"><i>'+eight()+(a.on?'':'<svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="6" y="11" width="12" height="9"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg>')+'</i><b>'+esc(a.n)+'</b><span>'+esc(a.on?(a.at?fdate(a.at):a.v||'Unlocked'):a.lock)+'</span></div>';}).join('')+'</div></section>';
  h+='<p class="src">Money from your money summary'+(m.updated?' ('+esc(hhmm(m.updated))+')':'')+'. Milestone targets from the studio plan. Everything else counted live from the board.</p>';
- el.innerHTML=h;}
+ el.innerHTML=flowBar()+'<div class="fbody">'+h+'</div>';}
+
+/* ===== 6.1 FLOW (Dave, 14 Nov 18:48): the studio at a glance. Map · Timeline · Insights · Teams · Numbers (the old Stats).
+   Real data only: projects (stage, next, milestone), tasks (due), drafts (due_at), j8_schedule (crons, next/last run),
+   j8_runs, money summary, public.j8_rank. A number without a source shows "collecting data". ===== */
+var FT=[['map','Map'],['time','Timeline'],['ins','Insights'],['team','Teams'],['numbers','Numbers']],FSTG=['Idea','Build','Beta','Validate','Launch','Paying'];
+var FF=(function(){var f=ls('j8-ff')||{};return {u:f.u||'all',o:f.o||'all',b:!!f.b};})(),TDAY=null,RANK=null,RANKT=0;
+var CD='collecting data',DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function flowTab(){var t=ls('j8-ftab');return FT.some(function(f){return f[0]===t;})?t:'map';}
+function saveFF(){ls('j8-ff',FF);}
+function flowBar(){var t=flowTab(),h='<div class="ftabs" role="tablist" aria-label="Flow views">'+FT.map(function(f){return '<button role="tab" aria-selected="'+(t===f[0])+'" class="'+(t===f[0]?'on':'')+'" data-ftab="'+f[0]+'">'+f[1]+'</button>';}).join('')+'</div>';
+ if(t==='map'||t==='time'||t==='ins')h+='<div class="ffil"><select class="fsel" data-fu aria-label="Filter by unit"><option value="all">All units</option>'+unitsSorted().map(function(u){return '<option value="'+esc(u.id)+'"'+(FF.u===u.id?' selected':'')+'>'+esc(u.name)+'</option>';}).join('')+'</select>'
+  +'<div class="fo" role="group" aria-label="Who holds it">'+[['all','All'],['me','Me'],['team','Team'],['ext','Outside']].map(function(o){return '<button aria-pressed="'+(FF.o===o[0])+'" data-fo="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>'
+  +'<button class="fb" aria-pressed="'+FF.b+'" data-fb="1">Only blocked</button></div>';
+ return h;}
+/* who holds a project's next step: Dave if anything waits on him there, outside if its milestone says so, else the team */
+function mineBy(){var m={};needs().forEach(function(i){var p=rowPid(i);if(p)(m[p]=m[p]||[]).push(i);});return m;}
+function holderOf(p,M){if(p.milestone_by==='external')return 'ext';if((M[p.id]||[]).length||p.milestone_by==='dave')return 'me';return 'team';}
+function holderChip(h,p){if(h==='me')return '<i class="ow dv" title="You">DM</i>';if(h==='ext')return '<i class="hx" title="Outside the studio">Ext</i>';var u=unitOf(p);return '<i class="hx tm" title="'+esc(u?u.name:'Team')+'">'+esc(u&&u.code?u.code:'Team')+'</i>';}
+function projBlocked(p){if(openBlk(p.id).length)return true;var g=graph();return Object.keys(g.it).some(function(id){var x=g.it[id];if(!x.open)return false;var pid=x.k==='task'?x.o.project_id:x.k==='approval'?x.o.product:null;return pid===p.id&&openBlk(id).length>0;});}
+function passP(p,M){if(FF.u!=='all'&&p.unit_id!==FF.u)return false;if(FF.o!=='all'&&holderOf(p,M)!==FF.o)return false;if(FF.b&&!projBlocked(p))return false;return true;}
+/* dates as written (stored in Israel time): "Sun 15 Nov 10:00" */
+function dday(s){return String(s||'').slice(0,10);}
+function dtime(s){var m=String(s||'').match(/T(\d\d:\d\d)/);return m?m[1]:'';}
+function dlabel(s){if(!s)return '';var d=new Date(dday(s)+'T12:00:00');if(isNaN(d))return '';return DOW[d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()]+(dtime(s)?' '+dtime(s):'');}
+function apDue(a){return a.due_at||'';}
+/* the next dated step of a project: its milestone, else its earliest open dated task or draft */
+function msOf(p){var today=ymd(new Date());if(p.milestone)return {t:p.milestone,at:p.milestone_at||'',src:p.milestone_src||''};
+ var c=[];tasksAll().forEach(function(t){if(t.project_id===p.id&&(!t.status||t.status==='open')&&t.due&&dday(t.due)>=today)c.push({t:t.title,at:t.due,src:'task'});});
+ J8.approvals.list().forEach(function(a){if(a.product===p.id&&isOpenAp(a)&&apDue(a)&&dday(apDue(a))>=today)c.push({t:apKind(a)+' · '+apWho(a),at:apDue(a),src:'draft slot'});});
+ c.sort(function(x,y){return String(x.at).localeCompare(String(y.at));});return c[0]||null;}
+function stageOf(p){return isNum(p.stage)&&p.stage>=1&&p.stage<=6?p.stage:0;}
+function laneHTML(p,M){var s=stageOf(p),h=holderOf(p,M),k='fl-'+p.id,o=openRow[k],ms=msOf(p),bl=openBlk(p.id),mine=(M[p.id]||[]).length;
+ var seg=FSTG.map(function(n,i){return '<i class="'+(i+1<s?'d':i+1===s?'c':'')+'"></i>';}).join('');
+ var x='<div class="lane'+(o?' open':'')+(p.status==='parked'?' pk':'')+'"'+(pcol(p.id)?' style="--pc:'+pcol(p.id)[0]+'"':'')+'><button class="lmain" data-open="'+esc(k)+'" aria-expanded="'+(o?'true':'false')+'">'
+  +'<span class="ln" dir="auto">'+pm(p.id)+esc(p.name)+(p.status==='parked'?' <small>· parked</small>':'')+'</span>'+holderChip(h,p)
+  +'<span class="lsg" role="img" aria-label="'+(s?'Stage '+s+' of 6: '+FSTG[s-1]:'No stage yet')+'">'+seg+'</span><span class="lst">'+(s?FSTG[s-1]:'No stage')+'</span>'
+  +'<span class="lms">'+(ms?'Next: <bdi dir="auto">'+esc(cut(ms.t,64))+'</bdi>'+(ms.at?' · <b>'+esc(dlabel(ms.at))+'</b>':''):'<em>No dated milestone yet</em>')+'</span></button>';
+ if(o){x+='<div class="lx2"><p class="nxs" dir="auto"><b>'+(s?'Stage '+s+' of 6 · '+FSTG[s-1]+(s<6?' → '+FSTG[s]:''):'No stage yet')+'</b>'+esc(whyMove(p))+'</p>'
+   +(ms&&ms.src?'<p class="why">Date from: '+esc(ms.src)+'</p>':'')+(bl.length?'<p class="why" dir="auto">Waits on: '+esc(itemNames(bl,3))+'</p>':'')
+   +(mine?'<p class="why">'+mine+(mine===1?' item waits':' items wait')+' on you here.</p>':'')
+   +'<div class="acts"><button class="s" data-jump="'+esc(p.id)+'">Open the project</button>'+(mine?'<button data-go="next">Do mine</button>':'')+'</div></div>';}
+ return x+'</div>';}
+function mapHTML(){var M=mineBy(),P=projList().filter(function(p){return p.id!=='p-general';}),U=unitsSorted(),h='',n=0;
+ U.map(function(u){return {u:u,L:P.filter(function(p){return p.unit_id===u.id;})};}).concat([{u:null,L:P.filter(function(p){return !U.some(function(u){return u.id===p.unit_id;});})}]).forEach(function(g){
+  var L=g.L.filter(function(p){return passP(p,M);}).sort(function(a,b){return (a.status==='parked'?1:0)-(b.status==='parked'?1:0)||stageOf(b)-stageOf(a);});if(!L.length)return;n+=L.length;
+  h+='<section class="mapu"><h3>'+esc(g.u?g.u.name:'Other')+' <span>'+L.length+'</span></h3>'+L.map(function(p){return laneHTML(p,M);}).join('')+'</section>';});
+ return n?'<p class="fhint">Every project as one lane: its stage, its next dated step and who holds it. Tap a lane.</p>'+h:'<div class="empty"><b>No project matches these filters.</b></div>';}
+/* ---- timeline: next 28 days (local = Israel), from real dated rows and the team schedule ---- */
+function cronSet(f,max){if(f==='*')return null;var o=[];String(f).split(',').forEach(function(p){var r=p.match(/^(\d+)-(\d+)$/);if(r){for(var i=+r[1];i<=+r[2];i++)o.push(i);}else if(/^\d+$/.test(p))o.push(+p);});return o;}
+function cronDay(c,d){var tz=/CRON_TZ=Asia\/Jerusalem/.test(c),f=String(c).replace(/^CRON_TZ=\S+\s+/,'').trim().split(/\s+/);if(f.length<5)return null;
+ var mi=cronSet(f[0]),hr=cronSet(f[1]),dom=cronSet(f[2]),mo=cronSet(f[3]),dw=cronSet(f[4]);
+ if(!hr)return {hourly:true,ok:(!dw||dw.indexOf(d.getDay())>-1)};
+ if(dom&&dom.indexOf(d.getDate())<0)return {t:[]};if(mo&&mo.indexOf(d.getMonth()+1)<0)return {t:[]};if(dw&&dw.indexOf(d.getDay())<0)return {t:[]};
+ var T=[];hr.forEach(function(h){(mi||[0]).forEach(function(m){if(tz){T.push(String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'));}
+  else{var u=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),h,m));T.push(String(u.getHours()).padStart(2,'0')+':'+String(u.getMinutes()).padStart(2,'0'));}});});
+ return {t:T.sort()};}
+function schedList(){return J8.schedule&&J8.schedule.list?J8.schedule.list().filter(function(s){return s.enabled!==false&&s.want_enabled!==false&&s.cron;}):[];}
+function events(){var E=[],M=mineBy(),push=function(e){var p=pobj(e.pid);if(FF.u!=='all'&&!(p&&p.unit_id===FF.u))return;if(FF.o!=='all'&&e.who!==FF.o)return;if(FF.b&&!(e.id&&openBlk(e.id).length))return;E.push(e);};
+ projList().forEach(function(p){if(p.milestone&&p.milestone_at)push({day:dday(p.milestone_at),time:dtime(p.milestone_at),k:'ms',who:holderOf(p,M),title:p.milestone,sub:p.name,pid:p.id,id:p.id,jump:p.id});});
+ tasksAll().forEach(function(t){if((!t.status||t.status==='open')&&t.due)push({day:dday(t.due),time:dtime(t.due),k:t.owner==='dave'?'you':'team',who:t.owner==='dave'?'me':'team',title:t.title,sub:pname(t.project_id),pid:t.project_id,id:t.id,jump:'list-tk-'+t.id});});
+ J8.approvals.list().forEach(function(a){if(!isOpenAp(a)||!apDue(a))return;var mine=(a.status||'pending')==='pending'||/by hand/i.test(String(a.label||'')+' '+String(a.channel||''))||/linkedin/i.test(String(a.channel||''));
+  push({day:dday(apDue(a)),time:dtime(apDue(a)),k:mine?'you':'team',who:mine?'me':'team',title:apKind(a)+' · '+apWho(a),sub:(a.status==='pending'||!a.status?'waits for your Send':mine?'you post it by hand':'the team sends it')+' · '+pname(a.product),pid:a.product,id:a.id,jump:'list-b-'+(a.batch||'other')});});
+ var m=J8.money.summary()||{};if(m.m1_date&&FF.o!=='ext'&&FF.u==='all'&&!FF.b)E.push({day:dday(m.m1_date),time:'',k:'ms',who:'me',title:'M1: '+usd(m.m1_usd||25000)+' booked',sub:'studio plan · money summary',jump:'stats'});
+ return E;}
+function runsOn(d){if(FF.o==='me'||FF.o==='ext'||FF.b||FF.u!=='all')return [];var R=[];schedList().forEach(function(s){var c=cronDay(s.cron,d);if(!c)return;if(c.hourly){if(c.ok)R.push({time:'',name:s.name,when:s.when_text||'every hour',hourly:true});return;}c.t.forEach(function(t){R.push({time:t,name:s.name,when:s.when_text||''});});});return R;}
+function timeHTML(){var today=new Date();today.setHours(12,0,0,0);var td=ymd(today),E=events(),by={},days=[];E.forEach(function(e){(by[e.day]=by[e.day]||[]).push(e);});
+ if(!TDAY)TDAY=td;for(var k=0;k<28;k++){var d=new Date(today.getTime()+k*864e5);days.push(d);}
+ var over=E.filter(function(e){return e.day<td;}),h='<p class="fhint">Next 4 weeks. Real dates only: milestones, your steps, draft slots and the team’s runs. Tap a day.</p><div class="tstrip" role="group" aria-label="Next 4 weeks">';
+ days.forEach(function(d){var key=ymd(d),L=by[key]||[],ms=L.filter(function(e){return e.k==='ms';}).length,yo=L.filter(function(e){return e.k==='you';}).length,te=L.filter(function(e){return e.k==='team';}).length,rn=runsOn(d).length;
+  h+='<button class="tday'+(key===td?' td':'')+(key===TDAY?' sel':'')+'" data-tday="'+key+'" aria-pressed="'+(key===TDAY)+'" aria-label="'+esc(DOW[d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()]+': '+L.length+' dated items, '+rn+' team runs')+'"><span class="tw">'+DOW[d.getDay()].slice(0,2)+'</span><b>'+d.getDate()+'</b><span class="tdots">'+(ms?'<i class="ms"></i>':'')+(yo?'<i class="yo"></i>':'')+(te?'<i class="te"></i>':'')+'</span><small>'+(L.length?L.length:'')+'</small></button>';});
+ h+='</div>';
+ var sd=new Date(TDAY+'T12:00:00'),L=(by[TDAY]||[]).slice().sort(function(a,b){return (a.time||'99').localeCompare(b.time||'99');}),RN=runsOn(sd);
+ h+='<section class="agenda"><h3>'+esc(DOW[sd.getDay()]+' '+sd.getDate()+' '+MON[sd.getMonth()])+(TDAY===td?' · today':'')+'</h3>';
+ if(!L.length&&!RN.length)h+='<p class="nd-0">Nothing dated on this day.</p>';
+ h+=L.map(function(e){return '<button class="ag ag-'+e.k+'" data-jump="'+esc(e.jump)+'"><span class="at">'+esc(e.time||'—')+'</span><span class="aw" dir="auto"><b>'+esc(cut(e.title,80))+'</b><small>'+esc(cut(e.sub||'',70))+'</small></span><span class="ah">'+(e.who==='me'?'You':e.who==='ext'?'Outside':'Team')+'</span></button>';}).join('');
+ if(RN.length)h+='<details class="runs"><summary>'+RN.length+(RN.length===1?' team run':' team runs')+'</summary>'+RN.map(function(r){return '<p><span class="at">'+esc(r.time||'hourly')+'</span>'+esc(r.name)+(r.hourly?' · '+esc(r.when):'')+'</p>';}).join('')+'</details>';
+ h+='</section>';
+ if(over.length)h+='<section class="agenda over"><h3>Slot passed, still open <span>'+over.length+'</span></h3>'+over.sort(function(a,b){return a.day.localeCompare(b.day);}).slice(0,8).map(function(e){return '<button class="ag ag-'+e.k+'" data-jump="'+esc(e.jump)+'"><span class="at">'+esc(dlabel(e.day).replace(/^\w+ /,''))+'</span><span class="aw" dir="auto"><b>'+esc(cut(e.title,80))+'</b><small>'+esc(cut(e.sub||'',70))+'</small></span><span class="ah">'+(e.who==='me'?'You':'Team')+'</span></button>';}).join('')+(over.length>8?'<p class="fhint">and '+(over.length-8)+' more in the List.</p>':'')+'</section>';
+ return h;}
+/* ---- insights: one sentence each, tap through ---- */
+function lastMove(p){var t=pd(p.updated);if(isNaN(t))t=-Infinity;J8.runs.list().forEach(function(r){if((r.projects||[]).indexOf(p.id)>-1||r.project===p.id){var e=pd(r.ended||r.started);if(e>t)t=e;}});
+ J8.inbox.list().forEach(function(x){if(x.p===p.id){var e=pd(x.updated_at);if(e>t)t=e;}});return t;}
+function firstAt(L){var m=Infinity;L.forEach(function(v){if(v<m)m=v;});return m;}
+function weekCounts(a,b){var runs=0,sent=0;J8.runs.list().forEach(function(r){var e=pd(r.ended);if(e>=a&&e<b&&r.status==='ok')runs++;});J8.approvals.list().forEach(function(x){var e=pd(x.sent_at);if(x.status==='sent'&&e>=a&&e<b)sent++;});return {runs:runs,sent:sent,dave:flowWin(a,b).n};}
+function insRow(lbl,txt,go,jump){return '<li><button class="insb"'+(jump?' data-jump="'+esc(jump)+'"':' data-go="'+esc(go||'next')+'"')+'><span class="il">'+esc(lbl)+'</span><span class="it" dir="auto">'+txt+'</span>'+ic('more')+'</button></li>';}
+function insHTML(){var M=mineBy(),N=needs().filter(function(i){var p=pobj(rowPid(i));if(FF.u!=='all'&&!(p&&p.unit_id===FF.u))return false;if(FF.o==='team'||FF.o==='ext')return false;if(FF.b&&!i.wo.length&&!i.ul.length)return false;return true;}),h='<ul class="ins">';
+ /* 1 waiting on whom (database ranking when it answered, else the same rules here) */
+ var R=RANK&&Date.now()-RANKT<12e4?RANK:null,top=N[0];
+ h+=insRow('Waiting on you',N.length?N.length+' items. First: '+esc(cut(nextOf(top).what,60))+(top.ul.length?' (frees '+top.ul.length+')':'')+'.':'nothing right now.','next');
+ if(R){var tm={},ex=0;R.forEach(function(r){if(r.owner==='dave')return;var p=pobj(r.kind==='project'?r.id:null);var key=r.owner==='team'?'Sending (team)':(DEPT[r.owner]||r.owner||'Team');tm[key]=(tm[key]||0)+1;});
+  var keys=Object.keys(tm).sort(function(a,b){return tm[b]-tm[a];});
+  h+=insRow('Waiting on the team',keys.length?keys.slice(0,3).map(function(k){return esc(k)+' '+tm[k];}).join(' · ')+' open (database ranking).':'nothing open.','list');}
+ else h+=insRow('Waiting on the team',CD+' (ranking loads when online).','list');
+ var ext=projList().filter(function(p){return p.milestone_by==='external';});
+ h+=insRow('Waiting outside',ext.length?ext.map(function(p){return esc(p.name)+': '+esc(cut(p.milestone,50));}).join(' · ')+'.':'nothing marked as outside.',null,ext[0]?ext[0].id:'list');
+ /* 2 stuck longest */
+ var old=N.filter(function(i){return i.age!==Infinity;}).sort(function(a,b){return a.age-b.age;})[0];
+ h+=insRow('Oldest wait',old?'“'+esc(cut(nextOf(old).what,60))+'” · '+Math.max(0,Math.floor((Date.now()-old.age)/864e5))+' days.':CD+'.',null,old?'list-'+old.key:'next');
+ /* 3 no movement in 7 days (projects not parked) */
+ var wk=Date.now()-7*864e5,P=projList().filter(function(p){return p.id!=='p-general'&&p.status!=='parked'&&(FF.u==='all'||p.unit_id===FF.u);}),still=[],unk=0;
+ P.forEach(function(p){var t=lastMove(p);if(t===-Infinity)unk++;else if(t<wk)still.push(p);});
+ h+=insRow('No movement 7 days',still.length?still.map(function(p){return esc(p.name);}).join(', ')+'.':'every active project moved this week'+(unk?' ('+unk+' with no record yet)':'')+'.',null,still[0]?still[0].id:'list');
+ /* 4 throughput: this week vs last; a week before the first record says collecting data */
+ var now=Date.now(),W=7*864e5,a=weekCounts(now-W,now),b=weekCounts(now-2*W,now-W),f0=firstAt(J8.runs.list().map(function(r){return pd(r.started||r.ended);}).filter(function(v){return !isNaN(v);})),lastOk=f0<=now-2*W;
+ h+=insRow('This week',esc('you cleared '+a.dave+' · team runs '+a.runs+' · sent '+a.sent)+'. Last week: '+(lastOk?esc(b.dave+' · '+b.runs+' · '+b.sent):CD)+'.','stats');
+ /* 5 money path */
+ var m=J8.money.summary()||{},mp=projList().filter(function(p){return p.id!=='p-general'&&p.status!=='parked'&&moneyP(p)&&isNum(p.stage);}).sort(function(x,y){return y.stage-x.stage;});
+ h+=insRow('Money',(isNum(m.booked_usd)?usd(m.booked_usd)+' booked (money summary)':'booked: '+CD)+'. '+(mp[0]?'Closest to first $: '+esc(mp[0].name)+' ('+FSTG[mp[0].stage-1]+'), next: '+esc(cut(String(mp[0].next||'').replace(/^(\w+):\s*/,''),70))+'.':'No project on the revenue path yet.'),null,mp[0]?mp[0].id:'stats');
+ if(mp.length>1)h+=insRow('Also on the money path',mp.slice(1,4).map(function(p){return esc(p.name)+' ('+FSTG[p.stage-1]+')';}).join(' · ')+'.',null,'list');
+ h+='</ul><p class="src">Every line is counted live from the board, the schedule and the team’s run log.</p>';
+ if(!R&&J8.rank&&connected){J8.rank().then(function(v){if(v){RANK=v;RANKT=Date.now();if(view==='stats'&&flowTab()==='ins')renderStats();}});}
+ return h;}
+/* ---- teams: the schedule (real crons) + pods that run inside the shifts ---- */
+function armKey(s){return String(s||'').toLowerCase().replace(/^3s\s+/,'').replace(/\s*\([^)]*\)\s*/g,' ').replace(/\s+/g,' ').trim();}
+function teamHTML(){var S=J8.schedule&&J8.schedule.list?J8.schedule.list():[],R=J8.runs.list(),last={},h='<p class="fhint">Each team: what it did last, how it went, and when it runs next.</p>';
+ R.forEach(function(r){var k=armKey(r.arm);if(!last[k])last[k]=r;});
+ var used={},row=function(name,r,next,when,on,locked){var st=r?r.status:null,dot=st==='ok'?'g':st==='failed'?'o':st==='running'||st==='started'?'b':'n',k='tm-'+armKey(name),o=openRow[k];
+  var units={};if(r)(r.projects||[]).concat(r.project?[r.project]:[]).forEach(function(pid){var u=unitOf(pobj(pid));if(u)units[u.code||u.name]=1;});
+  return '<div class="team'+(o?' open':'')+(on===false?' off':'')+'"><button class="tmain" data-open="'+esc(k)+'" aria-expanded="'+(o?'true':'false')+'"><i class="sd sd-'+dot+'" aria-hidden="true"></i><span class="tn">'+esc(name)+'</span><span class="tnx">'+(on===false?'off':next?'next '+esc(next):esc(when||''))+'</span>'
+   +'<span class="tl" dir="auto">'+(r?esc(cut(sevStrip(String(r.summary||'')),90))||esc(st||''):'<em>No run recorded yet</em>')+'</span></button>'
+   +(o?'<div class="lx2">'+(r?'<p class="why">Last run: '+esc(st||'—')+' · '+esc(ago(r.ended||r.started))+(Object.keys(units).length?' · '+esc(Object.keys(units).join(', ')):'')+'</p><p dir="auto">'+esc(sevStrip(String(r.summary||'')))+'</p>':'')+(when?'<p class="why">Runs: '+esc(when)+(locked?' (always on)':'')+'</p>':'')+'</div>':'')+'</div>';};
+ h+='<section class="mapu"><h3>On the schedule <span>'+S.length+'</span></h3>'+S.map(function(s){var k=armKey(s.name);used[k]=1;var nx=pd(s.next_run_at);return row(s.name,last[k],isNaN(nx)?'':hhmm(new Date(nx).toISOString())+(ymd(new Date(nx))===ymd(new Date())?'':' '+DOW[new Date(nx).getDay()]),s.when_text,s.enabled!==false&&s.want_enabled!==false,s.locked);}).join('')+'</section>';
+ var pods=Object.keys(last).filter(function(k){return !used[k]&&pd(last[k].ended||last[k].started)>Date.now()-14*864e5;});
+ if(pods.length)h+='<section class="mapu"><h3>Pods (run inside the shifts) <span>'+pods.length+'</span></h3>'+pods.map(function(k){return row(last[k].arm,last[k],'','not on the schedule list',true,false);}).join('')+'</section>';
+ if(!S.length&&!pods.length)h+='<p class="nd-0">No team schedule or runs yet: '+CD+'.</p>';
+ return h;}
+function renderStats(){var el=$('v-stats');if(!el)return;if(document.activeElement&&el.contains(document.activeElement)&&document.activeElement.tagName==='SELECT')return;if(!connected){el.innerHTML='<div class="empty"><b>Loading the flow…</b></div>';return;}
+ var t=flowTab();if(t==='numbers'){renderNumbers();return;}
+ el.innerHTML=flowBar()+'<div class="fbody">'+(t==='map'?mapHTML():t==='time'?timeHTML():t==='ins'?insHTML():teamHTML())+'</div>';}
 
 /* ===== header band: one title per screen, real subtitle ===== */
-function renderHead(){var t={chat:'J8NIX',next:'Next',list:'List',stats:'Stats'}[view],s='';
+function renderHead(){var t={chat:'J8NIX',next:'Next',list:'List',stats:'Flow'}[view],s='';
  if(view==='chat')s='your business manager';
  else if(!connected)s='loading…';
  else if(view==='next'){var nq=needs();s=nq.length?nq.length+' wait on you · #1 first':'nothing waits on you';}
@@ -485,6 +632,10 @@ function renderHead(){var t={chat:'J8NIX',next:'Next',list:'List',stats:'Stats'}
  $('hdT').textContent=t;$('hdS').textContent=s;}
 
 /* ===== settings sheet ===== */
+/* 6.1 theme: light by default; dark or auto only when Dave picks it (stored on this phone) */
+function theme(){var t=ls('j8-theme');return t==='dark'||t==='auto'?t:'light';}
+function setTheme(t){ls('j8-theme',t);document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#2B3F57':'#F7D3B0';renderTheme();if(typeof renderAll==='function')renderAll();}
+function renderTheme(){var e=$('themeSeg');if(!e)return;var t=theme();[].forEach.call(e.querySelectorAll('[data-theme-set]'),function(b){b.setAttribute('aria-pressed',b.dataset.themeSet===t?'true':'false');});}
 function openSheet(){$('sheet').hidden=false;$('scrim').hidden=false;$('gear').setAttribute('aria-expanded','true');}
 function closeSheet(){var s=$('sheet');if(s&&!s.hidden){s.hidden=true;$('scrim').hidden=true;$('gear').setAttribute('aria-expanded','false');if(ctlOn)ctlShow(false);if(location.hash==='#control')history.replaceState(null,'',location.pathname+location.search);}}
 function renderSeat(){var b=$('seat');if(!b)return;var p=CTRL&&CTRL.paused,ask=seatAsk>Date.now();
@@ -498,7 +649,7 @@ function seatTap(){if(!CTRL){toast('Not connected yet. Try again in a moment.');
  else{seatAsk=Date.now()+5000;renderSeat();setTimeout(renderSeat,5100);}}
 
 /* ===== 5.3 Control: run the team from the phone. Lives in the settings sheet; #control opens it. Admins change, everyone else reads. ===== */
-var J8V='6.0.1',ctlOn=false,ctlAsk=null,ctlOpen={};
+var J8V='6.1.0',ctlOn=false,ctlAsk=null,ctlOpen={};
 var COVERS={'job-application':'Job applications','li-connect':'LinkedIn connect notes','followup-1':'First follow-up','followup-2':'Second follow-up','tester-post':'Tester sign-up post'};
 var LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="6" y="11" width="12" height="9"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg>';
 function ilHM(ms){var p=ilParts(ms);return String(p.hour).padStart(2,'0')+':'+String(p.minute).padStart(2,'0');}
@@ -632,6 +783,14 @@ document.addEventListener('click',function(e){
  t=e.target.closest('[data-cat]');if(t){lcat=t.dataset.cat;renderList();$('v-list').scrollTop=0;return;}
  t=e.target.closest('[data-pin]');if(t){pinAll=!pinAll;renderPin();return;}
  t=e.target.closest('[data-open]');if(t){var k=t.dataset.open;openRow[k]=!openRow[k];renderView(view);if(view==='chat')renderPin();return;}
+ t=e.target.closest('[data-apnote]');if(t){var an=t.dataset.apnote;openRow['apn'+an]=!openRow['apn'+an];renderView(view);setTimeout(function(){var f=document.querySelector('form.apn[data-ap="'+(window.CSS&&CSS.escape?CSS.escape(an):an)+'"] textarea');if(f)f.focus();},40);return;}
+ t=e.target.closest('[data-apnd]');if(t){var aid=t.dataset.id,how=t.dataset.apnd,cd=t.closest('.card'),ta=cd&&cd.querySelector('form.apn textarea'),nv=String(ta&&ta.value||'').trim(),a0=AP[aid]||{};
+  if(!nv){toast('Write the note first.');if(ta)ta.focus();return;}if(!J8.status().connected){toast('Not connected. Try again in a moment.');return;}
+  J8.inbox.send(a0.product||'p-general',(how==='send'?'Approved, with a note: ':'Killed, with a note: ')+nv,null,aid).then(function(){ta.value='';openRow['apn'+aid]=0;decide(aid,how);},function(er){toast('Couldn’t send the note ('+(er&&er.code||'error')+'). Nothing changed.');});return;}
+ t=e.target.closest('[data-ftab]');if(t){ls('j8-ftab',t.dataset.ftab);renderStats();$('v-stats').scrollTop=0;return;}
+ t=e.target.closest('[data-fo]');if(t){FF.o=t.dataset.fo;saveFF();renderStats();return;}
+ t=e.target.closest('[data-fb]');if(t){FF.b=!FF.b;saveFF();renderStats();return;}
+ t=e.target.closest('[data-tday]');if(t){TDAY=t.dataset.tday;renderStats();var sel=document.querySelector('.tday.sel');if(sel&&sel.scrollIntoView)sel.scrollIntoView({block:'nearest',inline:'nearest'});return;}
  t=e.target.closest('[data-lmode]');if(t){lmode=t.dataset.lmode;ls('j8-lmode',lmode);renderList();renderHead();$('v-list').scrollTop=0;return;}
  t=e.target.closest('[data-tdone]');if(t){markDone('tk-'+t.dataset.tdone);return;}
  t=e.target.closest('[data-tundo]');if(t){var ud=t.dataset.tundo;J8.tasks.undo(ud).then(function(){toast('Back on your list.');},function(er){toast('Couldn’t save ('+(er&&er.code||'error')+'). Try again.');});return;}
@@ -648,18 +807,20 @@ document.addEventListener('click',function(e){
  t=e.target.closest('[data-apsave]');if(t){var sid=t.dataset.apsave,v=String(($('ed-'+sid)||{}).value||'').trim();if(!v){toast('The text is empty. Write it or Kill it.');return;}
   if(document.activeElement)document.activeElement.blur();J8.approvals.edit(sid,v).then(function(){editing=null;toast('Your text is approved. It goes out on the team’s next run.',function(){J8.approvals.undo(sid);});renderAll();},function(er){toast('Couldn’t save ('+(er&&er.code||'error')+').');});return;}
  t=e.target.closest('#seat,#seatC');if(t){seatTap();return;}
+ t=e.target.closest('[data-theme-set]');if(t){setTheme(t.dataset.themeSet);return;}
  t=e.target.closest('#undo');if(t){if(undoFn)undoFn();$('toast').classList.remove('on');return;}
 });
 document.addEventListener('submit',function(e){var f=e.target;if(!f.dataset||!f.dataset.ans)return;e.preventDefault();var ta=f.querySelector('textarea'),v=String(ta.value||'').trim();if(!v)return;
  if(!J8.status().connected){toast('Not connected. Try again in a moment.');return;}
- J8.inbox.send(f.dataset.ans,v,f.dataset.task||null).then(function(){ta.value='';ta.blur();toast('Sent to the team.');},function(er){toast('Couldn’t send ('+(er&&er.code||'error')+'). Try again.');});});
+ J8.inbox.send(f.dataset.ans,v,f.dataset.task||null,f.dataset.ap||null).then(function(){ta.value='';ta.blur();toast('Sent to the team.');},function(er){toast('Couldn’t send ('+(er&&er.code||'error')+'). Try again.');});});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet();});
+document.addEventListener('change',function(e){var t=e.target;if(t&&t.matches&&t.matches('[data-fu]')){FF.u=t.value;saveFF();renderStats();}});
 if(MQ.addEventListener)MQ.addEventListener('change',soon);
 /* messenger: newest at the bottom; follow the conversation as it grows */
 new MutationObserver(function(){if(view==='chat')chatBottom();}).observe($('j8cLog'),{childList:true,subtree:true,characterData:true});
 
 /* ===== boot (PWA): shell.js signs in and connects; the screens follow J8's status ===== */
-(function(){var v=ls('j8-view');go(v&&VIEWS[v]?v:'chat');renderAll();})();
+(function(){document.documentElement.dataset.theme=theme();renderTheme();var v=ls('j8-view');go(v&&VIEWS[v]?v:'chat');renderAll();})();
 (function(){
  J8.on('status',function(st){var s=$('status');
   if(st.connected&&!connected){connected=true;s.hidden=true;setTimeout(fromHash,300);}
@@ -676,6 +837,7 @@ new MutationObserver(function(){if(view==='chat')chatBottom();}).observe($('j8cL
  J8.on('todo',function(d){S=Object.assign({},d);soon();});
  J8.on('tasks',function(d){TK=d;soon();});
  J8.on('units',function(d){UN=d;soon();});
+ J8.on('schedule',function(){if(view==='stats')soon();});
  J8.on('control',function(d){CTRL=d&&d.main?d.main:null;renderSeat();renderCtl();});
  J8.on('schedule',function(){renderCtl();});J8.on('optout',function(){renderCtl();});J8.on('approvals',function(){renderCtl();});J8.on('status',function(){renderCtl();});
 })();

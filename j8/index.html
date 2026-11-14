@@ -6,7 +6,8 @@
 <meta name="robots" content="noindex,nofollow">
 <title>J8NIX</title>
 <meta name="description" content="J8NIX · Smart Operations OS, only smarter">
-<meta name="theme-color" content="#FFC462">
+<meta name="theme-color" content="#F7D3B0">
+<script>try{document.documentElement.dataset.theme=JSON.parse(localStorage.getItem('j8-theme'))||'light';}catch(e){document.documentElement.dataset.theme='light';}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -18,10 +19,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Assistant:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Assistant:wght@400;600;700&display=swap"></noscript>
-<link rel="stylesheet" href="app.css?v=6.0.1b">
+<link rel="stylesheet" href="app.css?v=6.1.0">
 </head>
 <body>
-<!-- J8NIX PWA 6.0.1 (the lead: Do this first, unlocks, unit → project → task; 5.3 Control in the settings sheet, #control; revert: app-5.3.0.js + app-5.3.0.css, see ops/brain/J8NIX-V6-PLAN.md): the approved v8 screens on live data (window.J8 in j8-data.js). Sign-in, alerts and install live in shell.js. -->
+<!-- J8NIX PWA 6.1.0 (Flow screen, notes on drafts, brighter J8NIX brand + product brands, optional dark theme; the lead: Do this first, unlocks, unit → project → task; 5.3 Control in the settings sheet, #control; revert: app-5.3.0.js + app-5.3.0.css, see ops/brain/J8NIX-V6-PLAN.md): the approved v8 screens on live data (window.J8 in j8-data.js). Sign-in, alerts and install live in shell.js. -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
 <symbol id="i-os" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10.5C8.1 9.3 7.6 7.9 7.6 6.3V5c2.9-1.1 5.9-1.1 8.8 0v1.3c0 2.6-1.5 4-3.7 5.5-2.4 1.6-5.1 2.9-5.1 6v1.2c2.9 1.1 5.9 1.1 8.8 0v-1.2c0-1.6-.5-3-1.4-4.2"/></symbol>
 <symbol id="i-tasks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.2l1.7 1.7 3.1-3.2"/><path d="M4 15.2l1.7 1.7 3.1-3.2"/><path d="M12.2 7.6h7.8M12.2 15.6h7.8"/></symbol>
@@ -94,7 +95,7 @@
    <button data-go="chat">Chat</button>
    <button data-go="next">Next<b class="cnt" id="nN"></b></button>
    <button data-go="list">List</button>
-   <button data-go="stats">Stats</button>
+   <button data-go="stats">Flow</button>
   </nav>
   <button class="gear" id="gear" aria-label="Settings" aria-expanded="false"><svg class="ico" aria-hidden="true"><use href="#i-settings"/></svg></button>
  </header>
@@ -117,13 +118,13 @@
 
   <section class="v" id="v-next" aria-label="What to do next"></section>
   <section class="v" id="v-list" aria-label="List"></section>
-  <section class="v" id="v-stats" aria-label="Stats" tabindex="0"></section>
+  <section class="v" id="v-stats" aria-label="Flow" tabindex="0"></section>
  </main>
  <nav class="dock" id="dock" aria-label="Sections">
   <button data-go="chat"><svg class="ico"><use href="#i-chat"/></svg>Chat</button>
   <button data-go="next"><svg class="ico"><use href="#i-mentor"/></svg>Next<b class="cnt" id="dN"></b></button>
   <button data-go="list"><svg class="ico"><use href="#i-tasks"/></svg>List</button>
-  <button data-go="stats"><svg class="ico"><use href="#i-progress"/></svg>Stats</button>
+  <button data-go="stats"><svg class="ico"><use href="#i-progress"/></svg>Flow</button>
  </nav>
  <div class="scrim" id="scrim" hidden></div>
  <div class="sheet" id="sheet" role="dialog" aria-label="Settings" hidden>
@@ -132,14 +133,15 @@
   <div class="sh-row"><div><b>Alerts on this phone</b><span>Team replies, finished work, drafts to OK.</span></div><button class="seat" id="pushBtn">Turn on</button></div>
   <label class="sh-row" id="orgRow" hidden><div><b>Business</b></div><select id="orgSel"></select></label>
   <div class="sh-row"><div><b>Signed in</b><span id="who"></span></div><button class="txtb" id="signOut">Sign out</button></div>
+  <div class="sh-row"><div><b>Theme</b><span>Light is the default.</span></div><div class="theme-seg" id="themeSeg" role="group" aria-label="Theme"><button data-theme-set="light" aria-pressed="true">Light</button><button data-theme-set="dark" aria-pressed="false">Dark</button><button data-theme-set="auto" aria-pressed="false">Auto</button></div></div>
   <div class="sh-row"><div><b>Live data</b><span id="connTxt">Connecting…</span></div></div>
   <div id="ctl"><div class="cx-h"><button type="button" class="cx-back" data-cx="back"><span aria-hidden="true">‹</span> Settings</button><h2 id="ctlT" tabindex="-1">Control</h2></div><div id="ctlBody"></div></div>
  </div>
 </div>
 <div class="toast" id="toast" role="status"><span id="toastMsg"></span><button id="undo" hidden>Undo</button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=6.0.1b"></script>
-<script src="app.js?v=6.0.1b"></script>
-<script src="shell.js?v=6.0.1b"></script>
+<script src="j8-data.js?v=6.1.0"></script>
+<script src="app.js?v=6.1.0"></script>
+<script src="shell.js?v=6.1.0"></script>
 </body>
 </html>

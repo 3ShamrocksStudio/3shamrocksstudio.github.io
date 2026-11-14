@@ -201,3 +201,129 @@ tables and the functions. Then one independent verifier agent.
 - Round 2 fixes (14 Nov evening): the 13 approved emails whose own notes need a postal address now wait on the postal-address
   task (it unlocks 16); a draft with any open blocker is never sent (hard rule in ARMS-CONTRACT.md §3b and J8NIX-DATA.md);
   the task-comment route trigger gives a non-member no hint whether a task id exists; the postal task opens the chat.
+
+---------------------------------------------------------------------------------------------------------------------
+# 6.1 · Comment on drafts + the Flow screen (Dave, 14 Nov 18:48) · PLAN
+
+## 6.1-A Approval comments
+- Every draft card gets **Comment** beside Send / Edit / Kill. A note never changes the draft's status.
+  The note box also offers **Approve + note** ("approved, but shorten line 2") and **Kill + note**.
+- Data: `j8_messages.approval_id text` (ADD COLUMN IF NOT EXISTS, insert grant on that column only). The route trigger
+  (`j8private.message_task_route`, CREATE OR REPLACE) handles it like task_id: a non-member gets no hint; for a member the
+  draft must exist in that business, `p` = the draft's project, `unit_id` = that project's unit.
+- Under the box: the team's latest reply on that draft, one line, tap for all. Dave's own notes are never listed back.
+- Arms (J8NIX-DATA.md): the inbox watcher reads approval_id, edits the draft when the note asks (pending → stays pending
+  with the new text; Approve + note → applies exactly the asked change as edited_body, status 'edited'; unclear → back to
+  pending + 🟠 question), replies with one 🔴/🟠/🟢 line and marks the message done. **Sender hard rule:** a draft with a note
+  not yet marked done is never sent.
+```
+┌ Waiting · LinkedIn note · 3S design services ───────┐
+│ Josh Rosenthal · Index Industries                    │
+│ Hi Josh, saw the round…                              │
+│ [ Send ] [ Edit ] [ Kill ] [ Comment ]               │
+│ ┌ Note to the team (the draft stays as it is) ────┐  │
+│ │ change line 2 to…                         ➤     │  │
+│ └──────────────────────────────────────────────────┘  │
+│ [ Approve + note ]  [ Kill + note ]                   │
+│ 🟢 Done: line 2 shortened; it waits for your Send.  › │
+└──────────────────────────────────────────────────────┘
+```
+
+## 6.1-B Flow (replaces the Stats tab; the old Stats lives on as "Numbers")
+Tab label **Flow**, same place in the dock (hash #stats still works). Five views, one segmented bar:
+**Map · Timeline · Insights · Teams · Numbers**. Filters under the bar (Map, Timeline, Insights):
+unit (select) · owner (All / Me / Team / Outside) · Only blocked.
+
+```
+ Flow                                        $0 of $25k · 7 days to M1
+ [Map][Timeline][Insights][Teams][Numbers]
+ [All units ▾]  (All)(Me)(Team)(Outside)  [ ] Only blocked
+ REVENUE
+ ● 3S design services   ▮▮▮▮▯▯ Validate      DM
+   next: 17 founder notes by hand · Sun 15 Nov
+ ● Accessibility checker ▮▮▮▮▮▯ Launch       DM
+   next: LinkedIn post · Mon 16 Nov 13:30
+ PRODUCT
+ ● LickPick              ▮▮▮▯▯▯ Beta         CMO
+   next: 30 Keepers ep 9–10 · Sun 15 Nov
+```
+Stages, Dave's words over the 6 data stages: Idea (Concept) · Build · Beta (Staged) · Validate · Launch (Monetize) · Paying.
+Lit = current; filled = passed. Holder chip: DM = Dave, a unit code = the team, Ext = outside (client, platform review).
+
+```
+ Timeline — next 4 weeks (Israel days), today ringed, scrolls sideways inside its strip only
+ ┌Sa┐┌Su┐┌Mo┐┌Tu┐ …
+ │14││15││16││17│
+ │ ●││●●││●●││● │   ● gold milestone · ● amber yours · ● blue team · small "9 runs"
+ └──┘└──┘└──┘└──┘
+ Sun 15 Nov
+  10:00  Prep page read (Tnufa)                 You    ›
+  12:30  LinkedIn post · studio                 You    ›
+  08:22  Weekly board (team run)                Team   ›
+ Overdue: 9 drafts whose slot passed           ›
+```
+```
+ Insights (one sentence each, tap through; "collecting data" when a number has no source yet)
+  Waiting on you: 21 · first frees 16 (postal address)        ›
+  Oldest wait: "Decide 25 posts" · 10 days                    ›
+  No movement 7 days: R&K, WH33LZ, FaiRent                    ›
+  This week: you cleared 19 (last week: collecting data)      ›
+  Closest to first $: Accessibility checker (Launch) · next…  ›
+```
+```
+ Teams
+  Inbox watcher    every hour · last ok 17:26 · next 19:26
+    now: "Done: council demo links checked…"
+  Brain shift      12:13 / 18:13 · last ok · next 12:13 Sun
+  Pods (run inside the shifts): CRO pod · last 09:30 ok — "17 founder notes ready…"
+```
+Sources (all real): projects (stage, next, milestone), tasks (due), drafts (due_at), j8_schedule (crons, next runs, last
+status), j8_runs (latest per team), money summary, j8_rank (via the same rules in the app). Missing → "collecting data".
+
+## 6.1-C Data model additions (additive)
+- `j8_projects`: `milestone text`, `milestone_at text` (ISO date or datetime), `milestone_by text` (dave | team | external),
+  `milestone_src text` (where the date came from).
+- `j8_approvals`: `due_at text` — the slot the draft is meant to go out, parsed only from its own warn/context text; the
+  weekday in the text must match the date or it is left empty.
+- `j8_messages`: `approval_id text` (6.1-A).
+Seeds only from real dates in rows or ops/brain/brain.json; everything else is listed as "couldn't date" in the report.
+
+## 6.1-D Revert
+App: same one-line sed as above with `?v=6.1.0` (`app-6.0.1.js` / `app-6.0.1.css` kept as the 6.0.1 copy).
+```
+sed -i 's/app\.css?v=6\.1\.0/app-6.0.1.css/;s/app\.js?v=6\.1\.0/app-6.0.1.js/' j8/index.html && sed -i "s/j8nix-v6\.1\.0'/j8nix-v6.1.0-revert'/" j8/sw.js
+```
+DB: nothing to drop; 6.0.1 ignores the new columns.
+
+## 6.1-E Brand pass (Dave 14 Nov 18:57: "brighter, deeper brand identity, product brands everywhere")
+- **J8NIX identity** from assets/brand-v3/j8nix/BRAND.md (built from Dave's logo files): Peach Gold #F2C194 band (light
+  gradient #FCE8D5 → #F2C194), J8 Slate #586475 for the avatar tile, the toast and Dave's chip, Signal Blue #1563FF for
+  actions and selected controls (replaces the near-black "on" state), airy base #F7F9FD, white cards. No near-black surfaces.
+- **Optional dark mode** (Settings → Theme: Light · Dark · Auto; default Light): J8NIX platform navy #11283C / #16314A, never black.
+- **Products**: colour (PCOL) and a real PNG badge (j8/brand/, resized from the repo's logo files, never redrawn; SH✡MER and
+  Nature from their transparent originals, never boxed) on: Flow lanes (edge + tint + badge), project headers in the List tree
+  (edge + tint + badge), draft cards (left stripe), every row marker (badge where one exists).
+- **Urgency stays semantic and separate**: small badges/dots only (🔴 red = needs you now, 🟠 amber = today, violet = team,
+  green = done). Brand colours never carry text and never sit in the urgency badge.
+- Brand colour contrast (non-text use; text always uses the theme's ink):
+| Brand colour | Hex | on light card #FFFFFF | on light base #F7F9FD | on dark card #16314A | Used as |
+|---|---|---|---|---|---|
+| SH✡MER gold | `#E0A828` | 2.14 | 2.03 | 6.23 | stripe / marker / lane edge only (never text) |
+| SH✡MER navy | `#0C1B3A` | 17.02 | 16.15 | 1.27 | stripe / marker / lane edge only (never text) |
+| SH✡MER Command orange | `#FC9918` | 2.16 | 2.05 | 6.17 | stripe / marker / lane edge only (never text) |
+| Nature leaf | `#2F8540` | 4.62 | 4.38 | 2.89 | stripe / marker / lane edge only (never text) |
+| LickPick volt | `#FFE600` | 1.27 | 1.20 | 10.54 | stripe / marker / lane edge only (never text) |
+| LickPick hot | `#FF2E88` | 3.50 | 3.32 | 3.81 | stripe / marker / lane edge only (never text) |
+| Studio purple | `#8239EA` | 5.64 | 5.35 | 2.37 | stripe / marker / lane edge only (never text) |
+| Studio green | `#3DCC6E` | 2.09 | 1.98 | 6.40 | stripe / marker / lane edge only (never text) |
+| Accessibility violet-2 | `#B07CFF` | 2.93 | 2.78 | 4.56 | stripe / marker / lane edge only (never text) |
+| Trashure orange | `#FF6C00` | 2.84 | 2.69 | 4.70 | stripe / marker / lane edge only (never text) |
+| Chore purple | `#6A21C4` | 7.99 | 7.58 | 1.67 | stripe / marker / lane edge only (never text) |
+| Chore gold | `#F59E0B` | 2.15 | 2.04 | 6.22 | stripe / marker / lane edge only (never text) |
+| FaiRent violet | `#6550FF` | 5.07 | 4.81 | 2.64 | stripe / marker / lane edge only (never text) |
+| J8NIX peach | `#F2C194` | 1.64 | 1.55 | 8.16 | stripe / marker / lane edge only (never text) |
+| J8NIX slate | `#586475` | 6.01 | 5.70 | 2.22 | stripe / marker / lane edge only (never text) |
+- Projects without a brand file (left without a colour; they fall back to the colour stored on the project, or none):
+  Instagram network (4 accounts, each with its own brand; badge = the Media Network logo), Director roles (jobs), VIBRANT
+  (client), Vicky Zaguri (client), Milo (logo file only, no colour tokens), R&K, WH33LZ, J8NIX-hosted HealthTech page uses the
+  studio brand. Chore Royale's badge comes from assets/studio/logos/chore-royale.png (the studio's transparent copy).
