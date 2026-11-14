@@ -34,7 +34,7 @@ So the reels follow 3SDS by doing what it asks for: they use LickPick's own toke
 - **Root notes drawn as the LickPick pick:** the `#pk` path from landing l.221, styled like the logo symbol (`#logo` l.222: volt fill, 4px ink stroke, hot copy offset 7/5). The home note is literally the logo.
 - **KEEP stamp:** a tilted volt pick with an ink check mark, plus the word, which follows the colour + icon + word rule. Sources: app `.stamp` l.115–117 (pick in `--keep`, rotated −8°), `#pickClip` landing l.220, `#i-check` path landing l.223.
 - **Sticker look:** hard offset shadows with no blur, 3–4px ink borders, slight rotations. Sources: landing `.btn` l.36 (`box-shadow:5px 5px 0 var(--hot)`), `.btn.ghost` l.39, and the "whatsnew" icon tiles l.208.
-- **End-card lick card:** copies the product's own take card. Panel background, keep-tinted border `#4D460F` (app `.card.v-keep` l.112), a stamp, "Lick A · home · 3.4 s" (the lick's true length), "**Best** · your Lick A, the strongest phrase" (the app's top grade and its own wording: `TIERS` l.7005 and l.7014 in `app/index.html`), and a cyan waveform (DS §7 "Take card: waveform in cyan"). The waveform is drawn from the lick's real note times and plays in sync with the audio replay.
+- **End-card lick card:** copies the product's own lick card. Panel background, keep-tinted border `#4D460F` (app `.card.v-keep` l.112), a stamp, "Lick A · home · 3.4 s" (the lick's true length), "**Best** · your Lick A, the strongest phrase" (the app's top grade and its own wording: `TIERS` l.7005 and l.7014 in `app/index.html`), and a cyan waveform (DS §7 "Lick card: waveform in cyan"). The waveform is drawn from the lick's real note times and plays in sync with the audio replay.
 - **Studio credit:** `lickpick/assets/3shamrocks.png` at 22px and 60% opacity, one centred line (the quiet credit from DS-COMPLIANCE §5).
 
 ## Voice
@@ -66,4 +66,4 @@ The reels also add things the reference does not have: a numbered lick path that
 
 ## NEEDS YOUR EYES
 
-- The written DS (`outputs/ds/lickpick.md` §6) still uses the word "take" in its voice section. I followed your newer "licks" rule. The DS text should be updated to match.
+- Done 14 Nov: the written DS (`outputs/ds/lickpick.md`) now uses "licks" throughout ("finds your best lick", "Lick card"), matching your rule.
