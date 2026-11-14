@@ -1,9 +1,12 @@
 // a11y-scan: public website accessibility checker (3Shamrocks Studio).
 // verify_jwt=false; this function validates its own input, rate-limits per hashed IP,
 // and unlocks the full report only with a Gumroad license key verified server-side.
+// Monitor keys (monthly membership, config 'gumroad_monitor_product_id') also get a per-site history,
+// and POST /a11y-scan/cron (pg_cron, token in Vault) re-checks each active monitor site weekly.
 // deno-lint-ignore-file no-explicit-any
 import { DOMParser } from "jsr:@b-fuze/deno-dom@0.1.56";
-import { ENGINE_VERSION, runChecks, statementTemplates, WEIGHTS } from "https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/bda88d75475a9fe68af5afd60ac2dab49a6e19b5/a11y/engine/engine.ts";
+import { ADVISORY, CHECK_BY_ID, ENGINE_VERSION, LEGAL, runChecks, statementTemplates, WEIGHTS } from "https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/bda88d75475a9fe68af5afd60ac2dab49a6e19b5/a11y/engine/engine.ts";
+declare const EdgeRuntime: { waitUntil(p: Promise<unknown>): void } | undefined;
 
 const SB_URL = Deno.env.get("SUPABASE_URL") || "";
 const SB_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -11,6 +14,9 @@ const FREE_PER_HOUR = 10;
 const PAID_PER_HOUR_IP = 40;
 const PAID_PER_KEY_DAY = 10;
 const FREE_TOP = 5;
+const MON_HISTORY = 30; // rows returned to the buyer
+const MON_BATCH = 5; // monitor sites re-checked per hourly cron run
+const DAY_MS = 86_400_000;
 const MAX_BYTES = 3 * 1024 * 1024;
 const TIMEOUT_MS = 10_000;
 const MAX_REDIRECTS = 3;
@@ -206,11 +212,27 @@ async function verifyLicense(key: string, productId: string): Promise<{ ok: bool
     if (!r.ok || !j || j.success !== true) return { ok: false, reason: "license_check_failed" };
     const p = j.purchase || {};
     if (p.refunded || p.chargebacked || (p.disputed && !p.dispute_won)) return { ok: false, reason: "license_revoked" };
-    if (p.subscription_ended_at || p.subscription_cancelled_at || p.subscription_failed_at) return { ok: false, reason: "license_revoked" };
+    // Gumroad sets these to the membership END date, so a cancelled membership stays valid until then.
+    for (const f of ["subscription_ended_at", "subscription_cancelled_at", "subscription_failed_at"]) {
+      if (!p[f]) continue;
+      const end = Date.parse(p[f]);
+      if (isNaN(end) || end <= Date.now()) return { ok: false, reason: "license_revoked" };
+    }
     return { ok: true };
   } catch {
     return { ok: false, reason: "license_check_failed" };
   }
+}
+// One key field for both products: the one-time report, then (if configured) the monitor membership.
+async function verifyAny(key: string, cfg: Record<string, string>): Promise<{ ok: boolean; reason?: string; tier?: "report" | "monitor" }> {
+  const a = await verifyLicense(key, cfg.gumroad_product_id);
+  if (a.ok) return { ...a, tier: "report" };
+  const mon = cfg.gumroad_monitor_product_id;
+  if (a.reason === "license_revoked" || !mon) return a;
+  const b = await verifyLicense(key, mon);
+  if (b.ok) return { ...b, tier: "monitor" };
+  if (b.reason === "license_revoked") return b;
+  return a.reason === "license_check_failed" || b.reason === "license_check_failed" ? { ok: false, reason: "license_check_failed" } : { ok: false, reason: "license_invalid" };
 }
 async function boundDomain(keyHash: string): Promise<string | null> {
   const rows = await rest(`a11y_licenses?key_hash=eq.${keyHash}&select=domain`);
@@ -228,14 +250,206 @@ async function bindDomain(keyHash: string, host: string): Promise<{ ok: boolean;
   }
 }
 
+// ---------- page gate (shared by the request path and the weekly job) ----------
+function gatePage(html: string): { doc: any } | { error: string } {
+  let doc: any;
+  try {
+    doc = new DOMParser().parseFromString(html, "text/html");
+  } catch {
+    return { error: "parse_failed" };
+  }
+  if (!doc) return { error: "parse_failed" };
+  const pageTitle = (doc.querySelector("title")?.textContent || "").trim();
+  if (
+    /^(just a moment|attention required|access denied|forbidden|403|captcha|are you a robot|security check|one moment)/i.test(pageTitle) ||
+    /cf-challenge|challenge-platform\/h\/|_incapsula_resource|px-captcha/i.test(html.slice(0, 20000))
+  ) return { error: "blocked_by_site" };
+  // visible body text (no script/style); tiny pages like example.com are fine, empty shells are not
+  const bodyEl = doc.body || doc.querySelector("body");
+  let bodyText = "";
+  const walkText = (n: any) => {
+    if (n.nodeType === 3) bodyText += n.nodeValue;
+    else if (n.nodeType === 1 && !/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE)$/i.test(n.nodeName)) for (const c of n.childNodes) walkText(c);
+  };
+  if (bodyEl) walkText(bodyEl);
+  const textLen = bodyText.replace(/\s+/g, " ").trim().length;
+  const nScripts = doc.querySelectorAll("script").length;
+  const challenge = /enable javascript|javascript is (required|disabled)|checking your browser|cdn-cgi\/challenge|captcha-delivery|awswaf|perimeterx|bm-verify|sec-cpt|incapsula|pardon our interruption/i.test(html.slice(0, 20000));
+  if (textLen < 50) {
+    if (!nScripts && !challenge && !(bodyEl?.children?.length)) return { error: "empty_page" };
+    return { error: "js_or_blocked" }; // bot-challenge stub, error stub or JS-only shell
+  }
+  if (textLen < 300 && challenge) return { error: "js_or_blocked" };
+  return { doc };
+}
+
+// ---------- monitor (subscription): history + weekly re-check ----------
+// Stored per (key_hash, domain): date, score, counts, per-check counts, engine version. Nothing else.
+const isoIn = (ms: number) => new Date(Date.now() + ms).toISOString();
+const pageKey = (u: URL) => `${u.protocol}//${u.host}${u.pathname}`; // no query string, no fragment
+const samePage = (a: string, b: string) => {
+  try {
+    const x = new URL(a), y = new URL(b);
+    return baseHost(x.hostname) === baseHost(y.hostname) && x.pathname.replace(/\/+$/, "") === y.pathname.replace(/\/+$/, "");
+  } catch {
+    return false;
+  }
+};
+function tally(r: any) {
+  const counts: Record<string, number> = { critical: 0, serious: 0, moderate: 0, minor: 0, advisory: 0, legal: 0 };
+  const byCheck: Record<string, number> = {};
+  for (const f of r.findings) {
+    counts[f.kind === "wcag" ? f.severity : f.kind]++;
+    byCheck[f.id] = f.count;
+  }
+  return { counts, byCheck };
+}
+async function recordHistory(keyHash: string, domain: string, r: any, auto: boolean) {
+  const { counts, byCheck } = tally(r);
+  await rest("a11y_history", {
+    method: "POST",
+    headers: { Prefer: "return=minimal" },
+    body: JSON.stringify({ key_hash: keyHash, domain, score: r.score ?? null, counts, check_counts: byCheck, engine: ENGINE_VERSION, auto }),
+  });
+}
+const patchMonitor = (keyHash: string, v: Record<string, unknown>) =>
+  rest(`a11y_monitors?key_hash=eq.${keyHash}`, { method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify(v) });
+async function monitorView(keyHash: string, domain: string, lang: "he" | "en", m: any, saved: boolean) {
+  const rows: any[] = (await rest(`a11y_history?key_hash=eq.${keyHash}&domain=eq.${encodeURIComponent(domain)}&select=checked_at,score,counts,check_counts,engine,auto&order=checked_at.desc&limit=${MON_HISTORY + 1}`)) || [];
+  const chrono = rows.reverse();
+  const titles: Record<string, { title: string; kind: string }> = {};
+  const name = (id: string) => {
+    if (!titles[id]) titles[id] = { title: CHECK_BY_ID[id]?.title?.[lang] || id, kind: LEGAL.has(id) ? "legal" : ADVISORY.has(id) ? "advisory" : "wcag" };
+    return id;
+  };
+  const history = chrono.map((h, i) => {
+    const prev = i > 0 ? chrono[i - 1] : null;
+    const cur = Object.keys(h.check_counts || {});
+    const before = prev ? Object.keys(prev.check_counts || {}) : [];
+    return {
+      at: h.checked_at,
+      score: h.score,
+      auto: h.auto,
+      counts: h.counts,
+      issues: cur.length,
+      compared: !!prev,
+      engine_changed: !!prev && prev.engine !== h.engine,
+      fixed: prev ? before.filter((id) => !(id in (h.check_counts || {}))).map(name) : [],
+      new: prev ? cur.filter((id) => !(id in (prev.check_counts || {}))).map(name) : [],
+    };
+  }).slice(-MON_HISTORY).reverse(); // newest first
+  return { watched_url: m.page_url, next_check_at: m.next_check_at, last_auto_at: m.last_auto_at || null, last_auto_status: m.last_auto_status || null, this_check_saved: saved, history, titles };
+}
+// Called after a successful paid scan with a monitor key: (re)activate the monitor, save the key in Vault
+// for the weekly subscription re-check, add this check to the history if it is the watched page.
+async function monitorOnScan(keyHash: string, key: string, domain: string, finalUrl: string, r: any, lang: "he" | "en") {
+  await rest("rpc/a11y_mon_key_put", { method: "POST", body: JSON.stringify({ p_key_hash: keyHash, p_key: key }) });
+  let m = (await rest(`a11y_monitors?key_hash=eq.${keyHash}&select=*`))?.[0];
+  if (!m) {
+    m = { key_hash: keyHash, domain, page_url: pageKey(new URL(finalUrl)), active: true, next_check_at: isoIn(7 * DAY_MS) };
+    await rest("a11y_monitors", { method: "POST", headers: { Prefer: "return=minimal,resolution=ignore-duplicates" }, body: JSON.stringify(m) });
+    m = (await rest(`a11y_monitors?key_hash=eq.${keyHash}&select=*`))?.[0] || m;
+  } else if (!m.active) {
+    m = { ...m, active: true, ended_at: null, next_check_at: isoIn(7 * DAY_MS) };
+    await patchMonitor(keyHash, { active: true, ended_at: null, next_check_at: m.next_check_at });
+  }
+  const saved = m.domain === domain && samePage(m.page_url, finalUrl);
+  if (saved) await recordHistory(keyHash, domain, r, false);
+  return await monitorView(keyHash, domain, lang, m, saved);
+}
+// Weekly re-check of one monitor: re-verify the subscription, then scan through the same SSRF-guarded fetch.
+async function recheckMonitor(m: any, productId: string): Promise<string> {
+  const end = async (status: string) => {
+    await patchMonitor(m.key_hash, { active: false, ended_at: new Date().toISOString(), last_auto_status: status });
+    await rest("rpc/a11y_mon_key_clear", { method: "POST", body: JSON.stringify({ p_key_hash: m.key_hash }) }); // stored key no longer needed
+    return status;
+  };
+  const retry = async (status: string, ms: number) => {
+    await patchMonitor(m.key_hash, { next_check_at: isoIn(ms), last_auto_at: new Date().toISOString(), last_auto_status: status });
+    return status;
+  };
+  const key = await rest("rpc/a11y_mon_key_get", { method: "POST", body: JSON.stringify({ p_key_hash: m.key_hash }) });
+  if (typeof key !== "string" || !/^[A-Za-z0-9-]{1,100}$/.test(key) || (await sha256("lic|" + key)) !== m.key_hash) return await end("no_key");
+  const v = await verifyLicense(key, productId);
+  if (!v.ok) return v.reason === "license_check_failed" ? await retry("license_check_failed", 6 * 3600_000) : await end(v.reason || "license_invalid");
+  const bound = await boundDomain(m.key_hash);
+  if (bound && bound !== m.domain) return await end("license_other_domain");
+  let target: URL;
+  try {
+    target = new URL(m.page_url);
+  } catch {
+    return await end("bad_url");
+  }
+  if (baseHost(target.hostname) !== m.domain) return await end("license_other_domain");
+  const page = await fetchPage(target, "en"); // checkTarget() runs on every hop
+  if ("error" in page) return await retry(page.error, DAY_MS);
+  if (baseHost(new URL(page.finalUrl).hostname) !== m.domain) return await retry("license_other_domain", DAY_MS);
+  const g = gatePage(page.html);
+  if ("error" in g) return await retry(g.error, DAY_MS);
+  const r = runChecks(g.doc, page.html, page.finalUrl, "en");
+  await recordHistory(m.key_hash, m.domain, r, true);
+  await patchMonitor(m.key_hash, { next_check_at: isoIn(7 * DAY_MS), last_auto_at: new Date().toISOString(), last_auto_status: "ok" });
+  return "ok";
+}
+// Retention: history of an ended subscription is kept 90 days (a returning subscriber sees it), any row 400 days.
+async function purgeMonitors() {
+  const del = (q: string) => rest(q, { method: "DELETE", headers: { Prefer: "return=minimal" } });
+  const cut90 = encodeURIComponent(new Date(Date.now() - 90 * DAY_MS).toISOString());
+  const old: any[] = (await rest(`a11y_monitors?active=is.false&ended_at=lt.${cut90}&select=key_hash&limit=50`)) || [];
+  for (const o of old) {
+    await rest("rpc/a11y_mon_key_clear", { method: "POST", body: JSON.stringify({ p_key_hash: o.key_hash }) });
+    await del(`a11y_history?key_hash=eq.${o.key_hash}`);
+    await del(`a11y_monitors?key_hash=eq.${o.key_hash}`);
+  }
+  await del(`a11y_history?checked_at=lt.${encodeURIComponent(new Date(Date.now() - 400 * DAY_MS).toISOString())}`);
+}
+async function runMonitorBatch(): Promise<{ ran: number; results: string[] }> {
+  cfgCache = null; // pick up a just-set product id
+  try {
+    await purgeMonitors();
+  } catch { /* retried next hour */ }
+  const cfg = await config();
+  const pid = cfg.gumroad_monitor_product_id;
+  if (!pid) return { ran: 0, results: [] };
+  const started = Date.now();
+  const due: any[] = (await rest(`a11y_monitors?active=is.true&next_check_at=lte.${encodeURIComponent(new Date().toISOString())}&select=key_hash,domain,page_url&order=next_check_at.asc&limit=${MON_BATCH}`)) || [];
+  const results: string[] = [];
+  for (const m of due) {
+    if (Date.now() - started > 90_000) break;
+    await patchMonitor(m.key_hash, { next_check_at: isoIn(3600_000) }); // claim: an overlapping run skips it
+    try {
+      results.push(await recheckMonitor(m, pid));
+    } catch {
+      results.push("error");
+    }
+  }
+  return { ran: results.length, results };
+}
+
 // ---------- handler ----------
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
+  // internal: hourly pg_cron tick. Needs the Vault token; anything else looks like a missing path.
+  if (new URL(req.url).pathname.replace(/\/+$/, "").endsWith("/cron")) {
+    const tok = req.headers.get("x-a11y-cron") || "";
+    let okTok = false;
+    try {
+      okTok = req.method === "POST" && /^[0-9a-f]{64}$/.test(tok) && (await rest("rpc/a11y_cron_ok", { method: "POST", body: JSON.stringify({ p_token: tok }) })) === true;
+    } catch { /* treat as not found */ }
+    if (!okTok) return err("not_found", 404);
+    const job = runMonitorBatch().catch(() => ({ ran: 0, results: ["error"] }));
+    if (typeof EdgeRuntime !== "undefined" && EdgeRuntime?.waitUntil) {
+      EdgeRuntime.waitUntil(job);
+      return json({ ok: true, accepted: true }, 202);
+    }
+    return json({ ok: true, ...(await job) });
+  }
   if (req.method === "GET") {
     try {
       const c = await config();
       const on = c.paid_enabled === "true" && !!c.gumroad_product_id;
-      return json({ ok: true, engine: ENGINE_VERSION, paid_enabled: on, buy_url: on ? c.buy_url || null : null, weights: WEIGHTS, free_per_hour: FREE_PER_HOUR });
+      const mon = on && !!c.gumroad_monitor_product_id && !!c.monitor_buy_url;
+      return json({ ok: true, engine: ENGINE_VERSION, paid_enabled: on, buy_url: on ? c.buy_url || null : null, monitor_enabled: mon, monitor_buy_url: mon ? c.monitor_buy_url : null, weights: WEIGHTS, free_per_hour: FREE_PER_HOUR });
     } catch {
       return err("unavailable", 503);
     }
@@ -281,14 +495,17 @@ Deno.serve(async (req) => {
   if (pre) return err(pre, 400);
 
   const paidOn = cfg.paid_enabled === "true" && !!cfg.gumroad_product_id;
+  const monOn = paidOn && !!cfg.gumroad_monitor_product_id && !!cfg.monitor_buy_url;
   let paid = false;
   let keyHash = "";
+  let tier: "report" | "monitor" | "" = "";
   if (license) {
     if (!paidOn) return err("paid_not_available", 400);
     const n = await hitCounter("ipl:" + ipHash, hour.toISOString());
     if (n > PAID_PER_HOUR_IP) return err("rate_limited", 429, { retry_after_s: 3600 - (Date.now() - hour.getTime()) / 1000 | 0 });
-    const v = await verifyLicense(license, cfg.gumroad_product_id);
+    const v = await verifyAny(license, cfg);
     if (!v.ok) return err(v.reason!, 402);
+    tier = v.tier!;
     keyHash = await sha256("lic|" + license);
     // refuse early if bound elsewhere; bind only after the page was fetched and parsed
     const cur = await boundDomain(keyHash);
@@ -306,34 +523,9 @@ Deno.serve(async (req) => {
   const finalUrl = new URL(page.finalUrl);
   if (paid && baseHost(finalUrl.hostname) !== baseHost(target.hostname)) return err("license_other_domain", 403, { bound_domain: baseHost(target.hostname) });
 
-  let doc: any;
-  try {
-    doc = new DOMParser().parseFromString(page.html, "text/html");
-  } catch {
-    return err("parse_failed", 422);
-  }
-  if (!doc) return err("parse_failed", 422);
-  const pageTitle = (doc.querySelector("title")?.textContent || "").trim();
-  if (
-    /^(just a moment|attention required|access denied|forbidden|403|captcha|are you a robot|security check|one moment)/i.test(pageTitle) ||
-    /cf-challenge|challenge-platform\/h\/|_incapsula_resource|px-captcha/i.test(page.html.slice(0, 20000))
-  ) return err("blocked_by_site", 422);
-  // visible body text (no script/style); tiny pages like example.com are fine, empty shells are not
-  const bodyEl = doc.body || doc.querySelector("body");
-  let bodyText = "";
-  const walkText = (n: any) => {
-    if (n.nodeType === 3) bodyText += n.nodeValue;
-    else if (n.nodeType === 1 && !/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE)$/i.test(n.nodeName)) for (const c of n.childNodes) walkText(c);
-  };
-  if (bodyEl) walkText(bodyEl);
-  const textLen = bodyText.replace(/\s+/g, " ").trim().length;
-  const nScripts = doc.querySelectorAll("script").length;
-  const challenge = /enable javascript|javascript is (required|disabled)|checking your browser|cdn-cgi\/challenge|captcha-delivery|awswaf|perimeterx|bm-verify|sec-cpt|incapsula|pardon our interruption/i.test(page.html.slice(0, 20000));
-  if (textLen < 50) {
-    if (!nScripts && !challenge && !(bodyEl?.children?.length)) return err("empty_page", 422);
-    return err("js_or_blocked", 422); // bot-challenge stub, error stub or JS-only shell
-  }
-  if (textLen < 300 && challenge) return err("js_or_blocked", 422);
+  const gate = gatePage(page.html);
+  if ("error" in gate) return err(gate.error, 422);
+  const doc = gate.doc;
   if (paid) {
     const b = await bindDomain(keyHash, baseHost(finalUrl.hostname));
     if (!b.ok) return err("license_other_domain", 403, { bound_domain: b.bound });
@@ -352,6 +544,14 @@ Deno.serve(async (req) => {
   }
   const checksRun = r.passed.length + r.findings.length;
   const scannedAt = new Date().toISOString();
+  let monitor: any = null;
+  if (paid && tier === "monitor") {
+    try {
+      monitor = await monitorOnScan(keyHash, license, baseHost(finalUrl.hostname), page.finalUrl, r, lang);
+    } catch {
+      monitor = { error: "history_unavailable" };
+    }
+  }
 
   // log: host only, no personal data
   rest("a11y_scans", {
@@ -364,6 +564,8 @@ Deno.serve(async (req) => {
     ok: true,
     engine: ENGINE_VERSION,
     paid,
+    tier: paid ? tier : null,
+    ...(monitor ? { monitor } : {}),
     lang,
     url: page.finalUrl,
     host: finalUrl.hostname,
@@ -393,5 +595,7 @@ Deno.serve(async (req) => {
     stats: r.stats,
     paid_enabled: paidOn,
     buy_url: paidOn ? cfg.buy_url || null : null,
+    monitor_enabled: monOn,
+    monitor_buy_url: monOn ? cfg.monitor_buy_url : null,
   });
 });
