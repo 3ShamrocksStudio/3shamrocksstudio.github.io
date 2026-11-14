@@ -220,12 +220,14 @@ var J8 = (function () {
 
     inbox: {
       /* scope: a project id ('p-…'), 'p-general', or {unit: unitId}. The database adds an instant acknowledgement line. */
-      send: function (project, text) {
+      /* 6.0.1: taskId tags the message to one task; the database routes it to that task's project and unit */
+      send: function (project, text, taskId) {
         var t = String(text || '').trim(); if (!t) return rej('empty');
         var unit = project && typeof project === 'object' ? project.unit : null;
         var p = typeof project === 'string' && project ? project : 'p-general';
         var id = p + '-' + Date.now(), doc = { p: p, text: t };
         if (unit) doc.unit_id = unit;
+        if (taskId) { doc.task_id = String(taskId); var pr = data.projects[p]; if (!unit && pr && pr.unit_id) doc.unit_id = pr.unit_id; }
         return insert('comments', id, doc).then(function () {
           var c = data.control.main;
           if (c && c.brain_enabled) api._brain(id).catch(function () {});
@@ -234,6 +236,7 @@ var J8 = (function () {
       },
       list: function (limit) { return list('comments').sort(function (a, b) { return String(b.at).localeCompare(String(a.at)); }).slice(0, limit || 1e9); },
       forProject: function (p) { return api.inbox.list().filter(function (x) { return x.p === p; }); },
+      forTask: function (t) { return api.inbox.list().filter(function (x) { return x.task_id === t; }); },
       forUnit: function (u) { return api.inbox.list().filter(function (x) { return x.unit_id === u; }); },
       lastReply: function (x) { var r = String(x && x.reply || '').trim().split('\n').filter(function (l) { return l.trim(); }); return r[r.length - 1] || ''; }
     },

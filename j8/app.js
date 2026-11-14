@@ -221,10 +221,17 @@ function leadCard(i,full){var n=nextOf(i),pid=rowPid(i),why=mentor(i),how=i.task
   +(how?'<p class="how1'+(full?'':' clamp')+'" dir="auto">'+esc(how)+'</p>':'')
   +(full&&n.why&&!i.task&&n.why!==why?'<p class="ctx" dir="auto">'+esc(n.why)+'</p>':'')
   +'<div class="df-meta">'+sevChip(i.sev)+'<span class="pj" dir="auto">'+pm(pid)+esc(i.sub||'')+'</span></div>'
-  +'<div class="df-act">'+prim+'<span class="sec2">'+(canDone(i)&&go?'<button data-ndone="'+esc(i.key)+'">'+ic('done')+'Done</button>':'')+'<button data-nlater="'+esc(i.key)+'">Later</button></span></div></article>';}
+  +'<div class="df-act">'+prim+'<span class="sec2">'+(canDone(i)&&go?'<button data-ndone="'+esc(i.key)+'">'+ic('done')+'Done</button>':'')+'<button data-nlater="'+esc(i.key)+'">Later</button></span></div>'+(full&&i.task?taskBox(i.task):'')+'</article>';}
+/* 6.0.1 a comment box on every task (Dave, 14 Nov 18:17): the message carries task_id; the database routes it to the task's
+   project and unit; under the box only the team's latest reply shows (one line, tap for all). Dave's own text is never listed back. */
+function taskBox(t){if(!t)return '';var x=J8.inbox.forTask?J8.inbox.forTask(t.id)[0]:null,k='tr-'+t.id,o=openRow[k],h='<form class="ans tc" data-ans="'+esc(t.project_id||'p-general')+'" data-task="'+esc(t.id)+'"><textarea rows="1" dir="auto" placeholder="Comment on this task" aria-label="Comment on: '+esc(t.title)+'"></textarea><button type="submit" aria-label="Send the comment">'+ic('send')+'</button></form>';
+ if(x){var R=String(x.reply||'').split('\n').filter(function(l){return l.trim();}),last=R.length?lastClean(x):'';
+  if(last)h+='<button class="trp'+(o?' open':'')+'" data-open="'+esc(k)+'" aria-expanded="'+(o?'true':'false')+'"><span class="trl" dir="auto">'+sevChip(sevOf(J8.inbox.lastReply(x)))+esc(last)+'</span></button>'
+   +(o?'<div class="trx" dir="auto">'+R.map(function(l){return esc(sevStrip(l.replace(/^\s*\d{1,2}:\d\d(?:\s*\([^)]*\))?\s*[—-]\s*/,'')));}).join('<br>')+'</div>':'');}
+ return h;}
 function lxBody(i){var n=nextOf(i),w=mentor(i),how=i.task?String(i.task.action||''):String(i.full||''),go=n.u||n.jump;
  return (w?'<p class="why" dir="auto">'+esc(w)+'</p>':'')+(how&&how!==n.what?'<p dir="auto">'+esc(how)+'</p>':'')
-  +'<div class="acts">'+(go||!canDone(i)?actBtn(n,'s'):'')+(canDone(i)?'<button data-ndone="'+esc(i.key)+'">Done</button>':'')+'<button data-nlater="'+esc(i.key)+'">Later</button>'+(i.mins?'<span class="mn">~'+i.mins+' min</span>':'')+'</div>';}
+  +'<div class="acts">'+(go||!canDone(i)?actBtn(n,'s'):'')+(canDone(i)?'<button data-ndone="'+esc(i.key)+'">Done</button>':'')+'<button data-nlater="'+esc(i.key)+'">Later</button>'+(i.mins?'<span class="mn">~'+i.mins+' min</span>':'')+'</div>'+(i.task?taskBox(i.task):'');}
 function leadRow(i,no){var nx=nextOf(i),k='ld-'+i.key,o=openRow[k],v=SEV[i.sev]?i.sev:'o';
  return '<li class="lr'+(o?' open':'')+(NEWK[i.key]?' nw':'')+'"><button class="ni" data-open="'+esc(k)+'" aria-expanded="'+(o?'true':'false')+'"><span class="no">'+no+'</span><span class="e" role="img" aria-label="'+esc(SEV[v][1])+'"><i class="sd sd-'+v+'"></i></span><span class="t" dir="auto">'+esc(cap1(nx.what))+(i.sub?' <small>· '+pm(rowPid(i))+esc(i.sub)+'</small>':'')+'</span>'+(i.ul.length?'<b class="ulb" aria-label="unlocks '+i.ul.length+'">◆'+i.ul.length+'</b>':'')+'</button>'
   +(o?'<div class="lx">'+lxBody(i)+'</div>':'')+'</li>';}
@@ -236,7 +243,7 @@ function restTree(L,start){var by={},keys=[];
  return keys.map(function(k){var g=by[k],ok='lu-'+k,o=openRow[ok],n=0;g.order.forEach(function(pk){n+=g.P[pk].L.length;});
   return '<section class="lu'+(o?' open':'')+'"><button class="luh" data-open="'+esc(ok)+'" aria-expanded="'+(o?'true':'false')+'"><b>'+esc(g.u?g.u.name:'Studio')+'</b><span>'+n+' wait on you</span><svg class="ico chev" aria-hidden="true"><use href="#i-more"/></svg></button>'
    +(o?g.order.map(function(pk){var P=g.P[pk];return '<div class="lp"><p class="lpn" dir="auto">'+pm(P.pid)+esc(P.name)+'</p><ul class="nd lead">'+P.L.map(function(i){return leadRow(i,i._n);}).join('')+'</ul></div>';}).join(''):'')+'</section>';}).join('');}
-function renderNext(){var el=$('v-next');if(!el)return;
+function renderNext(){var el=$('v-next');if(!el)return;if(document.activeElement&&el.contains(document.activeElement)&&document.activeElement.tagName==='TEXTAREA')return;
  if(!connected){el.innerHTML='<div class="empty"><b>Loading your next move…</b><p>Signing in and loading your live data.</p></div>';return;}
  var N=needs();
  if(!N.length){el.innerHTML='<div class="nx-wrap"><div class="empty">'+eight('big')+'<b>Nothing waits on you.</b><p>Ask J8NIX what to push next.</p><button class="pri" data-go="chat">Open the chat</button></div></div>';return;}
@@ -336,7 +343,7 @@ function rowHTML(i){var o=openRow[i.key],g=GC[i.g];
   if(i.p){var p=i.p,u=p.you_link||p.link;h+=(i.full?'<p dir="auto">'+esc(i.full)+'</p>':'<p dir="auto">'+esc(p.now||'')+'</p>')+'<p class="why">'+esc(i.why)+'</p><div class="acts">'
     +(u?(u.charAt(0)==='#'?'<button class="s" data-jump="'+esc(u.slice(1))+'">'+esc(p.you_link_text||'Open it')+'</button>':'<a class="s" href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(p.you_link?(p.you_link_text||'Open it'):(p.link_text||'Open it'))+'</a>'):'')
     +(i.move?'<button data-ndone="'+esc(i.key)+'">Done</button><button data-nlater="'+esc(i.key)+'">Later</button>':'')+'</div>';}
-  if(i.task){var tk=i.task,bl=openBlk(tk.id);h+=(tk.action?'<p dir="auto">'+esc(tk.action)+'</p>':'')+(bl.length?'<p class="why" dir="auto">Waits on: '+esc(itemNames(bl,2))+'</p>':'')+'<div class="acts">'+(tk.link?linkBtn(tk.link,tk.link_text||'Open it','s'):'')+(tk.owner==='dave'?'<button data-ndone="'+esc(i.key)+'">Done</button><button data-nlater="'+esc(i.key)+'">Later</button>':'')+'</div>';}
+  if(i.task){var tk=i.task,bl=openBlk(tk.id);h+=(tk.action?'<p dir="auto">'+esc(tk.action)+'</p>':'')+(bl.length?'<p class="why" dir="auto">Waits on: '+esc(itemNames(bl,2))+'</p>':'')+'<div class="acts">'+(tk.link?linkBtn(tk.link,tk.link_text||'Open it','s'):'')+(tk.owner==='dave'?'<button data-ndone="'+esc(i.key)+'">Done</button><button data-nlater="'+esc(i.key)+'">Later</button>':'')+'</div>'+taskBox(tk);}
   if(i.batch)h+=i.batch.items.map(function(a){return apCard(a,'ap');}).join('');
   if(i.ap)h+=apCard(i.ap,'ap');
   if(i.held)h+='<p dir="auto">'+esc(i.held.why)+'</p><ul class="who">'+i.held.items.map(function(a){return '<li dir="auto">'+esc(apWho(a))+'</li>';}).join('')+'</ul>';
@@ -351,10 +358,11 @@ function gbar(g,L){var c={};if(g==='approve'){var A=J8.approvals.list();c.wait=A
   +(g!=='approve'?'':'<p class="gcap">'+['wait','stuck','prog','done','park','kill'].filter(function(k){return c[k];}).map(function(k){return c[k]+' '+ST[k].toLowerCase();}).join(' · ')+' (all drafts)</p>');}
 /* ===== 6.0 List by unit: units → projects → tasks; stage → next stage, owner, real done/total, links, Done, comment box ===== */
 function curLmode(){return lmode||ls('j8-lmode')||'unit';}
-function taskLine(t){var bl=openBlk(t.id),dv=t.owner==='dave',tm=DEPT[t.owner]||t.owner||'Team';
+function taskLine(t){var bl=openBlk(t.id),dv=t.owner==='dave',tm=DEPT[t.owner]||t.owner||'Team',xk='tx-'+t.id,xo=openRow[xk];
  return '<div class="task'+(dv?'':' tm')+(bl.length?' bl':'')+'">'+(dv?'<button class="tk" data-tdone="'+esc(t.id)+'" aria-label="Mark done: '+esc(t.title)+'">'+ic('done')+'</button>':'<i class="tmd" aria-hidden="true"></i>')
-  +'<span dir="auto">'+esc(t.title)+(t.link?' '+linkBtn(t.link,t.link_text||'Open','lk2'):'')+'<small>'+(dv?'You':esc(tm))+(isNum(t.minutes)&&dv?' · ~'+t.minutes+' min':'')+(bl.length?' · waits on: '+esc(itemNames(bl,2)):'')+'</small></span></div>';}
-function doneLine(t){return '<div class="task done"><button class="tk on" data-tundo="'+esc(t.id)+'" aria-label="Untick: '+esc(t.title)+'">'+ic('done')+'</button><span dir="auto">'+esc(t.title)+'<small>Done '+esc(t.done_at?fdate(t.done_at):'')+(t.unlocked_on_done?' · unlocked '+t.unlocked_on_done:'')+'</small></span></div>';}
+  +'<span class="tw"><button class="tt" data-open="'+esc(xk)+'" aria-expanded="'+(xo?'true':'false')+'" dir="auto">'+esc(t.title)+'<small>'+(dv?'You':esc(tm))+(isNum(t.minutes)&&dv?' · ~'+t.minutes+' min':'')+(bl.length?' · waits on: '+esc(itemNames(bl,2)):'')+'</small></button>'
+  +(xo?(t.action?'<p class="ta" dir="auto">'+esc(t.action)+'</p>':'')+(t.link?linkBtn(t.link,t.link_text||'Open','lk2'):'')+taskBox(t):'')+'</span></div>';}
+function doneLine(t){var xk='tx-'+t.id,xo=openRow[xk];return '<div class="task done"><button class="tk on" data-tundo="'+esc(t.id)+'" aria-label="Untick: '+esc(t.title)+'">'+ic('done')+'</button><span class="tw"><button class="tt" data-open="'+esc(xk)+'" aria-expanded="'+(xo?'true':'false')+'" dir="auto">'+esc(t.title)+'<small>Done '+esc(t.done_at?fdate(t.done_at):'')+(t.unlocked_on_done?' · unlocked '+t.unlocked_on_done:'')+'</small></button>'+(xo?taskBox(t):'')+'</span></div>';}
 function projRow(p,mine){var k='pj-'+p.id,o=openRow[k],T=tasksAll().filter(function(t){return t.project_id===p.id;}),A=J8.approvals.list().filter(function(a){return a.product===p.id&&a.status!=='killed';});
  var tot=T.length+A.length,dn=T.filter(function(t){return t.status==='done';}).length+A.filter(function(a){return a.status==='sent';}).length,pct=tot?Math.round(dn/tot*100):0;
  var sn=stageName(p.stage),nx=isNum(p.stage)&&p.stage<6?J8.projects.STAGES[p.stage]:'',pk=p.status==='parked',own=mine.length?'dave':dept(p);
@@ -644,7 +652,7 @@ document.addEventListener('click',function(e){
 });
 document.addEventListener('submit',function(e){var f=e.target;if(!f.dataset||!f.dataset.ans)return;e.preventDefault();var ta=f.querySelector('textarea'),v=String(ta.value||'').trim();if(!v)return;
  if(!J8.status().connected){toast('Not connected. Try again in a moment.');return;}
- J8.inbox.send(f.dataset.ans,v).then(function(){ta.value='';ta.blur();toast('Sent to the team.');},function(er){toast('Couldn’t send ('+(er&&er.code||'error')+'). Try again.');});});
+ J8.inbox.send(f.dataset.ans,v,f.dataset.task||null).then(function(){ta.value='';ta.blur();toast('Sent to the team.');},function(er){toast('Couldn’t send ('+(er&&er.code||'error')+'). Try again.');});});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet();});
 if(MQ.addEventListener)MQ.addEventListener('change',soon);
 /* messenger: newest at the bottom; follow the conversation as it grows */

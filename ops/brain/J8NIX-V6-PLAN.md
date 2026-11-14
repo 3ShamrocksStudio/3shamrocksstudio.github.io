@@ -170,7 +170,7 @@ App revert (one line, from the repo root). While 6.0 was built another session s
 on top of 5.2.0; 6.0.0 is merged on top of 5.3.0. Kept copies: `j8/app-5.3.0.js` + `j8/app-5.3.0.css` (what was live right
 before 6.0, recommended revert) and `j8/app-5.2.0.js` + `j8/app-5.2.0.css` (as asked; reverting to them also drops Control).
 ```
-sed -i 's/app\.css?v=6\.0\.1/app-5.3.0.css/;s/app\.js?v=6\.0\.1/app-5.3.0.js/' j8/index.html && sed -i "s/j8nix-v6\.0\.1'/j8nix-v6.0.1-revert'/" j8/sw.js
+sed -i 's/app\.css?v=6\.0\.1b/app-5.3.0.css/;s/app\.js?v=6\.0\.1b/app-5.3.0.js/' j8/index.html && sed -i "s/j8nix-v6\.0\.1b'/j8nix-v6.0.1b-revert'/" j8/sw.js
 ```
 (j8-data.js and shell.js stay backward compatible with the 5.3.0 and 5.2.0 screens: they only add the tasks collection,
 load sent/killed drafts without bodies — templates always in full — and paint from the saved copy.)
@@ -194,3 +194,7 @@ tables and the functions. Then one independent verifier agent.
 - App: one clock per ranking pass (stable 🔴 order); team-ask rows show only the "Do: …" phrase; the Done toast counts only
   items with no other open blocker; violet dot for blocked team tasks; red removed from failed-run dots and Control errors;
   phone Chat panel compacted (card + one "Then" line); version label 6.0.1.
+- Task comments (Dave 14 Nov 18:17): every task has a "Comment on this task" box (Do this first on Next, the next 3, the tree's
+  team tasks and Done items, the By-type board). The message carries task_id; a database trigger routes it to the task's project
+  and unit and rejects a task id from another business. The existing "Got it" ack still answers; Dave's own messages still never
+  push. Under the box only the team's latest reply shows (one line, tap for all). Cache string 6.0.1b (6.0.1 was already cached).
