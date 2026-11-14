@@ -400,7 +400,7 @@ footer{position:relative;z-index:2;padding:44px 0 36px;border-top:1px solid var(
 <section id="packages">
   <div class="wrap">
     <h2 class="dots reveal"><span data-en>Or pick a package yourself.</span><span data-he>או בחרו חבילה בעצמכם.</span></h2>
-    <p class="lede reveal" data-en>Four ways to work with me. Each one says exactly what you get. The price is fixed and in writing before we start, shaped around the scope and budget you tell me.</p>
+    <p class="lede reveal" data-en>Four ways to work with me. Each one says exactly what you get. The price is fixed and in writing before work starts, shaped around the scope and budget you tell me.</p>
     <p class="lede reveal" data-he>ארבע דרכים לעבוד איתי. בכל אחת כתוב בדיוק מה מקבלים. המחיר קבוע ובכתב לפני שמתחילים, ונבנה סביב ההיקף והתקציב שתספרו לי.</p>
     <div class="pk-grid" id="pk-grid"></div>
   </div>
@@ -444,7 +444,7 @@ footer{position:relative;z-index:2;padding:44px 0 36px;border-top:1px solid var(
     <ol class="steps reveal">
       <li style="--c:var(--green)"><b><span data-en>A short call</span><span data-he>שיחה קצרה</span></b><span data-en>Show me the product and where it hurts. No deck or prep needed.</span><span data-he>תראו לי את המוצר ואיפה כואב. לא צריך מצגת או הכנה.</span></li>
       <li style="--c:var(--teal)"><b><span data-en>A written proposal</span><span data-he>הצעה כתובה</span></b><span data-en>What you get, the fixed price and the start date. On one page.</span><span data-he>מה מקבלים, המחיר הקבוע ותאריך ההתחלה. בעמוד אחד.</span></li>
-      <li style="--c:var(--violet-2)"><b><span data-en>We start</span><span data-he>מתחילים</span></b><span data-en>You work with me directly from day one. A proper invoice, plus VAT.</span><span data-he>עובדים איתי ישירות מהיום הראשון. חשבונית מסודרת, בתוספת מע״מ.</span></li>
+      <li style="--c:var(--violet-2)"><b><span data-en>Work starts</span><span data-he>מתחילים</span></b><span data-en>You work with me directly from day one. A proper invoice, plus VAT.</span><span data-he>עובדים איתי ישירות מהיום הראשון. חשבונית מסודרת, בתוספת מע״מ.</span></li>
     </ol>
   </div>
 </section>
@@ -600,7 +600,7 @@ var NOTE={
   sys:['מערכת אחת, כך שכל מסך חדש מתאים לשאר.','One system, so every new screen fits the rest.'],
   lead:['עיצוב בכיר, כל שבוע, לטווח ארוך.','Senior design, every week, for the long run.'],
   app:['אפליקציה עובדת, לא רק עיצוב. את המוצרים שלי אני בונה מקצה לקצה.','A working app, not just designs. I build my own products end to end.'],
-  asap:['לוח זמנים צפוף. מתחילים ממה שהכי חשוב.','A tight timeline. We start with what matters most.'],
+  asap:['לוח זמנים צפוף. מתחילים ממה שהכי חשוב.','A tight timeline. I start with what matters most.'],
   m12:['חודש או חודשיים זה מספיק זמן לעשות את זה כמו שצריך.','A month or two is enough time to do it properly.'],
   qtr:['הרבעון הבא. תכנון מראש משתלם.','Next quarter. Planning ahead pays off.'],
   'long':['בלי תאריך יעד. זה קשר עבודה מתמשך, לא פרויקט חד-פעמי.','No deadline. This is an ongoing working relationship, not a one-off.'],
@@ -705,10 +705,10 @@ function renderResult(){
   h+='<h2 class="q-q res-title" tabindex="-1">'+t(p.he,p.en)+'</h2>';
   h+='<p class="res-why">'+t(p.whyHe,p.whyEn)+'</p>';
   h+='<h3 class="res-h">'+t('מה מקבלים','What you get')+'</h3><ul class="loot" style="--c:'+p.c+'">'+p.li.map(function(x,i){return '<li style="--i:'+i+'">'+t(x[0],x[1])+'</li>'}).join('')+'</ul>';
-  h+='<dl class="facts"><dt>'+t('משך','How long')+'</dt><dd><b>'+t(p.durHe,p.durEn)+'</b></dd><dt>'+t('מחיר','Price')+'</dt><dd>'+t('מחיר קבוע, בכתב, לפני שמתחילים. התשובה שלכם על התקציב מגיעה איתי לשיחה, כדי שההיקף יתאים לה.','A fixed price, in writing, before we start. Your budget answer comes with your brief, so the scope fits it.')+'</dd></dl>';
-  if(a(3,'soon')&&(res.first==='launch'||res.first==='system'))h+='<p class="note">'+t('התאריך שלכם קרוב. '+p.durHe+' זה הזמן האמיתי לעבודה המלאה, אז נבחר יחד מה חייב להיות מוכן קודם.','Your date is close. '+p.durEn+' is the honest time for the full thing, so we\'ll pick what has to be ready first.')+'</p>';
+  h+='<dl class="facts"><dt>'+t('משך','How long')+'</dt><dd><b>'+t(p.durHe,p.durEn)+'</b></dd><dt>'+t('מחיר','Price')+'</dt><dd>'+t('מחיר קבוע, בכתב, לפני שמתחילים. התשובה שלכם על התקציב מגיעה איתי לשיחה, כדי שההיקף יתאים לה.','A fixed price, in writing, before work starts. Your budget answer comes with your brief, so the scope fits it.')+'</dd></dl>';
+  if(a(3,'soon')&&(res.first==='launch'||res.first==='system'))h+='<p class="note">'+t('התאריך שלכם קרוב. '+p.durHe+' זה הזמן האמיתי לעבודה המלאה, אז נבחר יחד מה חייב להיות מוכן קודם.','Your date is close. '+p.durEn+' is the honest time for the full thing, so I\'ll help you pick what has to be ready first.')+'</p>';
   else if(a(3,'soon')&&res.first==='sprint')h+='<p class="note">'+t('התזמון מתאים. זה בדיוק מה שהעבודה הזאת בנויה בשבילו.','Good timing. This one is built for exactly that.')+'</p>';
-  if(a(2,'brand')&&res.first==='launch')h+='<p class="note">'+t('אם זה באמת רק המותג, תכתבו לי. נתאים את ההיקף למה שאתם צריכים.','If it\'s really just the brand, tell me. We\'ll shape the scope around what you need.')+'</p>';
+  if(a(2,'brand')&&res.first==='launch')h+='<p class="note">'+t('אם זה באמת רק המותג, תכתבו לי. נתאים את ההיקף למה שאתם צריכים.','If it\'s really just the brand, tell me. I\'ll shape the scope around what you need.')+'</p>';
   if(a(2,'app'))h+='<p class="note">'+t('צריכים גם את האפליקציה בנויה? כתבו את זה בבריף. את המוצרים שלי אני מעצב ובונה מקצה לקצה, ונדבר על מה מתאים לכם.','Need the app built too? Say so in the brief. I design and build my own products end to end, and we\'ll talk about what fits yours.')+'</p>';
   if(res.second)h+='<p class="also">'+t('שווה להכיר גם: ','Also worth a look: ')+'<b>'+t(P[res.second].he,P[res.second].en)+'</b> · <button type="button" data-act="pk" data-k="'+res.second+'">'+t('לראות','see it')+'</button></p>';
   h+='<div class="brief"><h4>'+t('הבריף שלכם מוכן','Your brief is ready')+'</h4><p>'+t('הוסיפו שם ומשפט על הפרויקט (לא חובה), והבריף ייפתח באפליקציית המייל שלכם, מוכן לשליחה אליי.','Add a name and a line about the project (optional). The brief opens in your email app, ready to send to me.')+'</p>';
