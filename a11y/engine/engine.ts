@@ -2,12 +2,13 @@
 // Pure: takes a parsed Document (deno-dom) and returns findings. No network.
 // deno-lint-ignore-file no-explicit-any
 
-export const ENGINE_VERSION = "1.1.1";
+export const ENGINE_VERSION = "1.2.0";
 
 /** Best-practice, AAA or heuristic checks: reported as "advisory", never scored. */
 export const ADVISORY = new Set([
   "html-dir", "link-vague", "empty-heading", "heading-order", "missing-h1", "landmark-main", "landmark-nav", "skip-link",
   "autoplay-no-pause", "new-window", "small-text", "required-indicator", "form-errors", "label-placeholder-only",
+  "a11y-statement-unverified",
 ]);
 /** Legal (not WCAG) checks: reported separately, never scored. */
 export const LEGAL = new Set(["a11y-statement"]);
@@ -512,6 +513,13 @@ export const CHECKS: CheckDef[] = [
     he: "פרסמו עמוד הצהרת נגישות וקשרו אליו מהפוטר בכל עמוד. הדוח המלא כולל טיוטה מוכנה.",
     en: "Publish an accessibility statement page and link it from the footer of every page. The full report includes a ready draft.",
   }, `<footer><a href="/accessibility">הצהרת נגישות</a></footer>`),
+  C("a11y-statement-unverified", "IL reg. 35 / EAA", "LAW", "minor", { he: "קישור להצהרת נגישות לא נמצא ב-HTML של העמוד", en: "Accessibility statement link not found in the page's HTML" }, {
+    he: "ייתכן שהקישור מתווסף ב-JavaScript (בעמוד הרבה סקריפטים או רכיבי נגישות), ולכן מה-HTML לבד אי אפשר לדעת. בדקו ידנית.",
+    en: "It may be added by JavaScript (the page has many scripts or accessibility widgets), so the HTML alone can't tell. Check manually.",
+  }, {
+    he: "פתחו את העמוד בדפדפן וחפשו קישור ל״הצהרת נגישות״, בדרך כלל בפוטר. אם אין כזה, פרסמו הצהרה וקשרו אליה מכל עמוד.",
+    en: "Open the page in a browser and look for an \"Accessibility statement\" link, usually in the footer. If there isn't one, publish a statement and link it from every page.",
+  }, `<footer><a href="/accessibility">הצהרת נגישות</a></footer>`),
 ];
 
 export const CHECK_BY_ID: Record<string, CheckDef> = Object.fromEntries(CHECKS.map((c) => [c.id, c]));
@@ -839,8 +847,8 @@ export interface EngineResult {
   passed: string[];
   notApplicable: string[];
   overlays: string[];
-  statement: { found: boolean; href?: string; text?: string };
-  stats: { elements: number; textChars: number; hebrewRatio: number; scripts: number; jsRendered: boolean; lang: string | null; title: string };
+  statement: { found: boolean; href?: string; text?: string; unverified?: boolean };
+  stats: { elements: number; textChars: number; hebrewRatio: number; scripts: number; jsRendered: boolean; jsHeavy: boolean; lang: string | null; title: string };
   score: number | null;
   deductions: { id: string; points: number }[];
 }
@@ -891,6 +899,8 @@ export function runChecks(doc: any, rawHtml: string, pageUrl: string, lang: "he"
   const textChars = norm(text).length;
   const scripts = doc.querySelectorAll("script").length;
   const jsRendered = textChars < 300 && scripts >= 2;
+  // many scripts: a statement link or accessibility menu may be injected after load
+  const jsHeavy = jsRendered || scripts >= 30;
 
   // 1 lang
   app("html-lang");
@@ -1297,8 +1307,18 @@ export function runChecks(doc: any, rawHtml: string, pageUrl: string, lang: "he"
     }
   }
   app("a11y-statement");
-  if (!statement.found && !jsRendered) hit("a11y-statement", body || html);
-  if (!statement.found && jsRendered) applicable.delete("a11y-statement");
+  // accessibility UI in the static HTML (e.g. a widget button) hints the statement may be injected by JS
+  const a11yUi = !statement.found && all.some((e) => /נגיש|accessib/i.test([attr(e, "id"), attr(e, "class"), attr(e, "title"), attr(e, "aria-label")].join(" ")));
+  if (!statement.found && (jsHeavy || a11yUi)) {
+    statement.unverified = true;
+    applicable.delete("a11y-statement");
+    app("a11y-statement-unverified");
+  }
+  if (!statement.found && !jsRendered) hit(statement.unverified ? "a11y-statement-unverified" : "a11y-statement", body || html);
+  if (!statement.found && jsRendered) {
+    applicable.delete("a11y-statement");
+    applicable.delete("a11y-statement-unverified");
+  }
 
   // overlays
   const blobs: string[] = [];
@@ -1350,7 +1370,7 @@ export function runChecks(doc: any, rawHtml: string, pageUrl: string, lang: "he"
     statement,
     score,
     deductions,
-    stats: { elements: all.length, textChars, hebrewRatio: Math.round(hebrewRatio * 100) / 100, scripts, jsRendered, lang: hl || null, title: title.slice(0, 120) },
+    stats: { elements: all.length, textChars, hebrewRatio: Math.round(hebrewRatio * 100) / 100, scripts, jsRendered, jsHeavy, lang: hl || null, title: title.slice(0, 120) },
   };
 }
 
