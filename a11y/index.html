@@ -6,14 +6,14 @@
 <meta name="theme-color" content="#0a0910">
 <meta name="color-scheme" content="dark">
 <title>בדיקת נגישות לאתר — חינם, תוך 20 שניות | 3Shamrocks</title>
-<meta name="description" content="בדיקת נגישות אוטומטית לאתר לפי WCAG 2.2: 44 בדיקות, ציון, הסבר פשוט לכל בעיה, זיהוי תוסף נגישות והצהרת נגישות. דוח מלא עם תיקונים וטיוטת הצהרת נגישות בעברית ובאנגלית.">
+<meta name="description" content="בדיקת נגישות אוטומטית לאתר לפי WCAG 2.x ברמות A/AA (הבסיס של ת״י 5568): ציון, הסבר פשוט לכל בעיה, זיהוי תוסף נגישות והצהרת נגישות. דוח מלא עם תיקונים וטיוטת הצהרת נגישות בעברית ובאנגלית.">
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://3shamrocks.com/a11y/">
 <link rel="alternate" hreflang="he" href="https://3shamrocks.com/a11y/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
 <meta property="og:title" content="בדיקת נגישות לאתר — חינם, תוך 20 שניות">
-<meta property="og:description" content="44 בדיקות אוטומטיות לפי WCAG 2.2, ציון והסבר פשוט לכל בעיה. בלי הבטחות שווא: מה הבדיקה מוצאת, ומה היא לא יכולה לראות.">
+<meta property="og:description" content="בדיקות אוטומטיות לפי WCAG 2.x ברמות A/AA (הבסיס של ת״י 5568), ציון והסבר פשוט לכל בעיה. בלי הבטחות שווא: מה הבדיקה מוצאת, ומה היא לא יכולה לראות.">
 <meta property="og:url" content="https://3shamrocks.com/a11y/">
 <meta property="og:image" content="https://3shamrocks.com/assets/og/og-home.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=Rubik:wght@400;500;700&display=swap">
 <link rel="preconnect" href="https://otkvebgrdiayjnqrytrn.supabase.co">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"בדיקת נגישות לאתר | 3Shamrocks","alternateName":"Website accessibility checker","applicationCategory":"WebApplication","operatingSystem":"Any (web)","url":"https://3shamrocks.com/a11y/","inLanguage":["he","en"],"description":"Automated WCAG 2.2 A/AA-oriented accessibility check for a single web page, with a paid full report and accessibility statement draft.","offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","description":"Free scan: score and top issues"},{"@type":"Offer","price":"29","priceCurrency":"USD","description":"Full report for one site: all findings, fixes with code, accessibility statement draft"}],"publisher":{"@type":"Organization","name":"3Shamrocks Studio","url":"https://3shamrocks.com/"}}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"בדיקת נגישות לאתר | 3Shamrocks","alternateName":"Website accessibility checker","applicationCategory":"WebApplication","operatingSystem":"Any (web)","url":"https://3shamrocks.com/a11y/","inLanguage":["he","en"],"description":"Automated accessibility check of a single web page, based on WCAG 2.x A/AA (the basis of IS 5568), with a paid full report and accessibility statement draft.","offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","description":"Free scan: score and top issues"},{"@type":"Offer","price":"29","priceCurrency":"USD","description":"Full report for one site: all findings, fixes with code, accessibility statement draft"}],"publisher":{"@type":"Organization","name":"3Shamrocks Studio","url":"https://3shamrocks.com/"}}
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -46,7 +46,7 @@ img{max-width:100%;display:block}
 .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
 @media(max-width:600px){.wrap{padding:0 16px}}
 header.top{border-bottom:1px solid var(--line)}
-.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;flex-wrap:wrap}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
 .logo img{height:26px;width:auto}
 nav ul{display:flex;gap:18px;list-style:none;align-items:center;flex-wrap:wrap}
 nav a{color:var(--ink-2);text-decoration:none;font-size:15px}
@@ -85,7 +85,7 @@ section.block{padding:48px 0;border-top:1px solid var(--line)}
 .counts{display:flex;gap:10px;flex-wrap:wrap;list-style:none;margin-top:6px}
 .counts li{background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:15px}
 .sev{display:inline-block;font-size:13px;font-weight:700;border-radius:6px;padding:1px 8px;color:#000}
-.sev.critical{background:var(--crit)}.sev.serious{background:var(--ser)}.sev.moderate{background:var(--mod)}.sev.minor{background:var(--min)}
+.sev.critical{background:var(--crit)}.sev.serious{background:var(--ser)}.sev.moderate{background:var(--mod)}.sev.minor{background:var(--min)}.sev.adv{background:#d9d4ea}.sev.legal{background:#e7c8ff}
 .facts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
 @media(max-width:640px){.facts{grid-template-columns:1fr}}
 .fact{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px}
@@ -167,14 +167,14 @@ footer.site a{color:var(--ink-2)}
   <section class="hero" id="check">
     <div class="wrap">
       <h1 data-i18n="h1">בדיקת נגישות לאתר — חינם, תוך 20 שניות</h1>
-      <p class="lede" data-i18n="lede">מדביקים כתובת, ומקבלים ציון, את הבעיות החמורות בעמוד והסבר פשוט למה כל אחת מפריעה לאנשים עם מוגבלות. 44 בדיקות אוטומטיות לפי WCAG 2.2, בלי הרשמה.</p>
+      <p class="lede" data-i18n="lede">מדביקים כתובת, ומקבלים ציון, את הבעיות החמורות בעמוד והסבר פשוט למה כל אחת מפריעה לאנשים עם מוגבלות. בדיקות אוטומטיות לפי WCAG 2.x ברמות A/AA (הבסיס של תקן ישראלי 5568), בלי הרשמה.</p>
       <form class="scan-form" id="scan-form" novalidate>
         <label for="url" data-i18n="urlLabel">כתובת האתר לבדיקה</label>
         <div class="row">
           <input type="text" id="url" name="url" inputmode="url" autocomplete="url" spellcheck="false" dir="ltr" placeholder="example.co.il" aria-describedby="url-hint" required>
           <button class="btn" type="submit" id="scan-btn" data-i18n="scanBtn">בדקו עכשיו</button>
         </div>
-        <p class="hint" id="url-hint" data-i18n="urlHint">בודקים עמוד אחד (הכתובת שהזנתם). זו לא ייעוץ משפטי ולא תעודת עמידה בתקן.</p>
+        <p class="hint" id="url-hint" data-i18n="urlHint">בודקים עמוד אחד (הכתובת שהזנתם). זה לא ייעוץ משפטי ולא תעודת עמידה בתקן.</p>
         <p class="msg" id="scan-msg" role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -204,12 +204,12 @@ footer.site a{color:var(--ink-2)}
           <h3 data-i18n="cantTitle">מה היא לא יכולה לראות</h3>
           <ul>
             <li data-i18n="cant1">בדיקות אוטומטיות מוצאות רק חלק מבעיות הנגישות. לא נבדקים: ניווט מלא במקלדת, חוויה עם קורא מסך, איכות הטקסט החלופי, הבנת התוכן, וידאו ומסמכים.</li>
-            <li data-i18n="cant2">תוכן שנבנה ב-JavaScript אחרי טעינת העמוד, ועיצוב שמגיע מקובצי CSS. באתרים כאלה התוצאה חלקית, ונגיד לכם את זה.</li>
+            <li data-i18n="cant2">תוכן שנבנה ב-JavaScript אחרי טעינת העמוד, ועיצוב שמגיע מקובצי CSS. באתרים כאלה התוצאה חלקית, ואגיד לכם את זה.</li>
             <li data-i18n="cant3">ציון גבוה לא אומר שהאתר עומד בתקן, וזו לא חוות דעת משפטית. כדי לדעת באמת צריך גם בדיקה ידנית.</li>
           </ul>
         </div>
       </div>
-      <p class="hint" data-i18n="scoreHow">איך מחושב הציון: מתחילים מ-100. כל בדיקה שנכשלה מורידה לפי חומרה: קריטי 10, חמור 6, בינוני 3, קל 1 (פי 1.5 אם הבעיה מופיעה 10 פעמים או יותר). המינימום הוא 0.</p>
+      <p class="hint" data-i18n="scoreHow">איך מחושב הציון: מתחילים מ-100. כל בדיקת WCAG (רמות A/AA) שנכשלה מורידה לפי חומרה: קריטי 10, חמור 6, בינוני 3, קל 1 (פי 1.5 אם הבעיה מופיעה 10 פעמים או יותר). המינימום הוא 0. המלצות (best practice ו-AAA) והצהרת הנגישות מוצגות בנפרד ולא משפיעות על הציון.</p>
     </div>
   </section>
 
@@ -223,7 +223,7 @@ footer.site a{color:var(--ink-2)}
       </details>
       <details>
         <summary data-i18n="q2">מה הסיכון אם האתר לא נגיש?</summary>
-        <p data-i18n="a2">החוק מאפשר לבית המשפט לפסוק פיצוי של עד 50,000 ₪ בלי הוכחת נזק, ויש גם אכיפה של נציבות שוויון זכויות לאנשים עם מוגבלות.</p>
+        <p data-i18n="a2">החוק מאפשר לבית המשפט לפסוק פיצוי של עד 50,000 ₪ (צמוד למדד) בלי הוכחת נזק, ויש גם אכיפה של נציבות שוויון זכויות לאנשים עם מוגבלות.</p>
         <p class="src"><span data-i18n="srcLabel">מקור:</span> <a href="https://www.kolzchut.org.il/he/%D7%94%D7%A0%D7%92%D7%A9%D7%AA_%D7%90%D7%AA%D7%A8%D7%99_%D7%90%D7%99%D7%A0%D7%98%D7%A8%D7%A0%D7%98_%D7%95%D7%90%D7%A4%D7%9C%D7%99%D7%A7%D7%A6%D7%99%D7%95%D7%AA_%D7%9C%D7%90%D7%A0%D7%A9%D7%99%D7%9D_%D7%A2%D7%9D_%D7%9E%D7%95%D7%92%D7%91%D7%9C%D7%95%D7%AA" target="_blank" rel="noopener">כל זכות<span class="sr-only" data-i18n="newTab"> (נפתח בחלון חדש)</span></a></p>
       </details>
       <details>
@@ -244,7 +244,7 @@ footer.site a{color:var(--ink-2)}
       <details>
         <summary data-i18n="q6">האם הבדיקה הזו היא אישור שהאתר שלי עומד בחוק?</summary>
         <p data-i18n="a6">לא. היא מראה מה הבדיקות האוטומטיות מצאו בעמוד אחד, ועוזרת לתעדף תיקונים. היא לא מחליפה בדיקה ידנית מלאה, ולא ייעוץ משפטי.</p>
-        <p class="src"><span data-i18n="srcLabel">מקור:</span> <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener" lang="en">W3C: WCAG 2.2<span class="sr-only" data-i18n="newTab"> (נפתח בחלון חדש)</span></a></p>
+        <p class="src"><span data-i18n="srcLabel">מקור:</span> <a href="https://www.w3.org/WAI/standards-guidelines/wcag/" target="_blank" rel="noopener" lang="en">W3C: WCAG<span class="sr-only" data-i18n="newTab"> (נפתח בחלון חדש)</span></a></p>
       </details>
     </div>
   </section>
@@ -252,15 +252,15 @@ footer.site a{color:var(--ink-2)}
   <section class="block" id="studio" aria-labelledby="studio-title">
     <div class="wrap">
       <h2 id="studio-title" data-i18n="studioTitle">צריכים מישהו שיתקן?</h2>
-      <p class="studio" data-i18n="studioText">3Shamrocks Studio מתקן נגישות מהשורש: ברכיבים ובמערכת העיצוב של המוצר, כך שהתיקון לא נשבר בגרסה הבאה.</p>
-      <p class="studio"><a href="mailto:dave@3shamrocks.com?subject=Accessibility%20fixes" data-i18n="studioLink">כתבו לנו: dave@3shamrocks.com</a></p>
+      <p class="studio" data-i18n="studioText">ב-3Shamrocks Studio אני מתקן נגישות מהשורש: ברכיבים ובמערכת העיצוב של המוצר, כך שהתיקון לא נשבר בגרסה הבאה.</p>
+      <p class="studio"><a href="mailto:dave@3shamrocks.com?subject=Accessibility%20fixes" data-i18n="studioLink">כתבו לי: dave@3shamrocks.com</a></p>
     </div>
   </section>
 </main>
 
 <footer class="site">
   <div class="wrap">
-    <p>&copy; 2026 <a href="https://3shamrocks.com/">3Shamrocks Studio</a> · <span data-i18n="privacy">שומרים רק את שם האתר שנבדק והציון, בלי פרטים אישיים.</span></p>
+    <p>&copy; 2026 <a href="https://3shamrocks.com/">3Shamrocks Studio</a> · <span data-i18n="privacy">אני שומר את שם האתר שנבדק והציון. כדי להגביל את מספר הבדיקות אני שומר גם גיבוב (hash) חד-כיווני עם מלח של כתובת ה-IP, לכ-3 ימים. למי שקנה דוח אני שומר גיבוב של מפתח הרישיון ואת האתר שהוא משויך אליו. בלי שמות ובלי כתובות מייל.</span></p>
     <p><a href="accessibility-statement.html" data-i18n="stmtLink">הצהרת נגישות</a></p>
   </div>
 </footer>
@@ -271,24 +271,24 @@ footer.site a{color:var(--ink-2)}
 var API="https://otkvebgrdiayjnqrytrn.supabase.co/functions/v1/a11y-scan";
 var T={
 he:{skip:"דלג לתוכן הראשי",navLabel:"ראשי",navCheck:"בדיקה",navAbout:"מה הבדיקה יודעת",navFaq:"חוק ושאלות",h1:"בדיקת נגישות לאתר — חינם, תוך 20 שניות",
-lede:"מדביקים כתובת, ומקבלים ציון, את הבעיות החמורות בעמוד והסבר פשוט למה כל אחת מפריעה לאנשים עם מוגבלות. 44 בדיקות אוטומטיות לפי WCAG 2.2, בלי הרשמה.",
-urlLabel:"כתובת האתר לבדיקה",scanBtn:"בדקו עכשיו",urlHint:"בודקים עמוד אחד (הכתובת שהזנתם). זו לא ייעוץ משפטי ולא תעודת עמידה בתקן.",resTitle:"תוצאות הבדיקה",
+lede:"מדביקים כתובת, ומקבלים ציון, את הבעיות החמורות בעמוד והסבר פשוט למה כל אחת מפריעה לאנשים עם מוגבלות. בדיקות אוטומטיות לפי WCAG 2.x ברמות A/AA (הבסיס של תקן ישראלי 5568), בלי הרשמה.",
+urlLabel:"כתובת האתר לבדיקה",scanBtn:"בדקו עכשיו",urlHint:"בודקים עמוד אחד (הכתובת שהזנתם). זה לא ייעוץ משפטי ולא תעודת עמידה בתקן.",resTitle:"תוצאות הבדיקה",
 aboutTitle:"מה הבדיקה יכולה להגיד לכם, ומה לא",canTitle:"מה היא בודקת",
 can1:"את קוד ה-HTML של העמוד: תמונות בלי טקסט חלופי, שדות טופס בלי תווית, כפתורים וקישורים בלי שם, מבנה כותרות, שפה וכיווניות, זום חסום, iframe בלי כותרת, ARIA שגוי ועוד.",
 can2:"אם יש קישור להצהרת נגישות, ואם מותקן באתר תוסף נגישות (כמו accessiBe, UserWay, EqualWeb, נגיש בקליק).",can3:"ניגודיות צבעים, רק כשהצבעים כתובים ישירות בקוד העמוד.",
 cantTitle:"מה היא לא יכולה לראות",cant1:"בדיקות אוטומטיות מוצאות רק חלק מבעיות הנגישות. לא נבדקים: ניווט מלא במקלדת, חוויה עם קורא מסך, איכות הטקסט החלופי, הבנת התוכן, וידאו ומסמכים.",
-cant2:"תוכן שנבנה ב-JavaScript אחרי טעינת העמוד, ועיצוב שמגיע מקובצי CSS. באתרים כאלה התוצאה חלקית, ונגיד לכם את זה.",cant3:"ציון גבוה לא אומר שהאתר עומד בתקן, וזו לא חוות דעת משפטית. כדי לדעת באמת צריך גם בדיקה ידנית.",
-scoreHow:"איך מחושב הציון: מתחילים מ-100. כל בדיקה שנכשלה מורידה לפי חומרה: קריטי 10, חמור 6, בינוני 3, קל 1 (פי 1.5 אם הבעיה מופיעה 10 פעמים או יותר). המינימום הוא 0.",
+cant2:"תוכן שנבנה ב-JavaScript אחרי טעינת העמוד, ועיצוב שמגיע מקובצי CSS. באתרים כאלה התוצאה חלקית, ואגיד לכם את זה.",cant3:"ציון גבוה לא אומר שהאתר עומד בתקן, וזו לא חוות דעת משפטית. כדי לדעת באמת צריך גם בדיקה ידנית.",
+scoreHow:"איך מחושב הציון: מתחילים מ-100. כל בדיקת WCAG (רמות A/AA) שנכשלה מורידה לפי חומרה: קריטי 10, חמור 6, בינוני 3, קל 1 (פי 1.5 אם הבעיה מופיעה 10 פעמים או יותר). המינימום הוא 0. המלצות (best practice ו-AAA) והצהרת הנגישות מוצגות בנפרד ולא משפיעות על הציון.",
 faqTitle:"חוק נגישות אתרים: שאלות קצרות",q1:"האם העסק שלי חייב אתר נגיש בישראל?",a1:"אתר שנותן שירות לציבור נדרש לעמוד בתקנות הנגישות לשירות (תקן ישראלי 5568, שמבוסס על WCAG 2.0 ברמה AA) ולפרסם הצהרת נגישות. יש פטורים מסוימים, למשל לעסקים קטנים מאוד.",
-q2:"מה הסיכון אם האתר לא נגיש?",a2:"החוק מאפשר לבית המשפט לפסוק פיצוי של עד 50,000 ₪ בלי הוכחת נזק, ויש גם אכיפה של נציבות שוויון זכויות לאנשים עם מוגבלות.",
+q2:"מה הסיכון אם האתר לא נגיש?",a2:"החוק מאפשר לבית המשפט לפסוק פיצוי של עד 50,000 ₪ (צמוד למדד) בלי הוכחת נזק, ויש גם אכיפה של נציבות שוויון זכויות לאנשים עם מוגבלות.",
 q3:"אני מוכר לאירופה. מה זה ה-EAA?",a3:"חוק הנגישות האירופי (European Accessibility Act, Directive 2019/882) חל מ-28 ביוני 2025 על מוצרים ושירותים לצרכנים, כולל מסחר מקוון, גם לעסקים מחוץ לאיחוד שמוכרים לצרכנים בו. מיקרו-עסקים (פחות מ-10 עובדים ומחזור עד 2 מיליון אירו) פטורים בתחום השירותים.",
 q4:"ובארצות הברית?",a4:"בארה\"ב הוגשו ב-2025 כ-5,000 תביעות על נגישות דיגיטלית לפי חוק ה-ADA, רובן נגד אתרי מסחר.",
 q5:"יש לי תוסף נגישות. זה לא מספיק?",a5:"לא. תוסף (וידג'ט) משנה את התצוגה, אבל לא מתקן את הקוד שמתחת: תמונה בלי alt או טופס בלי תוויות נשארים כאלה. ב-2025 רשות הסחר הפדרלית בארה\"ב (FTC) חייבה את accessiBe לשלם מיליון דולר על טענות מטעות שהכלי שלה הופך כל אתר לעומד בהנחיות WCAG.",
 q6:"האם הבדיקה הזו היא אישור שהאתר שלי עומד בחוק?",a6:"לא. היא מראה מה הבדיקות האוטומטיות מצאו בעמוד אחד, ועוזרת לתעדף תיקונים. היא לא מחליפה בדיקה ידנית מלאה, ולא ייעוץ משפטי.",
-srcLabel:"מקור:",newTab:" (נפתח בחלון חדש)",studioTitle:"צריכים מישהו שיתקן?",studioText:"3Shamrocks Studio מתקן נגישות מהשורש: ברכיבים ובמערכת העיצוב של המוצר, כך שהתיקון לא נשבר בגרסה הבאה.",
-studioLink:"כתבו לנו: dave@3shamrocks.com",privacy:"שומרים רק את שם האתר שנבדק והציון, בלי פרטים אישיים.",stmtLink:"הצהרת נגישות",
+srcLabel:"מקור:",newTab:" (נפתח בחלון חדש)",studioTitle:"צריכים מישהו שיתקן?",studioText:"ב-3Shamrocks Studio אני מתקן נגישות מהשורש: ברכיבים ובמערכת העיצוב של המוצר, כך שהתיקון לא נשבר בגרסה הבאה.",
+studioLink:"כתבו לי: dave@3shamrocks.com",privacy:"אני שומר את שם האתר שנבדק והציון. כדי להגביל את מספר הבדיקות אני שומר גם גיבוב (hash) חד-כיווני עם מלח של כתובת ה-IP, לכ-3 ימים. למי שקנה דוח אני שומר גיבוב של מפתח הרישיון ואת האתר שהוא משויך אליו. בלי שמות ובלי כתובות מייל.",stmtLink:"הצהרת נגישות",
 scanning:"בודקים את העמוד… זה לוקח בדרך כלל 5 עד 20 שניות.",done:"הבדיקה הסתיימה. התוצאות למטה.",needUrl:"הזינו כתובת אתר, למשל example.co.il",
-score:"ציון",of100:"/100",noScore:"אין ציון",noScoreWhy:"העמוד נבנה כמעט כולו ב-JavaScript, ולכן הבדיקה ראתה רק שלד ריק. כדי לא להטעות, לא נתנו ציון.",
+score:"ציון",of100:"/100",noScore:"אין ציון",noScoreWhy:"העמוד נבנה כמעט כולו ב-JavaScript, ולכן הבדיקה ראתה רק שלד ריק. כדי לא להטעות, לא נתתי ציון.",
 found:"נמצאו",issuesKinds:"סוגי בעיות",checksRun:"בדיקות הורצו",passed:"עברו",sev:{critical:"קריטי",serious:"חמור",moderate:"בינוני",minor:"קל"},
 overlayYes:"זוהה תוסף נגישות: ",overlayNote:"תוסף משנה את התצוגה אבל לא מתקן את הקוד. הבעיות למטה נמצאו בקוד עצמו, גם עם התוסף.",overlayNo:"לא זוהה תוסף נגישות",overlayNoNote:"וזה בסדר: תיקון בקוד עדיף על תוסף.",
 stmtYes:"נמצא קישור להצהרת נגישות",stmtNo:"לא נמצא קישור להצהרת נגישות",stmtNoNote:"בישראל זו דרישה לאתר שנותן שירות לציבור. הדוח המלא כולל טיוטה מוכנה.",
@@ -299,31 +299,31 @@ ctaBtn:"לרכישת הדוח המלא",ctaSoon:"הדוח המלא יהיה זמ
 unlocking:"בודקים את הרישיון ומריצים את הבדיקה המלאה…",paidBadge:"דוח מלא",printReport:"הדפסה / שמירה כ-PDF",
 jsNote:"שימו לב: רוב העמוד נבנה ב-JavaScript, ולכן התוצאה חלקית.",langNote:"התוצאות מוצגות בשפה שבה הורצה הבדיקה. כדי לראות אותן בשפה האחרת, הריצו שוב.",
 scanned:"נבדק:",rerun:"בדיקה חדשה",
-stmtTitle:"מחולל הצהרת נגישות",stmtIntro:"מלאו את הפרטים, וקבלו טיוטת הצהרה בעברית ובאנגלית שמבוססת על הבדיקה. זו טיוטה: עברו עליה ועדכנו לפני פרסום.",
-fBiz:"שם העסק",fSite:"כתובת האתר",fContact:"שם האחראי/ת על נגישות",fPhone:"טלפון לפניות נגישות",fEmail:"אימייל לפניות נגישות",fDate:"תאריך עדכון ההצהרה",fDone:"מה כבר הונגש באתר (אפשר לערוך)",fLimits:"מגבלות ידועות (מולא מהבדיקה, אפשר לערוך)",
-fDoneDefault:"מבנה כותרות ותוויות לשדות טופס\nטקסט חלופי לתמונות\nאפשרות הגדלת טקסט במובייל",genBtn:"יצירת טיוטה",printStmt:"הדפסה / PDF של ההצהרה",copyStmt:"העתקת ה-HTML",copied:"הועתק",
+stmtTitle:"מחולל הצהרת נגישות",stmtIntro:"מלאו את הפרטים, וקבלו טיוטת הצהרה בעברית ובאנגלית שמבוססת על הבדיקה: מה נמצא תקין ומה עדיין לא. זו טיוטה: עברו עליה ועדכנו לפני פרסום.",
+fBiz:"שם העסק",fContact:"שם האחראי/ת על נגישות",fPhone:"טלפון לפניות נגישות",fEmail:"אימייל לפניות נגישות",fDate:"תאריך עדכון ההצהרה",advisory:"המלצה",legal:"דרישה חוקית",related:"קשור ל-",
+genBtn:"יצירת טיוטה",printStmt:"הדפסה / PDF של ההצהרה",copyStmt:"העתקת ה-HTML",copied:"הועתק",
 draftFlag:"טיוטה לבדיקה. זו לא חוות דעת משפטית ולא אישור עמידה בתקן. עברו על הנוסח ועדכנו אותו לפי המצב באתר לפני פרסום.",
-err:{rate_limited:"הגעתם למגבלת הבדיקות החינמיות לשעה. נסו שוב בעוד שעה.",blocked_host:"אי אפשר לבדוק את הכתובת הזו.",blocked_ip:"אי אפשר לבדוק את הכתובת הזו.",bad_port:"אפשר לבדוק רק אתרים בפורטים הרגילים (80/443).",bad_scheme:"אפשר לבדוק רק כתובות http או https.",bad_url:"הכתובת לא תקינה. נסו למשל example.co.il",dns_failed:"לא מצאנו את האתר. בדקו שהכתובת נכונה.",timeout:"האתר לא ענה תוך 10 שניות.",fetch_failed:"לא הצלחנו להתחבר לאתר.",http_error:"האתר החזיר שגיאה",not_html:"הכתובת לא מחזירה עמוד אינטרנט (HTML).",too_large:"העמוד גדול מ-3MB.",too_many_redirects:"יותר מדי הפניות (redirects).",blocked_by_site:"האתר חוסם בדיקות אוטומטיות (למשל Cloudflare), ולכן אי אפשר לבדוק אותו מכאן.",empty_page:"העמוד שהתקבל ריק.",parse_failed:"לא הצלחנו לקרוא את העמוד.",license_invalid:"מפתח הרישיון לא נמצא. בדקו שהעתקתם אותו במלואו.",license_revoked:"הרישיון הזה בוטל (החזר כספי או מחלוקת).",license_check_failed:"לא הצלחנו לאמת את הרישיון כרגע. נסו שוב בעוד דקה.",license_other_domain:"הרישיון הזה כבר משויך לאתר אחר: ",license_daily_cap:"הגעתם ל-10 בדיקות מלאות היום לרישיון הזה. נסו שוב מחר.",paid_not_available:"הדוח המלא עוד לא זמין.",unavailable:"השירות לא זמין כרגע. נסו שוב בעוד כמה דקות.",network:"בעיית חיבור. בדקו את האינטרנט ונסו שוב.",generic:"משהו השתבש. נסו שוב."}
+err:{rate_limited:"הגעתם למגבלת הבדיקות החינמיות לשעה. נסו שוב בעוד שעה.",blocked_host:"אי אפשר לבדוק את הכתובת הזו.",blocked_ip:"אי אפשר לבדוק את הכתובת הזו.",bad_port:"אפשר לבדוק רק אתרים בפורטים הרגילים (80/443).",bad_scheme:"אפשר לבדוק רק כתובות http או https.",bad_url:"הכתובת לא תקינה. נסו למשל example.co.il",dns_failed:"לא מצאתי את האתר. בדקו שהכתובת נכונה.",timeout:"האתר לא ענה תוך 10 שניות.",fetch_failed:"לא הצלחתי להתחבר לאתר.",http_error:"האתר החזיר שגיאה",not_html:"הכתובת לא מחזירה עמוד אינטרנט (HTML).",too_large:"העמוד גדול מ-3MB.",too_many_redirects:"יותר מדי הפניות (redirects).",blocked_by_site:"האתר הזה חוסם בדיקות אוטומטיות מהשרת שלי (למשל חומת הגנה מפני בוטים), ולכן אי אפשר לבדוק אותו מכאן.",empty_page:"העמוד שהתקבל ריק.",parse_failed:"לא הצלחתי לקרוא את העמוד.",license_invalid:"מפתח הרישיון לא נמצא. בדקו שהעתקתם אותו במלואו.",license_revoked:"הרישיון הזה בוטל (החזר כספי או מחלוקת).",license_check_failed:"לא הצלחתי לאמת את המפתח כרגע. נסו שוב בעוד כמה דקות.",license_other_domain:"הרישיון הזה כבר משויך לאתר אחר: ",license_daily_cap:"הגעתם ל-10 בדיקות מלאות היום לרישיון הזה. נסו שוב מחר.",paid_not_available:"הדוח המלא עוד לא זמין.",unavailable:"השירות לא זמין כרגע. נסו שוב בעוד כמה דקות.",network:"בעיית חיבור. בדקו את האינטרנט ונסו שוב.",generic:"משהו השתבש. נסו שוב."}
 },
 en:{skip:"Skip to main content",navLabel:"Main",navCheck:"Check",navAbout:"What it can tell you",navFaq:"Law & FAQ",h1:"Website accessibility check — free, in 20 seconds",
-lede:"Paste an address and get a score, the most serious issues on the page, and a plain-language reason why each one gets in the way of disabled people. 44 automated WCAG 2.2 checks, no sign-up.",
+lede:"Paste an address and get a score, the most serious issues on the page, and a plain-language reason why each one gets in the way of disabled people. Automated checks based on WCAG 2.x A/AA (the basis of IS 5568), no sign-up.",
 urlLabel:"Website address to check",scanBtn:"Check now",urlHint:"Checks one page (the address you enter). Not legal advice and not a compliance certificate.",resTitle:"Results",
 aboutTitle:"What this check can and can't tell you",canTitle:"What it checks",
 can1:"The page's HTML: images without alt text, form fields without labels, buttons and links without names, heading structure, language and direction, blocked zoom, untitled iframes, broken ARIA and more.",
 can2:"Whether there is a link to an accessibility statement, and whether an overlay widget is installed (e.g. accessiBe, UserWay, EqualWeb, Enable).",can3:"Colour contrast, only where colours are written directly in the page code.",
 cantTitle:"What it can't see",cant1:"Automated checks find only part of accessibility problems. Not covered: full keyboard use, the screen-reader experience, alt-text quality, content clarity, video and documents.",
-cant2:"Content built by JavaScript after the page loads, and styling from CSS files. On such sites the result is partial, and we'll tell you so.",cant3:"A high score doesn't mean the site complies, and this is not a legal opinion. To really know you also need a manual review.",
-scoreHow:"How the score works: start at 100. Each failed check deducts by severity: critical 10, serious 6, moderate 3, minor 1 (×1.5 if it occurs 10+ times). Minimum 0.",
+cant2:"Content built by JavaScript after the page loads, and styling from CSS files. On such sites the result is partial, and I'll tell you so.",cant3:"A high score doesn't mean the site complies, and this is not a legal opinion. To really know you also need a manual review.",
+scoreHow:"How the score works: start at 100. Each failed WCAG (A/AA) check deducts by severity: critical 10, serious 6, moderate 3, minor 1 (×1.5 if it occurs 10+ times). Minimum 0. Advisory items (best practice and AAA) and the accessibility statement are shown separately and don't affect the score.",
 faqTitle:"Website accessibility law: short answers",q1:"Does my business need an accessible website in Israel?",a1:"Sites that serve the public must meet the service accessibility regulations (Israeli Standard 5568, based on WCAG 2.0 AA) and publish an accessibility statement. Some exemptions exist, e.g. for very small businesses.",
-q2:"What is the risk if it isn't accessible?",a2:"The law lets courts award up to ₪50,000 in compensation without proof of damage, and the Commission for Equal Rights of Persons with Disabilities also enforces it.",
+q2:"What is the risk if it isn't accessible?",a2:"The law lets courts award up to ₪50,000 (index-linked) in compensation without proof of damage, and the Commission for Equal Rights of Persons with Disabilities also enforces it.",
 q3:"I sell into Europe. What is the EAA?",a3:"The European Accessibility Act (Directive 2019/882) applies from 28 June 2025 to consumer products and services, including e-commerce, also for non-EU businesses selling to EU consumers. Microenterprises (under 10 staff and up to €2M turnover) are exempt for services.",
 q4:"And in the US?",a4:"About 5,000 digital accessibility lawsuits were filed under the ADA in 2025, most against e-commerce sites.",
 q5:"I have an accessibility widget. Isn't that enough?",a5:"No. A widget changes the display but doesn't fix the code underneath: an image without alt or a form without labels stays that way. In 2025 the US FTC ordered accessiBe to pay $1M over misleading claims that its tool makes any website WCAG compliant.",
 q6:"Is this check proof that my site complies?",a6:"No. It shows what automated checks found on one page and helps you prioritise fixes. It doesn't replace a full manual review or legal advice.",
-srcLabel:"Source:",newTab:" (opens in a new tab)",studioTitle:"Need someone to fix it?",studioText:"3Shamrocks Studio fixes accessibility at the source: in the product's components and design system, so the fix doesn't break in the next release.",
-studioLink:"Email us: dave@3shamrocks.com",privacy:"We store only the checked site's host name and score, no personal data.",stmtLink:"Accessibility statement",
+srcLabel:"Source:",newTab:" (opens in a new tab)",studioTitle:"Need someone to fix it?",studioText:"At 3Shamrocks Studio I fix accessibility at the source: in the product's components and design system, so the fix doesn't break in the next release.",
+studioLink:"Email me: dave@3shamrocks.com",privacy:"I store the checked site's host name and score. For rate limiting I also keep a salted, one-way hash of your IP for about 3 days. For buyers I keep a hash of the license key and the site it's tied to. No names or emails.",stmtLink:"Accessibility statement",
 scanning:"Checking the page… this usually takes 5 to 20 seconds.",done:"Check finished. Results below.",needUrl:"Enter a website address, e.g. example.com",
-score:"Score",of100:"/100",noScore:"No score",noScoreWhy:"The page is built almost entirely by JavaScript, so the check saw only an empty shell. To avoid misleading you, we didn't give a score.",
+score:"Score",of100:"/100",noScore:"No score",noScoreWhy:"The page is built almost entirely by JavaScript, so the check saw only an empty shell. To avoid misleading you, I didn't give a score.",
 found:"Found",issuesKinds:"issue types",checksRun:"checks run",passed:"passed",sev:{critical:"Critical",serious:"Serious",moderate:"Moderate",minor:"Minor"},
 overlayYes:"Overlay widget detected: ",overlayNote:"A widget changes the display but doesn't fix the code. The issues below were found in the code itself, widget or not.",overlayNo:"No overlay widget detected",overlayNoNote:"That's fine: fixing the code beats a widget.",
 stmtYes:"Accessibility statement link found",stmtNo:"No accessibility statement link found",stmtNoNote:"In Israel it's required for sites serving the public; the EAA requires accessibility information too. The full report includes a ready draft.",
@@ -334,11 +334,11 @@ ctaBtn:"Get the full report",ctaSoon:"The full report will be available to buy s
 unlocking:"Checking the license and running the full check…",paidBadge:"Full report",printReport:"Print / save as PDF",
 jsNote:"Note: most of the page is built by JavaScript, so the result is partial.",langNote:"Results are shown in the language the check ran in. Run it again to see them in the other language.",
 scanned:"Checked:",rerun:"New check",
-stmtTitle:"Accessibility statement generator",stmtIntro:"Fill in the details to get a Hebrew and English statement draft based on the check. It is a draft: review and update it before publishing.",
-fBiz:"Business name",fSite:"Website address",fContact:"Accessibility contact person",fPhone:"Phone for accessibility requests",fEmail:"Email for accessibility requests",fDate:"Statement date",fDone:"What has already been made accessible (editable)",fLimits:"Known limitations (pre-filled from the check, editable)",
-fDoneDefault:"Heading structure and form field labels\nText alternatives for images\nText can be zoomed on mobile",genBtn:"Create draft",printStmt:"Print / PDF the statement",copyStmt:"Copy the HTML",copied:"Copied",
+stmtTitle:"Accessibility statement generator",stmtIntro:"Fill in the details to get a Hebrew and English statement draft based on the check: what was found in order and what isn't yet. It is a draft: review and update it before publishing.",
+fBiz:"Business name",fContact:"Accessibility contact person",fPhone:"Phone for accessibility requests",fEmail:"Email for accessibility requests",fDate:"Statement date",advisory:"Advisory",legal:"Legal requirement",related:"related to",
+genBtn:"Create draft",printStmt:"Print / PDF the statement",copyStmt:"Copy the HTML",copied:"Copied",
 draftFlag:"Draft for review. This is not a legal opinion or a compliance certificate. Review the wording and update it to match the site before publishing.",
-err:{rate_limited:"You've reached the free checks limit for this hour. Try again in an hour.",blocked_host:"This address can't be checked.",blocked_ip:"This address can't be checked.",bad_port:"Only sites on the standard ports (80/443) can be checked.",bad_scheme:"Only http or https addresses can be checked.",bad_url:"That address isn't valid. Try e.g. example.com",dns_failed:"We couldn't find that site. Check the address.",timeout:"The site didn't respond within 10 seconds.",fetch_failed:"We couldn't connect to the site.",http_error:"The site returned an error",not_html:"The address doesn't return a web page (HTML).",too_large:"The page is larger than 3MB.",too_many_redirects:"Too many redirects.",blocked_by_site:"The site blocks automated checks (e.g. Cloudflare), so it can't be checked from here.",empty_page:"The page we received was empty.",parse_failed:"We couldn't read the page.",license_invalid:"License key not found. Check you copied all of it.",license_revoked:"This license was revoked (refund or dispute).",license_check_failed:"We couldn't verify the license right now. Try again in a minute.",license_other_domain:"This license is already tied to another site: ",license_daily_cap:"You've used today's 10 full checks for this license. Try again tomorrow.",paid_not_available:"The full report isn't available yet.",unavailable:"The service is unavailable right now. Try again in a few minutes.",network:"Connection problem. Check your internet and try again.",generic:"Something went wrong. Please try again."}
+err:{rate_limited:"You've reached the free checks limit for this hour. Try again in an hour.",blocked_host:"This address can't be checked.",blocked_ip:"This address can't be checked.",bad_port:"Only sites on the standard ports (80/443) can be checked.",bad_scheme:"Only http or https addresses can be checked.",bad_url:"That address isn't valid. Try e.g. example.com",dns_failed:"I couldn't find that site. Check the address.",timeout:"The site didn't respond within 10 seconds.",fetch_failed:"I couldn't connect to the site.",http_error:"The site returned an error",not_html:"The address doesn't return a web page (HTML).",too_large:"The page is larger than 3MB.",too_many_redirects:"Too many redirects.",blocked_by_site:"This site blocks automated checks from my server (e.g. bot protection or a firewall), so it can't be checked from here.",empty_page:"The page we received was empty.",parse_failed:"I couldn't read the page.",license_invalid:"License key not found. Check you copied all of it.",license_revoked:"This license was revoked (refund or dispute).",license_check_failed:"I couldn't verify the key right now. Try again in a few minutes.",license_other_domain:"This license is already tied to another site: ",license_daily_cap:"You've used today's 10 full checks for this license. Try again tomorrow.",paid_not_available:"The full report isn't available yet.",unavailable:"The service is unavailable right now. Try again in a few minutes.",network:"Connection problem. Check your internet and try again.",generic:"Something went wrong. Please try again."}
 }};
 var lang="he", last=null, cfg={paid_enabled:false,buy_url:null}, licKey="";
 function $(id){return document.getElementById(id);}
@@ -402,8 +402,8 @@ function render(j, relang){
   if(j.score===null||j.score===undefined){h+='<p class="score">'+esc(L.noScore)+'</p>';}
   else{h+='<p class="score" aria-label="'+esc(L.score+" "+j.score+" "+L.of100)+'">'+j.score+'<small>'+L.of100+'</small></p><div class="bar" aria-hidden="true"><span style="width:'+Math.max(0,Math.min(100,j.score))+'%"></span></div>';}
   h+='</div><div><p><strong>'+esc(L.scanned)+'</strong> <span dir="ltr">'+esc(j.url)+'</span>'+(j.paid?' · <span class="sev minor">'+esc(L.paidBadge)+'</span>':'')+'</p>';
-  h+='<p>'+esc(L.found)+' '+j.total_findings+' '+esc(L.issuesKinds)+' · '+j.checks_run+' '+esc(L.checksRun)+' · '+(j.passed?j.passed.length:0)+' '+esc(L.passed)+'</p>';
-  h+='<ul class="counts">';["critical","serious","moderate","minor"].forEach(function(s){h+='<li>'+esc(sevLabel(s))+': '+(j.counts[s]||0)+'</li>';});h+='</ul></div></div>';
+  h+='<p><bdi>'+j.checks_run+'</bdi> '+esc(L.checksRun)+' · <bdi>'+(j.passed_count||0)+'</bdi> '+esc(L.passed)+' · '+esc(L.found)+' <bdi>'+j.total_findings+'</bdi> '+esc(L.issuesKinds)+'</p>';
+  h+='<ul class="counts">';["critical","serious","moderate","minor"].forEach(function(s){h+='<li>'+esc(sevLabel(s))+': <bdi>'+(j.counts[s]||0)+'</bdi></li>';});h+='<li>'+esc(L.advisory)+': <bdi>'+(j.advisory_count||0)+'</bdi></li></ul></div></div>';
   if(j.score===null||j.score===undefined) h+='<p class="hint">'+esc(L.noScoreWhy)+'</p>'; else if(j.stats&&j.stats.jsRendered) h+='<p class="hint">'+esc(L.jsNote)+'</p>';
   h+='<div class="facts"><div class="fact"><strong>'+(j.overlays&&j.overlays.length?esc(L.overlayYes+j.overlays.join(", ")):esc(L.overlayNo))+'</strong>'+esc(j.overlays&&j.overlays.length?L.overlayNote:L.overlayNoNote)+'</div>';
   h+='<div class="fact"><strong>'+esc(j.statement&&j.statement.found?L.stmtYes:L.stmtNo)+'</strong>'+(j.statement&&j.statement.found?'<span dir="auto">'+esc(j.statement.text||j.statement.href||"")+'</span>':esc(L.stmtNoNote))+'</div></div></div>';
@@ -411,8 +411,10 @@ function render(j, relang){
   else{
     h+='<h3 style="margin-top:28px">'+esc(j.paid?L.allIssues:L.topIssues)+'</h3><ol class="issues">';
     j.findings.forEach(function(f){
-      h+='<li class="issue"><h3><span class="sev '+esc(f.severity)+'">'+esc(sevLabel(f.severity))+'</span> <span>'+esc(f.title)+'</span></h3>';
-      h+='<p class="meta">'+esc(L.wcag)+' '+esc(f.wcag)+(f.level&&f.level!=="LAW"?' ('+esc(f.level)+')':'')+' · '+f.count+' '+esc(L.times)+'</p>';
+      var k=f.kind||"wcag", badge=k==="advisory"?'<span class="sev adv">'+esc(L.advisory)+'</span>':k==="legal"?'<span class="sev legal">'+esc(L.legal)+'</span>':'<span class="sev '+esc(f.severity)+'">'+esc(sevLabel(f.severity))+'</span>';
+      var ref=k==="legal"?'<bdi dir="ltr">'+esc(f.wcag)+'</bdi>':k==="advisory"?esc(L.related)+' <bdi dir="ltr">WCAG '+esc(f.wcag)+'</bdi>':'<bdi dir="ltr">WCAG '+esc(f.wcag)+' ('+esc(f.level)+')</bdi>';
+      h+='<li class="issue"><h3>'+badge+' <span>'+esc(f.title)+'</span></h3>';
+      h+='<p class="meta">'+ref+' · <bdi>'+f.count+'</bdi> '+esc(L.times)+'</p>';
       h+='<p>'+esc(f.why)+'</p>';
       if(f.examples&&f.examples.length){h+='<div class="ex"><p class="meta">'+esc(L.examples)+'</p>';f.examples.forEach(function(x){h+='<code>'+esc(x.snippet)+'</code>';});h+='</div>';}
       if(f.fix){h+='<div class="fix"><p><strong>'+esc(L.howFix)+'</strong> '+esc(f.fix)+'</p>'+(f.code?'<pre><code>'+esc(f.code)+'</code></pre>':'')+'</div>';}
@@ -424,9 +426,10 @@ function render(j, relang){
     h+='<div class="cta"><h3>'+esc(L.ctaTitle)+'</h3>';
     if(j.hidden_findings>0) h+='<p>'+esc(L.moreHidden(j.hidden_findings))+'</p>';
     h+='<p><strong>'+esc(L.ctaPrice)+'</strong></p><ul><li>'+esc(L.ctaL1)+'</li><li>'+esc(L.ctaL2)+'</li><li>'+esc(L.ctaL3)+'</li><li>'+esc(L.ctaL4)+'</li></ul>';
-    if(cfg.paid_enabled&&cfg.buy_url) h+='<a class="btn" href="'+esc(cfg.buy_url)+'" target="_blank" rel="noopener">'+esc(L.ctaBtn)+'<span class="sr-only">'+esc(L.newTab)+'</span></a>';
+    var on=j.paid_enabled&&j.buy_url;
+    if(on) h+='<a class="btn" href="'+esc(j.buy_url)+'" target="_blank" rel="noopener">'+esc(L.ctaBtn)+'<span class="sr-only">'+esc(L.newTab)+'</span></a>';
     else h+='<p class="hint">'+esc(L.ctaSoon)+'</p>';
-    h+='<form class="lic" id="lic-form" novalidate><label for="lic">'+esc(L.licLabel)+'</label><div class="row"><input type="text" id="lic" autocomplete="off" spellcheck="false" dir="ltr" aria-describedby="lic-hint lic-msg"><button class="btn ghost" type="submit">'+esc(L.licBtn)+'</button></div><p class="hint" id="lic-hint">'+esc(L.licHint)+'</p><p class="msg" id="lic-msg" role="status" aria-live="polite"></p></form>';
+    if(on) h+='<form class="lic" id="lic-form" novalidate><label for="lic">'+esc(L.licLabel)+'</label><div class="row"><input type="text" id="lic" autocomplete="off" spellcheck="false" dir="ltr" aria-describedby="lic-hint lic-msg"><button class="btn ghost" type="submit">'+esc(L.licBtn)+'</button></div><p class="hint" id="lic-hint">'+esc(L.licHint)+'</p><p class="msg" id="lic-msg" role="status" aria-live="polite"></p></form>';
     h+='</div>';
   }else{
     h+='<div class="actions no-print"><button type="button" class="btn ghost" id="print-report">'+esc(L.printReport)+'</button></div>';
@@ -434,7 +437,7 @@ function render(j, relang){
   $("res-body").innerHTML=h;
   var lf=$("lic-form"); if(lf) lf.addEventListener("submit",onLicense);
   var pr=$("print-report"); if(pr) pr.addEventListener("click",function(){document.body.className="print-report";window.print();});
-  if(j.paid) renderStmtForm(j); else {$("stmt-wrap").hidden=true;$("stmt-wrap").innerHTML="";}
+  if(j.paid&&j.statement_draft) renderStmtForm(j); else {$("stmt-wrap").hidden=true;$("stmt-wrap").innerHTML="";}
 }
 function onLicense(e){
   e.preventDefault();
@@ -449,47 +452,27 @@ function onLicense(e){
 
 function renderStmtForm(j){
   var L=T[lang], w=$("stmt-wrap"), today=new Date().toISOString().slice(0,10);
-  var limits=j.findings.map(function(f){return f.title;}).join("\n");
   var h='<section class="panel" style="margin-top:28px" aria-labelledby="stmt-title"><h3 id="stmt-title">'+esc(L.stmtTitle)+'</h3><p class="hint">'+esc(L.stmtIntro)+'</p>';
   h+='<form id="stmt-form" novalidate><div class="grid2" style="margin-top:14px">';
   function fld(id,label,type,val,ac){return '<div class="field"><label for="'+id+'">'+esc(label)+'</label><input type="'+type+'" id="'+id+'" value="'+esc(val||"")+'"'+(ac?' autocomplete="'+ac+'"':'')+'></div>';}
-  h+=fld("s-biz",L.fBiz,"text","","organization")+fld("s-site",L.fSite,"text",j.url,"url")+fld("s-contact",L.fContact,"text","","name")+fld("s-phone",L.fPhone,"tel","","tel")+fld("s-email",L.fEmail,"email","","email")+fld("s-date",L.fDate,"date",today);
-  h+='</div><div class="field" style="margin-top:14px"><label for="s-done">'+esc(L.fDone)+'</label><textarea id="s-done">'+esc(L.fDoneDefault)+'</textarea></div>';
-  h+='<div class="field" style="margin-top:14px"><label for="s-limits">'+esc(L.fLimits)+'</label><textarea id="s-limits">'+esc(limits)+'</textarea></div>';
-  h+='<div class="actions"><button class="btn" type="submit">'+esc(L.genBtn)+'</button></div></form></section><div id="stmt-out"></div>';
+  h+=fld("s-biz",L.fBiz,"text","","organization")+fld("s-contact",L.fContact,"text","","name")+fld("s-phone",L.fPhone,"tel","","tel")+fld("s-email",L.fEmail,"email","","email")+fld("s-date",L.fDate,"date",today);
+  h+='</div><div class="actions"><button class="btn" type="submit">'+esc(L.genBtn)+'</button></div></form></section><div id="stmt-out"></div>';
   w.innerHTML=h; w.hidden=false;
   $("stmt-form").addEventListener("submit",function(e){e.preventDefault();genStatement(j);});
 }
-function lines(s){return s.split(/\n+/).map(function(x){return x.trim();}).filter(Boolean);}
 function genStatement(j){
-  var v=function(id){return $(id).value.trim();};
-  var biz=v("s-biz")||"[שם העסק]", site=v("s-site")||j.url, who=v("s-contact"), ph=v("s-phone"), em=v("s-email"), date=v("s-date"), done=lines(v("s-done")), lim=lines(v("s-limits"));
-  var scanDate=(j.scanned_at||"").slice(0,10);
-  var ul=function(a){return a.length?"<ul>"+a.map(function(x){return "<li>"+esc(x)+"</li>";}).join("")+"</ul>":"";};
-  var he='<article class="stmt" lang="he" dir="rtl"><h3>הצהרת נגישות — '+esc(biz)+'</h3><p><strong>עדכון אחרון:</strong> '+esc(date)+'</p>'+
-    '<p>'+esc(biz)+' רואה חשיבות בשירות שוויוני ונגיש לכל הלקוחות, כולל אנשים עם מוגבלות, ופועלת להנגיש את האתר <bdi dir="ltr">'+esc(site)+'</bdi>.</p>'+
-    '<h4>רמת הנגישות באתר</h4><p>אנחנו פועלים להתאים את האתר לדרישות תקן ישראלי 5568 (המבוסס על הנחיות WCAG 2.0 ברמה AA), ובמידת האפשר להנחיות WCAG 2.2 ברמה AA. ההנגשה היא תהליך מתמשך, וייתכן שחלקים באתר עדיין אינם נגישים במלואם.</p>'+
-    '<h4>מה נבדק</h4><p>ב-'+esc(scanDate)+' נבדק העמוד <bdi dir="ltr">'+esc(j.url)+'</bdi> בבדיקה אוטומטית ('+esc(j.checks_run)+' בדיקות). בדיקה אוטומטית מזהה רק חלק מבעיות הנגישות; [מומלץ להשלים בדיקה ידנית, כולל מקלדת וקורא מסך, ולציין כאן מתי בוצעה].</p>'+
-    (done.length?'<h4>התאמות שבוצעו באתר</h4>'+ul(done):'')+
-    (lim.length?'<h4>מגבלות ידועות</h4><p>החלקים הבאים עדיין אינם נגישים במלואם, ואנחנו עובדים על תיקונם:</p>'+ul(lim):'')+
-    '<h4>פניות בנושא נגישות</h4><p>נתקלתם בבעיה? נשמח לשמוע ולעזור. אפשר לפנות '+(who?'אל '+esc(who)+', ':'')+(ph?'בטלפון <bdi dir="ltr">'+esc(ph)+'</bdi>, ':'')+(em?'במייל <a href="mailto:'+esc(em)+'">'+esc(em)+'</a>':'')+'. [ציינו תוך כמה ימים תינתן תשובה].</p></article>';
-  var en='<article class="stmt" lang="en" dir="ltr"><h3>Accessibility statement — '+esc(biz)+'</h3><p><strong>Last updated:</strong> '+esc(date)+'</p>'+
-    '<p>'+esc(biz)+' is committed to giving everyone, including people with disabilities, equal access to '+esc(site)+'.</p>'+
-    '<h4>Accessibility level</h4><p>We are working to meet WCAG 2.2 level AA (and Israeli Standard 5568, based on WCAG 2.0 AA). Accessibility is ongoing work, and some parts of the site may not yet be fully accessible.</p>'+
-    '<h4>What was checked</h4><p>On '+esc(scanDate)+' the page '+esc(j.url)+' was checked with an automated test ('+esc(j.checks_run)+' checks). Automated checks find only part of accessibility issues; [we recommend a manual review, including keyboard and screen reader, and stating here when it was done].</p>'+
-    (done.length?'<h4>What we have done</h4>'+ul(done):'')+
-    (lim.length?'<h4>Known limitations</h4><p>These parts are not yet fully accessible, and we are working on them:</p>'+ul(lim):'')+
-    '<h4>Contact us about accessibility</h4><p>Found a barrier? We want to hear about it. Contact '+(who?esc(who)+', ':'')+(ph?'phone '+esc(ph)+', ':'')+(em?'email <a href="mailto:'+esc(em)+'">'+esc(em)+'</a>':'')+'. [State how many days a reply will take].</p></article>';
-  var L=T[lang];
+  var L=T[lang], v=function(id){return $(id).value.trim();};
+  var vals={BIZ:v("s-biz"),DATE:v("s-date"),WHO:v("s-contact"),PHONE:v("s-phone"),EMAIL:v("s-email")};
+  function fill(tpl,he){return tpl.replace(/\{\{(BIZ|DATE|WHO|PHONE|EMAIL)\}\}/g,function(m,k){var x=vals[k];return x?(k==="PHONE"||k==="EMAIL"?'<bdi dir="ltr">'+esc(x)+'</bdi>':esc(x)):(he?"[למלא]":"[to fill]");});}
   var out=$("stmt-out");
-  out.innerHTML='<p class="draft-flag" role="note">'+esc(L.draftFlag)+'</p><div class="actions no-print"><button type="button" class="btn ghost" id="print-stmt">'+esc(L.printStmt)+'</button><button type="button" class="btn ghost" id="copy-stmt">'+esc(L.copyStmt)+'</button><span id="copy-msg" role="status" aria-live="polite"></span></div>'+he+en;
+  out.innerHTML='<p class="draft-flag" role="note">'+esc(L.draftFlag)+'</p><div class="actions no-print"><button type="button" class="btn ghost" id="print-stmt">'+esc(L.printStmt)+'</button><button type="button" class="btn ghost" id="copy-stmt">'+esc(L.copyStmt)+'</button><span id="copy-msg" role="status" aria-live="polite"></span></div>'+fill(j.statement_draft.he,true)+fill(j.statement_draft.en,false);
   $("print-stmt").addEventListener("click",function(){document.body.className="print-stmt";window.print();});
   $("copy-stmt").addEventListener("click",function(){
     var html=Array.prototype.map.call(out.querySelectorAll("article.stmt"),function(a){return a.outerHTML.replace(/ class="stmt"/,"");}).join("\n\n");
     var ok=function(){$("copy-msg").textContent=L.copied;};
     if(navigator.clipboard) navigator.clipboard.writeText(html).then(ok,function(){});
   });
-  out.querySelector("article").setAttribute("tabindex","-1"); out.querySelector("article").focus();
+  var a=out.querySelector("article"); a.setAttribute("tabindex","-1"); a.focus();
 }
 window.addEventListener("afterprint",function(){document.body.className="";});
 var pref=store("a11y-lang"); if(pref==="en") applyLang("en");
