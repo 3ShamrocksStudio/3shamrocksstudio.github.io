@@ -404,6 +404,12 @@ async function purgeMonitors() {
     await del(`a11y_monitors?key_hash=eq.${o.key_hash}`);
   }
   await del(`a11y_history?checked_at=lt.${encodeURIComponent(new Date(Date.now() - 400 * DAY_MS).toISOString())}`);
+  await del(`a11y_monitor_runs?ran_at=lt.${cut90}`);
+}
+// Counts only (no keys, no URLs), so failures of the weekly job are visible in the table and the function log.
+async function logRun(s: { due: number; scanned: number; failed: number; moved: number; ended: number }) {
+  console.log("a11y-monitor run", JSON.stringify(s));
+  if (s.due || s.ended) await rest("a11y_monitor_runs", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(s) }).catch(() => {});
 }
 async function runMonitorBatch(): Promise<{ ran: number; results: string[] }> {
   cfgCache = null; // pick up a just-set product id
@@ -412,7 +418,17 @@ async function runMonitorBatch(): Promise<{ ran: number; results: string[] }> {
   } catch { /* retried next hour */ }
   const cfg = await config();
   const pid = cfg.gumroad_monitor_product_id;
-  if (!pid) return { ran: 0, results: [] };
+  if (!pid) {
+    // No monitor product: subscriptions can't be re-verified, so don't keep their keys. A buyer who checks
+    // again with a valid key (once the product id is back) reactivates the monitor and the key is stored again.
+    const live: any[] = (await rest("a11y_monitors?active=is.true&select=key_hash&limit=50")) || [];
+    for (const m of live) {
+      await patchMonitor(m.key_hash, { active: false, ended_at: new Date().toISOString(), last_auto_status: "no_product" });
+      await rest("rpc/a11y_mon_key_clear", { method: "POST", body: JSON.stringify({ p_key_hash: m.key_hash }) });
+    }
+    await logRun({ due: 0, scanned: 0, failed: 0, moved: 0, ended: live.length });
+    return { ran: 0, results: live.map(() => "no_product") };
+  }
   const started = Date.now();
   const due: any[] = (await rest(`a11y_monitors?active=is.true&next_check_at=lte.${encodeURIComponent(new Date().toISOString())}&select=key_hash,domain,page_url,lang&order=next_check_at.asc&limit=${MON_BATCH}`)) || [];
   const results: string[] = [];
@@ -425,6 +441,15 @@ async function runMonitorBatch(): Promise<{ ran: number; results: string[] }> {
       results.push("error");
     }
   }
+  const ENDS = new Set(["no_key", "license_invalid", "license_revoked", "license_other_domain", "bad_url"]);
+  const n = (f: (s: string) => boolean) => results.filter(f).length;
+  await logRun({
+    due: due.length,
+    scanned: n((s) => s === "ok"),
+    moved: n((s) => s === "moved"),
+    ended: n((s) => ENDS.has(s)),
+    failed: n((s) => s !== "ok" && s !== "moved" && !ENDS.has(s)),
+  });
   return { ran: results.length, results };
 }
 
