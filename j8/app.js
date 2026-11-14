@@ -1,10 +1,13 @@
-/* J8NIX PWA screens 5.0.0 (5.3.0 adds Control in the settings sheet): the approved v8 UI (Chat · Next · List · Stats), ported from the claude.ai artifact.
+/* J8NIX PWA screens 6.0.0 (14 Nov 2026): v5.2.0 + the lead layer: dependencies (blocked_by), unlocks, one ranked queue
+   ("Do this first" → next 3 → the rest by unit → project), a unit → project → task List and a flow strip on Stats.
+   Plan, formula and revert: ops/brain/J8NIX-V6-PLAN.md. Revert copy of 5.2.0: app-5.2.0.js.
+   J8NIX PWA screens 5.0.0 (5.3.0 adds Control in the settings sheet): the approved v8 UI (Chat · Next · List · Stats), ported from the claude.ai artifact.
    Live data only, through window.J8 (j8-data.js, Supabase). No static copies of tasks or projects: empty data shows an empty state. */
 var T=[],P=[];
 /* ===== J8NIX UI v7 (12 Nov): Chat · Next · List · Stats. Reads and writes only through window.J8 (above) and control/main.
    The chat script below uses the globals marked [chat]. ===== */
-var S={},CMT={},AP={},PR={},RUNS={},MONEY={},CTRL=null;
-var connected=false,batchSel=null,showDec=false,selAp=null,hlAp=null,editing=null,view='chat',lcat='all',openRow={},seatAsk=0,wdb=null,nextIdx=0; /* [chat]: connected,batchSel,showDec,selAp,hlAp */
+var S={},CMT={},AP={},PR={},RUNS={},MONEY={},CTRL=null,TK={},UN={};
+var connected=false,batchSel=null,showDec=false,selAp=null,hlAp=null,editing=null,view='chat',lcat='all',openRow={},seatAsk=0,wdb=null,nextIdx=0,lmode=null; /* [chat]: connected,batchSel,showDec,selAp,hlAp */
 var KIND={application:['Application','i-clients'],email:['Email','i-inbox'],linkedin:['LinkedIn note','i-link'],post:['Post','i-note'],invoice:['Payment request','i-money'],template:['Template','i-loop'],other:['Message','i-chat']};
 var STW={pending:'Waiting',approved:'Approved',edited:'Edited, approved',killed:'Killed',sent:'Sent'};
 var DEPT={CRO:'Revenue',CFO:'Finance',CDO:'Design',CPO:'Product',CMO:'Marketing',CTO:'Tech',COO:'Ops',Grants:'Grants'};
@@ -86,7 +89,7 @@ function linkBtn(u,t,cls){if(!u)return '';if(u.charAt(0)==='#'){var j=u.slice(1)
 
 
 /* ===== derived data: one source for Chat, Next, List and Stats ===== */
-var GR=[['money','Money','#9A5B00'],['approve','Approve','#1F5BFF'],['projects','Projects','#3A4766'],['team','Team','#0F7FA8'],['later','Later','#5F6B88']]; /* 5.2: all AA as text on white */
+var GR=[['money','Money','#9A5B00'],['approve','Approve','#1F5BFF'],['projects','Projects','#3A4766'],['team','Team','#5B3FD0'],['later','Later','#5F6B88']]; /* 5.2: all AA as text on white */
 var GC={};GR.forEach(function(g){GC[g[0]]=g;});
 var ST={wait:'Waiting on you',prog:'In progress',done:'Done',stuck:'Stuck',park:'Parked',kill:'Killed'};
 var NOUN={application:'applications',email:'emails',linkedin:'LinkedIn notes',post:'posts',invoice:'invoices',template:'templates',other:'drafts'};
@@ -108,7 +111,7 @@ var ACTS=[['cv',/CV access/i,'Allow CV access on the Mac'],['li-hand',/LinkedIn 
 function actKey(t){t=String(t||'');for(var i=0;i<ACTS.length;i++)if(ACTS[i][1].test(t))return ACTS[i][0];return null;}
 function plainWhy(t){var k=actKey(t);if(k)for(var i=0;i<ACTS.length;i++)if(ACTS[i][0]===k)return ACTS[i][2];
  return cap1(String(t||'').replace(/\bno arms? sends?\b[^,;.]*/gi,'the team can’t send it').replace(/\b(the |an? )?arms?\b/gi,'the team').trim());}
-function held(){var by={},L=[];J8.approvals.list().forEach(function(a){if(a.status!=='approved'&&a.status!=='edited')return;var r=String(a.result||'');if(!/^Waiting/i.test(r))return;
+function held(){var by={},L=[];J8.approvals.list().forEach(function(a){if(a.status!=='approved'&&a.status!=='edited')return;var r=String(a.result||'');if(!/^Waiting/i.test(r))return;if(daveTaskBlocks(a.id))return; /* 6.0: the Dave task is the one action */
   var dave=/needs Dave/i.test(r),m=r.match(/\(([^)]*)\)/),why=(m&&dave?m[1]:r.replace(/^Waiting:\s*/i,'').replace(/\s*\(\d\d:\d\d\)\s*$/,'')).split(/;|, so | \(/)[0].trim(),ak=actKey(why),label=plainWhy(why);
   var k=(dave?'d:':'t:')+(ak||label.toLowerCase());if(!by[k]){by[k]={key:'held-'+k.replace(/[^a-z0-9]+/gi,'-').slice(0,48),dave:dave,why:label,act:ak,items:[]};L.push(by[k]);}by[k].items.push(a);});
  return L.sort(function(x,y){return (y.dave?1:0)-(x.dave?1:0)||y.items.length-x.items.length;});}
@@ -119,30 +122,82 @@ function askLine(x){var r=String(x.reply||''),m=r.match(/(NEEDS YOUR EYES|WHAT Y
 function whyMove(p){var n=String(p.next||'').trim(),m=n.match(/^(Concept|Build|Staged|Validate|Monetize|Paying)\s*:\s*(.+)$/i);
  if(m)return 'Moves '+p.name+' to '+m[1]+': '+m[2].replace(/\.$/,'');return n?cut(n,110):'Keeps '+p.name+' moving.';}
 /* the one product a row is about (for its colour marker), or null */
-function rowPid(i){if(i.p)return i.p.id;if(i.c)return i.c.p;if(i.ap)return i.ap.product;var L=i.batch?i.batch.items:i.held?i.held.items:null;if(!L||!L.length)return null;var p=L[0].product;return L.every(function(a){return a.product===p;})?p:null;}
+function rowPid(i){if(i.task)return i.task.project_id||null;if(i.p)return i.p.id;if(i.c)return i.c.p;if(i.ap)return i.ap.product;var L=i.batch?i.batch.items:i.held?i.held.items:null;if(!L||!L.length)return null;var p=L[0].product;return L.every(function(a){return a.product===p;})?p:null;}
 function oldTasks(){return openItems('today').concat(openItems('week'),openItems('later'));}
 var ORD={wait:0,stuck:1,prog:2,park:3,done:4};
 
-/* every row of the board, one shape: {key,g,st,title,sub,own,due,...} */
-function rows(){var R=[];
- apPending().filter(function(a){return a.kind==='invoice';}).forEach(function(a){R.push({key:'ap-'+a.id,g:'money',st:'wait',sev:'o',title:'Send '+apWho(a),sub:pname(a.product)+' · payment request',own:'dave',due:dueOf(a),ap:a});});
- projList().filter(function(p){return p.id!=='p-general';}).forEach(function(p){var y=youReal(p),pk=p.status==='parked',g=pk?'later':isMoneyProj(p)&&y?'money':'projects';
-  R.push({key:'mv-'+p.id,g:g,st:pk?'park':y?'wait':'prog',sev:y?sevOf(p.you)||'o':null,title:y?shortWhat(y):p.name,sub:y?p.name+(stageName(p.stage)?' · '+stageName(p.stage):''):cut(shortWhat(p.now||''),70)||stageName(p.stage),full:y,own:y?'dave':dept(p),why:whyMove(p),p:p,move:!!y});});
+/* ===== 6.0 lead engine: one graph over tasks, drafts and projects; unlocks; one ranked queue.
+   Same rules as public.j8_unlocks / public.j8_rank in the database (ops/brain/J8NIX-DATA.md):
+   open = task open · draft pending/approved/edited/queued · project not done/killed. A closed blocker stops blocking.
+   unlocks(X) = distinct open items reachable from X along "X blocks Y" (transitive, cycle-safe, X excluded).
+   Order: actionable first → unlocks → money → deadline → age. ===== */
+var G=null,SNV=0,NQ=null;
+function dt(s){var t=pd(s);return isNaN(t)?null:new Date(t);}
+function tasksAll(){return J8.tasks?J8.tasks.list():[];}
+function isOpenAp(a){var s=a.status||'pending';return s==='pending'||s==='approved'||s==='edited'||s==='queued';}
+function graph(){if(G&&G.a===AP&&G.p===PR&&G.k===TK&&G.u===UN)return G;
+ var it={},out={},un={};
+ J8.units.list().forEach(function(u){un[u.id]=u;});
+ tasksAll().forEach(function(t){it[t.id]={k:'task',o:t,open:!t.status||t.status==='open',bb:t.blocked_by||[]};});
+ J8.approvals.list().forEach(function(a){if(!it[a.id])it[a.id]={k:'approval',o:a,open:isOpenAp(a),bb:a.blocked_by||[]};});
+ J8.projects.list().forEach(function(p){if(!it[p.id])it[p.id]={k:'project',o:p,open:['done','killed'].indexOf(p.status)<0,bb:p.blocked_by||[]};});
+ Object.keys(it).forEach(function(id){var x=it[id];if(!x.open)return;x.bb.forEach(function(b){if(b!==id&&it[b]&&it[b].open){var o=out[b]=out[b]||[];if(o.indexOf(id)<0)o.push(id);}});});
+ G={a:AP,p:PR,k:TK,u:UN,it:it,out:out,un:un,memo:{}};return G;}
+function reach(id){var g=graph();if(g.memo[id])return g.memo[id];var seen={},st=[id],r=[];
+ while(st.length){var n=st.pop();(g.out[n]||[]).forEach(function(d){if(d!==id&&!seen[d]){seen[d]=1;r.push(d);st.push(d);}});}
+ return (g.memo[id]=r);}
+function openBlk(id){var g=graph(),x=g.it[id];if(!x)return [];return x.bb.filter(function(b){return b!==id&&g.it[b]&&g.it[b].open;});}
+function unlocksOf(ids){var own={},u={},L=[];ids.forEach(function(i){own[i]=1;});ids.forEach(function(i){reach(i).forEach(function(d){if(!own[d]&&!u[d]){u[d]=1;L.push(d);}});});return L;}
+function daveTaskBlocks(id){var g=graph();return openBlk(id).some(function(b){var x=g.it[b];return x.k==='task'&&x.o.owner==='dave';});}
+function pobj(id){return id&&PR[id]?Object.assign({id:id},PR[id]):null;}
+function unitOf(p){return p?graph().un[p.unit_id]||null:null;}
+function moneyP(p){if(!p)return false;var u=unitOf(p),c=u?u.code:p.owner;return (isNum(p.stage)&&p.stage>=4)||c==='CRO'||c==='CFO';}
+function coveredYou(p){return tasksAll().some(function(t){var c=t.covers_you||(t.extra&&t.extra.covers_you);return (!t.status||t.status==='open')&&c&&c.p===p.id&&c.you&&String(p.you||'').indexOf(c.you)===0;});}
+/* what waits, in plain words: "17 emails · 1 application · SH✡MER Command" */
+function itemNames(ids,max){var g=graph(),kinds={},order=[],other=[];max=max||3;
+ ids.forEach(function(id){var x=g.it[id];if(!x)return;if(x.k==='approval'){var n=NOUN[x.o.kind]||'drafts';if(!kinds[n]){kinds[n]=0;order.push(n);}kinds[n]++;}else other.push(x.k==='project'?x.o.name:x.o.title);});
+ var P=order.map(function(n){return kinds[n]+' '+(kinds[n]===1?n.replace(/s$/,''):n);}).concat(other);
+ return P.slice(0,max).join(' · ')+(P.length>max?' · and more':'');}
+function minsOf(i){if(i.task&&isNum(i.task.minutes))return i.task.minutes;var m=String(i.full||'').match(/\((?:[^()]*?,\s*)?(\d{1,3})\s*min\b/);return m?+m[1]:null;}
+function lead1(i){var ids=i.ids||[],pid=rowPid(i),p=pobj(pid);
+ i.ul=unlocksOf(ids);
+ i.wo=(i.batch||i.ap||i.held||!ids.length)?[]:ids.map(openBlk).reduce(function(a,b){return a.concat(b.filter(function(x){return a.indexOf(x)<0;}));},[]);
+ i.pp=p;i.money=i.g==='money'||moneyP(p)||!!(i.batch&&i.batch.items.some(function(a){return a.kind==='invoice';}));
+ i.dl=i.sev==='r'?Date.now():i.due?i.due.getTime():i.sev==='o'?eod().getTime():Infinity;
+ i.age=i.since&&!isNaN(i.since)?i.since.getTime():Infinity;i.mins=minsOf(i);return i;}
+function rankCmp(a,b){return (a.wo.length?1:0)-(b.wo.length?1:0)||b.ul.length-a.ul.length||(b.money?1:0)-(a.money?1:0)||(a.dl-b.dl)||(a.age-b.age)||sevRank(a.sev)-sevRank(b.sev);}
+/* the mentor line: why this one now, in one line */
+function mentor(i){var n=i.ul.length;
+ if(i.wo.length)return 'First: '+itemNames(i.wo,2)+(n?' (then it frees '+n+')':'')+'.';
+ if(n)return itemNames(i.ul)+(n===1?' waits':' wait')+' on this.';
+ if(i.money&&i.pp){var nx=isNum(i.pp.stage)&&i.pp.stage<6?J8.projects.STAGES[i.pp.stage]:'';return 'Closest to money: '+i.pp.name+(nx?' moves toward '+nx:'')+'.';}
+ if(i.due)return 'Due '+dshort(i.due)+'.';
+ if(i.age!==Infinity){var d=Math.floor((Date.now()-i.age)/864e5);if(d>=1)return 'Waiting '+d+(d===1?' day.':' days.');}
+ return '';}
+
+/* every row of the board, one shape: {key,g,st,title,sub,own,due,ids,...} */
+function rows(){var R=[],ida=function(L){return L.map(function(a){return a.id;});};
+ apPending().filter(function(a){return a.kind==='invoice';}).forEach(function(a){R.push({key:'ap-'+a.id,g:'money',st:'wait',sev:'o',title:'Send '+apWho(a),sub:pname(a.product)+' · payment request',own:'dave',due:dueOf(a),ap:a,ids:[a.id]});});
+ tasksAll().forEach(function(t){if(t.status==='done')return;var p=pobj(t.project_id),dv=t.owner==='dave',bl=openBlk(t.id).length>0,tm=DEPT[t.owner]||t.owner||'Team';
+  R.push({key:'tk-'+t.id,g:dv?(moneyP(p)?'money':'projects'):'team',st:dv?'wait':bl?'stuck':'prog',sev:dv?(t.sev==='r'?'r':'o'):null,title:t.title,sub:(p?p.name:'Studio')+(dv?'':' · '+tm),full:t.action||'',own:dv?'dave':tm,task:t,ids:[t.id],since:dt(t.created_at),due:dt(t.due)});});
+ projList().filter(function(p){return p.id!=='p-general';}).forEach(function(p){var y=coveredYou(p)?'':youReal(p),pk=p.status==='parked',g=pk?'later':isMoneyProj(p)&&y?'money':'projects';
+  R.push({key:'mv-'+p.id,g:g,st:pk?'park':y?'wait':'prog',sev:y?sevOf(p.you)||'o':null,title:y?shortWhat(y):p.name,sub:y?p.name+(stageName(p.stage)?' · '+stageName(p.stage):''):cut(shortWhat(p.now||''),70)||stageName(p.stage),full:y,own:y?'dave':dept(p),why:whyMove(p),p:p,move:!!y,ids:[p.id],since:dt(p.updated)});});
  batches().forEach(function(b){if(b.items.length===1&&b.items[0].kind==='invoice')return;var ds=b.items.map(dueOf).filter(Boolean).sort(function(x,y){return x-y;});
-  R.push({key:'b-'+b.id,g:'approve',st:'wait',sev:ds[0]&&ds[0]<=eod()?'r':'o',since:b.items.map(function(a){return a.created?new Date(a.created):null;}).filter(function(d){return d&&!isNaN(d);}).sort(function(x,y){return x-y;})[0]||null,title:b.items.length+' '+nounOf(b.items)+' to send',sub:b.label,own:'dave',due:ds[0]||null,batch:b});});
- held().forEach(function(h){var n=h.items.length+' '+nounOf(h.items);R.push({key:h.key,g:'team',st:h.dave?'wait':'stuck',sev:h.dave?'o':null,title:h.dave?cut(h.why,70)+' ('+n+')':n.replace(/^(\d+) /,'$1 approved ')+' held',sub:h.dave?'Approved; '+(h.items.length===1?'it goes':'they go')+' out once you do this':cut(h.why,70),own:h.dave?'dave':'Team',held:h});});
+  R.push({key:'b-'+b.id,g:'approve',st:'wait',sev:ds[0]&&ds[0]<=eod()?'r':'o',since:b.items.map(function(a){return dt(a.created);}).filter(Boolean).sort(function(x,y){return x-y;})[0]||null,title:b.items.length+' '+nounOf(b.items)+' to send',sub:b.label,own:'dave',due:ds[0]||null,batch:b,ids:ida(b.items)});});
+ held().forEach(function(h){var n=h.items.length+' '+nounOf(h.items);R.push({key:h.key,g:'team',st:h.dave?'wait':'stuck',sev:h.dave?'o':null,title:h.dave?cut(h.why,70)+' ('+n+')':n.replace(/^(\d+) /,'$1 approved ')+' held',sub:h.dave?'Approved; '+(h.items.length===1?'it goes':'they go')+' out once you do this':cut(h.why,70),own:h.dave?'dave':'Team',held:h,ids:ida(h.items)});});
  J8.inbox.list().forEach(function(x){var a=isAsk(x),st=a?'wait':x.status==='done'?'done':'prog';
-  R.push({key:'c-'+x.p+'-'+String(x.at),g:'team',st:st,sev:a?sevOf(J8.inbox.lastReply(x))||'o':null,title:a?cap1(cut(askLine(x),90)):pname(x.p)+(st==='done'?' · done':' · with the team'),sub:a?pname(x.p)+' team asks':cut(lastClean(x),80),own:a?'dave':dept(PR[x.p]||{}),c:x,ask:a,at:x.at,since:x.at?new Date(x.at):null});});
+  R.push({key:'c-'+x.p+'-'+String(x.at),ids:[],g:'team',st:st,sev:a?sevOf(J8.inbox.lastReply(x))||'o':null,title:a?cap1(cut(askLine(x),90)):pname(x.p)+(st==='done'?' · done':' · with the team'),sub:a?pname(x.p)+' team asks':cut(lastClean(x),80),own:a?'dave':dept(PR[x.p]||{}),c:x,ask:a,at:x.at,since:x.at?new Date(x.at):null});});
  var ot=oldTasks();if(ot.length)R.push({key:'old',g:'later',st:'park',title:ot.length+' older to-do items',sub:'From 3–11 Nov. Tick what is done.',own:'dave',tasks:ot});
  return R.sort(function(a,b){return GR.map(function(g){return g[0];}).indexOf(a.g)-GR.map(function(g){return g[0];}).indexOf(b.g)||ORD[a.st]-ORD[b.st];});}
 
 /* ===== Next: today's plan, one card at a time ===== */
 function snoozed(k){var z=ls('j8-snooze')||{};return z[k]&&z[k]>Date.now();}
-function snooze(k,h){var z=ls('j8-snooze')||{};z[k]=Date.now()+h*36e5;ls('j8-snooze',z);}
+function snooze(k,h){var z=ls('j8-snooze')||{};z[k]=Date.now()+h*36e5;ls('j8-snooze',z);SNV++;}
 function queue(){return needs();} /* 5.1.1: Next and "Needs you" share one list and one order */
 function eod(){var d=new Date();d.setHours(23,59,59,999);return d;}
 function today(){return queue().slice(0,5);}
 function nextOf(i){
+ if(i.task){var t=i.task;return {what:t.title,why:t.why||'',u:t.link||'',t:t.link_text||'Open it',jump:null};}
  if(i.p){var p=i.p,u=p.you_link||p.link,t=p.you_link?(p.you_link_text||'Open it'):(p.link_text||'Open it');return {what:i.title,why:i.why,u:u,t:t};}
  if(i.batch)return {what:'Decide '+i.title.replace(/ to send$/,''),why:'They go out only after your Send. '+i.batch.label+'.',jump:'list-'+i.key,t:'Open the '+i.batch.items.length};
  if(i.held)return {what:i.title,why:i.sub+'.',jump:'list-'+i.key,t:'See what waits'};
@@ -154,23 +209,44 @@ function actBtn(n,cls){if(n.u){if(n.u.charAt(0)==='#')return '<button class="'+c
 function plan(fresh,peek){var td=ymd(new Date()),p=ls('j8-plan'),Q=queue();if(fresh||!p||p.d!==td||!p.k||!p.k.length){p={d:td,k:Q.slice(0,5).map(function(x){return x.key;}),l:{}};if(!peek)ls('j8-plan',p);}
  var by={};rows().forEach(function(r){by[r.key]=r;});var inQ={};Q.forEach(function(q){inQ[q.key]=1;});
  return {p:p,L:p.k.map(function(k){return {key:k,row:by[k],open:!!inQ[k],later:!!(p.l&&p.l[k])};}),Q:Q};}
+/* 6.0 the lead: ONE "Do this first" card (action, link, minutes, unlocks N + why), then the next 3, then the rest by unit → project */
+function canDone(i){return !i.batch&&!i.ap;}
+function leadCard(i,full){var n=nextOf(i),pid=rowPid(i),why=mentor(i),how=i.task?String(i.task.action||''):(i.full&&shortWhat(i.full)!==String(i.full).trim()?i.full:''),go=n.u||n.jump;
+ var prim=go||!canDone(i)?actBtn(n,'pri'):'<button class="pri" data-ndone="'+esc(i.key)+'">'+ic('done')+'Done</button>';
+ return '<article class="df'+(full?' full':'')+'" aria-label="Do this first"'+(pcol(pid)?' style="--pc:'+pcol(pid)[0]+'"':'')+'>'
+  +'<div class="df-top"><span class="df-k">'+eight()+'Do this first</span><span class="df-r">'+(i.ul.length?'<b class="ul">◆ unlocks '+i.ul.length+'</b>':'')+(i.mins?'<span class="mn">~'+i.mins+' min</span>':'')+'</span></div>'
+  +'<h2 dir="auto">'+esc(cap1(n.what))+'</h2>'+(why?'<p class="why" dir="auto">'+esc(why)+'</p>':'')
+  +(how?'<p class="how1'+(full?'':' clamp')+'" dir="auto">'+esc(how)+'</p>':'')
+  +(full&&n.why&&!i.task&&n.why!==why?'<p class="ctx" dir="auto">'+esc(n.why)+'</p>':'')
+  +'<div class="df-meta">'+sevChip(i.sev)+'<span class="pj" dir="auto">'+pm(pid)+esc(i.sub||'')+'</span></div>'
+  +'<div class="df-act">'+prim+'<span class="sec2">'+(canDone(i)&&go?'<button data-ndone="'+esc(i.key)+'">'+ic('done')+'Done</button>':'')+'<button data-nlater="'+esc(i.key)+'">Later</button></span></div></article>';}
+function lxBody(i){var n=nextOf(i),w=mentor(i),how=i.task?String(i.task.action||''):String(i.full||''),go=n.u||n.jump;
+ return (w?'<p class="why" dir="auto">'+esc(w)+'</p>':'')+(how&&how!==n.what?'<p dir="auto">'+esc(how)+'</p>':'')
+  +'<div class="acts">'+(go||!canDone(i)?actBtn(n,'s'):'')+(canDone(i)?'<button data-ndone="'+esc(i.key)+'">Done</button>':'')+'<button data-nlater="'+esc(i.key)+'">Later</button>'+(i.mins?'<span class="mn">~'+i.mins+' min</span>':'')+'</div>';}
+function leadRow(i,no){var nx=nextOf(i),k='ld-'+i.key,o=openRow[k],v=SEV[i.sev]?i.sev:'o';
+ return '<li class="lr'+(o?' open':'')+(NEWK[i.key]?' nw':'')+'"><button class="ni" data-open="'+esc(k)+'" aria-expanded="'+(o?'true':'false')+'"><span class="no">'+no+'</span><span class="e" role="img" aria-label="'+esc(SEV[v][1])+'"><i class="sd sd-'+v+'"></i></span><span class="t" dir="auto">'+esc(cap1(nx.what))+(i.sub?' <small>· '+pm(rowPid(i))+esc(i.sub)+'</small>':'')+'</span>'+(i.ul.length?'<b class="ulb" aria-label="unlocks '+i.ul.length+'">◆'+i.ul.length+'</b>':'')+'</button>'
+  +(o?'<div class="lx">'+lxBody(i)+'</div>':'')+'</li>';}
+function unitsSorted(){return J8.units.departments().slice().sort(function(a,b){return (a.sort||0)-(b.sort||0);});}
+function restTree(L,start){var by={},keys=[];
+ L.forEach(function(i,k){i._n=start+k;var pid=rowPid(i),p=pobj(pid),u=unitOf(p),uk=u?u.id:'_';
+  if(!by[uk]){by[uk]={u:u,P:{},order:[]};}var pk=pid||'_';if(!by[uk].P[pk]){by[uk].P[pk]={name:p?p.name:'Studio',pid:pid,L:[]};by[uk].order.push(pk);}by[uk].P[pk].L.push(i);});
+ unitsSorted().forEach(function(u){if(by[u.id])keys.push(u.id);});if(by._)keys.push('_');
+ return keys.map(function(k){var g=by[k],ok='lu-'+k,o=openRow[ok],n=0;g.order.forEach(function(pk){n+=g.P[pk].L.length;});
+  return '<section class="lu'+(o?' open':'')+'"><button class="luh" data-open="'+esc(ok)+'" aria-expanded="'+(o?'true':'false')+'"><b>'+esc(g.u?g.u.name:'Studio')+'</b><span>'+n+' wait on you</span><svg class="ico chev" aria-hidden="true"><use href="#i-more"/></svg></button>'
+   +(o?g.order.map(function(pk){var P=g.P[pk];return '<div class="lp"><p class="lpn" dir="auto">'+pm(P.pid)+esc(P.name)+'</p><ul class="nd lead">'+P.L.map(function(i){return leadRow(i,i._n);}).join('')+'</ul></div>';}).join(''):'')+'</section>';}).join('');}
 function renderNext(){var el=$('v-next');if(!el)return;
  if(!connected){el.innerHTML='<div class="empty"><b>Loading your next move…</b><p>Signing in and loading your live data.</p></div>';return;}
- var P=plan(),L=P.L,cur=null,k0=-1;L.forEach(function(x,k){if(!cur&&x.open&&x.row){cur=x;k0=k;}});
- var done=L.filter(function(x){return !x.open&&!x.later;}).length,seg='';
- L.forEach(function(x,k){seg+='<i class="'+(k===k0?'c':x.later?'l':!x.open?'d':'')+'">'+(k===k0?eight():'')+'</i>';});
- var strip='<div class="strip"><b>Today '+(cur?(k0+1):L.length)+' of '+L.length+'</b><div class="seg">'+seg+'</div></div>';
- if(!cur){el.innerHTML='<div class="nx-wrap">'+(L.length?strip:'')+'<div class="empty">'+eight('big')+'<b>'+(L.length?'Today’s '+L.length+' are handled.':'Nothing waits on you today.')+'</b>'+(P.Q.length?'<p>'+P.Q.length+' more wait in your list.</p><button class="pri" data-plan="1">Plan the next '+Math.min(5,P.Q.length)+'</button>':'<p>Ask J8NIX what to push next.</p><button class="pri" data-go="chat">Open the chat</button>')+'</div></div>';return;}
- var i=cur.row,n=nextOf(i),g=GC[i.g],rest=P.Q.filter(function(q){return P.p.k.indexOf(q.key)<0;}).length;
- el.innerHTML='<div class="nx-wrap">'+strip
-  +'<article class="ncard" style="--gc:'+g[2]+(SEVC[i.sev]?';--sc:'+SEVC[i.sev]:'')+'"><div class="nc-top"><span class="gname">'+esc(g[1])+'</span><span class="nc-r">'+sevChip(i.sev)+pill(i.st)+'</span></div>'
-  +'<h2 dir="auto">'+esc(n.what)+'</h2><p class="why" dir="auto">'+esc(n.why)+'</p>'
-  +(i.full&&shortWhat(i.full)!==i.full.trim()?'<details class="how"><summary>Show the steps</summary><p dir="auto">'+esc(i.full)+'</p></details>':'')
-  +'<dl class="meta"><div><dt>Project</dt><dd>'+pm(rowPid(i))+'<span>'+esc(i.p?i.p.name:i.c?pname(i.c.p):i.batch?i.batch.label:i.held?pname((i.held.items[0]||{}).product):'Studio')+'</span></dd></div>'+(i.due?'<div><dt>Due</dt><dd><span>'+dshort(i.due)+'</span></dd></div>':'')+'</dl>'
-  +actBtn(n,'pri')
-  +'<div class="sec">'+(i.batch?'':'<button data-ndone="'+esc(i.key)+'">'+ic('done')+'Done, next</button>')+'<button data-nlater="'+esc(i.key)+'">Later</button></div></article>'
-  +'<p class="more">'+(rest?rest+' more after today':'Nothing else waits after these')+'</p></div>';}
-function markDone(k){var i=rows().filter(function(x){return x.key===k;})[0];snooze(k,24);
+ var N=needs();
+ if(!N.length){el.innerHTML='<div class="nx-wrap"><div class="empty">'+eight('big')+'<b>Nothing waits on you.</b><p>Ask J8NIX what to push next.</p><button class="pri" data-go="chat">Open the chat</button></div></div>';return;}
+ var ul=N.filter(function(i){return i.ul.length;}).length,h='<div class="nx-wrap"><p class="lsum">'+N.length+' wait on you. '+(ul?'Start with what unlocks the most.':'Start with what is closest to money.')+'</p>'+leadCard(N[0],true);
+ if(N.length>1)h+='<h3 class="lh">Then</h3><ul class="nd lead">'+N.slice(1,4).map(function(i,k){return leadRow(i,k+2);}).join('')+'</ul>';
+ if(N.length>4)h+='<h3 class="lh">Everything else <span>'+(N.length-4)+'</span></h3>'+restTree(N.slice(4),5);
+ el.innerHTML=h+'</div>';}
+function markDone(k){var i=rows().filter(function(x){return x.key===k;})[0];
+ if(i&&i.task){var id=i.task.id,n=unlocksOf([id]).length;if(!J8.status().connected){toast('Not connected. Try again in a moment.');return;}
+  J8.tasks.done(id).then(function(){toast(n?'Done. '+n+(n===1?' item is':' items are')+' free to move.':'Done. It stays under Done in the List.',function(){J8.tasks.undo(id).then(function(){toast('Back on your list.');},function(){toast('Couldn’t undo. Try again.');});});},
+   function(e){toast(e&&e.code==='conflict'?'It changed meanwhile. Try again.':'Couldn’t save ('+(e&&e.code||'error')+'). Try again.');});renderAll();return;}
+ snooze(k,24);
  if(i&&(i.p||i.held||i.c)&&J8.status().connected){var pid=i.p?i.p.id:i.c?i.c.p:(i.held.items[0]||{}).product||'p-general';
   J8.inbox.send(pid,'Done: '+(i.full||i.title)).then(function(){toast('Marked done. The team is told.');},function(){toast('Marked done here. Couldn’t tell the team.');});}
  else toast('Marked done.');renderAll();}
@@ -229,8 +305,11 @@ function dupMove(i,R){if(!i.p||!i.move)return false;var y=youRaw(i.p),ak=actKey(
  if(ak&&R.some(function(h){return h.held&&h.held.dave&&h.held.act===ak;}))return true;
  if(/\bApprove\b/.test(y)&&!/\(2\)/.test(y)&&R.some(function(b){return b.batch&&b.batch.items.some(function(a){return a.product===i.p.id;});}))return true;
  return false;}
-function needs(){var o={money:0,team:1,approve:2,projects:4},w=function(i){return i.held?3:o[i.g];},R=rows().filter(function(i){return i.st==='wait'&&o[i.g]!=null&&!snoozed(i.key);});
- return R.filter(function(i){return !dupMove(i,R);}).sort(function(a,b){return sevRank(a.sev)-sevRank(b.sev)||w(a)-w(b);});}
+/* 6.0: Dave's queue, ranked by the lead formula (unlocks → money → deadline → age); memoised per data change */
+function needs(){var mk=[AP,PR,TK,UN,CMT,S,SNV,Math.floor(Date.now()/6e4)];if(NQ&&NQ.k.every(function(x,j){return x===mk[j];}))return NQ.v.slice();
+ var o={money:0,team:1,approve:2,projects:4},w=function(i){return i.held?3:o[i.g];},R=rows().filter(function(i){return i.st==='wait'&&o[i.g]!=null&&!snoozed(i.key);});
+ R=R.filter(function(i){return !dupMove(i,R);}).map(lead1).sort(function(a,b){return rankCmp(a,b)||w(a)-w(b);});
+ NQ={k:mk,v:R};return R.slice();}
 function ndHref(i){var u=i.p&&i.p.you_link||'';return /^https?:\/\//.test(u)&&!/3shamrocks\.com\/j8\/?(#.*)?$/.test(u)?u:null;}
 function ndItem(i){var v=SEV[i.sev]?i.sev:'o',u=ndHref(i),inner='<span class="e" role="img" aria-label="'+esc(SEV[v][1])+'"><i class="sd sd-'+v+'"></i></span><span class="t" dir="auto">'+esc(cap1(i.title))+(i.sub?' <small>· '+pm(rowPid(i))+esc(i.sub)+'</small>':'')+'</span>';
  return '<li'+(NEWK[i.key]?' class="nw"':'')+'>'+(u?'<a class="ni" href="'+esc(u)+'" target="_blank" rel="noopener">'+inner+ic('link')+'</a>':'<button class="ni" data-jump="list-'+esc(i.key)+'">'+inner+'</button>')+'</li>';}
@@ -238,10 +317,11 @@ function ndItem(i){var v=SEV[i.sev]?i.sev:'o',u=ndHref(i),inner='<span class="e"
 var NEEDK=null,NEWK={},NEEDN=null;
 function bump(el){if(!el)return;el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');}
 function renderPin(){var el=$('j8Pin');if(!el)return;if(!connected){el.hidden=true;return;}el.hidden=false;
- var N=needs(),r=N.filter(function(i){return i.sev==='r';}).length,show=pinAll?N:N.slice(0,3),h='<p class="since" id="j8Since">'+esc(sinceLine())+'</p>';
+ var N=needs(),h='<p class="since" id="j8Since">'+esc(sinceLine())+'</p>';
  var K={};N.forEach(function(i){K[i.key]=1;});NEWK={};if(NEEDK)N.forEach(function(i){if(!NEEDK[i.key])NEWK[i.key]=1;});NEEDK=K;
- if(!N.length)h+='<div class="nd-h"><b>Needs you</b></div><p class="nd-0">Nothing needs you right now.</p>';
- else h+='<div class="nd-h"><b>Needs you</b><span class="nc" id="ndN">'+N.length+(r?'<em><i class="sd sd-r" aria-hidden="true"></i>'+r+' now</em>':'')+'</span>'+(N.length>3?'<button data-pin="1" aria-expanded="'+pinAll+'">'+(pinAll?'Show less':'All '+N.length)+'</button>':'')+'</div><ul class="nd">'+show.map(ndItem).join('')+'</ul>';
+ if(!N.length)h+='<p class="nd-0">Nothing needs you right now.</p>';
+ else{h+=leadCard(N[0],false);
+  if(N.length>1)h+='<div class="nd-h"><b>Then</b><span class="nc" id="ndN">'+N.length+' in order</span><button data-go="next">'+(N.length>4?'All '+N.length:'Open Next')+'</button></div><ul class="nd lead">'+N.slice(1,4).map(function(i,k){return leadRow(i,k+2);}).join('')+'</ul>';}
  el.innerHTML=h;
  if(NEEDN!==null&&NEEDN!==N.length)bump($('ndN'));NEEDN=N.length;}
 
@@ -253,6 +333,7 @@ function rowHTML(i){var o=openRow[i.key],g=GC[i.g];
   if(i.p){var p=i.p,u=p.you_link||p.link;h+=(i.full?'<p dir="auto">'+esc(i.full)+'</p>':'<p dir="auto">'+esc(p.now||'')+'</p>')+'<p class="why">'+esc(i.why)+'</p><div class="acts">'
     +(u?(u.charAt(0)==='#'?'<button class="s" data-jump="'+esc(u.slice(1))+'">'+esc(p.you_link_text||'Open it')+'</button>':'<a class="s" href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(p.you_link?(p.you_link_text||'Open it'):(p.link_text||'Open it'))+'</a>'):'')
     +(i.move?'<button data-ndone="'+esc(i.key)+'">Done</button><button data-nlater="'+esc(i.key)+'">Later</button>':'')+'</div>';}
+  if(i.task){var tk=i.task,bl=openBlk(tk.id);h+=(tk.action?'<p dir="auto">'+esc(tk.action)+'</p>':'')+(bl.length?'<p class="why" dir="auto">Waits on: '+esc(itemNames(bl,2))+'</p>':'')+'<div class="acts">'+(tk.link?linkBtn(tk.link,tk.link_text||'Open it','s'):'')+(tk.owner==='dave'?'<button data-ndone="'+esc(i.key)+'">Done</button><button data-nlater="'+esc(i.key)+'">Later</button>':'')+'</div>';}
   if(i.batch)h+=i.batch.items.map(function(a){return apCard(a,'ap');}).join('');
   if(i.ap)h+=apCard(i.ap,'ap');
   if(i.held)h+='<p dir="auto">'+esc(i.held.why)+'</p><ul class="who">'+i.held.items.map(function(a){return '<li dir="auto">'+esc(apWho(a))+'</li>';}).join('')+'</ul>';
@@ -265,9 +346,39 @@ function gbar(g,L){var c={};if(g==='approve'){var A=J8.approvals.list();c.wait=A
  var tot=0;Object.keys(c).forEach(function(k){tot+=c[k];});if(!tot)return '';
  return '<div class="gbar" aria-label="Status mix">'+['wait','stuck','prog','done','park','kill'].filter(function(k){return c[k];}).map(function(k){return '<i class="s-'+k+'" style="flex:'+c[k]+'" title="'+esc(ST[k]+': '+c[k])+'"></i>';}).join('')+'</div>'
   +(g!=='approve'?'':'<p class="gcap">'+['wait','stuck','prog','done','park','kill'].filter(function(k){return c[k];}).map(function(k){return c[k]+' '+ST[k].toLowerCase();}).join(' · ')+' (all drafts)</p>');}
+/* ===== 6.0 List by unit: units → projects → tasks; stage → next stage, owner, real done/total, links, Done, comment box ===== */
+function curLmode(){return lmode||ls('j8-lmode')||'unit';}
+function taskLine(t){var bl=openBlk(t.id),dv=t.owner==='dave',tm=DEPT[t.owner]||t.owner||'Team';
+ return '<div class="task'+(dv?'':' tm')+'">'+(dv?'<button class="tk" data-tdone="'+esc(t.id)+'" aria-label="Mark done: '+esc(t.title)+'">'+ic('done')+'</button>':'<i class="tmd" aria-hidden="true"></i>')
+  +'<span dir="auto">'+esc(t.title)+(t.link?' '+linkBtn(t.link,t.link_text||'Open','lk2'):'')+'<small>'+(dv?'You':esc(tm))+(isNum(t.minutes)&&dv?' · ~'+t.minutes+' min':'')+(bl.length?' · waits on: '+esc(itemNames(bl,2)):'')+'</small></span></div>';}
+function doneLine(t){return '<div class="task done"><button class="tk on" data-tundo="'+esc(t.id)+'" aria-label="Untick: '+esc(t.title)+'">'+ic('done')+'</button><span dir="auto">'+esc(t.title)+'<small>Done '+esc(t.done_at?fdate(t.done_at):'')+(t.unlocked_on_done?' · unlocked '+t.unlocked_on_done:'')+'</small></span></div>';}
+function projRow(p,mine){var k='pj-'+p.id,o=openRow[k],T=tasksAll().filter(function(t){return t.project_id===p.id;}),A=J8.approvals.list().filter(function(a){return a.product===p.id&&a.status!=='killed';});
+ var tot=T.length+A.length,dn=T.filter(function(t){return t.status==='done';}).length+A.filter(function(a){return a.status==='sent';}).length,pct=tot?Math.round(dn/tot*100):0;
+ var sn=stageName(p.stage),nx=isNum(p.stage)&&p.stage<6?J8.projects.STAGES[p.stage]:'',pk=p.status==='parked',own=mine.length?'dave':dept(p);
+ var h='<div class="brow pj'+(o?' open':'')+'" id="pj-'+esc(p.id)+'" style="--gc:#3A4766'+pcStyle(p.id)+'"><button class="pmain" data-open="'+esc(k)+'" aria-expanded="'+(o?'true':'false')+'">'
+  +'<span class="bt"><b dir="auto">'+esc(p.name)+'</b><span>'+(pk?'Parked · ':'')+(sn?esc(sn)+(nx?' → '+esc(nx):''):'No stage yet')+(mine.length?' · <em class="wy">'+mine.length+' wait on you</em>':'')+'</span></span>'+owner(own)
+  +'<span class="pgw"><span class="pg" role="img" aria-label="'+(tot?dn+' of '+tot+' done':'Nothing counted yet')+'"><i style="width:'+pct+'%"></i></span><span class="pgt">'+(tot?dn+' of '+tot+' done':'Nothing counted yet')+'</span></span></button>';
+ if(o){var team=T.filter(function(t){return t.status!=='done'&&t.owner!=='dave';}),D=T.filter(function(t){return t.status==='done';}).sort(function(a,b){return String(b.done_at||'').localeCompare(String(a.done_at||''));}),
+   pend=A.filter(function(a){return !a.status||a.status==='pending';}),bk=pend.length?'list-b-'+(pend[0].batch||'other'):'',wo=openBlk(p.id);
+  h+='<div class="bx"><p class="nxs" dir="auto"><b>Next stage</b>'+esc(whyMove(p))+'</p>'+(wo.length?'<p class="why" dir="auto">Waits on: '+esc(itemNames(wo,3))+'</p>':'')+(p.now?'<p class="why" dir="auto">'+esc(cut(p.now,240))+'</p>':'');
+  if(mine.length)h+='<p class="sub">Yours, in order</p><ul class="nd lead">'+mine.map(function(x){return leadRow(x.i,x.n);}).join('')+'</ul>';
+  if(team.length)h+='<p class="sub">The team</p>'+team.map(taskLine).join('');
+  var links=(p.link?linkBtn(p.link,p.link_text||'Open the project','lk2'):'')+(p.you_link&&p.you_link!==p.link&&!/3shamrocks\.com\/j8\/?(#.*)?$/.test(p.you_link)?linkBtn(p.you_link,p.you_link_text||'Open your step','lk2'):'')+(bk?'<button class="lk2" data-jump="'+esc(bk)+'">'+pend.length+(pend.length===1?' draft waits':' drafts wait')+' for your Send</button>':'');
+  if(links)h+='<div class="lks">'+links+'</div>';
+  if(D.length){var dk='dn-'+p.id;h+='<button class="gmore" data-open="'+esc(dk)+'" aria-expanded="'+(openRow[dk]?'true':'false')+'">Done ('+D.length+')</button>'+(openRow[dk]?D.map(doneLine).join(''):'');}
+  h+='<form class="ans" data-ans="'+esc(p.id)+'"><textarea rows="1" dir="auto" placeholder="Comment to the team" aria-label="Comment to the team about '+esc(p.name)+'"></textarea><button type="submit" aria-label="Send the comment">'+ic('send')+'</button></form></div>';}
+ return h+'</div>';}
+function treeHTML(){var N=needs(),pos={};N.forEach(function(i,k){var pid=rowPid(i);if(pid)(pos[pid]=pos[pid]||[]).push({i:i,n:k+1});});
+ var U=unitsSorted(),P=projList().filter(function(p){return p.id!=='p-general';}),first=function(p){return pos[p.id]?pos[p.id][0].n:1e4;},h='';
+ U.map(function(u){return {u:u,L:P.filter(function(p){return p.unit_id===u.id;})};}).concat([{u:null,L:P.filter(function(p){return !U.some(function(u){return u.id===p.unit_id;});})}]).forEach(function(g){if(!g.L.length)return;
+  var w=0;g.L.forEach(function(p){w+=(pos[p.id]||[]).length;});g.L.sort(function(a,b){return first(a)-first(b);});
+  h+='<section class="grp un"><div class="gh"><h2>'+esc(g.u?g.u.name:'Other')+'</h2><span>'+(w?w+' wait on you':g.L.length+(g.L.length===1?' project':' projects'))+'</span></div><div class="gtbl">'+g.L.map(function(p){return projRow(p,pos[p.id]||[]);}).join('')+'</div></section>';});
+ return h||'<div class="empty"><b>No projects yet.</b></div>';}
+function lmodeBar(){var m=curLmode();return '<div class="lmode" role="tablist" aria-label="Group the list">'+[['unit','By unit'],['type','By type']].map(function(x){return '<button role="tab" aria-selected="'+(m===x[0])+'" class="'+(m===x[0]?'on':'')+'" data-lmode="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';}
 function renderList(){var el=$('v-list');if(!el)return;if(document.activeElement&&el.contains(document.activeElement)&&document.activeElement.tagName==='TEXTAREA')return;
  if(!connected){el.innerHTML='<div class="empty"><b>Loading your board…</b></div>';return;}
- var R=rows(),h='<div class="cats" role="tablist">'+[['all','All']].concat(GR).map(function(c){var k=c[0];return '<button role="tab" aria-selected="'+(lcat===k)+'" class="'+(lcat===k?'on':'')+'" data-cat="'+k+'"'+(c[2]?' style="--gc:'+c[2]+'"':'')+'>'+c[1]+'</button>';}).join('')+'</div>';
+ if(curLmode()==='unit'){el.innerHTML=lmodeBar()+treeHTML();return;}
+ var R=rows(),h=lmodeBar()+'<div class="cats" role="tablist">'+[['all','All']].concat(GR).map(function(c){var k=c[0];return '<button role="tab" aria-selected="'+(lcat===k)+'" class="'+(lcat===k?'on':'')+'" data-cat="'+k+'"'+(c[2]?' style="--gc:'+c[2]+'"':'')+'>'+c[1]+'</button>';}).join('')+'</div>';
  GR.forEach(function(g){if(lcat!=='all'&&lcat!==g[0])return;var L=R.filter(function(i){return i.g===g[0];});if(!L.length)return;var w=L.filter(function(i){return i.st==='wait';}).length,col=openRow['g-'+g[0]];
   if(g[0]==='team'&&lcat==='all'&&!col)L=L.filter(function(i){return i.st!=='done';});
   h+='<section class="grp" style="--gc:'+g[2]+'"'+(g[0]==='approve'?' id="approvals"':'')+'><div class="gh"><h2>'+g[1]+'</h2><span>'+(w?w+' waiting on you':L.length+' items')+'</span></div>'
@@ -311,10 +422,31 @@ function activity(){var days=[],by={},S3=[['Drafts made','#A9BCFF'],['Your decis
  var bars=days.map(function(d){var v=by[d],s=v[0]+v[1]+v[2],t=new Date(d+'T12:00:00');
   return '<div class="col" title="'+esc(fdate(d)+': '+v[0]+' drafts, '+v[1]+' decisions, '+v[2]+' runs')+'"><b>'+(s||'')+'</b><div class="stk">'+v.map(function(n,j){return n?'<i style="height:'+(n/mx*100)+'%;background:'+S3[j][1]+'"></i>':'';}).reverse().join('')+'</div><span>'+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][t.getDay()]+'</span></div>';}).join('');
  return '<div class="act">'+bars+'</div><ul class="lg row">'+S3.map(function(s){return '<li><i style="background:'+s[1]+'"></i><span>'+s[0]+'</span></li>';}).join('')+'</ul>';}
+/* ===== 6.0 "How the flow improved": this week vs last, from real timestamps only.
+   Cleared by you = drafts you decided (decided_at; the team never sets it) + your tasks done (done_at).
+   Median wait = created → your decision / done. Blockers removed = items named in some blocked_by that closed in the
+   window; blocked_by exists from V6 on, so earlier windows say "collecting data". ===== */
+var V6='2026-11-14T15:00:00Z';
+function median(L){if(!L.length)return null;L=L.slice().sort(function(a,b){return a-b;});var m=L.length>>1;return L.length%2?L[m]:(L[m-1]+L[m])/2;}
+function closedAt(id){var x=graph().it[id];if(!x||x.open)return NaN;var o=x.o;if(x.k==='task')return pd(o.done_at);if(x.k==='approval')return pd(o.status==='sent'?o.sent_at:o.decided_at);return pd(o.updated);}
+function flowWin(a,b){var c=0,hrs=[],bl={},rm=0;
+ J8.approvals.list().forEach(function(x){(x.blocked_by||[]).forEach(function(k){bl[k]=1;});if(!x.status||x.status==='pending'||x.status==='queued')return;var t=pd(x.decided_at);if(!(t>=a&&t<b))return;c++;var s0=pd(x.created);if(!isNaN(s0)&&t>=s0)hrs.push((t-s0)/36e5);});
+ tasksAll().forEach(function(x){(x.blocked_by||[]).forEach(function(k){bl[k]=1;});if(x.status!=='done'||x.owner!=='dave')return;var t=pd(x.done_at);if(!(t>=a&&t<b))return;c++;var s0=pd(x.created_at);if(!isNaN(s0)&&t>=s0)hrs.push((t-s0)/36e5);});
+ J8.projects.list().forEach(function(x){(x.blocked_by||[]).forEach(function(k){bl[k]=1;});});
+ Object.keys(bl).forEach(function(k){var t=closedAt(k);if(t>=a&&t<b)rm++;});
+ return {n:c,med:median(hrs),rm:rm,track:b>pd(V6)};}
+function hrsTxt(h){return h==null?null:h*60<1?'under 1 min':h<1?Math.round(h*60)+' min':h<48?(h<10?h.toFixed(1).replace(/\.0$/,''):Math.round(h))+' h':Math.round(h/24)+' days';}
+function flowHTML(){var now=Date.now(),W=7*864e5,T=flowWin(now-W,now),L=flowWin(now-2*W,now-W),cd='collecting data';
+ var tile=function(lbl,v,lv,note){return '<div class="fv"><span>'+lbl+'</span><b>'+(v==null?'<em>'+cd+'</em>':esc(v))+'</b><small>'+(lv==null?'last week: '+cd:'last week '+esc(lv))+(note?' · '+note:'')+'</small></div>';};
+ return '<section class="st flow"><h2>How the flow improved <span>last 7 days vs the 7 before</span></h2><div class="fl">'
+  +tile('Cleared by you',String(T.n),String(L.n))
+  +tile('Median wait',hrsTxt(T.med),hrsTxt(L.med))
+  +tile('Blockers removed',T.track?String(T.rm):null,L.track?String(L.rm):null,'from 14 Nov')
+  +'</div><p class="src">Drafts: made → your decision. Your tasks: made → done. Counted live from the board.</p></section>';}
 function renderStats(){var el=$('v-stats');if(!el)return;if(!connected){el.innerHTML='<div class="empty"><b>Loading your numbers…</b></div>';return;}
  var m=J8.money.summary()||{},b=isNum(m.booked_usd)?m.booked_usd:0,d1=J8.money.daysTo(m.m1_date),Ap=J8.approvals.list(),cnt=function(f){return Ap.filter(f).length;},
   wt=cnt(function(a){return !a.status||a.status==='pending';}),ap=cnt(function(a){return a.status==='approved'||a.status==='edited';}),sn=cnt(function(a){return a.status==='sent';}),kl=cnt(function(a){return a.status==='killed';});
- var h='<div class="kpis"><div class="kpi gold"><span>Booked</span><b>'+usd(b)+'</b><small>of '+usd(m.m1_usd||25000)+' for M1</small></div>'
+ var h=flowHTML()+'<div class="kpis"><div class="kpi gold"><span>Booked</span><b>'+usd(b)+'</b><small>of '+usd(m.m1_usd||25000)+' for M1</small></div>'
   +'<div class="kpi" style="--kc:var(--cyan)"><span>Days to M1</span><b>'+(d1!==null?Math.max(0,d1):'—')+'</b><small>'+esc(fdate(m.m1_date||'2026-11-21'))+'</small></div>'
   +'<div class="kpi" style="--kc:var(--o)"><span>Waiting on you</span><b>'+wt+'</b><small>drafts</small></div>'
   +'<div class="kpi" style="--kc:var(--ok)"><span>Sent</span><b>'+sn+'</b><small>'+ap+' approved, not out yet</small></div></div>';
@@ -336,8 +468,8 @@ function renderStats(){var el=$('v-stats');if(!el)return;if(!connected){el.inner
 function renderHead(){var t={chat:'J8NIX',next:'Next',list:'List',stats:'Stats'}[view],s='';
  if(view==='chat')s='your business manager';
  else if(!connected)s='loading…';
- else if(view==='next'){var pl=plan(false,true).L,dn=pl.filter(function(x){return !x.open;}).length;s=pl.length?dn+' of '+pl.length+' handled today':'nothing waits on you';}
- else if(view==='list'){var w=rows().filter(function(i){return i.st==='wait';}).length;s=w+' rows waiting on you';}
+ else if(view==='next'){var nq=needs();s=nq.length?nq.length+' wait on you · #1 first':'nothing waits on you';}
+ else if(view==='list'){var nw=needs().length;s=(curLmode()==='unit'?'by unit · ':'by type · ')+nw+' wait on you';}
  else {var m=J8.money.summary()||{},d=J8.money.daysTo(m.m1_date);s=usd(m.booked_usd||0)+' of '+usd(m.m1_usd||25000)+(d!==null?' · '+Math.max(0,d)+' days to M1':'');}
  $('hdT').textContent=t;$('hdS').textContent=s;}
 
@@ -458,20 +590,22 @@ function chatBottom(){var s=$('chScroll');if(s)s.scrollTop=s.scrollHeight;}
 function setZone(z){if(z==='sign'){lcat='approve';if(selAp){var a=AP[selAp];if(a){openRow['b-'+(a.batch||'other')]=1;openRow['ap'+selAp]=1;}}}go(z==='sign'||z==='proj'||z==='inbox'?'list':z==='health'?'stats':z==='chat'?'chat':z,{keep:true});} /* [chat] */
 function renderView(v){if(v==='chat')renderBrief();if(v==='next')renderNext();if(v==='list')renderList();if(v==='stats')renderStats();}
 var booted=false;
-function renderAll(){var q=connected?plan(false,true).L.filter(function(x){return x.open;}).length:0;['nN','dN'].forEach(function(k){var e=$(k);if(e){var was=e.textContent;e.textContent=q?q:'';e.hidden=!q;if(q&&was&&was!==String(q))bump(e);}});renderSeat();renderHead();renderPin();renderBrief();renderView(view);
+function renderAll(){var q=connected?needs().length:0;['nN','dN'].forEach(function(k){var e=$(k);if(e){var was=e.textContent;e.textContent=q?q:'';e.hidden=!q;if(q&&was&&was!==String(q))bump(e);}});renderSeat();renderHead();renderPin();renderBrief();renderView(view);
  if(connected&&!booted&&view==='chat'){booted=true;setTimeout(chatBottom,60);}}
 var rq=null;function soon(){if(rq)return;rq=setTimeout(function(){rq=null;renderAll();},30);}
 
 function jump(t){
- if(!t)return;if(t==='control'){openCtl();return;}if(t==='chat'&&window.J8C){J8C.show();return;}
+ if(!t)return;if(/^(approvals|approve|list-approve|tasks|today|week)$/.test(t)||(t.indexOf('list-')===0&&t.indexOf('list-tk-')<0))lmode='type';if(t==='control'){openCtl();return;}if(t==='chat'&&window.J8C){J8C.show();return;}
  if(t.indexOf('ap-')===0&&window.J8C){J8C.openAp(t.slice(3));return;}
  if(t==='approvals'||t==='approve'||t==='list-approve'){lcat='approve';go('list');return;}
+ if(t.indexOf('list-tk-')===0){go('next');return;}
  if(t.indexOf('list-')===0){var k=t.slice(5),i=rows().filter(function(x){return x.key===k;})[0];lcat=i?i.g:'all';if(i)openRow[k]=1;go('list');scrollToEl(i&&i.batch?'approvals-'+i.batch.id:'r-'+k,'start');return;}
  if(t==='messages'||t==='chat'){go('chat');return;}
  if(t==='list'||t==='projects'||t==='proj'||t==='inbox'){lcat='all';go('list');return;}
  if(t==='tasks'||t==='today'||t==='week'){lcat='later';openRow.old=1;go('list');return;}
  if(t==='next'){go('next');return;}
  if(t==='stats'||t==='money'||t==='health'||t==='team'){go('stats');return;}
+ if(t.indexOf('p-')===0&&PR[t]){lmode='unit';openRow['pj-'+t]=1;go('list');scrollToEl('pj-'+t,'start');return;}
  if(t.indexOf('p-')===0){var k2='mv-'+t,i2=rows().filter(function(x){return x.key===k2;})[0];lcat=i2?i2.g:'projects';if(i2)openRow[k2]=1;go('list');if(i2)scrollToEl('r-'+k2,'start');}
 }
 function fromHash(){var h=(location.hash||'').slice(1);if(h)jump(h);}
@@ -486,7 +620,10 @@ document.addEventListener('click',function(e){
  t=e.target.closest('[data-jump]');if(t){jump(t.dataset.jump);return;}
  t=e.target.closest('[data-cat]');if(t){lcat=t.dataset.cat;renderList();$('v-list').scrollTop=0;return;}
  t=e.target.closest('[data-pin]');if(t){pinAll=!pinAll;renderPin();return;}
- t=e.target.closest('[data-open]');if(t){var k=t.dataset.open;openRow[k]=!openRow[k];renderView(view);return;}
+ t=e.target.closest('[data-open]');if(t){var k=t.dataset.open;openRow[k]=!openRow[k];renderView(view);if(view==='chat')renderPin();return;}
+ t=e.target.closest('[data-lmode]');if(t){lmode=t.dataset.lmode;ls('j8-lmode',lmode);renderList();renderHead();$('v-list').scrollTop=0;return;}
+ t=e.target.closest('[data-tdone]');if(t){markDone('tk-'+t.dataset.tdone);return;}
+ t=e.target.closest('[data-tundo]');if(t){var ud=t.dataset.tundo;J8.tasks.undo(ud).then(function(){toast('Back on your list.');},function(er){toast('Couldn’t save ('+(er&&er.code||'error')+'). Try again.');});return;}
  t=e.target.closest('[data-ndone]');if(t){markDone(t.dataset.ndone);return;}
  t=e.target.closest('[data-plan]');if(t){plan(true);renderAll();return;}
  t=e.target.closest('[data-nlater]');if(t){var pl=ls('j8-plan');if(pl&&pl.k&&pl.k.indexOf(t.dataset.nlater)>-1){pl.l=pl.l||{};pl.l[t.dataset.nlater]=1;ls('j8-plan',pl);}snooze(t.dataset.nlater,3);toast('Later: back in 3 hours.');renderAll();return;}
@@ -515,6 +652,7 @@ new MutationObserver(function(){if(view==='chat')chatBottom();}).observe($('j8cL
 (function(){
  J8.on('status',function(st){var s=$('status');
   if(st.connected&&!connected){connected=true;s.hidden=true;setTimeout(fromHash,300);}
+  else if(st.cached&&!st.connected&&!connected&&J8.projects.list().length){connected=true;} /* 6.0: paint the phone's last copy at once */
   else if(st.connected)s.hidden=true;
   else if(st.error==='offline'){if(J8.projects.list().length)connected=true;s.hidden=false;s.textContent='Offline. Showing the last copy.';}
   else if(st.error==='signed_out'){connected=false;booted=false;}
@@ -525,6 +663,8 @@ new MutationObserver(function(){if(view==='chat')chatBottom();}).observe($('j8cL
  J8.on('runs',function(d){RUNS=d;soon();});
  J8.on('money',function(d){MONEY=d;soon();});
  J8.on('todo',function(d){S=Object.assign({},d);soon();});
+ J8.on('tasks',function(d){TK=d;soon();});
+ J8.on('units',function(d){UN=d;soon();});
  J8.on('control',function(d){CTRL=d&&d.main?d.main:null;renderSeat();renderCtl();});
  J8.on('schedule',function(){renderCtl();});J8.on('optout',function(){renderCtl();});J8.on('approvals',function(){renderCtl();});J8.on('status',function(){renderCtl();});
 })();
