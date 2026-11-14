@@ -3,7 +3,7 @@
 // and unlocks the full report only with a Gumroad license key verified server-side.
 // deno-lint-ignore-file no-explicit-any
 import { DOMParser } from "jsr:@b-fuze/deno-dom@0.1.56";
-import { ENGINE_VERSION, runChecks, statementTemplates, WEIGHTS } from "https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/c9a083c342a08358523b3deab024496180a2ac67/a11y/engine/engine.ts";
+import { ENGINE_VERSION, runChecks, statementTemplates, WEIGHTS } from "https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/ec9b98eb72e0ef9f4ae0b79ed68501a50ebb8a81/a11y/engine/engine.ts";
 
 const SB_URL = Deno.env.get("SUPABASE_URL") || "";
 const SB_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
