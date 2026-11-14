@@ -445,7 +445,7 @@
       '<button class="btn big" data-act="onb_next" id="onbNext">Next</button></div></div>';
   }
   function start() {
-    return '<div class="hero-logo"><img src="brand/lockup-stacked.svg" alt="Chore Wars"></div><div class="stack" style="margin-top:18px">' +
+    return '<div class="hero-logo"><img src="../../assets/brand-v3/chore-royale/logo-stacked-600.webp" alt="Chore Royale"></div><div class="stack" style="margin-top:18px">' +
       '<button class="btn big" data-act="go_join">' + ic('qr', 32) + 'Join with code</button>' +
       '<button class="btn white big" data-act="go_create">' + ic('crown', 32) + 'New family (parent)</button>' +
       '<button class="btn ghost" data-act="go_demo">Try the demo</button></div>';
@@ -469,7 +469,7 @@
   function keepDraft() { var v = function (q) { var el = document.querySelector(q); return el ? el.value : null; }; ['house', 'name'].forEach(function (k) { var x = v('#f_' + k); if (x !== null) S.draft[k] = x; }); }
   function createForm() {
     var dr = S.draft; dr.av = dr.av || 'owl'; dr.bd = dr.bd || 'crown';
-    return '<div class="hero-logo" style="padding-top:20px"><img src="brand/mark.svg" alt="" style="width:110px"></div><div class="panel stack">' +
+    return '<div class="hero-logo" style="padding-top:20px"><img src="../../assets/brand-v3/chore-royale/logo-mark-512.webp" alt="" style="width:110px"></div><div class="panel stack">' +
       '<label class="field"><span>Family name</span><input id="f_house" maxlength="24" placeholder="The Thunder House" value="' + esc(dr.house || '') + '"></label>' +
       '<label class="field"><span>Your name</span><input id="f_name" maxlength="14" placeholder="Captain" value="' + esc(dr.name || '') + '"></label>' +
       avPicker(dr.av) +
@@ -479,13 +479,13 @@
   function joinForm() {
     var dr = S.draft;
     if (dr.parent) {
-      return '<div class="hero-logo" style="padding-top:20px"><img src="brand/mark.svg" alt="" style="width:110px"></div><div class="panel stack">' +
+      return '<div class="hero-logo" style="padding-top:20px"><img src="../../assets/brand-v3/chore-royale/logo-mark-512.webp" alt="" style="width:110px"></div><div class="panel stack">' +
         '<label class="field"><span>Family code</span><input id="f_code" class="code-in" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" value="' + esc(S.joinCode || '') + '"></label>' +
         pinField('f_pin', 'Parent PIN') +
         '<button class="btn big" data-act="parent_in">' + ic('lock', 28) + 'Referee in</button></div><button class="btn ghost" data-act="home">Back</button>';
     }
     if (!dr.code) {
-      return '<div class="hero-logo" style="padding-top:20px"><img src="brand/mark.svg" alt="" style="width:110px"></div><div class="panel stack">' +
+      return '<div class="hero-logo" style="padding-top:20px"><img src="../../assets/brand-v3/chore-royale/logo-mark-512.webp" alt="" style="width:110px"></div><div class="panel stack">' +
         '<label class="field"><span>Family code</span><input id="f_code" class="code-in" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" value="' + esc(S.joinCode || '') + '"></label>' +
         '<button class="btn big" data-act="find">Join</button></div><button class="btn ghost" data-act="parent_mode">I\'m the parent</button><button class="btn ghost" data-act="home">Back</button>';
     }
@@ -623,7 +623,7 @@
      The slot is where a non-personalised ad network will render (see model page); none is wired yet. */
   function adSheet() {
     var n = 5;
-    var s = sheet('<div class="admoment"><span class="adtag">Ad</span><div class="adbrand"><img src="brand/lockup.svg" alt="Chore Wars"></div>' +
+    var s = sheet('<div class="admoment"><span class="adtag">Ad</span><div class="adbrand"><img src="brand/royale-logo-800.png" alt="Chore Royale"></div>' +
       '<div class="reveal show" id="rev"><div class="flipcard spin"><div class="face back">' + ic('cards', 72) + '</div><div class="face front" id="revf"><span class="q">?</span></div></div></div>' +
       '<div class="adrow"><div class="ring" style="--p:0"><span class="num" id="adn">5</span></div><div class="adtxt"><b id="adname">Free power card</b><span class="fine" id="adsub">Steal, Shield or 2X</span></div></div></div>');
     var ring = s.querySelector('.ring');
@@ -773,7 +773,7 @@
       case 'pin_sheet': pinSheet(function (p) { act('set_pin', { pin: p }).then(function () { toast(ic('lock', 28) + 'PIN saved', 'good'); }).catch(function () { /* shown */ }); }); break;
       case 'share': {
         var url = location.origin + location.pathname + '?join=' + S.d.house.code;
-        if (navigator.share) navigator.share({ title: 'Chore Wars', url: url }).catch(function () { /* cancelled */ });
+        if (navigator.share) navigator.share({ title: 'Chore Royale', url: url }).catch(function () { /* cancelled */ });
         else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { toast(ic('check', 28) + 'Link copied', 'good'); });
         break;
       }
