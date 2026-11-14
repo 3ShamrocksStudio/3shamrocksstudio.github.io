@@ -2,7 +2,7 @@
 // Pure: takes a parsed Document (deno-dom) and returns findings. No network.
 // deno-lint-ignore-file no-explicit-any
 
-export const ENGINE_VERSION = "1.1.0";
+export const ENGINE_VERSION = "1.1.1";
 
 /** Best-practice, AAA or heuristic checks: reported as "advisory", never scored. */
 export const ADVISORY = new Set([
@@ -505,7 +505,7 @@ export const CHECKS: CheckDef[] = [
     `<input type="tel" autocomplete="tel">`,
   ),
   C("a11y-statement", "IL reg. 35 / EAA", "LAW", "serious", { he: "לא נמצא קישור להצהרת נגישות", en: "No link to an accessibility statement found" }, {
-    he: "בישראל, אתר שמספק שירות לציבור נדרש לפרסם הצהרת נגישות. גם חוק הנגישות האירופי (EAA) מחייב מידע על נגישות השירות. (בדקנו רק קישורים שקיימים ב-HTML; קישור שמוזרק ב-JS לא נראה כאן.)",
+    he: "בישראל, אתר שמספק שירות לציבור נדרש לפרסם הצהרת נגישות. גם חוק הנגישות האירופי (EAA) מחייב מידע על נגישות השירות. (הבדיקה מתייחסת רק לקישורים שקיימים ב-HTML; קישור שמוזרק ב-JS לא נראה כאן.)",
     en:
       "In Israel, sites serving the public must publish an accessibility statement. The EU Accessibility Act also requires accessibility information. (Only links present in the HTML were checked; a link injected by JS isn't visible here.)",
   }, {
@@ -1262,7 +1262,10 @@ export function runChecks(doc: any, rawHtml: string, pageUrl: string, lang: "he"
   // accessibility statement
   const STMT = /הצהרת\s*נגישות|נגישות|accessibility|barrierefrei|accessibilit[ée]|accesibilidad|accessibilità|toegankelijk|tillgänglighet|dostępność/i;
   let statement: EngineResult["statement"] = { found: false };
+  // pass 1: an explicit statement phrase wins; pass 2: loose same-site match
+  for (const pass of [1, 2])
   for (const a of all) {
+    if (statement.found) break;
     if (tag(a) !== "a") continue;
     const h = (attr(a, "href") || "").trim();
     if (!h || h === "#" || /^javascript:/i.test(h)) continue;
@@ -1275,7 +1278,7 @@ export function runChecks(doc: any, rawHtml: string, pageUrl: string, lang: "he"
       sameSite = lh === ph || root(lh) === root(ph) || lh.endsWith("." + ph) || ph.endsWith("." + lh);
     } catch { /* relative or odd href: treat as same site */ }
     const explicit = /הצהרת\s*(ה)?נגישות|accessibility statement|erklärung zur barrierefreiheit|déclaration d.accessibilité|declaración de accesibilidad|dichiarazione di accessibilità|toegankelijkheidsverklaring/i.test(n);
-    if (explicit || (sameSite && (STMT.test(n) || /accessib|negishut|nagishut|negishot|%d7%a0%d7%92%d7%99%d7%a9%d7%95%d7%aa|נגישות|barrierefrei/i.test(h)))) {
+    if ((pass === 1 && explicit) || (pass === 2 && sameSite && (STMT.test(n) || /accessib|negishut|nagishut|negishot|%d7%a0%d7%92%d7%99%d7%a9%d7%95%d7%aa|נגישות|barrierefrei/i.test(h)))) {
       statement = { found: true, href: h.slice(0, 200), text: n.slice(0, 80) };
       break;
     }
