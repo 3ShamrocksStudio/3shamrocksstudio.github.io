@@ -116,3 +116,19 @@ SELECT cron.schedule('a11y-monitor-tick', '23 * * * *', $cron$
       'x-a11y-cron', (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'a11y_cron_secret')),
     timeout_milliseconds := 10000)
 $cron$);
+
+-- Migration a11y_monitor_lang_runs (verifier fixes, 14 Nov 2026):
+-- the weekly re-check uses the language of the buyer's first check, and each run logs counts only.
+ALTER TABLE public.a11y_monitors ADD COLUMN IF NOT EXISTS lang text NOT NULL DEFAULT 'he' CHECK (lang IN ('he', 'en'));
+
+CREATE TABLE IF NOT EXISTS public.a11y_monitor_runs (
+  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  ran_at timestamptz NOT NULL DEFAULT now(),
+  due integer NOT NULL DEFAULT 0,
+  scanned integer NOT NULL DEFAULT 0,
+  failed integer NOT NULL DEFAULT 0,
+  moved integer NOT NULL DEFAULT 0,
+  ended integer NOT NULL DEFAULT 0
+);
+ALTER TABLE public.a11y_monitor_runs ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.a11y_monitor_runs FROM anon, authenticated;
