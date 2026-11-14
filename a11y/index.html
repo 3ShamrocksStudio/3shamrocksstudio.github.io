@@ -546,7 +546,7 @@ function genStatement(j){
 }
 window.addEventListener("afterprint",function(){document.body.className="";});
 var pref=store("a11y-lang"); if(pref==="en") applyLang("en");
-var qs=new URLSearchParams(location.search); if(qs.get("url")){ $("url").value=qs.get("url"); }
+var qs=new URLSearchParams(location.search); if(qs.get("lang")==="en") applyLang("en"); if(qs.get("url")){ $("url").value=qs.get("url"); }
 })();
 </script>
 </body>
