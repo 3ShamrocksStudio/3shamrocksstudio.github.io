@@ -1,6 +1,6 @@
 /* J8NIX v6 service worker: offline shell + web push. Never caches API data. */
-var CACHE = 'j8nix-v6.0.0';
-var SHELL = ['./', 'index.html', 'app.css?v=6.0.0', 'app.js?v=6.0.0', 'shell.js?v=6.0.0', 'j8-data.js?v=6.0.0', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
+var CACHE = 'j8nix-v6.0.1';
+var SHELL = ['./', 'index.html', 'app.css?v=6.0.1', 'app.js?v=6.0.1', 'shell.js?v=6.0.1', 'j8-data.js?v=6.0.1', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'icons/wm-slate.svg', 'icons/icon.svg', 'icons/icon-192.png', 'icons/badge-96.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', function (e) {

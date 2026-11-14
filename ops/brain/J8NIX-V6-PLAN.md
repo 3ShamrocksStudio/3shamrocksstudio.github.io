@@ -170,7 +170,7 @@ App revert (one line, from the repo root). While 6.0 was built another session s
 on top of 5.2.0; 6.0.0 is merged on top of 5.3.0. Kept copies: `j8/app-5.3.0.js` + `j8/app-5.3.0.css` (what was live right
 before 6.0, recommended revert) and `j8/app-5.2.0.js` + `j8/app-5.2.0.css` (as asked; reverting to them also drops Control).
 ```
-sed -i 's/app\.css?v=6\.0\.0/app-5.3.0.css/;s/app\.js?v=6\.0\.0/app-5.3.0.js/' j8/index.html && sed -i "s/j8nix-v6\.0\.0'/j8nix-v6.0.0-revert'/" j8/sw.js
+sed -i 's/app\.css?v=6\.0\.1/app-5.3.0.css/;s/app\.js?v=6\.0\.1/app-5.3.0.js/' j8/index.html && sed -i "s/j8nix-v6\.0\.1'/j8nix-v6.0.1-revert'/" j8/sw.js
 ```
 (j8-data.js and shell.js stay backward compatible with the 5.3.0 and 5.2.0 screens: they only add the tasks collection,
 load sent/killed drafts without bodies — templates always in full — and paint from the saved copy.)
@@ -181,3 +181,16 @@ Playwright (preinstalled Chromium) at 390×844 and 1280×800, QA org data (`j8qa
 SQL fixtures in the QA org: chain A→B→C, cycle D↔E, done blocker F. Checks: axe-core 0 violations, no horizontal scroll,
 no JS errors, Hebrew RTL, ranking parity SQL = JS. RLS: impersonated QA viewer sees 0 rows of the studio org through the
 tables and the functions. Then one independent verifier agent.
+
+## 10. 6.0.1 (fix round 1 after the independent verifier, 14 Nov)
+- "Turn on studio email sending" now matches the decided path (ops/brain/EMAIL-SENDER.md §7): check Chrome's Gmail shows
+  dave@3shamrocks.com, then Settings → Control → Email sending → On. The task closes itself when email_from_ok turns on
+  (trigger j8_control_done_tasks; tasks carry extra.done_when).
+- CV access: one instruction (System Settings path, Apple guide link) in the task and in the 4 drafts it blocks; Sensi.AI and
+  Taboola go by hand on LinkedIn, so their edges were removed (unlocks 4).
+- The Meta sign-in task was dropped: its 16 posts were killed by Dave; the Instagram project's own line asks for the logins.
+- j8_rank now treats a project with a real "you" ask as Dave's, like the app. Team questions and held sends stay app-only.
+- 16 decisions recorded by an arm got decided_at (from "Rejected by Dave 14 Nov 18:01"), so Stats counts them.
+- App: one clock per ranking pass (stable 🔴 order); team-ask rows show only the "Do: …" phrase; the Done toast counts only
+  items with no other open blocker; violet dot for blocked team tasks; red removed from failed-run dots and Control errors;
+  phone Chat panel compacted (card + one "Then" line); version label 6.0.1.

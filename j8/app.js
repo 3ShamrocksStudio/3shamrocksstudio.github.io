@@ -117,6 +117,8 @@ function held(){var by={},L=[];J8.approvals.list().forEach(function(a){if(a.stat
  return L.sort(function(x,y){return (y.dave?1:0)-(x.dave?1:0)||y.items.length-x.items.length;});}
 function isAsk(x){if(x.status==='done')return false;var v=sevOf(J8.inbox.lastReply(x));if(v)return v!=='g'; /* a tagged last line decides */
  return x.status==='routed'&&/NEEDS YOUR EYES|WHAT YOU DO|\?|Forward it|reply '|paste its/i.test(String(x.reply||''));}
+/* 6.0.1: a row shows only the action ("Do: …"), never a raw link; the full line stays behind tap-to-expand */
+function askShort(s){s=String(s||'');var m=s.match(/\bDo:\s*(.+)$/i),t=m?m[1]:s;t=t.replace(/\s*[—–-]\s*https?:\/\/\S+/g,'').replace(/https?:\/\/\S+/g,'').replace(/\s*\([^()]*\bmin\b[^()]*\)/gi,'').replace(/[\s.;:—–-]+$/,'');return cap1(cut(t||s.replace(/https?:\/\/\S+/g,''),90));}
 function lastClean(x){return sevStrip(J8.inbox.lastReply(x).replace(/^\s*\d{1,2}:\d\d(?:\s*\([^)]*\))?\s*[—-]\s*/,''));}
 function askLine(x){var r=String(x.reply||''),m=r.match(/(NEEDS YOUR EYES|WHAT YOU DO)\s*:\s*([^\n]+)/);if(m&&!sevOf(J8.inbox.lastReply(x)))return m[2];return lastClean(x);}
 function whyMove(p){var n=String(p.next||'').trim(),m=n.match(/^(Concept|Build|Staged|Validate|Monetize|Paying)\s*:\s*(.+)$/i);
@@ -159,11 +161,11 @@ function itemNames(ids,max){var g=graph(),kinds={},order=[],other=[];max=max||3;
  var P=order.map(function(n){return kinds[n]+' '+(kinds[n]===1?n.replace(/s$/,''):n);}).concat(other);
  return P.slice(0,max).join(' · ')+(P.length>max?' · and more':'');}
 function minsOf(i){if(i.task&&isNum(i.task.minutes))return i.task.minutes;var m=String(i.full||'').match(/\((?:[^()]*?,\s*)?(\d{1,3})\s*min\b/);return m?+m[1]:null;}
-function lead1(i){var ids=i.ids||[],pid=rowPid(i),p=pobj(pid);
+function lead1(i,now,ed){now=now||Date.now();ed=ed||eod().getTime();var ids=i.ids||[],pid=rowPid(i),p=pobj(pid);
  i.ul=unlocksOf(ids);
  i.wo=(i.batch||i.ap||i.held||!ids.length)?[]:ids.map(openBlk).reduce(function(a,b){return a.concat(b.filter(function(x){return a.indexOf(x)<0;}));},[]);
  i.pp=p;i.money=i.g==='money'||moneyP(p)||!!(i.batch&&i.batch.items.some(function(a){return a.kind==='invoice';}));
- i.dl=i.sev==='r'?Date.now():i.due?i.due.getTime():i.sev==='o'?eod().getTime():Infinity;
+ i.dl=i.sev==='r'?now:i.due?i.due.getTime():i.sev==='o'?ed:Infinity; /* 6.0.1: one clock per pass, so equal 🔴 items fall to age, as in j8_rank */
  i.age=i.since&&!isNaN(i.since)?i.since.getTime():Infinity;i.mins=minsOf(i);return i;}
 function rankCmp(a,b){return (a.wo.length?1:0)-(b.wo.length?1:0)||b.ul.length-a.ul.length||(b.money?1:0)-(a.money?1:0)||(a.dl-b.dl)||(a.age-b.age)||sevRank(a.sev)-sevRank(b.sev);}
 /* the mentor line: why this one now, in one line */
@@ -186,7 +188,7 @@ function rows(){var R=[],ida=function(L){return L.map(function(a){return a.id;})
   R.push({key:'b-'+b.id,g:'approve',st:'wait',sev:ds[0]&&ds[0]<=eod()?'r':'o',since:b.items.map(function(a){return dt(a.created);}).filter(Boolean).sort(function(x,y){return x-y;})[0]||null,title:b.items.length+' '+nounOf(b.items)+' to send',sub:b.label,own:'dave',due:ds[0]||null,batch:b,ids:ida(b.items)});});
  held().forEach(function(h){var n=h.items.length+' '+nounOf(h.items);R.push({key:h.key,g:'team',st:h.dave?'wait':'stuck',sev:h.dave?'o':null,title:h.dave?cut(h.why,70)+' ('+n+')':n.replace(/^(\d+) /,'$1 approved ')+' held',sub:h.dave?'Approved; '+(h.items.length===1?'it goes':'they go')+' out once you do this':cut(h.why,70),own:h.dave?'dave':'Team',held:h,ids:ida(h.items)});});
  J8.inbox.list().forEach(function(x){var a=isAsk(x),st=a?'wait':x.status==='done'?'done':'prog';
-  R.push({key:'c-'+x.p+'-'+String(x.at),ids:[],g:'team',st:st,sev:a?sevOf(J8.inbox.lastReply(x))||'o':null,title:a?cap1(cut(askLine(x),90)):pname(x.p)+(st==='done'?' · done':' · with the team'),sub:a?pname(x.p)+' team asks':cut(lastClean(x),80),own:a?'dave':dept(PR[x.p]||{}),c:x,ask:a,at:x.at,since:x.at?new Date(x.at):null});});
+  R.push({key:'c-'+x.p+'-'+String(x.at),ids:[],g:'team',st:st,sev:a?sevOf(J8.inbox.lastReply(x))||'o':null,full:a?askLine(x):'',title:a?askShort(askLine(x)):pname(x.p)+(st==='done'?' · done':' · with the team'),sub:a?pname(x.p)+' team asks':cut(lastClean(x),80),own:a?'dave':dept(PR[x.p]||{}),c:x,ask:a,at:x.at,since:x.at?new Date(x.at):null});});
  var ot=oldTasks();if(ot.length)R.push({key:'old',g:'later',st:'park',title:ot.length+' older to-do items',sub:'From 3–11 Nov. Tick what is done.',own:'dave',tasks:ot});
  return R.sort(function(a,b){return GR.map(function(g){return g[0];}).indexOf(a.g)-GR.map(function(g){return g[0];}).indexOf(b.g)||ORD[a.st]-ORD[b.st];});}
 
@@ -215,7 +217,7 @@ function leadCard(i,full){var n=nextOf(i),pid=rowPid(i),why=mentor(i),how=i.task
  var prim=go||!canDone(i)?actBtn(n,'pri'):'<button class="pri" data-ndone="'+esc(i.key)+'">'+ic('done')+'Done</button>';
  return '<article class="df'+(full?' full':'')+'" aria-label="Do this first"'+(pcol(pid)?' style="--pc:'+pcol(pid)[0]+'"':'')+'>'
   +'<div class="df-top"><span class="df-k">'+eight()+'Do this first</span><span class="df-r">'+(i.ul.length?'<b class="ul">◆ unlocks '+i.ul.length+'</b>':'')+(i.mins?'<span class="mn">~'+i.mins+' min</span>':'')+'</span></div>'
-  +'<h2 dir="auto">'+esc(cap1(n.what))+'</h2>'+(why?'<p class="why" dir="auto">'+esc(why)+'</p>':'')
+  +'<h2 dir="auto">'+(full?esc(cap1(n.what)):'<button class="dft" data-go="next">'+esc(cap1(n.what))+'</button>')+'</h2>'+(why?'<p class="why" dir="auto">'+esc(why)+'</p>':'')
   +(how?'<p class="how1'+(full?'':' clamp')+'" dir="auto">'+esc(how)+'</p>':'')
   +(full&&n.why&&!i.task&&n.why!==why?'<p class="ctx" dir="auto">'+esc(n.why)+'</p>':'')
   +'<div class="df-meta">'+sevChip(i.sev)+'<span class="pj" dir="auto">'+pm(pid)+esc(i.sub||'')+'</span></div>'
@@ -243,8 +245,8 @@ function renderNext(){var el=$('v-next');if(!el)return;
  if(N.length>4)h+='<h3 class="lh">Everything else <span>'+(N.length-4)+'</span></h3>'+restTree(N.slice(4),5);
  el.innerHTML=h+'</div>';}
 function markDone(k){var i=rows().filter(function(x){return x.key===k;})[0];
- if(i&&i.task){var id=i.task.id,n=unlocksOf([id]).length;if(!J8.status().connected){toast('Not connected. Try again in a moment.');return;}
-  J8.tasks.done(id).then(function(){toast(n?'Done. '+n+(n===1?' item is':' items are')+' free to move.':'Done. It stays under Done in the List.',function(){J8.tasks.undo(id).then(function(){toast('Back on your list.');},function(){toast('Couldn’t undo. Try again.');});});},
+ if(i&&i.task){var id=i.task.id,n=(graph().out[id]||[]).filter(function(d){return openBlk(d).filter(function(b){return b!==id;}).length===0;}).length; /* 6.0.1: only items with no other open blocker */if(!J8.status().connected){toast('Not connected. Try again in a moment.');return;}
+  J8.tasks.done(id).then(function(){toast(n?'Done. '+n+(n===1?' item is':' items are')+' free to go.':'Done. It stays under Done in the List.',function(){J8.tasks.undo(id).then(function(){toast('Back on your list.');},function(){toast('Couldn’t undo. Try again.');});});},
    function(e){toast(e&&e.code==='conflict'?'It changed meanwhile. Try again.':'Couldn’t save ('+(e&&e.code||'error')+'). Try again.');});renderAll();return;}
  snooze(k,24);
  if(i&&(i.p||i.held||i.c)&&J8.status().connected){var pid=i.p?i.p.id:i.c?i.c.p:(i.held.items[0]||{}).product||'p-general';
@@ -308,7 +310,7 @@ function dupMove(i,R){if(!i.p||!i.move)return false;var y=youRaw(i.p),ak=actKey(
 /* 6.0: Dave's queue, ranked by the lead formula (unlocks → money → deadline → age); memoised per data change */
 function needs(){var mk=[AP,PR,TK,UN,CMT,S,SNV,Math.floor(Date.now()/6e4)];if(NQ&&NQ.k.every(function(x,j){return x===mk[j];}))return NQ.v.slice();
  var o={money:0,team:1,approve:2,projects:4},w=function(i){return i.held?3:o[i.g];},R=rows().filter(function(i){return i.st==='wait'&&o[i.g]!=null&&!snoozed(i.key);});
- R=R.filter(function(i){return !dupMove(i,R);}).map(lead1).sort(function(a,b){return rankCmp(a,b)||w(a)-w(b);});
+ var now=Date.now(),ed=eod().getTime();R=R.filter(function(i){return !dupMove(i,R);}).map(function(i){return lead1(i,now,ed);}).sort(function(a,b){return rankCmp(a,b)||w(a)-w(b);});
  NQ={k:mk,v:R};return R.slice();}
 function ndHref(i){var u=i.p&&i.p.you_link||'';return /^https?:\/\//.test(u)&&!/3shamrocks\.com\/j8\/?(#.*)?$/.test(u)?u:null;}
 function ndItem(i){var v=SEV[i.sev]?i.sev:'o',u=ndHref(i),inner='<span class="e" role="img" aria-label="'+esc(SEV[v][1])+'"><i class="sd sd-'+v+'"></i></span><span class="t" dir="auto">'+esc(cap1(i.title))+(i.sub?' <small>· '+pm(rowPid(i))+esc(i.sub)+'</small>':'')+'</span>';
@@ -321,7 +323,8 @@ function renderPin(){var el=$('j8Pin');if(!el)return;if(!connected){el.hidden=tr
  var K={};N.forEach(function(i){K[i.key]=1;});NEWK={};if(NEEDK)N.forEach(function(i){if(!NEEDK[i.key])NEWK[i.key]=1;});NEEDK=K;
  if(!N.length)h+='<p class="nd-0">Nothing needs you right now.</p>';
  else{h+=leadCard(N[0],false);
-  if(N.length>1)h+='<div class="nd-h"><b>Then</b><span class="nc" id="ndN">'+N.length+' in order</span><button data-go="next">'+(N.length>4?'All '+N.length:'Open Next')+'</button></div><ul class="nd lead">'+N.slice(1,4).map(function(i,k){return leadRow(i,k+2);}).join('')+'</ul>';}
+  if(N.length>1&&MQ.matches)h+='<button class="thn" data-go="next"><b>Then</b><span class="t" dir="auto">2 · '+esc(cap1(nextOf(N[1]).what))+'</span><em id="ndN">+'+(N.length-1)+'</em>'+ic('more')+'</button>'; /* 6.0.1: phones keep the chat in view */
+  else if(N.length>1)h+='<div class="nd-h"><b>Then</b><span class="nc" id="ndN">'+N.length+' in order</span><button data-go="next">'+(N.length>4?'All '+N.length:'Open Next')+'</button></div><ul class="nd lead">'+N.slice(1,4).map(function(i,k){return leadRow(i,k+2);}).join('')+'</ul>';}
  el.innerHTML=h;
  if(NEEDN!==null&&NEEDN!==N.length)bump($('ndN'));NEEDN=N.length;}
 
@@ -349,7 +352,7 @@ function gbar(g,L){var c={};if(g==='approve'){var A=J8.approvals.list();c.wait=A
 /* ===== 6.0 List by unit: units → projects → tasks; stage → next stage, owner, real done/total, links, Done, comment box ===== */
 function curLmode(){return lmode||ls('j8-lmode')||'unit';}
 function taskLine(t){var bl=openBlk(t.id),dv=t.owner==='dave',tm=DEPT[t.owner]||t.owner||'Team';
- return '<div class="task'+(dv?'':' tm')+'">'+(dv?'<button class="tk" data-tdone="'+esc(t.id)+'" aria-label="Mark done: '+esc(t.title)+'">'+ic('done')+'</button>':'<i class="tmd" aria-hidden="true"></i>')
+ return '<div class="task'+(dv?'':' tm')+(bl.length?' bl':'')+'">'+(dv?'<button class="tk" data-tdone="'+esc(t.id)+'" aria-label="Mark done: '+esc(t.title)+'">'+ic('done')+'</button>':'<i class="tmd" aria-hidden="true"></i>')
   +'<span dir="auto">'+esc(t.title)+(t.link?' '+linkBtn(t.link,t.link_text||'Open','lk2'):'')+'<small>'+(dv?'You':esc(tm))+(isNum(t.minutes)&&dv?' · ~'+t.minutes+' min':'')+(bl.length?' · waits on: '+esc(itemNames(bl,2)):'')+'</small></span></div>';}
 function doneLine(t){return '<div class="task done"><button class="tk on" data-tundo="'+esc(t.id)+'" aria-label="Untick: '+esc(t.title)+'">'+ic('done')+'</button><span dir="auto">'+esc(t.title)+'<small>Done '+esc(t.done_at?fdate(t.done_at):'')+(t.unlocked_on_done?' · unlocked '+t.unlocked_on_done:'')+'</small></span></div>';}
 function projRow(p,mine){var k='pj-'+p.id,o=openRow[k],T=tasksAll().filter(function(t){return t.project_id===p.id;}),A=J8.approvals.list().filter(function(a){return a.product===p.id&&a.status!=='killed';});
@@ -487,7 +490,7 @@ function seatTap(){if(!CTRL){toast('Not connected yet. Try again in a moment.');
  else{seatAsk=Date.now()+5000;renderSeat();setTimeout(renderSeat,5100);}}
 
 /* ===== 5.3 Control: run the team from the phone. Lives in the settings sheet; #control opens it. Admins change, everyone else reads. ===== */
-var J8V='5.3.0',ctlOn=false,ctlAsk=null,ctlOpen={};
+var J8V='6.0.1',ctlOn=false,ctlAsk=null,ctlOpen={};
 var COVERS={'job-application':'Job applications','li-connect':'LinkedIn connect notes','followup-1':'First follow-up','followup-2':'Second follow-up','tester-post':'Tester sign-up post'};
 var LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="6" y="11" width="12" height="9"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg>';
 function ilHM(ms){var p=ilParts(ms);return String(p.hour).padStart(2,'0')+':'+String(p.minute).padStart(2,'0');}
@@ -496,7 +499,7 @@ function ilWhen(iso){var t=pd(iso);if(isNaN(t)||!ILF)return '';var d=ilDay(t);if
  var p=ilParts(t);return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(Date.UTC(p.year,p.month-1,p.day)).getUTCDay()]+' '+p.day+' '+MON[p.month-1]+' '+ilHM(t);}
 function sw(on,cx,label,dis,extra){return '<button type="button" class="sw" role="switch" aria-checked="'+(on?'true':'false')+'" aria-label="'+esc(label)+'" data-cx="'+cx+'" data-fk="'+esc(cx+(extra||''))+'"'+(extra?' data-id="'+esc(extra)+'"':'')+(dis?' disabled':'')+'></button>';}
 function runPend(s){var a=pd(s.run_now_at),d=pd(s.run_now_done_at);return !isNaN(a)&&(isNaN(d)||a>d)?a:null;}
-function schRow(s,ro){var st=s.last_status||'none',dot={ok:'g',failed:'r',running:'b'}[st]||'n',word={ok:'worked',failed:'failed',running:'running now'}[st]||'',on=s.want_enabled!=null?!!s.want_enabled:!!s.enabled,rp=runPend(s),p='';
+function schRow(s,ro){var st=s.last_status||'none',dot={ok:'g',failed:'o',running:'b'}[st]||'n',word={ok:'worked',failed:'failed',running:'running now'}[st]||'',on=s.want_enabled!=null?!!s.want_enabled:!!s.enabled,rp=runPend(s),p='';
  if(s.want_enabled!=null&&!!s.want_enabled!==!!s.enabled)p='<span class="cx-p">'+(s.want_enabled?'Turning on… (within the hour)':'Pausing… (within the hour)')+'</span>';
  var last=s.last_run_at?'Last run '+ago(s.last_run_at)+(word?' · '+word:''):'Not run yet',nx=s.enabled&&s.next_run_at?'Next '+ilWhen(s.next_run_at):s.enabled?'':'Off';
  return '<div class="sh-row cx-s"><div><b dir="auto">'+esc(s.name||'Team task')+'</b><span dir="auto">'+esc(s.when_text||'')+'</span>'
@@ -515,7 +518,7 @@ function renderCtl(){var el=$('ctlBody');if(!el||!ctlOn)return;var c=J8.control.
  /* 1 sending */
  h+='<section class="cx-g" aria-labelledby="cxg1"><h3 id="cxg1">Sending</h3><p class="cx-d">What I may send, and the switch that stops everything.</p>'
   +'<div class="sh-row"><div><b>Sending by the AI team</b><span id="seatCTxt">'+esc($('seatTxt').textContent)+'</span></div><button class="seat" id="seatC" data-fk="seatC">Pause sending</button></div>'
-  +'<div class="sh-row"><div><b id="cxEm">Email sending</b><span>Studio email goes out only from dave@3shamrocks.com; turn on once it’s connected.</span></div>'+sw(c&&c.email_from_ok,'email','Email sending',ro||!c)+'</div>'
+  +'<div class="sh-row"><div><b id="cxEm">Email sending</b><span>Studio email goes out only from dave@3shamrocks.com. Turn on once Chrome’s Gmail on the Mac shows that address.</span></div>'+sw(c&&c.email_from_ok,'email','Email sending',ro||!c)+'</div>'
   +(ctlAsk==='email'?askBox('email'):'')
   +'<div class="sh-row"><div><b>Live AI answers</b><span>Uses paid AI per answer.</span></div>'+sw(c&&c.brain_enabled,'brain','Live AI answers',ro||!c)+'</div>'
   +(ctlAsk==='brain'?askBox('brain'):'')+'</section>';

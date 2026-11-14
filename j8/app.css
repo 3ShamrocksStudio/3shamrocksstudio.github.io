@@ -461,8 +461,8 @@ body[data-view=chat] #chat{display:flex;flex-direction:column;overflow:hidden}
 .cx-f div{display:flex;gap:8px}
 .cx-f input{flex:1;min-width:0;min-height:44px;padding:0 12px;border:1.5px solid var(--slate-l);border-radius:8px;background:#fff;font-size:16px;outline:none}
 .cx-f input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(31,91,255,.15)}
-.cx-f input[aria-invalid=true]{border-color:var(--r-s)}
-.cx-e{font-size:14px;color:var(--r-t)}
+.cx-f input[aria-invalid=true]{border-color:var(--o-s)}
+.cx-e{font-size:14px;color:var(--o-t)}
 .cx-e:empty{display:none}
 a.seat{display:inline-flex;align-items:center;justify-content:center;text-align:center;flex:none;max-width:48%}
 .cx-who{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -544,6 +544,7 @@ a.seat{display:inline-flex;align-items:center;justify-content:center;text-align:
 .bx .nd.lead{border-top:1px solid var(--fog-l)}
 .task small{display:block;font-size:12.5px;color:var(--slate);margin-top:1px}
 .task.tm .tmd{width:10px;height:10px;margin:8px 8px 0;border-radius:50%;background:var(--blue);flex:none}
+.task.tm.bl .tmd{background:var(--vi)}
 .task .tk{color:var(--slate-l)}
 .task .tk:hover{border-color:var(--ok);color:var(--ok)}
 .task.done .tk.on{background:var(--ok-s);border-color:var(--ok-s);color:#fff}
@@ -565,3 +566,23 @@ a.seat{display:inline-flex;align-items:center;justify-content:center;text-align:
 .df:not(.full) .pri{min-height:44px;font-size:16px}
 .df:not(.full) .df-meta{margin-top:6px}
 .df:not(.full) .df-act{margin-top:8px}
+
+/* 6.0.1 compact lead on phones: the card stays under ~200px and "Then" is one line, so the chat keeps the screen */
+.dft{font:inherit;color:inherit;text-align:inherit;padding:0;width:100%;unicode-bidi:plaintext}
+.thn{display:grid;grid-template-columns:auto minmax(0,1fr) auto 18px;align-items:center;gap:8px;width:100%;min-height:44px;padding:2px 0 4px;text-align:left}
+.thn b{font:600 14.5px/1 var(--jost)}
+.thn .t{font-size:14px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext}
+.thn em{font-style:normal;font:600 12.5px/1 var(--jost);color:var(--gold-t);background:var(--gold-w);box-shadow:inset 0 0 0 1px #E9A23B;border-radius:10px;padding:4px 7px}
+.thn .ico{width:16px;height:16px;color:var(--slate)}
+@media (max-width:999px){
+ .ch-pin .df{margin:6px 0 4px;padding:9px 12px 8px}
+ .ch-pin .df h2{margin-top:4px;font-size:18px;line-height:1.25}
+ .ch-pin .df h2 .dft{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .ch-pin .df .why{margin-top:2px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .ch-pin .df .how1.clamp{-webkit-line-clamp:1;margin-top:2px;font-size:13.5px}
+ .ch-pin .df-meta{display:none}
+ .ch-pin .df-act{margin-top:6px;gap:6px}
+ .ch-pin .df-act .pri{min-height:40px;font-size:15.5px}
+ .ch-pin .df-act .sec2 button{min-height:40px;padding:0 8px}
+ .ch-pin .since{padding:2px 0 3px}
+}
