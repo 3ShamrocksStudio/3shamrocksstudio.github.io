@@ -2,7 +2,7 @@
 
 Dave's standing rule (14 Nov 21:02): "Every change must be reflected in portfolio, always. If we change brand and design, every relevant channel and link must ALWAYS UPDATE ACCORDINGLY AND ACCURATELY and continuously reflect the brand's design language, identity etc."
 
-This file is the list a sync pass walks. One block per brand: where the truth lives, the files, the look, and every surface with its URL or path. Paths are repo-relative (`3shamrocksstudio.github.io`, served at https://3shamrocks.com/) unless they start with `/mnt/user-data/outputs/` (studio outputs folder) or `~/Desktop/3S Projects/` (Dave's Mac).
+This file is the list a sync pass walks. One block per brand: where the truth lives, the files, the look, and every surface with its URL or path. Internal file: excluded from the public site in `_config.yml` (only `brain.json` and `index.html` in this folder are served). Paths are repo-relative (`3shamrocksstudio.github.io`, served at https://3shamrocks.com/) unless they start with `/mnt/user-data/outputs/` (studio outputs folder) or `~/Desktop/3S Projects/` (Dave's Mac).
 
 Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · 🔍 needs a check in Chrome (no login; read the public page only) · 🔒 needs Dave (his login or his decision) · — not applicable.
 
@@ -94,10 +94,12 @@ Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · �
 |---|---|---|
 | Portfolio case page | `work/lickpick.html` | ✅ 14 Nov |
 | Home card | `index.html` (`#work`, second device) | ✅ |
-| Landing | https://3shamrocks.com/lickpick/ (`lickpick/index.html`), `lickpick/beta.html`, `lickpick/new.html` | ✅ 14 Nov: share image now the current "licks" card (`assets/og/og-lickpick-v2.jpg`), absolute URL; the old `lickpick/assets/og.jpg` said "take" |
+| Landing | https://3shamrocks.com/lickpick/ (`lickpick/index.html`), `lickpick/beta.html` | ✅ 14 Nov: share image now the current "licks" card (`assets/og/og-lickpick-v2.jpg`), absolute URL; the old `lickpick/assets/og.jpg` said "take" |
+| What's new (changelog) | `lickpick/new.html` | ✅ 14 Nov: same share image; "take" → "lick" in 6 entries; "Another take" → "Another version" (the app's own name for it) |
 | App (PWA) | https://3shamrocks.com/lickpick/app/ | — (app team) |
 | Domain | lickpick.app | 🔍 where it points |
-| Instagram | @lickpick.app · https://www.instagram.com/lickpick.app/ · link page `n/lickpick/` | 🔍 bio, avatar, link |
+| Link page (IG bio) | `n/lickpick/index.html` | ✅ 14 Nov ("Your best lick, found.") |
+| Instagram | @lickpick.app · https://www.instagram.com/lickpick.app/ | 🔍 bio, avatar, link |
 | OG image | `assets/og/og-lickpick-v2.jpg` | ✅ |
 | J8NIX badge / PCOL | `j8/brand/lickpick.png`; `p-lickpick` `['#FFE600','#FF2E88']` | ✅ |
 
@@ -111,7 +113,7 @@ Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · �
 |---|---|---|
 | Portfolio case page | `work/trashure-hunters.html` | ✅ |
 | Home card + identity row | `index.html` | ✅ (identity row uses the horizontal lockup; card uses stacked) |
-| Game site | https://3shamrocks.com/th-site/ | ✅ |
+| Game site | https://3shamrocks.com/th-site/ | ✅ 14 Nov: partner copy first person (I/me). Safety promises and family sign-up still say "we" (brand voice to families, not client copy) |
 | Test builds | `th-mvp/`, `th-mvp-android/`; privacy `th-privacy/` | — (app team; app is being redone) |
 | Case study (old) | `thcasestudy/` | 🔍 still reachable? brand v2026? |
 | Instagram | @trashure_hunters · link page `n/trashure_hunters/` | 🔍 bio, avatar, link |
@@ -129,6 +131,7 @@ Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · �
 | Portfolio case page | `work/chore-royale.html` | ✅ |
 | Home card | `index.html` (`#work`, row 2) | ⚠️ tile glow and splash are teal (`#14C2B0`), the brand leads with purple + gold; teal is an accent. Possibly deliberate (Dave wants tiles distinct). Decide on next home pass |
 | OG image | `assets/og/og-chore-royale-v2.jpg` | ✅ 14 Nov (new: v4 logo, "Spin it. Steal it. Rule the house.", current screens). Old `og-chore-royale.jpg` had the old tagline |
+| Playable demo (linked from the case page) | https://3shamrocks.com/lab/chore-wars/ (`lab/chore-wars/`; URL kept so links don't break) | ✅ 14 Nov: manifest name "Chore Royale", real PNG icons from `app-icon.png` (192/512/maskable/apple-touch), PNG page icon, in-app logos and share title from Chore Wars to Royale v4, `brand.html` redirects to the case page. ⚠️ old Chore Wars SVGs remain in `lab/chore-wars/brand/` (now unused) |
 | App (staging) | Mac `3S Projects/Chore-Wars/` (`data-brand="choreroyale"`) | — |
 | Logo proposals page | `work/chore-royale-logo-proposals.html` (internal) | — |
 | J8NIX badge / PCOL | `j8/brand/chore.png`; `p-chore` `['#6A21C4','#F59E0B']` | ⚠️ PCOL on the old v1.1 violet; use `#5B23C8` / `#F5B92E` in the next J8NIX release |
@@ -146,7 +149,7 @@ Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · �
 | Portfolio case page | `work/fairent.html` | ✅ 14 Nov (הוגן removed from the type specimen and the demo copy) |
 | Home card + footer link | `index.html` | ✅ v5 logo · ⚠️ keep or remove: Dave's call |
 | Brand board | `assets/brand-v3/fairent/board.html` | ✅ 14 Nov (הוגן removed) |
-| Favicon on case page | `assets/brand-v3/fairent/favicon.svg` | ⚠️ SVG favicon; PNG `favicon-32.png` exists. Low priority |
+| Favicon + brand-tile icons on case page | `work/fairent.html` | ✅ 14 Nov: PNG (`favicon-32.png`, `favicon-180.png`, `app-icon.png`, `app-icon-dark.png`) instead of SVG |
 | OG image | `assets/og/og-fairent-v5.jpg` | ✅ |
 | App | separate `fairent` repo (`/fairent/`) | ⚠️ said הוגן in og:title and text on 3 Nov; not reachable from this repo. Check before FaiRent is shown again |
 | J8NIX PCOL | `p-fairent` `['#6550FF','#53D805']` | ⚠️ v4 colours; v5 = `#1A1633` / `#FFE53D` |
@@ -223,7 +226,7 @@ Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · �
 
 | Surface | Where | Status |
 |---|---|---|
-| Portfolio case page | `work/rk.html` | ✅ (favicon is `favicon.svg`; PNGs exist) |
+| Portfolio case page | `work/rk.html` | ✅ 14 Nov (favicon now `favicon-32.png`) |
 | Home card ("Concept" ribbon) | `index.html` | ✅ |
 | OG image | `assets/og/og-rk.jpg?v=rk72` | ✅ |
 | J8NIX | no badge, no PCOL | — |
@@ -244,4 +247,5 @@ Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · �
 
 ## Audit log
 - **14 Nov 2026, first audit.** Fixed on the site: הוגן removed (FaiRent case page + board); SH✡MER case-page wordmark SVG → PNG; "we" → "I" in Work with me; accessibility statement linked from all 8 case-page footers; new share images for Milo (no popsicle) and Chore Royale (brand v4, current tagline); LickPick landing share image → current "licks" card with an absolute URL; J8NIX Milo badge → v2 bear. Open items are the ⚠️ / 🔍 / 🔒 rows above; Dave's are in J8NIX (j8_tasks).
+- **14 Nov 2026, fix round 1 (verifier).** LickPick changelog + IG link page to "lick"; FaiRent and R&K icons to PNG; Chore Royale demo renamed with real icons and Royale logos; Trashure-Hunters partner copy first person; Work with me Hebrew first person; `ops/brain/*.md` and `brandos/` no longer published; brain.json no longer contains the old FaiRent Hebrew name or Mac paths.
 - Pre-existing axe issues on case pages (not caused by this pass): shomer, trashure-hunters, healthtech list/ARIA structure; fairent/shomer definition lists; chore-royale and milo colour contrast; chore-royale aria-hidden-focus.
