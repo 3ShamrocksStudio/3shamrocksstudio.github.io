@@ -7,6 +7,7 @@
    v1 collections: todo · comments · approvals · projects · runs · money
    v2 adds:        control · units · orgs (multi-business) · auth · push
    5.3 adds:       schedule (team schedule; Dave's pause/run requests) · optout (do-not-contact list)
+   v6 adds:        tasks (j8_tasks: Dave's and the team's steps, blocked_by) · warm() (paint from the phone's copy at once)
    Writes are optimistic and return Promises; on failure they reject with {code}.
    Needs vendor/supabase.js loaded first. Shapes: ops/brain/ARMS-CONTRACT.md.
    ===================================================================== */
@@ -14,8 +15,12 @@ var J8 = (function () {
   'use strict';
   var SB_URL = 'https://otkvebgrdiayjnqrytrn.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90a3ZlYmdyZGlheWpucXJ5dHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExOTEzMzQsImV4cCI6MjEwNjc2NzMzNH0.-A1KuUXMBx9NMBwUnZx0cS4TwJkjDz86yok5BcEcKsE'; // public anon key; RLS guards every row
-  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout'];
-  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout' };
+  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout', 'tasks'];
+  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout', tasks: 'j8_tasks' };
+  /* v6 speed: sent/killed drafts load without their bodies (the biggest part of the data); open drafts load in full */
+  var OPEN_AP = 'status.is.null,status.in.(pending,approved,edited,queued),kind.eq.template'; /* templates load in full: Control shows their text */
+  var LIGHT_AP = 'org_id,id,kind,label,to,channel,product,created,status,template_id,decided_at,decided_by,sent_at,result,rank,batch,batch_label,blocked_by,version,updated_at';
+  var TODO_COLS = 'org_id,id,done,back,at,version,updated_at';
   var DROP = ['org_id', 'extra']; // updated_at stays on docs: the app's "since you last looked" line reads it
   var sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'j8nix-v4-auth' } });
   var data = {}, ver = {}, subs = { status: [], orgs: [], auth: [] }, state = { connected: false, error: null, org: null, role: null, user: null };
@@ -34,10 +39,18 @@ var J8 = (function () {
   /* ---------- load + realtime ---------- */
   async function loadCol(c) {
     if (!state.org) return;
-    var r = await sb.from(TABLE[c]).select('*').eq('org_id', state.org);
-    if (r.error) throw r.error;
+    var rows;
+    if (c === 'approvals') {
+      var q = await Promise.all([sb.from(TABLE[c]).select('*').eq('org_id', state.org).or(OPEN_AP), sb.from(TABLE[c]).select(LIGHT_AP).eq('org_id', state.org).in('status', ['sent', 'killed']).or('kind.is.null,kind.neq.template')]);
+      if (q[0].error) throw q[0].error; if (q[1].error) throw q[1].error;
+      rows = (q[0].data || []).concat(q[1].data || []);
+    } else {
+      var r = await sb.from(TABLE[c]).select(c === 'todo' ? TODO_COLS : '*').eq('org_id', state.org);
+      if (r.error) { if (c === 'tasks') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks: a backend without j8_tasks still works */
+      rows = r.data || [];
+    }
     var o = {}, v = {};
-    (r.data || []).forEach(function (row) { o[row.id] = toDoc(row); v[row.id] = row.version; });
+    rows.forEach(function (row) { o[row.id] = toDoc(row); v[row.id] = row.version; });
     data[c] = o; ver[c] = v;
     cache(); emit(c);
   }
@@ -178,6 +191,12 @@ var J8 = (function () {
     raw: function (c) { return data[c]; },
     reload: function () { return loadAll(); },
     auth: auth,
+    /* v6: with a saved session and a saved copy, show the last copy at once (before any network); connect() refreshes it */
+    warm: function () {
+      var org = store('j8v4:org'); if (!org || !store('j8nix-v4-auth') || !store('j8v4:cache:' + org)) return false;
+      fromCache(org); if (!Object.keys(data.projects).length) return false;
+      status({ cached: true }); return true;
+    },
 
     orgs: {
       list: function () { return orgs.slice(); },
@@ -242,6 +261,15 @@ var J8 = (function () {
         });
       },
       get: function (id) { return data.projects[id] ? Object.assign({ id: id }, data.projects[id]) : null; }
+    },
+
+    tasks: {
+      list: function () { return list('tasks').filter(function (t) { return t.status !== 'dropped'; }); },
+      get: function (id) { return data.tasks[id] ? Object.assign({ id: id }, data.tasks[id]) : null; },
+      open: function () { return api.tasks.list().filter(function (t) { return !t.status || t.status === 'open'; }); },
+      /* Dave ticks a task: the database stamps done_at and how many items it unlocked; undo reopens it */
+      done: function (id) { return update('tasks', id, { status: 'done' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); },
+      undo: function (id) { return update('tasks', id, { status: 'open' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); }
     },
 
     runs: {

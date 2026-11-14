@@ -60,6 +60,8 @@
 
   (async function boot() {
     var h = location.hash;
+    /* v6: a returning phone shows its last copy at once; connect() below refreshes it or falls back to sign-in */
+    if (!/[?&]token_hash=/.test(location.search) && h.indexOf('refresh_token=') < 0 && J8.warm && J8.warm()) { $('#auth').hidden = true; $('#app').hidden = false; }
     if (/[?&]token_hash=/.test(location.search)) { try { await J8.auth.signInWithLink(location.href); } catch (e) { msg('That sign-in link has expired. Ask for a new one.', true); } history.replaceState(null, '', location.pathname); }
     if (h.indexOf('refresh_token=') > -1) { try { await J8.auth.signInWithLink(location.href); } catch (e) { msg('That sign-in link has expired. Ask for a new one.', true); } history.replaceState(null, '', location.pathname); }
     var ok = await J8.connect();
