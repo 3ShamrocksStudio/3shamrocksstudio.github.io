@@ -634,7 +634,7 @@ a.seat{display:inline-flex;align-items:center;justify-content:center;text-align:
 .lst{font:600 12.5px/1 var(--jost);color:var(--ink);justify-self:end}
 .lms{grid-column:1/-1;font-size:13px;color:var(--slate);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext}
 .lms b{color:var(--ink);font-weight:600}
-.lms em,.tl em{font-style:normal;color:var(--slate)}
+.lms em,.tsum em{font-style:normal;color:var(--slate)}
 .lane.open .lms{white-space:normal}
 .lx2{padding:0 12px 10px;font-size:14px;min-width:0}
 .lx2 p{margin-top:4px;unicode-bidi:plaintext;overflow-wrap:anywhere}
@@ -672,8 +672,14 @@ a.seat{display:inline-flex;align-items:center;justify-content:center;text-align:
 .tmain{grid-template-columns:12px minmax(0,1fr) auto}
 .tmain .sd{grid-row:1}
 .tnx{font-size:12.5px;color:var(--slate);white-space:nowrap}
-.tl{grid-column:2/-1;font-size:13px;color:var(--slate);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext}
-.team.open .tl{white-space:normal}
+.tsum{grid-column:2/-1;font-size:13px;color:var(--slate);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext}
+.team.open .tsum{white-space:normal}
+.mapdone>summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center}
+.mapdone>summary::-webkit-details-marker{display:none}
+.mapdone>summary h3{margin:0}
+.mapdone>summary h3::after{content:'▸';font-size:12px;color:var(--slate)}
+.mapdone[open]>summary h3::after{content:'▾'}
+@media (max-width:520px){.tmain{min-height:48px;padding:7px 10px;gap:2px 8px}.team .tn{font-size:14px}.tnx{font-size:12px}.tsum{font-size:12.5px}.team .lx2 a{word-break:break-all}}
 .sd-b{background:var(--blue)}.sd-n{background:var(--slate-l)}
 /* notes on drafts */
 .apn{margin-top:8px}

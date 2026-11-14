@@ -327,3 +327,21 @@ DB: nothing to drop; 6.0.1 ignores the new columns.
   Instagram network (4 accounts, each with its own brand; badge = the Media Network logo), Director roles (jobs), VIBRANT
   (client), Vicky Zaguri (client), Milo (logo file only, no colour tokens), R&K, WH33LZ, J8NIX-hosted HealthTech page uses the
   studio brand. Chore Royale's badge comes from assets/studio/logos/chore-royale.png (the studio's transparent copy).
+
+## 6.1.1 Round 3 fixes (14 Nov evening)
+- Teams: next run worked out from the schedule (cron, Israel time) when the stored next run has passed; shown as date + time
+  (e.g. "Sun 15 Nov 09:41"). Settings → schedule uses the same rule.
+- Done projects (status done, e.g. Vicky) leave the Map lanes and every Insights line; the Map shows them in a folded "Done" group.
+- Approve + note toast: "Approved. Held until the team applies your note." (Kill + note: "Killed. Nothing goes out; the team reads your note.")
+- Teams cards compact on phones; the summary line drops raw links (open the row for an "open link"). Root cause of the tall
+  cards: the summary used class .tl, which the Numbers milestone track also uses (height 92px); renamed .tsum.
+- DB `j8_v6_1_1_note_one_target`: a message with both task_id and approval_id is rejected (23514). Tested in j8qa-org, rolled back.
+- Scheduled tasks: all 8 J8NIX prompts now say J8NIX-DATA.md + ARMS-CONTRACT.md bind every run and their SQL replaces any SQL
+  in the prompt (copied SQL removed from revenue desk and sender arm). BRAIN.md startup says the same.
+
+### 6.1.1 Revert (to 6.1.0; `app-6.1.0.js` / `app-6.1.0.css` kept as the 6.1.0 copy)
+```
+sed -i 's/app\.css?v=6\.1\.1/app-6.1.0.css/;s/app\.js?v=6\.1\.1/app-6.1.0.js/' j8/index.html && sed -i "s/j8nix-v6\.1\.1'/j8nix-v6.1.1-revert'/" j8/sw.js
+```
+DB: the note check only refuses a row the app never writes; nothing to undo.
+
