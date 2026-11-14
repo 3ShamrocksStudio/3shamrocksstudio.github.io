@@ -1,8 +1,16 @@
-// 3Shamrocks a11y engine: deterministic static-HTML checks (WCAG 2.2 A/AA oriented).
+// 3Shamrocks a11y engine: deterministic static-HTML checks based on WCAG 2.x A/AA (the basis of IS 5568).
 // Pure: takes a parsed Document (deno-dom) and returns findings. No network.
 // deno-lint-ignore-file no-explicit-any
 
-export const ENGINE_VERSION = "1.0.1";
+export const ENGINE_VERSION = "1.1.0";
+
+/** Best-practice, AAA or heuristic checks: reported as "advisory", never scored. */
+export const ADVISORY = new Set([
+  "html-dir", "link-vague", "empty-heading", "heading-order", "missing-h1", "landmark-main", "landmark-nav", "skip-link",
+  "autoplay-no-pause", "new-window", "small-text", "required-indicator", "form-errors", "label-placeholder-only",
+]);
+/** Legal (not WCAG) checks: reported separately, never scored. */
+export const LEGAL = new Set(["a11y-statement"]);
 
 type L = { he: string; en: string };
 export type Severity = "critical" | "serious" | "moderate" | "minor";
@@ -21,6 +29,7 @@ export interface Finding {
   wcag: string;
   level: string;
   severity: Severity;
+  kind: "wcag" | "advisory" | "legal";
   count: number;
   examples: { selector: string; snippet: string }[];
   title: string;
@@ -689,6 +698,14 @@ function cssPath(el: any): string {
   }
   return parts.join(" > ");
 }
+function spaced(n: any, depth = 0): string {
+  if (!n || depth > 30) return "";
+  if (n.nodeType === 3) return n.nodeValue || "";
+  if (n.nodeType !== 1 || ["script", "style", "template", "noscript"].includes(tag(n))) return "";
+  let s = "";
+  for (const c of n.childNodes) s += spaced(c, depth + 1) + " ";
+  return s;
+}
 function startTag(el: any): string {
   let s = "<" + tag(el);
   for (const n of (el.getAttributeNames?.() || []).slice(0, 8)) {
@@ -697,8 +714,9 @@ function startTag(el: any): string {
     s += v === "" ? ` ${n}` : ` ${n}="${v.replace(/"/g, "&quot;")}"`;
   }
   s += ">";
-  const txt = norm(el.textContent).slice(0, 40);
-  if (txt && !["img", "input", "meta", "iframe", "br", "hr", "link"].includes(tag(el))) s += txt + (norm(el.textContent).length > 40 ? "…" : "");
+  const full = norm(spaced(el));
+  const txt = full.slice(0, 40);
+  if (txt && !["img", "input", "meta", "iframe", "br", "hr", "link"].includes(tag(el))) s += txt + (full.length > 40 ? "…" : "");
   return s.length > 220 ? s.slice(0, 217) + "..." : s;
 }
 
@@ -1078,7 +1096,7 @@ export function runChecks(doc: any, rawHtml: string, pageUrl: string, lang: "he"
     if (!vis.some((e) => tag(e) === "nav" || (attr(e, "role") || "") === "navigation")) hit("landmark-nav", body);
   }
   // skip link
-  if (links.length >= 10) {
+  if (links.length >= 10 && !mains.length && !vis.some((e) => tag(e) === "nav" || (attr(e, "role") || "") === "navigation")) {
     app("skip-link");
     const SKIP = /skip|jump to|דלג|דילוג|מעבר לתוכן|לתוכן העיקרי|לתוכן הראשי|main content/i;
     const first = links.slice(0, 5);
@@ -1296,11 +1314,13 @@ export function runChecks(doc: any, rawHtml: string, pageUrl: string, lang: "he"
     const els = hits[def.id];
     if (!els || !els.length) continue;
     const uniq = Array.from(new Set(els));
+    const kind = LEGAL.has(def.id) ? "legal" : ADVISORY.has(def.id) ? "advisory" : "wcag";
     findings.push({
       id: def.id,
       wcag: def.wcag,
-      level: def.level,
+      level: kind === "advisory" ? "advisory" : def.level,
       severity: def.sev,
+      kind,
       count: uniq.length,
       examples: uniq.slice(0, 3).map((e) => ({ selector: cssPath(e), snippet: startTag(e) })),
       title: def.title[lang],
@@ -1308,12 +1328,14 @@ export function runChecks(doc: any, rawHtml: string, pageUrl: string, lang: "he"
       fix: def.fix[lang],
       code: def.code,
     });
+    if (kind !== "wcag") continue;
     const w = WEIGHTS[def.sev];
     const pts = w * (uniq.length >= 10 ? 1.5 : 1);
     deductions.push({ id: def.id, points: pts });
   }
   const order: Severity[] = ["critical", "serious", "moderate", "minor"];
-  findings.sort((a, b) => order.indexOf(a.severity) - order.indexOf(b.severity) || b.count - a.count);
+  const kOrder = ["wcag", "legal", "advisory"];
+  findings.sort((a, b) => kOrder.indexOf(a.kind) - kOrder.indexOf(b.kind) || order.indexOf(a.severity) - order.indexOf(b.severity) || b.count - a.count);
   const score = jsRendered ? null : Math.max(0, Math.round(100 - deductions.reduce((s, d) => s + d.points, 0)));
   const passed = Array.from(applicable).filter((id) => !hits[id]);
   const notApplicable = CHECKS.map((c) => c.id).filter((id) => !applicable.has(id));
@@ -1327,4 +1349,45 @@ export function runChecks(doc: any, rawHtml: string, pageUrl: string, lang: "he"
     deductions,
     stats: { elements: all.length, textChars, hebrewRatio: Math.round(hebrewRatio * 100) / 100, scripts, jsRendered, lang: hl || null, title: title.slice(0, 120) },
   };
+}
+
+// ---------- accessibility statement draft (paid) ----------
+const escH = (s: string) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+const OK_LINES: Record<string, L> = {
+  "img-alt": { he: "טקסט חלופי לתמונות", en: "Text alternatives for images" },
+  "form-label": { he: "תוויות לשדות טופס", en: "Labels for form fields" },
+  "button-name": { he: "שמות נגישים לכפתורים", en: "Accessible names for buttons" },
+  "link-name": { he: "שמות נגישים לקישורים", en: "Accessible names for links" },
+  "html-lang": { he: "הגדרת שפת העמוד", en: "Page language is declared" },
+  "page-title": { he: "כותרת לעמוד", en: "Page title" },
+  "meta-viewport": { he: "הגדלת התצוגה במובייל אינה חסומה", en: "Zoom is not blocked on mobile" },
+  "frame-title": { he: "כותרות למסגרות (iframe)", en: "Titles for frames (iframe)" },
+  "autoplay-audio": { he: "אין השמעת קול אוטומטית", en: "No sound plays automatically" },
+  "tabindex-positive": { he: "סדר מעבר במקלדת ללא tabindex חיובי", en: "No positive tabindex in the keyboard order" },
+  "aria-role-invalid": { he: "ערכי role תקינים", en: "Valid ARIA roles" },
+  "video-captions": { he: "כתוביות לסרטונים", en: "Captions for videos" },
+  "table-headers": { he: "כותרות לטבלאות נתונים", en: "Headers for data tables" },
+};
+/** HE + EN statement drafts with {{BIZ}} {{DATE}} {{WHO}} {{PHONE}} {{EMAIL}} placeholders (filled client-side, escaped). */
+export function statementTemplates(r: EngineResult, url: string, scanDate: string, checksRun: number): { he: string; en: string } {
+  const passed = new Set(r.passed);
+  const okIds = Object.keys(OK_LINES).filter((id) => passed.has(id) && !(id === "form-label" && !passed.has("select-name") && !r.notApplicable.includes("select-name")));
+  const lim = r.findings.filter((f) => f.kind === "wcag");
+  const ul = (items: string[]) => "<ul>" + items.map((x) => "<li>" + escH(x) + "</li>").join("") + "</ul>";
+  const u = escH(url), d = escH(scanDate);
+  const he = '<article class="stmt" lang="he" dir="rtl"><h3>הצהרת נגישות — {{BIZ}}</h3><p><strong>עדכון אחרון:</strong> {{DATE}}</p>' +
+    '<p>{{BIZ}} רואה חשיבות בשירות שוויוני ונגיש לכל הלקוחות, כולל אנשים עם מוגבלות, ופועלת להנגיש את האתר <bdi dir="ltr">' + u + "</bdi>.</p>" +
+    "<h4>רמת הנגישות באתר</h4><p>אנחנו פועלים להתאים את האתר לדרישות תקן ישראלי 5568, המבוסס על הנחיות WCAG ברמה AA. ההנגשה היא תהליך מתמשך, וייתכן שחלקים באתר עדיין אינם נגישים במלואם.</p>" +
+    "<h4>מה נבדק</h4><p>ב-" + d + ' נבדק העמוד <bdi dir="ltr">' + u + "</bdi> בבדיקה אוטומטית (" + checksRun + " בדיקות). בדיקה אוטומטית מזהה רק חלק מבעיות הנגישות. [מומלץ להשלים בדיקה ידנית, כולל מקלדת וקורא מסך, ולציין כאן מתי בוצעה.]</p>" +
+    (okIds.length ? "<h4>מה נמצא תקין בבדיקה האוטומטית</h4><p>בבדיקה האוטומטית לא נמצאו בעיות בנושאים הבאים:</p>" + ul(okIds.map((id) => OK_LINES[id].he)) : "<h4>התאמות שבוצעו באתר</h4><p>[פרטו כאן מה הונגש באתר.]</p>") +
+    (lim.length ? "<h4>מגבלות ידועות</h4><p>החלקים הבאים עדיין אינם נגישים במלואם, ואנחנו עובדים על תיקונם:</p>" + ul(lim.map((f) => CHECK_BY_ID[f.id].title.he)) : "") +
+    "<h4>פניות בנושא נגישות</h4><p>נתקלתם בבעיה? נשמח לשמוע ולעזור.</p><ul><li>אחראי/ת נגישות: {{WHO}}</li><li>טלפון: {{PHONE}}</li><li>דוא״ל: {{EMAIL}}</li></ul><p>[ציינו תוך כמה ימים תינתן תשובה.]</p></article>";
+  const en = '<article class="stmt" lang="en" dir="ltr"><h3>Accessibility statement — {{BIZ}}</h3><p><strong>Last updated:</strong> {{DATE}}</p>' +
+    "<p>{{BIZ}} is committed to giving everyone, including people with disabilities, equal access to " + u + ".</p>" +
+    "<h4>Accessibility level</h4><p>We are working to meet WCAG level AA (the basis of Israeli Standard 5568). Accessibility is ongoing work, and some parts of the site may not yet be fully accessible.</p>" +
+    "<h4>What was checked</h4><p>On " + d + " the page " + u + " was checked with an automated test (" + checksRun + " checks). Automated checks find only part of accessibility issues. [We recommend a manual review, including keyboard and screen reader, and stating here when it was done.]</p>" +
+    (okIds.length ? "<h4>What the automated check found in order</h4><p>The automated check found no issues in these areas:</p>" + ul(okIds.map((id) => OK_LINES[id].en)) : "<h4>What we have done</h4><p>[Describe what has been made accessible.]</p>") +
+    (lim.length ? "<h4>Known limitations</h4><p>These parts are not yet fully accessible, and we are working on them:</p>" + ul(lim.map((f) => CHECK_BY_ID[f.id].title.en)) : "") +
+    "<h4>Contact us about accessibility</h4><p>Found a barrier? We want to hear about it.</p><ul><li>Accessibility contact: {{WHO}}</li><li>Phone: {{PHONE}}</li><li>Email: {{EMAIL}}</li></ul><p>[State how many days a reply will take.]</p></article>";
+  return { he, en };
 }
