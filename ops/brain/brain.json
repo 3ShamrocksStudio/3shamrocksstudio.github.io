@@ -1,7 +1,7 @@
 {
  "version": 3,
- "updated": "2026-11-13T23:23+02:00",
- "last_run": "2026-11-13T23:23+02:00",
+ "updated": "2026-11-14T03:25+02:00",
+ "last_run": "2026-11-14T03:25+02:00",
  "goal": {
   "target_usd": 1000000,
   "deadline": "2027-04-21",
@@ -31,6 +31,13 @@
    "owner": "CRO",
    "next_steps": [
     {
+     "step": "When /sprint/ is first linked in outreach: re-run the 3 stat sources (tech.eu Cervest quote, Optimizely 2026, Adobe 2025) and keep the wording inside them",
+     "seat": "CLO",
+     "due": "before first /sprint/ link",
+     "done_when": "sources re-read same day",
+     "added": "2026-11-14"
+    },
+    {
      "step": "Sun 15 Nov: Dave sends the 20 approved founder notes by hand (J8NIX approvals li-1112-f*); if LinkedIn refuses the note, connect blank and use the text as the first message after accept",
      "seat": "CRO",
      "due": "2026-11-15",
@@ -53,7 +60,8 @@
      "due": "before first /sprint/ link",
      "done_when": "claims list checked",
      "added": "2026-11-13",
-     "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/commit/4c5b745"
+     "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/commit/60eb56e",
+     "done": "2026-11-14"
     },
     {
      "step": "Re-source 5 founders with a 14-day funding window (Calcalist/Geektime funding pages), direct /in/ URLs",
@@ -790,6 +798,13 @@
    "where": "https://www.shomer-app.co.il/",
    "owner": "CRO",
    "next_steps": [
+    {
+     "step": "Next SH✡MER app deploy: merge branch i18n-circles (ab1c1e6, 7 EN/AR circle-panel strings) with the version bump; then translate the 5 circle-panel aria-labels + placeholder",
+     "seat": "CTO",
+     "due": "next app deploy",
+     "done_when": "live version.json bumped + EN/AR panel 0 Hebrew on live",
+     "added": "2026-11-14"
+    },
     {
      "step": "48 h after Dave sends s11b-shomer: read Gmail for replies from HaShomer HaChadash / Chabad HQ; draft answers same shift",
      "seat": "CRO",
@@ -1925,7 +1940,9 @@
      "seat": "CTO",
      "due": "12 Nov",
      "done_when": "staging diff",
-     "added": "2026-11-08"
+     "added": "2026-11-08",
+     "done": "2026-11-14",
+     "evidence": "https://github.com/3ShamrocksStudio/shomer-app/tree/dashboard-lock (built earlier: live data only for activated accounts, migration not applied, DASHBOARD-LOCK.md; waits on Dave OK)"
     },
     {
      "step": "Dave OK on the new Hebrew intro wording (to-do 'retest-command')",
@@ -1937,7 +1954,9 @@
      "step": "Dashboard plan lock behind a flag (sign-up open today); switch on only after Dave's OK",
      "seat": "CTO",
      "due": "2026-11-05",
-     "done_when": "verified on staging, flag off"
+     "done_when": "verified on staging, flag off",
+     "done": "2026-11-14",
+     "evidence": "https://github.com/3ShamrocksStudio/shomer-app/tree/dashboard-lock"
     },
     {
      "step": "Hebrew pilot sheet in SH✡MER brand: exact deliverables per price, transparent logo, no frame",
@@ -4607,6 +4626,62 @@
    ],
    "verifier": "opus independent: homepage PASS, subjUid step 1 PASS, follow-up e867126 PASS",
    "cash": "₪0 invoiced, ₪0 collected, 0 calls booked; waiting on Dave: 1 per-item council email + LinkedIn by-hand notes in J8NIX approvals"
+  },
+  {
+   "at": "2026-11-14T03:25+02:00",
+   "seat": "Night build shift 03:00 (CTO, CDO, CPO, CLO) · CASH MODE",
+   "models": {
+    "haiku": "none",
+    "sonnet": "source check of 3 sprint stats",
+    "opus": "orchestration, fixes, independent verifier (3/3 PASS)"
+   },
+   "dave_input_since_last": "None new: J8NIX messages 0 new (5 routed, all waiting on Dave); to-do no ticks since 12 Nov 10:45; control paused=false",
+   "steps": [
+    {
+     "text": "CLO/CRO: /sprint/ stats checked vs sources; Molten → Cervest CMO (tech.eu 2021); Optimizely 'frequently or always' restored EN+HE; same fix in J8NIX post draft",
+     "seat": "CLO",
+     "model": "sonnet+opus",
+     "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/commit/60eb56e"
+    },
+    {
+     "text": "CTO: SH✡MER circles panel 7 Hebrew-only strings → EN/AR on staging branch (not merged)",
+     "seat": "CTO",
+     "model": "opus",
+     "evidence": "https://github.com/3ShamrocksStudio/shomer-app/commit/ab1c1e6"
+    },
+    {
+     "text": "CTO: live health pass 6 studio pages x 390/1440: 200, 0 errors, no sideways scroll",
+     "seat": "CTO",
+     "model": "opus",
+     "evidence": "https://3shamrocks.com/"
+    },
+    {
+     "text": "COO: ledger 3 items closed (sprint stats, health check, superseded IG reels item), i18n staged",
+     "seat": "COO",
+     "model": "opus",
+     "evidence": "https://github.com/3ShamrocksStudio/3s-status/commit/b13293d"
+    }
+   ],
+   "loose_ends_closed": [],
+   "loose_ends_advanced": [
+    "shm-arabic-circle",
+    "svc-brand-sprint-page"
+   ],
+   "skipped": [
+    {
+     "what": "IG posting, Grow connect, LinkedIn sends",
+     "why": "need Dave's Mac/Chrome or his OK"
+    },
+    {
+     "what": "subjUid live rules",
+     "why": "no Firebase credential"
+    },
+    {
+     "what": "i18n deploy to live app",
+     "why": "staged only; goes with next app deploy"
+    }
+   ],
+   "verifier": "opus independent agent: A sprint stats + live md5 PASS, B i18n branch PASS (bug confirmed on main), C live health PASS"
   }
  ],
  "morning_note": {
@@ -4805,11 +4880,11 @@
    "pod": "SH✡MER product",
    "title": "Arabic strings untranslated in the circle panel",
    "status": "in_progress",
-   "next_action": "Heading translated on nature-layer (a02da25); sweep the rest of the circle panel in AR and list anything needing a native check",
+   "next_action": "Branch i18n-circles (ab1c1e6, not merged): 7 Hebrew-only strings in the circles panel now EN/AR, verifier PASS; Arabic rows in ARABIC-REVIEW-NOTES.md for a native check. Next: merge with the next app deploy; then aria-labels",
    "owner_seat": "CTO",
    "blocker": null,
-   "evidence": "https://github.com/3ShamrocksStudio/shomer-app/commit/a02da25",
-   "updated": "2026-11-08"
+   "evidence": "https://github.com/3ShamrocksStudio/shomer-app/commit/ab1c1e6",
+   "updated": "2026-11-14"
   },
   {
    "id": "shm-deeplink-build",
@@ -5501,11 +5576,11 @@
    "pod": "Revenue",
    "title": "AI-Ready Brand Sprint one-pager EN/HE (private artifact, price shown, for repliers only)",
    "status": "in_progress",
-   "next_action": "Page copy reworked 13 Nov 18:13 (sourced pains, no price). Next: Dave reads it before /sprint/ is linked anywhere; then after-accept message uses it.",
+   "next_action": "Stats re-checked vs sources and 2 wordings fixed (60eb56e, live md5 = repo). Next: Dave reads it before /sprint/ is linked anywhere; then the after-accept message uses it.",
    "owner_seat": "CDO",
    "blocker": "Dave's OK",
-   "evidence": "https://3shamrocksstudio.github.io/sprint/",
-   "updated": "2026-11-13T18:44+02:00"
+   "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/commit/60eb56e",
+   "updated": "2026-11-14"
   },
   {
    "id": "svc-sprint-followup-9",
@@ -5772,6 +5847,15 @@
    "blocked": "subjUid live rules (Firebase credential); IG drafts, Grow, J8NIX test wait on Dave; queue sweep found 0 to move",
    "note": "github.io local main has unrelated history again; worked on detached origin/main and pushed HEAD:main",
    "made_up_by": "Night shift 13 Nov 23:00 (scheduled run)"
+  },
+  {
+   "date": "2026-11-14",
+   "run": "3s night shift (scheduled, 03:00 Israel slot)",
+   "start": "03:08 Israel (01:08Z)",
+   "end": "03:27 Israel",
+   "done": "Sprint page stats fixed to match sources (site 60eb56e, live md5 = repo) + same wording in J8NIX post draft; SH✡MER circles panel EN/AR on branch i18n-circles (ab1c1e6, not merged); live health 6 pages x 2 sizes clean; ledger 3 → DONE (3s-status b13293d); opus verifier 3/3 PASS",
+   "blocked": "subjUid live rules (Firebase credential); IG drafts, Grow, J8NIX test wait on Dave; queue sweep: no approved T-templates besides T1, nothing pending to move",
+   "made_up_by": "Night shift 14 Nov 03:00 (scheduled run)"
   }
  ],
  "funnel": {
