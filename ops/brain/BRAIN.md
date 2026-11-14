@@ -6,6 +6,9 @@ This repo (3shamrocksstudio.github.io) is the brain's home because every run can
 3s-status (org/ORG.md, roles, DECISIONS, LEARNINGS, STUDIO_BRAIN) stays the read-only history.
 Its hard rules still bind. If the two conflict, the stricter rule wins.
 
+## −7. PROGRAM #1: 3S BRAND OS (Dave, Sat 14 Nov 18:13): binds every run
+Read `ops/brain/PROGRAM-BRAND-OS.md` right after this file, before any product queue. It is the studio's #1 product priority and counts as cash-mode work. Every brain shift, night shift, weekend shift and board meeting advances its current phase (P0→P5) by at least one verified step, logs it in that file's §9, and updates J8NIX project p-brandos. Its §7 lists the only things that wait for Dave.
+
 ## −6. OPERATING STANCE (Dave, 12 Nov 23:00, permanent): binds every run
 Dave: "better, stronger, smarter, more effective and productive, more powerful, aggressive and motivated by overpassing all goals… constantly learning and adjusting."
 - **Scoreboard first.** Every run opens with cash in vs target: M1 $25k by 21 Nov, $1M by 21 Apr 2027. Work that doesn't move that number comes after work that does.
