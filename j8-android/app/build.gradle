@@ -1,0 +1,57 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Release signing comes from a keystore kept OUTSIDE the repo.
+// Pass -PJ8_KEYSTORE=/path/to.jks -PJ8_KEYSTORE_PASSWORD=... -PJ8_KEY_ALIAS=j8nix -PJ8_KEY_PASSWORD=...
+def ks = project.findProperty('J8_KEYSTORE')
+
+android {
+    namespace 'com.threeshamrocks.j8nix'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.threeshamrocks.j8nix'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    signingConfigs {
+        if (ks) {
+            release {
+                storeFile file(ks)
+                storePassword project.findProperty('J8_KEYSTORE_PASSWORD')
+                keyAlias project.findProperty('J8_KEY_ALIAS') ?: 'j8nix'
+                keyPassword project.findProperty('J8_KEY_PASSWORD') ?: project.findProperty('J8_KEYSTORE_PASSWORD')
+                enableV1Signing true
+                enableV2Signing true
+                enableV3Signing true
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+            if (ks) signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+}
