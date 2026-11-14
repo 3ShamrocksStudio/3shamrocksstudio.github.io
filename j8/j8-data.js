@@ -294,7 +294,7 @@ var J8 = (function () {
       list: function () { return list('later'); },
       get: function (id) { return data.later[id] ? Object.assign({ id: id }, data.later[id]) : null; },
       set: function (id, patch) {
-        var p = {}; ['item_ids', 'kind', 'title', 'fp', 'status', 'come_back_at'].forEach(function (k) { if (k in patch) p[k] = patch[k]; });
+        var p = {}; ['item_ids', 'kind', 'title', 'fp', 'status', 'come_back_at', 'choice'].forEach(function (k) { if (k in patch) p[k] = patch[k]; });
         if (data.later[id]) return update('later', id, p);
         return insert('later', id, Object.assign({ status: 'later', item_ids: [] }, p)); /* "by" = auth.uid() by default; the policy checks it */
       }
