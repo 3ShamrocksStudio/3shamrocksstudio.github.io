@@ -46,10 +46,10 @@
 body[data-place=studio]{--p:var(--blue);--p-ink:var(--blue-ink);--p-w:var(--blue-w)}
 body[data-place=flow]{--p:var(--teal);--p-ink:var(--teal-ink);--p-w:var(--teal-w)}
 body[data-place=talk]{--p:var(--orchid);--p-ink:var(--orchid-ink);--p-w:var(--orchid-w)}
-html{font-size:calc(100% * var(--scale));-webkit-text-size-adjust:100%}
+html{font-size:calc(100% * var(--scale));-webkit-text-size-adjust:100%;height:100%}
 html[data-size=large]{--scale:1.125}html[data-size=xl]{--scale:1.25}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--page);color:var(--navy);font:400 1.125rem/1.45 var(--text);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+body{background:var(--page);color:var(--navy);font:400 1.125rem/1.45 var(--text);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;height:100%;overflow:hidden}
 button,input,textarea,select{font:inherit;color:inherit}
 button{background:none;border:0;cursor:pointer;text-align:inherit}
 a{color:var(--blue-ink)}
@@ -65,8 +65,9 @@ a{color:var(--blue-ink)}
 .mt{margin-top:12px}
 
 /* ---------- frame ---------- */
-.app{max-width:760px;margin:0 auto;min-height:100vh;min-height:100dvh;background:var(--canvas);display:flex;flex-direction:column;position:relative}
-.top{position:sticky;top:0;z-index:20;background:linear-gradient(100deg,var(--p-w) 0%,var(--card) 70%);border-bottom:3px solid var(--p);padding-top:env(safe-area-inset-top,0)}
+/* 7.1.1: the page body is the scroll box between the top bar and the nav, so nothing is ever under the nav */
+.app{max-width:760px;margin:0 auto;height:100%;height:100dvh;background:var(--canvas);display:flex;flex-direction:column;position:relative}
+.top{position:relative;flex:none;z-index:20;background:linear-gradient(100deg,var(--p-w) 0%,var(--card) 70%);border-bottom:3px solid var(--p);padding-top:env(safe-area-inset-top,0)}
 .top-in{display:flex;align-items:center;gap:12px;min-height:68px;padding:8px 8px 8px var(--g)}
 [dir=rtl] .top-in{padding:8px var(--g) 8px 8px}
 .ptile{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none;background:var(--p);color:var(--on-amber);box-shadow:0 6px 14px -8px var(--p)}
@@ -78,8 +79,8 @@ body[data-place=studio] .ptile{color:#fff}
 .ttl h1{font:600 1.5rem/1.15 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tsub{font-size:1rem;color:var(--ink-2)}
 .tbtn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:64px;min-height:56px;border-radius:12px;color:var(--ink-2);font-size:1rem;font-weight:600;line-height:1.1}
-.conn{padding:10px var(--g);background:var(--red-w);color:var(--red-ink);font-weight:700;font-size:1rem}
-main{flex:1;padding:6px var(--g) 40px;min-width:0}
+.conn{flex:none;padding:10px var(--g);background:var(--red-w);color:var(--red-ink);font-weight:700;font-size:1rem}
+main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:6px var(--g) 40px;min-width:0;scroll-padding:16px 0}
 .crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:0 -6px;font-size:1rem;color:var(--ink-2)}
 .crumbs button{min-height:var(--tap);padding:0 6px;border-radius:8px;color:var(--blue-ink);font-weight:700;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 .crumbs .sep{width:18px;height:18px;color:var(--slate)}
@@ -244,7 +245,7 @@ ol.track li.cur{height:14px;border-radius:7px;background:var(--teal)}
 .letter h3{font:700 1.1875rem/1.35 var(--text);margin-bottom:10px;white-space:normal}
 .edit{margin-top:10px}
 .edit textarea{width:100%;min-height:260px;padding:16px;border:2px solid var(--amber);border-radius:var(--r2);background:var(--card);font-size:1.125rem;line-height:1.55;resize:vertical;unicode-bidi:plaintext}
-.sticky{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:5;margin:0 calc(var(--g) * -1);padding:0 var(--g);background:linear-gradient(180deg,transparent,var(--canvas) 22%)}
+.sticky{position:sticky;bottom:0;z-index:5;margin:0 calc(var(--g) * -1);padding:0 var(--g);background:linear-gradient(180deg,transparent,var(--canvas) 22%)}
 
 /* ---------- flow ---------- */
 .q{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:16px;background:var(--card);border:1px solid var(--line-2);border-radius:var(--r2);margin-top:10px}
@@ -328,7 +329,7 @@ ul.lg.row{display:flex;flex-wrap:wrap;gap:4px 14px;clear:both}
 .sd-r{background:var(--red)}.sd-o{background:var(--amber)}.sd-g{background:var(--teal)}.sd-b{background:var(--blue)}.sd-n{background:var(--slate)}
 
 /* ---------- nav: every tab wears its colour, always ---------- */
-.nav{position:sticky;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line)}
+.nav{position:relative;flex:none;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line)}
 .nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:60px;border-radius:16px;font-size:1rem;font-weight:600;color:var(--ink-2);position:relative}
 .nav button .ico{width:26px;height:26px}
 .nav [data-nav=today] .ico{color:var(--amber-ink)}.nav [data-nav=studio] .ico{color:var(--blue-ink)}.nav [data-nav=flow] .ico{color:var(--teal-ink)}.nav [data-nav=talk] .ico{color:var(--orchid-ink)}
@@ -380,7 +381,7 @@ ul.lg.row{display:flex;flex-wrap:wrap;gap:4px 14px;clear:both}
 .updbar button{min-height:var(--tap);padding:0 14px;border-radius:12px;background:var(--amber);color:var(--on-amber);font-weight:700}
 
 /* ---------- sign-in ---------- */
-#auth{min-height:100vh;background:var(--canvas);max-width:760px;margin:0 auto}
+#auth{position:fixed;inset:0;overflow-y:auto;background:var(--canvas)}#auth>*{max-width:760px;margin-left:auto;margin-right:auto}
 #auth main{max-width:480px;margin:0 auto;padding:28px var(--g) calc(32px + env(safe-area-inset-bottom,0px))}
 #auth .step{display:grid;gap:12px}
 #auth label{font-weight:700;font-size:1rem;color:var(--ink-2)}
@@ -470,3 +471,12 @@ a.seat{flex:none;max-width:48%}
 /* ---------- wide screens: one calm column, the nav stays with it ---------- */
 @media (min-width:800px){body{padding:0 16px}.app{box-shadow:0 0 0 1px var(--line-2)}.sheet{bottom:16px;border-radius:24px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* 7.1.1: Not needed is quieter and distinct (it always asks first); toggles; parked group */
+.abar [data-a=no]{background:transparent;box-shadow:none;border:1.5px dashed var(--line);color:var(--slate);font-weight:600}
+.btn.tgl{min-height:var(--tap);color:var(--slate);box-shadow:0 0 0 1px var(--line)}
+.btn.tgl[aria-pressed=true]{background:var(--blue-w);color:var(--blue-ink);box-shadow:0 0 0 2px var(--blue)}
+.pad{padding:14px}
+details.grp.park>summary>.ico:first-child{color:var(--slate)}
+.gen .names{list-style:none;margin-top:8px;padding:4px 14px;background:var(--card);border:1px solid var(--line-2);border-radius:var(--r1)}
+.gen .names li{padding:8px 0;border-top:1px solid var(--line-2);overflow-wrap:anywhere}.gen .names li:first-child{border-top:0}
