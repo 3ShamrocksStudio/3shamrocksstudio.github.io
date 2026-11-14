@@ -429,3 +429,54 @@ cp j8/index-6.1.2.html j8/index.html && sed -i "s/j8nix-v7\.1\.0'/j8nix-v7.1.0-r
   - A viewer sees 0 studio rows and cannot insert.
   - A member can insert and update their own org only.
   - Writes to another org, a spoofed "by" and deletes are all refused.
+
+## 7.1.1 Fix round 1 (verifier report /mnt/user-data/outputs/j8nix-v7/VERIFIER-7.1.md, 14 Nov)
+1. **Not needed never hides new work.**
+   - `deferOf()` hides an item only while its j8_later row still describes it.
+   - A batch that gains a draft comes back. So does a task that is reopened, or a project whose "you" line has changed.
+   - A draft with no batch is keyed per draft (`b-one-<id>`, `bkey()`), so it no longer shares the single "other" key.
+   - J8NIX-DATA.md "Later and Not needed" now carries the same rule.
+2. **Not needed on a task that blocks things asks first.**
+   - The sheet names what waits on it, counted through chains, and offers "Not needed, let them go", "Kill them too" or Cancel.
+   - Nothing is written until Dave picks.
+   - His choice is saved first (`j8_later.choice`, migration `j8_v7_1_1_later_choice`, ADD COLUMN IF NOT EXISTS). Only then is the task dropped.
+   - Hard sender rule, now in both J8NIX-DATA.md and ARMS-CONTRACT.md §3b: a draft whose blocker task is `dropped` is never sent unless choice = `let_go`.
+   - Checked on the real org, read only: no approval waits on a dropped task today, so nothing changes now.
+3. **Parked projects' asks are reachable again.**
+   - Today has a folded "Parked, waiting on you" group (`parkedAsks()`).
+   - The project screen says "parked. When you pick it up: …" and shows that ask as the hero.
+   - `holderOf()` returns "you" for these projects, and their lanes carry a "Parked" chip.
+4. **Minutes include drafts.**
+   - Each draft is estimated at about 1,200 characters a minute of reading, plus 1 minute when it is sent by hand (LinkedIn, posts, reels) or 0.5 minute for an in-app Send. The minimum is 1 minute per draft (`estDraft()`).
+   - Estimated times show as "about N min" plus "(draft times estimated)" on Today, Studio and Department.
+5. **Hebrew words.**
+
+   | Label | Word |
+   |---|---|
+   | Then | הבא בתור |
+   | Later | אחר כך |
+   | Kill | לא לשלוח |
+   | Undo | בטל פעולה |
+   | Cancel / Close | סגור |
+   | You get | מה מקבלים |
+
+   The draft title isolates its numbers with `<bdi>` inside an RTL heading.
+6. **Flow** gains a "Blocked only" toggle on Every project, plus folded "No movement in 7 days" and "Waiting outside" sections.
+7. **Not needed on a held, approved send stops it.** Dave picks "Back to waiting for your OK" (status pending) or "Kill these N".
+8. **Nothing sits under the bottom bar.** The page body (`main`) is now the scroll box between the top bar and the nav.
+- **UX notes:**
+  - Not needed is a quieter dashed button and always asks first.
+  - The gold card's Do button comes before the Where / How / After facts, so it is on the first screen at 390 px.
+  - "This frees 3: 1 email and 2 team steps" replaces the list of item names (`plainNames()`).
+  - A draft opened from Today keeps Today in the top bar, with the crumb "Today ›".
+  - A project's "#approve" link opens that project's batch.
+- **QA:**
+  - Harness: 126 / 126, including new checks for every item above.
+  - Matrix: 224 runs (the 168 from 7.1.0, plus Largest text at 360 and 390 px in EN and HE). axe 0, JS errors 0, sideways scroll 0, text under 16 px 0, targets under 44 px 0.
+  - First paint, median of 3 (CPU ×4): 1168 ms first visit and 327 ms repeat. 6.1.2 measured 1192 ms and 373 ms.
+
+### 7.1.1 Revert (to 7.1.0; `app-7.1.0.js` / `app-7.1.0.css` / `index-7.1.0.html` kept)
+```
+cp j8/index-7.1.0.html j8/index.html && sed -i "s/j8nix-v7\.1\.1'/j8nix-v7.1.1-revert'/" j8/sw.js
+```
+DB: nothing to drop. 7.1.0 ignores `j8_later.choice`, and the sender rule stays safe without it.
