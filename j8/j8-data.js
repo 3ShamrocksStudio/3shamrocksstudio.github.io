@@ -6,6 +6,7 @@
      J8.approvals.pending();  J8.approvals.approve(id);  J8.inbox.send('p-shomer','text');
    v1 collections: todo · comments · approvals · projects · runs · money
    v2 adds:        control · units · orgs (multi-business) · auth · push
+   5.3 adds:       schedule (team schedule; Dave's pause/run requests) · optout (do-not-contact list)
    Writes are optimistic and return Promises; on failure they reject with {code}.
    Needs vendor/supabase.js loaded first. Shapes: ops/brain/ARMS-CONTRACT.md.
    ===================================================================== */
@@ -13,8 +14,8 @@ var J8 = (function () {
   'use strict';
   var SB_URL = 'https://otkvebgrdiayjnqrytrn.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90a3ZlYmdyZGlheWpucXJ5dHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExOTEzMzQsImV4cCI6MjEwNjc2NzMzNH0.-A1KuUXMBx9NMBwUnZx0cS4TwJkjDz86yok5BcEcKsE'; // public anon key; RLS guards every row
-  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units'];
-  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units' };
+  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout'];
+  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout' };
   var DROP = ['org_id', 'extra']; // updated_at stays on docs: the app's "since you last looked" line reads it
   var sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'j8nix-v4-auth' } });
   var data = {}, ver = {}, subs = { status: [], orgs: [], auth: [] }, state = { connected: false, error: null, org: null, role: null, user: null };
@@ -161,6 +162,8 @@ var J8 = (function () {
   function decide(patch) { return Object.assign({ decided_at: now(), decided_by: state.user && state.user.id }, patch); }
   function byRank(a, b) { return (typeof a.rank === 'number' ? a.rank : 999) - (typeof b.rank === 'number' ? b.rank : 999) || String(a.created || '').localeCompare(String(b.created || '')); }
   function num(x) { return x == null || x === '' ? null : Number(x); }
+  function byLine() { return 'J8NIX app · ' + (state.user ? state.user.email : ''); }
+  var capQ = Promise.resolve();
 
   var api = {
     COLLECTIONS: COLS.slice(),
@@ -260,7 +263,43 @@ var J8 = (function () {
       get: function () { return data.control.main || null; },
       paused: function () { return !!(data.control.main && data.control.main.paused); },
       setPaused: function (on) { return update('control', 'main', { paused: !!on, updated: now(), by: 'J8NIX app · ' + (state.user ? state.user.email : '') }); },
-      brainEnabled: function () { return !!(data.control.main && data.control.main.brain_enabled); }
+      brainEnabled: function () { return !!(data.control.main && data.control.main.brain_enabled); },
+      /* 5.3: the writes below touch only by, updated and the one field named */
+      setEmail: function (on) { return update('control', 'main', { email_from_ok: !!on, updated: now(), by: byLine() }); },
+      setBrain: function (on) { return update('control', 'main', { brain_enabled: !!on, updated: now(), by: byLine() }); },
+      CAP_KEYS: ['email', 'li_connect', 'li_followup'],
+      /* daily limit, a whole number 0–50, merged into caps; taps run one after another so the version check never trips on itself */
+      setCap: function (key, n) {
+        if (api.control.CAP_KEYS.indexOf(key) < 0) return rej('bad_key');
+        n = Number(n); if (!isFinite(n) || n !== Math.floor(n) || n < 0 || n > 50) return rej('bad_value');
+        var job = capQ.then(function () {
+          var c = data.control.main; if (!c) return rej('not_found');
+          return update('control', 'main', { caps: Object.assign({}, c.caps || {}, (function (o) { o[key] = n; return o; })({})), updated: now(), by: byLine() });
+        });
+        capQ = job.catch(function () {}); return job;
+      }
+    },
+
+    /* 5.3 team schedule. The app writes only want_enabled / run_now_at (+ updated, by): the column grant allows nothing else.
+       The team's hourly run carries the request out, so enabled and run_now_done_at catch up within about an hour. */
+    schedule: {
+      list: function () { return list('schedule').filter(function (s) { return !s.hidden; }).sort(function (a, b) { return (num(a.sort) == null ? 999 : num(a.sort)) - (num(b.sort) == null ? 999 : num(b.sort)) || String(a.name).localeCompare(String(b.name)); }); },
+      get: function (id) { return data.schedule[id] ? Object.assign({ id: id }, data.schedule[id]) : null; },
+      setEnabled: function (id, on) { var s = data.schedule[id]; if (!s) return rej('not_found'); if (s.locked) return rej('locked'); return update('schedule', id, { want_enabled: !!on, updated: now(), by: byLine() }); },
+      runNow: function (id) { var s = data.schedule[id]; if (!s) return rej('not_found'); if (s.locked) return rej('locked'); return update('schedule', id, { run_now_at: now(), updated: now(), by: byLine() }); }
+    },
+
+    /* 5.3 do-not-contact list: one row per address, id = the address in lower case */
+    optout: {
+      list: function () { return list('optout').sort(function (a, b) { return String(a.id).localeCompare(String(b.id)); }); },
+      has: function (email) { return !!data.optout[String(email || '').trim().toLowerCase()]; },
+      valid: function (email) { return /^[^\s@<>",;]+@[^\s@<>",;]+\.[a-z]{2,}$/i.test(String(email || '').trim()); },
+      add: function (email) {
+        var e = String(email || '').trim().toLowerCase();
+        if (!api.optout.valid(e)) return rej('bad_email');
+        if (data.optout[e]) return rej('exists');
+        return insert('optout', e, { email: e, at: now(), source: 'J8NIX app', by: state.user ? state.user.email : null });
+      }
     },
 
     push: {
