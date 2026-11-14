@@ -15,7 +15,7 @@ var J8 = (function () {
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90a3ZlYmdyZGlheWpucXJ5dHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExOTEzMzQsImV4cCI6MjEwNjc2NzMzNH0.-A1KuUXMBx9NMBwUnZx0cS4TwJkjDz86yok5BcEcKsE'; // public anon key; RLS guards every row
   var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units'];
   var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units' };
-  var DROP = ['org_id', 'extra', 'updated_at'];
+  var DROP = ['org_id', 'extra']; // updated_at stays on docs: the app's "since you last looked" line reads it
   var sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'j8nix-v4-auth' } });
   var data = {}, ver = {}, subs = { status: [], orgs: [], auth: [] }, state = { connected: false, error: null, org: null, role: null, user: null };
   var orgs = [], channel = null, poll = null;
