@@ -47,3 +47,4 @@ Real data only, every claim sourced. Demo brands are 3S itself or clearly fictio
 
 ## 9. Log (append one line per run: date · run · what shipped · link)
 - 2026-11-14 · main session · Program created; P0 research started.
+- 2026-11-14 · research agent · P0 research done · ops/brain/brandos/RESEARCH.md
