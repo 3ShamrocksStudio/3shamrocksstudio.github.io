@@ -3,7 +3,7 @@
 // and unlocks the full report only with a Gumroad license key verified server-side.
 // deno-lint-ignore-file no-explicit-any
 import { DOMParser } from "jsr:@b-fuze/deno-dom@0.1.56";
-import { ENGINE_VERSION, runChecks, statementTemplates, WEIGHTS } from "https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/ec9b98eb72e0ef9f4ae0b79ed68501a50ebb8a81/a11y/engine/engine.ts";
+import { ENGINE_VERSION, runChecks, statementTemplates, WEIGHTS } from "https://raw.githubusercontent.com/3ShamrocksStudio/3shamrocksstudio.github.io/bda88d75475a9fe68af5afd60ac2dab49a6e19b5/a11y/engine/engine.ts";
 
 const SB_URL = Deno.env.get("SUPABASE_URL") || "";
 const SB_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -318,7 +318,22 @@ Deno.serve(async (req) => {
     /^(just a moment|attention required|access denied|forbidden|403|captcha|are you a robot|security check|one moment)/i.test(pageTitle) ||
     /cf-challenge|challenge-platform\/h\/|_incapsula_resource|px-captcha/i.test(page.html.slice(0, 20000))
   ) return err("blocked_by_site", 422);
-  if (doc.querySelectorAll("*").length < 30 && page.html.length < 3000) return err("empty_page", 422);
+  // visible body text (no script/style); tiny pages like example.com are fine, empty shells are not
+  const bodyEl = doc.body || doc.querySelector("body");
+  let bodyText = "";
+  const walkText = (n: any) => {
+    if (n.nodeType === 3) bodyText += n.nodeValue;
+    else if (n.nodeType === 1 && !/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE)$/i.test(n.nodeName)) for (const c of n.childNodes) walkText(c);
+  };
+  if (bodyEl) walkText(bodyEl);
+  const textLen = bodyText.replace(/\s+/g, " ").trim().length;
+  const nScripts = doc.querySelectorAll("script").length;
+  const challenge = /enable javascript|javascript is (required|disabled)|checking your browser|cdn-cgi\/challenge|captcha-delivery|awswaf|perimeterx|bm-verify|sec-cpt|incapsula|pardon our interruption/i.test(page.html.slice(0, 20000));
+  if (textLen < 50) {
+    if (!nScripts && !challenge && !(bodyEl?.children?.length)) return err("empty_page", 422);
+    return err("js_or_blocked", 422); // bot-challenge stub, error stub or JS-only shell
+  }
+  if (textLen < 300 && challenge) return err("js_or_blocked", 422);
   if (paid) {
     const b = await bindDomain(keyHash, baseHost(finalUrl.hostname));
     if (!b.ok) return err("license_other_domain", 403, { bound_domain: b.bound });
