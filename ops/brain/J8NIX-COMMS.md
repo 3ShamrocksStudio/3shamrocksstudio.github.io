@@ -7,7 +7,7 @@ The phone alert shows only the last line, so that line must stand on its own.
 
 1. **Outcome first, in one plain sentence.** What changed or what is true now. Not what the team did internally.
 2. **Severity tag at the very start** (right after the `HH:MM — ` time on reply lines):
-   - 🔴 **needs you now** — money, a live prospect or a deadline is lost if Dave waits hours. Pushes day and night. Use rarely.
+   - 🔴 **needs you now** — money, a live prospect or a deadline is lost if Dave waits hours. Use rarely. At night (23:00–07:00 Israel) only a 🔴 team reply line, or a failed run that reports a security problem or a live outage, pushes; a 🔴 run summary waits for the morning.
    - 🟠 **needs you today** — Dave must do or decide something, but it can wait for a quiet moment. No push 23:00–07:00 Israel.
    - 🟢 **FYI, done** — nothing for Dave. No push 23:00–07:00 Israel.
    If in doubt between 🔴 and 🟠, pick 🟠. Never tag 🔴 for a team-side problem (failed run, bug, missing access the team can solve).
@@ -40,4 +40,5 @@ The phone alert shows only the last line, so that line must stand on its own.
 - **Chat → "Needs you"** (pinned at the top): every open item that needs Dave — drafts to OK per batch, team questions waiting on him, each project's `you` line — 🔴 first, one line each, tap to act. Empty: "Nothing needs you right now."
 - **Chat → "Since you last looked"**: runs finished, drafts added, team replies since his last visit (real timestamps, stored on his phone).
 - **Reply bubbles and Next** show the tag as a chip; old lines without a tag show no chip (or 🟠 when they say NEEDS YOUR EYES).
-- **Alerts** (`j8private.push_on_change`): title = tag + short title (e.g. "🟠 SH✡MER app · needs you today", "🟢 Done · Night shift"). 23:00–07:00 Israel only 🔴 pushes; the others are logged in the outbox as "quiet hours" and show in the app. Untagged: replies 🟢 (🟠 if they say NEEDS YOUR EYES / WHAT YOU DO), new drafts 🟠, finished runs 🟢, failed runs 🟠. `j8.no_push` still silences everything; Dave's own messages never push.
+- **Alerts** (`j8private.push_on_change`): title = tag + short title with plain team names (e.g. "🟠 SH✡MER app · needs you today", "🟢 Done · Night shift", "🟢 Done · Sales team"). New drafts are always 🟠. Failed runs are 🟠, or 🔴 when the summary reports a security problem or a live outage (security, breach, leak, outage, site/app down). 23:00–07:00 Israel only a 🔴 team reply line or a 🔴 failed run pushes; everything else is logged in the outbox as "quiet hours" and shows in the app. Untagged replies are 🟢 (🟠 if they say NEEDS YOUR EYES / WHAT YOU DO); untagged finished runs are 🟢. `j8.no_push` still silences everything; Dave's own messages never push.
+- **App** (5.1.1): a draft batch due today shows 🔴 in the app only (no night push). Held sends are grouped by the one action Dave must take ("Allow CV access on the Mac (6 applications)"), and a project "you" line that repeats a listed batch or held send is left out. Next and "Needs you" use one list and one order.
