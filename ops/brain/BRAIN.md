@@ -2,6 +2,7 @@
 > v3 (8 Nov, Ultra plan): one brain running many models, agents and teams. New: model routing (§9), pods (§10), loose-ends register (§11), catch-up rule (§12), throughput target (§13), visible control room (§14), standing rules of 8 Nov (§15), new cadence (§5). Everything from v2 still holds.
 
 Every scheduled run of 3Shamrocks Studio reads THIS file first, then `ops/brain/brain.json`.
+Every run also reads `ops/brain/J8NIX-DATA.md` and `ops/brain/ARMS-CONTRACT.md` at its start (14 Nov): they bind every run, and their SQL replaces any SQL copied into a scheduled-task prompt.
 This repo (3shamrocksstudio.github.io) is the brain's home because every run can write to it.
 3s-status (org/ORG.md, roles, DECISIONS, LEARNINGS, STUDIO_BRAIN) stays the read-only history.
 Its hard rules still bind. If the two conflict, the stricter rule wins.
