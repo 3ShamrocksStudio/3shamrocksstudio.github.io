@@ -24,7 +24,7 @@ var J8 = (function () {
   var DROP = ['org_id', 'extra']; // updated_at stays on docs: the app's "since you last looked" line reads it
   var sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'j8nix-v4-auth' } });
   var data = {}, ver = {}, subs = { status: [], orgs: [], auth: [] }, state = { connected: false, error: null, org: null, role: null, user: null };
-  var orgs = [], channel = null, poll = null;
+  var orgs = [], channel = null, poll = null, rankC = null;
   COLS.forEach(function (c) { data[c] = {}; ver[c] = {}; subs[c] = []; });
 
   function now() { return new Date().toISOString(); }
@@ -190,6 +190,13 @@ var J8 = (function () {
     status: function () { return clone(state); },
     raw: function (c) { return data[c]; },
     reload: function () { return loadAll(); },
+    /* 6.1: the database's ranked list (public.j8_rank), cached for a minute; null when offline */
+    rank: async function () {
+      if (!state.org) return null;
+      if (rankC && rankC.org === state.org && Date.now() - rankC.t < 6e4) return rankC.v;
+      var r = await sb.rpc('j8_rank', { p_org: state.org }); if (r.error) return null;
+      rankC = { org: state.org, t: Date.now(), v: r.data || [] }; return rankC.v;
+    },
     auth: auth,
     /* v6: with a saved session and a saved copy, show the last copy at once (before any network); connect() refreshes it */
     warm: function () {
@@ -221,12 +228,14 @@ var J8 = (function () {
     inbox: {
       /* scope: a project id ('p-…'), 'p-general', or {unit: unitId}. The database adds an instant acknowledgement line. */
       /* 6.0.1: taskId tags the message to one task; the database routes it to that task's project and unit */
-      send: function (project, text, taskId) {
+      /* 6.1: approvalId tags a note on one draft (the draft's status is untouched); routed like a task note */
+      send: function (project, text, taskId, approvalId) {
         var t = String(text || '').trim(); if (!t) return rej('empty');
         var unit = project && typeof project === 'object' ? project.unit : null;
         var p = typeof project === 'string' && project ? project : 'p-general';
         var id = p + '-' + Date.now(), doc = { p: p, text: t };
         if (unit) doc.unit_id = unit;
+        if (approvalId) { doc.approval_id = String(approvalId); var pa = data.projects[p]; if (!unit && pa && pa.unit_id) doc.unit_id = pa.unit_id; }
         if (taskId) { doc.task_id = String(taskId); var pr = data.projects[p]; if (!unit && pr && pr.unit_id) doc.unit_id = pr.unit_id; }
         return insert('comments', id, doc).then(function () {
           var c = data.control.main;
@@ -236,6 +245,7 @@ var J8 = (function () {
       },
       list: function (limit) { return list('comments').sort(function (a, b) { return String(b.at).localeCompare(String(a.at)); }).slice(0, limit || 1e9); },
       forProject: function (p) { return api.inbox.list().filter(function (x) { return x.p === p; }); },
+      forApproval: function (a) { return api.inbox.list().filter(function (x) { return x.approval_id === a; }); },
       forTask: function (t) { return api.inbox.list().filter(function (x) { return x.task_id === t; }); },
       forUnit: function (u) { return api.inbox.list().filter(function (x) { return x.unit_id === u; }); },
       lastReply: function (x) { var r = String(x && x.reply || '').trim().split('\n').filter(function (l) { return l.trim(); }); return r[r.length - 1] || ''; }
