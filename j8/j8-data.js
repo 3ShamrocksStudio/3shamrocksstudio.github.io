@@ -8,6 +8,7 @@
    v2 adds:        control · units · orgs (multi-business) · auth · push
    5.3 adds:       schedule (team schedule; Dave's pause/run requests) · optout (do-not-contact list)
    v6 adds:        tasks (j8_tasks: Dave's and the team's steps, blocked_by) · warm() (paint from the phone's copy at once)
+   7.1 adds:       later (j8_later: Dave's Later with a come-back time, Not needed and Done on a Today item)
    Writes are optimistic and return Promises; on failure they reject with {code}.
    Needs vendor/supabase.js loaded first. Shapes: ops/brain/ARMS-CONTRACT.md.
    ===================================================================== */
@@ -15,8 +16,8 @@ var J8 = (function () {
   'use strict';
   var SB_URL = 'https://otkvebgrdiayjnqrytrn.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90a3ZlYmdyZGlheWpucXJ5dHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExOTEzMzQsImV4cCI6MjEwNjc2NzMzNH0.-A1KuUXMBx9NMBwUnZx0cS4TwJkjDz86yok5BcEcKsE'; // public anon key; RLS guards every row
-  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout', 'tasks'];
-  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout', tasks: 'j8_tasks' };
+  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout', 'tasks', 'later'];
+  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout', tasks: 'j8_tasks', later: 'j8_later' };
   /* v6 speed: sent/killed drafts load without their bodies (the biggest part of the data); open drafts load in full */
   var OPEN_AP = 'status.is.null,status.in.(pending,approved,edited,queued),kind.eq.template'; /* templates load in full: Control shows their text */
   var LIGHT_AP = 'org_id,id,kind,label,to,channel,product,created,status,template_id,decided_at,decided_by,sent_at,result,rank,batch,batch_label,blocked_by,version,updated_at';
@@ -46,7 +47,7 @@ var J8 = (function () {
       rows = (q[0].data || []).concat(q[1].data || []);
     } else {
       var r = await sb.from(TABLE[c]).select(c === 'todo' ? TODO_COLS : '*').eq('org_id', state.org);
-      if (r.error) { if (c === 'tasks') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks: a backend without j8_tasks still works */
+      if (r.error) { if (c === 'tasks' || c === 'later') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks / later: a backend without the table still works */
       rows = r.data || [];
     }
     var o = {}, v = {};
@@ -282,7 +283,21 @@ var J8 = (function () {
       open: function () { return api.tasks.list().filter(function (t) { return !t.status || t.status === 'open'; }); },
       /* Dave ticks a task: the database stamps done_at and how many items it unlocked; undo reopens it */
       done: function (id) { return update('tasks', id, { status: 'done' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); },
-      undo: function (id) { return update('tasks', id, { status: 'open' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); }
+      undo: function (id) { return update('tasks', id, { status: 'open' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); },
+      /* 7.1 Not needed: the existing 'dropped' status (never deleted); undo() reopens it */
+      drop: function (id) { return update('tasks', id, { status: 'dropped' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); }
+    },
+
+    /* 7.1: Dave's Later (come_back_at), Not needed and Done on one Today item. id = the app's item key (tk-…, mv-…, b-…).
+       One row per item; a new decision overwrites the old one (status 'open' = undone). Rows are never deleted. */
+    later: {
+      list: function () { return list('later'); },
+      get: function (id) { return data.later[id] ? Object.assign({ id: id }, data.later[id]) : null; },
+      set: function (id, patch) {
+        var p = {}; ['item_ids', 'kind', 'title', 'fp', 'status', 'come_back_at'].forEach(function (k) { if (k in patch) p[k] = patch[k]; });
+        if (data.later[id]) return update('later', id, p);
+        return insert('later', id, Object.assign({ status: 'later', item_ids: [] }, p)); /* "by" = auth.uid() by default; the policy checks it */
+      }
     },
 
     runs: {
