@@ -38,7 +38,7 @@ Doc id: `<projectId>-<epochMs>` (page-created). Shape:
   status: "new" | "routed" | "done",
   reply: "multi-line; the page shows only the LAST non-empty line" }
 ```
-Arm duty every pass: query `status == "new"`, act, set `status:"routed"` with a first reply line, then `status:"done"` with the final line when finished. Append new reply lines with a time prefix (`"15:11 — …"`); the last line is what Dave sees.
+Arm duty every pass: query `status == "new"`, act, set `status:"routed"` with a first reply line, then `status:"done"` with the final line when finished. Append new reply lines with a time prefix (`"15:11 — …"`); the last line is what Dave sees. Every line starts with a severity tag after the time (`"15:11 — 🟢 …"`, 🔴 now / 🟠 today / 🟢 FYI) and follows `ops/brain/J8NIX-COMMS.md`.
 
 ## 3. `approvals` = everything that goes out in Dave's name
 
@@ -147,7 +147,7 @@ One doc per arm run. Doc id: `<arm-slug>-<YYYYMMDD-HHMM>`. Shape:
   status: "ok" | "failed" | "nothing", summary: "1–3 lines, what changed",
   link?: "evidence URL", project?: "p-…", projects?: ["p-…"] }
 ```
-Write it at the end of every run, including failures (`status:"failed"`, summary = the error) and empty runs (`"nothing"`). The page shows each arm's latest run: green ok, amber nothing or older than 48 h, red failed.
+Write it at the end of every run, including failures (`status:"failed"`, summary = what it means for Dave, tagged per `ops/brain/J8NIX-COMMS.md`) and empty runs (`"nothing"`). The page shows each arm's latest run: green ok, amber nothing or older than 48 h, red failed.
 
 ## 6. `money`
 
