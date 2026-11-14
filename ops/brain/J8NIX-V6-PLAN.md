@@ -361,3 +361,53 @@ DB: the note check only refuses a row the app never writes; nothing to undo.
 ```
 sed -i 's/app\.css?v=6\.1\.2/app-6.1.1.css/;s/app\.js?v=6\.1\.2/app-6.1.1.js/' j8/index.html && sed -i "s/j8nix-v6\.1\.2'/j8nix-v6.1.2-revert'/" j8/sw.js
 ```
+
+---------------------------------------------------------------------------------------------------------------------
+# 7.1 · The v7.1 design on live data (Dave 14 Nov 21:02: "Good") · PLAN
+
+Source of truth: /mnt/user-data/outputs/j8nix-v7/DESIGN-v71.md (+ DESIGN.md, RESEARCH.md, AUDIT.md, prototype-v71/).
+Decisions taken for Dave (delegated): amber = every "you do this" button · Talk = light orchid · Flow = one scroll led by
+"What is stuck" · tabs Today / Studio / Flow / Talk · Kill stays on drafts · Dave's own comments fold to one line · light theme
+is the default, dark stays in Settings with v7.1 hues · "Later" (with a when-sheet) and "Not needed".
+Scope: presentation and words change; the data logic stays (rows(), graph/unlocks, needs()/rankCmp, mentor, markDone,
+decide, task/draft notes with routing, Approve/Kill + note, Done untick, Control, push, auto-update). Real data only:
+none of the prototype's sample content ships. Product brands stay on their logo tiles (PNG, j8/brand/).
+
+## 7.1-A Screens → code → data
+| Prototype screen | Code (j8/app.js 7.1.0) | Data |
+|---|---|---|
+| Shell: top bar (place tile + name, Back, Settings), 3 px place line, nav (4 tabs, hue icons, counts) | `index.html` `#top`, `#nav`; `renderTop()`, `renderNav()` | Today count = `needs().length`; Talk count = open team questions (`isAsk`) |
+| 4-question brief (every screen) | `brief({crumbs,title,what,need,gain,prog})` | per screen, below |
+| 01 Today, 02 row open, 03 after Done | `vToday()`, `goldCard()`, `rowItem()`, `abar()`, `doneBlock()` | `needs()` (ranked queue, unchanged) · minutes `minsOf` · unlocks `i.ul` · why `mentor(i)` · Done today = tasks `done_at` today + drafts `decided_at` today + `j8_later` done/not-needed rows today |
+| Gold card facts Where / How / After | `facts(i)` | task `link_text`/link host, `action`, `extra.done_when`; project `you`, `you_link`; batch = "Here, in J8NIX" |
+| Then 3 · Planned for later · Everything else by department · Done today | `vToday()` | `needs()[1..3]`; `j8_later` status later and `come_back_at` > now; rest grouped by `unitOf(project)`; Done as above, each with Undo |
+| 12 Later sheet | `laterSheet(key)` → `deferItem(key,'later',when)` | NEW `j8_later` row (status later, `come_back_at`); the item leaves Today and comes back by itself at that time |
+| Not needed | `notNeeded(key)` | task → `status='dropped'` (existing status = not needed) + `j8_later` row status not_needed (shown under Done, Undo reopens); draft batch → confirm, then Kill each draft; project move / team question / held send → `j8_later` row + a "Not needed: …" message to that project's team (routed by the existing trigger) |
+| Mark done (outside link) / Not yet | `S.doing[key]`, `markDone(key)` (unchanged rules) | task → `status='done'`; others → `j8_later` status done for 24 h + "Done: …" message (as 6.0) |
+| 04 Studio | `vStudio()` | `j8_units` departments with projects; "for you" = items of `needs()` in that unit; furthest stage = max `stage` |
+| 05 Department | `vDept(unit)` | projects of the unit, sorted by need then stage; holder = `holderOf()` (6.1) |
+| 06 Project | `vProj(pid)` | stage track (`stage`), next stage from `next`; "Your next step" = first `needs()` item of the project; team = open non-Dave tasks; drafts = pending batches; Done here = done tasks (Undo = untick) + decided drafts; project comment box (`inbox.send(p)`) |
+| 07 / 08 Draft, all decided | `vDraft(batchId)` | pending drafts of the batch (fixed list at entry); Send = `approvals.approve`, Edit = `approvals.edit`, Kill = `approvals.kill`, Undo = `approvals.undo`; email-sending-off note from `j8_control.email_from_ok`; open blockers named |
+| 09 Flow (one scroll) | `vFlow()` | What is stuck = `needs()[0]` when it frees ≥ 1; Money = `j8_money` summary; This week = `weekCounts()` / `flowWin()` (6.1); Every project = lanes (stage, holder); Coming up = `events()` (milestones, task due, draft `due_at`, M1) + "Slot passed, still open"; The team right now = `j8_schedule` + `j8_runs` (status word: Working / Waiting / Off / Problem); folded "Numbers and milestones" = the 6.1 Numbers view |
+| 10 Talk | `vTalk()` + `J8C` | team questions = `isAsk(message)` (hero + answer box); Answers to your comments = messages with task_id / approval_id / project that carry a team line; Updates = the chat log (Dave's own text folded to one line); composer = `inbox.send('p-general')` |
+| 11 Comment thread | `threadSheet(target)` | messages for that task_id / approval_id / project; Dave's notes folded; team lines in full; status "Sent to <team>, HH:MM" → "Answered by <team>, HH:MM"; drafts keep Approve + note / Kill + note |
+| 13 All clear · 14 error · loading | `stateBox()` | empty `needs()`; `J8.status().error==='offline'` shows the saved copy at full contrast with its time |
+| 15 Hebrew, Large text | Settings → Language (`j8-lang`, html `lang`/`dir`), Text size (`j8-size`, 1 / 1.125 / 1.25) | shell words translated; content keeps `dir=auto` + `<bdi>` |
+| Settings | the existing sheet + Text size, Language, Help ("Show the tip again"), Theme (Light default, Dark, Auto) | Control, push, business switch, sign-out unchanged |
+
+## 7.1-B Data model (additive only, migration `j8_v7_1_later`)
+- NEW `public.j8_later` (org_id, id = the Today item key, item_ids text[], kind, title, fp, status later|not_needed|done|open,
+  come_back_at timestamptz, at, by default auth.uid(), version, updated_at). PK (org_id, id). Triggers: `j8private.bump()`.
+  RLS: read = viewer; insert/update = member (by must be the caller). No delete policy. Column grants: insert
+  (org_id,id,item_ids,kind,title,fp,status,come_back_at), update (item_ids,kind,title,fp,status,come_back_at). Realtime on.
+- `fp` = the text the decision was about (a project's "you" line): when the team writes a new line the old Later/Not needed
+  no longer hides it.
+- Tasks: Not needed uses the existing `status='dropped'` (DESIGN.md §10 b); the app also shows it under Done via j8_later.
+- CREATE TABLE IF NOT EXISTS / CREATE POLICY guarded / no DROP. 6.1.2 ignores the table.
+
+## 7.1-C Revert (to 6.1.2; `app-6.1.2.js` / `app-6.1.2.css` / `index-6.1.2.html` kept)
+```
+cp j8/index-6.1.2.html j8/index.html && sed -i "s/j8nix-v7\.1\.0'/j8nix-v7.1.0-revert'/" j8/sw.js
+```
+(6.1.2's index.html loads `app.css?v=6.1.2`/`app.js?v=6.1.2`; the revert copy points those at `app-6.1.2.css` /
+`app-6.1.2.js` so the 7.1 files can stay.) DB: nothing to drop; 6.1.2 never reads j8_later.
