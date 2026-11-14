@@ -198,3 +198,6 @@ tables and the functions. Then one independent verifier agent.
   team tasks and Done items, the By-type board). The message carries task_id; a database trigger routes it to the task's project
   and unit and rejects a task id from another business. The existing "Got it" ack still answers; Dave's own messages still never
   push. Under the box only the team's latest reply shows (one line, tap for all). Cache string 6.0.1b (6.0.1 was already cached).
+- Round 2 fixes (14 Nov evening): the 13 approved emails whose own notes need a postal address now wait on the postal-address
+  task (it unlocks 16); a draft with any open blocker is never sent (hard rule in ARMS-CONTRACT.md §3b and J8NIX-DATA.md);
+  the task-comment route trigger gives a non-member no hint whether a task id exists; the postal task opens the chat.
