@@ -1180,7 +1180,16 @@
           "seat": "CTO",
           "due": "with the 'yes Firebase' batch",
           "done_when": "rules test covers late pasubj",
-          "added": "2026-11-13"
+          "added": "2026-11-13",
+          "done": "2026-11-15",
+          "evidence": "https://github.com/3ShamrocksStudio/shomer-app/commit/c7039f9 · emulator 19/19 · opus verifier PASS"
+        },
+        {
+          "step": "Next SH✡MER app deploy: subjuid-step1 is now on top of main v335 (e700d9b); merge it with i18n-circles (checked clean 15 Nov), bump version, re-run tools/subjuid-rules-test.mjs",
+          "seat": "CTO",
+          "due": "next app deploy",
+          "done_when": "live APP_VER bumped, both features live, emulator PASS",
+          "added": "2026-11-15"
         }
       ],
       "dave": [
@@ -5283,6 +5292,41 @@
         "Brain shift 11:13: draft replies for the 3 repliers (per-item)",
         "Mac sender 09:41/15:41: approved emails to Israeli recipients"
       ]
+    },
+    {
+      "at": "2026-11-15T08:42+02:00",
+      "seat": "Night shift 23:00 Sat (CTO, CPO, CLO)",
+      "models": {
+        "haiku": "none",
+        "sonnet": "none",
+        "opus": "orchestration + 1 independent verifier"
+      },
+      "dave_input_since_last": "None new (all J8NIX notes already answered)",
+      "steps": [
+        {
+          "text": "CTO/CLO: subjUid order fix: pasubj may land after the alert (write-once, reporter-only kept); branch merged up to main v335; emulator 19/19",
+          "seat": "CTO",
+          "model": "opus",
+          "evidence": "https://github.com/3ShamrocksStudio/shomer-app/commit/c7039f9"
+        },
+        {
+          "text": "COO: ledger 3 OPEN → DONE with live md5 / row evidence",
+          "seat": "COO",
+          "model": "opus",
+          "evidence": "https://github.com/3ShamrocksStudio/3s-status/commit/7ff7cb9"
+        }
+      ],
+      "loose_ends_closed": [],
+      "loose_ends_advanced": [
+        "shomer-subjuid"
+      ],
+      "skipped": [
+        {
+          "what": "Brand OS P4 template",
+          "why": "a concurrent morning run created T6 at 08:29; avoided a duplicate"
+        }
+      ],
+      "verifier": "opus, ALL PASS (4 claims)"
     }
   ],
   "morning_note": {
@@ -6514,6 +6558,16 @@
       "blocked": "subjUid live rules (Firebase credential); IIA site blocks cloud fetch; i18n-circles waits on next app deploy",
       "note": "last_run set to the run's start time so the 08:30 morning plan is not run-locked",
       "made_up_by": "Night shift 15 Nov 03:00 (scheduled run)"
+    },
+    {
+      "date": "2026-11-15",
+      "run": "3s night shift (scheduled, 23:00 Sat Israel slot)",
+      "start": "23:08 Sat Israel (21:08Z)",
+      "end": "08:42 Sun Israel (session paused overnight; real work ~45 min)",
+      "done": "Messages: 0 new; postal-address and CV-reminder notes already closed by the 03:00 shift. SH✡MER subjUid: branch subjuid-step1 brought up to main v335 (e700d9b) and pasubj rule relaxed so a late private record still lands (c7039f9), emulator 19/19, opus verifier PASS incl. adversarial; ledger 3 OPEN → DONE (IG approval queue, LinkedIn pipeline, J8NIX rebuild) in 3s-status 7ff7cb9",
+      "blocked": "subjUid live rules (Firebase credential); Brand OS P4 template already being drafted by a concurrent run (T6 pending), left to it",
+      "note": "Duplicate CV reminder: this run scheduled one before seeing the 03:00 shift's; deleting/disabling it was refused by the permission check, so Dave may get the 10:00 reminder twice. last_run left unchanged so daytime shifts are not run-locked.",
+      "made_up_by": "Night shift 14→15 Nov 23:00 (scheduled run)"
     }
   ],
   "funnel": {
