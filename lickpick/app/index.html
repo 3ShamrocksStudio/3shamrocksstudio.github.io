@@ -5398,9 +5398,9 @@ function afterSave(c) {
 
 async function keepMade(name, blob, c) {
   const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  if (!(await vault.room(blob.size)) || !(await vault.put("made", id, blob))) return;
+  if (!(await vault.room(blob.size)) || !(await vault.put("made", id, blob))) { setTimeout(() => toast("Saved to Downloads only. LickPick couldn't keep a copy in My licks (phone storage is full).", { icon: "i-x", label: "OK", sticky: true, run: () => { } }), 1500); return false; }
   const m = { id, name, size: blob.size, at: Date.now(), clip: c?.key || null, from: c?.name || "", thumb: c?.thumb || null, len: c ? srcOf(c)?.len || 0 : 0, shape: c?.ex && ASPECT[c.ex.fmt] ? ASPECT[c.ex.fmt].join(":") : "", proj: c ? { ...projOf(c), pickSel: c.pickSel || 0, src: c.src || "pick", pickAdjSnap: c.pickAdj || null } : null };   // the whole edit, so you can reopen and change it later
-  store.set("lp:made", [m, ...madeList()]); renderMade(); renderNavBadge();
+  store.set("lp:made", [m, ...madeList()]); renderMade(); renderNavBadge(); return true;
 }
 function renderNavBadge() { const b = $("#madeBadge"); if (b) { const n = madeList().length; b.hidden = !n; b.textContent = n; } }
 function renderMade() {
