@@ -105,6 +105,10 @@ Dave's order, 12 Nov: focus everything on immediate revenue. Until **₪35,000 i
 5. **Report** to Dave every run in ≤3 lines: ₪ invoiced, ₪ collected, calls booked, items waiting for his OK (with links). A run that moved none of these writes why in brain.json and fixes the cause next run.
 6. **Exit:** ₪35,000 collected → back to normal §3, Dave confirms.
 
+7. **Speed to cash beats "closest to money" (Dave, 15 Nov 10:06).** The studio and Dave's personal account are one for now, so rank every income step by days until shekels land, not by deal size or stage. Order: (a) delivered work not yet invoiced (VIBRANT IFU edits, task t-vibrant-invoice); (b) live replies, above all the hiring/freelance threads; (c) contract or hourly gigs that pay weekly (Indeed, AllJobs, Gmail job alerts, GoFractional); (d) then sprints and new outreach. Every run that touches revenue names today's fastest step first.
+8. **Warm first, never explain their product (Dave, 15 Nov 10:18).** First-contact notes and intros sound like a friendly person: congratulate, show interest, say who Dave is in one line, ask to connect. Never describe or explain the lead's own product back to them. Cold, robotic intros are a defect.
+9. **Max engagement per channel, every time (Dave, 15 Nov 09:46).** Before drafting any post or message, apply ops/brain/ENGAGEMENT.md for that channel (hook in the first line, link placement, visual, question at the end). Research and update that file whenever a channel's rules change. A post without a strong hook and a fitting visual is not ready for Dave.
+
 ## 0. Command structure
 - **Dave = CEO.** Brand, design, product concept, brand concept, added value, prices, anything sent in his name: his call.
 - **Claude = acting COO + every other seat.** Leads all processes until Dave interjects. When he does, the brain logs his call and re-plans in the same run.
