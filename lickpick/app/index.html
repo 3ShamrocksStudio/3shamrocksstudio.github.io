@@ -5935,21 +5935,21 @@ function render() {
 }
 function renderBoxes() {
   const real = state.clips.filter(c => !c.example && c.status === "done");
-  const trash = real.filter(c => verdict(c) === "trash"), done = real.filter(c => c.saved && verdict(c) !== "trash");
+  const trash = real.filter(c => verdict(c) === "trash"), done = real.filter(c => c.saved === true && verdict(c) !== "trash");
   const sum = a => a.reduce((s, c) => s + c.size, 0);
   const free = sum(trash) + sum(done);
   const badge = $("#cleanBadge"); badge.hidden = !(trash.length + done.length); badge.textContent = trash.length + done.length;
   const keepers = real.filter(c => verdict(c) === "keep" && !c.saved && onParts(c).length).length;
   $("#cleanTop").innerHTML = `<div class="clean-hero${free ? "" : " empty"}"><strong>${free ? fmtSize(free) : "Nothing to free yet"}</strong>
-    <p>${free ? "ready to free up. Delete the originals listed below in your gallery." : "Save your keepers first. Their originals show up here, ready to delete."}</p>
+    <p>${free ? "could be freed up. Check the lists below first, then delete the originals in your gallery." : "Save your keepers first. Their originals show up here, ready to delete."}</p>
     ${free ? bulkHTML() : ""}
     <ol class="steps"><li><b>1</b>Save keepers</li><li><b>2</b>Delete the originals in your gallery</li></ol>
     <p class="never">${icon("i-lock")}LickPick never deletes anything itself.</p></div>`;
   const box = (cls, title, sub, items, key) => items.length ? `<div class="box ${cls}"><h2>${icon(cls === "t" ? "i-bin" : "i-check")}${title}</h2><p>${sub}</p>
     <ol>${items.map(c => `<li>${esc(c.name)}, ${fmt(c.raw.duration)}, ${fmtSize(c.size)}</li>`).join("")}</ol>
     <button class="btn sm ghost" type="button" data-copy="${key}">${icon("i-copy")}Copy list</button></div>` : "";
-  $("#boxes").innerHTML = (trash.length || done.length) ? box("t", "No music. Safe to delete.", `${trash.length} jam${trash.length > 1 ? "s" : ""}, frees ${fmtSize(sum(trash))}`, trash, "trash")
-    + box("k", "Saved clean. Original can go.", `${done.length} jam${done.length > 1 ? "s" : ""}, frees ${fmtSize(sum(done))}`, done, "done")
+  $("#boxes").innerHTML = (trash.length || done.length) ? box("t", "No music found. Check first.", `${trash.length} jam${trash.length > 1 ? "s" : ""}. Play each one before you delete it. Would free ${fmtSize(sum(trash))}`, trash, "trash")
+    + box("k", "Saved. Check your licks first.", `${done.length} jam${done.length > 1 ? "s" : ""} with a lick saved. Open My licks and make sure you have the ones you want, then the original can go. Would free ${fmtSize(sum(done))}`, done, "done")
     : "";   // the card above already says "Nothing to free yet"
   renderQuickbar(); if (state.sel) renderSelBar();
 }
@@ -6480,7 +6480,7 @@ function suggestHTML(c) {
 }
 function pickPanel(c) {
   const list = picksOf(c), pk = pickOf(c), v = verdict(c), rep = report(c), k = keptSeconds(c), D = c.raw?.duration || 0;
-  const verdictLine = { keep: `Worth keeping. ${fmt(k)} of clean playing.`, review: k ? `Some gold, not much: ${fmt(k)} clean.` : "Playing, but nothing clean enough.", trash: notMusic(c) ? NOT_MUSIC_MSG[notMusic(c)] : "No music found. Safe to delete." }[v] || "";
+  const verdictLine = { keep: `Worth keeping. ${fmt(k)} of clean playing.`, review: k ? `Some gold, not much: ${fmt(k)} clean.` : "Playing, but nothing clean enough.", trash: notMusic(c) ? NOT_MUSIC_MSG[notMusic(c)] : "No music found. Play it to check before you delete it." }[v] || "";
   const facts = [keyText(c) && ["Key", keyText(c)], c.raw?.info?.tempo && ["Tempo", c.raw.info.tempo + " BPM"], ["Length", fmt(D)], ["Camera", c.raw?.cameraChecked ? "checked" : "not checked"]].filter(Boolean);
   const canSave = !!c.file && !!downloads && !c.exporting, L = state.pickLen;
   return `    ${!pk && c._pickJob ? `<div class="pickhero none"><p class="working"><span class="pulse"></span>Finding your best phrase…</p></div>` : pk ? `<div class="pickhero">
