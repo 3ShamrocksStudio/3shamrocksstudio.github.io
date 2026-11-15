@@ -1,0 +1,75 @@
+{
+  "brand": "Plinkettle Health",
+  "notice": "Fictional demo brand, not a real company. Invented by 3Shamrocks Studio on 2026-11-15 to demonstrate the Brand OS scorer. Every token, claim and source below is made up.",
+  "version": "0.1.0-demo",
+  "derived": "2026-11-15, invented for the Brand OS P2 demo; sources point at the fictional demo brand book (demo-brandbook) or the fictional claims ledger (demo/claims-ledger.md)",
+  "about": "Fictional HealthTech startup: a hydration and medication-reminder app for adults over 65 and the family members who help them.",
+  "palette": [
+    {"name": "cream",  "hex": "#fbf8f3", "role": "page background",       "sources": ["demo-brandbook (fictional) p.4"]},
+    {"name": "white",  "hex": "#ffffff", "role": "card surface",          "sources": ["demo-brandbook (fictional) p.4"]},
+    {"name": "ink",    "hex": "#1d2b3a", "role": "primary text",          "sources": ["demo-brandbook (fictional) p.4"]},
+    {"name": "ink-2",  "hex": "#4a5a6a", "role": "secondary text",        "sources": ["demo-brandbook (fictional) p.4"]},
+    {"name": "teal",   "hex": "#0f6e61", "role": "brand accent / buttons", "sources": ["demo-brandbook (fictional) p.5"]},
+    {"name": "mint",   "hex": "#cdeee6", "role": "accent tint / panels",  "sources": ["demo-brandbook (fictional) p.5"]},
+    {"name": "coral",  "hex": "#c4492f", "role": "alert / highlight",     "sources": ["demo-brandbook (fictional) p.5"]},
+    {"name": "sun",    "hex": "#f2c14e", "role": "decorative only, never text on light", "sources": ["demo-brandbook (fictional) p.5"]}
+  ],
+  "neutral_allowances": [],
+  "color_tolerance": {"metric": "CIEDE2000", "max_delta_e": 6.0, "note": "Same tolerance as the 3S genome. Alpha is ignored."},
+  "fonts": {
+    "allowed": ["Fraunces", "Atkinson Hyperlegible"],
+    "generic_allowed": ["system-ui", "sans-serif", "serif", "monospace", "inherit", "initial"],
+    "roles": {"display": "Fraunces", "body": "Atkinson Hyperlegible"},
+    "sources": ["demo-brandbook (fictional) p.7"]
+  },
+  "contrast": {
+    "min_ratio_body": 4.5,
+    "min_ratio_large": 3.0,
+    "large_text_px": 24,
+    "fix_hint": "Use ink #1d2b3a on cream/white/mint, or white on teal #0f6e61. Sun #f2c14e is never a text colour on light surfaces.",
+    "sources": ["WCAG 2.2 AA (real standard); demo-brandbook (fictional) p.8"]
+  },
+  "voice": {
+    "person": "brand name or 'you'; never company 'we'",
+    "banned_pronouns": ["we", "we're", "we've", "we'll", "we'd", "our", "ours", "us"],
+    "preferred": "Plinkettle ... / you ...",
+    "pronoun_rule": "first-person-plural",
+    "pronoun_reason": "Company 'we' voice",
+    "pronoun_fix": "Rewrite with Plinkettle as the subject, or speak to the reader as 'you'.",
+    "banned_words": ["cure", "cures", "miracle", "revolutionary", "clinically proven", "doctor-approved", "FDA-approved", "guaranteed", "game-changing", "life-saving"],
+    "fake_urgency_patterns": ["only \\d+ (left|remaining|spots?|seats?|places?)", "limited[- ]time", "act now", "hurry", "last chance", "don'?t miss out", "ends (today|tonight|soon)", "while (supplies|stocks) last"],
+    "sources": ["demo-brandbook (fictional) p.10: calm, plain, never 'we', no medical promises"]
+  },
+  "claims": {
+    "rule": "Any number-with-percent, multiplier, ranking, count of users, or 'doubled/halved' claim must carry a source marker in the same block that points at an approved claim in the ledger: data-source=\"claims-ledger.md#Cn\" or [source: claims-ledger.md#Cn].",
+    "source_markers": ["data-source attribute", "[source: ...] tag"],
+    "ledger": "claims-ledger.md",
+    "approved": [
+      {"id": "C1", "text": "41 of 50 pilot participants kept daily reminders switched on for 30 days (82%)", "source": "claims-ledger.md#C1", "status": "FICTIONAL DEMO CLAIM"},
+      {"id": "C2", "text": "1,200 families on the waitlist", "source": "claims-ledger.md#C2", "status": "FICTIONAL DEMO CLAIM"},
+      {"id": "C3", "text": "Reminder setup takes about 3 minutes in usability testing (median of 12 sessions)", "source": "claims-ledger.md#C3", "status": "FICTIONAL DEMO CLAIM"},
+      {"id": "C4", "text": "Plinkettle is a reminder tool, not a medical device; it does not diagnose or treat", "source": "claims-ledger.md#C4", "status": "FICTIONAL DEMO POSITIONING LINE"}
+    ],
+    "sources": ["demo/claims-ledger.md (fictional)"]
+  },
+  "logo": {
+    "approved_files": ["brand/plinkettle-logo.svg", "brand/plinkettle-logo-mono.svg"],
+    "approved_dirs": [],
+    "alt_required": true,
+    "alt_text": "Plinkettle Health",
+    "detect_src": "logo|plinkettle|wordmark",
+    "detect_alt": "logo|plinkettle",
+    "sources": ["demo-brandbook (fictional) p.2"]
+  },
+  "scoring": {
+    "pass_threshold": 85,
+    "checks": {
+      "colour":   {"penalty_per_violation": 16, "cap": 32},
+      "font":     {"penalty_per_violation": 18, "cap": 30},
+      "contrast": {"penalty_per_violation": 16, "cap": 32},
+      "voice":    {"penalty_per_violation": 16, "cap": 30},
+      "claims":   {"penalty_per_violation": 16, "cap": 30},
+      "logo":     {"penalty_per_violation": 18, "cap": 30}
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "asset": "assets/04-email-before.txt",
+  "genome": "Plinkettle Health",
+  "score": 54,
+  "threshold": 85,
+  "verdict": "SEND BACK",
+  "checks": {
+    "colour": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    },
+    "font": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    },
+    "contrast": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    },
+    "voice": {
+      "status": "fail",
+      "violations": 8,
+      "penalty": 30
+    },
+    "claims": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 16
+    },
+    "logo": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    }
+  },
+  "violations": [
+    {
+      "check": "voice",
+      "rule": "first-person-plural",
+      "found": "Our",
+      "reason": "Company 'we' voice 'Our': Subject: Our app cures forgetfulness. Don't miss out",
+      "fix": "Rewrite with Plinkettle as the subject, or speak to the reader as 'you'."
+    },
+    {
+      "check": "voice",
+      "rule": "banned-word",
+      "found": "cures",
+      "reason": "Banned hype word 'cures': Subject: Our app cures forgetfulness. Don't miss out!",
+      "fix": "Delete it and state the concrete fact instead."
+    },
+    {
+      "check": "voice",
+      "rule": "fake-urgency",
+      "found": "Don't miss out",
+      "reason": "Fake urgency 'Don't miss out': Subject: Our app cures forgetfulness. Don't miss out!",
+      "fix": "Remove it; state the real deadline with its date or say nothing."
+    },
+    {
+      "check": "voice",
+      "rule": "first-person-plural",
+      "found": "We",
+      "reason": "Company 'we' voice 'We': We built Plinkettle because our own grandp",
+      "fix": "Rewrite with Plinkettle as the subject, or speak to the reader as 'you'."
+    },
+    {
+      "check": "voice",
+      "rule": "first-person-plural",
+      "found": "our",
+      "reason": "Company 'we' voice 'our': We built Plinkettle because our own grandparents kept missing their pil",
+      "fix": "Rewrite with Plinkettle as the subject, or speak to the reader as 'you'."
+    },
+    {
+      "check": "voice",
+      "rule": "banned-word",
+      "found": "game-changing",
+      "reason": "Banned hype word 'game-changing': nts kept missing their pills. It is the game-changing app families have been waiting for.",
+      "fix": "Delete it and state the concrete fact instead."
+    },
+    {
+      "check": "voice",
+      "rule": "fake-urgency",
+      "found": "Only 50 spots",
+      "reason": "Fake urgency 'Only 50 spots': Only 50 spots left in the pilot, so act now.",
+      "fix": "Remove it; state the real deadline with its date or say nothing."
+    },
+    {
+      "check": "voice",
+      "rule": "fake-urgency",
+      "found": "act now",
+      "reason": "Fake urgency 'act now': Only 50 spots left in the pilot, so act now.",
+      "fix": "Remove it; state the real deadline with its date or say nothing."
+    },
+    {
+      "check": "claims",
+      "rule": "unsourced-claim",
+      "found": "halved",
+      "reason": "Unsourced change claim claim 'halved': Families who use it see missed doses halved, and setup takes 3 minutes.",
+      "fix": "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim."
+    }
+  ]
+}

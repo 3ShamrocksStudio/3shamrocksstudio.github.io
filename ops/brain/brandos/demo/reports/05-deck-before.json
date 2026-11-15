@@ -1,0 +1,83 @@
+{
+  "asset": "assets/05-deck-before.html",
+  "genome": "Plinkettle Health",
+  "score": 2,
+  "threshold": 85,
+  "verdict": "SEND BACK",
+  "checks": {
+    "colour": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 16
+    },
+    "font": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 18
+    },
+    "contrast": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 16
+    },
+    "voice": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    },
+    "claims": {
+      "status": "fail",
+      "violations": 2,
+      "penalty": 30
+    },
+    "logo": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 18
+    }
+  },
+  "violations": [
+    {
+      "check": "colour",
+      "rule": "off-palette",
+      "found": "#3b82f6",
+      "reason": "#3b82f6 is dE2000 22.2 from the nearest palette colour (ink-2 #4a5a6a); limit is 6.0.",
+      "fix": "Replace with #4a5a6a (ink-2) or another palette token."
+    },
+    {
+      "check": "font",
+      "rule": "non-brand-font",
+      "found": "Inter",
+      "reason": "Font 'Inter' is not in the brand font set.",
+      "fix": "Use one of: Fraunces, Atkinson Hyperlegible."
+    },
+    {
+      "check": "contrast",
+      "rule": "wcag-aa",
+      "found": "#4a5a6a on #0f6e61",
+      "reason": "Contrast 1.16:1 in .stat is below the 4.5:1 minimum.",
+      "fix": "Use ink #1d2b3a on cream/white/mint, or white on teal #0f6e61. Sun #f2c14e is never a text colour on light surfaces."
+    },
+    {
+      "check": "claims",
+      "rule": "unsourced-claim",
+      "found": "300%",
+      "reason": "Unsourced percentage claim '300%': reminder app for seniors. Retention up 300%.",
+      "fix": "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim."
+    },
+    {
+      "check": "claims",
+      "rule": "unsourced-claim",
+      "found": "#1",
+      "reason": "Unsourced ranking claim '#1': #1 reminder app for seniors. Retention up",
+      "fix": "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim."
+    },
+    {
+      "check": "logo",
+      "rule": "unapproved-logo-file",
+      "found": "img/logo-final-v3.png",
+      "reason": "Logo file 'img/logo-final-v3.png' is not an approved logo.",
+      "fix": "Use brand/plinkettle-logo.svg or brand/plinkettle-logo-mono.svg."
+    }
+  ]
+}

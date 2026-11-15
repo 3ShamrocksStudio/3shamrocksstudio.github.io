@@ -27,12 +27,16 @@
     "min_ratio_body": 4.5,
     "min_ratio_large": 3.0,
     "large_text_px": 24,
+    "fix_hint": "Use ink #f6f4ff on dark surfaces, or darken the background.",
     "sources": ["DS-COMPLIANCE-SNAPSHOT.md section 4 (body text >= 4.5:1, large text and UI >= 3:1)"]
   },
   "voice": {
     "person": "first person singular",
     "banned_pronouns": ["we", "we're", "we've", "we'll", "we'd", "our", "ours", "us"],
     "preferred": "I",
+    "pronoun_rule": "first-person-plural",
+    "pronoun_reason": "Plural voice",
+    "pronoun_fix": "Rewrite in first person singular ('I').",
     "banned_words": ["revolutionary", "revolutionize", "game-changing", "game changer", "world-class", "best-in-class", "guaranteed", "cutting-edge", "unparalleled", "next-level"],
     "fake_urgency_patterns": ["only \\d+ (left|remaining|spots?|seats?|places?)", "limited[- ]time", "act now", "hurry", "last chance", "don'?t miss out", "ends (today|tonight|soon)", "while (supplies|stocks) last"],
     "sources": ["ops/brain/BRAIN.md:83 (First person singular, never we)", "ops/brain/LEADGEN.md:38 (First person singular. No fake scarcity.)", "banned word list: CTO assignment brief for Brand OS scorer, 2026-11-14. NEEDS YOUR EYES: confirm list."]
@@ -46,6 +50,9 @@
     "approved_files": ["assets/studio/3shamrocks.png", "assets/studio/3shamrocks_black.png"],
     "approved_dirs": ["assets/studio/logos/"],
     "alt_required": true,
+    "alt_text": "3Shamrocks Studio",
+    "detect_src": "logo|3shamrocks|/marks/|wordmark",
+    "detect_alt": "logo|3shamrocks",
     "sources": ["DS-COMPLIANCE-SNAPSHOT.md section 5 (real studio logo only: 3shamrocks.png / 3shamrocks_black.png)", "assets/studio/logos/ (product logos present in repo)", "sprint/index.html:161 (alt='3Shamrocks Studio')"]
   },
   "scoring": {

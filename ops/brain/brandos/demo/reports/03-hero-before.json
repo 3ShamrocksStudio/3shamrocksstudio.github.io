@@ -1,0 +1,83 @@
+{
+  "asset": "assets/03-hero-before.html",
+  "genome": "Plinkettle Health",
+  "score": 4,
+  "threshold": 85,
+  "verdict": "SEND BACK",
+  "checks": {
+    "colour": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    },
+    "font": {
+      "status": "fail",
+      "violations": 2,
+      "penalty": 30
+    },
+    "contrast": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 16
+    },
+    "voice": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 16
+    },
+    "claims": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 16
+    },
+    "logo": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 18
+    }
+  },
+  "violations": [
+    {
+      "check": "font",
+      "rule": "non-brand-font",
+      "found": "Poppins",
+      "reason": "Font 'Poppins' is loaded but is not in the brand font set.",
+      "fix": "Use one of: Fraunces, Atkinson Hyperlegible."
+    },
+    {
+      "check": "font",
+      "rule": "non-brand-font",
+      "found": "Poppins",
+      "reason": "Font 'Poppins' is not in the brand font set.",
+      "fix": "Use one of: Fraunces, Atkinson Hyperlegible."
+    },
+    {
+      "check": "contrast",
+      "rule": "wcag-aa",
+      "found": "#f2c14e on #fbf8f3",
+      "reason": "Contrast 1.58:1 in .kicker is below the 4.5:1 minimum.",
+      "fix": "Use ink #1d2b3a on cream/white/mint, or white on teal #0f6e61. Sun #f2c14e is never a text colour on light surfaces."
+    },
+    {
+      "check": "voice",
+      "rule": "first-person-plural",
+      "found": "We",
+      "reason": "Company 'we' voice 'We': We make sure your mum never forgets her ta",
+      "fix": "Rewrite with Plinkettle as the subject, or speak to the reader as 'you'."
+    },
+    {
+      "check": "claims",
+      "rule": "unsourced-claim",
+      "found": "10,000+ users",
+      "reason": "Unsourced count claim '10,000+ users': Trusted by 10,000+ users across the country.",
+      "fix": "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim."
+    },
+    {
+      "check": "logo",
+      "rule": "logo-missing-alt",
+      "found": "brand/plinkettle-logo.svg",
+      "reason": "Logo image 'brand/plinkettle-logo.svg' has no alt text.",
+      "fix": "Add alt=\"Plinkettle Health\"."
+    }
+  ]
+}

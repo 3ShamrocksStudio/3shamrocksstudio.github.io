@@ -290,19 +290,20 @@ def run(path, genome):
             if ratio < need:
                 add("contrast", "wcag-aa", "%s on %s" % (hex_of(fg), hex_of(bg)),
                     "Contrast %.2f:1 in %s is below the %.1f:1 minimum." % (ratio, where, need),
-                    "Use ink %s on dark surfaces, or darken the background." % "#f6f4ff")
+                    genome["contrast"].get("fix_hint", "Use a palette ink colour with enough contrast, or change the background."))
 
     # ---- voice
     v = genome["voice"]
-    pron = re.compile(r"\b(%s)\b" % "|".join(re.escape(p).replace("\\'", "['’]") for p in v["banned_pronouns"]), re.I)
-    banned = re.compile(r"\b(%s)\b" % "|".join(re.escape(w).replace("\\-", "[- ]?") for w in v["banned_words"]), re.I)
-    urg = re.compile("|".join(v["fake_urgency_patterns"]), re.I)
+    never = re.compile(r"(?!x)x")  # an empty list in the genome must match nothing, not everything
+    pron = re.compile(r"\b(%s)\b" % "|".join(re.escape(p).replace("\\'", "['’]") for p in v["banned_pronouns"]), re.I) if v.get("banned_pronouns") else never
+    banned = re.compile(r"\b(%s)\b" % "|".join(re.escape(w).replace("\\-", "[- ]?") for w in v["banned_words"]), re.I) if v.get("banned_words") else never
+    urg = re.compile("|".join(v["fake_urgency_patterns"]), re.I) if v.get("fake_urgency_patterns") else never
     for bid, text, _ in blocks:
         for m in pron.finditer(text):
             if m.group(0) == "US":
                 continue
-            add("voice", "first-person-plural", m.group(0), "Plural voice '%s': %s" % (m.group(0), snippet(text, m)),
-                "Rewrite in first person singular ('I').")
+            add("voice", v.get("pronoun_rule", "first-person-plural"), m.group(0), "%s '%s': %s" % (v.get("pronoun_reason", "Plural voice"), m.group(0), snippet(text, m)),
+                v.get("pronoun_fix", "Rewrite in the brand's voice (%s)." % v.get("person", "see genome")))
         for m in banned.finditer(text):
             add("voice", "banned-word", m.group(0), "Banned hype word '%s': %s" % (m.group(0), snippet(text, m)),
                 "Delete it and state the concrete fact instead.")
@@ -336,7 +337,7 @@ def run(path, genome):
     for tag, a in doc.imgs:
         src = a.get("src") or a.get("href") or a.get("xlink:href") or ""
         alt = a.get("alt")
-        if not (re.search(r"logo|3shamrocks|/marks/|wordmark", src, re.I) or (alt and re.search(r"logo|3shamrocks", alt, re.I))):
+        if not (re.search(lg.get("detect_src", r"logo|wordmark"), src, re.I) or (alt and re.search(lg.get("detect_alt", r"logo"), alt, re.I))):
             continue
         norm = re.sub(r"^(\.\./|\./|/)+", "", src.split("?")[0]).lower()
         ok = any(norm.endswith(f) for f in approved_f) or any(d in norm for d in approved_d)
@@ -345,7 +346,7 @@ def run(path, genome):
                 "Use " + " or ".join(lg["approved_files"]) + ".")
         if lg.get("alt_required") and not (alt and alt.strip()):
             add("logo", "logo-missing-alt", src, "Logo image '%s' has no alt text." % src,
-                "Add alt=\"3Shamrocks Studio\".")
+                "Add alt=\"%s\"." % lg.get("alt_text", genome["brand"]))
     return V
 
 # --------------------------------------------------------------------- scoring

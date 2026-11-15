@@ -1,0 +1,104 @@
+{
+  "asset": "assets/01-linkedin-before.md",
+  "genome": "Plinkettle Health",
+  "score": 40,
+  "threshold": 85,
+  "verdict": "SEND BACK",
+  "checks": {
+    "colour": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    },
+    "font": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    },
+    "contrast": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    },
+    "voice": {
+      "status": "fail",
+      "violations": 7,
+      "penalty": 30
+    },
+    "claims": {
+      "status": "fail",
+      "violations": 2,
+      "penalty": 30
+    },
+    "logo": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    }
+  },
+  "violations": [
+    {
+      "check": "voice",
+      "rule": "first-person-plural",
+      "found": "We",
+      "reason": "Company 'we' voice 'We': We're thrilled to announce our revolutiona",
+      "fix": "Rewrite with Plinkettle as the subject, or speak to the reader as 'you'."
+    },
+    {
+      "check": "voice",
+      "rule": "first-person-plural",
+      "found": "our",
+      "reason": "Company 'we' voice 'our': We're thrilled to announce our revolutionary hydration app for older a",
+      "fix": "Rewrite with Plinkettle as the subject, or speak to the reader as 'you'."
+    },
+    {
+      "check": "voice",
+      "rule": "banned-word",
+      "found": "revolutionary",
+      "reason": "Banned hype word 'revolutionary': We're thrilled to announce our revolutionary hydration app for older adults!",
+      "fix": "Delete it and state the concrete fact instead."
+    },
+    {
+      "check": "voice",
+      "rule": "first-person-plural",
+      "found": "our",
+      "reason": "Company 'we' voice 'our': proven to keep seniors hydrated. 82% of our pilot users stuck with it, and 10,000+",
+      "fix": "Rewrite with Plinkettle as the subject, or speak to the reader as 'you'."
+    },
+    {
+      "check": "voice",
+      "rule": "banned-word",
+      "found": "clinically proven",
+      "reason": "Banned hype word 'clinically proven': Plinkettle is clinically proven to keep seniors hydrated. 82% of our pi",
+      "fix": "Delete it and state the concrete fact instead."
+    },
+    {
+      "check": "voice",
+      "rule": "fake-urgency",
+      "found": "Hurry",
+      "reason": "Fake urgency 'Hurry': Hurry, limited time early access for families",
+      "fix": "Remove it; state the real deadline with its date or say nothing."
+    },
+    {
+      "check": "voice",
+      "rule": "fake-urgency",
+      "found": "limited time",
+      "reason": "Fake urgency 'limited time': Hurry, limited time early access for families. Link in comm",
+      "fix": "Remove it; state the real deadline with its date or say nothing."
+    },
+    {
+      "check": "claims",
+      "rule": "unsourced-claim",
+      "found": "82%",
+      "reason": "Unsourced percentage claim '82%': ically proven to keep seniors hydrated. 82% of our pilot users stuck with it, and 1",
+      "fix": "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim."
+    },
+    {
+      "check": "claims",
+      "rule": "unsourced-claim",
+      "found": "10,000+ users",
+      "reason": "Unsourced count claim '10,000+ users': % of our pilot users stuck with it, and 10,000+ users are already waiting.",
+      "fix": "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim."
+    }
+  ]
+}

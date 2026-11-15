@@ -11,6 +11,7 @@ Exit code 0 = at or above threshold (goes on to Dave's taste gate), 1 = goes bac
 
 ## Files
 - `genome-3s.json`: palette, fonts, contrast, voice, claims, logo rules and scoring. Every token has a `sources` field pointing at the repo file it came from.
+- Brand-specific hint text and logo detection also live in the genome (`contrast.fix_hint`, `voice.pronoun_rule/pronoun_reason/pronoun_fix`, `logo.alt_text/detect_src/detect_alt`), so `--genome` works for any brand. Missing fields fall back to neutral defaults. Demo on a fictional brand: `../demo/`.
 - `scorer.py`: the scorer. `tests/fixtures/`: 10 planted-error assets and 2 clean ones. `reports/`: JSON reports on the live sprint and audit pages.
 
 ## Rubric

@@ -1,0 +1,76 @@
+{
+  "asset": "assets/02-adcard-before.svg",
+  "genome": "Plinkettle Health",
+  "score": 20,
+  "threshold": 85,
+  "verdict": "SEND BACK",
+  "checks": {
+    "colour": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 16
+    },
+    "font": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 18
+    },
+    "contrast": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    },
+    "voice": {
+      "status": "fail",
+      "violations": 2,
+      "penalty": 30
+    },
+    "claims": {
+      "status": "fail",
+      "violations": 1,
+      "penalty": 16
+    },
+    "logo": {
+      "status": "pass",
+      "violations": 0,
+      "penalty": 0
+    }
+  },
+  "violations": [
+    {
+      "check": "colour",
+      "rule": "off-palette",
+      "found": "#ff7a00",
+      "reason": "#ff7a00 is dE2000 21.8 from the nearest palette colour (coral #c4492f); limit is 6.0.",
+      "fix": "Replace with #c4492f (coral) or another palette token."
+    },
+    {
+      "check": "font",
+      "rule": "non-brand-font",
+      "found": "Montserrat",
+      "reason": "Font 'Montserrat' is not in the brand font set.",
+      "fix": "Use one of: Fraunces, Atkinson Hyperlegible."
+    },
+    {
+      "check": "voice",
+      "rule": "first-person-plural",
+      "found": "Our",
+      "reason": "Company 'we' voice 'Our': Our app is the miracle your parents need.",
+      "fix": "Rewrite with Plinkettle as the subject, or speak to the reader as 'you'."
+    },
+    {
+      "check": "voice",
+      "rule": "banned-word",
+      "found": "miracle",
+      "reason": "Banned hype word 'miracle': Our app is the miracle your parents need.",
+      "fix": "Delete it and state the concrete fact instead."
+    },
+    {
+      "check": "claims",
+      "rule": "unsourced-claim",
+      "found": "2x",
+      "reason": "Unsourced multiplier claim '2x': 2x more often.",
+      "fix": "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim."
+    }
+  ]
+}
