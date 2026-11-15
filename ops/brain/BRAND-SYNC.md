@@ -44,21 +44,21 @@ Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · �
 | J8NIX badge / PCOL | `j8/brand/studio.png` · `j8/app.js` PCOL `p-site`… `['#8239EA','#3DCC6E']` | ✅ 14 Nov |
 
 ## 2 · J8NIX
-- **Owner seat:** CPO (Products lab) / CTO for the app · **Last synced:** 14 Nov 2026 (audit only; no portfolio page exists)
-- **Source of truth:** `assets/brand-v3/j8nix/BRAND.md` + `palette.json` (brand v4: the logo system, Dave's vectors). Live app look = `j8/app.css` 6.1 tokens. Coming: `/mnt/user-data/outputs/j8nix-v7/DESIGN-v71.md` (v7.1 five-hue system: Sun Amber `#FFA41B` you, Studio Blue `#1257E6` studio, Flow Teal `#10B5A3` progress, Talk Orchid `#D07CF5` people, Alarm Red `#E23744`; navy `#0D1C2B`, canvas `#F6F8FB`, Peach Gold `#F2C194`). **Not live yet; do not publish v7.1 visuals.**
-- **Logo PNGs:** `assets/brand-v3/j8nix/logo.png` (stacked, on dark), `logo-on-light.png`, `wordmark.png`, `logo-mark.png` (app icon), `glyph-*.png`; app `j8/icons/icon-192.png`, `icon-512.png`, `maskable-512.png`, `apple-touch-icon.png`; studio copy `assets/studio/logos/j8nix.png`.
-- **Colour / type:** brand v4 Peach Gold `#F2C194`, white 8, Slate `#586475`, Command Navy `#0D1C2B`, Signal Blue `#1563FF`. App 6.1: light "brighter" base (mist `#F7F9FD`, ink `#1A2638`, gold `#F2C194`, blue `#1563FF`, theme `#FFC462`). Futura/Jost (logo, display), Assistant / Source Sans 3 (UI).
+- **Owner seat:** CPO (Products lab) / CTO for the app · **Last synced:** 15 Nov 2026 · **UPDATED: brand identity v5** (from Dave's new `J8NIX.ai`)
+- **Source of truth:** `assets/brand-v3/j8nix/BRAND.md` + `palette.json` (v5). Board: `assets/brand-v3/j8nix/brand-card.png` (= `/mnt/user-data/outputs/j8nix-v8/brand-v5/brand-board.png`). Mac original: `~/Desktop/3S Projects/J8NIX/Brand/J8NIX.ai`. Live app look = `j8/app.css` 8.1.0 tokens.
+- **Logo PNGs (from the .ai, drawing unchanged):** `assets/brand-v3/j8nix/logo-royal-1024.png` (Royal tile, light surfaces; also `logo-on-light.png`), `logo-midnight-1024.png` (midnight lockup, dark surfaces; also `logo.png`), `wordmark.png` / `wordmark-midnight.svg` (dark grounds only), `mark-1024.png` (white 8 on Royal; also `logo-mark.png`), `mark-white-1024.png`, `mark-midnight-1024.png`. App `j8/icons/icon.svg`, `icon-192.png`, `icon-512.png`, `maskable-512.png`, `apple-touch-icon.png`, `badge-96.png`, `wm-midnight.svg`; studio copy `assets/studio/logos/j8nix.png`.
+- **Colour / type:** Midnight `#060833`, Royal `#2A44C6`, Sky `#2AB9FF`. Roles: You Orange `#FF9700`, J8 Indigo `#202663` + white 8, Alarm Red `#DD0E3F`, Done/Paying Green `#32CC00`. Stages: Idea Violet `#9500FF`, Build Royal, Beta Teal `#00C2A8`, Validate Fuchsia `#E23FD0`, Launch Sky, Paying Green. Heebo (HE + EN), display 500–600, sentence case. Peach/slate is legacy.
 
 | Surface | Where | Status |
 |---|---|---|
-| Portfolio case page | none. `work/j8nix.html`, `j8nix-case.html`, `products/j8nix.html` redirect home; no home card (Dave took J8NIX off the site in Nov, then said it is to be added to the portfolio later) | ⚠️ no page. Leftover `.bp-j8` CSS in `index.html` still carries the old slate look (unused). Build the case page when v7.1 ships, from the v7.1 palette and real screens |
-| The app (PWA) | https://3shamrocks.com/j8/ (`j8/index.html`, v6.1.2) | ✅ is the reference for the 6.1 look |
-| App manifest / icons | `j8/manifest.webmanifest` (theme `#FFC462`, bg `#F4F7FF`), `j8/icons/*` | ✅ 6.1 · update with v7.1 |
-| Android APK | `j8/app/J8NIX-1.0.0.apk`, `j8-android/` | 🔍 icon matches 6.1? re-check with v7.1 |
-| Brand file | `assets/brand-v3/j8nix/BRAND.md` | ⚠️ still v4 dark slate/navy palette; does not describe the 6.1 light look or v7.1. Update when v7.1 ships |
-| OG image | `assets/og/og-j8nix.jpg` (old dark look; used by no page) | ⚠️ replace with v7.1 when the case page is built |
-| Timeline dashboard | https://3shamrocks.com/ops/ | 🔍 J8NIX naming/badge |
-| Product badges + colours inside J8NIX (PCOL / PBADGE) | `j8/brand/*.png`, `j8/app.js` `PCOL`, `PBADGE` | ⚠️ `p-fairent` still `['#6550FF','#53D805']` (FaiRent v4 indigo/green; v5 is Ledger Ink `#1A1633` + Highlighter `#FFE53D` + Red Pen `#FF4A2B`); `p-chore` `['#6A21C4','#F59E0B']` vs brand v4 `#5B23C8` / `#F5B92E`; no FaiRent badge. Fold into the next J8NIX release. Milo badge ✅ 14 Nov (v2 bear, reaches phones with the next J8NIX cache version) |
+| Portfolio case page | none. `work/j8nix.html`, `j8nix-case.html`, `products/j8nix.html` redirect home; no home card (Dave took J8NIX off the site in Nov, then said it is to be added to the portfolio later) | ⚠️ no page. Leftover `.bp-j8` CSS in `index.html` / `home-staging.html` now carries v5 (Midnight, Sky name, Heebo), unused. Build the case page from v5 and real screens |
+| The app (PWA) | https://3shamrocks.com/j8/ (`j8/index.html`, 8.1.0) | ✅ v5, 15 Nov (revert: `index-8.0.1.html`) |
+| App manifest / icons | `j8/manifest.webmanifest` (theme + background `#060833`), `j8/icons/*` | ✅ v5, 15 Nov |
+| Android APK | `j8/app/J8NIX-1.0.0.apk`, `j8-android/` | ⚠️ launcher icon is still the old slate/peach 8; rebuild with `mark-1024.png` in the next APK |
+| Brand file | `assets/brand-v3/j8nix/BRAND.md`, `palette.json` | ✅ v5, 15 Nov |
+| OG image | `assets/og/og-j8nix.jpg` (midnight lockup, v5; used by no page yet) | ✅ v5, 15 Nov |
+| Timeline dashboard | https://3shamrocks.com/ops/ | 🔍 J8NIX naming/badge (uses ops tokens, not the J8NIX palette) |
+| Product badges + colours inside J8NIX (PCOL / PBADGE) | `j8/brand/j8nix.png` (white 8 on Royal, v5), `j8/app.js` PCOL `p-j8nix` `['#2A44C6','#2AB9FF']` | ✅ J8NIX v5, 15 Nov. ⚠️ others unchanged: `p-fairent` still `['#6550FF','#53D805']` (FaiRent v5 is Ledger Ink `#1A1633` + Highlighter `#FFE53D` + Red Pen `#FF4A2B`); `p-chore` `['#6A21C4','#F59E0B']` vs brand v4 `#5B23C8` / `#F5B92E`; no FaiRent badge |
 
 ## 3 · SH✡MER (+ SH✡MER Nature)
 - **Owner seat:** CPO / CTO (SH✡MER pod); site and pages CDO · **Last synced:** 14 Nov 2026
