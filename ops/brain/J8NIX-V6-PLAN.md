@@ -480,3 +480,39 @@ cp j8/index-6.1.2.html j8/index.html && sed -i "s/j8nix-v7\.1\.0'/j8nix-v7.1.0-r
 cp j8/index-7.1.0.html j8/index.html && sed -i "s/j8nix-v7\.1\.1'/j8nix-v7.1.1-revert'/" j8/sw.js
 ```
 DB: nothing to drop. 7.1.0 ignores `j8_later.choice`, and the sender rule stays safe without it.
+
+---------------------------------------------------------------------------------------------------------------------
+# 8.0 · Home first + the v8 colour system (Dave 15 Nov: "let's move on with this") · SHIPPED 8.0.0
+Design: /mnt/user-data/outputs/j8nix-v8/DESIGN-v8.md (prototype/home.html, shots/overview.png). Report: SHIPPED-8.md.
+
+## 8.0-A What changed
+- **Home is the first screen** (desktop and phone): 01 Your move now · 02 Money vs goal · 03 Waiting on you · 04 This week ·
+  05 Projects by stage · 06 J8 suggests next · 07 The team at work. Code: app.js `vHome()` and the 8.0 block above "shell".
+- **Your move now** = `myQueue()[0]`, the same ranked queue as Today (client copy of `j8_rank` / `j8_unlocks` over the
+  `j8_items` graph; parity is a harness check). `fixedSoon()`: a step of Dave's with a clock time from 15 min ago to 2 h
+  ahead (project milestone held by Dave, Dave task `due`, pending draft `due_at`) comes first, only when one exists.
+  Nothing is hard-coded.
+- **Customisation**: Pin / Hide / Move (grip: drag on desktop, Alt+↑/↓, tap = Edit Home on the phone), Edit Home sheet
+  (order, pin, hide, width Full / ⅔ / ½ on desktop, Reset). Saved per member: `j8_members.prefs.home` through
+  `public.j8_prefs_set(p_org, p_prefs)` (security definer, own row only, object only, ≤ 16 KB, merges top-level keys);
+  localStorage `j8-home` is the fallback, and the newer copy wins.
+- **Ask J8 or jump** (top bar, `/`): places, projects, your steps; "Ask the team" sends to Talk (p-general).
+- **v8 colours and shapes across the app** (app.css 8.0 layer): Sun #FFBE0B = you, Alarm #FF3547 only for alarms,
+  stage spectrum (Idea grape, Build blue, Beta sky, Validate pink, Launch tangerine, Paying green), brand slate rail +
+  peach "you are here", J8 band slate #3A4556, no rounded corners, sections = 3 px rule + index chip, the J8 notch on the
+  hero, the J8 band and primary buttons (mirrored in Hebrew). Dark: navy #0F1626, hues lifted one step.
+  The 7.1 variable names are kept (amber = Sun, blue = brand ink, teal = Paying green, orchid = J8 slate), so 7.1.1's
+  rules and logic are unchanged.
+- **Phone**: slate tab bar with 5 tabs (Home first), top bar with the 8 mark, Ask, Edit Home (Home only) and Settings.
+- **Desktop ≥ 960 px**: a 232 px slate rail with the J8NIX wordmark; other screens keep an 880 px reading column.
+
+## 8.0-B DB (additive only)
+Migration `j8_v8_member_prefs`: `j8_members.prefs jsonb not null default '{}'`, `grant select (prefs)`, function
+`j8_prefs_set`, execute for `authenticated` only. Tested with rollback: own row OK, merge OK, another org 42501,
+non-object 22023, direct update by a viewer 0 rows, anon 42501. Nothing dropped.
+
+## 8.0-C Revert (to 7.1.1; `app-7.1.1.js` / `app-7.1.1.css` / `index-7.1.1.html` kept)
+```
+cp j8/index-7.1.1.html j8/index.html && sed -i "s/j8nix-v8\.0\.0'/j8nix-v8.0.0-revert'/" j8/sw.js
+```
+DB: nothing to drop; 7.1.1 never reads `prefs` (j8-data.js asks for it and falls back if missing).
