@@ -1,7 +1,7 @@
 {
   "version": 3,
-  "updated": "2026-11-15T09:20+02:00",
-  "last_run": "2026-11-15T09:20+02:00",
+  "updated": "2026-11-15T08:58+02:00",
+  "last_run": "2026-11-15T08:58+02:00",
   "goal": {
     "target_usd": 1000000,
     "deadline": "2027-04-21",
@@ -3056,6 +3056,13 @@
       "by": "Weekly board",
       "decision": "Drop the VC perk-platform listing idea (6 Nov): no owner for 9 days, not checked.",
       "check": "none"
+    },
+    {
+      "at": "2026-11-15T08:58+02:00",
+      "by": "Dave (CEO)",
+      "decision": "Studio deliverables and messages that look or sound like a stock Claude design are unacceptable: everything Dave sees or that goes out must be in 3SDS (live studio-site look) and the studio's own voice.",
+      "where": "J8NIX messages p-ig-1794724324572, p-general-1794724342948 (08:32)",
+      "check": "2026-11-22"
     }
   ],
   "learnings": [
@@ -3246,6 +3253,11 @@
       "date": "2026-11-15",
       "text": "Top of funnel beats market (accept 35% vs 26%, reply 12% vs 7.2%, Belkins 2025); the loss is reply→call (0/3) and sending. Next method research targets reply→call.",
       "source": "ops/board/research-20261115.md"
+    },
+    {
+      "date": "2026-11-15",
+      "text": "Board summary built as a default Claude Docs page + free-audit message in generic wording were rejected by Dave (08:32) as 'Claude design system, not 3SDS'. Rule: anything Dave reads or that goes out uses the live studio-site tokens/fonts (sprint/index.html: black, Bricolage Grotesque + Instrument Sans, violet) and Dave's own approved wording; the 3SDS v4.0 doc (Syne/Inter, 14px) is out of date vs the live site.",
+      "source": "J8NIX messages 15 Nov 08:32"
     }
   ],
   "runs": [
@@ -5327,6 +5339,57 @@
         }
       ],
       "verifier": "opus, ALL PASS (4 claims)"
+    },
+    {
+      "at": "2026-11-15T08:58+02:00",
+      "seat": "Stand-up 08:30 (CEO-office chair, COO, CFO, CRO, CMO rotating)",
+      "models": {
+        "haiku": "none",
+        "sonnet": "none",
+        "opus": "orchestration, 1 page worker, 1 independent verifier"
+      },
+      "dave_input_since_last": "2 J8NIX messages 08:32 (same text): board page and messaging look/sound like stock Claude, not 3SDS",
+      "steps": [
+        {
+          "text": "CMO/CDO: board summary rebuilt in live studio look (sprint page tokens, Bricolage + Instrument Sans), every number traced to source; verifier PASS 4/4",
+          "seat": "CDO",
+          "model": "opus",
+          "evidence": "https://claude.ai/artifact/SZqfBuZZxiNdDHjbNznkci"
+        },
+        {
+          "text": "CMO: free-audit template T6 rewritten in Dave's own approved wording (still pending, no price)",
+          "seat": "CMO",
+          "model": "opus",
+          "evidence": "J8NIX approvals tpl-t6-audit-offer v2"
+        },
+        {
+          "text": "COO: lesson + board-output rule in BRAIN.md",
+          "seat": "COO",
+          "model": "opus",
+          "evidence": "ops/brain/BRAIN.md §0, §−6.L"
+        },
+        {
+          "text": "CFO: booked $0 vs M1 pace $20.2k (day 26 of 31, money summary)",
+          "seat": "CFO",
+          "model": "opus",
+          "evidence": "J8NIX money summary"
+        }
+      ],
+      "loose_ends_closed": [],
+      "loose_ends_advanced": [
+        "le-1115-3sds-doc"
+      ],
+      "skipped": [
+        {
+          "what": "new CRO drafts",
+          "why": "send-first rule (69 pending); replies to the 3 repliers stay with the 11:13 shift, now in Dave's voice"
+        },
+        {
+          "what": "full product loop",
+          "why": "board ran 08:22 and planned the day; this run handled Dave's rejection first"
+        }
+      ],
+      "verifier": "independent opus agent: tokens match sprint page, all numbers traced, no prices/names/jargon, 390px no overflow"
     }
   ],
   "morning_note": {
@@ -6393,6 +6456,18 @@
       "blocker": "Dave OK",
       "evidence": "https://job-boards.eu.greenhouse.io/aidocmedical/jobs/4951044101",
       "updated": "2026-11-14T18:40+02:00"
+    },
+    {
+      "id": "le-1115-3sds-doc",
+      "product": "studio",
+      "pod": "Studio and brand",
+      "title": "3SDS v4.0 spec (3s-status) disagrees with the live studio site (fonts, radius, palette)",
+      "status": "open",
+      "next_action": "CDO: write a 3SDS v4.1 token sheet from sprint/index.html into this repo (ops/brain/brandos/3SDS-LIVE.md) and point every page builder at it; 3s-status is read-only",
+      "owner_seat": "CDO",
+      "blocker": "",
+      "evidence": "sprint/index.html :root vs 3s-status design-systems/3shamrocks-studio/DESIGN-SYSTEM.md §2",
+      "updated": "2026-11-15T08:58+02:00"
     }
   ],
   "pods": [
@@ -7121,6 +7196,16 @@
       "id": "p-jobs-1794673849159",
       "at": "2026-11-15",
       "done": "One-time reminder scheduled Sun 15 Nov 10:00 Israel; it closes the message"
+    },
+    {
+      "id": "p-general-1794724342948",
+      "at": "2026-11-15",
+      "done": "Board page rebuilt in live studio look (https://claude.ai/artifact/SZqfBuZZxiNdDHjbNznkci); free-audit template rewritten in Dave's own wording; rule added to BRAIN §−6.L"
+    },
+    {
+      "id": "p-ig-1794724324572",
+      "at": "2026-11-15",
+      "done": "Same note as p-general; same fix"
     }
   ]
 }
