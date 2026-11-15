@@ -7,6 +7,17 @@ This repo (3shamrocksstudio.github.io) is the brain's home because every run can
 3s-status (org/ORG.md, roles, DECISIONS, LEARNINGS, STUDIO_BRAIN) stays the read-only history.
 Its hard rules still bind. If the two conflict, the stricter rule wins.
 
+## −8. TOKEN BUDGET (Dave, Sun 15 Nov 10:23): binds EVERY run, overrides any "minimum run time", "N subagents" or "deep research" line in a scheduled prompt or below
+Max results for minimum tokens. Every run:
+1. **Gate first.** Before cloning or reading big files, one cheap SQL check: is there new or actionable work (new j8_messages, due approvals, an open unblocked money step)? If not, insert the j8_runs row with status 'nothing' and stop.
+2. **Read narrow.** Use grep, line ranges or jq for the keys you need. Never read brain.json or BRAIN.md whole after the first sections; never re-read a file in the same run.
+3. **No minimum run time and no required subagent count.** Stop when the top money steps are done. Use at most 2 worker subagents per run, each with a narrow scope.
+4. **Model routing.** Use haiku for lookups, scans and file moves; sonnet for routine edits, drafts and verifiers; opus only for complex design or architecture.
+5. **Money first.** Only work with a clear path to cash before the next milestone (score = $ × probability ÷ days). Parked products get zero tokens unless Dave asks.
+6. **Reuse, don't redo.** Never regenerate drafts, reels, research or reports that already exist. Research only when a decision depends on a fact that may have changed, with at most 5 searches, and save notes for reuse.
+7. **Verify small.** One focused verifier (sonnet) per shipped change, checking only that change's claims.
+8. **Short output.** The run summary is one tagged line. No long reports unless Dave asks.
+
 ## −7. PROGRAM #1: 3S BRAND OS (Dave, Sat 14 Nov 18:13): binds every run
 Read `ops/brain/PROGRAM-BRAND-OS.md` right after this file, before any product queue. It is the studio's #1 product priority and counts as cash-mode work. Every brain shift, night shift, weekend shift and board meeting advances its current phase (P0→P5) by at least one verified step, logs it in that file's §9, and updates J8NIX project p-brandos. Its §7 lists the only things that wait for Dave.
 
