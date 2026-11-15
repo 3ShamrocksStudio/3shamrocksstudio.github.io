@@ -1,4 +1,4 @@
-# 3S Brand QA scorer v0.1
+# 3S Brand QA scorer v0.2
 
 Program #1 Brand OS, module 3 (Precision QA gate). Scores one asset (.html, .svg, .txt, .md) against a brand genome and returns a 0-100 Brand Consistency Score, pass/fail per check, and every violation with a reason and a fix hint. Python 3, stdlib only. Demonstrated on 3Shamrocks Studio's own brand.
 
@@ -24,13 +24,15 @@ Score = 100 minus penalties. Each violation costs a fixed amount, capped per che
 | contrast | Text/background pairs found together in one inline style or one CSS rule, below 4.5:1 (3:1 at 24px and up) | 16 | 32 |
 | voice | "we/our/us" (should be "I"), banned hype words, fake urgency phrases | 16 | 30 |
 | claims | Percentages, multipliers, #1/No. 1, TIME, doubled/tripled/halved, "award-winning", customer counts, with no `data-source` attribute on the element or an ancestor and no `[source: ...]` tag in the same block/paragraph | 16 | 30 |
+| claims (ledger, v0.2) | Only when the genome has `claims.ledger` (a claims-ledger.md next to the genome). A block citing `claims-ledger.md#Cn` (data-source or `[source: ...]`) is flagged `unknown-claim-id` if Cn is not in the ledger, and `claim-mismatch` for any number not in that row's approved wording ("1,200" and "1200" match). `banned-claim` for cures/treats/prevents/diagnoses, doctor-approved, FDA-approved, clinically proven in any block, unless negated ("does not diagnose or treat"). No ledger in the genome: none of this runs, results are the same as v0.1 | 16 | 30 (shared with claims) |
 | logo | An `img`/`image` that looks like a logo with no alt text, or a file outside the approved logo list | 18 | 30 |
 
-## Limits (v0.1)
+## Limits (v0.2)
 - Static analysis of source only. No rendered pixels: colours set by a stylesheet in another file, JS, images, or `var()` chains are not resolved.
 - Contrast is checked only where text and background colours sit together in the same inline style or CSS rule. Inherited backgrounds are not known.
 - Voice and claim checks are English regex. Hebrew text is scanned for numbers and percentages only. Claims in sentences with no number are not found.
 - Claim sources must use the marker format. A plain "(Adobe, 2025)" in prose does not count, and payment terms such as "50% deposit" are flagged because the scorer cannot tell a term from a claim. Expect some noise on real pages.
+- Ledger check compares numbers only, not the rest of the wording, and does not check the claim is used in a fitting context. "Negated" means not/never/n't within 30 characters before the word. Banned-claim words are English and built into the scorer (not read from the ledger text); plain uses such as "prevent missed doses" are flagged too. Expect some noise.
 - Logo checks are by file name and alt text. Clear-space, size, and recolouring are not checked.
 - Genome entries marked NEEDS YOUR EYES (the `#ffffff` allowance, the banned-word list) are not yet confirmed by Dave.
 

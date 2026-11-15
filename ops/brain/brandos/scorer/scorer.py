@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""3S Brand OS - Brand QA scorer v0.1 (static analysis, stdlib only).
+"""3S Brand OS - Brand QA scorer v0.2 (static analysis, stdlib only).
 
 Usage: python3 scorer.py ASSET [--genome genome-3s.json] [--out report.json]
 ASSET is .html/.htm/.svg/.txt/.md. Prints a JSON report. Exit 0 = at/above
@@ -111,6 +111,7 @@ class Doc(HTMLParser):
         self.links = []          # stylesheet hrefs
         self.texts = []          # (blockid, text, sourced)
         self.blocktext = {}
+        self.cites = {}          # blockid -> data-source values on the element or ancestors
         self._bid = 0
         self._in = []            # raw-text containers
 
@@ -163,6 +164,11 @@ class Doc(HTMLParser):
         sourced = any("data-source" in a for _, a, _ in self.stack)
         self.texts.append((bid, data, sourced))
         self.blocktext.setdefault(bid, []).append(data)
+        for _, a, _ in self.stack:
+            if a.get("data-source"):
+                self.cites.setdefault(bid, [])
+                if a["data-source"] not in self.cites[bid]:
+                    self.cites[bid].append(a["data-source"])
 
 # ---------------------------------------------------------------------- checks
 def css_decls(css):
@@ -194,7 +200,9 @@ def run(path, genome):
             paras[bid] = paras.get(bid, "")
         blocks = [(bid, t, src) for bid, t, src in doc.texts]
         blocktext = {b: " ".join(v) for b, v in doc.blocktext.items()}
+        cites = doc.cites
     else:
+        cites = {}
         blocks, blocktext = [], {}
         for i, para in enumerate(re.split(r"\n\s*\n", raw), 1):
             blocks.append((i, para, False)); blocktext[i] = para
@@ -330,6 +338,43 @@ def run(path, genome):
                 add("claims", "unsourced-claim", m.group(0).strip(), "Unsourced %s claim '%s': %s" % (kind, m.group(0).strip(), snippet(text, m)),
                     "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim.")
 
+    # ---- claims ledger (v0.2): only when the genome points at a ledger
+    ledger = genome.get("_ledger")
+    if ledger is not None:
+        lname = re.escape(os.path.basename(genome["claims"]["ledger"]))
+        cite_rx = re.compile(lname + r"#(\w+)", re.I)
+        tag_rx = re.compile(r"\[source:[^\]]*\]", re.I)
+        num_rx = re.compile(r"\d[\d,]*(?:\.\d+)?")
+        def nums(t):
+            return {n.replace(",", "").rstrip(".") for n in num_rx.findall(t)}
+        banned_rx = re.compile(r"\b(cures?|cured|treats?|prevents?|diagnos(?:e|es))\b|\b(doctor[- ]approved|FDA[- ]approved|clinically proven)\b", re.I)
+        negation = re.compile(r"\b(not|never|no|cannot|can't|doesn't|don't|won't|isn't|without)\b|n't\b", re.I)
+        for bid in sorted({b for b, _, _ in blocks}, key=str):
+            text = blocktext.get(bid, "")
+            ids = []
+            for src in cites.get(bid, []) + [tag_rx.findall(text) and " ".join(tag_rx.findall(text)) or ""]:
+                ids += [m.upper() for m in cite_rx.findall(src)]
+            body = tag_rx.sub(" ", text)
+            ok_ids = []
+            for cid in dict.fromkeys(ids):
+                if cid in ledger:
+                    ok_ids.append(cid)
+                else:
+                    add("claims", "unknown-claim-id", cid, "Block cites %s#%s but the ledger has no such claim." % (genome["claims"]["ledger"], cid),
+                        "Cite an ID that exists in the ledger, or get the claim approved and added first.")
+            if ok_ids:
+                allowed = set()
+                for cid in ok_ids:
+                    allowed |= nums(ledger[cid])
+                for n in sorted(nums(body) - allowed, key=lambda x: body.find(x)):
+                    add("claims", "claim-mismatch", n, "Number '%s' is not in the approved wording of %s (%s)." % (n, "/".join(ok_ids), " | ".join(ledger[c] for c in ok_ids)),
+                        "Use the approved wording and numbers from the ledger exactly, or get the new number approved first.")
+            for m in banned_rx.finditer(body):
+                if negation.search(body[max(0, m.start() - 30):m.start()]):
+                    continue
+                add("claims", "banned-claim", m.group(0), "Not-approved claim '%s' (ledger 'Not approved' list): %s" % (m.group(0), snippet(body, m)),
+                    "Remove it. Only a negated disclaimer such as the ledger's C4 wording may use these words.")
+
     # ---- logo
     lg = genome["logo"]
     approved_f = [a.lower() for a in lg["approved_files"]]
@@ -352,8 +397,20 @@ def run(path, genome):
 # --------------------------------------------------------------------- scoring
 CHECKS = ["colour", "font", "contrast", "voice", "claims", "logo"]
 
+def load_ledger(path):
+    """Parse ledger rows '| <a id="Cn"></a>Cn | approved wording | ...' into {id: wording}."""
+    out = {}
+    for line in open(path, encoding="utf-8"):
+        m = re.match(r'\s*\|\s*<a id="(\w+)"></a>\s*\1\s*\|\s*([^|]+?)\s*\|', line)
+        if m:
+            out[m.group(1).upper()] = m.group(2)
+    return out
+
 def score(asset, genome_path):
     genome = json.load(open(genome_path))
+    lf = genome.get("claims", {}).get("ledger")
+    if lf:
+        genome["_ledger"] = load_ledger(os.path.join(os.path.dirname(os.path.abspath(genome_path)), lf))
     V = run(asset, genome)
     sc = genome["scoring"]
     total, checks = 0, {}

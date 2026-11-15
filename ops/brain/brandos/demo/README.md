@@ -10,7 +10,7 @@ P2 step 1 (first half): the Brand QA scorer run end to end on a brand that is no
 - `claims-ledger.md`: the fictional source for every approved claim.
 - `assets/`: 5 assets x before/after, plus `brand/plinkettle-logo.svg`.
 - `reports/`: one JSON scorer report per asset (10).
-- `fixtures/` + `run_demo_tests.py`: 10 planted-error files (one error type each) and 2 clean ones.
+- `fixtures/` + `run_demo_tests.py`: 13 planted-error files (one error type each) and 3 clean ones.
 
 ## Before / after scores (threshold 85)
 | Asset | Before | What was wrong | After |
@@ -27,13 +27,13 @@ Penalties are capped per check, so the two text assets with only voice and claim
 ```
 cd ops/brain/brandos
 python3 scorer/scorer.py demo/assets/03-hero-before.html --genome demo/genome-plinkettle.json
-python3 demo/run_demo_tests.py      # 10/10 planted caught, 0/2 false positives, 10/10 before/after verdicts
+python3 demo/run_demo_tests.py      # 13/13 planted caught, 0/3 false positives, 10/10 before/after verdicts
 python3 scorer/tests/run_tests.py   # 3S tests, unchanged
 ```
 
 ## Limits
 - The assets were written by hand for this demo, not yet produced by the production skills. That is the second half of P2 step 1, along with the Command view.
-- The scorer checks that a claim has a marker; it does not yet check the marker matches the ledger wording (that is P2 step 2). The demo test only checks marker IDs exist in the genome.
+- Scorer v0.2 (P2 step 2) reads `claims-ledger.md` through the genome. A block that cites `#Cn` is flagged if Cn is not in the ledger (`unknown-claim-id`) or if a number in the block is not in that row's wording (`claim-mismatch`); "clinically proven", "doctor-approved", "FDA-approved" and cures/treats/prevents/diagnoses are flagged (`banned-claim`) unless negated. Only numbers are compared, not the full wording. Fixtures 11-13 plant these errors; clean-03 is the C4 disclaimer and must not be flagged. Fixtures 06 and 13 also trip the voice banned-word list, so the test allows that extra check.
 - Claims with no number or keyword are missed: "setup takes 3 minutes" in the before email was not flagged.
 - A font loaded by link and used in CSS counts twice (Poppins in the hero).
 - All v0.1 limits in `../scorer/README.md` apply: source only, no rendered pixels, English regex, contrast only where text and background sit in one rule.
