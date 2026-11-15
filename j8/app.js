@@ -1,4 +1,5 @@
-/* J8NIX PWA screens 8.0.1 (15 Nov 2026): Home first (seven sections, live data, per-member layout) and the v8 colours and shapes,
+/* J8NIX PWA screens 8.1.0 (15 Nov 2026): brand identity v5 colours only (stage spectrum, donuts, J8NIX tile). Revert copy: app-8.0.1.js.
+   8.0.1: Home first (seven sections, live data, per-member layout) and the v8 colours and shapes,
    on 7.1.1's logic, which is unchanged (rows, unlocks, needs, mentor, Today, Studio, Flow, Talk, drafts, Later, Not needed, Control).
    Revert copy of 7.1.1: app-7.1.1.js + index-7.1.1.html.
    7.1.1 (14 Nov 2026, fix round 1 after the verifier): the v7.1 design (Today / Studio / Flow / Talk) on live data.
@@ -42,7 +43,7 @@ function sevChip(v){return v&&SEV[v]?'<span class="sv sv-'+v+'"><i class="sd sd-
 var PCOL={'p-shomer':['#E0A828','#0C1B3A'],'p-ios':['#E0A828','#0C1B3A'],'p-tnufa':['#E0A828','#0C1B3A'],'p-command':['#FC9918','#0C1B3A'],'p-nature':['#2F8540','#4FA85C'],
  'p-lickpick':['#FFE600','#FF2E88'],'p-site':['#8239EA','#3DCC6E'],'p-services':['#8239EA','#3DCC6E'],'p-payments':['#8239EA','#3DCC6E'],'p-csr':['#8239EA','#3DCC6E'],
  'p-linkedin':['#8239EA','#3DCC6E'],'p-healthtech':['#8239EA','#3DCC6E'],'p-a11y':['#8239EA','#B07CFF'],
- 'p-th':['#FF6C00','#0A0A2E'],'p-chore':['#6A21C4','#F59E0B'],'p-fairent':['#6550FF','#53D805'],'p-j8nix':['#F2C194','#586475'],'p-general':['#9AA6BF','#9AA6BF']};
+ 'p-th':['#FF6C00','#0A0A2E'],'p-chore':['#6A21C4','#F59E0B'],'p-fairent':['#6550FF','#53D805'],'p-j8nix':['#2A44C6','#2AB9FF'],'p-general':['#9AA6BF','#9AA6BF']};
 var PBADGE={'p-shomer':'shomer','p-ios':'shomer','p-tnufa':'shomer','p-command':'shomer','p-nature':'nature','p-lickpick':'lickpick','p-th':'th','p-chore':'chore','p-milo':'milo','p-ig':'media','p-j8nix':'j8nix',
  'p-site':'studio','p-services':'studio','p-payments':'studio','p-csr':'studio','p-linkedin':'studio','p-healthtech':'studio','p-a11y':'studio'};
 function lum(h){var m=String(h).replace('#','');if(m.length!==6)return .5;return [0,2,4].map(function(i){var c=parseInt(m.substr(i,2),16)/255;return c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4);}).reduce(function(s,c,i){return s+c*[.2126,.7152,.0722][i];},0);}
@@ -290,7 +291,7 @@ function donut(parts,label,center){var tot=parts.reduce(function(s,p){return s+p
  parts.forEach(function(p){if(!p.v)return;var L=C*p.v/tot,g=nz>1?2:0;segs+='<circle r="'+R+'" cx="56" cy="56" fill="none" stroke="'+p.c+'" stroke-width="18" stroke-dasharray="'+Math.max(0,L-g)+' '+(C-Math.max(0,L-g))+'" stroke-dashoffset="'+(-o)+'" transform="rotate(-90 56 56)"><title>'+esc(p.k+': '+p.v)+'</title></circle>';o+=L;});
  return '<svg class="dn" viewBox="0 0 112 112" role="img" aria-label="'+esc(label)+'">'+segs+'<text x="56" y="62" text-anchor="middle" class="pt">'+(center!=null?center:tot)+'</text></svg>'
   +'<ul class="lg">'+parts.filter(function(p){return p.v||p.keep;}).map(function(p){return '<li><i style="background:'+p.c+'"></i><span>'+esc(p.k)+'</span><b>'+p.v+'</b></li>';}).join('')+'</ul>';}
-function activity(){var days=[],by={},S3=[['Drafts made','#9AA5B5'],['Your decisions','#FFBE0B'],['Team runs','#586475']];
+function activity(){var days=[],by={},S3=[['Drafts made','#9AA5B5'],['Your decisions','#FF9700'],['Team runs','#586475']];
  for(var k=6;k>=0;k--){var d=new Date(Date.now()-k*864e5);days.push(ymd(d));by[ymd(d)]=[0,0,0];}
  var add=function(iso,j){if(!iso)return;var t=new Date(iso);if(isNaN(t))return;var key=ymd(t);if(by[key])by[key][j]++;};
  J8.approvals.list().forEach(function(a){add(a.created,0);add(a.decided_at,1);});J8.runs.list().forEach(function(r){add(r.ended||r.started,2);});
@@ -370,7 +371,7 @@ function noUrl(s){return String(s==null?'':s).replace(/\s*(?:[—–-]\s*)?(?:ch
 function linkTxt(s){var out='',i=0,re=/(?:https?:\/\/)\S+/gi,m;s=String(s==null?'':s);while((m=re.exec(s))){var u=m[0].replace(/[.,;:)]+$/,'');out+=esc(s.slice(i,m.index))+'<a href="'+esc(u)+'" target="_blank" rel="noopener">open link</a>';i=m.index+u.length;}return out+esc(s.slice(i));}
 function armKey(s){return String(s||'').toLowerCase().replace(/^3s\s+/,'').replace(/\s*\([^)]*\)\s*/g,' ').replace(/\s+/g,' ').trim();}
 function theme(){var t=ls('j8-theme');return t==='dark'||t==='auto'?t:'light';}
-function setTheme(t){ls('j8-theme',t);document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#0F1626':'#FFFFFF';renderTheme();if(typeof renderAll==='function')renderAll();}
+function setTheme(t){ls('j8-theme',t);document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#060833':'#FFFFFF';renderTheme();if(typeof renderAll==='function')renderAll();}
 function renderTheme(){var e=$('themeSeg');if(!e)return;var t=theme();[].forEach.call(e.querySelectorAll('[data-theme-set]'),function(b){b.setAttribute('aria-pressed',b.dataset.themeSet===t?'true':'false');});}
 function openSheet(){$('sheet').hidden=false;$('scrim').hidden=false;$('gear').setAttribute('aria-expanded','true');}
 function closeSheet(){var s=$('sheet');if(s&&!s.hidden){s.hidden=true;$('scrim').hidden=true;$('gear').setAttribute('aria-expanded','false');if(ctlOn)ctlShow(false);if(location.hash==='#control')history.replaceState(null,'',location.pathname+location.search);}}
@@ -485,7 +486,7 @@ function firstNum(L){var m=Infinity;L.forEach(function(v){if(v<m)m=v;});return m
    The data logic above is unchanged from 6.1.2 (rows, unlocks, needs, mentor, notes with routing, Control).
    Plan + screen → code → data map: ops/brain/J8NIX-V6-PLAN.md §7.1. Revert: index-6.1.2.html (one line in the plan).
    ===================================================================================================================== */
-var J8V='8.0.1';
+var J8V='8.1.0';
 /* ---------- words (EN / HE). Content stays in its own language with dir=auto; numbers in <bdi>. ---------- */
 var LANG=(function(){var l=ls('j8-lang');return l==='he'?'he':'en';})();
 var TX={en:{
@@ -494,14 +495,14 @@ var TX={en:{
  do:'Do',comment:'Comment',later:'Later',notNeeded:'Not needed',send:'Send',edit:'Edit',kill:'Kill',undo:'Undo',where:'Where',how:'How',after:'After',
  markDone:'Mark done',notYet:'Not yet',save:'Save and send',cancel:'Cancel',close:'Close',now:'Now',gotIt:'Got it',actions:'Actions',
  dayTitle:'Your day, {d}',todayWhat:'Your steps, in the order that frees the most work.',nSteps:'{n} steps',oneStep:'1 step',aboutMin:', about {n} min',
- nThings:'{n} things',oneThing:'1 thing',moveAfterGold:'move after the gold card alone.',goldMoney:'the gold card is the step closest to money.',goldGain:'one clear step at a time, in the best order.',
+ nThings:'{n} things',oneThing:'1 thing',moveAfterGold:'move after the orange card alone.',goldMoney:'the orange card is the step closest to money.',goldGain:'one clear step at a time, in the best order.',
  nOfDone:'{a} of {b} done today',minEst:'about {n} min',estNote:' (draft times estimated)',stepsN:'{n} steps for you',parked:'Parked',parkedGrp:'Parked, waiting on you',parkedNeed:'parked. When you pick it up: {x}',
  nnQ:'Not needed?',nnTaskP:'It closes and moves under Done. You can undo it.',nnYes:'Yes, not needed',nnDeps:'{n} things wait on this: {x}.',nnHeld:'Until you choose, they stay held.',letGo:'Not needed, let them go',killToo:'Kill them too',
  letGoT:'Not needed. The {n} that waited on it can go ahead.',killTooT:'Not needed, and {n} that waited on it are killed or closed.',nnHeldP:'{n} approved sends wait on this step.',backWait:'Back to waiting for your OK',killThese:'Kill these {n}',backWaitT:'{n} sends are back to waiting for your OK.',
  nnApP:'This payment request will not be sent.',nnTellP:'The {t} team is told it is not needed.',andMore:'and {n} more',blockedOnly:'Blocked only',noBlocked:'No project is blocked right now.',noMove:'No movement in 7 days',waitOutside:'Waiting outside',loading:'Loading…',loadingDay:'Loading your day…',nothingNow:'nothing right now.',teamKeeps:'the team keeps {n} things moving.',
  allClear:'All clear',allClearP:'Everything that needed you is done. New steps appear here, and your phone tells you.',seeFlow:'See how the studio is moving',
  noConn:'No connection',noConnP:'You see the list from {t}. What you tap now is sent when you are back online.',tryAgain:'Try again',savedCopy:'Saved copy from {t}:',
- coach:'New here? Amber means you. Do the gold card first.',
+ coach:'New here? Orange means you. Do the orange card first.',
  wTask:'Waits',wNow:'Now',wToday:'Today',wWeek:'This week',min:'{n} min',hereJ8:'Here, in J8NIX',whereCtl:'J8NIX Settings, then Control',whereTalk:'Talk, in J8NIX',
  howBatch:'Read each one, then tap Send, Edit or Kill.',afterSwitch:'This closes by itself when {s} is on in Control.',afterOut:'Come back and tap Mark done.',
  readN:'read the {n}',readOne:'read it',answerTeam:'answer the team',openIt:'open it',forYou:'{n} for you',teamHasIt:'Team has it',furthest:'Furthest: {s}',
@@ -546,14 +547,14 @@ var TX={en:{
  do:'לבצע',comment:'הערה',later:'אחר כך',notNeeded:'לא צריך',send:'לשלוח',edit:'לערוך',kill:'לא לשלוח',undo:'בטל פעולה',where:'איפה',how:'איך',after:'אחרי',
  markDone:'סמן כבוצע',notYet:'עוד לא',save:'לשמור ולשלוח',cancel:'סגור',close:'סגור',now:'עכשיו',gotIt:'הבנתי',actions:'פעולות',
  dayTitle:'היום שלך, {d}',todayWhat:'הצעדים שלך, לפי הסדר שמשחרר הכי הרבה עבודה.',nSteps:'{n} צעדים',oneStep:'צעד אחד',aboutMin:', בערך {n} דק׳',
- nThings:'{n} דברים',oneThing:'דבר אחד',moveAfterGold:'זזים אחרי הכרטיס הזהוב לבדו.',goldMoney:'הכרטיס הזהוב הוא הצעד הקרוב ביותר לכסף.',goldGain:'צעד ברור אחד בכל פעם, בסדר הנכון.',
+ nThings:'{n} דברים',oneThing:'דבר אחד',moveAfterGold:'זזים אחרי הכרטיס הכתום לבדו.',goldMoney:'הכרטיס הכתום הוא הצעד הקרוב ביותר לכסף.',goldGain:'צעד ברור אחד בכל פעם, בסדר הנכון.',
  nOfDone:'{a} מתוך {b} בוצעו היום',minEst:'בערך {n} דק׳',estNote:' (זמני הטיוטות מוערכים)',stepsN:'{n} צעדים בשבילך',parked:'מושהה',parkedGrp:'מושהה, מחכה לך',parkedNeed:'מושהה. כשחוזרים אליו: {x}',
  nnQ:'לא צריך?',nnTaskP:'זה נסגר ועובר לבוצע. אפשר לבטל.',nnYes:'כן, לא צריך',nnDeps:'{n} דברים מחכים לזה: {x}.',nnHeld:'עד שתבחר, הם נשארים מוחזקים.',letGo:'לא צריך, לשחרר אותם',killToo:'לא לשלוח גם אותם',
  letGoT:'לא צריך. ה-{n} שחיכו לזה יכולים להמשיך.',killTooT:'לא צריך, ו-{n} שחיכו לזה לא יישלחו או נסגרו.',nnHeldP:'{n} שליחות מאושרות מחכות לצעד הזה.',backWait:'להחזיר להמתנה לאישור שלך',killThese:'לא לשלוח את ה-{n}',backWaitT:'{n} שליחות חזרו להמתנה לאישור שלך.',
  nnApP:'בקשת התשלום הזו לא תישלח.',nnTellP:'צוות {t} יעודכן שזה לא צריך.',andMore:'ועוד {n}',blockedOnly:'רק חסומים',noBlocked:'אין עכשיו פרויקט חסום.',noMove:'לא זזו 7 ימים',waitOutside:'מחכה למישהו מבחוץ',loading:'טוען…',loadingDay:'טוען את היום שלך…',nothingNow:'כלום כרגע.',teamKeeps:'הצוות ממשיך להזיז {n} דברים.',
  allClear:'הכול נקי',allClearP:'כל מה שחיכה לך בוצע. צעדים חדשים יופיעו כאן, והטלפון יודיע לך.',seeFlow:'לראות איך הסטודיו זז',
  noConn:'אין חיבור',noConnP:'זו הרשימה מ-{t}. מה שתלחץ עכשיו יישלח כשיחזור החיבור.',tryAgain:'לנסות שוב',savedCopy:'עותק שמור מ-{t}:',
- coach:'חדש כאן? כתום = את/ה. קודם הכרטיס הזהוב.',
+ coach:'חדש כאן? כתום = את/ה. קודם הכרטיס הכתום.',
  wTask:'ממתין',wNow:'עכשיו',wToday:'היום',wWeek:'השבוע',min:'{n} דק׳',hereJ8:'כאן, ב-J8NIX',whereCtl:'הגדרות J8NIX, ואז Control',whereTalk:'שיחה, ב-J8NIX',
  howBatch:'לקרוא כל אחד, ואז לשלוח, לערוך או לבטל.',afterSwitch:'זה נסגר לבד כש-{s} מופעל ב-Control.',afterOut:'לחזור ולסמן כבוצע.',
  readN:'לקרוא את {n}',readOne:'לקרוא',answerTeam:'לענות לצוות',openIt:'לפתוח',forYou:'{n} בשבילך',teamHasIt:'אצל הצוות',furthest:'הכי רחוק: {s}',
@@ -595,7 +596,7 @@ var TX={en:{
 }};
 /* 8.0.0: words for Home, Edit Home and Ask (EN / HE) */
 Object.assign(TX.en,{
- coach:'New here? Yellow means you. Do the gold card first.',
+ coach:'New here? Orange means you. Do the orange card first.',
  home:'Home',ask:'Ask J8 or jump to anything',editHome:'Edit Home',nowW:'now',
  s_hero:'Your move now',s_money:'Money vs goal',s_waiting:'Waiting on you',s_week:'This week',s_stages:'Projects by stage',s_j8:'J8 suggests next',s_team:'The team at work',
  w_money:'Where the studio stands today',w_waiting:'Steps and drafts only you can move',w_week:'Calls, deadlines and milestones, day by day',w_stages:'Every live project, from idea to paying',w_j8:'Your copilot’s advice',w_team:'What J8’s departments did, and what is next',
@@ -614,7 +615,7 @@ Object.assign(TX.en,{
  askTitle:'Ask J8 or jump',askPh:'A project, a step or a question',askSend:'Ask the team: “{x}”',askSent:'Sent to the team. The answer comes in Talk.',places:'Places',projectsH:'Projects',steps:'Your steps',noMatch:'Nothing matches. You can ask the team instead.'
 });
 Object.assign(TX.he,{
- coach:'חדש כאן? צהוב = את/ה. קודם הכרטיס הזהוב.',
+ coach:'חדש כאן? כתום = את/ה. קודם הכרטיס הכתום.',
  home:'בית',ask:'לשאול את J8 או לקפוץ לכל מקום',editHome:'לערוך את הבית',nowW:'עכשיו',
  s_hero:'הצעד שלך עכשיו',s_money:'כסף מול היעד',s_waiting:'מחכה לך',s_week:'השבוע',s_stages:'פרויקטים לפי שלב',s_j8:'J8 מציע הלאה',s_team:'הצוות בעבודה',
  w_money:'איפה הסטודיו עומד היום',w_waiting:'צעדים וטיוטות שרק את/ה יכול/ה להזיז',w_week:'שיחות, מועדים ואבני דרך, יום אחר יום',w_stages:'כל פרויקט פעיל, מרעיון ועד תשלום',w_j8:'העצה של J8',w_team:'מה המחלקות של J8 עשו, ומה הלאה',
@@ -641,11 +642,11 @@ function whenStr(ms){var d=new Date(ms);if(isNaN(d))return '';var td=ymd(new Dat
  if(k===td)return (LANG==='he'?'היום ':'today ')+hm2(ms);if(k===tm1)return (LANG==='he'?'מחר ':'tomorrow ')+hm2(ms);return dayStr(d)+' '+hm2(ms);}
 
 /* ---------- icons, tiles, small parts ---------- */
-var TBG={shomer:'#0C1B3A',nature:'#EEF6EE',lickpick:'#15111F',th:'#0A0A2E',chore:'#F6F1FF',milo:'#CFE3EA',media:'#F4F7FB',j8nix:'#586475',studio:'#F3EAFE'};
+var TBG={shomer:'#0C1B3A',nature:'#EEF6EE',lickpick:'#15111F',th:'#0A0A2E',chore:'#F6F1FF',milo:'#CFE3EA',media:'#F4F7FB',j8nix:'#2A44C6',studio:'#F3EAFE'};
 function tile(pid,cls){var b=pid&&PBADGE[pid];cls='tile'+(cls?' '+cls:'');
  if(b)return '<span class="'+cls+'" style="background:'+TBG[b]+'"><img src="brand/'+b+'.png" alt="" width="64" height="64" loading="lazy" decoding="async"></span>';
  var c=pcolRaw(pid);if(!c||pid==='p-general')return '<span class="'+cls+' plain">'+ic('studio')+'</span>';
- return '<span class="'+cls+'" style="background:'+c[0]+';color:'+(lum(c[0])<.3?'#fff':'#0D1C2B')+'">'+ic('studio')+'</span>';}
+ return '<span class="'+cls+'" style="background:'+c[0]+';color:'+(lum(c[0])<.3?'#fff':'#060833')+'">'+ic('studio')+'</span>';}
 function g8(){return '<svg class="g8" aria-hidden="true"><use href="#eight"/></svg>';}
 function chip(cls,icon,txt){return '<span class="chip'+(cls?' '+cls:'')+'">'+ic(icon)+'<span>'+txt+'</span></span>';}
 function prog(a,b,label){var pc=b?Math.round(100*a/b):0;return '<div class="prog" role="img" aria-label="'+esc(label)+'"><span class="bar"><i style="width:'+Math.max(pc,3)+'%"></i></span><bdi>'+esc(label).replace(/^(\d+)/,'<b>$1</b>')+'</bdi></div>';}
@@ -889,10 +890,10 @@ function numbersHTML(){var m=J8.money.summary()||{},b=isNum(m.booked_usd)?m.book
   +'<div class="kpi"><span>Sent</span><b>'+sn+'</b><small>'+ap+' approved, not out yet</small></div></div>';
  var t0=new Date(START+'T12:00:00').getTime(),t1=new Date(MS[5][1]+'T12:00:00').getTime(),x=function(d){return Math.max(0,Math.min(100,(new Date(d+'T12:00:00').getTime()-t0)/(t1-t0)*100));},tn=Math.max(0,Math.min(100,(Date.now()-t0)/(t1-t0)*100)),nx=MS.filter(function(s){return b<s[2];})[0];
  h+='<section class="st"><h3>Milestones</h3><ol class="msl">'+MS.map(function(s){return '<li class="'+(b>=s[2]?'r':'')+(nx&&nx[0]===s[0]?' nx':'')+'"><b>'+s[0].replace('M','Milestone ')+'</b><span>'+usd(s[2])+' by '+fdate(s[1])+'</span>'+(b>=s[2]?chip('done','check','Reached'):nx&&nx[0]===s[0]?chip('you','today','Next'):'')+'</li>';}).join('')+'</ol></section>';
- var P=projList().filter(function(p){return p.id!=='p-general';}),SC=['#A46CFF','#3B8BFF','#00B6F0','#FF4FA0','#FF7A1A','#12C26E'] /* 8.0: the stage spectrum */,sg=J8.projects.STAGES.map(function(s,i){return {k:FSTG[i],v:P.filter(function(p){return p.stage===i+1;}).length,c:SC[i]};});
- var ns=P.filter(function(p){return !isNum(p.stage);}).length;if(ns)sg.push({k:'No stage',v:ns,c:'#D9E1EB'});
+ var P=projList().filter(function(p){return p.id!=='p-general';}),SC=['#9500FF','#2A44C6','#00C2A8','#E23FD0','#2AB9FF','#32CC00'] /* 8.1: the v5 stage spectrum */,sg=J8.projects.STAGES.map(function(s,i){return {k:FSTG[i],v:P.filter(function(p){return p.stage===i+1;}).length,c:SC[i]};});
+ var ns=P.filter(function(p){return !isNum(p.stage);}).length;if(ns)sg.push({k:'No stage',v:ns,c:'#D8D8D8'});
  h+='<div class="pair"><section class="st"><h3>Projects by stage</h3>'+donut(sg,'Projects by stage')+'</section>'
-  +'<section class="st"><h3>Drafts</h3>'+donut([{k:'Waiting',v:wt,c:'#FFBE0B',keep:1},{k:'Approved',v:ap,c:'#586475',keep:1},{k:'Sent',v:sn,c:'#12C26E',keep:1},{k:'Killed',v:kl,c:'#C3CBD8',keep:1}],'Drafts by status')+'</section></div>';
+  +'<section class="st"><h3>Drafts</h3>'+donut([{k:'Waiting',v:wt,c:'#FF9700',keep:1},{k:'Approved',v:ap,c:'#586475',keep:1},{k:'Sent',v:sn,c:'#32CC00',keep:1},{k:'Killed',v:kl,c:'#C9D0E4',keep:1}],'Drafts by status')+'</section></div>';
  h+='<section class="st"><h3>Activity, last 7 days</h3>'+activity()+'</section>';
  var A=achievements(),on=A.filter(function(a){return a.on;}).length;
  h+='<section class="st"><h3>Achievements <span class="n">'+on+' of '+A.length+'</span></h3><div class="badges">'+A.sort(function(p,q){return (q.on?1:0)-(p.on?1:0);}).map(function(a){
@@ -1227,7 +1228,7 @@ function renderTop(){var pl=curPlace(),inner=UI.v!==pl;document.body.dataset.pla
  $('tBack').hidden=!inner;$('tTile').innerHTML=g8();$('hdT').textContent=t(pl);
  var o=J8.orgs&&J8.orgs.current();$('hdW').textContent=(o&&o.name?o.name+' · ':'')+dayStr();
  $('editBtn').hidden=UI.v!=='home';$('askL').textContent=t('ask');$('editL').textContent=t('editHome');$('askBtn').setAttribute('aria-label',t('ask'));
- var m=document.querySelector('meta[name=theme-color]');if(m)m.content=isDark()?'#0F1626':'#FFFFFF';}
+ var m=document.querySelector('meta[name=theme-color]');if(m)m.content=isDark()?'#060833':'#FFFFFF';}
 function renderNav(){var n=connected?myQueue().length:0,q=connected?askRows().length:0,pl=curPlace();
  [].forEach.call(document.querySelectorAll('#nav [data-nav]'),function(b){var k=b.dataset.nav;if(k===pl)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');b.querySelector('.lbl').textContent=t(k);});
  var a=$('nN'),b=$('tN'),was=a.textContent;a.textContent=n||'';a.hidden=!n;b.textContent=q||'';b.hidden=!q;
@@ -1377,7 +1378,7 @@ function toast(msg,undo){$('toastMsg').textContent=msg;var u=$('undo');u.hidden=
 window.toast=toast;
 
 /* ---------- boot: shell.js signs in and connects; the screens follow J8's status ---------- */
-(function(){try{var e=document.querySelector('#eight path');if(e)document.documentElement.style.setProperty('--glyph','url("data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="79 21 24 48"><path fill="#8A4600" d="'+e.getAttribute('d')+'"/></svg>')+'")');}catch(x){}})();
+(function(){try{var e=document.querySelector('#eight path');if(e)document.documentElement.style.setProperty('--glyph','url("data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="79 21 24 48"><path fill="#060833" d="'+e.getAttribute('d')+'"/></svg>')+'")');}catch(x){}})();
 (function(){document.documentElement.dataset.theme=theme();renderTheme();setSize(ls('j8-size')||'std');document.documentElement.lang=LANG;document.documentElement.dir=LANG==='he'?'rtl':'ltr';
  var v=ls('j8-view'),m={chat:'talk',next:'today',list:'studio',stats:'flow'};UI.v='home';renderPrefs();render();})(); /* 8.0: Home is the first screen */
 (function(){

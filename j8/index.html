@@ -17,12 +17,13 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700;800&family=Assistant:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700;800&family=Assistant:wght@400;600;700;800&display=swap"></noscript>
-<link rel="stylesheet" href="app.css?v=8.0.1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"></noscript>
+<link rel="stylesheet" href="app.css?v=8.1.0">
 </head>
 <body>
-<!-- J8NIX PWA 8.0.1 (15 Nov 2026): Home first (7 sections, live data, Pin / Hide / Move / Edit Home saved per member in j8_members.prefs),
+<!-- J8NIX PWA 8.1.0 (15 Nov 2026): brand identity v5 (Midnight / Royal / Sky, Heebo, new icons; assets/brand-v3/j8nix/BRAND.md). Revert to 8.0.1: index-8.0.1.html.
+     8.0.1: Home first (7 sections, live data, Pin / Hide / Move / Edit Home saved per member in j8_members.prefs),
      the v8 colour system (Sun = you, red = alarm only, a hue per stage, brand slate + peach rail), square shapes and the J8 notch.
      Revert to 7.1.1: index-7.1.1.html (one line in SHIPPED-8.md and the plan). 7.1.1 (fix round 1: Not needed asks first and never hides new work, parked asks, draft minutes, Hebrew words; 7.1.0: the v7.1 design on live data: Today / Studio / Flow / Talk, one hue per place, a 4-question brief on every screen,
      16 px minimum text, 48 px targets, text size + Hebrew in Settings, Later with a come-back time, Not needed, undo everywhere).
@@ -114,7 +115,7 @@
  <div class="conn" id="status" role="status" hidden></div>
  <main id="main" tabindex="-1"></main>
  <nav class="nav" id="nav" aria-label="Main">
-  <span class="wm" aria-hidden="true"><img src="icons/wm-slate.svg" alt="" width="136" height="48"></span>
+  <span class="wm" aria-hidden="true"><img src="icons/wm-midnight.svg" alt="" width="136" height="48"></span>
   <button data-nav="home"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span class="lbl">Home</span></button>
   <button data-nav="today"><svg class="ico" aria-hidden="true"><use href="#i-today"/></svg><span class="lbl">Today</span><span class="count" id="nN" hidden></span><span class="sr" id="nNs"></span></button>
   <button data-nav="studio"><svg class="ico" aria-hidden="true"><use href="#i-studio"/></svg><span class="lbl">Studio</span></button>
@@ -141,9 +142,9 @@
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="toastMsg"></span><button id="undo" hidden><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg><span id="undoL">Undo</span></button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=8.0.1"></script>
-<script src="app.js?v=8.0.1"></script>
-<script src="shell.js?v=8.0.1"></script>
+<script src="j8-data.js?v=8.1.0"></script>
+<script src="app.js?v=8.1.0"></script>
+<script src="shell.js?v=8.1.0"></script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>
