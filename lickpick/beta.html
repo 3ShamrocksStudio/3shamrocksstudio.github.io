@@ -33,6 +33,7 @@ h2{font:400 clamp(26px,5vw,36px)/1.1 var(--d);margin:44px 0 14px}
 .join{background:var(--volt);color:var(--ink);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--hot);border-radius:24px;padding:22px}
 .join h2{margin-top:0}.join p{color:rgba(11,9,18,.8);font-weight:700}
 .join .row{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.join input{flex:1 1 220px;min-height:52px;padding:0 16px;border-radius:16px;border:3px solid var(--ink);background:#fff;color:var(--ink);font:700 17px var(--b)}
 .join .btn{background:var(--ink);color:var(--volt);border-color:var(--ink);box-shadow:4px 4px 0 var(--hot)}
 .check{list-style:none;padding:0;margin:0;display:grid;gap:8px}
 .check li{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--dim)}.check li b{color:var(--text)}
@@ -79,6 +80,8 @@ footer img{height:13px;width:auto;opacity:.75}
 <div class="join">
   <h2>Want in?</h2>
   <p>Comment "LICK" on any post on <a href="https://www.instagram.com/lickpick.app/" target="_blank" rel="noopener" style="color:inherit">@lickpick.app</a>, send us a DM there, or email us. We'll reply with your personal link. It opens LickPick with Pro already on.</p>
+  <form id="bf" class="row" novalidate><input id="be" type="email" name="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@email.com" aria-label="Your email" required><button class="btn" type="submit" id="bb">Send me the beta link</button></form>
+  <p id="bm" role="status" aria-live="polite" style="margin-top:10px"></p>
   <div class="row"><a class="btn" href="https://www.instagram.com/lickpick.app/" target="_blank" rel="noopener">Comment LICK on Instagram</a><a class="btn" href="mailto:lickpick.app@gmail.com?subject=Founding%20tester&body=Hi!%20I%20play%3A%20%0AI%20post%20on%3A%20">Email us</a><a class="btn" href="app/">Try it free now</a></div>
   <p style="margin-top:12px;font-size:14px">You'll need an Android phone with Chrome. Open the link, then Chrome menu → Add to Home screen.</p>
 </div>
@@ -90,4 +93,13 @@ footer img{height:13px;width:auto;opacity:.75}
 <details><summary>What happens after the beta?</summary><p>You keep Pro, for life. Free stays free: scan every jam, hear the band, save with a small LickPick mark.</p></details>
 
 <footer><img src="assets/3shamrocks.png" alt="3Shamrocks Studio" ><span>© 2026 3Shamrocks Studio. All rights reserved.</span><span><a href="mailto:lickpick.app@gmail.com">lickpick.app@gmail.com</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span></footer>
-</div></body></html>
+</div>
+<script>
+(function(){var f=document.getElementById("bf"),e=document.getElementById("be"),b=document.getElementById("bb"),m=document.getElementById("bm");if(!f)return;
+f.addEventListener("submit",function(ev){ev.preventDefault();var v=(e.value||"").trim();
+if(v.length>254||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.textContent="That email doesn't look right. Check it and try again.";return}
+var src=/[?&]src=ig(&|$)/.test(location.search)?"ig-comment":"beta-page";b.disabled=true;m.textContent="Sending...";
+fetch("https://otkvebgrdiayjnqrytrn.supabase.co/rest/v1/lp_beta_signups",{method:"POST",headers:{"Content-Type":"application/json","apikey":"sb_publishable_ZSMgkwuVwKwqrMgEIlG4Nw_-CmQ_Yct","Prefer":"return=minimal"},body:JSON.stringify({email:v,source:src})})
+.then(function(r){if(!r.ok)throw new Error(r.status);m.textContent="Thanks. I'll email you the beta link within 24 hours.";f.style.display="none"})
+.catch(function(){b.disabled=false;m.textContent="That didn't go through. Try again, or email lickpick.app@gmail.com."})});})();
+</script></body></html>
