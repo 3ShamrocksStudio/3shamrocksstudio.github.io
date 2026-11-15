@@ -12,7 +12,7 @@ Base: **Midnight `#060833`**, **Royal `#2A44C6`**, **Sky `#2AB9FF`**.
 
 | Meaning | Colour | Text on it | Ink on white / wash |
 |---|---|---|---|
-| **You** (your move, needs you, the hero band) | Orange `#FF9700` | Midnight 8.9:1 | `#9A5200` on `#FFF1DC` 5.3:1 |
+| **You** (your move, needs you: a rail, a tag, the Do button; never a big fill) | Orange `#FF9700` | Midnight 8.9:1 | `#9A5200` on `#FFF1DC` 5.3:1 |
 | **J8** (the AI's voice, J8's band) | Indigo `#202663` + the white 8 | White 13.8:1 | Ice `#DCE4FF` accents 10.9:1 |
 | **Alarm** (only: due today, days running out, zero results, Kill) | Red `#DD0E3F` | White 5.0:1 | `#B80A33` on `#FFE4EA` 5.6:1 |
 | **Done / paying** | Green `#32CC00` | Midnight 9.0:1 | `#237A00` on `#E4F8DA` 4.9:1 |
@@ -66,7 +66,7 @@ Rules:
 3SDS gives each product its own corners. J8NIX's own:
 - **Radius unit 0.** Blocks, bands, buttons, chips and tags are square. Rounded corners appear only on the logo tile and the app icons, which are Dave's drawing.
 - **Sections:** a 3 px Midnight rule and a Midnight index chip (01, 02…).
-- **Full-bleed colour bands** for what matters: the Orange hero, the Indigo J8 band, and the stage lanes.
+- **Full-bleed bands** for what matters: the Midnight hero (Indigo in dark) with a 6 px Orange "you" rail, the Indigo J8 band, and the stage lanes. Orange is never a big fill: only a rail, a small tag or the Do button.
 - **The J8 notch:** a 45° cut on the top-start corner (12–18 px), mirrored in Hebrew, on the hero, the J8 band and primary buttons. It comes from the diagonal of the hourglass 8.
 - Hairlines in Mist-blue. No drop shadows on light. No glows.
 
