@@ -1,77 +1,66 @@
 {
   "name": "J8NIX",
-  "version": "4.0",
-  "source": "Real logo files: 3S Projects/J8NIX/Brand (J8NIX.ai, J8NIX_LOGO.png, J8NIX_notag.png, J8NIX_tagline.png, icon.svg, J8NIX_wireframe.jpg) and the platform tokens in 3S Projects/J8NIX/index.html",
-  "palette": [
-    {
-      "name": "Peach Gold",
-      "hex": "#F2C194",
-      "role": "Logo letters J N I X, tagline, accent (logo files; platform --accent)"
-    },
-    {
-      "name": "White",
-      "hex": "#FFFFFF",
-      "role": "The hourglass 8 and \"SMARTER\" (logo files)"
-    },
-    {
-      "name": "Slate",
-      "hex": "#586475",
-      "role": "App-icon tile, workspace frame (icon.svg; wireframe; platform --neutral)"
-    },
-    {
-      "name": "Mist",
-      "hex": "#CCD8E5",
-      "role": "Workspace canvas (wireframe)"
-    },
-    {
-      "name": "Steel",
-      "hex": "#93A3B5",
-      "role": "Chat panel, secondary (wireframe)"
-    },
-    {
-      "name": "Frame",
-      "hex": "#6A809B",
-      "role": "Frame stroke (wireframe)"
-    },
-    {
-      "name": "Signal Blue",
-      "hex": "#1563FF",
-      "role": "Daily progress (wireframe)"
-    },
-    {
-      "name": "Wire Ink",
-      "hex": "#231F20",
-      "role": "Text on light panels (wireframe)"
-    },
-    {
-      "name": "Command Navy",
-      "hex": "#0D1C2B",
-      "role": "Platform canvas (platform --bg)"
-    },
-    {
-      "name": "Deck Navy",
-      "hex": "#11283C",
-      "role": "Panels on dark (platform --bg-2)"
-    },
-    {
-      "name": "Header Navy",
-      "hex": "#0A1622",
-      "role": "Header (platform --header-bg)"
-    },
-    {
-      "name": "Peach Deep",
-      "hex": "#E0A878",
-      "role": "Accent pressed (platform --accent-deep)"
-    }
+  "version": "5.0",
+  "updated": "2026-11-15",
+  "source": "Dave's brand file 3S Projects/J8NIX/Brand/J8NIX.ai (main + supporting swatches, three logo lockups). Type: Heebo. Shape: 3SDS layer 1 for J8NIX (see BRAND.md).",
+  "main": [
+    { "name": "Midnight", "hex": "#060833", "role": "Ink on light, page on dark, the rail, primary buttons (light), the midnight lockup ground" },
+    { "name": "Royal", "hex": "#2A44C6", "role": "The logo tile and app icon; stage 2 Build" },
+    { "name": "Sky", "hex": "#2AB9FF", "role": "The logo highlight line; stage 5 Launch" }
   ],
-  "type": {
-    "logo_tagline": "Futura Medium / Futura Bold (from J8NIX.ai; web fallback Jost)",
-    "interface": "Source Sans 3 (wireframe); platform build uses Plus Jakarta Sans + JetBrains Mono"
+  "supporting": [
+    { "name": "Orange", "hex": "#FF9700", "role": "YOU: your move, needs you, the hero band" },
+    { "name": "Red", "hex": "#DD0E3F", "role": "ALARM only: due today, days running out, zero results, Kill" },
+    { "name": "Green", "hex": "#32CC00", "role": "DONE / PAYING: progress, done, money in; stage 6 Paying" },
+    { "name": "Violet", "hex": "#9500FF", "role": "Stage 1 Idea" },
+    { "name": "Indigo", "hex": "#202663", "role": "J8 (AI): J8's band and voice, with the white 8" },
+    { "name": "Haze", "hex": "#838EB7", "role": "Neutral: parked, quiet lines, dark-mode muted" },
+    { "name": "Slate", "hex": "#586475", "role": "Neutral: secondary text on light (6.0:1 on white)" },
+    { "name": "Mist", "hex": "#D8D8D8", "role": "Neutral: 'no stage' in charts; light surfaces are Mist tinted blue (#F2F5FC, #E4E8F3, #C9D0E4)" }
+  ],
+  "logo_only": [
+    { "name": "Deep navy", "hex": "#081C33", "role": "Letters on the Royal tile lockup" },
+    { "name": "White", "hex": "#FFFFFF", "role": "The hourglass 8 in every lockup" },
+    { "name": "Peach", "hex": "#F2C194", "role": "Legacy: the old slate-tile lockup letters. Retired from the UI" }
+  ],
+  "added_in_v5": [
+    { "name": "Teal", "hex": "#00C2A8", "role": "Stage 3 Beta" },
+    { "name": "Fuchsia", "hex": "#E23FD0", "role": "Stage 4 Validate" },
+    { "name": "Ice", "hex": "#DCE4FF", "role": "'You are here' block, selected option, primary button on dark" }
+  ],
+  "roles": {
+    "you":   { "fill": "#FF9700", "ink": "#9A5200", "wash": "#FFF1DC", "on": "#060833", "dark": { "fill": "#FFA41F", "ink": "#FFB547", "wash": "#33270F", "on": "#060833" } },
+    "j8":    { "fill": "#202663", "on": "#FFFFFF", "accent": "#DCE4FF", "dark": { "fill": "#202663", "on": "#FFFFFF" } },
+    "alarm": { "fill": "#DD0E3F", "ink": "#B80A33", "wash": "#FFE4EA", "on": "#FFFFFF", "dark": { "fill": "#FF3D67", "ink": "#FF7C98", "wash": "#3D1230", "on": "#060833" } },
+    "done":  { "fill": "#32CC00", "ink": "#237A00", "wash": "#E4F8DA", "on": "#060833", "dark": { "fill": "#3FD80A", "ink": "#7BE34F", "wash": "#15331E", "on": "#060833" } }
   },
-  "status": {
-    "live": "#2F9E63",
-    "in_progress": "#2F74C0",
-    "waiting": "#D4892A",
-    "backlog": "#76859A"
+  "stages": [
+    { "n": 1, "name": "Idea",     "fill": "#9500FF", "ink": "#7A00D6", "wash": "#F2E6FF", "on": "#FFFFFF", "dark": { "fill": "#9500FF", "ink": "#C79BFF", "wash": "#281660", "on": "#FFFFFF" }, "why": "imagination" },
+    { "n": 2, "name": "Build",    "fill": "#2A44C6", "ink": "#2A44C6", "wash": "#E6EAFF", "on": "#FFFFFF", "dark": { "fill": "#3D5AFE", "ink": "#9FB0FF", "wash": "#1B2470", "on": "#FFFFFF" }, "why": "the brand's own blue: the work itself" },
+    { "n": 3, "name": "Beta",     "fill": "#00C2A8", "ink": "#00766A", "wash": "#DCF7F2", "on": "#060833", "dark": { "fill": "#00C2A8", "ink": "#5FE6D0", "wash": "#0E3340", "on": "#060833" }, "why": "fresh: first testers" },
+    { "n": 4, "name": "Validate", "fill": "#E23FD0", "ink": "#A3168F", "wash": "#FBE4F8", "on": "#060833", "dark": { "fill": "#E23FD0", "ink": "#F38BE6", "wash": "#3A1550", "on": "#060833" }, "why": "people say yes" },
+    { "n": 5, "name": "Launch",   "fill": "#2AB9FF", "ink": "#00679F", "wash": "#DDF2FF", "on": "#060833", "dark": { "fill": "#2AB9FF", "ink": "#7FD4FF", "wash": "#0E2A5C", "on": "#060833" }, "why": "lift-off into the sky" },
+    { "n": 6, "name": "Paying",   "fill": "#32CC00", "ink": "#237A00", "wash": "#E4F8DA", "on": "#060833", "dark": { "fill": "#3FD80A", "ink": "#7BE34F", "wash": "#15331E", "on": "#060833" }, "why": "money in (same green as done)" }
+  ],
+  "themes": {
+    "light": { "page": "#F2F5FC", "canvas": "#FFFFFF", "card": "#FFFFFF", "line": "#C9D0E4", "line_2": "#E4E8F3", "ink": "#060833", "ink_2": "#3A4266", "muted": "#586475", "rail": "#060833", "rail_ink": "#FFFFFF", "here": "#DCE4FF", "primary": "#060833", "primary_ink": "#FFFFFF", "theme_color": "#FFFFFF" },
+    "dark":  { "page": "#060833", "canvas": "#0C1046", "card": "#12175A", "line": "#2E3577", "line_2": "#1C2260", "ink": "#EEF1FF", "ink_2": "#B8BFE0", "muted": "#9AA3CC", "rail": "#03052A", "rail_ink": "#FFFFFF", "here": "#DCE4FF", "primary": "#DCE4FF", "primary_ink": "#060833", "theme_color": "#060833" }
+  },
+  "contrast_pairs_measured": [
+    ["#060833 on #FFFFFF", 19.26], ["#060833 on #F2F5FC", 17.65], ["#3A4266 on #FFFFFF", 9.76], ["#586475 on #FFFFFF", 6.01], ["#586475 on #F2F5FC", 5.51],
+    ["#060833 on #FF9700 (you)", 8.88], ["#9A5200 on #FFF1DC", 5.27], ["#FFFFFF on #DD0E3F", 4.99], ["#B80A33 on #FFE4EA", 5.60], ["#060833 on #32CC00", 8.96], ["#237A00 on #E4F8DA", 4.86],
+    ["#FFFFFF on #9500FF", 5.64], ["#7A00D6 on #F2E6FF", 6.27], ["#FFFFFF on #2A44C6", 7.66], ["#2A44C6 on #E6EAFF", 6.41], ["#060833 on #00C2A8", 8.51], ["#00766A on #DCF7F2", 4.90],
+    ["#060833 on #E23FD0", 5.37], ["#A3168F on #FBE4F8", 5.72], ["#060833 on #2AB9FF", 8.70], ["#00679F on #DDF2FF", 5.30], ["#FFFFFF on #202663 (J8)", 13.83], ["#060833 on #DCE4FF", 15.21],
+    ["dark #EEF1FF on #12175A", 14.40], ["dark #B8BFE0 on #12175A", 8.93], ["dark #9AA3CC on #12175A", 6.55], ["dark #FFB547 on #33270F", 8.31], ["dark #FF7C98 on #3D1230", 6.47],
+    ["dark #7BE34F on #15331E", 8.49], ["dark #C79BFF on #281660", 6.96], ["dark #9FB0FF on #1B2470", 6.61], ["dark #FFFFFF on #3D5AFE", 5.13], ["dark #5FE6D0 on #0E3340", 8.76],
+    ["dark #F38BE6 on #3A1550", 6.88], ["dark #7FD4FF on #0E2A5C", 8.48], ["dark #060833 on #FFA41F", 9.71]
+  ],
+  "type": { "family": "Heebo", "hebrew_and_latin": true, "weights": { "body": 400, "emphasis": 700, "display": "500-600" }, "case": "sentence case; no all-caps labels; no wide letter-spacing", "web": "https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" },
+  "shape": { "radius_unit": 0, "rules": "3px section rule + Midnight index chip", "signature": "the J8 notch: a 12-18px 45-degree cut on the top-start corner of the hero, the J8 band and primary buttons", "rounded": "only the logo tile and app icons (Dave's drawing)" },
+  "files": {
+    "lockup_royal": "logo-royal.svg, logo-royal-1024.png (= logo-on-light.png)",
+    "lockup_midnight": "logo-midnight.svg, logo-midnight-1024.png (= logo.png, logo.svg)",
+    "wordmark_dark": "wordmark-midnight.svg, wordmark.png",
+    "mark": "mark.svg, mark-1024.png (= logo-mark.png): white 8 on Royal; mark-white-1024.png, mark-midnight-1024.png, glyph.svg: the 8 alone"
   }
 }

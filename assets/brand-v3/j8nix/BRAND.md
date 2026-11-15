@@ -1,41 +1,75 @@
-# J8NIX · Brand v4
+# J8NIX · Brand v5
 
-**The logo is Dave's. It is not redrawn.** Every logo file here is built from the vectors in `J8NIX.ai` (the wordmark paths and the Futura tagline) and Dave's `icon.svg`. Shapes, proportions and colours are untouched. v4 only builds the system around it.
+Updated 15 Nov 2026. Source: Dave's `3S Projects/J8NIX/Brand/J8NIX.ai` (three lockups, main and supporting swatches). Tokens: `palette.json` (v5). Live in the app from J8NIX 8.1.0 (`j8/app.css`).
 
-## Source files used
-- `3S Projects/J8NIX/Brand/J8NIX.ai`: wordmark vectors (peach J N I X, white hourglass 8) and the tagline "SMART OPERATIONS OS, ONLY SMARTER" (Futura Medium + Bold).
-- `J8NIX_LOGO.png`: the official stacked layout (tagline under the wordmark, full width). `logo.png` reproduces it in vector.
-- `icon.svg`: the app icon (peach hourglass on a Slate tile). `logo-mark.png` and `mark.svg` are this file, unchanged.
-- `J8NIX_wireframe.jpg` and the J8NIX platform: workspace colours and the dashboard structure.
+**The logo drawing is Dave's and never changes** (the letterforms and the hourglass 8). Only colourways and grounds follow the palette.
 
-## Logo system
-- `logo.png` / `logo.svg`: official stacked lockup, for dark backgrounds.
-- `wordmark.png`, `glyph-wordmark.svg`: wordmark without tagline.
-- `logo-on-light.png`: single-colour Command Navy version for light backgrounds (same shapes; the white 8 cannot show on white).
-- `logo-mark.png`, `mark.svg`: app icon. `glyph-*.png`, `glyph.svg`: the hourglass 8 alone.
-- Never recolour the 8 to peach or the letters to white in the full-colour logo. Never stretch, outline or re-set it in another font.
+## Colour
 
-## Icons
-`icons.svg` / `icons.png`: 10 icons for the platform's real panels and buttons (tasks, projects, calendar, progress, live status, chat, voice memo, reminder, audit, new project). They follow the wordmark's own drawing rule: one monoline weight, round caps, open terminals. Each icon has one white stroke, the way the logo has one white 8.
+Base: **Midnight `#060833`**, **Royal `#2A44C6`**, **Sky `#2AB9FF`**.
 
-## Palette
-| Name | Hex | Source / use |
-|---|---|---|
-| Peach Gold | `#F2C194` | Logo letters J N I X, tagline, accent (logo files; platform --accent) |
-| White | `#FFFFFF` | The hourglass 8 and "SMARTER" (logo files) |
-| Slate | `#586475` | App-icon tile, workspace frame (icon.svg; wireframe; platform --neutral) |
-| Mist | `#CCD8E5` | Workspace canvas (wireframe) |
-| Steel | `#93A3B5` | Chat panel, secondary (wireframe) |
-| Frame | `#6A809B` | Frame stroke (wireframe) |
-| Signal Blue | `#1563FF` | Daily progress (wireframe) |
-| Wire Ink | `#231F20` | Text on light panels (wireframe) |
-| Command Navy | `#0D1C2B` | Platform canvas (platform --bg) |
-| Deck Navy | `#11283C` | Panels on dark (platform --bg-2) |
-| Header Navy | `#0A1622` | Header (platform --header-bg) |
-| Peach Deep | `#E0A878` | Accent pressed (platform --accent-deep) |
+### One meaning per hue
 
-Status colours (platform): Live `#2F9E63`, In progress `#2F74C0`, Waiting `#D4892A`, Backlog `#76859A`.
+| Meaning | Colour | Text on it | Ink on white / wash |
+|---|---|---|---|
+| **You** (your move, needs you, the hero band) | Orange `#FF9700` | Midnight 8.9:1 | `#9A5200` on `#FFF1DC` 5.3:1 |
+| **J8** (the AI's voice, J8's band) | Indigo `#202663` + the white 8 | White 13.8:1 | Ice `#DCE4FF` accents 10.9:1 |
+| **Alarm** (only: due today, days running out, zero results, Kill) | Red `#DD0E3F` | White 5.0:1 | `#B80A33` on `#FFE4EA` 5.6:1 |
+| **Done / paying** | Green `#32CC00` | Midnight 9.0:1 | `#237A00` on `#E4F8DA` 4.9:1 |
+
+Chrome is monochrome: Midnight rail, Midnight primary buttons (Ice on dark), an Ice `#DCE4FF` block for "you are here". Neutrals: Slate `#586475` (muted text), Haze `#838EB7` (quiet, parked), Mist `#D8D8D8` ("no stage").
+
+### Project stages
+
+Each stage has its own hue, always shown with its number and word (colour never works alone).
+
+| # | Stage | Fill | Text on fill | Ink / wash | Dark fill |
+|---|---|---|---|---|---|
+| 1 | Idea | Violet `#9500FF` | White 5.6:1 | `#7A00D6` / `#F2E6FF` 6.3:1 | `#9500FF` |
+| 2 | Build | Royal `#2A44C6` | White 7.7:1 | `#2A44C6` / `#E6EAFF` 6.4:1 | `#3D5AFE` (white 5.1:1) |
+| 3 | Beta | Teal `#00C2A8` | Midnight 8.5:1 | `#00766A` / `#DCF7F2` 4.9:1 | `#00C2A8` |
+| 4 | Validate | Fuchsia `#E23FD0` | Midnight 5.4:1 | `#A3168F` / `#FBE4F8` 5.7:1 | `#E23FD0` |
+| 5 | Launch | Sky `#2AB9FF` | Midnight 8.7:1 | `#00679F` / `#DDF2FF` 5.3:1 | `#2AB9FF` |
+| 6 | Paying | Green `#32CC00` | Midnight 9.0:1 | `#237A00` / `#E4F8DA` 4.9:1 | `#3FD80A` |
+
+The spectrum runs cool, from Violet through the brand blues to Green, so it sits with Midnight, Royal and Sky. Warm hues are kept for You (Orange) and Alarm (Red) only.
+
+## Themes
+
+- **Light:** page `#F2F5FC`, cards `#FFFFFF`, lines `#C9D0E4` / `#E4E8F3` (Mist tinted blue), text Midnight `#060833` (17.7:1 on the page), secondary `#3A4266` (9.0:1), muted Slate (5.5:1).
+- **Dark (the midnight lockup):** page Midnight `#060833`, canvas `#0C1046`, cards `#12175A`, lines `#2E3577`, text `#EEF1FF` (14.4:1 on cards), secondary `#B8BFE0` (8.9:1), muted `#9AA3CC` (6.6:1). Fills keep their hue. Inks lift (full list in `palette.json`).
+- Every text pair above is WCAG AA or better. All are measured and listed in `palette.json → contrast_pairs_measured`.
 
 ## Type
-- Logo tagline and display: **Futura** Medium / Bold (from the .ai). Web fallback: Jost.
-- Interface: **Source Sans 3** (the wireframe).
+
+**Heebo** for Hebrew and Latin (Google Fonts, 400 / 500 / 600 / 700). Display and headings 500–600, body 400, emphasis 700. Sentence case everywhere. No all-caps labels and no wide letter-spacing. Numbers are tabular.
+
+## Logo
+
+| Lockup | File | Use |
+|---|---|---|
+| Royal tile: deep-navy letters `#081C33`, white 8, on Royal | `logo-royal.svg`, `logo-royal-1024.png` (`logo-on-light.png`) | Light surfaces, studio pages, store art |
+| Midnight: letters in the Royal → Sky → navy gradient with the Sky highlight line, white 8 | `logo-midnight.svg`, `logo-midnight-1024.png` (`logo.png`) | Dark surfaces, OG / share images |
+| Wordmark (midnight colourway, no tile) | `wordmark-midnight.svg`, `wordmark.png`, app `j8/icons/wm-midnight.svg` | On Midnight or Indigo only (the app rail) |
+| Mark: the white 8 on a Royal tile | `mark.svg`, `mark-1024.png` (`logo-mark.png`), app icons | App icon, favicon, J8NIX badge |
+| The 8 alone | `mark-white-1024.png`, `mark-midnight-1024.png`, `glyph.svg` | Watermarks, notification badge |
+| Legacy (peach on slate) | `glyph-peach.png`, `icons.png`, old lockup in the .ai | Do not use |
+
+Rules:
+1. Never redraw, stretch, rotate, outline or add effects. The 8 stays white on every coloured ground.
+2. Royal-tile lockup on light, midnight lockup or wordmark on dark. Never the gradient wordmark on a light surface.
+3. Clear space is at least the height of the 8's top bowl on all sides. Below 24 px tall, use the mark.
+4. Only these colourways. A new ground must come from the palette and keep the white 8 at 4.5:1 or better.
+
+## Shape (3SDS layer 1 for J8NIX)
+
+3SDS gives each product its own corners. J8NIX's own:
+- **Radius unit 0.** Blocks, bands, buttons, chips and tags are square. Rounded corners appear only on the logo tile and the app icons, which are Dave's drawing.
+- **Sections:** a 3 px Midnight rule and a Midnight index chip (01, 02…).
+- **Full-bleed colour bands** for what matters: the Orange hero, the Indigo J8 band, and the stage lanes.
+- **The J8 notch:** a 45° cut on the top-start corner (12–18 px), mirrored in Hebrew, on the hero, the J8 band and primary buttons. It comes from the diagonal of the hourglass 8.
+- Hairlines in Mist-blue. No drop shadows on light. No glows.
+
+## Where it lives
+
+App: `j8/app.css` tokens, `j8/app.js` (stage spectrum, PCOL `p-j8nix`), `j8/icons/*`, `j8/manifest.webmanifest` (theme and background `#060833`). Badge `j8/brand/j8nix.png`. Studio copy `assets/studio/logos/j8nix.png`. Share image `assets/og/og-j8nix.jpg`. Board: `brand-card.png`.
