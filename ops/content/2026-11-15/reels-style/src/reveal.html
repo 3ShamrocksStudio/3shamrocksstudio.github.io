@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@500;700&family=Alef:wght@700&family=Heebo:wght@500;800&family=Dela+Gothic+One&family=Archivo:wght@600;800&family=Bangers&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden}
+.s{position:absolute;inset:0;overflow:hidden;display:none}
+body[data-b="studio"] #studio,body[data-b="shomer"] #shomer,body[data-b="lickpick"] #lickpick,body[data-b="th"] #th{display:block}
+body[data-m="frame"] .rv{display:none}
+body[data-m="reveal"] .fr{display:none}
+.c{position:absolute;left:50%;transform:translateX(-50%)}
+/* ---------- STUDIO: site intro ---------- */
+#studio{background:#08080f;font-family:Syne}
+#studio .glow{position:absolute;width:1400px;height:1400px;left:-160px;top:260px;border-radius:50%;background:radial-gradient(circle,#8239ea55 0,#8239ea00 60%);animation:sg 4s ease-out both}
+@keyframes sg{0%{transform:scale(.3);opacity:0}60%{opacity:1}100%{transform:scale(1.05)}}
+#studio .sweep{position:absolute;top:0;bottom:0;width:260px;background:linear-gradient(90deg,#9b59f700,#b07cff55,#9b59f700);animation:sw 1.4s .9s cubic-bezier(.6,0,.2,1) both;transform:skewX(-14deg)}
+@keyframes sw{from{left:-400px}to{left:1300px}}
+#studio .mark{top:640px;width:330px;animation:sm 1.1s .2s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes sm{0%{transform:translateX(-50%) scale(.2) rotate(-12deg);opacity:0;filter:blur(18px)}100%{transform:translateX(-50%) scale(1);opacity:1;filter:blur(0)}}
+#studio .wm{top:820px;width:900px;clip-path:inset(0 100% 0 0);animation:wm 1.1s .4s cubic-bezier(.7,0,.2,1) both}
+@keyframes wm{to{clip-path:inset(0 0 0 0)}}
+#studio .line{top:1040px;height:6px;background:#3dcc6e;width:0;animation:ln .7s 1.6s cubic-bezier(.7,0,.2,1) both}
+@keyframes ln{to{width:520px}}
+#studio .tag{top:1090px;width:100%;text-align:center;color:#fff;font-size:44px;font-weight:800;letter-spacing:-1px;opacity:0;animation:up .8s 2.2s ease-out both}
+#studio .url{top:1200px;width:100%;text-align:center;color:#b07cff;font:700 40px Inter;opacity:0;animation:up .8s 2.6s ease-out both}
+@keyframes up{from{opacity:0;transform:translate(-50%,40px)}to{opacity:1;transform:translate(-50%,0)}}
+/* ---------- SHOMER ---------- */
+#shomer{background:radial-gradient(circle at 50% 42%,#173063 0,#0C1B3A 55%,#050c1d 100%)}
+#shomer .ring{top:780px;width:300px;height:300px;margin-left:-150px;border:6px solid #FC9918;border-radius:50%;opacity:0;animation:ring 1.8s ease-out infinite}
+#shomer .ring.r2{animation-delay:.6s}#shomer .ring.r3{animation-delay:1.2s}
+@keyframes ring{0%{transform:scale(.6);opacity:.9}100%{transform:scale(3.2);opacity:0}}
+#shomer .ring{left:50%}
+#shomer .badge{top:560px;width:740px;animation:bd 1s .1s cubic-bezier(.2,1.3,.4,1) both;filter:drop-shadow(0 30px 50px #000a)}
+@keyframes bd{0%{transform:translateX(-50%) translateY(-900px) rotate(-30deg)}100%{transform:translateX(-50%) translateY(0) rotate(0)}}
+#shomer .glint{position:absolute;top:560px;left:170px;width:740px;height:740px;-webkit-mask:url(SHOMER_logo_big.png) center/contain no-repeat;mask:url(SHOMER_logo_big.png) center/contain no-repeat;background:linear-gradient(115deg,#fff0 40%,#fffb 50%,#fff0 60%);background-size:300% 100%;animation:gl 1s 1.2s ease-in-out both}
+@keyframes gl{from{background-position:100% 0}to{background-position:-50% 0}}
+#shomer .wm{top:1390px;width:860px;opacity:0;animation:up .8s 1.9s ease-out both}
+#shomer .tag{top:1600px;width:100%;text-align:center;color:#FC9918;font:700 70px Alef;direction:rtl;opacity:0;animation:up .8s 2.5s ease-out both}
+/* ---------- LICKPICK: MTV 90s ---------- */
+#lickpick{background:#0B0912;font-family:'Dela Gothic One'}
+#lickpick .cut{position:absolute;inset:0;opacity:0}
+#lickpick .k1{background:#FFE600;animation:k 4s steps(1) both;--a:0;--b:.35}
+#lickpick .k2{background:repeating-conic-gradient(#FF2E88 0 25%,#0B0912 0 50%) 0 0/180px 180px;animation:k2 4s steps(1) both}
+#lickpick .k3{background:#FF2E88;animation:k3 4s steps(1) both}
+@keyframes k{0%{opacity:1}8.75%{opacity:0}}
+@keyframes k2{0%{opacity:0}8.75%{opacity:1}17.5%{opacity:0}}
+@keyframes k3{0%{opacity:0}17.5%{opacity:1}26.25%{opacity:0}}
+#lickpick .big{position:absolute;width:100%;text-align:center;font-size:330px;line-height:.85;color:#0B0912;letter-spacing:-8px}
+#lickpick .w1{top:620px;transform:rotate(-8deg);animation:k 4s steps(1) both}
+#lickpick .w2{top:640px;color:#FFE600;-webkit-text-stroke:10px #0B0912;transform:rotate(6deg) scale(1.1);animation:k2 4s steps(1) both}
+#lickpick .w3{top:600px;color:#FFF7F0;transform:rotate(-4deg);animation:k3 4s steps(1) both}
+#lickpick .end{position:absolute;inset:0;opacity:0;animation:e 4s steps(1) both}
+@keyframes e{0%{opacity:0}26.25%{opacity:1}}
+#lickpick .halftone{position:absolute;inset:0;background:radial-gradient(#FF2E88 30%,transparent 32%) 0 0/36px 36px;opacity:.28}
+#lickpick .pick{top:520px;width:640px;animation:slam .5s 1.05s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes slam{0%{transform:translateX(-50%) scale(3.2) rotate(25deg);opacity:0}100%{transform:translateX(-50%) scale(1) rotate(-6deg);opacity:1}}
+#lickpick .shake{position:absolute;inset:0;animation:sh .35s 1.5s linear both}
+@keyframes sh{0%,100%{transform:none}20%{transform:translate(-24px,14px)}40%{transform:translate(20px,-18px)}60%{transform:translate(-14px,-8px)}80%{transform:translate(10px,12px)}}
+#lickpick .lock{top:1250px;width:880px;animation:pop .4s 1.75s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes pop{0%{transform:translateX(-50%) scale(0)}100%{transform:translateX(-50%) scale(1)}}
+#lickpick .sticker{position:absolute;font:400 78px Bangers;letter-spacing:3px;padding:10px 34px;background:#FFE600;color:#0B0912;border:7px solid #0B0912;box-shadow:12px 12px 0 #FF2E88;opacity:0}
+#lickpick .st1{top:300px;left:70px;transform:rotate(-10deg);animation:po2 .3s 2.2s both}
+#lickpick .st2{top:1500px;right:70px;transform:rotate(8deg);background:#FF2E88;color:#FFF7F0;box-shadow:12px 12px 0 #FFE600;animation:po2 .3s 2.5s both}
+@keyframes po2{0%{opacity:0;scale:2.2}100%{opacity:1;scale:1}}
+#lickpick .osd{position:absolute;top:70px;left:70px;font:700 54px 'Archivo';color:#FFF7F0;letter-spacing:4px;text-shadow:3px 3px 0 #FF2E88}
+#lickpick .osd i{display:inline-block;width:34px;height:34px;border-radius:50%;background:#ff2b2b;margin-right:16px;animation:bl .5s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+#lickpick .vhs{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#0000 0 3px,#0003 3px 6px);mix-blend-mode:multiply}
+#lickpick .track{position:absolute;left:0;right:0;height:90px;background:linear-gradient(#fff0,#fff5,#fff0);animation:tr 1.3s linear infinite}
+@keyframes tr{from{top:-120px}to{top:1960px}}
+/* ---------- TRASHURE HUNTERS ---------- */
+#th{background:radial-gradient(circle at 50% 45%,#2a5cff 0,#1a1450 60%,#0b0824 100%);font-family:Bangers}
+#th .rays{position:absolute;left:50%;top:880px;width:2600px;height:2600px;margin:-1300px 0 0 -1300px;background:repeating-conic-gradient(#ffffff14 0 8deg,#0000 0 16deg);animation:spin 8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#th .logo{top:430px;width:820px;animation:bounce 1.1s .15s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes bounce{0%{transform:translateX(-50%) translateY(700px) scale(.4)}100%{transform:translateX(-50%) translateY(0) scale(1)}}
+#th .sp{position:absolute;width:60px;height:60px;background:#7CFF4F;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);opacity:0;animation:spk .9s ease-out both}
+@keyframes spk{0%{opacity:0;transform:scale(0) rotate(0)}40%{opacity:1;transform:scale(1.3) rotate(90deg)}100%{opacity:0;transform:scale(.4) rotate(180deg)}}
+#th .tag{top:1430px;width:100%;text-align:center;color:#7CFF4F;font-size:120px;line-height:1;-webkit-text-stroke:6px #0b0824;text-shadow:0 10px 0 #0b0824;opacity:0;animation:up .6s 1.7s cubic-bezier(.2,1.5,.4,1) both}
+#th .tag b{display:block;color:#FFD23F}
+/* ---------- STYLE FRAMES ---------- */
+.fr .phone{position:absolute;left:50%;top:430px;width:600px;height:1230px;margin-left:-300px;border-radius:70px;border:16px solid #111;overflow:hidden;box-shadow:0 40px 90px #000b}
+.fr .phone img{width:100%;height:100%;object-fit:cover;object-position:top}
+.fr .hd{position:absolute;top:150px;width:100%;text-align:center}
+.fr .sub{position:absolute;bottom:150px;left:90px;right:90px;text-align:center;padding:22px 30px;border-radius:14px;font-size:50px;line-height:1.25}
+.fr .lg{position:absolute;bottom:60px;left:50%;transform:translateX(-50%)}
+</style></head>
+<body>
+<!-- STUDIO -->
+<div class="s" id="studio">
+ <div class="rv"><div class="glow"></div><div class="sweep"></div>
+  <img class="c wm" src="3shamrocks.png">
+  <div class="c line"></div><div class="c tag">From idea to finished product.</div><div class="c url">3shamrocks.com</div></div>
+ <div class="fr"><div class="glow" style="animation:none;opacity:1"></div>
+  <div class="hd" style="color:#fff;font:800 92px/1 Syne;letter-spacing:-2px">The brand.<br><span style="color:#b07cff">The interface.</span><br><span style="color:#3dcc6e">The working app.</span></div>
+  <div class="phone" style="top:560px;height:1100px"><img src="shomer-site-mobile.webp"></div>
+  <div class="sub" style="background:#08080fdd;color:#fff;font-family:Inter;border:2px solid #8239ea">I take an idea and turn it into a real, finished product.</div>
+  <img class="lg" src="3shamrocks.png" style="width:440px"></div>
+</div>
+<!-- SHOMER -->
+<div class="s" id="shomer">
+ <div class="rv"><div class="c ring"></div><div class="c ring r2"></div><div class="c ring r3"></div>
+  <img class="c badge" src="SHOMER_logo_big.png"><div class="glint"></div>
+  <img class="c wm" src="shomer-logo.png"><div class="c tag">שומר אחי אנוכי</div></div>
+ <div class="fr">
+  <div class="hd" style="color:#fff;font:700 70px/1.15 Alef;direction:rtl">לחיצה אחת.<br><span style="color:#FC9918">השומרים שבחרת יודעים מיד איפה.</span></div>
+  <div class="phone"><img src="shomer-app-map.webp"></div>
+  <div class="sub" style="background:#0C1B3Aee;color:#fff;font-family:Alef;direction:rtl;border-right:10px solid #FC9918">ניעור של הטלפון, והשומרים שבחרת מקבלים התראה עם המיקום.</div>
+  <img class="lg" src="shomer-logo.png" style="width:440px"></div>
+</div>
+<!-- LICKPICK -->
+<div class="s" id="lickpick">
+ <div class="rv"><div class="cut k1"></div><div class="cut k2"></div><div class="cut k3"></div>
+  <div class="big w1">YO!</div><div class="big w2">LICKS</div><div class="big w3">NOW!</div>
+  <div class="end"><div class="halftone"></div><div class="shake">
+   <img class="c pick" src="lickpick.png"><img class="c lock" src="lickpick-lockup.png">
+   <div class="sticker st1">100% LICKS</div><div class="sticker st2">PICK IT!</div></div></div>
+  <div class="osd"><i></i>REC ▶ PLAY</div><div class="track"></div><div class="vhs"></div></div>
+ <div class="fr"><div class="halftone" style="position:absolute;inset:0;background:radial-gradient(#FF2E88 30%,transparent 32%) 0 0/36px 36px;opacity:.28"></div>
+  <div class="hd" style="font:400 120px/.9 'Dela Gothic One';color:#FFE600;-webkit-text-stroke:6px #0B0912;text-shadow:12px 12px 0 #FF2E88;transform:rotate(-5deg)">CALL NOW!<br><span style="color:#FFF7F0">PICK A LICK</span></div>
+  <div class="phone" style="top:520px;height:1100px;transform:rotate(4deg);border-color:#FFE600"><img src="lickpick-app-pick.webp"></div>
+  <div class="sub" style="background:#FFE600;color:#0B0912;font:400 64px Bangers;letter-spacing:2px;border:6px solid #0B0912;box-shadow:10px 10px 0 #FF2E88;bottom:190px">OPERATORS ARE STANDING BY*</div>
+  <div style="position:absolute;bottom:120px;width:100%;text-align:center;color:#FFF7F0;font:600 30px Archivo">*not really. it's an app.</div>
+  <div class="osd" style="position:absolute;top:70px;left:70px;font:700 54px Archivo;color:#FFF7F0;letter-spacing:4px;text-shadow:3px 3px 0 #FF2E88"><i style="display:inline-block;width:34px;height:34px;border-radius:50%;background:#ff2b2b;margin-right:16px"></i>REC</div>
+  <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,#0000 0 3px,#0003 3px 6px)"></div></div>
+</div>
+<!-- TRASHURE HUNTERS -->
+<div class="s" id="th">
+ <div class="rv"><div class="rays"></div><img class="c logo" src="logo-th26.webp">
+  <div class="sp" style="left:170px;top:520px;animation-delay:.9s"></div><div class="sp" style="left:860px;top:600px;animation-delay:1.05s"></div>
+  <div class="sp" style="left:220px;top:1180px;animation-delay:1.2s"></div><div class="sp" style="left:820px;top:1260px;animation-delay:1.35s"></div>
+  <div class="c tag">Clean the World.<b>Win the Game.</b></div></div>
+ <div class="fr"><div class="rays" style="animation:none"></div>
+  <div class="hd" style="font:400 140px/.95 Bangers;color:#FFD23F;-webkit-text-stroke:6px #0b0824;letter-spacing:2px">THIS PLASTIC CUP<br><span style="color:#7CFF4F">IS WORTH POINTS.</span></div>
+  <div class="phone"><img src="th-ar-hunt.webp"></div>
+  <div class="sub" style="background:#0b0824ee;color:#fff;font:500 48px Heebo;border:4px solid #7CFF4F;bottom:250px">Find it on the map. Pick it up. Level up.</div>
+  <img class="lg" src="trashure-hunters.png" style="width:360px;bottom:40px"></div>
+</div>
+<script>
+const q=new URLSearchParams(location.search);document.body.dataset.b=q.get('b');document.body.dataset.m=q.get('m')||'reveal';
+window.seek=t=>{document.getAnimations().forEach(a=>{a.pause();a.currentTime=t*1000})};
+</script>
+</body></html>
