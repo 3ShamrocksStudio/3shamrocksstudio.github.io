@@ -1,4 +1,4 @@
-/* J8NIX PWA screens 8.0.0 (15 Nov 2026): Home first (seven sections, live data, per-member layout) and the v8 colours and shapes,
+/* J8NIX PWA screens 8.0.1 (15 Nov 2026): Home first (seven sections, live data, per-member layout) and the v8 colours and shapes,
    on 7.1.1's logic, which is unchanged (rows, unlocks, needs, mentor, Today, Studio, Flow, Talk, drafts, Later, Not needed, Control).
    Revert copy of 7.1.1: app-7.1.1.js + index-7.1.1.html.
    7.1.1 (14 Nov 2026, fix round 1 after the verifier): the v7.1 design (Today / Studio / Flow / Talk) on live data.
@@ -485,7 +485,7 @@ function firstNum(L){var m=Infinity;L.forEach(function(v){if(v<m)m=v;});return m
    The data logic above is unchanged from 6.1.2 (rows, unlocks, needs, mentor, notes with routing, Control).
    Plan + screen → code → data map: ops/brain/J8NIX-V6-PLAN.md §7.1. Revert: index-6.1.2.html (one line in the plan).
    ===================================================================================================================== */
-var J8V='8.0.0';
+var J8V='8.0.1';
 /* ---------- words (EN / HE). Content stays in its own language with dir=auto; numbers in <bdi>. ---------- */
 var LANG=(function(){var l=ls('j8-lang');return l==='he'?'he':'en';})();
 var TX={en:{
@@ -535,7 +535,7 @@ var TX={en:{
  you:'You',team:'Team',outside:'Outside',
  tTitle:'{n} questions for you',tTitle1:'1 question for you',tTitle0:'All answered',tWhat:'You and the team: questions, answers and updates.',tNeed:'{n} from the team. Answer in a line.',tNeed0:'nothing. All questions are answered.',tGain:'the team keeps working while you answer in a line.',
  asks:'{t} asks',answerPh:'Answer the team',openLink:'Open the link',moreQ:'More questions',answers:'Answers to your comments',answered:'Answered',tAnswered:'{t} answered, {h}',
- updates:'Updates',msgTeam:'Message the team',talkHint:'To ask about one item, open it and tap Comment.',yourMsg:'Your message, {h}',yourNote:'Your note, {h}',
+ updates:'Updates',msgTeam:'Message the team',talkHint:'To ask about one item, open it and tap Comment.',newMsgs:'New messages',showAll:'Show all ({n})',newMsgs:'New messages',showAll:'Show all ({n})',yourMsg:'Your message, {h}',yourNote:'Your note, {h}',
  sent:'Sent',withTeam:'With the team',doneW:'Done',comments:'Comments',sentTo:'Sent to {t}, {h}. The answer comes here and in Talk.',answeredBy:'Answered by {t}, {h}',
  threadLead:'Ask a question or give a change. The {t} team answers here and in Talk, usually within the hour.',sentToT:'Sent to {t}. The answer comes here and in Talk.',
  apNote:'Approve + note',kNote:'Kill + note',writeNote:'Write the note first.',
@@ -587,7 +587,7 @@ var TX={en:{
  you:'את/ה',team:'צוות',outside:'מבחוץ',
  tTitle:'{n} שאלות בשבילך',tTitle1:'שאלה אחת בשבילך',tTitle0:'הכול נענה',tWhat:'את/ה והצוות: שאלות, תשובות ועדכונים.',tNeed:'{n} מהצוות. לענות בשורה.',tNeed0:'כלום. כל השאלות נענו.',tGain:'הצוות ממשיך לעבוד בזמן שאת/ה עונה בשורה.',
  asks:'{t} שואל',answerPh:'לענות לצוות',openLink:'לפתוח את הקישור',moreQ:'עוד שאלות',answers:'תשובות להערות שלך',answered:'נענה',tAnswered:'{t} ענה, {h}',
- updates:'עדכונים',msgTeam:'הודעה לצוות',talkHint:'כדי לשאול על פריט אחד, לפתוח אותו וללחוץ הערה.',yourMsg:'ההודעה שלך, {h}',yourNote:'ההערה שלך, {h}',
+ updates:'עדכונים',msgTeam:'הודעה לצוות',talkHint:'כדי לשאול על פריט אחד, לפתוח אותו וללחוץ הערה.',newMsgs:'הודעות חדשות',showAll:'להציג הכול ({n})',newMsgs:'הודעות חדשות',showAll:'להציג הכול ({n})',yourMsg:'ההודעה שלך, {h}',yourNote:'ההערה שלך, {h}',
  sent:'נשלח',withTeam:'אצל הצוות',doneW:'בוצע',comments:'הערות',sentTo:'נשלח ל{t}, {h}. התשובה תגיע לכאן ולשיחה.',answeredBy:'{t} ענה, {h}',
  threadLead:'לשאול שאלה או לבקש שינוי. צוות {t} עונה כאן ובשיחה, בדרך כלל תוך שעה.',sentToT:'נשלח ל{t}. התשובה תגיע לכאן ולשיחה.',
  apNote:'לאשר + הערה',kNote:'לא לשלוח + הערה',writeNote:'קודם לכתוב את ההערה.',
@@ -796,9 +796,9 @@ function vProj(){var p=pobj(UI.proj);if(!p)return vStudio();var u=unitOf(p),s=st
  h+=brief({crumbs:cr,title:esc(p.name),what:(s?t('pWhat',{s:'<b class="tk st'+s+'">'+stg(s)+'</b>',a:s}):t('noStage'))+(p.now?' <span class="pnow">'+esc(cut(sevStrip(p.now),160))+'</span>':''),
   need:pk?th('parkedNeed',{x:cap1(nextOf(pk).what)}):y?esc(cap1(nextOf(y).what))+(isNum(y.mins)?', '+t(y.est?'minEst':'min',{n:y.mins}):'')+'.':t('pNeed0'),gain:ng?t('pGain',{s:'<b class="k">'+esc(ng.s)+'</b>',x:esc(cut(ng.x,120))})+(/[.!?]$/.test(ng.x)?'':'.'):t('pGainP'),prog:'<div class="trackwrap">'+track(p)+pcount(p)+'</div>'});
  if(y){h+='<section class="hero" aria-labelledby="yH"><span class="ftag">'+(pk?ic('lock')+t('parkedGrp'):g8()+t('yourNext'))+'</span><h3 id="yH" dir="auto">'+esc(cap1(nextOf(y).what))+'</h3>'+itemBody(y)+'</section>';
-  if(mine.length>1)h+='<h2 class="sec">'+t('alsoYours')+' <span class="n">'+(mine.length-1)+'</span></h2><div class="list">'+mine.slice(1).map(rowItem).join('')+'</div>';}
+  if(mine.length>1)h+='<h2 class="sec">'+t('alsoYours')+' <span class="n">'+(mine.length-1)+'</span></h2>'+capL(mine.slice(1),3,rowItem,'mineAll-'+p.id);}
  var team=tasksAll().filter(function(x){return x.project_id===p.id&&x.owner!=='dave'&&(!x.status||x.status==='open');});
- if(team.length)h+='<h2 class="sec">'+t('teamOn')+' <span class="n">'+team.length+'</span></h2><div class="list">'+team.map(teamRow).join('')+'</div>';
+ if(team.length)h+='<h2 class="sec">'+t('teamOn')+' <span class="n">'+team.length+'</span></h2>'+capL(team,4,teamRow,'teamAll-'+p.id);
  var hold=J8.approvals.list().filter(function(a){return a.product===p.id&&a.kind!=='template'&&(a.status==='approved'||a.status==='edited'||a.status==='queued');});
  if(hold.length)h+='<details class="grp" data-k="hold-'+esc(p.id)+'"'+(UI.open['hold-'+p.id]?' open':'')+'><summary>'+ic('lock')+'<span>'+t('approvedWait')+'</span><span class="n">'+hold.length+'</span>'+ic('down','chev')+'</summary><ul class="names">'+hold.map(function(a){return '<li dir="auto">'+esc(apKind(a)+': '+apWho(a))+'</li>';}).join('')+'</ul></details>';
  var D=tasksAll().filter(function(x){return x.project_id===p.id&&x.status==='done';}).sort(function(a,b){return String(b.done_at||'').localeCompare(String(a.done_at||''));});
@@ -808,7 +808,7 @@ function vProj(){var p=pobj(UI.proj);if(!p)return vStudio();var u=unitOf(p),s=st
  if(lk)h+='<div class="links">'+lk+'</div>';
  var pm1=J8.inbox.forProject(p.id).filter(function(x){return !x.task_id&&!x.approval_id;})[0],last=pm1?lastTeamLine(pm1):null;
  h+='<h2 class="sec" id="pcH">'+th('commentOn',{x:p.name})+'</h2><p class="lead">'+th('commentLead',{t:deptName(u)})+'</p>'
-  +'<form class="cbox" data-ans="'+esc(p.id)+'"><label class="sr" for="pc-'+esc(p.id)+'">'+t('yourComment')+'</label><textarea id="pc-'+esc(p.id)+'" rows="1" dir="auto" placeholder="'+esc(t('writeC'))+'"></textarea><button class="btn" type="submit">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form>'
+  +'<div class="pinc"><form class="cbox" data-ans="'+esc(p.id)+'"><label class="sr" for="pc-'+esc(p.id)+'">'+t('yourComment')+'</label><textarea id="pc-'+esc(p.id)+'" rows="1" dir="auto" placeholder="'+esc(t('writeC'))+'"></textarea><button class="btn" type="submit">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form></div>'
   +(last?'<button class="lastline" data-a="thread-proj" data-id="'+esc(p.id)+'">'+sevChip(last.v)+'<span dir="auto">'+esc(last.x)+'</span></button>':'');
  return h;}
 
@@ -868,7 +868,7 @@ function vFlow(){if(!connected)return brief({title:t('fTitleNo'),what:t('fWhat')
  h+='<section class="q"><span class="qi">'+ic('up')+'</span><div><h3>'+t('thisWeek')+'</h3><p class="ans">'+esc(t('clearedYou',{n:a.dave}))+'</p><p>'+esc(t('weekP',{r:a.runs,s:a.sent,l:lastOk?lw.dave+' / '+lw.runs+' / '+lw.sent:CD}))+'</p></div></section>';
  var A=projList().filter(function(p){return p.id!=='p-general';}),P=A.filter(function(p){return !isDoneP(p);}).sort(function(x,y){return (x.status==='parked'?1:0)-(y.status==='parked'?1:0)||stageOf(y)-stageOf(x);}),D=A.filter(isDoneP);
  var PB=UI.blockedOnly?P.filter(projBlocked):P;
- h+='<h2 class="sec">'+t('everyProject')+' <span class="n">'+PB.length+'</span></h2><p class="lead">'+t('everyLead')+'</p><button class="btn tgl mt" data-a="blocked-only" aria-pressed="'+(UI.blockedOnly?'true':'false')+'">'+ic('lock')+'<span>'+t('blockedOnly')+'</span></button><div class="list mt">'+(PB.length?PB.map(lane).join(''):'<p class="lead pad">'+t('noBlocked')+'</p>')+'</div>';
+ h+='<h2 class="sec">'+t('everyProject')+' <span class="n">'+PB.length+'</span></h2><p class="lead">'+t('everyLead')+'</p><button class="btn tgl mt" data-a="blocked-only" aria-pressed="'+(UI.blockedOnly?'true':'false')+'">'+ic('lock')+'<span>'+t('blockedOnly')+'</span></button>'+(PB.length?capL(PB,5,lane,'pbAll',' mt'):'<div class="list mt"><p class="lead pad">'+t('noBlocked')+'</p></div>');
  var wk=Date.now()-7*864e5,still=P.filter(function(p){if(p.status==='parked')return false;var lm=lastMove(p);return lm!==-Infinity&&lm<wk;});
  if(still.length)h+='<details class="grp" data-k="still"'+(UI.open.still?' open':'')+'><summary>'+ic('later')+'<span>'+t('noMove')+'</span><span class="n">'+still.length+'</span>'+ic('down','chev')+'</summary><div class="list">'+still.map(lane).join('')+'</div></details>';
  var ext=P.filter(function(p){return p.milestone_by==='external';});
@@ -878,7 +878,7 @@ function vFlow(){if(!connected)return brief({title:t('fTitleNo'),what:t('fWhat')
  var ag=function(e,past){return '<button class="ag" data-a="jump" data-id="'+esc(e.jump||'')+'"><time>'+esc(past?dlabel(e.day).replace(/^\w+ /,''):dlabel(e.day+(e.time?'T'+e.time:'')).replace(/ \d\d:\d\d$/,'')+(e.time?' '+e.time:''))+'</time><span class="rt"><b dir="auto">'+esc(cut(e.title,80))+'</b><span class="sub">'+whoChip(e.who==='me'?'me':e.who==='ext'?'ext':'team')+'<span dir="auto">'+esc(cut(e.sub||'',60))+'</span></span></span></button>';};
  h+='<h2 class="sec">'+t('comingUp')+(up.length?' <span class="n">'+up.length+'</span>':'')+'</h2>'+(up.length?'<div class="list">'+up.slice(0,10).map(function(e){return ag(e);}).join('')+'</div>':'<p class="lead">'+t('nothingDated')+'</p>');
  if(over.length)h+='<details class="grp" data-k="over"'+(UI.open.over?' open':'')+'><summary>'+ic('later')+'<span>'+t('slotPassed')+'</span><span class="n">'+over.length+'</span>'+ic('down','chev')+'</summary><div class="list">'+over.sort(function(x,y){return x.day.localeCompare(y.day);}).slice(0,12).map(function(e){return ag(e,true);}).join('')+'</div></details>';
- var TR=teamRows();if(TR.length)h+='<h2 class="sec">'+t('teamNow')+' <span class="n">'+TR.length+'</span></h2><div class="list">'+TR.map(teamRowHTML).join('')+'</div>';
+ var TR=teamRows();if(TR.length)h+='<h2 class="sec">'+t('teamNow')+' <span class="n">'+TR.length+'</span></h2>'+capL(TR,4,teamRowHTML,'trAll');
  h+='<details class="grp nums" data-k="nums"'+(UI.open.nums?' open':'')+'><summary>'+ic('up')+'<span>'+t('numbers')+'</span>'+ic('down','chev')+'</summary><div class="numbody">'+(UI.open.nums?numbersHTML():'')+'</div></details>';
  return h;}
 function numbersHTML(){var m=J8.money.summary()||{},b=isNum(m.booked_usd)?m.booked_usd:0,d1=J8.money.daysTo(m.m1_date),Ap=J8.approvals.list(),cnt=function(f){return Ap.filter(f).length;},
@@ -909,7 +909,7 @@ function targetTitle(tg){if(tg.task){var tk=J8.tasks.get(tg.task)||(J8.raw('task
  if(tg.ap){var a=AP[tg.ap]||{};return {title:(a.kind==='template'?'Template':apKind(a))+': '+apWho(Object.assign({id:tg.ap},a)),pid:a.product};}
  if(tg.p)return {title:pname(tg.p),pid:tg.p};var x=CMT[tg.msg]||{};return {title:cut(x.text||'',80),pid:x.p};}
 function vTalk(){if(!connected)return brief({title:t('talk'),what:t('tWhat'),need:t('loading'),gain:t('loading')});
- var Q=askRows(),q=Q.filter(function(i){return i.key===UI.ask;})[0]||Q[0],h='';
+ var Q=askRows(),q=Q.filter(function(i){return i.key===UI.ask;})[0]||Q[0],h='<div class="tk-top" id="tkTop">';
  h+=brief({title:Q.length>1?th('tTitle',{n:Q.length}):Q.length?t('tTitle1'):t('tTitle0'),what:t('tWhat'),need:Q.length?t('tNeed',{n:k1(Q.length)}):t('tNeed0'),gain:t('tGain')});
  if(q){var x=q.c,u=firstUrl(x.reply),tm=pDept(x.p);
   h+='<section class="hero talkq" aria-labelledby="qH"><span class="ftag ppl">'+ic('team')+th('asks',{t:x.p==='p-general'?t('team'):tm})+'</span><h3 id="qH" dir="auto">'+esc(q.title)+'</h3><p class="sub" dir="auto">'+esc(pname(x.p))+(x.at?', '+esc(tm1(x.at)):'')+'</p>'
@@ -917,11 +917,13 @@ function vTalk(){if(!connected)return brief({title:t('talk'),what:t('tWhat'),nee
    +'<form class="cbox ans-hero" data-ans="'+esc(x.p)+'" data-ask="'+esc(q.key)+'"><label class="sr" for="aq">'+t('answerPh')+'</label><textarea id="aq" rows="2" dir="auto" placeholder="'+esc(t('answerPh'))+'"></textarea><button class="btn act" type="submit">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form></section>';
   if(Q.length>1)h+='<h2 class="sec">'+t('moreQ')+' <span class="n">'+(Q.length-1)+'</span></h2><div class="list">'+Q.filter(function(i){return i!==q;}).map(function(i){return '<div class="row"><button class="rbtn" data-a="ask" data-k="'+esc(i.key)+'">'+tile(i.c.p)+'<span class="rt"><b dir="auto">'+esc(i.title)+'</b><span class="sub" dir="auto">'+esc(pname(i.c.p))+'</span></span>'+ic('fwd','chev flip')+'</button></div>';}).join('')+'</div>';}
  var A=J8.inbox.list().filter(function(x){return (x.task_id||x.approval_id||(x.p&&x.p!=='p-general'))&&lastTeamLine(x);}).slice(0,8);
- if(A.length)h+='<h2 class="sec">'+t('answers')+' <span class="n">'+A.length+'</span></h2><div class="list">'+A.map(function(x){var tg=msgTarget(x),tt=targetTitle(tg),l=lastTeamLine(x);
-  return '<div class="row"><button class="rbtn" data-a="thread-msg" data-id="'+esc(x.id)+'">'+tile(tt.pid||x.p)+'<span class="rt"><b dir="auto">'+esc(tt.title)+'</b><span class="sub">'+esc(t('tAnswered',{t:pDept(tt.pid||x.p),h:l.t||tm1(x.updated_at)}))+'</span><span class="chips">'+(x.status==='done'?chip('done','check',t('answered')):chip('talk','team',t('withTeam')))+'</span></span>'+ic('fwd','chev flip')+'</button></div>';}).join('')+'</div>';
- h+='<h2 class="sec">'+t('updates')+'</h2><p class="lead">'+esc(sinceLine())+'</p><div class="msgs" id="j8cLog" aria-live="polite">'+talkLog()+'</div>';
- h+='<div class="ch-strip" id="j8cStrip"></div><form class="cbox" id="j8cForm" autocomplete="off"><label class="sr" for="j8cIn">'+t('msgTeam')+'</label><textarea id="j8cIn" rows="1" dir="auto" placeholder="'+esc(t('msgTeam'))+'"></textarea><button class="btn" type="submit" id="j8cGo">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form><p class="lead mt" id="j8cNote"></p><p class="lead">'+t('talkHint')+'</p>';
+ var AR=function(x){var tg=msgTarget(x),tt=targetTitle(tg),l=lastTeamLine(x);
+  return '<div class="row"><button class="rbtn" data-a="thread-msg" data-id="'+esc(x.id)+'">'+tile(tt.pid||x.p)+'<span class="rt"><b dir="auto">'+esc(tt.title)+'</b><span class="sub">'+esc(t('tAnswered',{t:pDept(tt.pid||x.p),h:l.t||tm1(x.updated_at)}))+'</span><span class="chips">'+(x.status==='done'?chip('done','check',t('answered')):chip('talk','team',t('withTeam')))+'</span></span>'+ic('fwd','chev flip')+'</button></div>';};
+ if(A.length)h+='<h2 class="sec">'+t('answers')+' <span class="n">'+A.length+'</span></h2><div class="list">'+A.slice(0,3).map(AR).join('')+'</div>'+(A.length>3?'<details class="grp" data-k="ansAll"'+(UI.open.ansAll?' open':'')+'><summary><span>'+t('showAll',{n:A.length})+'</span></summary><div class="list">'+A.slice(3).map(AR).join('')+'</div></details>':'');
+ h+='</div><div class="tk-log" id="tkLog" data-n="'+J8.inbox.list(60).length+'"><h2 class="sec">'+t('updates')+'</h2><p class="lead">'+esc(sinceLine())+'</p><div class="msgs" id="j8cLog" aria-live="polite">'+talkLog()+'</div></div>';
+ h+='<div class="tk-c"><div class="ch-strip" id="j8cStrip"></div><form class="cbox" id="j8cForm" autocomplete="off"><label class="sr" for="j8cIn">'+t('msgTeam')+'</label><textarea id="j8cIn" rows="1" dir="auto" placeholder="'+esc(t('msgTeam'))+'"></textarea><button class="btn" type="submit" id="j8cGo">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form><p class="lead mt" id="j8cNote"></p><p class="lead tkh">'+t('talkHint')+'</p><button type="button" class="newpill" id="tkNew" data-a="tk-new" hidden>'+ic('down')+'<span>'+t('newMsgs')+' ↓</span></button></div>';
  return h;}
+function capL(L,n,fn,key,cls){var o='<div class="list'+(cls||'')+'">'+L.slice(0,n).map(fn).join('')+'</div>';if(L.length>n)o+='<details class="grp" data-k="'+key+'"'+(UI.open[key]?' open':'')+'><summary><span>'+t('showAll',{n:L.length})+'</span>'+ic('down','chev')+'</summary><div class="list">'+L.slice(n).map(fn).join('')+'</div></details>';return o;}
 function tm1(iso){var ms=pd(iso);return isNaN(ms)?'':isToday(ms)?hm2(ms):dayStr(new Date(ms))+' '+hm2(ms);}
 var SW={new:'sent',routed:'withTeam',done:'doneW'};
 function md(s){var h=esc(s);
@@ -937,7 +939,7 @@ function talkLog(){var L=J8.inbox.list(60).slice().reverse(),h='',day='';
 
 /* ---------- sheets: thread, Later, confirm ---------- */
 var lastFocus=null;
-function gOpen(html,col){lastFocus=document.activeElement;var s=$('gsheet');s.style.setProperty('--sh',col||'var(--navy)');s.innerHTML='<div class="grab" aria-hidden="true"></div>'+html;s.hidden=false;$('scrim').hidden=false;var f=s.querySelector('h2');if(f){f.tabIndex=-1;f.focus();}}
+function gOpen(html,col){lastFocus=document.activeElement;var s=$('gsheet');s.classList.remove('thr');s.style.setProperty('--sh',col||'var(--navy)');s.innerHTML='<div class="grab" aria-hidden="true"></div>'+html;s.hidden=false;$('scrim').hidden=false;var f=s.querySelector('h2');if(f){f.tabIndex=-1;f.focus();}}
 function gClose(){var s=$('gsheet');if(!s||s.hidden)return;s.hidden=true;UI.gsheet=null;if($('sheet').hidden)$('scrim').hidden=true;if(lastFocus&&document.body.contains(lastFocus))try{lastFocus.focus({preventScroll:true});}catch(e){}}
 function threadMsgs(tg){return J8.inbox.list().filter(function(x){return tg.task?x.task_id===tg.task:tg.ap?x.approval_id===tg.ap:tg.p?(x.p===tg.p&&!x.task_id&&!x.approval_id):x.id===tg.msg;}).reverse();}
 function threadSheet(tg,sent){UI.gsheet={k:'thread',tg:tg,sent:sent};var tt=targetTitle(tg),pid=tt.pid,team=pid?pDept(pid):t('team'),M=threadMsgs(tg),h='';
@@ -950,7 +952,8 @@ function threadSheet(tg,sent){UI.gsheet={k:'thread',tg:tg,sent:sent};var tt=targ
  h+='<form class="cbox apn" data-ans="'+esc(ansP)+'"'+(tg.task?' data-task="'+esc(tg.task)+'"':'')+(tg.ap?' data-ap="'+esc(tg.ap)+'"':'')+'><label class="sr" for="gth">'+t('yourComment')+'</label><textarea id="gth" rows="2" dir="auto" placeholder="'+esc(t('writeC'))+'"></textarea><button class="btn" type="submit">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form>';
  if(ap&&(!ap.status||ap.status==='pending')&&ap.kind!=='template')h+='<div class="apn-act"><button class="btn" data-apnd="send" data-id="'+esc(tg.ap)+'">'+ic('check')+'<span>'+t('apNote')+'</span></button><button class="btn killo" data-apnd="kill" data-id="'+esc(tg.ap)+'">'+ic('kill')+'<span>'+t('kNote')+'</span></button></div>';
  h+='<button class="btn wide mt" data-a="gclose">'+t('close')+'</button>';
- var keep=$('gth')&&!$('gsheet').hidden?$('gth').value:'';gOpen(h,'var(--orchid)');if(keep)$('gth').value=keep;}
+ var keep=$('gth')&&!$('gsheet').hidden?$('gth').value:'',wasT=$('gsheet').classList.contains('thr'),mm=wasT&&$('gsheet').querySelector('.msgs'),atB=!mm||mm.scrollHeight-mm.scrollTop-mm.clientHeight<48,y0=mm?mm.scrollTop:0;gOpen(h,'var(--orchid)');if(keep)$('gth').value=keep;
+ var g=$('gsheet'),m2=g.querySelector('.msgs');g.classList.add('thr');if(m2)m2.scrollTop=atB?m2.scrollHeight:y0;}
 function laterTimes(){var n=new Date(),a=new Date(n);a.setHours(20,30,0,0);var o=[];
  if(a-n>36e5)o.push(['tonight',a.getTime()]);else o.push(['in3h',n.getTime()+3*36e5]);
  var b=new Date(n);b.setDate(b.getDate()+1);b.setHours(8,30,0,0);o.push(['tomorrow',b.getTime()]);
@@ -1232,13 +1235,17 @@ function renderNav(){var n=connected?myQueue().length:0,q=connected?askRows().le
 function isDark(){var t0=document.documentElement.dataset.theme;return t0==='dark'||(t0==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches);}
 var TYPING={};
 function busyMain(){var a=document.activeElement,m=$('main');return a&&m&&m.contains(a)&&(a.tagName==='TEXTAREA'||a.tagName==='INPUT'||a.tagName==='SELECT')&&String(a.value||'').trim();}
+function tkSave(){var l=$('tkLog');return l?{t:l.scrollTop,b:l.scrollHeight-l.scrollTop-l.clientHeight<48,n:+l.dataset.n||0,p:$('tkNew')&&!$('tkNew').hidden}:null;}
+function tkRestore(sv,focus){var l=$('tkLog');if(!l)return;var n=+l.dataset.n||0,pill=$('tkNew');
+ if(focus||!sv||sv.b){l.scrollTop=l.scrollHeight;if(pill)pill.hidden=true;}else{l.scrollTop=sv.t;if(pill)pill.hidden=!(sv.p||n>sv.n);}}
 function render(focus){var m=$('main');if(!m)return;view=UI.v;renderTop();renderNav();
- if(!focus&&busyMain())return;
+ if(!focus&&busyMain()){if(UI.v==='talk'&&$('j8cLog')){var sv0=tkSave(),lg=$('j8cLog');lg.innerHTML=talkLog();$('tkLog').dataset.n=J8.inbox.list(60).length;tkRestore(sv0,false);}return;}
+ var sv=UI.v==='talk'?tkSave():null,tp=$('tkTop')?$('tkTop').scrollTop:0;m.classList.toggle('tk',UI.v==='talk');
  [].forEach.call(m.querySelectorAll('textarea[id]'),function(x){TYPING[x.id]=x.value;});
  var y=m.scrollTop;
  m.innerHTML=UI.v==='home'?vHome():UI.v==='today'?vToday():UI.v==='studio'?vStudio():UI.v==='dept'?vDept():UI.v==='proj'?vProj():UI.v==='draft'?vDraft():UI.v==='flow'?vFlow():vTalk();
  Object.keys(TYPING).forEach(function(id){var x=document.getElementById(id);if(x&&TYPING[id]&&!x.value)x.value=TYPING[id];});
- if(UI.v==='talk')talkWire();
+ if(UI.v==='talk'){talkWire();tkRestore(sv,focus);if($('tkTop')&&!focus)$('tkTop').scrollTop=tp;}
  if(focus){m.scrollTop=0;var ph=$('pageH');(ph||m).focus({preventScroll:true});}else if(Math.abs(m.scrollTop-y)>2)m.scrollTop=y;
  if(UI.gsheet&&UI.gsheet.k==='thread'&&!$('gsheet').hidden){var g=$('gth');if(!g||document.activeElement!==g)threadSheet(UI.gsheet.tg);}}
 function goV(v,keepStack){if(!keepStack&&UI.v!==v)UI.stack.push({v:UI.v,dept:UI.dept,proj:UI.proj,batch:UI.batch,dids:UI.dids});UI.v=v;UI.editing=false;if(PLACE[v]===v)ls('j8-view',v);render(true);}
@@ -1280,6 +1287,7 @@ function talkWire(){var s=$('j8cStrip'),QUICK=['What is the one move that brings
 document.addEventListener('toggle',function(e){var d=e.target;if(!d||!d.dataset||!d.dataset.k)return;UI.open[d.dataset.k]=d.open;
  if(d.dataset.k==='nums'&&d.open){var b=d.querySelector('.numbody');if(b&&!b.innerHTML)b.innerHTML=numbersHTML();}},true);
 document.addEventListener('click',function(e){
+  var pl=e.target.closest&&e.target.closest('#tkNew');if(pl){var l0=$('tkLog');if(l0)l0.scrollTop=l0.scrollHeight;pl.hidden=true;return;}
  var el=e.target.closest('[data-a]');
  if(el&&el.tagName==='A'){var k0=el.dataset.k;if(el.dataset.a==='do'&&k0){UI.doing[k0]=1;var i0=rowByKey(k0);toast(dwOf(i0&&i0.task)?t('openedSelf'):t('openedGo'));setTimeout(render,50);}return;}
  if(e.target.closest('a'))return;
@@ -1394,3 +1402,9 @@ window.toast=toast;
  J8.on('control',function(d){CTRL=d&&d.main?d.main:null;renderSeat();renderCtl();soon();});
  J8.on('schedule',function(){renderCtl();});J8.on('optout',function(){renderCtl();});J8.on('approvals',function(){renderCtl();});J8.on('status',function(){renderCtl();});
 })();
+
+/* 8.0.1: keep the composer above the keyboard (visual viewport) and the pill honest while the list is scrolled */
+(function(){var vv=window.visualViewport,r=document.documentElement;function f(){var h=vv?vv.height:innerHeight,kb=vv?Math.max(0,innerHeight-vv.height-vv.offsetTop):0;r.style.setProperty('--vvh',Math.round(h)+'px');r.style.setProperty('--kb',Math.round(kb)+'px');if(vv&&vv.offsetTop>0)window.scrollTo(0,0);}
+ f();if(vv){vv.addEventListener('resize',f);vv.addEventListener('scroll',f);}addEventListener('resize',f);
+ document.addEventListener('scroll',function(e){var l=e.target;if(l&&l.id==='tkLog'&&l.scrollHeight-l.scrollTop-l.clientHeight<48){var p=$('tkNew');if(p)p.hidden=true;}},true);
+ document.addEventListener('focusin',function(e){var x=e.target;if(x&&x.tagName==='TEXTAREA'&&x.closest('.tk-c,.pinc,.thr')){setTimeout(function(){try{x.scrollIntoView({block:'nearest'});}catch(_){}},250);}});})();
