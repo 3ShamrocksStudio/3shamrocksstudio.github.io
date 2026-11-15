@@ -1,4 +1,6 @@
-/* J8NIX 8.1.0 (15 Nov 2026): brand identity v5 (assets/brand-v3/j8nix/BRAND.md, palette.json v5), from Dave's J8NIX.ai.
+/* J8NIX 8.1.1 (15 Nov 2026): the hero and Today's first card are Midnight bands (Indigo in dark) with an Orange rail, tag and Do button.
+   Revert copy: app-8.1.0.css.
+   8.1.0: brand identity v5 (assets/brand-v3/j8nix/BRAND.md, palette.json v5), from Dave's J8NIX.ai.
    Base: Midnight #060833 · Royal #2A44C6 · Sky #2AB9FF. Type: Heebo (Hebrew + Latin), display 500-600, sentence case.
    One meaning per hue. ROLES: YOU = Orange #FF9700 (your move, needs you, the hero band) · J8 = Indigo #202663 band with the
    white 8 (J8's voice) · ALARM = Red #DD0E3F (rare by rule) · DONE / PAYING = Green #32CC00. STAGES: Idea Violet #9500FF ·
@@ -21,6 +23,7 @@
  --gold-a:#FF9700;--gold-b:#FF9700;--gold-c:#FF9700;--gold-glow:transparent;--btn-glow:transparent;
  --toast:#060833;--toast-ink:#FFFFFF;--toast-ic:#FF9700;--scrim:rgba(6,8,51,.5);
  --p:var(--rail);--p-ink:var(--navy);--p-w:var(--canvas);
+ --hero:#060833;--hero-2:#202663;
  --r1:0;--r2:0;--r3:0;--g:20px;--tap:48px;--nt:12px;
  --display:'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;--text:'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;--scale:1;
  color-scheme:light;
@@ -35,6 +38,7 @@
  --red:#FF3D67;--red-ink:#FF7C98;--red-w:#3D1230;--red-l:#8A2A48;
  --s1:#9500FF;--s1-ink:#C79BFF;--s1-w:#281660;--s1-on:#FFFFFF;--s2:#3D5AFE;--s2-ink:#9FB0FF;--s2-w:#1B2470;--s2-on:#FFFFFF;--s3:#00C2A8;--s3-ink:#5FE6D0;--s3-w:#0E3340;--s3-on:#060833;
  --s4:#E23FD0;--s4-ink:#F38BE6;--s4-w:#3A1550;--s4-on:#060833;--s5:#2AB9FF;--s5-ink:#7FD4FF;--s5-w:#0E2A5C;--s5-on:#060833;--s6:#3FD80A;--s6-ink:#7BE34F;--s6-w:#15331E;--s6-on:#060833;
+ --hero:#202663;--hero-2:#12175A;
  --rail:#03052A;--j8:#202663;--prim-bg:#DCE4FF;--prim-ink:#060833;
  --wait-w:#1A2066;
  --gold-a:#FFA41F;--gold-b:#FFA41F;--gold-c:#FFA41F;
@@ -50,6 +54,7 @@
  --red:#FF3D67;--red-ink:#FF7C98;--red-w:#3D1230;--red-l:#8A2A48;
  --s1:#9500FF;--s1-ink:#C79BFF;--s1-w:#281660;--s1-on:#FFFFFF;--s2:#3D5AFE;--s2-ink:#9FB0FF;--s2-w:#1B2470;--s2-on:#FFFFFF;--s3:#00C2A8;--s3-ink:#5FE6D0;--s3-w:#0E3340;--s3-on:#060833;
  --s4:#E23FD0;--s4-ink:#F38BE6;--s4-w:#3A1550;--s4-on:#060833;--s5:#2AB9FF;--s5-ink:#7FD4FF;--s5-w:#0E2A5C;--s5-on:#060833;--s6:#3FD80A;--s6-ink:#7BE34F;--s6-w:#15331E;--s6-on:#060833;
+ --hero:#202663;--hero-2:#12175A;
  --rail:#03052A;--j8:#202663;--prim-bg:#DCE4FF;--prim-ink:#060833;
  --wait-w:#1A2066;
  --gold-a:#FFA41F;--gold-b:#FFA41F;--gold-c:#FFA41F;
@@ -513,9 +518,11 @@ details.grp.park>summary>.ico:first-child{color:var(--slate)}
 .first,.h8hero,.j8band,.hero{--nt:18px}
 
 /* on a Sun band the same tokens read navy-on-Sun, in both themes */
-.sun,.first,.h8hero{--navy:#060833;--ink-2:#1E2550;--slate:#1E2550;--line:rgba(6,8,51,.55);--line-2:rgba(6,8,51,.22);--card:rgba(255,255,255,.55);--canvas:rgba(255,255,255,.45);
- --wait-w:rgba(255,255,255,.6);--teal-ink:#060833;--teal-w:rgba(255,255,255,.6);--amber-ink:#060833;--amber-w:rgba(255,255,255,.6);--orchid-ink:#060833;--orchid-l:#060833;--blue:#060833;--blue-ink:#060833;--blue-l:#060833;
- --red-ink:#9E0A2E;--red-w:#FFE4EA;--red-l:#9E0A2E;--prim-bg:#060833;--prim-ink:#FF9700;color:#060833}
+.sun,.first,.h8hero{--navy:#FFFFFF;--ink-2:#C9D2F5;--slate:#C9D2F5;--line:rgba(255,255,255,.55);--line-2:rgba(255,255,255,.18);--card:rgba(255,255,255,.08);--canvas:rgba(255,255,255,.06);--rule:#FFFFFF;
+ --wait-w:rgba(255,255,255,.1);--teal-ink:#7BE34F;--teal-w:rgba(255,255,255,.1);--amber-ink:#FFB547;--amber-w:rgba(255,255,255,.1);--orchid-ink:#FFFFFF;--orchid-l:rgba(255,255,255,.7);--blue:#FFFFFF;--blue-ink:#FFFFFF;--blue-l:#FFFFFF;
+ --red-ink:#FF7C98;--red-w:#3D1230;--red-l:#FF7C98;--prim-bg:var(--amber);--prim-ink:#060833;color:#FFFFFF}
+/* 8.1.1: the hero is a Midnight band (Indigo in dark); "you" is the 6 px Orange rail, the Orange tag and the Orange Do button */
+.first,.h8hero{border-inline-start:6px solid var(--amber)}
 
 /* ---------- frame: white page, navy rule under the top bar ---------- */
 body{background:var(--page)}
@@ -590,17 +597,17 @@ body[data-place] .ptile{color:var(--peach)}
 .abar [data-a=no]{border:2px dashed var(--line);color:var(--slate)}
 
 /* ---------- Today's gold card is a full-bleed Sun band ---------- */
-.first{background:var(--amber);box-shadow:none;margin:14px calc(-1 * var(--g)) 0;border:0}
+.first{background:var(--hero);box-shadow:none;margin:14px calc(-1 * var(--g)) 0;border:0;border-inline-start:6px solid var(--amber)}
 .first .in{padding:18px var(--g) 4px}
 .first::after{opacity:.12}
 .ftag{background:#060833;color:var(--amber);font-weight:700}
-.first .ftag{color:#FF9700}
+.first .ftag{background:var(--amber);color:#060833}
 .first h3{font:600 1.875rem/1.12 var(--display)}
-.first .facts{background:rgba(255,255,255,.5)}
+.first .facts{background:rgba(255,255,255,.08)}
 @media (min-width:960px){.first{margin-inline:0}}
 
 /* ---------- other "you" heroes: a Sun-washed block with a Sun rule and the notch ---------- */
-.hero{background:var(--amber-w);box-shadow:none;border-inline-start:6px solid var(--amber)}
+.hero{background:var(--card);box-shadow:none;border-inline-start:6px solid var(--amber)}
 .hero.talkq{box-shadow:none}
 .hero .ftag{background:var(--amber);color:#060833}
 .ftag.ppl{background:var(--j8);color:#fff}
@@ -670,13 +677,14 @@ body[data-place=home] main{--hp:var(--g);padding:0 var(--hp) 48px}
 .h8src{font-size:1rem;color:var(--ink-2);margin-top:8px;overflow-wrap:anywhere}
 
 /* 01 the hero: a full-bleed Sun band with the J8 notch */
-.h8hero{grid-column:1/-1;margin:18px calc(-1 * var(--hp)) 18px;background:var(--amber);display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+.h8hero{grid-column:1/-1;margin:18px calc(-1 * var(--hp)) 18px;background:var(--hero);display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
 .h8hero .l{padding:20px var(--hp) 22px;min-width:0}
-.h8hero .eb{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-weight:700;font-size:1rem}
+.h8hero .eb{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-weight:700;font-size:1rem;background:var(--amber);color:#060833;padding:0 10px 0 0}
+[dir=rtl] .h8hero .eb{padding:0 0 0 10px}
 [lang=he] .h8hero .eb{letter-spacing:0}
 .h8hero .eb .ix{background:#060833;color:#FF9700;padding:2px 7px;font-family:var(--display)}
 .h8hero h3{font:600 2.5rem/1.08 var(--display);margin:10px 0 8px;overflow-wrap:anywhere}
-.h8hero .why{color:#060833;font-size:1.125rem;font-weight:600;margin:0}
+.h8hero .why{color:#FFFFFF;font-size:1.125rem;font-weight:600;margin:0}
 .h8hero .why .ico{display:none}.h8hero .why span{font-weight:600}
 .h8hero .meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:12px 0 14px;font-size:1rem;font-weight:600}
 .h8hero .meta>span{display:inline-flex;align-items:center;gap:6px;min-width:0}
@@ -689,11 +697,11 @@ body[data-place=home] main{--hp:var(--g);padding:0 var(--hp) 48px}
  .h8hero .abar>*{flex-direction:row;gap:8px;min-height:52px;padding:0 16px;font-size:1.0625rem}
  .h8hero .abar .do{flex:0 1 auto}
 }
-.h8hero .r{background:rgba(255,255,255,.42);padding:20px 26px;border-inline-start:3px solid #060833;min-width:0}
+.h8hero .r{background:var(--hero-2);padding:20px 26px;border-inline-start:1px solid rgba(255,255,255,.18);min-width:0}
 .h8hero .r h4{font-size:1rem;font-weight:700;margin-bottom:6px}
 [lang=he] .h8hero .r h4{letter-spacing:0}
 .h8then{list-style:none}
-.h8then li{border-top:1px solid rgba(6,8,51,.3)}
+.h8then li{border-top:1px solid rgba(255,255,255,.18)}
 .h8then button{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:8px;align-items:center;width:100%;min-height:52px;padding:6px 0;font-weight:600;text-align:start}
 .h8then .n{font:600 1.125rem/1 var(--display)}
 .h8then small{display:block;font-size:1rem;font-weight:600;opacity:.9}
@@ -703,7 +711,7 @@ body[data-place=home] main{--hp:var(--g);padding:0 var(--hp) 48px}
 @media (max-width:959px){
  .h8hero{grid-template-columns:1fr}
  .h8hero h3{font-size:1.875rem}
- .h8hero .r{padding:12px var(--hp) 14px;border-inline-start:0;border-top:3px solid #060833}
+ .h8hero .r{padding:12px var(--hp) 14px;border-inline-start:0;border-top:1px solid rgba(255,255,255,.18)}
  .h8then li.dk{display:none}
 }
 @media (min-width:960px){.h8then li.mo{display:none}}
@@ -846,7 +854,7 @@ main.tk .tk-c #j8cNote,main.tk .tk-c .tkh{display:none}
 .sheet.thr>form.cbox{margin-top:8px}
 @media (min-width:800px){.sheet{bottom:calc(16px + var(--kb,0px))}}
 
-.first .abar{position:sticky;bottom:0;z-index:3;background:var(--amber)}
+.first .abar{position:sticky;bottom:0;z-index:3;background:var(--hero)}
 main.tk .brief .bl,main.tk .brief .prog{display:none}
 main.tk .tk-top{max-height:46%}
 main.tk .tk-top{border-bottom:1px solid var(--line)}

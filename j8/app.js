@@ -1,4 +1,5 @@
-/* J8NIX PWA screens 8.1.0 (15 Nov 2026): brand identity v5 colours only (stage spectrum, donuts, J8NIX tile). Revert copy: app-8.0.1.js.
+/* J8NIX PWA screens 8.1.1 (15 Nov 2026): version only (the hero change is CSS). Revert copy: app-8.1.0.js.
+   8.1.0 (15 Nov 2026): brand identity v5 colours only (stage spectrum, donuts, J8NIX tile). Revert copy: app-8.0.1.js.
    8.0.1: Home first (seven sections, live data, per-member layout) and the v8 colours and shapes,
    on 7.1.1's logic, which is unchanged (rows, unlocks, needs, mentor, Today, Studio, Flow, Talk, drafts, Later, Not needed, Control).
    Revert copy of 7.1.1: app-7.1.1.js + index-7.1.1.html.
@@ -486,7 +487,7 @@ function firstNum(L){var m=Infinity;L.forEach(function(v){if(v<m)m=v;});return m
    The data logic above is unchanged from 6.1.2 (rows, unlocks, needs, mentor, notes with routing, Control).
    Plan + screen → code → data map: ops/brain/J8NIX-V6-PLAN.md §7.1. Revert: index-6.1.2.html (one line in the plan).
    ===================================================================================================================== */
-var J8V='8.1.0';
+var J8V='8.1.1';
 /* ---------- words (EN / HE). Content stays in its own language with dir=auto; numbers in <bdi>. ---------- */
 var LANG=(function(){var l=ls('j8-lang');return l==='he'?'he':'en';})();
 var TX={en:{
