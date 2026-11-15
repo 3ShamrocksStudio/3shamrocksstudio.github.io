@@ -88,6 +88,7 @@
    <button class="plain" type="button" id="again">Use another email</button>
   </form>
   <p class="ios" id="iosHint" hidden>iPhone: tap Share → <b>Add to Home Screen</b> first, then open J8NIX from there.</p>
+  <p class="ios" id="apkHint" hidden>Android: <a href="app/"><b>get the J8NIX app</b></a>, then sign in there.</p>
   <p class="amsg" id="amsg" role="status"></p>
  </main>
 </div>
@@ -114,6 +115,7 @@
   <div class="sh-row"><div><b>Control</b><span>Sending, daily limits, team schedule, templates, do-not-contact.</span></div><button class="seat" id="ctlBtn" data-cx="open">Open</button></div>
   <div class="sh-row"><div><b>Sending by the AI team</b><span id="seatTxt">—</span></div><button class="seat" id="seat">Pause sending</button></div>
   <div class="sh-row"><div><b>Alerts on this phone</b><span>Team replies, finished work, drafts to OK.</span></div><button class="seat" id="pushBtn">Turn on</button></div>
+  <div class="sh-row" id="apkRow" hidden><div><b>J8NIX app for Android</b><span>Install it on this phone.</span></div><a class="seat" href="app/">Get it</a></div>
   <div class="sh-grp"><h3 id="sizeH">Text size</h3><div class="seg3" role="group" aria-labelledby="sizeH"><button class="opt" data-size-set="std" aria-pressed="true"><span class="sl">Standard</span><small>18 px</small></button><button class="opt" data-size-set="large" aria-pressed="false"><span class="sl">Large</span><small>20 px</small></button><button class="opt" data-size-set="xl" aria-pressed="false"><span class="sl">Largest</span><small>22 px</small></button></div></div>
   <div class="sh-grp"><h3 id="langH">Language</h3><div class="seg3" role="group" aria-labelledby="langH"><button class="opt" data-lang-set="en" lang="en" aria-pressed="true">English</button><button class="opt" data-lang-set="he" lang="he" aria-pressed="false">עברית</button></div></div>
   <div class="sh-grp"><h3 id="themeH">Theme</h3><div class="seg3" id="themeSeg" role="group" aria-labelledby="themeH"><button class="opt" data-theme-set="light" aria-pressed="true">Light</button><button class="opt" data-theme-set="dark" aria-pressed="false">Dark</button><button class="opt" data-theme-set="auto" aria-pressed="false">Auto</button></div></div>
@@ -130,5 +132,6 @@
 <script src="j8-data.js?v=7.1.1"></script>
 <script src="app.js?v=7.1.1"></script>
 <script src="shell.js?v=7.1.1"></script>
+<script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>
