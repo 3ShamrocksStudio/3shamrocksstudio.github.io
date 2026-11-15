@@ -28,7 +28,7 @@ Paid data tools (Vibe Prospecting / Explorium and similar) only if their own cos
 1. Round is seed, pre-Series A or Series A, announced ≤45 days ago (≤7 days preferred), with a source link.
 2. Product has a user-facing surface (app, dashboard, marketplace, consumer device, or a brand that is still thin: no site, one-line site, a named product family).
 3. A named founder with a confirmed current role (company site, the funding article, or the company's own announcement) checked the same day.
-4. Not already contacted: check J8NIX `approvals` (all statuses) and the private lead files for the company AND the founder name. Any hit = skip.
+4. Not already contacted: check J8NIX `approvals` (all statuses) and the private lead files for the company AND the founder name. Any hit = skip. Also check Dave's LinkedIn chats export (Messages + Connections, task t-li-history-export) for the founder name (Dave, 15 Nov): already talked = adjust to that history or skip; never two leads with the same text.
 5. Skip: defence/weapons, deep research with no product surface, companies that already list a design lead or CPO who ran design (they don't need us), growth rounds and later.
 6. Past clients, friends, family: never through this engine (per-item, BRAIN §−3).
 
