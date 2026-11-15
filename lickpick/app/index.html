@@ -5941,7 +5941,7 @@ function renderBoxes() {
   const badge = $("#cleanBadge"); badge.hidden = !(trash.length + done.length); badge.textContent = trash.length + done.length;
   const keepers = real.filter(c => verdict(c) === "keep" && !c.saved && onParts(c).length).length;
   $("#cleanTop").innerHTML = `<div class="clean-hero${free ? "" : " empty"}"><strong>${free ? fmtSize(free) : "Nothing to free yet"}</strong>
-    <p>${free ? "could be freed up. Check the lists below first, then delete the originals in your gallery." : "Save your keepers first. Their originals show up here, ready to delete."}</p>
+    <p>${free ? "could be freed up. Check the lists below first, then delete the originals in your gallery." : "Save your keepers first. Their originals show up here, so you can check them and then delete them."}</p>
     ${free ? bulkHTML() : ""}
     <ol class="steps"><li><b>1</b>Save keepers</li><li><b>2</b>Delete the originals in your gallery</li></ol>
     <p class="never">${icon("i-lock")}LickPick never deletes anything itself.</p></div>`;
