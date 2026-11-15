@@ -16,7 +16,8 @@ Max results for minimum tokens. Every run:
 5. **Money first.** Only work with a clear path to cash before the next milestone (score = $ × probability ÷ days). Parked products get zero tokens unless Dave asks.
 6. **Reuse, don't redo.** Never regenerate drafts, reels, research or reports that already exist. Research only when a decision depends on a fact that may have changed, with at most 5 searches, and save notes for reuse.
 7. **Verify small.** One focused verifier (sonnet) per shipped change, checking only that change's claims.
-8. **Short output.** The run summary is one tagged line. No long reports unless Dave asks.
+8. **Social creative (Dave, 15 Nov 13:40):** stop making code-rendered reels, carousels or "designed" posts. Dave rejected every one: they look like generic Claude design, with no viral hook and no deep brand identity. Make social content ONLY from (a) real footage or photos Dave provides, edited to a pro standard (like the LickPick real-footage reel he called the best so far), or (b) a generative photo or video tool Dave has approved and paid for. Until then: zero tokens on social creative.
+9. **Short output.** The run summary is one tagged line. No long reports unless Dave asks.
 
 ## −7. PROGRAM #1: 3S BRAND OS (Dave, Sat 14 Nov 18:13): binds every run
 Read `ops/brain/PROGRAM-BRAND-OS.md` right after this file, before any product queue. It is the studio's #1 product priority and counts as cash-mode work. Every brain shift, night shift, weekend shift and board meeting advances its current phase (P0→P5) by at least one verified step, logs it in that file's §9, and updates J8NIX project p-brandos. Its §7 lists the only things that wait for Dave.
