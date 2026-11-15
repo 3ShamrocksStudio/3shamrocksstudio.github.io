@@ -41,12 +41,24 @@ console.log("PASS flat/dark video: audio decides", keep);
 
 // licks A, B and C on a repetitive loop: different stretches, at most a fifth shared with one already chosen
 // (70 s at 100 BPM: before the fix B and C shared 40% of their length)
-const loop = await jam(70, 100), L = await M.picksAsync(loop, [[0, 70]], "auto", null);
+const loop = await jam(70, 100);  const L = await M.picksAsync(loop, [[0, 70]], "auto", null);
 assert.ok(L.length >= 1, "at least one lick");
 for (let i = 0; i < L.length; i++) for (let j = 0; j < i; j++) {
   const ov = Math.min(L[i].e, L[j].e) - Math.max(L[i].s, L[j].s);
   assert.ok(ov <= 0.2 * Math.min(L[i].len, L[j].len) + 1e-6, `lick ${"ABC"[i]} overlaps ${"ABC"[j]} by ${ov.toFixed(1)} s`);
 }
 console.log("PASS licks distinct", L.map(p => `${p.s.toFixed(1)}-${p.e.toFixed(1)}`));
+// no lick is offered with a pinned flub (wrong note / off pitch, severity >= 0.8) inside it
+{
+  const flubAt = [L[0], ...L.slice(1)].map(p => (p.s + p.e) / 2);   // one pinned flub in the middle of every pick
+  const cell = M.flubTimes ? 1 : 0; assert.ok(cell, "LickMusic.flubTimes is exposed");
+  const pen = { ...loop.penalty }, wr = Array.from(pen["wrong notes"] || new Array(loop.nCells).fill(0)), op = Array.from(pen["off pitch"] || new Array(loop.nCells).fill(0));
+  const CELLS = loop.cell || (loop.duration / loop.nCells);
+  flubAt.forEach((t, i) => { (i % 2 ? op : wr)[Math.floor(t / CELLS)] = 0.9; });
+  pen["wrong notes"] = wr; pen["off pitch"] = op;
+  const L2 = await M.picksAsync({ ...loop, penalty: pen }, [[0, 70]], "auto", null);
+  for (const p of L2) assert.equal(M.flubTimes({ penalty: pen }, p.s, p.e).length, 0, `pick ${p.s.toFixed(1)}-${p.e.toFixed(1)} has a pinned flub`);
+  console.log("PASS no pick contains a pinned flub", L2.map(p => `${p.s.toFixed(1)}-${p.e.toFixed(1)}`), "(was", L.length, "picks)");
+}
 assert.equal(raw.info.tempoExact, undefined, "no dead tempoExact field");
 console.log("PASS all");
