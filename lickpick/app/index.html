@@ -4800,7 +4800,7 @@ function keepVideo(c) {
     if (await vault.room(c.file.size)) ok = await vault.put("v", c.key, c.file);
     c.libBusy = false;
     if (ok) { c.inLib = true; persist(c); diagLog("kept in library: " + c.name); }
-    else { c.libFull = true; diagLog("library full: " + c.name); saveVideoCopy(c); }
+    else { c.libFull = true; diagLog("library full: " + c.name); saveVideoCopy(c); if (c.rec) toast("Couldn't store your recording. It will be lost if you close LickPick. Save it to your phone now.", { icon: "i-x", label: "OK", sticky: true, run: () => { } }); }
     renderCard(c); if (cur() === c) renderStudio(); reconnectBar();
   });
 }
@@ -4813,7 +4813,7 @@ function persist(c) {
   if (c.status !== "done" || !c.key) return;
   const r2 = a => Array.isArray(a) ? a.map(v => Math.round(v * 100) / 100) : a;
   const raw = { ...c.raw, penalty: Object.fromEntries(Object.entries(c.raw.penalty || {}).map(([k, v]) => [k, r2(v)])), highlight: r2(c.raw.highlight) };
-  recs.set(c.key, { v: 4, pickSel: c.pickSel || 0, name: c.name, size: c.size, raw, parts: c.parts, edited: !!c.edited, override: c.override, saved: !!c.saved, thumb: c.thumb || null, inLib: !!c.inLib, pickSaved: !!c.pickSaved, ...projOf(c) });
+  recs.set(c.key, { v: 4, pickSel: c.pickSel || 0, name: c.name, size: c.size, raw, parts: c.parts, edited: !!c.edited, override: c.override, saved: !!c.saved, thumb: c.thumb || null, inLib: !!c.inLib, rec: !!c.rec, pickSaved: !!c.pickSaved, ...projOf(c) });
   const lib = store.get("lp:lib") || []; if (!lib.includes(c.key)) { lib.push(c.key); store.set("lp:lib", lib); }
 }
 function forget(c) {
@@ -4841,7 +4841,7 @@ async function restoreLibrary() {
     const key = keys[i], prev = all[i] || store.get(key);
     if (state.clips.some(c => c.key === key)) continue;
     if ((prev?.v !== 3 && prev?.v !== 4) || !prev.raw?.penalty) continue;
-    const c = { id: ++uid, key, pickSel: prev.pickSel || 0, file: null, name: prev.name || key.slice(8).split("|")[0], size: prev.size || 0, status: "done", raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb, inLib: !!prev.inLib, pickSaved: prev.pickSaved, ...Object.fromEntries(PROJ.filter(k => prev[k] != null).map(k => [k, prev[k]])), proxy: unpackBlob(snd[i]), vproxy: unpackBlob(vid[i]) };
+    const c = { id: ++uid, key, pickSel: prev.pickSel || 0, file: null, name: prev.name || key.slice(8).split("|")[0], size: prev.size || 0, status: "done", raw: prev.raw, parts: prev.parts || [], edited: prev.edited, override: prev.override, saved: prev.saved, thumb: prev.thumb, inLib: !!prev.inLib, rec: !!prev.rec, pickSaved: prev.pickSaved, ...Object.fromEntries(PROJ.filter(k => prev[k] != null).map(k => [k, prev[k]])), proxy: unpackBlob(snd[i]), vproxy: unpackBlob(vid[i]) };
     c.result = ClipEngine.decide(c.raw, { strictness: state.strictness, minKeep: state.minKeep, weights: taste.rw });
     state.clips.push(c);
   }
@@ -5455,7 +5455,7 @@ function addFiles(files, recorded, opts = {}) {
   let known = 0;
   for (const f of files) {
     const old = oldIds[fileKey(f)];   // a re-added take keeps its project
-    state.clips.push({ id: old ? old.id : ++uid, inLib: !!opts.inLib, proxy: old?.proxy || null, vproxy: old?.vproxy || null, key: fileKey(f), file: f, name: f.name, size: f.size, status: "queued", progress: 0, parts: [], override: null, checking: true });
+    state.clips.push({ id: old ? old.id : ++uid, inLib: !!opts.inLib, rec: !!opts.rec || !!old?.rec, proxy: old?.proxy || null, vproxy: old?.vproxy || null, key: fileKey(f), file: f, name: f.name, size: f.size, status: "queued", progress: 0, parts: [], override: null, checking: true });
   }
   state.filter = "all"; setView("clips"); render();
   const added = state.clips.filter(c => c.checking);
@@ -7534,7 +7534,7 @@ async function recKeep() {
   recStopPlayback(); REC.state = "busy"; recRender();
   const ext = /mp4/.test(blob.type) ? "mp4" : "webm", name = `Layer ${takeName(c).replace(/[^\w .-]+/g, "")} ${new Date().toTimeString().slice(0, 5).replace(":", "")}.${ext}`;
   const file = new File([blob], name, { type: blob.type || "video/webm", lastModified: Date.now() }), lStart = REC.tP - REC.tRec;
-  recClose(); addFiles([file], true, { inLib: true }); layerWhenScanned(c.key, file, lStart);
+  recClose(); addFiles([file], true, { rec: true }); layerWhenScanned(c.key, file, lStart);
 }
 const LAYER_MAX = 3;
 const layerClip = L => state.clips.find(x => x.key === L.key);
