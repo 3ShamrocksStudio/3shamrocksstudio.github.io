@@ -4925,7 +4925,7 @@ function saveProxy(c, getPCM, idle) {
 const TASTE_LABELS = { energy: ["Energy", "calmer", "bigger"], activity: ["Busy-ness", "sparser", "busier"], tone: ["Tone", "rawer", "cleaner"], tight: ["Timing", "loose is fine", "tight"], variety: ["Movement", "steady", "moving"], len: ["Length", "shorter", "longer"] };
 const RATES = [[-2, "Worst"], [-1, "Bad"], [0, "OK"], [1, "Good"], [2, "Best"]];
 // what you can say about a stretch, and what each teaches
-const WHY_BAD = [["Sloppy timing", "timing drift", "tight"], ["Wrong notes", "wrong notes", null], ["Out of tune", "off pitch", null], ["Distorted", "distorted audio", "tone"], ["Noisy", "noise, no music", "tone"], ["Blurry", "out of focus", null], ["Boring", null, "variety"], ["Too busy", null, "-activity"], ["Too quiet", null, "energy"]];
+const WHY_BAD = [["Sloppy timing", "timing drift", "tight"], ["Wrong notes", "wrong notes", null], ["Out of tune", "off pitch", null], ["Loud peaks", "distorted audio", "tone"], ["Noisy", "noise, no music", "tone"], ["Blurry", "out of focus", null], ["Boring", null, "variety"], ["Too busy", null, "-activity"], ["Too quiet", null, "energy"]];
 const WHY_GOOD = [["Great groove", null, "tight"], ["Great tone", null, "tone"], ["Big energy", null, "energy"], ["Nice ideas", null, "variety"], ["Flashy", null, "activity"], ["Chill", null, "-activity"], ["Forgive the slips", "*", null]];
 const taste = Object.assign({ n: 0, ver: 0, w: {}, rw: {}, log: [], saves: 0 }, store.get("lp:taste") || {});
 const tasteK = () => Math.min(1, taste.n / 15);
@@ -6504,12 +6504,14 @@ ${pk ? rateStrip(c, pk.s, pk.e, `Rate Lick ${"ABC"[c.pickSel || 0]}`) : ""}
       ${rep.length ? `<div class="cutlist">${rep.map(r => `<div><b>${r.n}×</b><span>${esc(r.why)}</span><em>${fmt(r.t)} cut</em></div>`).join("")}</div>` : `<p class="hint">Clean jam. Nothing to cut.</p>`}
       <div class="facts">${facts.map(([a, b]) => `<span class="fact">${a} <b>${esc(b)}</b></span>`).join("")}</div>
       ${(c.raw?.styleNotes || []).map(n => `<p class="hint">${esc(n.charAt(0).toUpperCase() + n.slice(1))}.</p>`).join("")}
-      ${(c.result?.removed || []).length ? `<details><summary>Every cut</summary><div class="cuts">${c.result.removed.map(r => `<button type="button" class="cut" data-seek="${r.start}" data-seek-end="${r.end}"><span class="t">${fmt(r.start)} to ${fmt(r.end)}</span><span>${esc(r.reasons.join(", "))}</span></button>`).join("")}</div></details>` : ""}
+      ${(c.result?.removed || []).length ? `<details><summary>Every cut</summary><div class="cuts">${c.result.removed.map(r => `<button type="button" class="cut" data-seek="${r.start}" data-seek-end="${r.end}"><span class="t">${fmt(r.start)} to ${fmt(r.end)}</span><span>${esc(niceWhy(r.reasons.join(", ")))}</span></button>`).join("")}</div></details>` : ""}
       <div class="row2 ovr">${v !== "trash" ? `<button class="btn sm ghost" type="button" data-ovr="trash">${icon("i-bin")}Trash it</button>` : ""}${v !== "keep" ? `<button class="btn sm ghost" type="button" data-ovr="keep">${icon("i-check")}Keep it</button>` : ""}${c.override ? `<button class="btn sm ghost" type="button" data-ovr="">${icon("i-undo")}Undo</button>` : ""}${c.edited ? `<button class="btn sm ghost" type="button" data-act="reset">Reset edits</button>` : ""}<button class="btn sm ghost" type="button" data-act="forget">${icon("i-x")}Remove from list</button></div>
     </details>${pk ? whyHTML(c) : ""}</div></details>`;
 }
 // ---------- mistake pins: the exact moments that sound off (from the scan), and a fix for each
 // off beat = timing drift, wrong note = notes outside the key and chord, out of tune = notes between pitches
+// testers see plain words, not "distorted audio"
+const niceWhy = t => String(t).replace(/distorted audio/gi, m => m[0] === "D" ? "Loud peaks" : "loud peaks");
 const PINK = { "timing drift": ["beat", "Off the beat", "#FF7A1A"], "wrong notes": ["key", "Wrong note", "#FF2E88"], "off pitch": ["tune", "Out of tune", "#2BE7FF"] };
 function pinsOf(c) {
   const P = c.raw?.penalty; if (!P) return [];
@@ -7019,7 +7021,7 @@ function whyHTML(c) {
       rows.push({ s: x, e: y, cls: "kept", tag: "Good", tier: "good", why });
     }
   }
-  for (const r of (c.result?.removed || []).filter(r => r.end - r.start >= 0.5)) { const t = USELESS.has(r.reasons[0]) ? "useless" : "inspect"; rows.push({ s: r.start, e: r.end, cls: "cut", tag: TIERS[t][0], tier: t, why: capFirst(r.reasons.join(", ")) + "." }); }
+  for (const r of (c.result?.removed || []).filter(r => r.end - r.start >= 0.5)) { const t = USELESS.has(r.reasons[0]) ? "useless" : "inspect"; rows.push({ s: r.start, e: r.end, cls: "cut", tag: TIERS[t][0], tier: t, why: capFirst(niceWhy(r.reasons.join(", "))) + "." }); }
   rows.sort((a, b) => a.s - b.s);
   c._whyRows = rows;
   const rowHTML = r => `<button type="button" class="wrow ${r.cls}" data-seek="${r.s}" data-seek-end="${r.e}" data-seek-label="${esc(r.tag)} ${fmt(r.s)}"><span class="wt">${r.tier ? tierTag(r.tier) : `<b>${esc(r.tag)}</b>`}${fmt(r.s)} · ${r.e - r.s < 10 ? (r.e - r.s).toFixed(1) + "s" : fmt(r.e - r.s)}</span><span class="ww">${esc(r.why)}</span>${icon("i-play")}</button>`;
@@ -7050,7 +7052,7 @@ function segsOf(c) {
   });
   for (const r of c.result?.removed || []) {
     if (r.end - r.start < 0.5) continue;
-    out.push({ s: r.start, e: r.end, tier: USELESS.has(r.reasons[0]) ? "useless" : "inspect", on: false, kind: "cut", reasons: r.reasons, why: capFirst(r.reasons.join(", ")) });
+    out.push({ s: r.start, e: r.end, tier: USELESS.has(r.reasons[0]) ? "useless" : "inspect", on: false, kind: "cut", reasons: r.reasons, why: capFirst(niceWhy(r.reasons.join(", "))) });
   }
   return out.sort((a, b) => a.s - b.s);
 }
@@ -7993,7 +7995,7 @@ const LANE = 14;   // the grade lane along the bottom: tap a stretch to hear it
 // "Why" view: every stretch in its own colour by what LickPick heard there
 const CATS = {
   best: ["Best", "#FFE600"], good: ["Good", "#2BE7FF"], timing: ["Timing drift", "#F25FD0"], notes: ["Wrong notes / off pitch", "#B47CFF"],
-  stops: ["Stops & retakes", "#FF3D5A"], talk: ["Talking", "#FF9F1C"], noise: ["Noise / click only", "#C08A5E"], distort: ["Distorted", "#9BE564"],
+  stops: ["Stops & retakes", "#FF3D5A"], talk: ["Talking", "#FF9F1C"], noise: ["Noise / click only", "#C08A5E"], distort: ["Loud peaks", "#9BE564"],
   camera: ["Camera dark / blurry", "#5B7CFF"], silence: ["Silence", "#6E6688"], low: ["Below the bar", "#8E84AA"], skipped: ["Skipped by you", "#3F3758"],
 };
 const CAT_OF = { "timing drift": "timing", "wrong notes": "notes", "off pitch": "notes", "stopped / restarted": "stops", "failed attempt, replayed after": "stops", "talking": "talk", "noise, no music": "noise", "click track or tapping, no playing": "noise", "distorted audio": "distort", "lens covered / too dark": "camera", "out of focus": "camera", "silence": "silence" };
