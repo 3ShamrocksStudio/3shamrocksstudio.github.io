@@ -1,4 +1,5 @@
-/* J8NIX PWA screens 8.1.1 (15 Nov 2026): version only (the hero change is CSS). Revert copy: app-8.1.0.js.
+/* J8NIX PWA screens 9.0.0 (15 Nov 2026): the v10 layout, see the 9.0.0 block before boot. Revert copy: app-8.1.1.js.
+   8.1.1 (15 Nov 2026): version only (the hero change is CSS). Revert copy: app-8.1.0.js.
    8.1.0 (15 Nov 2026): brand identity v5 colours only (stage spectrum, donuts, J8NIX tile). Revert copy: app-8.0.1.js.
    8.0.1: Home first (seven sections, live data, per-member layout) and the v8 colours and shapes,
    on 7.1.1's logic, which is unchanged (rows, unlocks, needs, mentor, Today, Studio, Flow, Talk, drafts, Later, Not needed, Control).
@@ -1323,11 +1324,11 @@ document.addEventListener('click',function(e){
  else if(a==='comment'){var ci2=rowByKey(k);if(!ci2)return;threadSheet(ci2.task?{task:ci2.task.id}:ci2.c?{msg:ci2.c.id}:ci2.ap?{ap:ci2.ap.id}:ci2.batch&&ci2.batch.items.length===1?{ap:ci2.batch.items[0].id}:{p:rowPid(ci2)||'p-general'});}
  else if(a==='later'){laterSheet(k);}
  else if(a==='later-pick'){laterPick(k,el.dataset.w,el.dataset.l);}
- else if(a==='later-now'){deferItem(k,'open',null).then(function(){toast(t('backOnList')+' '+(LANG==='he'?'זה בהיום.':'It is on Today.'));},function(e2){toast(t('couldNot',{e:e2&&e2.code||'error'}));});render();}
+ else if(a==='later-now'){deferItem(k,'open',null).then(function(){toast(t('backOnList')+' '+(LANG==='he'?'זה בעכשיו.':'It is on Now.'));},function(e2){toast(t('couldNot',{e:e2&&e2.code||'error'}));});render();}
  else if(a==='no'){notNeeded(k);}
  else if(/^nn-/.test(a)){nnDo(a,k);}
  else if(a==='undo'){undoDone(k);}
- else if(a==='untick'){J8.tasks.undo(id).then(function(){toast(t('backOnList')+' '+(LANG==='he'?'זה בהיום.':'It is on Today.'));},function(e2){toast(t('couldNot',{e:e2&&e2.code||'error'}));});}
+ else if(a==='untick'){J8.tasks.undo(id).then(function(){toast(t('backOnList')+' '+(LANG==='he'?'זה בעכשיו.':'It is on Now.'));},function(e2){toast(t('couldNot',{e:e2&&e2.code||'error'}));});}
  else if(a==='gclose'){gClose();}
  else if(a==='coach-off'){ls('j8-coach',0);render();}
  else if(a==='retry'){J8.reload().then(function(){toast(LANG==='he'?'מחובר. הרשימה מעודכנת.':'Connected. Your list is up to date.');},function(){toast(t('notConn'));});}
@@ -1359,7 +1360,7 @@ document.addEventListener('submit',function(e){var f=e.target;if(!f)return;
  if(f.dataset.f==='edit'){e.preventDefault();var ta=f.querySelector('textarea'),v=String(ta.value||'').trim(),L=UI.dids||[],cur=L.filter(isPend)[0];if(!cur)return;if(!v){toast(t('emptyText'));return;}
   ta.blur();J8.approvals.edit(cur,v).then(function(){UI.editing=false;toast(t('savedApproved'),function(){J8.approvals.undo(cur);});render(true);},function(er){toast(t('couldNot',{e:er&&er.code||'error'}));});return;}
  if(f.id==='j8cForm'){e.preventDefault();var i=$('j8cIn'),mv=String(i.value||'').trim();if(!mv)return;if(!J8.status().connected){toast(t('notConn'));return;}
-  i.value='';TYPING.j8cIn='';$('j8cGo').disabled=true;J8.inbox.send('p-general',mv).then(function(){$('j8cGo')&&($('j8cGo').disabled=false);i.blur();toast(LANG==='he'?'נשלח. הצוות עונה כאן.':'Sent. The team answers here, in Talk.');render();},function(er){if($('j8cGo'))$('j8cGo').disabled=false;i.value=mv;toast(t('couldNot',{e:er&&er.code||'error'}));});return;}
+  i.value='';TYPING.j8cIn='';$('j8cGo').disabled=true;J8.inbox.send('p-general',mv).then(function(){$('j8cGo')&&($('j8cGo').disabled=false);i.blur();toast(LANG==='he'?'נשלח. התשובה מגיעה כאן, בחלונית של J8.':'Sent. The answer comes here, in the J8 panel.');render();},function(er){if($('j8cGo'))$('j8cGo').disabled=false;i.value=mv;toast(t('couldNot',{e:er&&er.code||'error'}));});return;}
  if(!f.dataset||!f.dataset.ans)return;e.preventDefault();var ta3=f.querySelector('textarea'),val=String(ta3.value||'').trim();if(!val){ta3.focus();return;}
  if(!J8.status().connected){toast(t('notConn'));return;}
  var pid=f.dataset.ans,team=pid&&pid!=='p-general'?pDept(pid):t('team'),ask=f.dataset.ask,inSheet=!!f.closest('#gsheet');
@@ -1378,10 +1379,428 @@ function hideToast(){$('toast').classList.remove('on');undoFn=null;clearTimeout(
 function toast(msg,undo){$('toastMsg').textContent=msg;var u=$('undo');u.hidden=!undo;$('undoL').textContent=t('undo');undoFn=undo||null;$('toast').classList.add('on');clearTimeout(tt);tt=setTimeout(hideToast,undo?10000:5000);}
 window.toast=toast;
 
+/* =====================================================================================================================
+   J8NIX 9.0.0 (15 Nov 2026): the v10 layout (j8nix-audit/V10-SPEC.md) on 8.1.1's engine, which is unchanged
+   (rows, j8_rank + "frees the most" order, Do / Comment / Later / Not needed, drafts Send / Edit / Kill, held sends, comments, Talk).
+   Five places: Now · Inbox · Projects · Calendar · Me, plus the J8 panel (contextual cards + Ask with the pinned composer).
+   Every string comes from TX (EN / HE). Numbers sit in <bdi>. A copy lint runs on every render (no ops tags, role codes, j8_ names).
+   Revert: index-8.1.1.html + app-8.1.1.js + app-8.1.1.css + sw-8.1.1.js (one line in j8nix-v8/SHIPPED-8.md, v10 section).
+   ===================================================================================================================== */
+J8V='9.0.0';
+var VMAP={home:'now',today:'now',next:'now',studio:'projects',list:'projects',flow:'money',stats:'money',talk:'inbox',chat:'inbox'};
+PLACE={now:'now',inbox:'inbox',projects:'projects',calendar:'calendar',me:'me',proj:'projects',dept:'projects',draft:'inbox',qitem:'inbox',money:'now'};
+var PLACES=['now','inbox','projects','calendar','me'];
+UI.v='now';UI.pf={u:'all',o:'all',n:false,view:null,sort:'stage'};UI.ifil='all';UI.isel=null;UI.pseg='act';
+Object.assign(TX.en,{
+ now:'Now',inbox:'Inbox',projects:'Projects',calendar:'Calendar',me:'Me',xSearch:'Search or ask',
+ xNextFixed:'Next fixed: {x}',xNoFixed:'Nothing fixed today',xPlan:'Plan my day',xBudget:'Today’s budget',
+ xBudgetPlan:'{a} of {b} planned · {n} items',xBudgetFit:'{a} fits your {b} · {n} items',xOver:'{a} more than your day holds',
+ xFrees:'Frees: {x}',xWhy:'Why?',xMore:'More actions',xToday:'Today, fits your day',xWait:'Waiting on others',xLater:'Later',
+ xKMoney:'Money this week',xKMoneyV:'{a} of {b}',xKDays:'{n} days left',xKInbox:'Inbox',xKDec:'{n} decisions',xKDec1:'1 decision',xKDec0:'Nothing waits',
+ xKRisk:'Projects at risk',xKRiskV:'{a} overdue · {b} stalled',xKNoMoney:'No figures yet',xNothing:'Nothing needs you right now.',xAsOf:'As of {t}',
+ xMoneyH:'Money',xMoneyB:'What blocks money',xMoneyNone:'Nothing on your list blocks money right now.',xSrc:'Source: {x}',xLive:'your live J8NIX data',
+ xFAll:'All',xFDrafts:'Drafts',xFQ:'Questions',xFRep:'Replies',xInboxNone:'Nothing waits on your decision.',xPick:'Pick an item from the list.',
+ xSet:'Approve set',xSampleH:'Check 3 of {n}',xSampleP:'J8 picked 3 drafts from this set: the first, one from the middle and the last. If they read right, approve all {n}.',
+ xApproveAll:'Approve all {n}',xOneByOne:'Review one by one',xApprovedAll:'Approved {n}. They go out on the team’s next run.',xSkip:'Skip',xSkipped:'Skipped. It waits at the end of this set.',
+ xTeamAsks:'{t} asks',xReplied:'{t} replied',xOpenThread:'Open the thread',xNDrafts:'{n} drafts',xNDraft1:'1 draft',
+ xCheck:'J8 check',xChkTo:'Goes to: {x}',xChkNoTo:'No recipient yet. Edit before you send.',xChkWin:'Goes out: {x}',xWinNext:'on the team’s next run',xWinSun:'Sunday (nothing is sent on Friday or Saturday)',xChkLen:'{n} words',
+ xDept:'Department',xOwner:'Who moves it',xAnyone:'Anyone',xYou:'You',xTeam:'Team',xOutside:'Outside',xNeedsMe:'Needs me',xBoard:'Board',xList:'List',
+ xNoStage:'No stage',xParked:'Parked',xDone:'Done',xNext:'Next: {x}',xOverdue:'Overdue',xStalled:'Stalled {n} d',xShowMore:'Show {n} more',xName:'Name',xStage:'Stage',xHealth:'Health',
+ xStageOf:'Stage {a} of 6 · {s}',xOk:'On track',xYourStep:'Your next step',xNoStep:'Nothing waits on you here.',xNowH:'Where it stands',xStepsH:'Steps',xMsH:'Milestone',xMsNone:'No milestone yet',xEta:'Date unknown',
+ xSegAct:'Activity',xSegDr:'Drafts',xSegRev:'J8 review',xRevStalled:'No move for {n} days.',xRevNoMs:'No milestone or date set.',xRevNoNext:'No next step written.',xRevOk:'Nothing looks off: there is a next step, a milestone and a recent move.',
+ xRevOverdue:'The milestone date has passed.',xNoDrafts:'No drafts wait for this project.',xNoAct:'No comments or finished steps yet.',
+ xCalNoDate:'No date',xCalPlan:'Plan with J8',xCalNone:'Nothing fixed in the next 14 days.',xCalConn:'Google Calendar is not connected, so only J8NIX dates show here.',xTMs:'Milestone',xTGoal:'Goal',xNoDateP:'Your open steps with no day',
+ xProfile:'Profile',xOrg:'Organisation and team',xConn:'Connections',xPrefs:'Preferences',xSending:'Sending',xHelp:'Help',xAccount:'Account',
+ xCapH:'Your day',xCapP:'Now plans up to this much of your time.',xQuietH:'Quiet days',xQuietP:'Friday and Saturday: nothing is sent for you.',
+ xCData:'J8NIX data',xCOn:'Connected',xCOff:'Offline',xCMail:'Studio email',xCMailOn:'Sending is on',xCMailOff:'Sending is off',xManage:'Manage',
+ xCCal:'Google Calendar',xCWa:'WhatsApp',xCPay:'Payments (Grow, Morning)',xCLi:'LinkedIn',xNotConn:'Not connected',xSoon:'Coming soon',xSoonT:'{x} is not built yet. Nothing was connected.',
+ xCMoney:'Money figures',xCMoneyOn:'From the weekly board, {t}',xCMoneyOff:'No figures yet',xUnits:'AI team: {x}',xInvite:'Invite people',xInviteT:'Invites are not built yet. Today the workspace owner adds members.',
+ xJ8:'J8',xOpenJ8:'Open J8',xCloseJ8:'Close J8',xNotNow:'Not now',xAskJ8:'Ask J8 or the team',xAskH:'Ask J8',xSnoozed:'Hidden for 24 hours.',
+ xCPlanW:'{n} steps wait, about {a}. Your day holds {b}.',xCPlanY:'Plan the day so the top steps fit.',xCMonW:'Closest to money: {x}.',xCMonY:'It is the step nearest to money on your list.',
+ xDoIt:'Do it',xOpen:'Open',xCDrW:'{x}: check before you send.',xCCalW:'{n} open steps of yours have no day.',xCCalY:'They show on the calendar once they get a day.',
+ xCWeakY:'The weakest project right now.',xCNone:'Nothing to add here right now.',xWhySrc:'From your live J8NIX data, {t}.',
+ xPlanH:'Plan my day',xPlanP:'J8 ticked the steps that fit {b}, in the order that frees the most. Tick in or out, then commit.',xPlanTot:'{a} of {b}',xCommit:'Commit',xPlanned:'Planned: {n} steps, {a}.',
+ xMinShort:'{n} min',xH:'{h} h',xHM:'{h} h {m}',xItems1:'1 item',xNofDone:'{a} of {b} done',xBack:'Back',xMe:'Me'
+});
+Object.assign(TX.he,{
+ now:'עכשיו',inbox:'תיבה',projects:'פרויקטים',calendar:'יומן',me:'אני',xSearch:'חיפוש או שאלה',
+ xNextFixed:'הקבוע הבא: {x}',xNoFixed:'אין משהו קבוע היום',xPlan:'לתכנן את היום',xBudget:'התקציב של היום',
+ xBudgetPlan:'{a} מתוך {b} מתוכננים · {n} פריטים',xBudgetFit:'{a} נכנסים ב־{b} שלך · {n} פריטים',xOver:'{a} יותר ממה שהיום מכיל',
+ xFrees:'משחרר: {x}',xWhy:'למה?',xMore:'עוד פעולות',xToday:'היום, נכנס ביום שלך',xWait:'מחכה לאחרים',xLater:'אחר כך',
+ xKMoney:'כסף השבוע',xKMoneyV:'{a} מתוך {b}',xKDays:'עוד {n} ימים',xKInbox:'תיבה',xKDec:'{n} החלטות',xKDec1:'החלטה אחת',xKDec0:'שום דבר לא מחכה',
+ xKRisk:'פרויקטים בסיכון',xKRiskV:'{a} באיחור · {b} תקועים',xKNoMoney:'עדיין אין מספרים',xNothing:'שום דבר לא מחכה לך כרגע.',xAsOf:'נכון ל־{t}',
+ xMoneyH:'כסף',xMoneyB:'מה חוסם כסף',xMoneyNone:'שום דבר ברשימה שלך לא חוסם כסף כרגע.',xSrc:'מקור: {x}',xLive:'הנתונים החיים שלך ב־J8NIX',
+ xFAll:'הכול',xFDrafts:'טיוטות',xFQ:'שאלות',xFRep:'תשובות',xInboxNone:'שום דבר לא מחכה להחלטה שלך.',xPick:'לבחור פריט מהרשימה.',
+ xSet:'לאשר סט',xSampleH:'לבדוק 3 מתוך {n}',xSampleP:'J8 בחר 3 טיוטות מהסט: הראשונה, אחת מהאמצע והאחרונה. אם הן נכונות, לאשר את כל ה־{n}.',
+ xApproveAll:'לאשר את כל ה־{n}',xOneByOne:'לעבור אחת אחת',xApprovedAll:'אושרו {n}. הן יוצאות בריצה הבאה של הצוות.',xSkip:'לדלג',xSkipped:'דילגת. היא מחכה בסוף הסט.',
+ xTeamAsks:'{t} שואל',xReplied:'{t} ענה',xOpenThread:'לפתוח את השיחה',xNDrafts:'{n} טיוטות',xNDraft1:'טיוטה אחת',
+ xCheck:'הבדיקה של J8',xChkTo:'נשלח אל: {x}',xChkNoTo:'עדיין אין נמען. לערוך לפני שליחה.',xChkWin:'יוצא: {x}',xWinNext:'בריצה הבאה של הצוות',xWinSun:'ביום ראשון (בשישי ובשבת לא נשלח כלום)',xChkLen:'{n} מילים',
+ xDept:'מחלקה',xOwner:'מי מזיז',xAnyone:'כולם',xYou:'את/ה',xTeam:'הצוות',xOutside:'מבחוץ',xNeedsMe:'מחכה לי',xBoard:'לוח',xList:'רשימה',
+ xNoStage:'בלי שלב',xParked:'בהמתנה',xDone:'הסתיים',xNext:'הבא: {x}',xOverdue:'באיחור',xStalled:'תקוע {n} ימים',xShowMore:'להציג עוד {n}',xName:'שם',xStage:'שלב',xHealth:'מצב',
+ xStageOf:'שלב {a} מתוך 6 · {s}',xOk:'בתלם',xYourStep:'הצעד הבא שלך',xNoStep:'שום דבר לא מחכה לך כאן.',xNowH:'איפה זה עומד',xStepsH:'צעדים',xMsH:'אבן דרך',xMsNone:'עדיין אין אבן דרך',xEta:'תאריך לא ידוע',
+ xSegAct:'פעילות',xSegDr:'טיוטות',xSegRev:'סקירה של J8',xRevStalled:'אין תזוזה כבר {n} ימים.',xRevNoMs:'אין אבן דרך או תאריך.',xRevNoNext:'לא כתוב צעד הבא.',xRevOk:'שום דבר לא נראה חריג: יש צעד הבא, אבן דרך ותזוזה לאחרונה.',
+ xRevOverdue:'התאריך של אבן הדרך עבר.',xNoDrafts:'אין טיוטות שמחכות בפרויקט הזה.',xNoAct:'עדיין אין הערות או צעדים שהסתיימו.',
+ xCalNoDate:'בלי תאריך',xCalPlan:'לתכנן עם J8',xCalNone:'אין משהו קבוע ב־14 הימים הקרובים.',xCalConn:'יומן Google לא מחובר, אז מוצגים כאן רק תאריכים מ־J8NIX.',xTMs:'אבן דרך',xTGoal:'יעד',xNoDateP:'צעדים פתוחים שלך בלי יום',
+ xProfile:'פרופיל',xOrg:'ארגון וצוות',xConn:'חיבורים',xPrefs:'העדפות',xSending:'שליחה',xHelp:'עזרה',xAccount:'חשבון',
+ xCapH:'היום שלך',xCapP:'עכשיו מתכנן עד כמה זמן כזה שלך.',xQuietH:'ימים שקטים',xQuietP:'שישי ושבת: שום דבר לא נשלח בשמך.',
+ xCData:'נתוני J8NIX',xCOn:'מחובר',xCOff:'לא מחובר',xCMail:'המייל של הסטודיו',xCMailOn:'השליחה פעילה',xCMailOff:'השליחה כבויה',xManage:'לנהל',
+ xCCal:'יומן Google',xCWa:'WhatsApp',xCPay:'תשלומים (Grow, מורנינג)',xCLi:'LinkedIn',xNotConn:'לא מחובר',xSoon:'בקרוב',xSoonT:'{x} עדיין לא נבנה. שום דבר לא חובר.',
+ xCMoney:'נתוני כסף',xCMoneyOn:'מהלוח השבועי, {t}',xCMoneyOff:'עדיין אין מספרים',xUnits:'צוות ה־AI: {x}',xInvite:'להזמין אנשים',xInviteT:'הזמנות עדיין לא נבנו. היום בעל/ת המרחב מוסיפים חברים.',
+ xJ8:'J8',xOpenJ8:'לפתוח את J8',xCloseJ8:'לסגור את J8',xNotNow:'לא עכשיו',xAskJ8:'לשאול את J8 או את הצוות',xAskH:'לשאול את J8',xSnoozed:'מוסתר ל־24 שעות.',
+ xCPlanW:'{n} צעדים מחכים, בערך {a}. היום שלך מכיל {b}.',xCPlanY:'לתכנן את היום כך שהצעדים העליונים ייכנסו.',xCMonW:'הכי קרוב לכסף: {x}.',xCMonY:'זה הצעד הכי קרוב לכסף ברשימה שלך.',
+ xDoIt:'לעשות',xOpen:'לפתוח',xCDrW:'{x}: לבדוק לפני שליחה.',xCCalW:'ל־{n} צעדים פתוחים שלך אין יום.',xCCalY:'הם יופיעו ביומן ברגע שיקבלו יום.',
+ xCWeakY:'הפרויקט החלש ביותר כרגע.',xCNone:'אין מה להוסיף כאן כרגע.',xWhySrc:'מהנתונים החיים שלך ב־J8NIX, {t}.',
+ xPlanH:'לתכנן את היום',xPlanP:'J8 סימן את הצעדים שנכנסים ב־{b}, לפי מה שמשחרר הכי הרבה. לסמן או להוריד, ואז לאשר.',xPlanTot:'{a} מתוך {b}',xCommit:'לאשר תוכנית',xPlanned:'מתוכנן: {n} צעדים, {a}.',
+ xMinShort:'{n} דק׳',xH:'{h} ש׳',xHM:'{h} ש׳ {m} דק׳',xItems1:'פריט אחד',xNofDone:'{a} מתוך {b} בוצעו',xBack:'חזרה',xMe:'אני'
+});
+Object.assign(TX.en,{whereTalk:'the J8 panel, in J8NIX',laterNote:'It waits under "Later" on Now, then comes back by itself.',commentLead:'Ideas or changes. The {t} team answers here and in the J8 panel.',goToday:'Go to Now',approvedLast:'Approved. It is under Done today on Now.',killedLast:'Killed. It will not be sent. It is under Done today on Now.',sentTo:'Sent to {t}, {h}. The answer comes here and in the J8 panel.',threadLead:'Ask a question or give a change. The {t} team answers here and in the J8 panel, usually within the hour.',sentToT:'Sent to {t}. The answer comes here and in the J8 panel.',askSent:'Sent. The answer comes in the J8 panel.',inclFirst:'It includes your first step on Now.',moreInToday:'{n} more on Now',seeTeam:'See the projects'});
+Object.assign(TX.he,{whereTalk:'החלונית של J8, ב־J8NIX',laterNote:'זה מחכה תחת "אחר כך" בעכשיו, ואז חוזר לבד.',commentLead:'רעיונות או שינויים. צוות {t} עונה כאן ובחלונית של J8.',goToday:'ללכת לעכשיו',approvedLast:'אושר. זה תחת "בוצע היום" בעכשיו.',killedLast:'בוטל. זה לא יישלח. זה תחת "בוצע היום" בעכשיו.',sentTo:'נשלח אל {t}, {h}. התשובה מגיעה כאן ובחלונית של J8.',threadLead:'לשאול שאלה או לבקש שינוי. צוות {t} עונה כאן ובחלונית של J8, בדרך כלל תוך שעה.',sentToT:'נשלח אל {t}. התשובה מגיעה כאן ובחלונית של J8.',askSent:'נשלח. התשובה מגיעה בחלונית של J8.',inclFirst:'כולל את הצעד הראשון שלך בעכשיו.',moreInToday:'עוד {n} בעכשיו',seeTeam:'לראות את הפרויקטים'});
+/* ---------- small helpers ---------- */
+function bdi(x){return '<bdi>'+esc(x)+'</bdi>';}
+function dur(m){m=Math.max(0,Math.round(m||0));var h=Math.floor(m/60),r=m%60;return h?(r?t('xHM',{h:h,m:r}):t('xH',{h:h})):t('xMinShort',{n:r});}
+function capMin(){var c=ls('j8-cap');if(!isNum(c)){try{c=(J8.prefs.get()||{}).cap;}catch(e){c=null;}}return isNum(c)&&c>=30&&c<=720?c:180;}
+function planToday(){var p=ls('j8-plan');if(!(p&&p.d===ymd(new Date()))){try{p=(J8.prefs.get()||{}).plan;}catch(e){p=null;}}return p&&p.d===ymd(new Date())&&Array.isArray(p.keys)?p:null;}
+function minsI(i){return isNum(i.mins)?i.mins:10;}
+function fitDay(N,cap){var a=0,L=[];N.forEach(function(i){if(a+minsI(i)<=cap||!L.length){L.push(i);a+=minsI(i);}});return L;}
+function todayList(N){var pl=planToday();if(pl){var L=N.filter(function(i){return pl.keys.indexOf(i.key)>-1;});return {L:L,plan:true};}return {L:fitDay(N,capMin()),plan:false};}
+function mono(name){var w=String(name||'?').replace(/[^\p{L}\p{N} ]/gu,' ').trim().split(/\s+/);return ((w[0]||'?').charAt(0)+(w[1]?w[1].charAt(0):(w[0]||'').charAt(1)||'')).toUpperCase();}
+function ptile(pid,sz){if(pid&&PBADGE[pid])return tile(pid,sz);var p=pobj(pid);if(!p||pid==='p-general')return tile(pid,sz);return '<span class="tile mono '+(sz||'')+'" aria-hidden="true">'+esc(mono(p.name))+'</span>';}
+function isDue(i){return i.sev==='r'||(i.due&&ymd(i.due)<=ymd(new Date()));}
+function nextFixed(){var now=new Date(),td=ymd(now),hm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'),E=events().filter(function(e){return e.day>td||(e.day===td&&(!e.time||e.time>=hm));}).sort(function(a,b){return (a.day+(a.time||'99')).localeCompare(b.day+(b.time||'99'));});return E[0]||null;}
+function evWhen(e){var d=new Date(e.day+'T12:00:00');return (e.day===ymd(new Date())?'':dayShort(d)+' ')+(e.time||'');}
+function stalledDays(p){var lm=lastMove(p);if(!isNum(lm)||lm===-Infinity)return null;var d=Math.floor((Date.now()-lm)/864e5);return d;}
+function healthOf(p){if(isDoneP(p)||p.status==='parked')return null;var ms=msOf(p);if(ms&&ms.at&&dday(ms.at)<ymd(new Date()))return {k:'over',w:t('xOverdue')};var d=stalledDays(p);if(d!=null&&d>=9)return {k:'stall',w:t('xStalled',{n:d}),d:d};return null;}
+function liveP(){return projList().filter(function(p){return p.id!=='p-general';});}
+function decisions(){return myQueue().filter(function(i){return i.batch||i.ap||i.c||i.held;});}
+function asOfTxt(){return t('xAsOf',{t:UI.syncedAt?hm2(UI.syncedAt):'—'});}
+/* mentor line in Hebrew too (the English branch is 8.1.1's) */
+var mentorEN=mentor;
+mentor=function(i){if(LANG!=='he')return mentorEN(i);var n=i.ul.length;
+ if(i.wo.length)return 'קודם: '+itemNames(i.wo,2)+(n?' (ואז זה משחרר '+n+')':'')+'.';
+ if(n)return 'זה משחרר '+n+' פריטים שמחכים.';
+ if(i.money&&i.pp)return 'הכי קרוב לכסף: '+i.pp.name+'.';
+ if(i.due)return 'עד '+dshort(i.due)+'.';
+ if(i.age!==Infinity){var d=Math.floor((Date.now()-i.age)/864e5);if(d>=1)return 'מחכה '+d+' ימים.';}
+ return '';};
+function freesTxt(i){var n=i.ul.length;if(!n)return '';return LANG==='he'?n+' פריטים שמחכים':plainNames(i.ul);}
+var nextOfEN=nextOf;
+nextOf=function(i){var n=nextOfEN(i);if(LANG==='he'&&i.batch){var c=i.batch.items.length;n=Object.assign({},n,{what:'להחליט על '+(c===1?'טיוטה אחת':c+' טיוטות')+': '+(i.batch.label||'')});}return n;};
+/* ---------- copy lint: no ops tags, role codes, function or table names, empty slots ---------- */
+var ROLEW={CRO:['Revenue','הכנסות'],CFO:['Finance','כספים'],CDO:['Design','עיצוב'],CPO:['Product','מוצר'],CMO:['Marketing','שיווק'],CTO:['Tech','טכנולוגיה'],COO:['Ops','תפעול']};
+function lintTxt(s){return s.replace(/\b(NEEDS YOUR EYES|WHAT YOU DO)\b\s*[:·—-]?\s*/g,'').replace(/\s*\(?\bj8_[a-z_]+\b\)?/g,'').replace(/\b(CRO|CFO|CDO|CPO|CMO|CTO|COO)\b/g,function(m){return ROLEW[m][LANG==='he'?1:0];}).replace(/\b(qa|tbd|todo) next\.\s*/gi,'');}
+function lint(root){if(!root)return;var tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),n,L=[];while((n=tw.nextNode())){var e=n.parentElement;if(!e||e.closest('textarea,.letter,script,style'))continue;L.push(n);}
+ L.forEach(function(n){var v=n.nodeValue,w=lintTxt(v);if(w!==v)n.nodeValue=w;});}
+/* ---------- Now ---------- */
+function qRow(i,ix){var n=nextOf(i),pid=rowPid(i),p=pobj(pid),o=UI.open[i.key],top=ix<3,g=doTarget(i),k=esc(i.key);
+ var prim=g.href?'<a class="qdo" href="'+esc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'">'+t('do')+'</a>':'<button class="qdo" data-a="'+(g.done?'done':'do')+'" data-k="'+k+'">'+(g.done?t('markDone'):t('do'))+'</button>';
+ if(UI.doing[i.key])prim='<button class="qdo" data-a="done" data-k="'+k+'">'+t('markDone')+'</button>';
+ var fr=top&&i.ul.length?'<p class="frees" dir="auto">'+esc(t('xFrees',{x:freesTxt(i)}))+'</p>':'';
+ return '<li class="qr'+(top?' t3':'')+(o?' open':'')+'" id="r-'+k+'"><div class="qm">'+(top?'<span class="ix"><bdi>'+(ix+1)+'</bdi></span>':'')+'<div class="qt"><b dir="auto">'+esc(cap1(n.what))+'</b>'+fr+'</div>'
+  +'<span class="qp">'+ptile(pid,'sm')+'<span class="qpn" dir="auto">'+esc(p?p.name:(i.sub||pname(pid)))+'</span></span><span class="qmin">'+(isNum(i.mins)?bdi(dur(i.mins)):'')+'</span>'+prim
+  +'<button class="qmore" data-a="row" data-k="'+k+'" aria-expanded="'+(o?'true':'false')+'">'+ic('dots')+'<span class="sr">'+t('xMore')+'</span></button></div>'+(o?'<div class="rmore">'+itemBody(i)+'</div>':'')+'</li>';}
+function capQ(L,n,key,off){off=off||0;var o='<ol class="ql">'+L.slice(0,n).map(function(i,k){return qRow(i,k+off);}).join('')+'</ol>';
+ if(L.length>n)o+='<details class="grp" data-k="'+key+'" data-was="'+(UI.open[key]?1:0)+'"'+(UI.open[key]?' open':'')+'><summary><span>'+t('xShowMore',{n:'<bdi>'+(L.length-n)+'</bdi>'})+'</span>'+ic('down','chev')+'</summary>'+(UI.open[key]?'<ol class="ql">'+L.slice(n).map(function(i,k){return qRow(i,k+n+off+3);}).join('')+'</ol>':'')+'</details>';return o;}
+function sect(key,label,n,body,openDef){var op=key in UI.open?UI.open[key]:!!openDef;return '<details class="sec10" data-k="'+key+'" data-was="'+(op?1:0)+'"'+(op?' open':'')+'><summary><span>'+label+'</span><span class="n"><bdi>'+n+'</bdi></span>'+ic('down','chev')+'</summary>'+(op?body:'')+'</details>';}
+function teamOpen(){return tasksAll().filter(function(x){return x.owner!=='dave'&&(!x.status||x.status==='open');});}
+function kpis(){var m=J8.money.summary(),D=decisions(),P=liveP(),ov=0,st=0;P.forEach(function(p){var h=healthOf(p);if(h&&h.k==='over')ov++;else if(h)st++;});
+ var mv=m?'<b class="kv"><bdi>'+esc(usd(isNum(m.booked_usd)?m.booked_usd:0))+'</bdi></b><span class="kl">'+esc(t('xKMoney'))+'</span><span class="ks">'+(isNum(m.m1_usd)?bdi(t('xKMoneyV',{a:usd(m.booked_usd||0),b:usd(m.m1_usd)})):'')+(m.m1_date&&J8.money.daysTo(m.m1_date)!=null?' · '+bdi(t('xKDays',{n:Math.max(0,J8.money.daysTo(m.m1_date))})):'')+'</span>'+(isNum(m.m1_usd)&&m.m1_usd>0?'<span class="km"><i style="width:'+Math.max(0,Math.min(100,(m.booked_usd||0)/m.m1_usd*100))+'%"></i></span>':'')
+  :'<b class="kv">—</b><span class="kl">'+esc(t('xKMoney'))+'</span><span class="ks">'+esc(t('xKNoMoney'))+'</span>';
+ return '<div class="kcs"><button class="kc" data-a="nav" data-id="money">'+mv+'</button>'
+  +'<button class="kc" data-a="nav" data-id="inbox"><b class="kv"><bdi>'+D.length+'</bdi></b><span class="kl">'+esc(t('xKInbox'))+'</span><span class="ks">'+esc(D.length===1?t('xKDec1'):D.length?t('xKDec',{n:D.length}):t('xKDec0'))+'</span></button>'
+  +'<button class="kc" data-a="x-risk"><b class="kv"><bdi>'+(ov+st)+'</bdi></b><span class="kl">'+esc(t('xKRisk'))+'</span><span class="ks"><bdi>'+esc(t('xKRiskV',{a:ov,b:st}))+'</bdi></span></button></div>';}
+function vNow(){var h='<header class="ph"><div><h2 id="pageH" tabindex="-1">'+esc(dayStr())+'</h2>';
+ if(!connected)return h+'</div></header><p class="lead" role="status">'+t('loadingDay')+'</p><div class="skel"></div><div class="skel"></div>';
+ var nf=nextFixed();h+='<p class="sub">'+(nf?'<button class="lnk" data-a="jump" data-id="'+esc(nf.jump==='stats'?'money':nf.jump||'calendar')+'"><span>'+esc(t('xNextFixed',{x:''}))+'<bdi dir="auto">'+esc(evWhen(nf)+' '+cut(nf.title,60))+'</bdi></span></button>':esc(t('xNoFixed')))+'</p></div>';
+ var N=myQueue(),cap=capMin(),TL=todayList(N),L=TL.L,tot=sumMins(L.map(function(i){return {mins:minsI(i)};}));
+ h+='<button class="btn pri" data-a="x-plan">'+ic('plan')+'<span>'+t('xPlan')+'</span></button></header>';
+ if(J8.status().error==='offline'){var sa=UI.syncedAt?hm2(UI.syncedAt):'—';h+='<p class="held">'+ic('wifi')+'<span>'+esc(t('noConnP',{t:sa}))+'</span> <button class="lnk" data-a="retry">'+t('tryAgain')+'</button></p>';}
+ if(!N.length){var D0=doneToday();return h+'<section class="empty10"><p>'+esc(t('xNothing'))+(nf?' '+esc(t('xNextFixed',{x:''}))+'<bdi dir="auto">'+esc(evWhen(nf)+' '+nf.title)+'</bdi>':'')+'</p><button class="btn" data-a="nav" data-id="projects">'+t('xOpen')+': '+t('projects')+'</button></section>'+kpis()+doneBlock(D0,false);}
+ var pc=Math.min(100,tot/cap*100),over=tot>cap;
+ h+='<div class="budget" role="img" aria-label="'+esc(t('xBudget'))+'"><span class="blab">'+ic('time')+t('xBudget')+'</span><span class="bm"><i style="width:'+pc+'%"></i></span><span class="bt"><bdi>'+esc(TL.plan?t('xBudgetPlan',{a:dur(tot),b:dur(cap),n:L.length}):t('xBudgetFit',{a:dur(tot),b:dur(cap),n:L.length}))+'</bdi></span></div>';
+ var top=L.slice(0,3),restT=L.slice(3),later=N.filter(function(i){return L.indexOf(i)<0;}),tm=teamOpen(),D=doneToday();
+ h+='<ol class="ql tops" aria-label="'+esc(t('first'))+'">'+top.map(qRow).join('')+'</ol>';
+ h+=sect('nT',t('xToday'),restT.length,restT.length?capQ(restT,isDesk()?2:4,'nTall',3):'<p class="lead">—</p>',isDesk());
+ h+=sect('nW',t('xWait'),tm.length,capL(tm,8,teamRow,'nWall'),false);
+ h+=sect('nL',t('xLater'),later.length+plannedRows().length,(later.length?capQ(later,10,'nLall',3):'')+plannedBlock(),false);
+ h+=kpis()+doneBlock(D,UI.open.doneOpen);
+ return h;}
+/* Money lens (from the Now KPI): the figures with their source and time, then what blocks money */
+function vMoney(){var m=J8.money.summary(),M=myQueue().filter(function(i){return i.money;});
+ var h='<header class="ph"><div>'+crumbs([['now',t('now')]])+'<h2 id="pageH" tabindex="-1">'+esc(t('xMoneyH'))+'</h2><p class="sub">'+esc(m&&m.updated?t('xSrc',{x:cut(m.by||'',60)})+' · '+t('xAsOf',{t:tm1(m.updated)}):asOfTxt())+'</p></div></header>';
+ h+='<section class="card10">'+secMoney()+'</section><h3 class="h3">'+esc(t('xMoneyB'))+' <span class="n"><bdi>'+M.length+'</bdi></span></h3>';
+ h+=M.length?capQ(M,6,'mAll'):'<p class="lead">'+esc(t('xMoneyNone'))+'</p>';return h;}
+/* ---------- Inbox (master-detail on desktop, list → push on a phone) ---------- */
+function inboxItems(){var Q=decisions(),R=J8.inbox.list().filter(function(x){return (x.task_id||x.approval_id||(x.p&&x.p!=='p-general'))&&lastTeamLine(x);}).slice(0,40);
+ var L=Q.map(function(i){return {k:i.key,type:i.c?'q':'d',i:i};}).concat(R.map(function(x){return {k:'rp-'+x.id,type:'r',x:x};}));
+ return L.filter(function(o){return UI.ifil==='all'||(UI.ifil==='d'&&o.type==='d')||(UI.ifil==='q'&&o.type==='q')||(UI.ifil==='r'&&o.type==='r');});}
+function iRow(o){var sel=UI.isel===o.k,h,pid,ttl,sub,act='';
+ if(o.type==='r'){var x=o.x,tg=msgTarget(Object.assign({id:x.id},x)),tt=targetTitle(tg),l=lastTeamLine(x);pid=tt.pid||x.p;ttl=tt.title;sub=t('xReplied',{t:pDept(pid)})+(l.t?' · '+l.t:'');}
+ else{var i=o.i,n=nextOf(i);pid=rowPid(i);ttl=i.c?i.title:i.batch?(i.batch.label||n.what):cap1(n.what);
+  sub=i.c?t('xTeamAsks',{t:pDept(i.c.p)}):i.batch?(i.batch.items.length===1?t('xNDraft1'):t('xNDrafts',{n:i.batch.items.length}))+(isNum(i.mins)?' · '+dur(i.mins):''):(i.held?i.sub:'');
+  if(i.batch&&i.batch.items.length>=4)act='<button class="iset" data-a="x-set" data-id="'+esc(i.batch.id)+'">'+t('xSet')+'</button>';}
+ h='<li class="ir'+(sel?' sel':'')+'"><button class="irb" data-a="x-isel" data-id="'+esc(o.k)+'" aria-current="'+(sel?'true':'false')+'">'+ptile(pid,'sm')+'<span class="rt"><b dir="auto">'+esc(ttl)+'</b><span class="sub" dir="auto">'+esc(pname(pid))+' · '+esc(sub)+'</span></span>'+(o.i&&isDue(o.i)?'<i class="dd" aria-hidden="true"></i>':'')+'</button>'+act+'</li>';return h;}
+function iDetail(o){if(!o)return '<p class="lead pick">'+esc(t('xPick'))+'</p>';
+ if(o.type==='r'){var x=o.x,tg=msgTarget(Object.assign({id:x.id},x)),tt=targetTitle(tg),L=teamLines(x);
+  return '<h3 class="h3" dir="auto">'+esc(tt.title)+'</h3><div class="msgs">'+L.slice(-4).map(function(l){return '<p class="msg" dir="auto">'+(l.t?'<time>'+esc(l.t)+'</time> ':'')+esc(sevStrip(l.x))+'</p>';}).join('')+'</div><button class="btn" data-a="thread-msg" data-id="'+esc(x.id)+'">'+ic('comment')+'<span>'+t('xOpenThread')+'</span></button>';}
+ var i=o.i;if(i.batch||i.ap){var bid=i.batch?i.batch.id:'ap:'+i.ap.id,ids=i.batch?i.batch.items.map(function(a){return a.id;}):[i.ap.id];
+  if(UI.batch!==bid||!(UI.dids||[]).length){UI.batch=bid;UI.dids=ids;UI.editing=false;}UI.draftFrom='inbox';return draftCheck()+vDraft10().replace(/id="pageH"/g,'id="dH"');}
+ if(i.c){var c=i.c,u=firstUrl(c.reply);return '<h3 class="h3" dir="auto">'+esc(i.title)+'</h3><p class="sub" dir="auto">'+esc(t('xTeamAsks',{t:pDept(c.p)}))+' · '+esc(pname(c.p))+(c.at?' · '+esc(tm1(c.at)):'')+'</p>'+(askLine(c)!==i.title?'<p dir="auto">'+esc(askLine(c).replace(/https?:\/\/\S+/g,'').trim())+'</p>':'')
+  +(u?'<p class="mt"><a class="btn go" href="'+esc(u)+'" target="_blank" rel="noopener">'+ic('link')+'<span>'+t('openLink')+'</span></a></p>':'')
+  +'<form class="cbox" data-ans="'+esc(c.p)+'" data-ask="'+esc(i.key)+'"><label class="sr" for="aq">'+t('answerPh')+'</label><textarea id="aq" rows="2" dir="auto" placeholder="'+esc(t('answerPh'))+'"></textarea><button class="btn pri" type="submit">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form>';}
+ return '<h3 class="h3" dir="auto">'+esc(cap1(nextOf(i).what))+'</h3>'+itemBody(i);}
+function draftCheck(){var L=UI.dids||[],cur=L.filter(isPend)[0],a=cur?AP[cur]:null;if(!a)return '';var txt=J8.approvals.textOf(Object.assign({id:cur},a))||'',w=txt.trim()?txt.trim().split(/\s+/).length:0,dw=new Date().getDay(),q=dw===5||dw===6;
+ return '<aside class="j8card" aria-label="'+esc(t('xCheck'))+'"><b>'+g8()+esc(t('xCheck'))+'</b><ul><li dir="auto">'+esc(a.to?t('xChkTo',{x:cut(a.to,90)}):t('xChkNoTo'))+'</li><li>'+esc(t('xChkWin',{x:q?t('xWinSun'):t('xWinNext')}))+'</li><li><bdi>'+esc(t('xChkLen',{n:w}))+'</bdi></li></ul></aside>';}
+function vInbox(){var h='<header class="ph"><div><h2 id="pageH" tabindex="-1">'+esc(t('inbox'))+'</h2><p class="sub">'+esc(asOfTxt())+'</p></div></header>';
+ if(!connected)return h+'<div class="skel"></div>';
+ var F=[['all','xFAll'],['d','xFDrafts'],['q','xFQ'],['r','xFRep']];h+='<div class="segc" role="group" aria-label="'+esc(t('inbox'))+'">'+F.map(function(f){return '<button class="opt" data-a="x-ifil" data-id="'+f[0]+'" aria-pressed="'+(UI.ifil===f[0]?'true':'false')+'">'+t(f[1])+'</button>';}).join('')+'</div>';
+ var L=inboxItems();if(!L.length)return h+'<section class="empty10"><p>'+esc(t('xInboxNone'))+'</p><button class="btn" data-a="nav" data-id="now">'+t('xOpen')+': '+t('now')+'</button></section>';
+ var desk=isDesk(),sel=L.filter(function(o){return o.k===UI.isel;})[0];if(desk&&!sel){sel=L[0];UI.isel=sel.k;}
+ var n=30,list='<ul class="il">'+L.slice(0,n).map(iRow).join('')+'</ul>'+(L.length>n?'<details class="grp" data-k="iAll" data-was="'+(UI.open.iAll?1:0)+'"'+(UI.open.iAll?' open':'')+'><summary><span>'+t('xShowMore',{n:'<bdi>'+(L.length-n)+'</bdi>'})+'</span>'+ic('down','chev')+'</summary>'+(UI.open.iAll?'<ul class="il">'+L.slice(n).map(iRow).join('')+'</ul>':'')+'</details>':'');
+ return h+(desk?'<div class="mdg"><div class="mdl">'+list+'</div><div class="mdd" id="mdd">'+iDetail(sel)+'</div></div>':list);}
+function allInbox(){var s=UI.ifil;UI.ifil='all';var r=inboxItems();UI.ifil=s;return r;}
+function vDraft10(){return vDraft().replace('<button class="kill" data-a="dkill"','<button data-a="x-skip">'+ic('fwd','flip')+'<span>'+t('xSkip')+'</span></button><button class="kill" data-a="dkill"');}
+function vQitem(){var o=allInbox().filter(function(x){return x.k===UI.isel;})[0];
+ return '<header class="ph"><div>'+crumbs([['inbox',t('inbox')]])+'</div></header><span id="pageH" tabindex="-1" class="sr">'+esc(t('inbox'))+'</span>'+(o?iDetail(o):'<p class="lead">'+esc(t('xInboxNone'))+'</p>');}
+function sampler(bid){var L=apPending().filter(function(a){return bkey(a)===bid;}),n=L.length;if(!n)return;var S=[L[0],L[n>>1],L[n-1]].filter(function(a,k,A){return A.indexOf(a)===k;});UI.gsheet={k:'set'};
+ gOpen('<h2 id="gTitle">'+esc(t('xSampleH',{n:n}))+'</h2><p class="lead">'+esc(t('xSampleP',{n:n}))+'</p>'+S.map(function(a){return '<article class="letter sm" dir="auto"><b>'+esc(apWho(a))+'</b>\n'+esc(J8.approvals.textOf(a)||'')+'</article>';}).join('')
+  +'<div class="abar two"><button class="do" data-a="x-setall" data-id="'+esc(bid)+'">'+ic('check')+'<span>'+esc(t('xApproveAll',{n:n}))+'</span></button><button data-a="x-set1" data-id="'+esc(bid)+'">'+ic('do','flip')+'<span>'+t('xOneByOne')+'</span></button></div><button class="btn wide mt" data-a="gclose">'+t('close')+'</button>','var(--rail)');}
+function setAll(bid){var ids=apPending().filter(function(a){return bkey(a)===bid;}).map(function(a){return a.id;});gClose();if(!J8.status().connected){toast(t('notConn'));return;}
+ seq(ids,function(id){return J8.approvals.approve(id);}).then(function(){toast(t('xApprovedAll',{n:ids.length}),function(){seq(ids,function(id){return J8.approvals.undo(id);}).then(function(){toast(t('backWaiting'));});});render();});}
+/* ---------- Projects: board by stage (list for many), filters instead of levels ---------- */
+function pPass(p,M){var f=UI.pf;if(f.u!=='all'&&p.unit_id!==f.u)return false;if(f.o!=='all'&&holderOf(p,M)!==f.o)return false;if(f.n&&!projNeed(p.id).length)return false;if(f.risk&&!healthOf(p))return false;return true;}
+function pCard(p,M){var ng=nextGoal(p),y=youReal(p),h=healthOf(p),ho=holderOf(p,M),w=projNeed(p.id).length;
+ return '<li><button class="pc" data-a="proj" data-id="'+esc(p.id)+'">'+ptile(p.id,'md')+'<span class="rt"><b dir="auto">'+esc(p.name)+'</b><span class="nx" dir="auto">'+esc(t('xNext',{x:cut(sevStrip(y||(ng?ng.x:'—')),80)}))+'</span><span class="pmeta"><span class="own10 '+(ho==='me'?'you':'')+'">'+esc(ho==='me'?t('xYou'):ho==='ext'?t('xOutside'):t('xTeam'))+(w?' · <bdi>'+w+'</bdi>':'')+'</span>'+(h?'<span class="hw '+h.k+'">'+esc(h.w)+'</span>':'')+'</span></span></button></li>';}
+function stBar(s){var o='<span class="stbar" aria-hidden="true">';for(var k=1;k<=6;k++)o+='<i class="'+(k<=s?(k===6?'pay':'on'):'')+'"></i>';return o+'</span>';}
+function vProjects(){var M=mineBy(),A=liveP(),P=A.filter(function(p){return pPass(p,M);}),f=UI.pf;if(UI.v==='dept'&&UI.dept){f.u=UI.dept==='_'?'all':UI.dept;UI.v='projects';}
+ var view=f.view||(A.length>24?'list':'board'),U=unitsSorted();
+ var h='<header class="ph"><div><h2 id="pageH" tabindex="-1">'+esc(t('projects'))+' <span class="n"><bdi>'+P.length+'</bdi></span></h2><p class="sub">'+esc(asOfTxt())+'</p></div></header>';
+ h+='<div class="filt"><label><span>'+t('xDept')+'</span><select data-x="pf-u"><option value="all">'+t('xAnyone')+'</option>'+U.map(function(u){return '<option value="'+esc(u.id)+'"'+(f.u===u.id?' selected':'')+'>'+esc(lintTxt(u.name))+'</option>';}).join('')+'</select></label>'
+  +'<label><span>'+t('xOwner')+'</span><select data-x="pf-o"><option value="all">'+t('xAnyone')+'</option><option value="me"'+(f.o==='me'?' selected':'')+'>'+t('xYou')+'</option><option value="team"'+(f.o==='team'?' selected':'')+'>'+t('xTeam')+'</option><option value="ext"'+(f.o==='ext'?' selected':'')+'>'+t('xOutside')+'</option></select></label>'
+  +'<button class="opt" data-a="x-pfn" aria-pressed="'+(f.n?'true':'false')+'">'+t('xNeedsMe')+'</button>'+(f.risk?'<button class="opt" data-a="x-pfr" aria-pressed="true">'+t('xKRisk')+'</button>':'')
+  +'<span class="segc sm" role="group" aria-label="View"><button class="opt" data-a="x-pv" data-id="board" aria-pressed="'+(view==='board'?'true':'false')+'">'+t('xBoard')+'</button><button class="opt" data-a="x-pv" data-id="list" aria-pressed="'+(view==='list'?'true':'false')+'">'+t('xList')+'</button></span></div>';
+ var act=P.filter(function(p){return p.status!=='parked'&&!isDoneP(p);}),park=P.filter(function(p){return p.status==='parked';}),done=P.filter(isDoneP);
+ if(view==='list'){var S=act.slice().sort(f.sort==='name'?function(a,b){return String(a.name).localeCompare(String(b.name));}:f.sort==='health'?function(a,b){return (healthOf(b)?1:0)-(healthOf(a)?1:0);}:function(a,b){return stageOf(b)-stageOf(a);});
+  h+='<table class="pt"><thead><tr><th><button class="lnk" data-a="x-psort" data-id="name">'+t('xName')+'</button></th><th><button class="lnk" data-a="x-psort" data-id="stage">'+t('xStage')+'</button></th><th class="hide-s">'+t('xOwner')+'</th><th><button class="lnk" data-a="x-psort" data-id="health">'+t('xHealth')+'</button></th></tr></thead><tbody>'
+   +S.map(function(p){var s=stageOf(p),hh=healthOf(p),ho=holderOf(p,M);return '<tr><td><button class="pl" data-a="proj" data-id="'+esc(p.id)+'">'+ptile(p.id,'sm')+'<span dir="auto">'+esc(p.name)+'</span></button></td><td>'+(s?stBar(s)+' '+esc(stg(s)):esc(t('xNoStage')))+'</td><td class="hide-s">'+esc(ho==='me'?t('xYou'):ho==='ext'?t('xOutside'):t('xTeam'))+'</td><td>'+(hh?'<span class="hw '+hh.k+'">'+esc(hh.w)+'</span>':esc(t('xOk')))+'</td></tr>';}).join('')+'</tbody></table>';}
+ else{var lanes=[0,1,2,3,4,5,6].map(function(s){return {s:s,P:act.filter(function(p){return stageOf(p)===s;})};}).filter(function(l){return l.s>0||l.P.length;});
+  h+='<div class="board">'+lanes.map(function(l){var k='ln'+l.s,op=UI.open[k],L=op?l.P:l.P.slice(0,6);
+   return '<section class="lane10"><h3>'+(l.s?stBar(l.s)+'<span>'+esc(stg(l.s))+'</span>':'<span>'+esc(t('xNoStage'))+'</span>')+'<span class="n"><bdi>'+l.P.length+'</bdi></span></h3><ul>'+L.map(function(p){return pCard(p,M);}).join('')+'</ul>'+(l.P.length>6?'<button class="lnk more" data-a="lane" data-id="'+l.s+'">'+(op?t('close'):t('xShowMore',{n:'<bdi>'+(l.P.length-6)+'</bdi>'}))+'</button>':'')+'</section>';}).join('')+'</div>';}
+ if(park.length)h+=sect('pPark',t('xParked'),park.length,'<ul class="cards">'+park.map(function(p){return pCard(p,M);}).join('')+'</ul>',false);
+ if(done.length)h+=sect('pDone',t('xDone'),done.length,'<ul class="cards">'+done.map(function(p){return pCard(p,M);}).join('')+'</ul>',false);
+ return h;}
+function vProj(){var p=pobj(UI.proj);if(!p){UI.v='projects';return vProjects();}var s=stageOf(p),mine=projNeed(p.id),pk=mine.length?null:parkedAsks().filter(function(i){return i.p.id===p.id;})[0],y=mine[0]||pk,hh=healthOf(p),ms=msOf(p);
+ var h='<header class="ph proj"><div>'+crumbs([['projects',t('projects')]])+'<div class="phl">'+ptile(p.id,'lg')+'<div><h2 id="pageH" tabindex="-1" dir="auto">'+esc(p.name)+'</h2><p class="sub">'+(s?stBar(s)+' <bdi>'+esc(t('xStageOf',{a:s,s:stg(s)}))+'</bdi>':esc(t('xNoStage')))+' · <span class="hw '+(hh?hh.k:'ok')+'">'+esc(hh?hh.w:p.status==='parked'?t('xParked'):isDoneP(p)?t('xDone'):t('xOk'))+'</span></p></div></div></div></header>';
+ h+='<section class="ystep"><h3 class="h3">'+esc(t('xYourStep'))+'</h3>'+(y?'<p class="yt" dir="auto"><b>'+esc(cap1(nextOf(y).what))+'</b>'+(isNum(y.mins)?' · '+bdi(dur(y.mins)):'')+'</p>'+itemBody(y):'<p class="lead">'+esc(t('xNoStep'))+'</p>')+'</section>';
+ var team=tasksAll().filter(function(x){return x.project_id===p.id&&x.owner!=='dave'&&(!x.status||x.status==='open');}),nw=sevStrip(String(p.now||'')).trim();
+ h+='<div class="cols3"><section><h3 class="h3">'+esc(t('xNowH'))+'</h3>'+(nw?(nw.length>420?'<details class="fold"><summary dir="auto">'+esc(nw.slice(0,300))+'…</summary><p dir="auto">'+esc(nw)+'</p></details>':'<p dir="auto">'+esc(nw)+'</p>'):'<p class="lead">—</p>')+pcount(p)+'</section>'
+  +'<section><h3 class="h3">'+esc(t('xStepsH'))+' <span class="n"><bdi>'+(Math.max(0,mine.length-1)+team.length)+'</bdi></span></h3>'+(mine.length>1?capL(mine.slice(1),3,rowItem,'mineAll-'+p.id):'')+(team.length?capL(team,4,teamRow,'teamAll-'+p.id):'')+(mine.length<2&&!team.length?'<p class="lead">—</p>':'')+'</section>'
+  +'<section><h3 class="h3">'+esc(t('xMsH'))+'</h3>'+(ms?'<p dir="auto"><b>'+esc(ms.t)+'</b></p><p class="sub">'+(ms.at?bdi(dlabelL(ms.at)+(dtime(ms.at)?' '+dtime(ms.at):'')):esc(t('xEta')))+'</p>':'<p class="lead">'+esc(t('xMsNone'))+'</p>')+'</section></div>';
+ var DR=apPending().filter(function(a){return a.product===p.id;}),seg=UI.pseg;
+ h+='<div class="segc" role="group" aria-label="'+esc(p.name)+'"><button class="opt" data-a="x-pseg" data-id="act" aria-pressed="'+(seg==='act'?'true':'false')+'">'+t('xSegAct')+'</button><button class="opt" data-a="x-pseg" data-id="dr" aria-pressed="'+(seg==='dr'?'true':'false')+'">'+t('xSegDr')+' <bdi>'+DR.length+'</bdi></button><button class="opt" data-a="x-pseg" data-id="rev" aria-pressed="'+(seg==='rev'?'true':'false')+'">'+t('xSegRev')+'</button></div>';
+ if(seg==='dr'){h+=DR.length?'<ul class="il">'+DR.slice(0,20).map(function(a){return '<li class="ir"><button class="irb" data-a="opendraft" data-id="'+esc(bkey(a))+'"><span class="rt"><b dir="auto">'+esc(apKind(a)+': '+apWho(a))+'</b><span class="sub" dir="auto">'+esc(a.batch_label||'')+'</span></span></button></li>';}).join('')+'</ul>':'<p class="lead">'+esc(t('xNoDrafts'))+'</p>';}
+ else if(seg==='rev'){var R=[];if(hh&&hh.k==='over')R.push(t('xRevOverdue'));var sd=stalledDays(p);if(sd!=null&&sd>=9)R.push(t('xRevStalled',{n:sd}));if(!ms)R.push(t('xRevNoMs'));if(!String(p.next||'').trim()&&!y)R.push(t('xRevNoNext'));
+  h+='<aside class="j8card"><b>'+g8()+esc(t('xSegRev'))+'</b><ul>'+(R.length?R:[t('xRevOk')]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><p class="src">'+esc(t('xWhySrc',{t:UI.syncedAt?hm2(UI.syncedAt):'—'}))+'</p></aside>';}
+ else{var hold=J8.approvals.list().filter(function(a){return a.product===p.id&&a.kind!=='template'&&(a.status==='approved'||a.status==='edited'||a.status==='queued');});
+  if(hold.length)h+='<details class="grp" data-k="hold-'+esc(p.id)+'"'+(UI.open['hold-'+p.id]?' open':'')+'><summary>'+ic('lock')+'<span>'+t('approvedWait')+'</span><span class="n"><bdi>'+hold.length+'</bdi></span>'+ic('down','chev')+'</summary><ul class="names">'+hold.map(function(a){return '<li dir="auto">'+esc(apKind(a)+': '+apWho(a))+'</li>';}).join('')+'</ul></details>';
+  var D=tasksAll().filter(function(x){return x.project_id===p.id&&x.status==='done';}).sort(function(a,b){return String(b.done_at||'').localeCompare(String(a.done_at||''));});
+  if(D.length)h+='<details class="grp done" data-k="pd-'+esc(p.id)+'"'+(UI.open['pd-'+p.id]?' open':'')+'><summary>'+ic('check')+'<span>'+t('doneHere2')+'</span><span class="n"><bdi>'+D.length+'</bdi></span>'+ic('down','chev')+'</summary><div class="list">'+D.slice(0,UI.open['pdAll-'+p.id]?500:20).map(function(x){
+   return '<div class="drow"><button class="dlink" data-a="thread-task" data-id="'+esc(x.id)+'"><b dir="auto" class="strike">'+esc(x.title)+'</b><span class="sub">'+t('doneW')+(x.done_at?', '+esc(fdate(x.done_at)):'')+'</span></button>'+(x.owner==='dave'?'<button class="undo" data-a="untick" data-id="'+esc(x.id)+'">'+ic('undo')+'<span>'+t('undo')+'</span></button>':'')+'</div>';}).join('')+'</div></details>';
+  var pm1=J8.inbox.forProject(p.id).filter(function(x){return !x.task_id&&!x.approval_id;})[0],last=pm1?lastTeamLine(pm1):null;if(!hold.length&&!D.length&&!last)h+='<p class="lead">'+esc(t('xNoAct'))+'</p>';
+  if(last)h+='<button class="lastline" data-a="thread-proj" data-id="'+esc(p.id)+'">'+sevChip(last.v)+'<span dir="auto">'+esc(last.x)+'</span></button>';
+  if(p.link)h+='<div class="links"><a class="btn go" href="'+esc(p.link)+'" target="_blank" rel="noopener">'+ic('link')+'<span dir="auto">'+esc(p.link_text||(LANG==='he'?'לפתוח את הפרויקט':'Open the project'))+'</span></a></div>';
+  h+='<div class="pinc"><form class="cbox" data-ans="'+esc(p.id)+'"><label class="sr" for="pc-'+esc(p.id)+'">'+t('yourComment')+'</label><textarea id="pc-'+esc(p.id)+'" rows="1" dir="auto" placeholder="'+esc(t('writeC'))+'"></textarea><button class="btn pri" type="submit">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form></div>';}
+ return h;}
+/* ---------- Calendar: a mini week, a "No date" bucket, a 14-day agenda ---------- */
+function vCal(){var h='<header class="ph"><div><h2 id="pageH" tabindex="-1">'+esc(t('calendar'))+'</h2><p class="sub">'+esc(asOfTxt())+'</p></div></header>';if(!connected)return h+'<div class="skel"></div>';
+ var E=events(),now=new Date(),D=[];for(var k=0;k<14;k++){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+k,12);D.push({d:d,key:ymd(d),ev:[]});}
+ E.forEach(function(e){var x=D.filter(function(dd){return dd.key===e.day;})[0];if(x)x.ev.push(e);});
+ h+='<ol class="mweek">'+D.slice(0,7).map(function(dd,k){var n=dd.ev.length;return '<li class="'+(k===0?'td':'')+'"><span>'+esc(dayShort(dd.d))+'</span><span class="dots" role="img" aria-label="'+n+'">'+'<i></i>'.repeat(Math.min(4,n))+'</span></li>';}).join('')+'</ol>';
+ var nd=tasksAll().filter(function(x){return x.owner==='dave'&&(!x.status||x.status==='open')&&!x.due;});
+ if(nd.length)h+='<div class="nodate"><span>'+esc(t('xCalNoDate'))+' · <bdi>'+nd.length+'</bdi></span><button class="btn" data-a="x-plan">'+ic('plan')+'<span>'+t('xCalPlan')+'</span></button></div>';
+ h+='<p class="lead">'+esc(t('xCalConn'))+' <button class="lnk" data-a="nav" data-id="me">'+t('xConn')+'</button></p>';
+ var has=D.filter(function(dd){return dd.ev.length;});if(!has.length)return h+'<section class="empty10"><p>'+esc(t('xCalNone'))+'</p></section>';
+ h+='<div class="agenda">'+has.map(function(dd){dd.ev.sort(function(a,b){return (a.time||'99').localeCompare(b.time||'99');});var k='cd'+dd.key,L=UI.open[k]?dd.ev:dd.ev.slice(0,8);
+  return '<section><h3>'+esc(dayStr(dd.d))+'</h3><ul>'+L.map(function(e){var goal=e.jump==='stats',ty=goal?t('xTGoal'):e.k==='ms'?t('xTMs'):e.k==='you'?t('xYou'):t('xTeam');
+   return '<li><button class="agr" data-a="jump" data-id="'+esc(goal?'money':(e.jump||''))+'"><time>'+esc(e.time||'')+'</time>'+ptile(e.pid,'sm')+'<span class="rt"><b dir="auto">'+esc(goal?t('m1goal',{a:usd((J8.money.summary()||{}).m1_usd||0)}):e.title)+'</b><span class="sub" dir="auto">'+esc(e.sub||'')+'</span></span><span class="tg '+(e.k==='you'?'you':'')+'">'+esc(ty)+'</span></button></li>';}).join('')+'</ul>'+(dd.ev.length>8&&!UI.open[k]?'<button class="lnk more" data-a="x-open" data-id="'+k+'">'+t('xShowMore',{n:'<bdi>'+(dd.ev.length-8)+'</bdi>'})+'</button>':'')+'</section>';}).join('')+'</div>';
+ return h;}
+/* ---------- Me: profile, organisation, connections with true status, preferences, sending, help ---------- */
+function connRow(name,st,on,btn){return '<li class="cr"><span class="cl">'+esc(name.charAt(0))+'</span><span class="rt"><b>'+esc(name)+'</b><span class="sub '+(on?'on':'')+'">'+(on?ic('check'):'')+esc(st)+'</span></span>'+btn+'</li>';}
+function vMe(){var st=J8.status(),u=st.user||{},o=J8.orgs.current()||{},ctl=J8.control.get()||{},m=J8.money.summary(),soon=function(n){return '<button class="btn" data-a="x-soon" data-id="'+esc(n)+'">'+t('xSoon')+'</button>';};
+ var h='<header class="ph"><div><h2 id="pageH" tabindex="-1">'+esc(t('me'))+'</h2></div></header>';
+ h+='<section class="mesec"><h3 class="h3">'+esc(t('xProfile'))+'</h3><div class="prof"><span class="av big" aria-hidden="true">'+esc(mono(u.email||'?'))+'</span><div><b dir="auto">'+esc(u.email||'—')+'</b><p class="sub">'+esc((st.role||'')+(o.name?' · '+o.name:''))+'</p></div></div></section>';
+ var U=unitsSorted().map(function(x){return lintTxt(x.name);});
+ h+='<section class="mesec"><h3 class="h3">'+esc(t('xOrg'))+'</h3>'+(U.length?'<p dir="auto">'+esc(t('xUnits',{x:U.join(', ')}))+'</p>':'')+'<div data-slot="msAcct"></div><button class="btn" data-a="x-soon" data-id="'+esc(t('xInvite'))+'" data-t="invite">'+t('xInvite')+'</button></section>';
+ h+='<section class="mesec"><h3 class="h3">'+esc(t('xConn'))+'</h3><ul class="conns">'
+  +connRow(t('xCData'),st.connected?t('xCOn')+' · '+asOfTxt():t('xCOff'),st.connected,st.connected?'':'<button class="btn" data-a="retry">'+t('tryAgain')+'</button>')
+  +connRow(t('xCMail'),ctl.email_from_ok?t('xCMailOn'):t('xCMailOff'),!!ctl.email_from_ok,'<button class="btn" data-cx="open">'+t('xManage')+'</button>')
+  +connRow(t('xCMoney'),m&&m.updated?t('xCMoneyOn',{t:tm1(m.updated)}):t('xCMoneyOff'),!!(m&&m.updated),m?'<button class="btn" data-a="nav" data-id="money">'+t('xOpen')+'</button>':'')
+  +connRow(t('xCCal'),t('xNotConn'),false,soon(t('xCCal')))+connRow(t('xCWa'),t('xNotConn'),false,soon(t('xCWa')))+connRow(t('xCPay'),t('xNotConn'),false,soon(t('xCPay')))+connRow(t('xCLi'),t('xNotConn'),false,soon(t('xCLi')))
+  +'</ul><div data-slot="msPush"></div></section>';
+ var cap=capMin();h+='<section class="mesec"><h3 class="h3">'+esc(t('xPrefs'))+'</h3><div data-slot="msPrefs"></div><div class="sh-grp"><h3 id="capH">'+esc(t('xCapH'))+'</h3><p class="sub">'+esc(t('xCapP'))+'</p><div class="seg3" role="group" aria-labelledby="capH">'+[60,120,180,240,360].map(function(c){return '<button class="opt" data-a="x-cap" data-id="'+c+'" aria-pressed="'+(cap===c?'true':'false')+'"><bdi>'+esc(dur(c))+'</bdi></button>';}).join('')+'</div></div>'
+  +'<div class="sh-row"><div><b>'+esc(t('xQuietH'))+'</b><span>'+esc(t('xQuietP'))+'</span></div></div></section>';
+ h+='<section class="mesec"><h3 class="h3">'+esc(t('xSending'))+'</h3><div data-slot="msSend"></div></section><section class="mesec"><div data-slot="msHelp"></div></section>';
+ return h;}
+function parkMe(){var pk=$('mePark');if(!pk)return;['msSend','msPush','msPrefs','msHelp','msAcct'].forEach(function(id){var e=$(id);if(e&&e.parentNode!==pk)pk.appendChild(e);});}
+function slotMe(){[].forEach.call(document.querySelectorAll('#main [data-slot]'),function(s){var e=$(s.dataset.slot);if(e)s.appendChild(e);});}
+function meWords(){var W={mSendH:LANG==='he'?'שליחה על ידי צוות ה־AI':'Sending by the AI team',mCtlH:LANG==='he'?'בקרה':'Control',mCtlP:LANG==='he'?'מגבלות יומיות, לוח הזמנים של הצוות, תבניות, לא ליצור קשר.':'Daily limits, team schedule, templates, do-not-contact.',
+ mPushH:LANG==='he'?'התראות במכשיר הזה':'Alerts on this device',mPushP:LANG==='he'?'תשובות מהצוות, עבודה שהסתיימה, טיוטות לאישור.':'Team replies, finished work, drafts to OK.',mOrgH:LANG==='he'?'עסק':'Business',mWhoH:LANG==='he'?'מחובר/ת':'Signed in',mLiveH:LANG==='he'?'נתונים חיים':'Live data',ctlBackL:t('me'),signOut:LANG==='he'?'להתנתק':'Sign out',ctlBtn:LANG==='he'?'לפתוח':'Open'};
+ Object.keys(W).forEach(function(id){var e=$(id);if(e)e.textContent=W[id];});var ct=$('connTxt');if(ct)ct.textContent=J8.status().connected?t('xCOn')+' · '+asOfTxt():t('xCOff');var tb=$('tipB');if(tb&&tb.lastChild)tb.lastChild.textContent=t('showTip');}
+/* ---------- J8 panel: at most 2 cards about what is on screen, then Ask (the team thread, composer pinned) ---------- */
+function j8Card(key,what,why,act,actId,actData){if(snoozed('j8c-'+key))return null;return {k:key,h:'<article class="j8card" data-key="'+esc(key)+'"><p class="w" dir="auto">'+what+'</p><p class="y" dir="auto">'+esc(why)+'</p><div class="acts">'+(act?'<button class="lk" data-a="'+act+'"'+(actId?' data-id="'+esc(actId)+'"':'')+(actData?' data-k="'+esc(actData)+'"':'')+'>'+esc(t('xDoIt'))+'</button>':'')+'<button class="lk" data-a="x-snz" data-id="'+esc(key)+'">'+t('xNotNow')+'</button><button class="lk" data-a="x-why" data-id="'+esc(key)+'" aria-expanded="'+(UI.open['why-'+key]?'true':'false')+'">'+t('xWhy')+'</button></div>'+(UI.open['why-'+key]?'<p class="src">'+esc(t('xWhySrc',{t:UI.syncedAt?hm2(UI.syncedAt):'—'}))+'</p>':'')+'</article>'};}
+function j8Cards(){if(!connected)return [];var C=[],pl=curPlace(),v=UI.v,N=myQueue();
+ if(v==='now'&&N.length){var cap=capMin(),tot=sumMins(N.map(function(i){return {mins:minsI(i)};}));if(tot>cap&&!planToday())C.push(j8Card('plan',esc(t('xCPlanW',{n:N.length,a:dur(tot),b:dur(cap)})),t('xCPlanY'),'x-plan'));
+  var mi=N.filter(function(i){return i.money;})[0];if(mi)C.push(j8Card('money-'+mi.key,esc(t('xCMonW',{x:cap1(nextOf(mi).what)})),t('xCMonY'),'x-goitem',null,mi.key));}
+ else if(v==='money'){var mi2=N.filter(function(i){return i.money;})[0];if(mi2)C.push(j8Card('money-'+mi2.key,esc(t('xCMonW',{x:cap1(nextOf(mi2).what)})),t('xCMonY'),'x-goitem',null,mi2.key));}
+ else if(v==='proj'){var p=pobj(UI.proj),hh=p&&healthOf(p);if(hh)C.push(j8Card('risk-'+p.id,esc(p.name+': '+hh.w),t('xCWeakY'),'x-pseg','rev'));}
+ else if(pl==='inbox'&&(UI.dids||[]).length){var cur=(UI.dids||[]).filter(isPend)[0];if(cur)C.push(j8Card('dr-'+cur,esc(t('xCDrW',{x:apWho(Object.assign({id:cur},AP[cur]))})),(AP[cur]&&AP[cur].to)?t('xChkTo',{x:cut(AP[cur].to,60)}):t('xChkNoTo'),null));}
+ else if(v==='calendar'){var nd=tasksAll().filter(function(x){return x.owner==='dave'&&(!x.status||x.status==='open')&&!x.due;}).length;if(nd)C.push(j8Card('cal',esc(t('xCCalW',{n:nd})),t('xCCalY'),'x-plan'));}
+ else if(v==='projects'){var M=mineBy(),W=liveP().map(function(p){return {p:p,h:healthOf(p)};}).filter(function(x){return x.h;}).sort(function(a,b){return (b.h.k==='over'?999:b.h.d||0)-(a.h.k==='over'?999:a.h.d||0);})[0];if(W)C.push(j8Card('weak-'+W.p.id,esc(W.p.name+': '+W.h.w),t('xCWeakY'),'proj',W.p.id));}
+ return C.filter(Boolean).slice(0,2);}
+function j8Open(){return document.body.dataset.j8==='open';}
+function setJ8(on,focus){document.body.dataset.j8=on?'open':'closed';if(isWide())ls('j8-panel',on?1:0);['j8Btn','j8Strip'].forEach(function(id){var e=$(id);if(e)e.setAttribute('aria-expanded',on?'true':'false');});
+ var sc=$('scrim');if(sc&&!isWide())sc.hidden=!on&&$('gsheet').hidden&&$('sheet').hidden;renderJ8();if(on&&focus){var i=$('j8cIn');if(i)i.focus();}}
+function isWide(){return window.matchMedia?matchMedia('(min-width:1100px)').matches:true;}
+function renderJ8(){var C=j8Cards(),c=$('j8Cards'),lg=$('j8cLog');
+ var dot=$('j8Dot'),nn=$('j8N');if(dot)dot.hidden=!C.length;if(nn){nn.hidden=!C.length;nn.textContent=C.length||'';}
+ var L={j8H:'xJ8',j8TalkH:'xAskH',j8StripL:'xOpenJ8',j8CloseL:'xCloseJ8',j8BtnL:'xOpenJ8',j8cInL:'xAskJ8',j8cGoL:'send',kbarL:'xSearch'};Object.keys(L).forEach(function(id){var e=$(id);if(e)e.textContent=t(L[id]);});var ci=$('j8cIn');if(ci)ci.placeholder=t('xAskJ8');
+ if(!j8Open())return;
+ if(c){c.innerHTML=C.length?C.map(function(x){return x.h;}).join(''):'<p class="lead">'+esc(t('xCNone'))+'</p>';lint(c);}
+ if(lg){var nb=lg.scrollHeight-lg.scrollTop-lg.clientHeight<48;lg.innerHTML=talkLog();lint(lg);if(nb)lg.scrollTop=lg.scrollHeight;}
+ talkWire();}
+/* ---------- Plan my day: J8 proposes up to the day's capacity, the user commits ---------- */
+function planSheet(){var N=myQueue(),cap=capMin(),pl=planToday(),pick=pl?pl.keys:fitDay(N,cap).map(function(i){return i.key;});UI.gsheet={k:'plan'};
+ gOpen('<h2 id="gTitle">'+esc(t('xPlanH'))+'</h2><p class="lead">'+esc(t('xPlanP',{b:dur(cap)}))+'</p><p class="ptot" id="planTot" aria-live="polite"></p><ul class="plan">'+N.slice(0,60).map(function(i){return '<li><label><input type="checkbox" data-pk="'+esc(i.key)+'" data-m="'+minsI(i)+'"'+(pick.indexOf(i.key)>-1?' checked':'')+'><span dir="auto">'+esc(cap1(nextOf(i).what))+'</span><bdi>'+esc(dur(minsI(i)))+'</bdi></label></li>';}).join('')+'</ul>'
+  +'<div class="abar two"><button class="do" data-a="x-commit">'+ic('check')+'<span>'+t('xCommit')+'</span></button><button data-a="gclose">'+ic('back','flip')+'<span>'+t('cancel')+'</span></button></div>','var(--rail)');planTot();}
+function planTot(){var a=0;[].forEach.call(document.querySelectorAll('#gsheet [data-pk]:checked'),function(x){a+=+x.dataset.m||0;});var e=$('planTot');if(e)e.innerHTML='<bdi>'+esc(t('xPlanTot',{a:dur(a),b:dur(capMin())}))+'</bdi>';e&&e.classList.toggle('over',a>capMin());}
+function planCommit(){var K=[],a=0;[].forEach.call(document.querySelectorAll('#gsheet [data-pk]:checked'),function(x){K.push(x.dataset.pk);a+=+x.dataset.m||0;});var p={d:ymd(new Date()),keys:K,at:Date.now()};ls('j8-plan',p);
+ try{if(J8.prefs&&J8.status().connected)J8.prefs.set({plan:p}).catch(function(){});}catch(e){}gClose();toast(t('xPlanned',{n:K.length,a:dur(a)}));navTo('now');}
+/* ---------- shell: rail, top bar, routing, URL per screen ---------- */
+function curPlace(){return PLACE[UI.v]||'now';}
+function renderTop(){var pl=curPlace(),inner=UI.v!==pl;document.body.dataset.place=pl;document.body.dataset.inner=inner?'1':'0';
+ $('tBack').hidden=!inner;$('hdT').textContent=UI.v==='proj'&&pobj(UI.proj)?pobj(UI.proj).name:UI.v==='money'?t('xMoneyH'):t(pl);$('tBackL').textContent=t('xBack');
+ var m=document.querySelector('meta[name=theme-color]');if(m)m.content=isDark()?'#060833':'#FFFFFF';}
+function badge(n){return n>9?'9+':String(n);}
+function renderNav(){var N=connected?myQueue():[],L=connected?todayList(N).L:[],D=connected?decisions():[],pl=curPlace();
+ [].forEach.call(document.querySelectorAll('#nav [data-nav]'),function(b){var k=b.dataset.nav;if(k===pl)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');var l=b.querySelector('.lbl');if(l)l.textContent=t(k);});
+ var a=$('nN'),b=$('tN'),nd=L.some(isDue),dd=D.some(isDue);a.textContent=L.length?badge(L.length):'';a.hidden=!L.length;a.classList.toggle('due',nd);b.textContent=D.length?badge(D.length):'';b.hidden=!D.length;b.classList.toggle('due',dd);
+ $('nNs').textContent=L.length?' '+(LANG==='he'?'צעדים להיום':'steps for today'):'';$('tNs').textContent=D.length?' '+(LANG==='he'?'החלטות':'decisions'):'';
+ var st=J8.status(),u=st.user||{},o=J8.orgs.current()||{};$('userAv').textContent=mono(u.email||'?');$('userN').textContent=u.email?String(u.email).split('@')[0]:t('me');$('userO').textContent=o.name||'';
+ var P=liveP().filter(function(p){return p.status!=='parked'&&!isDoneP(p);}),pins=ls('j8-pins'),pp=Array.isArray(pins)?pins.map(pobj).filter(Boolean):P.slice().sort(function(x,y){return projNeed(y.id).length-projNeed(x.id).length||stageOf(y)-stageOf(x);}).slice(0,5);
+ $('pins').innerHTML=pp.length?'<p class="ph6">'+(LANG==='he'?'נעוצים':'Pinned')+'</p>'+pp.slice(0,5).map(function(p){return '<button data-a="proj" data-id="'+esc(p.id)+'"'+(UI.v==='proj'&&UI.proj===p.id?' aria-current="page"':'')+'>'+ptile(p.id,'sm')+'<span class="lbl" dir="auto">'+esc(p.name)+'</span></button>';}).join(''):'';}
+function hashOf(){var v=UI.v;return v==='proj'&&UI.proj?'#/p/'+UI.proj:v==='draft'&&UI.batch?'#/d/'+UI.batch:v==='qitem'&&UI.isel?'#/i/'+UI.isel:'#/'+v;}
+function render(focus){var m=$('main');if(!m)return;if(VMAP[UI.v])UI.v=VMAP[UI.v];view=UI.v;renderTop();renderNav();
+ if(!focus&&busyMain()){renderJ8();return;}
+ [].forEach.call(m.querySelectorAll('textarea[id]'),function(x){TYPING[x.id]=x.value;});parkMe();
+ var y=m.scrollTop,v=UI.v,md=$('mdd'),my=md?md.scrollTop:0;
+ m.innerHTML=v==='now'?vNow():v==='inbox'?vInbox():v==='qitem'?vQitem():v==='projects'||v==='dept'?vProjects():v==='proj'?vProj():v==='draft'?draftCheck()+vDraft10():v==='calendar'?vCal():v==='me'?vMe():v==='money'?vMoney():vNow();
+ slotMe();if(v==='me'){meWords();renderPrefs();renderSeat();renderTheme();}lint(m);
+ Object.keys(TYPING).forEach(function(id){var x=document.getElementById(id);if(x&&TYPING[id]&&!x.value)x.value=TYPING[id];});
+ if(focus){m.scrollTop=0;m.classList.add('push');clearTimeout(render.pt);render.pt=setTimeout(function(){m.classList.remove('push');},220);var ph=$('pageH');(ph||m).focus({preventScroll:true});}else{if(Math.abs(m.scrollTop-y)>2)m.scrollTop=y;var md2=$('mdd');if(md2)md2.scrollTop=my;}
+ try{var hs=hashOf();if(location.hash!==hs&&!/token/.test(location.hash))history.replaceState(null,'',location.pathname+location.search+hs);}catch(e){}
+ renderJ8();if(UI.gsheet&&UI.gsheet.k==='thread'&&!$('gsheet').hidden){var g=$('gth');if(!g||document.activeElement!==g){threadSheet(UI.gsheet.tg);lint($('gsheet'));}}}
+function goV(v,keepStack){v=VMAP[v]||v;if(!keepStack&&UI.v!==v)UI.stack.push({v:UI.v,dept:UI.dept,proj:UI.proj,batch:UI.batch,dids:UI.dids,isel:UI.isel});UI.v=v;UI.editing=false;if(PLACE[v]===v)ls('j8-view',v);render(true);}
+function navTo(v){v=VMAP[v]||v;if(v==='dept')v='projects';if(v!=='projects')UI.pf.risk=false;UI.stack=[];UI.doing={};goV(v,true);}
+function back(){var s=UI.stack.pop()||{v:curPlace()};UI.v=VMAP[s.v]||s.v;UI.dept=s.dept;UI.proj=s.proj;UI.batch=s.batch;UI.dids=s.dids;UI.isel=s.isel||UI.isel;UI.editing=false;render(true);}
+function openProj(pid){UI.proj=pid;UI.pseg='act';goV('proj');}
+function openDraft(bid){var L=bid.indexOf('ap:')===0?[bid.slice(3)]:apPending().filter(function(a){return bkey(a)===bid;}).map(function(a){return a.id;});
+ if(!L.length){toast(t('allClearT'));return;}UI.batch=bid;UI.dids=L;UI.editing=false;UI.draftFrom='inbox';
+ if(isDesk()&&curPlace()==='inbox'&&UI.v==='inbox'){render();return;}
+ var k=decisions().filter(function(i){return i.batch&&i.batch.id===bid||i.ap&&('ap:'+i.ap.id)===bid;})[0];if(k)UI.isel=k.key;
+ if(isDesk()){UI.stack=[];UI.v='inbox';render(true);return;}goV('draft');}
+function jump(tg){if(!tg)return;tg=String(tg);
+ if(tg==='control'){openCtl();return;}
+ var m=tg.match(/^\/?(p|d|i|t)\/(.+)$/);if(m){if(m[1]==='p'&&PR[m[2]]){UI.stack=[{v:'projects'}];openProj(m[2]);}else if(m[1]==='d')openDraft(m[2]);else if(m[1]==='i'){UI.isel=m[2];navTo('inbox');if(!isDesk())goV('qitem');}else if(m[1]==='t')threadSheet({task:m[2]});return;}
+ tg=tg.replace(/^\//,'');
+ if(PLACES.indexOf(tg)>-1||tg==='money'){navTo(tg);return;}
+ if(VMAP[tg]){navTo(VMAP[tg]);return;}
+ if(/^(approvals|approve|list-approve)$/.test(tg)){var fb=firstBatch();if(fb)openDraft(fb);else navTo('inbox');return;}
+ if(tg.indexOf('list-b-')===0){openDraft(tg.slice(7));return;}
+ if(tg.indexOf('ap-')===0){var a=AP[tg.slice(3)];if(a&&isPend(tg.slice(3)))openDraft(a.batch?a.batch:'ap:'+tg.slice(3));else navTo('inbox');return;}
+ if(tg.indexOf('list-')===0){var k=tg.slice(5).replace(/^tk-tk-/,'tk-');UI.open[k]=1;UI.open.nT=true;UI.open.nL=true;UI.open.nTall=true;UI.open.nLall=true;navTo('now');var e=$('r-'+k);if(e)e.scrollIntoView({block:'center'});return;}
+ if(/^(tasks|week|money|health|team)$/.test(tg)){navTo(tg==='money'?'money':'now');return;}
+ if(/^(proj|inbox)$/.test(tg)){navTo(tg==='proj'?'projects':'inbox');return;}
+ if(tg.indexOf('p-')===0&&PR[tg]){UI.stack=[{v:'projects'}];openProj(tg);return;}
+ navTo('now');}
+function fromHash(){var h=(location.hash||'').slice(1);if(h&&!/token|refresh_token/.test(h))jump(h);}
+function closeSheet(){var s=$('sheet');if(s&&!s.hidden){s.hidden=true;if($('gsheet').hidden&&!(j8Open()&&!isWide()))$('scrim').hidden=true;if(ctlOn)ctlShow(false);}}
+function openSheet(){$('sheet').hidden=false;$('scrim').hidden=false;}
+function renderPrefs(){var sz=document.documentElement.dataset.size||'std';[].forEach.call(document.querySelectorAll('[data-size-set]'),function(b){b.setAttribute('aria-pressed',b.dataset.sizeSet===sz?'true':'false');});
+ [].forEach.call(document.querySelectorAll('[data-lang-set]'),function(b){b.setAttribute('aria-pressed',b.dataset.langSet===LANG?'true':'false');});
+ var lb={sizeH:'textSize',langH:'language',helpH:'help',themeH:'theme'};Object.keys(lb).forEach(function(id){var e=$(id);if(e)e.textContent=t(lb[id]);});
+ [].forEach.call(document.querySelectorAll('[data-size-set] .sl'),function(e){e.textContent=t(e.parentNode.dataset.sizeSet);});
+ [].forEach.call(document.querySelectorAll('[data-theme-set]'),function(e){e.textContent=(LANG==='he'?{light:'בהיר',dark:'כהה',auto:'אוטומטי'}:{light:'Light',dark:'Dark',auto:'Auto'})[e.dataset.themeSet];});}
+function askItems(q){q=String(q||'').trim().toLowerCase();var R=[],m=function(s){return !q||String(s||'').toLowerCase().indexOf(q)>-1;};
+ PLACES.forEach(function(x){if(m(t(x))||m(x))R.push({g:'places',id:'nav:'+x,ic:{now:'today',inbox:'inbox',projects:'proj',calendar:'cal',me:'you'}[x],l:t(x)});});
+ if(m('control'))R.push({g:'places',id:'ctl',ic:'set',l:LANG==='he'?'בקרה':'Control'});
+ if(q){myQueue().forEach(function(i){var w=cap1(nextOf(i).what);if(m(w)||m(i.sub))R.push({g:'steps',id:'item:'+i.key,ic:'you',l:w});});
+  projList().forEach(function(p){if(p.id!=='p-general'&&m(p.name))R.push({g:'projectsH',id:'proj:'+p.id,ic:'proj',l:p.name});});
+  apPending().forEach(function(a){if(m(a.to)||m(a.batch_label))R.push({g:'xFDrafts',id:'draft:'+bkey(a),ic:'mail',l:apKind(a)+': '+apWho(a)});});}
+ else myQueue().slice(0,3).forEach(function(i){R.push({g:'steps',id:'item:'+i.key,ic:'you',l:cap1(nextOf(i).what)});});
+ return R.slice(0,12);}
+function askCmd(id){var q=$('askIn')?$('askIn').value.trim():'';gClose();
+ if(id==='ask'){if(!q)return;if(!J8.status().connected){toast(t('notConn'));return;}J8.inbox.send('p-general',q).then(function(){toast(t('askSent'));setJ8(true);},function(e){toast(t('couldNot',{e:e&&e.code||'error'}));});return;}
+ if(id==='set'){navTo('me');return;}if(id==='ctl'){openCtl();return;}
+ var k=id.split(':'),v=k.slice(1).join(':');if(k[0]==='nav')navTo(v);else if(k[0]==='proj'){UI.stack=[{v:UI.v}];openProj(v);}else if(k[0]==='draft')openDraft(v);else if(k[0]==='item')jump('list-'+v);}
+/* ---------- v10 actions (window capture: runs before 8.1.1's handler; anything it does not own falls through) ---------- */
+window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a],[data-cx=back]');if(!el)return;
+ if(el.dataset.cx==='back'){e.stopPropagation();closeSheet();navTo('me');return;}
+ var a=el.dataset.a,id=el.dataset.id,k=el.dataset.k,own=true;
+ if(a==='x-j8')setJ8(!j8Open(),!j8Open());
+ else if(a==='x-plan')planSheet();
+ else if(a==='x-commit')planCommit();
+ else if(a==='x-risk'){UI.pf.risk=true;UI.stack=[];goV('projects',true);}
+ else if(a==='x-pfr'){UI.pf.risk=false;render();}
+ else if(a==='x-pfn'){UI.pf.n=!UI.pf.n;render();}
+ else if(a==='x-pv'){UI.pf.view=id;render();}
+ else if(a==='x-psort'){UI.pf.sort=id;render();}
+ else if(a==='x-pseg'){UI.pseg=id;if(UI.v!=='proj'&&UI.proj)goV('proj');else render();}
+ else if(a==='x-ifil'){UI.ifil=id;UI.isel=null;render();}
+ else if(a==='x-isel'){UI.isel=id;var o=inboxItems().filter(function(x){return x.k===id;})[0];UI.batch=null;UI.dids=[];if(o&&o.i&&(o.i.batch||o.i.ap)){var bid=o.i.batch?o.i.batch.id:'ap:'+o.i.ap.id;UI.batch=bid;UI.dids=o.i.batch?o.i.batch.items.map(function(x){return x.id;}):[o.i.ap.id];}
+  if(isDesk())render();else goV(UI.dids.length?'draft':'qitem');}
+ else if(a==='x-set')sampler(id);
+ else if(a==='x-setall')setAll(id);
+ else if(a==='x-set1'){gClose();openDraft(id);}
+ else if(a==='x-skip'){var L=UI.dids||[],cur=L.filter(isPend)[0];if(cur){UI.dids=L.filter(function(x){return x!==cur;}).concat([cur]);toast(t('xSkipped'));render();}}
+ else if(a==='x-cap'){ls('j8-cap',+id);try{if(J8.prefs&&J8.status().connected)J8.prefs.set({cap:+id}).catch(function(){});}catch(x){}render();toast(t('xCapH')+': '+dur(+id));}
+ else if(a==='x-soon')toast(el.dataset.t==='invite'?t('xInviteT'):t('xSoonT',{x:id}));
+ else if(a==='x-snz'){snooze('j8c-'+id,24);toast(t('xSnoozed'));renderJ8();}
+ else if(a==='x-why'){UI.open['why-'+id]=!UI.open['why-'+id];renderJ8();}
+ else if(a==='x-goitem'){if(!isWide())setJ8(false);jump('list-'+k);}
+ else if(a==='x-open'){UI.open[id]=true;render();}
+ else if(a==='lane'){UI.open['ln'+id]=!UI.open['ln'+id];render();}
+ else if(a==='crumb'&&/^(now|inbox|projects|calendar|me|money)$/.test(String(id).split(':')[0])){navTo(String(id).split(':')[0]);}
+ else if(a==='proj'&&el.closest('#nav,#j8p')){if(!isWide()&&el.closest('#j8p'))setJ8(false);UI.stack=[{v:curPlace()}];openProj(id);}
+ else own=false;
+ if(own){e.stopPropagation();e.preventDefault();}},true);
+document.addEventListener('change',function(e){var s=e.target;if(!s)return;if(s.dataset&&s.dataset.x==='pf-u'){UI.pf.u=s.value;render();}else if(s.dataset&&s.dataset.x==='pf-o'){UI.pf.o=s.value;render();}else if(s.dataset&&s.dataset.pk)planTot();});
+/* ⌘K / Ctrl+K opens Search or ask; Inbox keys j/k move, a approve, e edit, s skip, x kill, u undo */
+document.addEventListener('keydown',function(e){var x=e.target,typing=x&&(/^(INPUT|TEXTAREA|SELECT)$/.test(x.tagName)||x.isContentEditable);
+ if((e.metaKey||e.ctrlKey)&&(e.key==='k'||e.key==='K')){e.preventDefault();askSheet();return;}
+ if(typing||e.metaKey||e.ctrlKey||e.altKey||!$('gsheet').hidden||curPlace()!=='inbox'||$('app').hidden)return;
+ var L=inboxItems(),i=L.map(function(o){return o.k;}).indexOf(UI.isel),cur=(UI.dids||[]).filter(isPend)[0];
+ if(e.key==='j'||e.key==='k'){var n=L[Math.max(0,Math.min(L.length-1,i+(e.key==='j'?1:-1)))];if(n){e.preventDefault();var b=document.querySelector('[data-a=x-isel][data-id="'+(window.CSS&&CSS.escape?CSS.escape(n.k):n.k)+'"]');if(b)b.click();}}
+ else if(e.key==='a'&&cur){e.preventDefault();draftDecide(cur,'send');}
+ else if(e.key==='x'&&cur){e.preventDefault();draftDecide(cur,'kill');}
+ else if(e.key==='e'&&cur){e.preventDefault();UI.editing=true;render();var ta=document.querySelector('form.edit textarea');if(ta)ta.focus();}
+ else if(e.key==='s'&&cur){e.preventDefault();var sk=document.createElement('button');sk.dataset.a='x-skip';document.body.appendChild(sk);sk.click();sk.remove();}
+ else if(e.key==='u'){var u=$('undo');if(u&&!u.hidden){e.preventDefault();u.click();}}});
+window.matchMedia&&matchMedia('(min-width:1100px)').addEventListener&&matchMedia('(min-width:1100px)').addEventListener('change',function(q){setJ8(q.matches&&ls('j8-panel')===1);soon();});
+document.body.dataset.j8=isWide()&&ls('j8-panel')===1?'open':'closed';
+
+/* lint what the 8.1.1 sheets print too; Hebrew quick asks; lazy sections render when opened; scrim and Escape close J8 on a phone */
+var gOpenEN=gOpen;gOpen=function(h,c){gOpenEN(h,c);lint($('gsheet'));};
+var threadSheetEN=threadSheet;threadSheet=function(tg,sent){threadSheetEN(tg,sent);lint($('gsheet'));};
+function talkWire(){var s=$('j8cStrip'),Q=LANG==='he'?['מה הצעד שמביא כסף הכי מהר?','מה מחכה לי עכשיו?','אילו צוותים נכשלו או השתתקו?','שורה אחת על כל פרויקט']:['What is the one move that brings money fastest?','What is waiting on me right now?','Which teams failed or went quiet?','One line on every project'];
+ if(s){var empty=!J8.inbox.list().length;s.hidden=!empty;if(empty)s.innerHTML=Q.map(function(x){return '<button type="button" class="opt" data-cq="'+esc(x)+'">'+esc(x)+'</button>';}).join('');}
+ var nt=$('j8cNote');if(nt)nt.textContent=J8.control.brainEnabled()?(LANG==='he'?'J8 עונה כאן בעוד רגע.':'J8 answers here in a moment.'):(LANG==='he'?'הצוות עונה כאן, בדרך כלל תוך שעה. תקבל/י התראה כשיענו.':'The team answers here, usually within the hour. You get an alert when they reply.');}
+document.addEventListener('toggle',function(e){var d=e.target;if(!d||!d.dataset||!d.dataset.k)return;if(d.dataset.was!=null&&(d.open?'1':'0')!==d.dataset.was){d.dataset.was=d.open?'1':'0';var k=d.dataset.k;setTimeout(function(){render();var s=document.querySelector('details[data-k="'+k+'"] > summary');if(s)s.focus({preventScroll:true});},0);}},true);
+window.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#scrim')&&j8Open()&&!isWide()&&$('gsheet').hidden&&$('sheet').hidden){e.stopPropagation();setJ8(false);}},true);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&j8Open()&&!isWide()&&$('gsheet').hidden&&$('sheet').hidden)setJ8(false);});
+
 /* ---------- boot: shell.js signs in and connects; the screens follow J8's status ---------- */
 (function(){try{var e=document.querySelector('#eight path');if(e)document.documentElement.style.setProperty('--glyph','url("data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="79 21 24 48"><path fill="#060833" d="'+e.getAttribute('d')+'"/></svg>')+'")');}catch(x){}})();
 (function(){document.documentElement.dataset.theme=theme();renderTheme();setSize(ls('j8-size')||'std');document.documentElement.lang=LANG;document.documentElement.dir=LANG==='he'?'rtl':'ltr';
- var v=ls('j8-view'),m={chat:'talk',next:'today',list:'studio',stats:'flow'};UI.v='home';renderPrefs();render();})(); /* 8.0: Home is the first screen */
+ var v=ls('j8-view'),m={chat:'talk',next:'today',list:'studio',stats:'flow'};UI.v='now';renderPrefs();render();})(); /* 9.0: Now is the first screen */
 (function(){
  J8.on('status',function(st){var s=$('status');
   if(st.connected){UI.syncedAt=Date.now();ls('j8-synced',UI.syncedAt);}

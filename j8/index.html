@@ -19,16 +19,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"></noscript>
-<link rel="stylesheet" href="app.css?v=8.1.1">
+<link rel="stylesheet" href="app.css?v=9.0.0">
 </head>
 <body>
-<!-- J8NIX PWA 8.1.1 (15 Nov 2026): Midnight hero with an Orange "you" rail, tag and Do button. Revert to 8.1.0: index-8.1.0.html.
-     8.1.0: brand identity v5 (Midnight / Royal / Sky, Heebo, new icons; assets/brand-v3/j8nix/BRAND.md). Revert to 8.0.1: index-8.0.1.html.
-     8.0.1: Home first (7 sections, live data, Pin / Hide / Move / Edit Home saved per member in j8_members.prefs),
-     the v8 colour system (Sun = you, red = alarm only, a hue per stage, brand slate + peach rail), square shapes and the J8 notch.
-     Revert to 7.1.1: index-7.1.1.html (one line in SHIPPED-8.md and the plan). 7.1.1 (fix round 1: Not needed asks first and never hides new work, parked asks, draft minutes, Hebrew words; 7.1.0: the v7.1 design on live data: Today / Studio / Flow / Talk, one hue per place, a 4-question brief on every screen,
-     16 px minimum text, 48 px targets, text size + Hebrew in Settings, Later with a come-back time, Not needed, undo everywhere).
-     Plan: ops/brain/J8NIX-V6-PLAN.md §7.1. Revert to 7.1.0: index-7.1.0.html; to 6.1.2: index-6.1.2.html (one line each in the plan). Data: window.J8 (j8-data.js). -->
+<!-- J8NIX PWA 9.0.0 (15 Nov 2026): v10 layout. Five places (Now · Inbox · Projects · Calendar · Me) plus the J8 panel, on 8.1.1's engine.
+     Revert to 8.1.1: index-8.1.1.html (+ app-8.1.1.js, app-8.1.1.css, sw-8.1.1.js). One line in j8nix-v8/SHIPPED-8.md (v10 section).
+     Older: 8.1.1 → index-8.1.0.html … index-6.1.2.html. Data: window.J8 (j8-data.js). -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></symbol>
  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
@@ -76,6 +72,11 @@
  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.5 12a8.5 8.5 0 0 1-12.3 7.6L3.5 21l1.4-4.4A8.5 8.5 0 1 1 20.5 12z"/><path d="M8.5 10.5h7M8.5 14h4.5"/></symbol>
  <symbol id="i-more" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+<symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3 13h5l1.5 3h5L16 13h5"/><path d="M5 5h14l2 8v6H3v-6z"/></symbol>
+ <symbol id="i-proj" viewBox="0 0 24 24"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="7" rx="1"/></symbol>
+ <symbol id="i-plan" viewBox="0 0 24 24"><path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9"/></symbol>
+ <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+ <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></symbol>
 <symbol id="eight" viewBox="79 21 24 48"><path fill="currentColor" d="M 100.554688 64.019531 L 100.554688 58.773438 C 100.554688 55.09375 99.308594 51.472656 97.042969 48.570312 C 96.765625 48.210938 96.289062 48.015625 95.851562 48.132812 C 94.972656 48.367188 94.691406 49.3125 95.132812 49.957031 C 96.886719 52.523438 98.191406 55.367188 98.191406 58.476562 L 98.191406 63.308594 C 95.863281 64.242188 93.398438 64.71875 90.855469 64.71875 C 88.316406 64.71875 85.851562 64.242188 83.523438 63.308594 L 83.523438 59.015625 C 83.523438 53.597656 86.449219 48.488281 91.308594 46.089844 C 97.007812 43.277344 100.554688 37.570312 100.554688 31.21875 L 100.554688 26.164062 C 100.671875 25.628906 100.402344 25.066406 99.882812 24.832031 C 97.035156 23.558594 94 22.910156 90.855469 22.910156 C 87.726562 22.910156 84.699219 23.554688 81.859375 24.820312 C 81.40625 25.023438 81.144531 25.476562 81.164062 25.945312 C 81.160156 25.953125 81.160156 25.964844 81.160156 25.972656 L 81.160156 31.21875 C 81.160156 34.859375 82.386719 38.453125 84.609375 41.339844 C 84.839844 41.640625 85.191406 41.800781 85.542969 41.800781 C 85.953125 41.800781 86.367188 41.589844 86.609375 41.144531 C 86.835938 40.738281 86.734375 40.230469 86.453125 39.863281 C 84.5625 37.394531 83.523438 34.324219 83.523438 31.21875 L 83.523438 26.683594 C 85.851562 25.746094 88.316406 25.273438 90.855469 25.273438 C 93.398438 25.273438 95.863281 25.746094 98.191406 26.683594 L 98.191406 30.976562 C 98.191406 36.394531 95.261719 41.503906 90.40625 43.902344 C 84.707031 46.714844 81.160156 52.421875 81.160156 58.773438 L 81.160156 64.019531 C 81.160156 64.027344 81.160156 64.039062 81.164062 64.046875 C 81.144531 64.515625 81.40625 64.96875 81.859375 65.171875 C 84.699219 66.4375 87.726562 67.082031 90.855469 67.082031 C 93.988281 67.082031 97.015625 66.4375 99.851562 65.171875 C 100.308594 64.96875 100.570312 64.515625 100.550781 64.046875 C 100.550781 64.035156 100.554688 64.027344 100.554688 64.019531 "/></symbol>
 </svg>
 <div id="auth" hidden>
@@ -103,49 +104,72 @@
  </main>
 </div>
 <div id="app" class="app" hidden>
+ <nav class="rail" id="nav" aria-label="Main">
+  <span class="wm"><img src="icons/wm-sky.svg" alt="J8NIX" width="184" height="66"></span>
+  <button class="kbar" data-a="ask-open" aria-haspopup="dialog"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><span id="kbarL">Search or ask</span><kbd aria-hidden="true">/</kbd></button>
+  <div class="places">
+   <button data-nav="now"><svg class="ico" aria-hidden="true"><use href="#i-today"/></svg><span class="lbl">Now</span><span class="count" id="nN" hidden></span><span class="sr" id="nNs"></span></button>
+   <button data-nav="inbox"><svg class="ico" aria-hidden="true"><use href="#i-inbox"/></svg><span class="lbl">Inbox</span><span class="count" id="tN" hidden></span><span class="sr" id="tNs"></span></button>
+   <button data-nav="projects"><svg class="ico" aria-hidden="true"><use href="#i-proj"/></svg><span class="lbl">Projects</span></button>
+   <button data-nav="calendar"><svg class="ico" aria-hidden="true"><use href="#i-cal"/></svg><span class="lbl">Calendar</span></button>
+   <button data-nav="me" class="meTab"><svg class="ico" aria-hidden="true"><use href="#i-you"/></svg><span class="lbl">Me</span></button>
+  </div>
+  <div class="pins" id="pins"></div>
+  <button class="user" data-a="nav" data-id="me" id="userBtn"><span class="av" id="userAv" aria-hidden="true">·</span><span class="un"><b id="userN">Me</b><span id="userO"></span></span></button>
+ </nav>
  <header class="top" id="top">
   <div class="top-in">
    <button class="back" id="tBack" data-a="back" hidden><svg class="ico flip" aria-hidden="true"><use href="#i-back"/></svg><span id="tBackL">Back</span></button>
-   <span class="ptile" id="tTile" aria-hidden="true"></span>
-   <div class="ttl"><p class="sr">You are in</p><h1 id="hdT">Home</h1><p class="tsub" id="hdW"></p></div>
-   <button class="tbtn askb" id="askBtn" data-a="ask-open" aria-haspopup="dialog"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><span class="tl" id="askL">Ask J8 or jump to anything</span><kbd aria-hidden="true">/</kbd></button>
-   <button class="tbtn" id="editBtn" data-a="edit-home" aria-haspopup="dialog" hidden><svg class="ico" aria-hidden="true"><use href="#i-set"/></svg><span class="tl" id="editL">Edit Home</span></button>
-   <button class="tbtn" id="gear" aria-haspopup="dialog" aria-expanded="false"><svg class="ico" aria-hidden="true"><use href="#i-cog"/></svg><span class="tl" id="gearL">Settings</span></button>
+   <span class="ptile" id="tTile" aria-hidden="true"><img src="icons/icon.svg" alt="" width="32" height="32"></span>
+   <div class="ttl"><h1 id="hdT">Now</h1></div>
+   <button class="tbtn j8b" id="j8Btn" data-a="x-j8" aria-expanded="false" aria-controls="j8p"><svg class="g8" aria-hidden="true"><use href="#eight"/></svg><span class="sr" id="j8BtnL">J8</span><i class="dot" id="j8Dot" hidden></i></button>
   </div>
  </header>
  <div class="conn" id="status" role="status" hidden></div>
  <main id="main" tabindex="-1"></main>
- <nav class="nav" id="nav" aria-label="Main">
-  <span class="wm" aria-hidden="true"><img src="icons/wm-midnight.svg" alt="" width="136" height="48"></span>
-  <button data-nav="home"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span class="lbl">Home</span></button>
-  <button data-nav="today"><svg class="ico" aria-hidden="true"><use href="#i-today"/></svg><span class="lbl">Today</span><span class="count" id="nN" hidden></span><span class="sr" id="nNs"></span></button>
-  <button data-nav="studio"><svg class="ico" aria-hidden="true"><use href="#i-studio"/></svg><span class="lbl">Studio</span></button>
-  <button data-nav="flow"><svg class="ico" aria-hidden="true"><use href="#i-flow"/></svg><span class="lbl">Flow</span></button>
-  <button data-nav="talk"><svg class="ico" aria-hidden="true"><use href="#i-talk"/></svg><span class="lbl">Talk</span><span class="count" id="tN" hidden></span><span class="sr" id="tNs"></span></button>
- </nav>
+ <aside class="j8p" id="j8p" aria-labelledby="j8H">
+  <button class="j8strip" data-a="x-j8" id="j8Strip" aria-expanded="false" aria-controls="j8Body"><svg class="g8" aria-hidden="true"><use href="#eight"/></svg><span class="sr" id="j8StripL">Open J8</span><span class="n" id="j8N" hidden></span></button>
+  <div class="j8body" id="j8Body">
+   <div class="j8h"><svg class="g8" aria-hidden="true"><use href="#eight"/></svg><h2 id="j8H">J8</h2><button class="tbtn" data-a="x-j8" id="j8Close"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg><span class="sr" id="j8CloseL">Close J8</span></button></div>
+   <div class="j8cards" id="j8Cards"></div>
+   <h3 class="j8sub" id="j8TalkH">Ask J8</h3>
+   <div class="msgs" id="j8cLog" aria-live="polite"></div>
+   <div class="tk-c"><div class="ch-strip" id="j8cStrip"></div><form class="cbox" id="j8cForm" autocomplete="off"><label class="sr" for="j8cIn" id="j8cInL">Ask J8 or the team</label><textarea id="j8cIn" rows="1" dir="auto" placeholder="Ask J8 or the team"></textarea><button class="btn" type="submit" id="j8cGo"><svg class="ico flip" aria-hidden="true"><use href="#i-send"/></svg><span id="j8cGoL">Send</span></button></form><p class="lead" id="j8cNote"></p></div>
+  </div>
+ </aside>
  <div class="scrim" id="scrim" hidden></div>
- <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Settings" hidden>
+ <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Control" hidden>
   <div class="grab" aria-hidden="true"></div>
-  <div class="sh-row"><div><b>Control</b><span>Sending, daily limits, team schedule, templates, do-not-contact.</span></div><button class="seat" id="ctlBtn" data-cx="open">Open</button></div>
-  <div class="sh-row"><div><b>Sending by the AI team</b><span id="seatTxt">—</span></div><button class="seat" id="seat">Pause sending</button></div>
-  <div class="sh-row"><div><b>Alerts on this phone</b><span>Team replies, finished work, drafts to OK.</span></div><button class="seat" id="pushBtn">Turn on</button></div>
-  <div class="sh-row" id="apkRow" hidden><div><b>J8NIX app for Android</b><span>Install it on this phone.</span></div><a class="seat" href="app/">Get it</a></div>
-  <div class="sh-grp"><h3 id="sizeH">Text size</h3><div class="seg3" role="group" aria-labelledby="sizeH"><button class="opt" data-size-set="std" aria-pressed="true"><span class="sl">Standard</span><small>18 px</small></button><button class="opt" data-size-set="large" aria-pressed="false"><span class="sl">Large</span><small>20 px</small></button><button class="opt" data-size-set="xl" aria-pressed="false"><span class="sl">Largest</span><small>22 px</small></button></div></div>
-  <div class="sh-grp"><h3 id="langH">Language</h3><div class="seg3" role="group" aria-labelledby="langH"><button class="opt" data-lang-set="en" lang="en" aria-pressed="true">English</button><button class="opt" data-lang-set="he" lang="he" aria-pressed="false">עברית</button></div></div>
-  <div class="sh-grp"><h3 id="themeH">Theme</h3><div class="seg3" id="themeSeg" role="group" aria-labelledby="themeH"><button class="opt" data-theme-set="light" aria-pressed="true">Light</button><button class="opt" data-theme-set="dark" aria-pressed="false">Dark</button><button class="opt" data-theme-set="auto" aria-pressed="false">Auto</button></div></div>
-  <div class="sh-grp"><h3 id="helpH">Help</h3><button class="opt" id="tipB"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg><span>Show the tip again</span></button></div>
-  <label class="sh-row" id="orgRow" hidden><div><b>Business</b></div><select id="orgSel"></select></label>
-  <div class="sh-row"><div><b>Signed in</b><span id="who"></span></div><button class="txtb" id="signOut">Sign out</button></div>
-  <div class="sh-row"><div><b>Live data</b><span id="connTxt">Connecting…</span></div></div>
-  <div id="ctl"><div class="cx-h"><button type="button" class="cx-back" data-cx="back"><svg class="ico flip" aria-hidden="true"><use href="#i-back"/></svg> Settings</button><h2 id="ctlT" tabindex="-1">Control</h2></div><div id="ctlBody"></div></div>
+  <div id="ctl"><div class="cx-h"><button type="button" class="cx-back" data-cx="back"><svg class="ico flip" aria-hidden="true"><use href="#i-back"/></svg> <span id="ctlBackL">Me</span></button><h2 id="ctlT" tabindex="-1">Control</h2></div><div id="ctlBody"></div></div>
  </div>
  <div class="sheet gen" id="gsheet" role="dialog" aria-modal="true" aria-labelledby="gTitle" hidden></div>
+ <div id="mePark" hidden>
+  <div id="msSend">
+   <div class="sh-row"><div><b id="mSendH">Sending by the AI team</b><span id="seatTxt">—</span></div><button class="seat" id="seat">Pause sending</button></div>
+   <div class="sh-row"><div><b id="mCtlH">Control</b><span id="mCtlP">Daily limits, team schedule, templates, do-not-contact.</span></div><button class="seat" id="ctlBtn" data-cx="open">Open</button></div>
+  </div>
+  <div id="msPush">
+   <div class="sh-row"><div><b id="mPushH">Alerts on this device</b><span id="mPushP">Team replies, finished work, drafts to OK.</span></div><button class="seat" id="pushBtn">Turn on</button></div>
+   <div class="sh-row" id="apkRow" hidden><div><b>J8NIX app for Android</b><span>Install it on this phone.</span></div><a class="seat" href="app/">Get it</a></div>
+  </div>
+  <div id="msPrefs">
+   <div class="sh-grp"><h3 id="sizeH">Text size</h3><div class="seg3" role="group" aria-labelledby="sizeH"><button class="opt" data-size-set="std" aria-pressed="true"><span class="sl">Standard</span><small>18 px</small></button><button class="opt" data-size-set="large" aria-pressed="false"><span class="sl">Large</span><small>20 px</small></button><button class="opt" data-size-set="xl" aria-pressed="false"><span class="sl">Largest</span><small>22 px</small></button></div></div>
+   <div class="sh-grp"><h3 id="langH">Language</h3><div class="seg3" role="group" aria-labelledby="langH"><button class="opt" data-lang-set="en" lang="en" aria-pressed="true">English</button><button class="opt" data-lang-set="he" lang="he" aria-pressed="false">עברית</button></div></div>
+   <div class="sh-grp"><h3 id="themeH">Theme</h3><div class="seg3" id="themeSeg" role="group" aria-labelledby="themeH"><button class="opt" data-theme-set="light" aria-pressed="true">Light</button><button class="opt" data-theme-set="dark" aria-pressed="false">Dark</button><button class="opt" data-theme-set="auto" aria-pressed="false">Auto</button></div></div>
+  </div>
+  <div id="msHelp"><div class="sh-grp"><h3 id="helpH">Help</h3><button class="opt" id="tipB"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg><span>Show the tip again</span></button></div></div>
+  <div id="msAcct">
+   <label class="sh-row" id="orgRow" hidden><div><b id="mOrgH">Business</b></div><select id="orgSel"></select></label>
+   <div class="sh-row"><div><b id="mWhoH">Signed in</b><span id="who"></span></div><button class="txtb" id="signOut">Sign out</button></div>
+   <div class="sh-row"><div><b id="mLiveH">Live data</b><span id="connTxt">Connecting…</span></div></div>
+  </div>
+ </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="toastMsg"></span><button id="undo" hidden><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg><span id="undoL">Undo</span></button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=8.1.1"></script>
-<script src="app.js?v=8.1.1"></script>
-<script src="shell.js?v=8.1.1"></script>
+<script src="j8-data.js?v=9.0.0"></script>
+<script src="app.js?v=9.0.0"></script>
+<script src="shell.js?v=9.0.0"></script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>
