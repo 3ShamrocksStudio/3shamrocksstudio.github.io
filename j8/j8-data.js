@@ -9,6 +9,7 @@
    5.3 adds:       schedule (team schedule; Dave's pause/run requests) · optout (do-not-contact list)
    v6 adds:        tasks (j8_tasks: Dave's and the team's steps, blocked_by) · warm() (paint from the phone's copy at once)
    7.1 adds:       later (j8_later: Dave's Later with a come-back time, Not needed and Done on a Today item)
+   8.0 adds:       prefs (j8_members.prefs via j8_prefs_set: the member's Home layout)
    Writes are optimistic and return Promises; on failure they reject with {code}.
    Needs vendor/supabase.js loaded first. Shapes: ops/brain/ARMS-CONTRACT.md.
    ===================================================================== */
@@ -132,9 +133,10 @@ var J8 = (function () {
       (subs.auth || []).forEach(function (f) { f(clone(state.user)); });
       try {
         await sb.rpc('j8_accept_invites');
-        var r = await sb.from('j8_members').select('role,display_name,org_id,j8_orgs(id,name,slug)').eq('user_id', s.user.id);
+        var r = await sb.from('j8_members').select('role,display_name,org_id,prefs,j8_orgs(id,name,slug)').eq('user_id', s.user.id);
+        if (r.error) r = await sb.from('j8_members').select('role,display_name,org_id,j8_orgs(id,name,slug)').eq('user_id', s.user.id); /* 8.0: a backend without prefs still works */
         if (r.error) throw r.error;
-        orgs = (r.data || []).map(function (m) { return { id: m.org_id, name: m.j8_orgs ? m.j8_orgs.name : '', slug: m.j8_orgs ? m.j8_orgs.slug : '', role: m.role, me: m.display_name }; });
+        orgs = (r.data || []).map(function (m) { return { id: m.org_id, name: m.j8_orgs ? m.j8_orgs.name : '', slug: m.j8_orgs ? m.j8_orgs.slug : '', role: m.role, me: m.display_name, prefs: m.prefs && typeof m.prefs === 'object' ? m.prefs : {} }; });
         store('j8v4:orgs', JSON.stringify(orgs));
       } catch (e) {
         try { orgs = JSON.parse(store('j8v4:orgs') || '[]'); } catch (x) { orgs = []; }
@@ -211,6 +213,18 @@ var J8 = (function () {
       current: function () { return orgs.filter(function (o) { return o.id === state.org; })[0] || null; },
       use: function (id) { connecting = Promise.resolve(true); return useOrg(id); },
       can: function (role) { var r = { owner: 4, admin: 3, member: 2, viewer: 1 }; return (r[state.role] || 0) >= (r[role] || 0); }
+    },
+    /* 8.0: the member's own preferences (j8_members.prefs), e.g. the Home layout. set() merges top-level keys through
+       public.j8_prefs_set (own row only); it rejects with {code} when offline or refused, so the app keeps its local copy. */
+    prefs: {
+      get: function () { var o = api.orgs.current(); return o && o.prefs ? clone(o.prefs) : {}; },
+      set: async function (patch) {
+        if (!state.org || !state.user) return rej('offline');
+        var r = await sb.rpc('j8_prefs_set', { p_org: state.org, p_prefs: patch || {} });
+        if (r.error) return rej('denied', { message: r.error.message });
+        var o = api.orgs.current(); if (o) o.prefs = r.data && typeof r.data === 'object' ? r.data : Object.assign({}, o.prefs, patch);
+        store('j8v4:orgs', JSON.stringify(orgs)); return true;
+      }
     },
     units: {
       list: function () { return list('units').sort(function (a, b) { return (a.sort || 0) - (b.sort || 0); }); },
