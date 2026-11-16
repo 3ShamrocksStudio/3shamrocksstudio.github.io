@@ -19,1018 +19,1234 @@
 <link rel="preload" href="assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/img/logo.webp" as="image" type="image/webp">
 <style>
-@font-face{font-family:"Fredoka";src:url(assets/fonts/fredoka.woff2) format("woff2");font-weight:500 700;font-display:swap}
-@font-face{font-family:"Inter";src:url(assets/fonts/inter.woff2) format("woff2");font-weight:400 700;font-display:swap}
-
+@font-face{font-family:Fredoka;src:url(assets/fonts/fredoka.woff2) format('woff2');font-weight:300 700;font-display:swap}
+@font-face{font-family:Inter;src:url(assets/fonts/inter.woff2) format('woff2');font-weight:100 900;font-display:swap}
 :root{
-  --navy:#0A0A2E; --orange:#FF6C00; --orange-l:#FF8A33; --gold:#FCD34D;
-  --cream:#FFF7E8; --ink:#16163A; --ink-2:#4A4A6A;
-  --space:#D94FAA; --air:#A78BFA; --water:#4BA3E3; --earth:#2EBD8A; --fire:#F5961E; --light:#FCD34D;
-  --display:"Fredoka",ui-rounded,system-ui,sans-serif; --body:"Inter",system-ui,-apple-system,sans-serif;
-  --ease:cubic-bezier(.22,1,.36,1); --hud:64px; --max:1160px; --gut:20px;
-  --c:var(--orange);
+  --space:#FC71EA;--air:#7F4DE2;--water:#3DA7F9;--earth:#28E4B1;--fire:#FF8400;--sun:#FFC83D;
+  --ink:#14272E;--night:#0A0A2E;--grime:#39038B;--cream:#FFF7E8;--white:#fff;
+  --r:28px;--shadow:0 18px 50px rgba(10,10,46,.35);
+  --c:var(--space);
 }
-*,*::before,*::after{box-sizing:border-box}
-*{margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hud) + 12px);-webkit-text-size-adjust:100%}
-body{font-family:var(--body);font-size:17px;line-height:1.6;color:#EEF0FF;background:var(--navy);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-@supports(overflow:clip){body{overflow-x:clip}}
-img{display:block;max-width:100%;height:auto}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--cream);font:400 17px/1.55 Inter,system-ui,sans-serif;overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}
 a{color:inherit}
-:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:6px}
+h1,h2,h3,.fd{font-family:Fredoka,system-ui,sans-serif;font-weight:700;line-height:1.05;letter-spacing:-.01em;margin:0}
+p{margin:0}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.skip{position:fixed;left:12px;top:12px;transform:translateY(-200%);z-index:999;background:var(--gold);color:var(--ink);padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
-.skip:focus{transform:none}
-.wrap{width:100%;max-width:var(--max);margin:0 auto;padding:0 var(--gut);position:relative;z-index:2}
+.skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--sun);color:var(--ink);padding:10px 16px;border-radius:12px;font-weight:700}
+.skip:focus{top:12px}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+.wrap{width:min(1240px,100% - 32px);margin-inline:auto}
 
-/* ---------- Header ---------- */
-.hud{position:fixed;inset:0 0 auto;z-index:100;height:var(--hud);display:flex;align-items:center;
-  background:rgba(10,10,46,.78);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07);transition:background .5s,color .5s,border-color .5s}
-.hud .wrap{display:flex;align-items:center;gap:20px;justify-content:space-between}
-.hud-logo img{height:40px;width:auto}
-.hud nav ul{display:flex;gap:4px;list-style:none}
-.hud nav a{display:block;padding:8px 12px;border-radius:999px;text-decoration:none;font-weight:600;font-size:15px;opacity:.82}
-.hud nav a:hover{opacity:1;background:rgba(255,255,255,.08)}
-.hud-depth{display:none;font-family:var(--display);font-weight:600;font-size:14px;color:var(--c);white-space:nowrap}
-.hud-bar{position:absolute;left:0;bottom:-1px;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--c);transition:background .5s}
-.hud.is-light{background:rgba(255,247,232,.9);color:var(--ink);border-bottom-color:rgba(22,22,58,.08)}
-.hud.is-light nav a:hover{background:rgba(22,22,58,.06)}
-.hud.is-light .hud-depth{color:#A15C00}
-@media(max-width:899px){.realm{padding:84px 0}#temple{padding-top:60px}}
-@media(max-width:899px){.hud nav{display:none}.hud-depth{display:block}.hud-logo img{height:34px}}
+/* ---------- world texture (the game's realm backdrop, as a page skin) ---------- */
+.world{position:relative;background:
+  radial-gradient(circle at 20% 10%,rgba(127,77,226,.35),transparent 40%),
+  radial-gradient(circle at 85% 30%,rgba(252,113,234,.22),transparent 45%),
+  linear-gradient(180deg,#0A0A2E 0%,#1A0F4A 100%)}
+.world::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(rgba(255,255,255,.55) 1px,transparent 1.5px),radial-gradient(rgba(255,255,255,.25) 1px,transparent 1.5px);
+  background-size:90px 90px,37px 37px;background-position:0 0,13px 21px}
 
-/* ---------- Buttons ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 26px;border-radius:999px;
-  font-family:var(--display);font-weight:700;font-size:18px;line-height:1.1;text-decoration:none;cursor:pointer;border:0;transition:transform .2s var(--ease),box-shadow .2s}
-.btn-primary{background:var(--orange);color:var(--navy);box-shadow:0 6px 0 #B84D00,0 16px 30px -12px rgba(255,108,0,.7)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 0 #B84D00,0 20px 34px -12px rgba(255,108,0,.75)}
-.btn-primary:active{transform:translateY(4px);box-shadow:0 2px 0 #B84D00}
-.btn-line{background:transparent;color:inherit;box-shadow:inset 0 0 0 2px currentColor}
-.btn-line:hover{background:rgba(255,255,255,.08)}
-.btn-soon{background:rgba(255,255,255,.06);color:rgba(238,240,255,.72);box-shadow:inset 0 0 0 2px rgba(255,255,255,.18);cursor:default}
-.btn-soon small{font-family:var(--body);font-weight:600;font-size:12px;opacity:.75}
-.btn-sm{min-height:44px;padding:10px 18px;font-size:16px}
-.hud .btn-sm{min-height:40px;padding:8px 16px;font-size:15px;white-space:nowrap;box-shadow:0 4px 0 #B84D00}
-@media(max-width:420px){.hud .wrap{gap:10px}.hud .btn-sm{padding:8px 13px;font-size:14px}.hud-depth{font-size:13px}}
-@media(max-width:899px){.cue{display:none}}
-.actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
+/* ---------- chunky game buttons ---------- */
+.btn{--b:var(--fire);--bd:#B85600;display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font:700 19px/1 Fredoka,system-ui,sans-serif;color:#fff;text-decoration:none;cursor:pointer;
+  background:var(--b);border:0;border-radius:999px;padding:16px 28px;
+  box-shadow:0 6px 0 var(--bd),0 12px 24px rgba(0,0,0,.28);transition:transform .12s,box-shadow .12s;
+  -webkit-tap-highlight-color:transparent;user-select:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--bd),0 16px 28px rgba(0,0,0,.3)}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--bd),0 4px 10px rgba(0,0,0,.3)}
+.btn.purple{--b:var(--air);--bd:#4A2596}
+.btn.blue{--b:var(--water);--bd:#1C6CB0}
+.btn.light{--b:#fff;--bd:#C9C2E8;color:var(--ink)}
+.btn.sm{font-size:16px;padding:12px 20px}
+.btn img{width:28px;height:28px}
 
-/* ---------- Type ---------- */
-h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.01em}
-h1{font-size:clamp(2.7rem,6.4vw,4.7rem);line-height:.98}
-@media(min-width:960px){.hero h1 span,.hero h1 .l1{white-space:nowrap}}
-h2{font-size:clamp(2.1rem,4.6vw,3.4rem);line-height:1.02;margin-bottom:18px}
-h3{font-size:1.3rem;line-height:1.2}
-.lead{font-size:clamp(1.08rem,1.6vw,1.25rem);line-height:1.55;max-width:34em;color:rgba(238,240,255,.86)}
-p+p{margin-top:14px}
-.note{font-size:14px;color:rgba(238,240,255,.62);margin-top:16px;max-width:42em}
+/* ---------- nav ---------- */
+.nav{position:fixed;inset:0 0 auto;z-index:60;padding:14px 0;transition:background .3s,backdrop-filter .3s}
+.nav.solid{background:rgba(10,10,46,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.nav .wrap{display:flex;align-items:center;gap:18px}
+.nav .brand{display:flex;align-items:center}
+.nav .brand img{height:52px;width:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));transition:transform .2s}
+.nav .brand:hover img{transform:rotate(-4deg) scale(1.05)}
+.nav ul{display:flex;gap:6px;list-style:none;margin:0 0 0 auto;padding:0}
+.nav ul a{display:block;padding:10px 14px;border-radius:999px;text-decoration:none;font:600 16px Fredoka,sans-serif}
+.nav ul a:hover{background:rgba(255,255,255,.12)}
+.burger{display:none;margin-left:auto;width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:rgba(10,10,46,.4);cursor:pointer;position:relative}
+.burger i{position:absolute;left:14px;right:14px;height:3px;border-radius:3px;background:#fff;transition:.25s}
+.burger i:nth-child(1){top:16px}.burger i:nth-child(2){top:24px}.burger i:nth-child(3){top:32px}
+.menu-open .burger i:nth-child(1){top:24px;transform:rotate(45deg)}
+.menu-open .burger i:nth-child(2){opacity:0}
+.menu-open .burger i:nth-child(3){top:24px;transform:rotate(-45deg)}
+.mmenu{position:fixed;inset:0;z-index:55;display:none;flex-direction:column;justify-content:center;gap:10px;padding:90px 28px 40px;
+  background:radial-gradient(circle at 50% 30%,#3A1F8A,#0A0A2E 70%)}
+.menu-open .mmenu{display:flex}
+.mmenu a{font:700 34px Fredoka,sans-serif;text-decoration:none;display:flex;align-items:center;gap:14px}
+.mmenu a img{width:44px;height:44px;object-fit:contain}
+.mmenu .btn{margin-top:18px;align-self:flex-start}
+@media (max-width:920px){.nav ul{display:none}.burger{display:block}.nav .cta{display:none}}
 
-/* ---------- Hero ---------- */
-.hero{position:relative;min-height:100svh;padding:calc(var(--hud) + 40px) 0 72px;display:flex;align-items:center;overflow:hidden;
-  background:radial-gradient(60% 55% at 72% 38%,rgba(217,79,170,.30),transparent 70%),radial-gradient(50% 50% at 10% 90%,rgba(75,163,227,.18),transparent 70%),var(--navy)}
-.stars{position:absolute;inset:0;z-index:0;opacity:.7;pointer-events:none;
-  background-image:radial-gradient(1.5px 1.5px at 12% 22%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 32% 68%,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 58% 14%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 82% 58%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 46% 86%,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 92% 12%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 6% 52%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 70% 80%,#fff 50%,transparent 51%);
-  background-size:520px 520px}
-.hero-grid{display:grid;gap:44px;align-items:center}
-@media(min-width:960px){.hero-grid{grid-template-columns:1.15fr .85fr;gap:32px}}
-.status{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:999px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);font-size:14px;font-weight:600;margin-bottom:22px}
-.status i{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(252,211,77,.2)}
-.hero-logo{width:min(380px,86%);margin-bottom:22px;filter:drop-shadow(0 14px 26px rgba(0,0,0,.45))}
-.hero h1{color:#fff;margin-bottom:20px}
-.hero h1 span{display:block;color:var(--orange-l)}
-.hero h1 .l1{color:#fff}
-.hero .lead{max-width:30em}
-.who-line{margin-top:22px;font-size:15px;color:rgba(238,240,255,.7)}
+/* ---------- visit HUD (site mini-game, not saved) ---------- */
+.hud{position:fixed;left:14px;bottom:14px;z-index:58;display:flex;align-items:center;gap:10px;
+  padding:8px 14px 8px 8px;border-radius:999px;background:rgba(10,10,46,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 0 0 2px rgba(255,255,255,.18),0 10px 30px rgba(0,0,0,.35);transform:translateY(140%);transition:transform .45s cubic-bezier(.2,1.4,.4,1)}
+.hud.show{transform:none}
+.hud img{width:40px;height:40px}
+.hud .lv{font:700 13px Fredoka,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--sun)}
+.hud .xpbar{width:110px;height:10px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden;margin-top:3px}
+.hud .xpbar b{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,var(--earth),var(--water));transition:width .5s}
+.hud .coins{display:flex;align-items:center;gap:6px;font:700 17px Fredoka,sans-serif;margin-left:4px}
+.hud .coins i{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFE89A,#FFB300 60%,#C67C00);box-shadow:inset 0 -2px 0 rgba(0,0,0,.2)}
+.hud.bump{animation:bump .5s}
+@keyframes bump{30%{transform:scale(1.12)}}
+.toasts{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:70;display:grid;gap:8px;pointer-events:none;width:min(92vw,420px)}
+.toast{background:#fff;color:var(--ink);border-radius:18px;padding:12px 16px;display:flex;gap:12px;align-items:center;
+  font:600 16px/1.25 Fredoka,sans-serif;box-shadow:0 6px 0 #C9C2E8,0 14px 30px rgba(0,0,0,.3);animation:tin .45s cubic-bezier(.2,1.5,.4,1)}
+.toast img{width:40px;height:40px;object-fit:contain;flex:none}
+.toast b{color:var(--fire)}
+.toast.out{animation:tout .35s forwards}
+@keyframes tin{from{opacity:0;transform:translateY(-20px) scale(.9)}}
+@keyframes tout{to{opacity:0;transform:translateY(-14px)}}
+.flycoin{position:fixed;z-index:80;width:24px;height:24px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 35% 35%,#FFE89A,#FFB300 60%,#C67C00);transition:transform .8s cubic-bezier(.5,-.4,.6,1),opacity .8s}
+.spark{position:fixed;z-index:79;pointer-events:none;width:10px;height:10px;border-radius:50%;background:var(--sun);animation:spark .7s ease-out forwards}
+@keyframes spark{to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
 
-.stage{position:relative;width:min(300px,64vw);margin:0 auto;aspect-ratio:9/16.8}
-.phone{position:relative;border-radius:38px;padding:9px;background:linear-gradient(160deg,#2B2B5C,#0B0B1C);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 40px 80px -24px rgba(0,0,0,.7),0 0 60px -10px var(--c)}
-.phone::after{content:"";position:absolute;top:16px;left:50%;width:30%;height:6px;margin-left:-15%;border-radius:9px;background:#05050f}
-.phone-screen{border-radius:30px;overflow:hidden;aspect-ratio:9/19.5;background:#000}
-.phone-screen img{width:100%;height:100%;object-fit:cover;object-position:top}
-.stage .phone{position:absolute;inset:0;margin:auto;height:100%}
-.stage .phone .phone-screen{height:100%;aspect-ratio:auto}
-.orbit{position:absolute;z-index:3;width:var(--s,110px);filter:drop-shadow(0 14px 18px rgba(0,0,0,.45));animation:pop .9s var(--ease) both,bob 6s ease-in-out infinite;animation-delay:var(--d,0s),calc(var(--d,0s) + .9s)}
-.o1{--s:132px;--d:.15s;top:-4%;left:-34%}
-.o2{--s:120px;--d:.3s;top:6%;right:-36%}
-.o3{--s:104px;--d:.45s;top:44%;left:-40%}
-.o4{--s:112px;--d:.6s;bottom:2%;right:-34%}
-.o5{--s:108px;--d:.75s;bottom:-6%;left:-22%}
-@media(max-width:600px){.o1{--s:92px;left:-28%}.o2{--s:84px;right:-28%}.o3{--s:74px;left:-30%}.o4{--s:80px;right:-27%}.o5{--s:78px;left:-18%}}
-@keyframes pop{from{opacity:0;transform:scale(.4) translateY(30px)}to{opacity:1;transform:none}}
-@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -12px}}
-.cue{position:absolute;left:50%;bottom:20px;z-index:3;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--display);font-weight:600;font-size:14px;color:rgba(238,240,255,.6);text-decoration:none}
-.cue svg{animation:nudge 2.4s ease-in-out infinite}
-@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+/* ---------- loader: hatching egg ---------- */
+.loader{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:radial-gradient(circle,#2A1666,#0A0A2E 70%);transition:opacity .5s,visibility .5s}
+.loader.done{opacity:0;visibility:hidden}
+.loader img{width:120px;animation:wob .5s ease-in-out infinite alternate}
+.loader p{margin-top:14px;font:600 18px Fredoka,sans-serif;text-align:center;opacity:.85}
+@keyframes wob{from{transform:rotate(-8deg)}to{transform:rotate(8deg) translateY(-4px)}}
 
-/* ---------- Depth rail (desktop) ---------- */
-.rail{position:fixed;left:22px;top:50%;z-index:90;transform:translateY(-50%);opacity:0;pointer-events:none;transition:opacity .4s}
-.rail.show{opacity:1;pointer-events:auto}
-.rail ol{list-style:none;position:relative;display:grid;gap:18px}
-.rail ol::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:rgba(255,255,255,.16);border-radius:2px}
-.rail a{position:relative;display:flex;align-items:center;gap:12px;text-decoration:none;font-family:var(--display);font-weight:600;font-size:14px}
-.rail a i{width:18px;height:18px;border-radius:50%;background:var(--navy);box-shadow:inset 0 0 0 2px var(--rc);transition:background .3s,transform .3s}
-.rail a span{opacity:0;transform:translateX(-6px);transition:.3s;color:var(--rc);white-space:nowrap;text-shadow:0 1px 8px rgba(0,0,0,.5)}
-.rail a:hover span,.rail a:focus-visible span,.rail a[aria-current="step"] span{opacity:1;transform:none}
-.rail a[aria-current="step"] i{background:var(--rc);transform:scale(1.15)}
-.rail.on-light ol::before{background:rgba(22,22,58,.15)}
-.rail.on-light a span{text-shadow:none;color:var(--ink)}
-.rail.on-light a i{background:var(--cream)}
-.rail.on-light a[aria-current="step"] i{background:var(--rc)}
-@media(max-width:1399px){.rail{display:none}}
-
-/* ---------- Realms ---------- */
-.realm{position:relative;padding:120px 0 120px;overflow:hidden;background:linear-gradient(180deg,var(--top) 0%,var(--top) 30%,var(--bot) 100%)}
-.realm::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(55% 45% at var(--gx,80%) var(--gy,35%),color-mix(in srgb,var(--c) 26%,transparent),transparent 70%)}
-/* realm backgrounds end on the game's REALM_BG_COLORS (cosmic_void #0A0A2E, sky_realm #3C1F7B, deep_waters #0D2B4E, green_lands #0D3B1A, ember_fields #3B0F00) */
-#space{--c:var(--space);--top:#0E0B33;--bot:#1C0F45;--gx:85%;--gy:30%}
-#sky{--c:var(--air);--top:#1C0F45;--bot:#3C1F7B;--gx:12%;--gy:40%}
-#waters{--c:var(--water);--top:#2A1F6E;--bot:#0D2B4E;--gx:85%;--gy:45%;background:linear-gradient(180deg,#3C1F7B 0,#0D2B4E 340px,#0D2B4E 70%,#0A2A3A 100%)}
-#lands{--c:var(--earth);--top:#0A2A3A;--bot:#0D3B1A;--gx:15%;--gy:40%}
-#embers{--c:var(--fire);--top:#0D3B1A;--bot:#3B0F00;--gx:80%;--gy:50%}
-#temple{--c:#E8A400;--top:#3B0F00;--bot:var(--cream);color:var(--ink);background:linear-gradient(180deg,#3B0F00 0,#7A4A12 90px,#F6D98C 240px,var(--cream) 420px,var(--cream) 100%)}
-#temple::before{background:radial-gradient(40% 260px at 50% 220px,rgba(255,255,255,.85),transparent 70%)}
-
-.realm-head{display:flex;align-items:center;gap:16px;margin-bottom:40px}
-.realm-badge{flex:none;display:grid;place-items:center;width:58px;height:58px;border-radius:50%;font-family:var(--display);font-weight:700;font-size:28px;line-height:1;color:var(--navy);background:var(--c);box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 22%,transparent)}
-.realm-head p{font-family:var(--display);font-weight:600;line-height:1.25}
-.realm-head b{display:block;font-size:20px;color:var(--c)}
-.realm-head span{font-size:15px;opacity:.7}
-#temple .realm-head b{color:#A15C00}
-#temple{padding-top:80px}
-
-.split{display:grid;gap:48px;align-items:center}
-@media(min-width:960px){.split{grid-template-columns:1fr 1fr;gap:64px}.split.rev>:first-child{order:2}}
-.guide{position:relative;display:flex;align-items:flex-end;gap:16px;margin-top:34px}
-.guide img{width:112px;flex:none;filter:drop-shadow(0 12px 18px rgba(0,0,0,.4))}
-.guide p{font-size:15px;line-height:1.45;color:rgba(238,240,255,.78);padding-bottom:10px;max-width:24em}
-.guide p b{display:block;font-family:var(--display);font-size:18px;color:var(--c)}
-
-/* ---------- Realm scenes: floating element assets (mirrors the game's intro-scene props) ----------
-   Game behaviour (th-mvp IntroScreen + Cinematic): each prop sits at a fixed x/y with a fixed rotation and opacity,
-   and drifts on translateY only; the Elemonster bobs (6 → -4 → 2px), Cosmix sways ±6deg, Wispo has 3 dashed rings
-   spinning ±120deg, the Cosmic Void has 40 twinkling stars, the Temple has 12 light rays turning 30deg per 6s. */
-.scene{position:absolute;inset:0;z-index:1;pointer-events:none;--k:1;--ok:1}
-.prop{position:absolute;left:var(--x);top:var(--y);width:calc(var(--s,120px) * var(--k,1));
-  transform:translate(-50%,-50%) translate3d(0,calc(var(--p,0px) * var(--z,0)),0);opacity:0;scale:.82;transition:opacity 1.1s var(--ease),scale 1.1s var(--ease)}
-.seen .prop,.prop.now{opacity:calc(var(--o,1) * var(--ok,1));scale:1}
-.prop>img{width:100%;rotate:var(--r,0deg);filter:drop-shadow(0 12px 18px rgba(0,0,0,.38));animation:pdrift var(--t,6s) ease-in-out infinite alternate}
-@keyframes pdrift{from{translate:0 0}to{translate:0 calc(var(--d,0) * 2.4px)}}
-.prop.rise>img{animation:prise var(--t,7s) linear infinite;animation-delay:var(--dl,0s)}
-@keyframes prise{0%{translate:0 0;opacity:0}12%{opacity:1}80%{opacity:1}100%{translate:0 calc(var(--d,-60) * 4px);opacity:0}}
-.prop.grime>img{animation:gpulse 3.6s ease-in-out infinite;filter:drop-shadow(0 0 22px color-mix(in srgb,var(--c) 55%,transparent))}
-@keyframes gpulse{0%,100%{scale:1}50%{scale:1.07}}
-.realm:not(.on) .scene *,.hero:not(.on) .hills *{animation-play-state:paused!important}
-.tw{position:absolute;inset:0}
-.tw i{position:absolute;width:var(--z);height:var(--z);border-radius:50%;background:#fff;animation:twk var(--t) ease-in-out infinite;animation-delay:var(--dl)}
-@keyframes twk{0%,100%{opacity:.3}50%{opacity:.9}75%{opacity:.5}}
-.motes{position:absolute;inset:0;overflow:hidden}
-.motes i{position:absolute;bottom:-10px;width:var(--z);height:var(--z);border-radius:50%;background:var(--mc);box-shadow:0 0 8px var(--mc);opacity:0;animation:mote var(--t) linear infinite;animation-delay:var(--dl)}
-@keyframes mote{0%{opacity:0;transform:translate(0,0)}10%{opacity:.9}85%{opacity:.9}100%{opacity:0;transform:translate(var(--wx),calc(var(--h,600px) * -1))}}
-.rings{position:absolute;z-index:0;left:var(--rx,50%);top:var(--ry,50%);width:0;height:0}
-.rings i{position:absolute;left:50%;top:50%;border-radius:50%;border:2px dashed rgba(230,220,255,.35);width:var(--rs);height:var(--rs);margin:calc(var(--rs) / -2) 0 0 calc(var(--rs) / -2);animation:rspin 6s linear infinite alternate}
-.rings i:nth-child(1){--rs:150px}.rings i:nth-child(2){--rs:200px;animation-direction:alternate-reverse}.rings i:nth-child(3){--rs:250px}
-@keyframes rspin{from{rotate:0deg}to{rotate:120deg}}
-@media(max-width:899px){.scene{--k:.55;--ok:.6}.prop.dk{display:none}}
-
-/* Elemonster guides bob like the game intro, with their realm glow */
-.guide img,.phone-solo .buddy{animation:ebob 3.2s ease-in-out infinite alternate}
-.guide img.sway{animation:ebob 3.2s ease-in-out infinite alternate,esway 4s ease-in-out infinite alternate}
-@keyframes ebob{0%{translate:0 6px}55%{translate:0 -4px}100%{translate:0 2px}}
-@keyframes esway{from{rotate:-6deg}to{rotate:6deg}}
-.guide img{filter:drop-shadow(0 0 26px color-mix(in srgb,var(--glow,var(--c)) 55%,transparent)) drop-shadow(0 12px 18px rgba(0,0,0,.4))}
-#space{--glow:#D94FAA}#sky{--glow:#9B6BD8}#waters{--glow:#4BA3E3}#lands{--glow:#6BE08F}#embers{--glow:#F5961E}
-
-/* XP chip on realm heads (real realm-skin thresholds from the game) */
-.realm-head{flex-wrap:wrap}
-.xp-chip{display:inline-flex;align-items:center;gap:8px;margin-left:auto;padding:7px 14px 7px 8px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:14px;color:#fff;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--c) 60%,transparent)}
-.xp-chip svg{width:24px;height:24px;flex:none}
-#temple .xp-chip{color:var(--ink);background:#fff;margin-left:0}
-@media(max-width:600px){.xp-chip{margin-left:74px;margin-top:-6px;font-size:13px}}
-
-/* ---------- Real world + Gamification experience ---------- */
-.tag{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 6px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:13px;line-height:1.1;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;vertical-align:middle;color:var(--navy)}
-.tag::before{content:"";width:18px;height:18px;flex:none;border-radius:50%;background:rgba(10,10,46,.14) center/14px no-repeat}
-.tag.rw{background:#2EBD8A}
-.tag.rw::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A0A2E' stroke-width='2.4'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18'/%3E%3C/svg%3E")}
-.tag.ge{background:var(--gold)}
-.tag.ge::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z' fill='%230A0A2E'/%3E%3C/svg%3E")}
-.bridge{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px 14px;margin-top:24px;padding:14px 18px;border-radius:20px;background:rgba(0,0,0,.24);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
-.bridge b{font-family:var(--display);font-weight:600;font-size:16px;color:#fff}
-.bridge .arr{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--orange);color:var(--navy);animation:nudgex 1.8s ease-in-out infinite}
-@keyframes nudgex{0%,100%{translate:0 0}50%{translate:4px 0}}
-.bridge>span:not(.arr){display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-@media(max-width:480px){.bridge{grid-template-columns:1fr}.bridge .arr{rotate:90deg;margin-left:8px}}
-#temple .bridge{background:#fff;box-shadow:inset 0 0 0 1px rgba(22,22,58,.08);max-width:760px;margin-left:auto;margin-right:auto}
-#temple .bridge b{color:var(--ink)}
-
-.worlds{position:relative;padding:40px 0 110px;background:#0E0B33;overflow:hidden}
-.worlds-head{text-align:center;max-width:780px;margin:0 auto}
-.worlds-head .kick{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px}
-.worlds-head .kick em{font-style:normal;font-family:var(--display);font-weight:700;font-size:22px;color:var(--orange-l)}
-.worlds-head h2{color:#fff}
-.worlds-head .lead{margin:0 auto}
-.portal{position:relative;margin:44px auto 0;max-width:1060px;aspect-ratio:16/7;border-radius:32px;overflow:hidden;background:#0A0A2E;box-shadow:0 40px 80px -30px rgba(0,0,0,.8),inset 0 0 0 2px rgba(255,255,255,.12)}
-.portal .side{position:absolute;inset:0}
-.portal .real{clip-path:polygon(0 0,57% 0,45% 100%,0 100%);background:#4BA3E3}
-.portal .real>img{width:100%;height:100%;object-fit:cover;object-position:50% 62%}
-.portal .game{clip-path:polygon(57% 0,100% 0,100% 100%,45% 100%);background:radial-gradient(60% 70% at 78% 40%,rgba(217,79,170,.45),transparent 70%),radial-gradient(40% 50% at 60% 90%,rgba(75,163,227,.3),transparent 70%),#0A0A2E}
-.portal .seam{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
-.portal .tag{position:absolute;top:16px;z-index:5;font-size:14px;box-shadow:0 6px 0 rgba(0,0,0,.25)}
-.portal .tag.rw{left:16px}.portal .tag.ge{right:16px}
-.portal .prop{z-index:4}
-.portal .hero-mon{position:absolute;z-index:6;left:51%;bottom:-2%;width:22%;translate:-50% 0;filter:drop-shadow(0 18px 22px rgba(0,0,0,.5));animation:hop 2.6s var(--ease) infinite}
-@keyframes hop{0%,58%,100%{transform:translateY(0) scale(1,1)}64%{transform:translateY(0) scale(1.08,.9)}76%{transform:translateY(-16%) scale(.95,1.06)}88%{transform:translateY(0) scale(1.05,.95)}}
-.sparkle{position:absolute;z-index:4;width:22px;height:22px;background:radial-gradient(circle,#fff 0 20%,transparent 22%),conic-gradient(from 45deg,transparent 0 20deg,#fff 20deg 25deg,transparent 25deg 110deg,#fff 110deg 115deg,transparent 115deg 200deg,#fff 200deg 205deg,transparent 205deg 290deg,#fff 290deg 295deg,transparent 295deg);border-radius:50%;animation:spark 2.2s ease-in-out infinite;animation-delay:var(--dl,0s)}
-@keyframes spark{0%,100%{opacity:0;scale:.4}50%{opacity:1;scale:1.1}}
-@media(max-width:700px){.portal{--k:.6;aspect-ratio:4/3.6;border-radius:24px}.portal .tag{top:12px;font-size:11px;padding:4px 9px 4px 5px}.portal .tag.rw{left:10px}.portal .tag.ge{right:10px}.portal .hero-mon{width:34%}}
-
-.pairs{list-style:none;display:grid;gap:18px;max-width:1060px;margin:44px auto 0}
-@media(min-width:900px){.pairs{grid-template-columns:1fr 1fr;gap:22px}}
-.pair{display:grid;grid-template-columns:1fr 44px 1fr;align-items:stretch;gap:0}
-.pw{position:relative;display:flex;flex-direction:column;gap:6px;padding:18px 18px 20px;border-radius:22px}
-.pw .tag{align-self:flex-start;font-size:11px;padding:4px 9px 4px 4px}
-.pw .tag::before{width:16px;height:16px;background-size:12px}
-.pw img{height:62px;width:auto;max-width:90px;object-fit:contain;margin:8px 0 4px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.35))}
-.pw h3{font-size:1.08rem;color:#fff;line-height:1.2}
-.pw p{font-size:14px;line-height:1.45;color:rgba(238,240,255,.76)}
-.pw.r{background:linear-gradient(160deg,rgba(46,189,138,.2),rgba(46,189,138,.06));box-shadow:inset 0 0 0 2px rgba(46,189,138,.4)}
-.pw.g{background:linear-gradient(160deg,rgba(252,211,77,.2),rgba(217,79,170,.1));box-shadow:inset 0 0 0 2px rgba(252,211,77,.45)}
-.pair .lnk{align-self:center;justify-self:center;width:44px;height:44px;margin:0 -6px;z-index:2;display:grid;place-items:center;border-radius:50%;background:var(--orange);color:var(--navy);box-shadow:0 4px 0 #B84D00}
-.pair .lnk svg{animation:nudgex 1.8s ease-in-out infinite}
-@media(max-width:560px){.pair{grid-template-columns:1fr}.pair .lnk{margin:-8px auto;rotate:90deg}
-  .pw{display:grid;grid-template-columns:56px 1fr;column-gap:14px;row-gap:4px;align-items:center;padding:14px 16px}
-  .pw .tag{grid-column:1/-1;justify-self:start}.pw img{grid-row:2/4;margin:0;height:50px!important;max-width:56px;justify-self:center}
-  .pw h3{font-size:1rem}.pw p{grid-column:2;font-size:13.5px}
-  .worlds{padding-bottom:56px}}
-
-/* Hero layered scenery (parallax hills, like a game title screen) */
-.hero{--p:0px}
-.hero .stars{translate:0 calc(var(--p) * -.35)}
-.hero .stage{translate:0 calc(var(--p) * -.12)}
-.hills{position:absolute;left:0;right:0;bottom:-1px;height:170px;z-index:1;pointer-events:none}
-.hills svg{position:absolute;left:0;bottom:0;width:100%;height:100%}
-.hills .h1{translate:0 calc(var(--p) * -.22)}.hills .h2{translate:0 calc(var(--p) * -.1)}
-.hills .prop{opacity:1;scale:1}
-@media(max-width:899px){.hills{height:96px}.hills .prop{--k:.55}}
-@media(min-width:900px){.hero{padding-bottom:150px}}
-
-/* Bouncy game CTAs */
-.btn-primary:hover{animation:boing .55s var(--ease)}
-@keyframes boing{0%{transform:scale(1)}30%{transform:scale(1.09,.9)}55%{transform:scale(.96,1.05)}78%{transform:scale(1.02,.98)}100%{transform:translateY(-2px)}}
-.btn-hop{animation:ctahop 4s var(--ease) infinite 2s}
-.btn-hop:hover{animation:boing .55s var(--ease)}
-@keyframes ctahop{0%,80%,100%{transform:none}85%{transform:translateY(-7px) scale(1.03,.97)}90%{transform:translateY(0) scale(1.05,.94)}95%{transform:translateY(-2px)}}
-.btn-play{background:linear-gradient(180deg,#B38BFF,#7C4DDB);color:#fff;box-shadow:0 6px 0 #4B2A99,0 16px 30px -12px rgba(124,77,219,.7)}
-.btn-play:hover{transform:translateY(-2px);box-shadow:0 8px 0 #4B2A99,0 20px 34px -12px rgba(124,77,219,.75);animation:boing .55s var(--ease)}
-.btn-play:active{transform:translateY(4px);box-shadow:0 2px 0 #4B2A99}
-.btn-play img{height:26px;width:auto}
-
-/* Choose your Elemonster (team picker + evolution track, facts from the game) */
-.picker{margin-top:72px;padding:34px 28px 30px;border-radius:32px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
-.picker>h3{font-size:clamp(1.6rem,3vw,2.2rem);color:#fff;text-align:center}
-.picker>p{text-align:center;color:rgba(238,240,255,.76);margin-top:6px}
-.roster{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:28px}
-.mon{appearance:none;border:0;cursor:pointer;font:inherit;color:#fff;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px 12px;border-radius:22px;background:color-mix(in srgb,var(--mc) 16%,#0D1030);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--mc) 40%,transparent),0 6px 0 color-mix(in srgb,var(--mc) 35%,#05050f);transition:transform .25s var(--ease),box-shadow .25s}
-.mon img{height:96px;width:auto;max-width:100%;object-fit:contain;transition:transform .35s var(--ease);filter:drop-shadow(0 10px 12px rgba(0,0,0,.4))}
-.mon b{font-family:var(--display);font-size:17px}
-.mon span{font-size:12px;font-weight:600;opacity:.75}
-.mon:hover{transform:translateY(-4px)}
-.mon:hover img{transform:scale(1.08) rotate(-3deg)}
-.mon[aria-pressed="true"]{background:color-mix(in srgb,var(--mc) 34%,#0D1030);box-shadow:inset 0 0 0 3px var(--mc),0 6px 0 color-mix(in srgb,var(--mc) 55%,#05050f),0 0 30px -6px var(--mc)}
-.mon[aria-pressed="true"] img{animation:ebob 1.6s ease-in-out infinite alternate}
-@media(max-width:700px){.picker{padding:26px 14px}.roster{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.mon{padding:10px 2px 8px;border-radius:16px}.mon img{height:54px}.mon b{font-size:13px}.mon span{display:none}}
-.mon-detail{display:grid;gap:22px;margin-top:26px;padding:22px;border-radius:24px;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--mc) 45%,transparent)}
-@media(min-width:900px){.mon-detail{grid-template-columns:.9fr 1.1fr;align-items:center}}
-.mon-detail h4{font-family:var(--display);font-size:1.6rem;line-height:1.1;color:var(--mc)}
-.mon-detail .tl{font-family:var(--display);font-weight:600;font-size:1.1rem;color:#fff;margin-top:6px}
-.mon-detail .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.mon-detail .meta span{padding:5px 11px;border-radius:999px;font-size:13px;font-weight:600;background:rgba(255,255,255,.08)}
-.mon-detail .hide{margin-top:12px;font-size:15px;color:rgba(238,240,255,.78)}
-.evo{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:relative}
-.evo::before{content:"";position:absolute;left:12%;right:12%;top:44px;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--mc),rgba(255,255,255,.15))}
-.evo li{position:relative;text-align:center;font-size:12px;line-height:1.3;color:rgba(238,240,255,.75)}
-.evo .orb{position:relative;width:88px;height:88px;max-width:100%;aspect-ratio:1;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;background:#14123A;box-shadow:inset 0 0 0 3px var(--mc)}
-.evo .orb img{width:70%;height:70%;object-fit:contain}
-.evo .orb.lock{box-shadow:inset 0 0 0 3px rgba(255,255,255,.22);font-family:var(--display);font-weight:700;font-size:30px;color:rgba(255,255,255,.55)}
-.evo b{display:block;font-family:var(--display);font-size:14px;color:#fff}
-@media(max-width:600px){.evo .orb{width:64px;height:64px;font-size:24px}.evo::before{top:32px}.evo b{font-size:12px}}
-
-/* Temple of Light: rays, Orbo pulse, Compos, Light Cell (from the game's Temple cinematic) */
-.orbo-stage{position:relative;width:220px;height:230px;margin:0 auto 18px}
-.orbo-stage .rays{position:absolute;left:50%;top:50%;width:560px;height:560px;margin:-280px 0 0 -280px;z-index:0;border-radius:50%;
-  background:repeating-conic-gradient(from 0deg,rgba(232,164,0,.22) 0deg 7deg,transparent 7deg 30deg);
-  -webkit-mask:radial-gradient(circle,#000 18%,transparent 68%);mask:radial-gradient(circle,#000 18%,transparent 68%);animation:rays 6s linear infinite}
-@keyframes rays{to{rotate:30deg}}
-.orbo-stage .orbo{position:relative;z-index:2;margin:0 auto;animation:opulse 6s ease-in-out infinite}
-@keyframes opulse{0%,100%{scale:.96}25%{scale:1.03}50%{scale:.98}75%{scale:1.06}}
-.orbo-stage .cp{position:absolute;z-index:1;width:74px;left:50%;top:50%;margin:-37px;translate:var(--cx) var(--cy);animation:cfloat 3s ease-in-out infinite alternate;animation-delay:var(--dl,0s);filter:drop-shadow(0 10px 12px rgba(122,74,18,.35))}
-@keyframes cfloat{to{translate:var(--cx) calc(var(--cy) - 12px)}}
-.orbo-stage .cell{position:absolute;z-index:3;width:70px;left:50%;bottom:-6px;margin-left:-35px;animation:cellpop 6s var(--ease) infinite}
-@keyframes cellpop{0%,50%{opacity:0;scale:.2}62%{opacity:1;scale:1}85%{opacity:1;scale:1.25}100%{opacity:0;scale:1.25}}
-@media(max-width:600px){.orbo-stage .cp{width:54px;margin:-27px}.orbo-stage{--sx:.62}}
-
-/* Realm 1: story */
-.story-art{position:relative}
-.story-art .team{border-radius:28px;box-shadow:0 30px 60px -24px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.1);width:100%;aspect-ratio:1200/735;object-fit:cover}
-.grime-card{position:relative;margin:-56px 0 0 auto;width:min(330px,86%);display:flex;gap:14px;align-items:center;padding:14px 18px 14px 14px;border-radius:22px;background:rgba(14,10,36,.92);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 20px 40px -18px rgba(0,0,0,.7)}
-.grime-card img{width:76px;height:76px;object-fit:contain;flex:none}
-.grime-card p{font-size:14px;line-height:1.45;color:rgba(238,240,255,.8)}
-.grime-card b{display:block;font-family:var(--display);font-size:16px;color:#fff}
-.descent-map{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px;list-style:none}
-.descent-map li{display:flex;align-items:center;gap:8px;padding:7px 12px 7px 8px;border-radius:999px;font-size:14px;font-weight:600;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
-.descent-map li i{width:12px;height:12px;border-radius:50%;background:var(--rc)}
-
-/* Realm 2: steps */
-.steps{list-style:none;position:relative;display:grid;gap:26px;counter-reset:s}
-.steps::before{content:"";position:absolute;left:27px;top:30px;bottom:30px;border-left:2px dashed color-mix(in srgb,var(--c) 55%,transparent)}
-.steps li{position:relative;display:grid;grid-template-columns:56px 1fr;gap:18px;align-items:start}
-.steps li::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:56px;height:56px;border-radius:18px;background:#1E1450;box-shadow:inset 0 0 0 2px var(--c);font-family:var(--display);font-weight:700;font-size:24px;color:var(--c)}
-.steps h3{margin:4px 0 4px;color:#fff}
-.steps p{color:rgba(238,240,255,.78);font-size:16px}
-.steps p.st{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
-.steps .st .tag{font-size:11px;padding:3px 8px 3px 3px}.steps .st .tag::before{width:15px;height:15px;background-size:11px}
-.loot{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.loot span{padding:5px 12px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:14px;color:var(--navy);background:var(--gold);box-shadow:0 3px 0 #B8860B;animation:lootpop 2.4s var(--ease) infinite}
-.loot span:nth-child(2){animation-delay:.2s}.loot span:nth-child(3){animation-delay:.4s;background:#2EBD8A;box-shadow:0 3px 0 #167A55}
-@keyframes lootpop{0%,70%,100%{transform:none}78%{transform:translateY(-5px) scale(1.06)}86%{transform:none}}
-.phone-solo{width:min(290px,70vw);margin:0 auto;position:relative}
-.phone-solo .buddy{position:absolute;width:130px;bottom:-30px;left:-70px;z-index:3;filter:drop-shadow(0 14px 18px rgba(0,0,0,.45))}
-@media(max-width:600px){.phone-solo .buddy{width:96px;left:-36px}}
-
-/* Realm 3: game */
-.ar-frame{position:relative;border-radius:28px;overflow:hidden;box-shadow:0 30px 60px -24px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.12);margin-top:8px}
-.ar-frame img{width:100%;aspect-ratio:1200/540;object-fit:cover}
-.ar-frame figcaption{position:absolute;left:16px;bottom:14px;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.features{display:grid;gap:28px 40px;margin-top:48px}
-@media(min-width:760px){.features{grid-template-columns:1fr 1fr}}
-.feature{display:grid;grid-template-columns:72px 1fr;gap:18px;align-items:start}
-.feature .ico{width:72px;height:72px;border-radius:20px;display:grid;place-items:center;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
-.feature .ico img{max-width:56px;max-height:52px;width:auto}
-.feature h3{color:#fff;margin:2px 0 4px}
-.feature p{font-size:16px;color:rgba(238,240,255,.76)}
-.skins{display:flex;gap:18px;justify-content:center;margin-top:64px;flex-wrap:nowrap}
-.skins figure{width:min(190px,30vw);text-align:center}
-.skins .phone{padding:6px;border-radius:26px}
-.skins .phone::after{top:11px;height:4px}
-.skins .phone-screen{border-radius:21px}
-.skins figcaption{margin-top:12px;font-family:var(--display);font-weight:600;font-size:15px;color:var(--rc)}
-.skins figure:nth-child(2){transform:translateY(-24px)}
-@media(max-width:600px){.skins{gap:10px}.skins figcaption{font-size:13px}}
-
-/* Realm 4: families & schools */
-.duo{display:grid;gap:22px;margin-top:44px}
-@media(min-width:860px){.duo{grid-template-columns:1fr 1fr}}
-.panel{border-radius:28px;overflow:hidden;background:rgba(5,30,24,.72);box-shadow:inset 0 0 0 1px rgba(46,189,138,.25)}
-.panel img{width:100%;aspect-ratio:16/9;object-fit:cover}
-.panel-body{padding:26px 26px 30px}
-.panel h3{font-size:1.6rem;color:#fff;margin-bottom:10px}
-.ticks{list-style:none;display:grid;gap:10px;margin-top:16px}
-.ticks li{position:relative;padding-left:30px;font-size:16px;color:rgba(238,240,255,.82)}
-.ticks li::before{content:"";position:absolute;left:0;top:5px;width:18px;height:18px;border-radius:50%;background:var(--c) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.5l2.6 2.5L13 6.5' fill='none' stroke='%230A0A2E' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/18px no-repeat}
-.panel .btn{margin-top:22px}
-
-/* Realm 5: safety */
-.promises{display:grid;gap:0;margin-top:40px;border-radius:28px;overflow:hidden;background:rgba(30,12,4,.6);box-shadow:inset 0 0 0 1px rgba(245,150,30,.28)}
-@media(min-width:760px){.promises{grid-template-columns:1fr 1fr}}
-.promise{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:24px 26px;border-top:1px solid rgba(245,150,30,.16)}
-@media(min-width:760px){.promise:nth-child(-n+2){border-top:0}.promise:nth-child(odd){border-right:1px solid rgba(245,150,30,.16)}}
-@media(max-width:759px){.promise:first-child{border-top:0}}
-.promise svg{width:44px;height:44px;color:var(--fire)}
-.promise h3{font-size:1.15rem;color:#fff;margin-bottom:4px}
-.promise p{font-size:15px;color:rgba(238,240,255,.76)}
-.outdoor{display:grid;gap:28px;align-items:center;margin-top:56px;padding:30px;border-radius:28px;background:linear-gradient(135deg,rgba(245,150,30,.16),rgba(245,150,30,.04));box-shadow:inset 0 0 0 1px rgba(245,150,30,.25)}
-@media(min-width:860px){.outdoor{grid-template-columns:150px 1fr}}
-.outdoor img{width:150px;margin:0 auto}
-.outdoor h3{font-size:1.5rem;color:#fff;margin-bottom:12px}
-.outdoor ul{list-style:none;display:grid;gap:8px 28px}
-@media(min-width:620px){.outdoor ul{grid-template-columns:1fr 1fr}}
-.outdoor li{position:relative;padding-left:22px;font-size:16px;color:rgba(238,240,255,.85)}
-.outdoor li::before{content:"";position:absolute;left:2px;top:9px;width:9px;height:9px;border-radius:3px;background:var(--fire);transform:rotate(45deg)}
-
-/* Realm 6: join + partners */
-#temple .lead{color:var(--ink-2)}
-#temple h2{color:var(--ink)}
-.join-head{text-align:center;max-width:720px;margin:0 auto}
-.join-head .orbo{width:150px;margin:0 auto 18px;filter:drop-shadow(0 16px 30px rgba(232,164,0,.45))}
-.join-head .lead{margin:0 auto}
-.join-card{max-width:760px;margin:44px auto 0;padding:34px;border-radius:32px;background:#fff;box-shadow:0 1px 0 rgba(22,22,58,.05),0 30px 60px -30px rgba(122,74,18,.45);text-align:center}
-.join-card h3{font-size:1.7rem;margin-bottom:8px}
-.join-card p{color:var(--ink-2);font-size:16px;max-width:36em;margin-left:auto;margin-right:auto}
-.join-card .actions{justify-content:center;margin-top:24px}
-.join-card .btn-line{color:var(--ink)}
-.join-card .btn-line:hover{background:rgba(22,22,58,.05)}
-.join-card .fine{font-size:14px;color:var(--ink-2);margin-top:18px}
-.copied{display:inline-block;min-width:5em;font-weight:600;color:#1A8C5B}
-.partners{margin-top:96px}
-.partners>h2{text-align:center}
-.partners>.lead{text-align:center;margin:0 auto}
-.p-list{list-style:none;margin-top:40px;display:grid;gap:16px}
-@media(min-width:860px){.p-list{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.p-item{grid-template-columns:48px 1fr!important;gap:14px!important;padding:20px!important}.p-item .mark{width:48px!important;height:48px!important}.p-item .mark img{width:38px!important;height:38px!important}}
-.p-item{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:26px;border-radius:24px;background:#fff;box-shadow:inset 0 0 0 1px rgba(22,22,58,.07)}
-.p-item .mark{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--pc);}
-.p-item .mark img{width:50px;height:50px;object-fit:contain}
-.p-item h3{color:var(--ink);font-size:1.3rem;margin-bottom:6px}
-.p-item p{color:var(--ink-2);font-size:16px}
-.p-item a.more{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;font-family:var(--display);font-weight:700;font-size:16px;color:#B84D00;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
-.honest{max-width:720px;margin:36px auto 0;text-align:center;font-size:14px;color:var(--ink-2)}
-
-/* Footer */
-footer{background:var(--navy);color:rgba(238,240,255,.7);padding:44px 0 52px}
-footer .wrap{display:grid;gap:24px}
-@media(min-width:860px){footer .wrap{grid-template-columns:auto 1fr auto;align-items:center}}
-.f-brand{display:flex;align-items:center;gap:16px}
-.f-brand img:first-child{height:46px;width:auto}
-.f-brand img:last-child{height:26px;width:auto}
-footer nav ul{list-style:none;display:flex;flex-wrap:wrap;gap:4px 20px}
-@media(min-width:860px){footer nav ul{justify-content:center}}
-footer nav a{display:inline-block;padding:10px 0;font-weight:600;font-size:15px;color:#fff;text-decoration:none}
-footer nav a:hover{text-decoration:underline}
-footer small{display:block;font-size:13px;line-height:1.5}
-@media(min-width:860px){footer small{text-align:right}}
-
-@media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{animation:none!important;transition:none!important}
+/* ---------- hero: key-art carousel, characters break the frame ---------- */
+.hero{padding:96px 0 70px;overflow:hidden}
+.stage{position:relative;height:min(78vh,720px);min-height:520px}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .7s,visibility .7s}
+.slide.on{opacity:1;visibility:visible}
+.card{position:absolute;inset:0;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);background:#1A0F4A}
+.card>img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.08) translate(var(--mx,0),var(--my,0));transition:transform .4s ease-out}
+.slide.on .card>img.bg{animation:kb 12s ease-out both}
+@keyframes kb{from{transform:scale(1.16)}}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,46,.82) 0%,rgba(10,10,46,.45) 42%,transparent 70%)}
+.copy{position:absolute;z-index:3;left:clamp(20px,5vw,64px);bottom:clamp(24px,6vh,64px);max-width:560px}
+.slide .copy>*{opacity:0;transform:translateY(24px);transition:.6s cubic-bezier(.2,1,.3,1)}
+.slide.on .copy>*{opacity:1;transform:none}
+.slide.on .copy>*:nth-child(2){transition-delay:.1s}.slide.on .copy>*:nth-child(3){transition-delay:.2s}.slide.on .copy>*:nth-child(4){transition-delay:.3s}
+.kicker{display:inline-flex;align-items:center;gap:8px;font:600 14px Fredoka,sans-serif;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:7px 14px;border-radius:999px;margin-bottom:14px}
+.kicker i{width:9px;height:9px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 4px rgba(255,200,61,.25)}
+.hero h1,.hero .h1{font-size:clamp(38px,5.2vw,74px);text-shadow:0 6px 0 rgba(10,10,46,.45)}
+.hero h1 span,.hero .h1 span{color:var(--fire);display:block}
+.hero .lede{font-size:clamp(16px,1.4vw,19px);margin:12px 0 22px;max-width:470px;opacity:.95}
+.ctas{display:flex;flex-wrap:wrap;gap:14px}
+.logo-big{width:clamp(170px,17vw,240px);margin-bottom:6px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.4))}
+/* the character that bursts out of the frame */
+.burst{position:absolute;z-index:4;background:none;border:0;padding:0;pointer-events:auto;cursor:pointer;filter:drop-shadow(0 18px 30px rgba(0,0,0,.45));
+  transform:translate(var(--mx2,0),var(--my2,0));transition:transform .4s ease-out}
+.burst img{animation:bob 3.2s ease-in-out infinite}
+.slide.on .burst{animation:popin .9s cubic-bezier(.2,1.6,.4,1) both .25s}
+@keyframes popin{from{opacity:0;transform:translateY(80px) scale(.6)}}
+@keyframes bob{50%{transform:translateY(-14px) rotate(2deg)}}
+.b1{right:-2%;bottom:-70px;width:min(34vw,380px)}
+.b2{right:4%;top:-40px;width:min(30vw,330px)}
+.b3{right:-1%;bottom:-60px;width:min(28vw,300px)}
+.dots{position:absolute;z-index:6;left:50%;bottom:-44px;transform:translateX(-50%);display:flex;gap:10px}
+.dots button{width:14px;height:14px;border-radius:999px;border:0;background:rgba(255,255,255,.35);cursor:pointer;transition:width .3s,background .3s;padding:0}
+.dots button[aria-current="true"]{width:40px;background:var(--sun)}
+.arrows{position:absolute;z-index:6;right:16px;bottom:-56px;display:flex;gap:10px}
+.arrows button{width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:rgba(10,10,46,.5);color:#fff;font:700 20px Fredoka;cursor:pointer}
+/* hero litter you can clean */
+.litter{position:absolute;z-index:5;border:0;background:none;padding:0;cursor:pointer;width:64px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.4));
+  animation:float 4s ease-in-out infinite;transition:transform .2s}
+.litter:hover{transform:scale(1.15) rotate(-8deg)}
+.litter.gone{animation:poof .5s forwards;pointer-events:none}
+@keyframes float{50%{translate:0 -10px}}
+@keyframes poof{to{transform:scale(0) rotate(180deg);opacity:0}}
+.hint{position:absolute;z-index:6;left:50%;top:18px;transform:translateX(-50%);background:#fff;color:var(--ink);border-radius:999px;
+  padding:8px 16px;font:600 15px Fredoka,sans-serif;box-shadow:0 4px 0 #C9C2E8;white-space:nowrap;animation:hint 2s ease-in-out infinite}
+@keyframes hint{50%{transform:translateX(-50%) translateY(-4px)}}
+.devnote{font-size:14px;opacity:.75;margin-top:14px}
+@media (max-width:760px){
+  .hero{padding-top:84px}
+  .stage{height:auto;min-height:0}
+  .slide{position:relative;display:none}
+  .slide.on{display:block}
+  .card{position:relative;inset:auto;height:auto;padding:230px 20px 28px}
+  .card>img.bg{height:250px;bottom:auto}
+  .card::after{background:linear-gradient(180deg,transparent 120px,rgba(10,10,46,.95) 250px)}
+  .copy{position:relative;left:auto;bottom:auto}
+  .b1,.b2,.b3{width:104px;top:-34px;bottom:auto;right:-4px}
+  .hero .stage{margin-top:30px}
+  .card .litter:nth-of-type(1){left:6%!important;top:178px!important}
+  .card .litter:nth-of-type(2){left:34%!important;top:196px!important}
+  .card .litter:nth-of-type(3){left:58%!important;top:186px!important}
+  .hud{left:10px;bottom:10px;padding:6px 10px 6px 6px;gap:7px}.hud img{width:32px;height:32px}.hud .xpbar{width:58px}.hud .lv{font-size:11px}.hud .coins{font-size:15px}
+  .toasts{top:74px}.toast{font-size:14px;padding:9px 12px}.toast img{width:30px;height:30px}
+  .dots{bottom:-34px}.arrows{display:none}
+  .hint{top:12px;font-size:13px}
+  .litter{width:48px}
 }
+
+/* ---------- section scaffolding ---------- */
+section{position:relative}
+.sec{padding:110px 0}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font:600 15px Fredoka,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.eyebrow img{width:34px;height:34px;object-fit:contain}
+.h2{font-size:clamp(36px,5vw,64px);margin:10px 0 16px}
+.sub{font-size:19px;max-width:640px;opacity:.9}
+.center{text-align:center}.center .sub{margin-inline:auto}
+.badge{display:inline-flex;align-items:center;gap:6px;font:600 13px Fredoka,sans-serif;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22)}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s cubic-bezier(.2,1,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- roster: Meet the Elemonsters ---------- */
+.roster{background:linear-gradient(180deg,#1A0F4A,#2A1666)}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:70px}
+.mcard{--mc:var(--earth);position:relative;border:0;cursor:pointer;color:#fff;text-align:left;padding:150px 16px 18px;border-radius:24px;
+  background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--mc) 70%,#fff 0%),color-mix(in srgb,var(--mc) 55%,#0A0A2E) 75%);
+  box-shadow:0 8px 0 color-mix(in srgb,var(--mc) 50%,#000),0 18px 30px rgba(0,0,0,.35);transition:transform .25s cubic-bezier(.2,1.6,.4,1)}
+.mcard:hover,.mcard[aria-pressed="true"]{transform:translateY(-10px) rotate(-1.5deg)}
+.mcard img{position:absolute;left:50%;top:-56px;width:78%;height:200px;object-fit:contain;transform:translateX(-50%);
+  filter:drop-shadow(0 12px 16px rgba(0,0,0,.4));transition:transform .3s cubic-bezier(.2,1.6,.4,1)}
+.mcard:hover img{transform:translateX(-50%) scale(1.08) translateY(-8px)}
+.mcard.boing img{animation:boing .6s cubic-bezier(.2,1.8,.4,1)}
+@keyframes boing{30%{transform:translateX(-50%) scaleY(.82) scaleX(1.15)}60%{transform:translateX(-50%) translateY(-28px) scale(1.05)}}
+.mcard b{display:block;font:700 26px Fredoka,sans-serif}
+.mcard small{font:600 14px Fredoka,sans-serif;opacity:.9}
+.mcard .met{position:absolute;right:12px;top:12px;font:700 12px Fredoka;background:#fff;color:var(--ink);border-radius:999px;padding:4px 9px;opacity:0;transform:scale(.5);transition:.3s}
+.mcard.was-met .met{opacity:1;transform:none}
+.sheet{--mc:var(--earth);margin-top:44px;display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:34px;align-items:center;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:var(--r);padding:30px;position:relative;overflow:hidden}
+.sheet::before{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 20% 50%,color-mix(in srgb,var(--mc) 45%,transparent),transparent 45%);pointer-events:none}
+.sheet .big{position:relative;height:340px;display:grid;place-items:center}
+.sheet .big img{max-height:330px;width:auto;object-fit:contain;filter:drop-shadow(0 20px 30px rgba(0,0,0,.45));animation:bob 3s ease-in-out infinite}
+.sheet h3{font-size:46px;color:var(--mc)}
+.sheet .tag{font:600 21px/1.3 Fredoka,sans-serif;margin:8px 0 14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.evo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.evo .st{display:grid;justify-items:center;gap:4px;font:600 13px Fredoka,sans-serif;text-align:center;width:88px}
+.evo .st div{width:78px;height:78px;border-radius:20px;display:grid;place-items:center;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18)}
+.evo .st img{max-width:62px;max-height:64px}
+.evo .st.lock div{font:700 30px Fredoka;color:rgba(255,255,255,.5)}
+.evo .st small{opacity:.7;font-weight:500}
+.evo .ar{opacity:.5;font-size:20px}
+@media (max-width:920px){
+  .cards{grid-template-columns:repeat(5,minmax(150px,1fr));overflow-x:auto;padding:70px 8px 20px;margin-top:0;scroll-snap-type:x mandatory}
+  .mcard{scroll-snap-align:center}
+  .sheet{grid-template-columns:1fr;text-align:center}.sheet .chips,.sheet .evo{justify-content:center}.sheet .big{height:240px}.sheet .big img{max-height:230px}
+}
+
+/* ---------- River of Three: the descent through six realms ---------- */
+.river{background:linear-gradient(180deg,#2A1666 0%,#140B3A 14%,#3B2A86 30%,#0B3C6E 46%,#0E5A4A 62%,#5A1E0A 78%,#FFE9B8 92%,#FFF7E8 100%);overflow:hidden}
+.river svg.flow{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.flow path{fill:none;stroke-linecap:round}
+.flow .glow{stroke:rgba(120,220,255,.35);stroke-width:34;filter:blur(10px)}
+.flow .core{stroke:url(#rg);stroke-width:10}
+.river-head{position:relative;z-index:2;padding:110px 0 40px}
+.realm{position:relative;z-index:2;min-height:92vh;display:flex;align-items:center;padding:60px 0}
+.realm .wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+.realm:nth-of-type(even) .scene{order:2}
+.scene{position:relative;height:min(64vh,560px);border-radius:var(--r);overflow:visible}
+.scene .orb{position:absolute;inset:8% 8%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 55%,transparent),transparent 65%);filter:blur(6px);animation:pulse 5s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08);opacity:.75}}
+.scene .lead{position:absolute;left:50%;top:50%;width:62%;max-height:80%;object-fit:contain;transform:translate(-50%,-50%);filter:drop-shadow(0 24px 30px rgba(0,0,0,.45));cursor:pointer}
+.scene .lead.many{width:96%}
+.scene .prop{position:absolute;filter:drop-shadow(0 10px 14px rgba(0,0,0,.35));animation:drift var(--t,7s) ease-in-out infinite;animation-delay:var(--d,0s);pointer-events:none}
+@keyframes drift{50%{transform:translate(var(--x,10px),var(--y,-18px)) rotate(var(--rot,6deg))}}
+.realm .txt{max-width:540px}
+.realm .num{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--c);color:#fff;font:700 22px Fredoka;box-shadow:0 5px 0 rgba(0,0,0,.25);margin-right:10px}
+.realm .h2{margin-top:16px}
+.realm .guide{display:flex;gap:12px;align-items:center;margin-top:22px;padding:12px 16px;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+.realm .guide img{width:54px;height:54px;object-fit:contain}
+.realm .guide p{font-size:15px}
+.realm.light{color:var(--ink)}
+.realm.light .guide{background:rgba(20,39,46,.06);border-color:rgba(20,39,46,.12)}
+.realm.light .badge{background:rgba(20,39,46,.07);border-color:rgba(20,39,46,.15)}
+.realm.light .eyebrow{color:#C27C00}
+.realm .reveal.in .lead{animation:enter .9s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes enter{from{transform:translate(-50%,-30%) scale(.7);opacity:0}}
+@media (max-width:860px){
+  .realm{min-height:0;padding:50px 0}
+  .realm .wrap{grid-template-columns:1fr;gap:10px}
+  .realm:nth-of-type(even) .scene{order:0}
+  .scene{height:320px}
+}
+.realm-rail{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:50;display:grid;gap:10px;opacity:0;pointer-events:none;transition:opacity .4s}
+.realm-rail.show{opacity:1;pointer-events:auto}
+.realm-rail a{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.35);display:block;position:relative;transition:.3s}
+.realm-rail a[aria-current]{background:var(--sun);transform:scale(1.4)}
+.realm-rail a span{position:absolute;right:24px;top:50%;transform:translateY(-50%);white-space:nowrap;font:600 13px Fredoka;background:#0A0A2E;padding:4px 10px;border-radius:999px;opacity:0;transition:.2s}
+.realm-rail a:hover span,.realm-rail a[aria-current] span{opacity:1}
+@media (max-width:860px){.realm-rail{display:none}}
+
+/* ---------- two worlds slider ---------- */
+.two{background:#FFF7E8;color:var(--ink)}
+.two .eyebrow{color:#D9730D}
+.compare{position:relative;margin:44px auto 0;max-width:1000px;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;box-shadow:0 20px 50px rgba(20,39,46,.25);user-select:none;touch-action:pan-y}
+.compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.compare .game{clip-path:inset(0 0 0 var(--cut,50%))}
+.compare .handle{position:absolute;top:0;bottom:0;left:var(--cut,50%);width:4px;background:#fff;transform:translateX(-2px);box-shadow:0 0 18px rgba(0,0,0,.4)}
+.compare .handle button{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:62px;height:62px;border-radius:50%;border:0;cursor:ew-resize;
+  background:var(--fire);color:#fff;font:700 22px Fredoka;box-shadow:0 5px 0 #B85600,0 10px 20px rgba(0,0,0,.3)}
+.compare .lab{position:absolute;top:16px;font:700 15px Fredoka;background:rgba(255,255,255,.92);color:var(--ink);padding:6px 14px;border-radius:999px}
+.compare .lab.l{left:16px}.compare .lab.r{right:16px;background:var(--air);color:#fff}
+.quest{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:50px}
+.qcard{background:#fff;border-radius:24px;padding:24px 20px;box-shadow:0 6px 0 #EADFC8,0 14px 30px rgba(20,39,46,.08);position:relative}
+.qcard .n{position:absolute;top:-18px;left:20px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--qc,var(--water));color:#fff;font:700 20px Fredoka;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.qcard h3{font-size:24px;margin:12px 0 6px}
+.qcard p{font-size:15px;color:#3C5058}
+.qcard .w{font:600 12px Fredoka;letter-spacing:.06em;text-transform:uppercase;color:var(--qc,var(--water))}
+@media (max-width:860px){.quest{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.quest{grid-template-columns:1fr}}
+
+/* ---------- playable: Clear the Grime Zone ---------- */
+.play{background:linear-gradient(180deg,#FFF7E8,#E9F4FD);color:var(--ink)}
+.play .eyebrow{color:var(--water)}
+.arena{position:relative;max-width:1000px;margin:40px auto 0;aspect-ratio:16/10;border-radius:var(--r);overflow:hidden;
+  box-shadow:0 10px 0 #9CC7EA,0 24px 50px rgba(20,39,46,.25);background:#7FA7E8 url(assets/img/park-bg.webp) center/cover;touch-action:manipulation}
+.arena .haze{position:absolute;inset:0;background:radial-gradient(circle at 50% 60%,rgba(57,3,139,.55),rgba(57,3,139,.8));transition:opacity .6s;pointer-events:none}
+.arena .zone{position:absolute;left:50%;top:52%;width:28%;transform:translate(-50%,-50%);transition:transform .6s,opacity .6s;pointer-events:none;animation:spin 18s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+.arena .item{position:absolute;border:0;background:none;padding:0;cursor:pointer;width:9%;transition:transform .15s;filter:drop-shadow(0 6px 6px rgba(0,0,0,.35))}
+.arena .item:hover{transform:scale(1.15)}
+.arena .item.gone{animation:tobin .55s cubic-bezier(.5,-.3,.7,1) forwards;pointer-events:none}
+@keyframes tobin{to{left:88%;top:80%;transform:scale(.2) rotate(240deg);opacity:0}}
+.arena .bin{position:absolute;right:3%;bottom:4%;width:12%;aspect-ratio:3/4;border-radius:10px 10px 16px 16px;background:linear-gradient(#3DA7F9,#1C6CB0);
+  box-shadow:inset 0 -6px 0 rgba(0,0,0,.2),0 8px 16px rgba(0,0,0,.3);display:grid;place-items:center;font:700 clamp(10px,1.4vw,15px) Fredoka;color:#fff;text-align:center}
+.arena .bin::before{content:"";position:absolute;left:-8%;right:-8%;top:-10%;height:14%;border-radius:8px;background:#1C6CB0}
+.arena .bin.gulp{animation:gulp .35s}
+@keyframes gulp{50%{transform:scale(1.12,0.9)}}
+.arena .bar{position:absolute;left:3%;right:3%;top:3%;display:flex;gap:10px;align-items:center;z-index:5}
+.arena .pill{background:rgba(255,255,255,.95);border-radius:999px;padding:6px 14px;font:700 clamp(12px,1.6vw,16px) Fredoka;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.arena .pill.t{margin-left:auto}
+.arena .over{position:absolute;inset:0;z-index:8;display:grid;place-items:center;text-align:center;padding:20px;background:rgba(10,10,46,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);color:#fff}
+.arena .over[hidden]{display:none}
+.arena .over h3{font-size:clamp(28px,4vw,44px);margin-bottom:8px}
+.arena .over p{max-width:460px;margin:0 auto 18px;font-size:clamp(14px,1.6vw,17px)}
+.arena .trashure{position:absolute;left:50%;top:45%;width:18%;transform:translate(-50%,-50%);border:0;background:none;padding:0;cursor:crosshair;animation:jig 1.2s ease-in-out infinite}
+.arena .trashure img{filter:drop-shadow(0 0 20px rgba(57,3,139,.9))}
+@keyframes jig{25%{transform:translate(-46%,-54%) rotate(-6deg)}75%{transform:translate(-54%,-48%) rotate(6deg)}}
+.arena .hp{position:absolute;left:50%;top:22%;transform:translateX(-50%);width:26%;height:12px;border-radius:9px;background:rgba(0,0,0,.35);overflow:hidden}
+.arena .hp b{display:block;height:100%;width:100%;background:linear-gradient(90deg,#9B5CFF,#39038B);transition:width .25s}
+.arena .gun{position:absolute;right:6%;bottom:-2%;width:20%;transform-origin:20% 70%;transition:transform .12s;pointer-events:none}
+.arena .gun.fire{transform:rotate(-12deg) translateY(-6px)}
+.arena .splash{position:absolute;width:60px;height:60px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(61,167,249,.6) 45%,transparent 70%);animation:spl .45s forwards}
+@keyframes spl{from{transform:translate(-50%,-50%) scale(.3)}to{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
+.arena .compo{position:absolute;left:50%;top:48%;width:20%;transform:translate(-50%,-50%);animation:free 1s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes free{from{transform:translate(-50%,-50%) scale(0) rotate(-30deg)}}
+.arena .warn{position:absolute;z-index:7;left:50%;top:18%;transform:translateX(-50%);background:#FFE14D;color:var(--ink);border-radius:16px;padding:10px 16px;font:700 clamp(13px,1.6vw,16px)/1.3 Fredoka;text-align:center;max-width:80%;box-shadow:0 5px 0 #C9A400}
+.arena .warn[hidden]{display:none}
+.playnote{text-align:center;font-size:14px;color:#56707A;margin-top:18px}
+
+/* ---------- app screens ---------- */
+.screens{background:linear-gradient(180deg,#E9F4FD,#F3EEFB);color:var(--ink);overflow:hidden}
+.phones{display:flex;justify-content:center;gap:clamp(10px,2vw,28px);margin-top:50px;perspective:1200px}
+.phone{width:clamp(150px,21vw,250px);border-radius:34px;padding:9px;background:#14272E;box-shadow:0 30px 50px rgba(20,39,46,.3);transition:transform .5s cubic-bezier(.2,1.4,.4,1)}
+.phone img{border-radius:26px}
+.phone:nth-child(1){transform:rotate(-7deg) translateY(30px)}.phone:nth-child(3){transform:rotate(7deg) translateY(30px)}
+.phone:nth-child(4){transform:rotate(10deg) translateY(60px)}
+.phone:hover{transform:translateY(-12px) scale(1.04)}
+.phone figcaption{text-align:center;font:600 14px Fredoka;color:#fff;padding:8px 0 2px}
+.feat{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:70px}
+.feat div{background:#fff;border-radius:20px;padding:18px;box-shadow:0 5px 0 #DCD3F0}
+.feat h3{font-size:20px;margin-bottom:6px}
+.feat p{font-size:15px;color:#3C5058}
+@media (max-width:860px){.phones .phone:nth-child(4){display:none}.feat{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.phones .phone:nth-child(1){display:none}.feat{grid-template-columns:1fr}}
+
+/* ---------- boss: King Grime ---------- */
+.boss{background:radial-gradient(circle at 50% 40%,#3B0F7A,#12052E 70%);overflow:hidden}
+.boss .wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.bossfield{position:relative;height:520px;display:grid;place-items:center}
+.bossfield .kg{position:relative;width:min(420px,90%);border:0;background:none;padding:0;cursor:crosshair;transition:transform .1s,filter .4s}
+.bossfield .kg img{filter:drop-shadow(0 0 50px rgba(155,92,255,.6));animation:loom 4s ease-in-out infinite}
+@keyframes loom{50%{transform:scale(1.04) translateY(-8px)}}
+.bossfield .kg.hit{transform:scale(.95) rotate(-3deg)}
+.bossfield .kg.beaten{transform:scale(0) rotate(30deg);opacity:0;transition:1s cubic-bezier(.6,-.4,.6,1)}
+.bossfield .orbo{position:absolute;width:min(300px,65%);opacity:0;transform:scale(.4);transition:1.2s cubic-bezier(.2,1.4,.4,1) .4s;filter:drop-shadow(0 0 60px #FFE9A0)}
+.bossfield .orbo.free{opacity:1;transform:none}
+.bossfield .rays{position:absolute;inset:-20%;opacity:0;background:repeating-conic-gradient(from 0deg,rgba(255,233,160,.35) 0 8deg,transparent 8deg 20deg);
+  -webkit-mask:radial-gradient(circle,#000 10%,transparent 60%);mask:radial-gradient(circle,#000 10%,transparent 60%);transition:opacity 1s;animation:spin 30s linear infinite}
+.bossfield.won .rays{opacity:1}
+.meter{margin-top:22px;max-width:420px}
+.meter label{display:flex;justify-content:space-between;font:700 15px Fredoka;margin-bottom:6px}
+.meter div{height:18px;border-radius:12px;background:rgba(255,255,255,.12);overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.4)}
+.meter b{display:block;height:100%;width:100%;background:linear-gradient(90deg,#9B5CFF,#5A0FC8 60%,#39038B);transition:width .3s}
+@media (max-width:860px){.boss .wrap{grid-template-columns:1fr}.bossfield{height:380px}}
+
+/* ---------- families, code, join, partners ---------- */
+.fam{background:#F3EEFB;color:var(--ink)}
+.fam .eyebrow{color:var(--air)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:44px}
+.panel{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 6px 0 #DCD3F0,0 18px 40px rgba(20,39,46,.08)}
+.panel img{aspect-ratio:16/9;object-fit:cover;width:100%;height:auto}
+.panel .in{padding:24px}
+.panel h3{font-size:28px;margin-bottom:8px}
+.panel ul{padding:0;margin:14px 0 0;list-style:none;display:grid;gap:8px}
+.panel li{padding-left:30px;position:relative;font-size:16px}
+.panel li::before{content:"";position:absolute;left:0;top:3px;width:20px;height:20px;border-radius:50%;background:var(--earth) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10l3 3 7-7' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")}
+.panel .btn{margin-top:18px}
+@media (max-width:760px){.two-col{grid-template-columns:1fr}}
+.code{background:linear-gradient(180deg,#FFE9B8,#FFF7E8);color:var(--ink)}
+.code .eyebrow{color:#C27C00}
+.promises{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.promise{background:#fff;border-radius:24px;padding:22px;box-shadow:0 6px 0 #F0D9A8;position:relative;transition:transform .25s}
+.promise:hover{transform:translateY(-6px) rotate(-1deg)}
+.promise .ic{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:var(--pc,var(--fire));font-size:28px;margin-bottom:12px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.promise h3{font-size:21px;margin-bottom:6px}
+.promise p{font-size:15px;color:#3C5058}
+.rules{margin-top:30px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;background:#14272E;color:#fff;border-radius:var(--r);padding:26px 30px}
+.rules img{width:120px}
+.rules h3{font-size:24px;margin-bottom:10px;color:var(--sun)}
+.rules ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;font-size:15px}
+.rules li::before{content:"★ ";color:var(--sun)}
+.fine{font-size:14px;color:#56707A;margin-top:18px}
+@media (max-width:860px){.promises{grid-template-columns:1fr 1fr}.rules{grid-template-columns:1fr}.rules ul{grid-template-columns:1fr}}
+@media (max-width:520px){.promises{grid-template-columns:1fr}}
+.join{background:radial-gradient(circle at 50% 0%,#FFF2C9,#FFF7E8 55%);color:var(--ink);overflow:hidden}
+.join .sun{position:absolute;left:50%;top:-260px;width:900px;height:900px;transform:translateX(-50%);pointer-events:none;opacity:.6;
+  background:repeating-conic-gradient(from 0deg,rgba(255,200,61,.28) 0 6deg,transparent 6deg 15deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 60%);mask:radial-gradient(circle,#000 0,transparent 60%);animation:spin 60s linear infinite}
+.join .wrap{position:relative}
+.troop{display:flex;justify-content:center;align-items:flex-end;gap:clamp(4px,2vw,22px);margin:30px 0 -30px;position:relative;z-index:2}
+.troop img{width:clamp(56px,10vw,120px);cursor:pointer;transition:transform .25s cubic-bezier(.2,1.6,.4,1);animation:bob 3s ease-in-out infinite}
+.troop img:nth-child(2){animation-delay:-.6s}.troop img:nth-child(3){animation-delay:-1.2s;width:clamp(70px,13vw,150px)}.troop img:nth-child(4){animation-delay:-1.8s}.troop img:nth-child(5){animation-delay:-2.4s}
+.troop img:hover{transform:translateY(-14px) scale(1.08)}
+.signup{position:relative;z-index:1;max-width:620px;margin:0 auto;background:#fff;border-radius:var(--r);padding:56px 30px 30px;text-align:center;box-shadow:0 8px 0 #F0D9A8,0 24px 50px rgba(20,39,46,.12)}
+.signup h3{font-size:30px;margin-bottom:8px}
+.signup p{color:#3C5058}
+.signup .ctas{justify-content:center;margin:20px 0 12px}
+.signup small{display:block;color:#56707A;font-size:14px}
+.score{max-width:620px;margin:26px auto 0;background:#14272E;color:#fff;border-radius:24px;padding:18px 22px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.score img{width:58px}
+.score b{font:700 22px Fredoka;color:var(--sun)}
+.score .bdg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.score .bdg span{font:600 12px Fredoka;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.1);opacity:.45}
+.score .bdg span.got{opacity:1;background:var(--air)}
+.score small{display:block;opacity:.7;font-size:12.5px;margin-top:6px}
+.partners{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+.pcard{background:#fff;border-radius:22px;padding:22px;box-shadow:0 6px 0 #EADFC8;display:flex;flex-direction:column;gap:8px}
+.pcard img{width:56px;height:56px;object-fit:contain}
+.pcard h3{font-size:21px}
+.pcard p{font-size:15px;color:#3C5058;flex:1}
+.pcard a{font:700 16px Fredoka;color:#D9730D}
+@media (max-width:900px){.partners{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.partners{grid-template-columns:1fr}}
+footer{background:#0A0A2E;color:#fff;padding:50px 0 120px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
+footer img{height:56px;width:auto}
+footer nav{display:flex;flex-wrap:wrap;gap:18px;font:600 15px Fredoka}
+footer nav a{text-decoration:none}
+footer p{font-size:13px;opacity:.7;max-width:420px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+
+.tw i{position:absolute;width:var(--z);height:var(--z);border-radius:50%;background:#fff;animation:twk var(--t) ease-in-out infinite;animation-delay:var(--dl)}
+@keyframes twk{50%{opacity:.2}}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="hud" id="hud">
-  <div class="wrap">
-    <a class="hud-logo" href="#top" aria-label="Trashure-Hunters home"><img src="assets/img/logo.webp" width="640" height="294" alt="Trashure-Hunters"></a>
-    <nav aria-label="Main">
-      <ul>
-        <li><a href="#space">Story</a></li>
-        <li><a href="#sky">How it works</a></li>
-        <li><a href="#lands">Families &amp; schools</a></li>
-        <li><a href="#embers">Safety</a></li>
-        <li><a href="#partners">Partners</a></li>
-      </ul>
-    </nav>
-    <span class="hud-depth" id="hudDepth" aria-hidden="true"></span>
-    <a class="btn btn-primary btn-sm" href="#join">Join the hunt</a>
-  </div>
-  <div class="hud-bar" id="hudBar" aria-hidden="true"></div>
-</header>
+<div class="loader" id="loader" aria-hidden="true">
+  <div><img src="assets/img/egg-space.webp" width="220" height="275" alt=""><p>Hatching your adventure…</p></div>
+</div>
 
-<nav class="rail" id="rail" aria-label="The six realms">
-  <ol>
-    <li><a href="#space" style="--rc:var(--space)"><i></i><span>Cosmic Void</span></a></li>
-    <li><a href="#sky" style="--rc:var(--air)"><i></i><span>Sky Realm</span></a></li>
-    <li><a href="#waters" style="--rc:var(--water)"><i></i><span>Deep Waters</span></a></li>
-    <li><a href="#lands" style="--rc:var(--earth)"><i></i><span>Green Lands</span></a></li>
-    <li><a href="#embers" style="--rc:var(--fire)"><i></i><span>Ember Fields</span></a></li>
-    <li><a href="#temple" style="--rc:#E8A400"><i></i><span>Temple of Light</span></a></li>
-  </ol>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Trashure-Hunters home"><img src="assets/img/logo.webp" width="640" height="294" alt="Trashure-Hunters"></a>
+    <ul>
+      <li><a href="#roster">Elemonsters</a></li>
+      <li><a href="#river">The Story</a></li>
+      <li><a href="#play">Play</a></li>
+      <li><a href="#families">Families &amp; schools</a></li>
+      <li><a href="#code">Safety</a></li>
+      <li><a href="#partners">Partners</a></li>
+    </ul>
+    <a class="btn sm cta" href="#join">Join the hunt</a>
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mmenu"><i></i><i></i><i></i></button>
+  </div>
+</header>
+<nav class="mmenu" id="mmenu" aria-label="Menu">
+  <a href="#roster"><img src="assets/img/sproutz.webp" alt="">Elemonsters</a>
+  <a href="#river"><img src="assets/img/orbo.webp" alt="">The Story</a>
+  <a href="#play"><img src="assets/img/watergun.webp" alt="">Play</a>
+  <a href="#families"><img src="assets/img/bloop.webp" alt="">Families &amp; schools</a>
+  <a href="#code"><img src="assets/img/blazo.webp" alt="">Safety</a>
+  <a href="#partners"><img src="assets/img/wispo.webp" alt="">Partners</a>
+  <a class="btn" href="#join">Join the hunt</a>
+</nav>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="hud" id="hud" aria-label="Your visit score, just for fun">
+  <img src="assets/img/th-icon.webp" width="240" height="246" alt="">
+  <div><div class="lv" id="hudLv">Hunter Lv 1</div><div class="xpbar"><b id="hudXp"></b></div></div>
+  <div class="coins" title="Trash-Cash earned on this visit"><i></i><span id="hudTc">0</span></div>
+</div>
+
+<nav class="realm-rail" id="rail" aria-label="Realms">
+  <a href="#r1"><span>Cosmic Void</span></a><a href="#r2"><span>Sky Realm</span></a><a href="#r3"><span>Deep Waters</span></a>
+  <a href="#r4"><span>Green Lands</span></a><a href="#r5"><span>Ember Fields</span></a><a href="#r6"><span>Temple of Light</span></a>
 </nav>
 
 <main id="main">
 
-<!-- HERO -->
-<section class="hero" id="top" aria-labelledby="h-hero">
-  <div class="stars" aria-hidden="true"></div>
-  <div class="wrap">
-    <div class="hero-grid">
-      <div>
-        <p class="status"><i aria-hidden="true"></i>In development. Not yet available to download.</p>
-        <img class="hero-logo" src="assets/img/logo.webp" width="640" height="294" alt="Trashure-Hunters">
-        <h1 id="h-hero"><span class="l1">Clean the World.</span> <span>Win the Game.</span></h1>
-        <p class="lead">A real-world adventure game for kids and the grown-ups who play with them. Pick up real litter in your neighbourhood, and every cleanup heals a magical world of six realms.</p>
-        <div class="actions">
-          <a class="btn btn-primary btn-hop" href="#join">Join the hunt</a>
-          <a class="btn btn-play" id="playBtn" href="/th-mvp/"><img src="assets/img/th-icon.webp" width="240" height="246" alt="">Beta test</a>
+<!-- ============ HERO: key-art carousel ============ -->
+<section class="hero world" id="top" aria-roledescription="carousel" aria-label="Trashure-Hunters">
+  <div class="wrap stage" id="stage">
+
+    <article class="slide on" aria-roledescription="slide" aria-label="1 of 3: The game">
+      <div class="card">
+        <img class="bg" src="assets/img/team.webp" width="1200" height="735" alt="Sproutz, Bloop, Blazo, Wispo and Cosmix together in a park">
+        <span class="hint" id="hint">Tap the litter to clean the park!</span>
+        <button class="litter" style="left:46%;top:70%" data-xp="10" aria-label="Pick up a plastic bottle"><img src="assets/img/rf-bottle.webp" width="200" height="309" alt=""></button>
+        <button class="litter" style="left:62%;top:78%;animation-delay:-1s" data-xp="10" aria-label="Pick up a snack wrapper"><img src="assets/img/rf-wrapper.webp" width="220" height="258" alt=""></button>
+        <button class="litter" style="left:79%;top:64%;animation-delay:-2s;width:54px" data-xp="10" aria-label="Pick up a wrapper"><img src="assets/img/rf-wrapper.webp" width="220" height="258" alt="" style="transform:rotate(70deg)"></button>
+        <div class="copy">
+          <span class="kicker"><i></i>In development · not yet available to download</span>
+          <img class="logo-big" src="assets/img/logo.webp" width="640" height="294" alt="Trashure-Hunters">
+          <h1>Clean the World. <span>Win the Game.</span></h1>
+          <p class="lede">A real-world adventure for kids and the grown-ups who play with them. Pick up real litter, and every cleanup heals a magical world of six realms.</p>
+          <div class="ctas"><a class="btn" href="#join">Join the hunt</a><a class="btn purple" href="#play"><img src="assets/img/watergun.webp" alt="">Play now</a></div>
         </div>
-        <p class="who-line">Planned for iOS and Android. Made by 3Shamrocks Studio.</p>
       </div>
-      <div class="stage" style="--c:var(--space)">
-        <div class="phone"><div class="phone-screen"><img src="assets/img/splash.webp" width="416" height="900" alt="The Trashure-Hunters app start screen"></div></div>
-        <img class="orbit o1" src="assets/img/cosmix.webp" width="520" height="540" alt="Cosmix, the space Elemonster">
-        <img class="orbit o2" src="assets/img/wispo.webp" width="520" height="505" alt="Wispo, the air Elemonster">
-        <img class="orbit o3" src="assets/img/bloop.webp" width="520" height="715" alt="Bloop, the water Elemonster">
-        <img class="orbit o4" src="assets/img/blazo.webp" width="509" height="736" alt="Blazo, the fire Elemonster">
-        <img class="orbit o5" src="assets/img/sproutz.webp" width="496" height="702" alt="Sproutz, the earth Elemonster">
-      </div>
-    </div>
-  </div>
-  <div class="hills" aria-hidden="true">
-    <svg class="h1" viewBox="0 0 1440 170" preserveAspectRatio="none"><path d="M0 92C160 50 330 46 520 82s380 74 560 30 290-62 360-40V170H0z" fill="#2A1B66" opacity=".75"/></svg>
-    <svg class="h2" viewBox="0 0 1440 170" preserveAspectRatio="none"><path d="M0 128c220-56 430-40 640-12s420 46 560 8 200-30 240-24V170H0z" fill="#1B1250"/></svg>
-    <svg viewBox="0 0 1440 170" preserveAspectRatio="none"><path d="M0 150c260-30 520-34 760-16s460 20 680-6V170H0z" fill="#0E0B33"/></svg>
-    <span class="prop grime" style="--x:86%;--y:40%;--s:96px;--c:var(--space)"><img src="assets/img/gz-space.webp" width="240" height="241" alt=""></span>
-    <span class="prop" style="--x:12%;--y:76%;--s:54px;--r:70deg;--d:3;--t:4s"><img src="assets/img/rf-bottle.webp" width="200" height="309" alt=""></span>
-    <span class="prop" style="--x:20%;--y:82%;--s:50px;--r:-20deg;--d:-3;--t:5s"><img src="assets/img/rf-wrapper.webp" width="220" height="258" alt=""></span>
-  </div>
-  <a class="cue" href="#space">Begin the descent
-    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </a>
-</section>
+      <button class="burst b1" id="heroBurst" data-say="water" aria-label="Bloop says hi"><img src="assets/img/bloop.webp" width="520" height="715" alt=""></button>
+    </article>
 
-<!-- TWO WORLDS: real world + gamification experience -->
-<section class="worlds" id="worlds" aria-labelledby="h-worlds">
-  <div class="wrap">
-    <div class="worlds-head">
-      <p class="kick"><span class="tag rw">Real world</span><em aria-hidden="true">+</em><span class="tag ge">Gamification experience</span></p>
-      <h2 id="h-worlds">One cleanup. Two worlds.</h2>
-      <p class="lead">Every real-world action has a gamification experience reward. The litter, the park and the grown-up beside you are real. The quest, the XP and the Elemonster are the game.</p>
-    </div>
-    <div class="portal" role="img" aria-label="A real park on one side and the game's Cosmic Void on the other, with Sproutz jumping between them">
-      <div class="side real"><img src="assets/img/park-bg.webp" width="1440" height="1154" alt="" loading="lazy"></div>
-      <div class="side game scene"><div class="tw" data-stars="26"></div></div>
-      <svg class="seam" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="57" y1="0" x2="45" y2="100" stroke="#FCD34D" stroke-width="5" vector-effect="non-scaling-stroke"/><line x1="57" y1="0" x2="45" y2="100" stroke="#fff" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>
-      <span class="tag rw">Real world</span><span class="tag ge">Gamification experience</span>
-      <span class="prop now" style="--x:22%;--y:84%;--s:70px;--r:70deg;--d:2;--t:4s"><img src="assets/img/rf-bottle.webp" width="200" height="309" alt="" loading="lazy"></span>
-      <span class="prop now" style="--x:34%;--y:88%;--s:64px;--r:-20deg;--d:-2;--t:5s"><img src="assets/img/rf-wrapper.webp" width="220" height="258" alt="" loading="lazy"></span>
-      <i class="sparkle" style="left:20%;top:70%"></i><i class="sparkle" style="left:36%;top:76%;--dl:1.1s"></i>
-      <span class="prop now grime" style="--x:86%;--y:66%;--s:130px;--c:var(--earth)"><img src="assets/img/gz-earth.webp" width="240" height="258" alt="" loading="lazy"></span>
-      <span class="prop now" style="--x:70%;--y:30%;--s:86px;--d:-6;--t:3.4s"><img src="assets/img/compo-fluff.webp" width="220" height="207" alt="" loading="lazy"></span>
-      <span class="prop now" style="--x:90%;--y:24%;--s:72px;--d:6;--t:3.8s"><img src="assets/img/compo-leaf.webp" width="220" height="243" alt="" loading="lazy"></span>
-      <span class="prop now" style="--x:66%;--y:74%;--s:70px;--d:-5;--t:3s"><img src="assets/img/light-cell.webp" width="260" height="258" alt="" loading="lazy"></span>
-      <img class="hero-mon" src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy">
-    </div>
-    <ol class="pairs">
-      <li class="pair">
-        <div class="pw r"><span class="tag rw">Real world</span><img src="assets/img/rf-bottle.webp" width="200" height="309" alt="" loading="lazy"><h3>Pick up real litter</h3><p>With a grown-up, gloves on, into the right bin.</p></div>
-        <span class="lnk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <div class="pw g"><span class="tag ge">Gamification experience</span><img src="assets/img/i-captured.webp" width="160" height="162" alt="" loading="lazy"><h3>Earn XP and Trash-Cash</h3><p>Every verified cleanup pays out in the game.</p></div>
-      </li>
-      <li class="pair">
-        <div class="pw r"><span class="tag rw">Real world</span><img src="assets/img/i-trashcam.webp" width="160" height="57" alt="" loading="lazy"><h3>Snap a before and after</h3><p>Trash-Cam checks the litter, not people.</p></div>
-        <span class="lnk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <div class="pw g"><span class="tag ge">Gamification experience</span><img src="assets/img/gz-water.webp" width="240" height="249" alt="" loading="lazy"><h3>Clear a Grime Zone</h3><p>The zone on your live map heals, and King Grime shrinks.</p></div>
-      </li>
-      <li class="pair">
-        <div class="pw r"><span class="tag rw">Real world</span><img src="assets/img/photo-park.webp" width="1000" height="562" alt="" loading="lazy" style="border-radius:12px;height:56px"><h3>Clean the places you play</h3><p>Parks, beaches, the walk to school.</p></div>
-        <span class="lnk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <div class="pw g"><span class="tag ge">Gamification experience</span><img src="assets/img/compo-cosmic.webp" width="220" height="248" alt="" loading="lazy"><h3>Hunt Trashures, free the Compos</h3><p>Real cleanups unlock hidden Trashures to catch with your Water Gun in AR.</p></div>
-      </li>
-      <li class="pair">
-        <div class="pw r"><span class="tag rw">Real world</span><img src="assets/img/photo-team.webp" width="800" height="800" alt="" loading="lazy" style="border-radius:12px;height:56px"><h3>Keep showing up together</h3><p>A weekend walk becomes a habit.</p></div>
-        <span class="lnk" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <div class="pw g"><span class="tag ge">Gamification experience</span><img src="assets/img/egg-earth.webp" width="220" height="317" alt="" loading="lazy"><h3>Hatch and grow your Elemonster</h3><p>From Seed or Egg to Realm Keeper, travelling inward through six realms.</p></div>
-      </li>
-    </ol>
+    <article class="slide" aria-roledescription="slide" aria-label="2 of 3: The story">
+      <div class="card" style="background:radial-gradient(circle at 75% 35%,#5A1FB0,#1A0F4A 55%,#0A0A2E)">
+        <div class="tw" data-stars="60" style="position:absolute;inset:0"></div>
+        <div class="copy">
+          <span class="kicker"><i></i>The story</span>
+          <div class="h1" role="heading" aria-level="2">King Grime <span>has risen.</span></div>
+          <p class="lede">Five young Elemonsters made one big mistake, and the light at the centre of every world went dim. Only real care, in the real world, can bring it back.</p>
+          <div class="ctas"><a class="btn purple" href="#river">Begin the descent</a></div>
+        </div>
+      </div>
+      <button class="burst b2" data-say="space" aria-label="King Grime"><img src="assets/img/kinggrime.webp" width="460" height="458" alt=""></button>
+    </article>
+
+    <article class="slide" aria-roledescription="slide" aria-label="3 of 3: The hunt">
+      <div class="card">
+        <img class="bg" src="assets/img/ar.webp" width="1200" height="540" alt="The Trashure-Hunt in augmented reality: a Trashure on a playground, the Water Gun ready">
+        <div class="copy">
+          <span class="kicker"><i></i>The hunt</span>
+          <div class="h1" role="heading" aria-level="2">Real cleanups. <span>Real Trashures.</span></div>
+          <p class="lede">Every cleanup unlocks hidden Trashures nearby. Spray them with your Water Gun and free the Compos trapped inside.</p>
+          <div class="ctas"><a class="btn blue" href="#play">Try the hunt</a><a class="btn light" href="/th-mvp/"><img src="assets/img/th-icon.webp" alt="">Beta test</a></div>
+        </div>
+      </div>
+      <button class="burst b3" data-say="air" aria-label="Wispo"><img src="assets/img/wispo.webp" width="520" height="505" alt=""></button>
+    </article>
+
+    <div class="dots" role="tablist" aria-label="Choose a slide"><button aria-current="true" aria-label="Slide 1"></button><button aria-label="Slide 2"></button><button aria-label="Slide 3"></button></div>
+    <div class="arrows"><button id="prev" aria-label="Previous slide">‹</button><button id="next" aria-label="Next slide">›</button></div>
   </div>
 </section>
 
-<!-- REALM 1: COSMIC VOID / STORY -->
-<section class="realm" id="space" data-realm="1" data-name="Cosmic Void" aria-labelledby="h-space">
-  <div class="scene" aria-hidden="true">
-    <div class="tw" data-stars="40"></div>
-    <span class="prop" style="--x:88%;--y:9%;--s:150px;--r:20deg;--d:-8;--z:-.18"><img src="assets/img/rf-asteroid.webp" width="240" height="271" alt="" loading="lazy"></span>
-    <span class="prop dk" style="--x:5%;--y:86%;--s:170px;--r:-12deg;--d:10;--o:.8;--z:.12;--t:7s"><img src="assets/img/rf-debris.webp" width="300" height="357" alt="" loading="lazy"></span>
-    <span class="prop grime" style="--x:95%;--y:62%;--s:120px;--o:.75;--z:-.08"><img src="assets/img/gz-space.webp" width="240" height="241" alt="" loading="lazy"></span>
-    <span class="prop dk" style="--x:50%;--y:5%;--s:60px;--r:-30deg;--d:6;--o:.6;--z:-.3;--t:5s"><img src="assets/img/rf-asteroid.webp" width="240" height="271" alt="" loading="lazy"></span>
-  </div>
-  <div class="wrap">
-    <div class="realm-head"><span class="realm-badge" aria-hidden="true">1</span><p><b>The Cosmic Void</b><span>Realm 1 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FCD34D"/></svg>Every hunter starts here: 0 XP</span></div>
-    <div class="split">
-      <div>
-        <h2 id="h-space">No villains. Only neglect.</h2>
-        <p class="lead">Five young Elemonsters grew up together across five realms, joined by a living current called the River of Three. When people in our world stopped caring, litter drifted into the river, all the way down to the Temple of Light at the centre.</p>
-        <p class="lead">The light dimmed. The Grime Signal flooded every realm. Now the only thing that can push it back is real care, in the real world.</p>
-        <div class="bridge"><span><span class="tag rw">Real world</span><b>Every cleanup</b></span><span class="arr" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="tag ge">Gamification experience</span><b>The light comes back</b></span></div>
-        <ul class="descent-map" aria-label="The six realms, from outermost to centre">
-          <li style="--rc:var(--space)"><i></i>Cosmic Void</li>
-          <li style="--rc:var(--air)"><i></i>Sky Realm</li>
-          <li style="--rc:var(--water)"><i></i>Deep Waters</li>
-          <li style="--rc:var(--earth)"><i></i>Green Lands</li>
-          <li style="--rc:var(--fire)"><i></i>Ember Fields</li>
-          <li style="--rc:var(--light)"><i></i>Temple of Light</li>
-        </ul>
-        <div class="guide"><img class="sway" src="assets/img/cosmix.webp" width="520" height="540" alt="" loading="lazy"><p><b>Cosmix guides this realm</b>The wise one. She mapped the way back to the light before anyone else was brave enough to try.</p></div>
-      </div>
-      <div class="story-art">
-        <img class="team" src="assets/img/team.webp" width="1200" height="735" alt="The five Elemonsters, Wispo, Sproutz, Blazo, Bloop and Cosmix, standing together in a park" loading="lazy">
-        <div class="grime-card">
-          <img src="assets/img/kinggrime.webp" width="460" height="458" alt="" loading="lazy">
-          <p><b>King Grime</b>Not evil, just what forgotten trash becomes. Every cleanup shrinks him.</p>
+<!-- ============ ROSTER ============ -->
+<section class="roster sec" id="roster" aria-labelledby="h-roster">
+  <div class="wrap center">
+    <span class="eyebrow" style="--c:var(--earth)"><img src="assets/img/egg-earth.webp" alt="">Meet the Elemonsters</span>
+    <h2 class="h2" id="h-roster">Pick your partner</h2>
+    <p class="sub">Five young friends, five elements, five teams. Tap one to meet them.</p>
+    <div class="cards" id="cards">
+      <button class="mcard" data-id="sproutz" aria-pressed="true" style="--mc:#28E4B1"><span class="met">Met ✓</span><img src="assets/img/sproutz.webp" width="496" height="702" alt=""><b>Sproutz</b><small>Earth Team</small></button>
+      <button class="mcard" data-id="bloop" aria-pressed="false" style="--mc:#3DA7F9"><span class="met">Met ✓</span><img src="assets/img/bloop.webp" width="520" height="715" alt=""><b>Bloop</b><small>Water Team</small></button>
+      <button class="mcard" data-id="blazo" aria-pressed="false" style="--mc:#FF8400"><span class="met">Met ✓</span><img src="assets/img/blazo.webp" width="509" height="736" alt=""><b>Blazo</b><small>Fire Team</small></button>
+      <button class="mcard" data-id="wispo" aria-pressed="false" style="--mc:#7F4DE2"><span class="met">Met ✓</span><img src="assets/img/wispo.webp" width="520" height="505" alt=""><b>Wispo</b><small>Air Team</small></button>
+      <button class="mcard" data-id="cosmix" aria-pressed="false" style="--mc:#FC71EA"><span class="met">Met ✓</span><img src="assets/img/cosmix.webp" width="520" height="540" alt=""><b>Cosmix</b><small>Space Team</small></button>
+    </div>
+    <div class="sheet" id="sheet" style="--mc:#28E4B1" aria-live="polite">
+      <div class="big"><img id="sBig" src="assets/img/sproutz.webp" width="496" height="702" alt="Sproutz"></div>
+      <div style="text-align:left" class="sheet-txt">
+        <h3 id="sName">Sproutz</h3>
+        <p class="tag" id="sTag">Earth Guardian. Stubborn heart. Grows with you.</p>
+        <div class="chips"><span class="badge" id="sTeam">Earth Team</span><span class="badge" id="sEl">Nature, growth, roots</span><span class="badge" id="sStart">Starts as a Seed</span></div>
+        <p><b>Hiding right now:</b> <span id="sHide">Buried under leaves in a forest creek…</span></p>
+        <div class="evo" aria-label="Evolution path">
+          <div class="st"><div><img id="sEgg" src="assets/img/egg-earth.webp" alt=""></div><span id="sS1">Seed</span><small>0 XP</small></div><span class="ar">›</span>
+          <div class="st lock"><div>?</div><span>Baby</span><small>500 XP</small></div><span class="ar">›</span>
+          <div class="st"><div><img id="sGrown" src="assets/img/sproutz.webp" alt=""></div><span>Grown</span><small>2,500 XP</small></div><span class="ar">›</span>
+          <div class="st lock"><div>?</div><span>Realm Keeper</span><small>10,000 XP</small></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- REALM 2: SKY / HOW IT WORKS -->
-<section class="realm" id="sky" data-realm="2" data-name="Sky Realm" aria-labelledby="h-sky">
-  <div class="scene" aria-hidden="true">
-    <span class="prop dk" style="--x:4%;--y:30%;--s:340px;--d:12;--o:.75;--z:-.15;--t:7s"><img src="assets/img/rf-cloud.webp" width="440" height="238" alt="" loading="lazy"></span>
-    <span class="prop" style="--x:97%;--y:64%;--s:340px;--d:-12;--o:.75;--z:-.1;--t:8s"><img src="assets/img/rf-cloud.webp" width="440" height="238" alt="" loading="lazy"></span>
-    <span class="prop dk" style="--x:58%;--y:4%;--s:280px;--d:6;--o:.55;--z:-.25;--t:6s"><img src="assets/img/rf-cloud.webp" width="440" height="238" alt="" loading="lazy"></span>
-    <span class="prop dk" style="--x:44%;--y:13%;--s:96px;--d:-10;--z:-.3;--t:5s"><img src="assets/img/f-balloon.webp" width="144" height="195" alt="" loading="lazy"></span>
-    <span class="prop grime dk" style="--x:5%;--y:88%;--s:120px;--o:.8;--z:.1"><img src="assets/img/gz-air.webp" width="240" height="269" alt="" loading="lazy"></span>
+<!-- ============ THE RIVER OF THREE ============ -->
+<section class="river" id="river" aria-labelledby="h-river">
+  <svg class="flow" id="flow" aria-hidden="true" preserveAspectRatio="none">
+    <defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FC71EA"/><stop offset=".2" stop-color="#7F4DE2"/><stop offset=".4" stop-color="#3DA7F9"/>
+      <stop offset=".6" stop-color="#28E4B1"/><stop offset=".8" stop-color="#FF8400"/><stop offset="1" stop-color="#FFC83D"/></linearGradient></defs>
+    <path class="glow" id="flowGlow"/><path class="core" id="flowCore"/>
+  </svg>
+  <div class="wrap center river-head reveal">
+    <span class="eyebrow" style="--c:#9EDBFF"><img src="assets/img/f-bubble.webp" alt="">The River of Three</span>
+    <h2 class="h2" id="h-river">Follow the river to the light</h2>
+    <p class="sub">One living current runs through all six realms, from the Cosmic Void all the way to the Temple of Light. Scroll down and travel it.</p>
   </div>
-  <div class="wrap">
-    <div class="realm-head"><span class="realm-badge" aria-hidden="true">2</span><p><b>The Sky Realm</b><span>Realm 2 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FCD34D"/></svg>Reached at 500 XP</span></div>
-    <div class="split rev">
-      <div>
-        <h2 id="h-sky">How the hunt works</h2>
-        <p class="lead" style="margin-bottom:34px">The game loop is a real cleanup. The app just makes it a quest.</p>
-        <ol class="steps">
-          <li><div><p class="st"><span class="tag rw">Real world</span><span class="tag ge">Gamification experience</span></p><h3>Spot it</h3><p>Find litter on the live map's Grime Zones, or anywhere you walk with a grown-up.</p></div></li>
-          <li><div><p class="st"><span class="tag rw">Real world</span></p><h3>Clean it</h3><p>Pick it up safely, with gloves or a grabber, and put it in the right bin.</p></div></li>
-          <li><div><p class="st"><span class="tag rw">Real world</span></p><h3>Prove it</h3><p>Snap a before and after with Trash-Cam. It checks for trash, not people.</p></div></li>
-          <li><div><p class="st"><span class="tag ge">Gamification experience</span></p><h3>Heal the realm</h3><p>Earn XP, clear the zone, and watch your Elemonster grow from seed or egg towards Realm Keeper.</p><p class="loot"><span>+ XP</span><span>+ Trash-Cash</span><span>Zone cleared</span></p></div></li>
-        </ol>
-        <p class="note" style="margin-top:30px"><b style="color:var(--air);font-family:var(--display);font-size:16px">Wispo guides this realm.</b> The jokester, always on the move. He makes the first cleanup feel like play.</p>
+
+  <section class="realm" id="r1" data-name="Cosmic Void" style="--c:#FC71EA" aria-labelledby="h-r1">
+    <div class="wrap reveal">
+      <div class="scene">
+        <div class="orb"></div>
+        <img class="prop" src="assets/img/f-asteroid.webp" alt="" style="width:16%;left:2%;top:6%;--t:8s">
+        <img class="prop" src="assets/img/rf-asteroid.webp" alt="" style="width:13%;right:4%;bottom:6%;--t:9s;--d:-3s">
+        <div class="lead many" data-say="space" role="img" aria-label="The five young Elemonsters" style="display:flex;align-items:flex-end;justify-content:center;gap:2%">
+          <img src="assets/img/sproutz.webp" alt="" style="width:19%"><img src="assets/img/bloop.webp" alt="" style="width:18%"><img src="assets/img/blazo.webp" alt="" style="width:19%"><img src="assets/img/wispo.webp" alt="" style="width:21%"><img src="assets/img/cosmix.webp" alt="" style="width:21%">
+        </div>
       </div>
-      <div class="phone-solo" style="--c:var(--air)">
-        <div class="phone"><div class="phone-screen"><img src="assets/img/map-air.webp" width="560" height="1213" alt="The live map in the Sky Realm skin, with Grime Zones and Trashures to find" loading="lazy"></div></div>
-        <div class="rings" aria-hidden="true" style="--rx:0;--ry:calc(100% - 40px)"><i></i><i></i><i></i></div>
-        <img class="buddy" src="assets/img/wispo.webp" width="520" height="505" alt="" loading="lazy">
+      <div class="txt">
+        <span class="eyebrow"><span class="num">1</span>The Cosmic Void</span> <span class="badge">Every hunter starts here: 0 XP</span>
+        <h2 class="h2" id="h-r1">Five young friends</h2>
+        <p class="sub">Sproutz, Bloop, Blazo, Wispo and Cosmix grew up together in five different realms, joined by the River of Three, the living current that flows through every world.</p>
+        <div class="guide"><img src="assets/img/cosmix.webp" alt=""><p><b>Cosmix guides this realm.</b> The wise one. She mapped the way back to the light before anyone else was brave enough to try.</p></div>
       </div>
+    </div>
+  </section>
+
+  <section class="realm" id="r2" data-name="Sky Realm" style="--c:#A47BFF" aria-labelledby="h-r2">
+    <div class="wrap reveal">
+      <div class="scene">
+        <div class="orb" style="--c:#FFE9A0"></div>
+        <img class="prop" src="assets/img/f-cloud.webp" alt="" style="width:30%;left:-4%;top:10%;--t:10s;--x:30px">
+        <img class="prop" src="assets/img/rf-cloud.webp" alt="" style="width:34%;right:-6%;bottom:8%;--t:12s;--x:-30px">
+        <img class="prop" src="assets/img/f-balloon.webp" alt="" style="width:12%;right:8%;top:4%;--t:7s">
+        <img class="prop" src="assets/img/compo-fluff.webp" alt="" style="width:14%;left:8%;bottom:10%;--t:6s;--d:-2s">
+        <img class="lead" data-say="air" src="assets/img/orbo.webp" alt="Orbo, keeper of the Temple of Light" style="width:46%;filter:drop-shadow(0 0 40px rgba(255,233,160,.9))">
+      </div>
+      <div class="txt">
+        <span class="eyebrow"><span class="num">2</span>The Sky Realm</span> <span class="badge">Reached at 500 XP</span>
+        <h2 class="h2" id="h-r2">Meet Orbo</h2>
+        <p class="sub">At the centre of every world glows Orbo, the ancient keeper of light. Together with the Realm Keepers he creates Compos: gentle creatures that keep forests green, oceans blue and stars bright.</p>
+        <div class="guide"><img src="assets/img/wispo.webp" alt=""><p><b>Wispo guides this realm.</b> The jokester, always on the move. He makes the first cleanup feel like play.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="realm" id="r3" data-name="Deep Waters" style="--c:#3DA7F9" aria-labelledby="h-r3">
+    <div class="wrap reveal">
+      <div class="scene">
+        <div class="orb"></div>
+        <img class="prop" src="assets/img/f-jelly.webp" alt="" style="width:16%;left:4%;top:4%;--t:8s;--y:-30px">
+        <img class="prop" src="assets/img/rf-bottle.webp" alt="" style="width:11%;right:12%;top:8%;--t:6s;--rot:25deg">
+        <img class="prop" src="assets/img/rf-wrapper.webp" alt="" style="width:12%;left:10%;bottom:6%;--t:7s;--d:-2s">
+        <img class="prop" src="assets/img/f-bubble.webp" alt="" style="width:10%;right:6%;bottom:16%;--t:5s;--y:-40px">
+        <img class="lead" data-say="water" src="assets/img/gz-water.webp" alt="A Grime Zone made of drifting trash" style="width:48%">
+      </div>
+      <div class="txt">
+        <span class="eyebrow"><span class="num">3</span>The Deep Waters</span> <span class="badge">Reached at 2,500 XP</span>
+        <h2 class="h2" id="h-r3">People forgot to look down</h2>
+        <p class="sub">In our world, trash began to pile up. It slipped into creeks and rivers and drifted all the way down the River of Three. Far away, Orbo grew tired, fighting the grime all alone.</p>
+        <div class="guide"><img src="assets/img/bloop.webp" alt=""><p><b>Bloop guides this realm.</b> The empath. Feels every bit of grime in the water, and every bit you clear.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="realm" id="r4" data-name="Green Lands" style="--c:#28E4B1" aria-labelledby="h-r4">
+    <div class="wrap reveal">
+      <div class="scene">
+        <div class="orb" style="--c:#9B5CFF"></div>
+        <img class="prop" src="assets/img/f-leaf.webp" alt="" style="width:14%;left:2%;top:8%;--t:7s;--rot:-20deg">
+        <img class="prop" src="assets/img/rf-leaf.webp" alt="" style="width:12%;right:4%;top:2%;--t:8s;--d:-3s">
+        <img class="prop" src="assets/img/gz-earth.webp" alt="" style="width:18%;right:2%;bottom:4%;--t:9s">
+        <img class="lead" data-say="earth" src="assets/img/kinggrime.webp" alt="King Grime, made of forgotten trash" style="width:60%;filter:drop-shadow(0 0 50px rgba(155,92,255,.8))">
+      </div>
+      <div class="txt">
+        <span class="eyebrow"><span class="num">4</span>The Green Lands</span> <span class="badge">Reached at 5,000 XP</span>
+        <h2 class="h2" id="h-r4">King Grime awakes!</h2>
+        <p class="sub">The five friends sneaked into the Temple and stood in a circle around Orbo. Their power hit the grime inside him, and King Grime burst out. The Grime Signal blasted through every realm.</p>
+        <div class="guide"><img src="assets/img/sproutz.webp" alt=""><p><b>Sproutz guides this realm.</b> The gentle giant who leads with love. The Green Lands are his home, and the hardest place to see dimmed.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="realm" id="r5" data-name="Ember Fields" style="--c:#FF8400" aria-labelledby="h-r5">
+    <div class="wrap reveal">
+      <div class="scene">
+        <div class="orb"></div>
+        <img class="prop" src="assets/img/rf-flame.webp" alt="" style="width:10%;left:6%;top:6%;--t:5s">
+        <img class="prop" src="assets/img/f-flame.webp" alt="" style="width:8%;right:10%;top:12%;--t:6s;--d:-2s">
+        <img class="prop" src="assets/img/rf-charcoal.webp" alt="" style="width:15%;left:4%;bottom:4%;--t:9s">
+        <img class="prop" src="assets/img/compo-leaf.webp" alt="" style="width:14%;right:4%;bottom:10%;--t:6s;--y:-24px">
+        <img class="lead" data-say="fire" src="assets/img/grime-space.webp" alt="A Trashure, a Compo trapped in grime" style="width:46%">
+      </div>
+      <div class="txt">
+        <span class="eyebrow"><span class="num">5</span>The Ember Fields</span> <span class="badge">Reached at 8,000 XP</span>
+        <h2 class="h2" id="h-r5">Trashures are everywhere</h2>
+        <p class="sub">The friends were swept away by the River. Now Trashures trap the Compos, and Grime Zones are spreading across our streets, parks and beaches. But one young Elemonster has found its way to you…</p>
+        <div class="guide"><img src="assets/img/blazo.webp" alt=""><p><b>Blazo guards this realm.</b> The hothead with a heart. Fiercely loyal to the people he protects.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="realm light" id="r6" data-name="Temple of Light" style="--c:#FFC83D" aria-labelledby="h-r6">
+    <div class="wrap reveal">
+      <div class="scene">
+        <div class="orb" style="--c:#FFE08A"></div>
+        <img class="prop" src="assets/img/egg-earth.webp" alt="" style="width:11%;left:6%;bottom:8%;--t:5s">
+        <img class="prop" src="assets/img/egg-water.webp" alt="" style="width:11%;left:22%;bottom:2%;--t:6s;--d:-1s">
+        <img class="prop" src="assets/img/egg-fire.webp" alt="" style="width:11%;right:22%;bottom:2%;--t:5.5s;--d:-2s">
+        <img class="prop" src="assets/img/egg-air.webp" alt="" style="width:11%;right:6%;bottom:8%;--t:6.5s;--d:-3s">
+        <img class="prop" src="assets/img/egg-space.webp" alt="" style="width:11%;left:44%;bottom:-4%;--t:6s;--d:-4s">
+        <img class="lead" data-say="space" src="assets/img/light-cell.webp" alt="The light of the Temple" style="width:44%;top:40%;filter:drop-shadow(0 0 60px #FFD86B)">
+      </div>
+      <div class="txt">
+        <span class="eyebrow"><span class="num">6</span>The Temple of Light</span> <span class="badge">The centre: 10,000 XP</span>
+        <h2 class="h2" id="h-r6">Your mission</h2>
+        <p class="sub">Every piece of real trash you clean gives your Elemonster power and weakens King Grime. Orbo is still in there. Clean enough, and together we can set him free.</p>
+        <div class="ctas" style="margin-top:24px"><a class="btn" href="#play">Start your first cleanup</a><a class="btn light" href="#roster">Choose your Elemonster</a></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ============ TWO WORLDS ============ -->
+<section class="two sec" id="how" aria-labelledby="h-how">
+  <div class="wrap center">
+    <span class="eyebrow"><img src="assets/img/i-trashcam.webp" alt="" style="width:80px">One cleanup. Two worlds.</span>
+    <h2 class="h2" id="h-how">The litter is real. So is the magic.</h2>
+    <p class="sub">The park, the litter and the grown-up beside you are real. The quest, the XP and the Elemonster are the game. Drag the slider to switch worlds.</p>
+    <div class="compare" id="compare">
+      <img src="assets/img/photo-park.webp" width="1000" height="562" alt="A real park path with litter beside it">
+      <img class="game" src="assets/img/ar.webp" width="1200" height="540" alt="The same idea in the game: a Trashure to hunt in augmented reality">
+      <span class="lab l">Real world</span><span class="lab r">Game world</span>
+      <div class="handle"><button id="cmpBtn" role="slider" aria-label="Switch between real world and game world" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">⇆</button></div>
+    </div>
+    <div class="quest" style="text-align:left">
+      <div class="qcard" style="--qc:var(--water)"><span class="n">1</span><span class="w">Real world</span><h3>Spot it</h3><p>Find litter in a Grime Zone on the live map, or anywhere you walk with a grown-up.</p></div>
+      <div class="qcard" style="--qc:var(--earth)"><span class="n">2</span><span class="w">Real world</span><h3>Clean it</h3><p>Pick it up safely, with gloves or a grabber, and put it in the right bin.</p></div>
+      <div class="qcard" style="--qc:var(--air)"><span class="n">3</span><span class="w">Real world</span><h3>Prove it</h3><p>Snap a photo with Trash-Cam. It checks for trash, not people.</p></div>
+      <div class="qcard" style="--qc:var(--fire)"><span class="n">4</span><span class="w">Game world</span><h3>Heal the realm</h3><p>Earn XP and Trash-Cash, heal the Grime Zone and watch your Elemonster grow.</p></div>
     </div>
   </div>
 </section>
 
-<!-- REALM 3: DEEP WATERS / INSIDE THE GAME -->
-<section class="realm" id="waters" data-realm="3" data-name="Deep Waters" aria-labelledby="h-waters">
-  <div class="scene" aria-hidden="true">
-    <span class="prop" style="--x:5%;--y:24%;--s:120px;--r:70deg;--d:10;--o:.85;--z:-.12"><img src="assets/img/rf-bottle.webp" width="200" height="309" alt="" loading="lazy"></span>
-    <span class="prop" style="--x:95%;--y:6%;--s:120px;--r:-20deg;--d:-10;--o:.85;--z:-.18"><img src="assets/img/rf-wrapper.webp" width="220" height="258" alt="" loading="lazy"></span>
-    <span class="prop rise" style="--x:8%;--y:40%;--s:70px;--d:-60;--t:9s"><img src="assets/img/rf-bubble.webp" width="160" height="159" alt="" loading="lazy"></span>
-    <span class="prop rise dk" style="--x:93%;--y:46%;--s:48px;--d:-60;--t:7s;--dl:-3s"><img src="assets/img/rf-bubble.webp" width="160" height="159" alt="" loading="lazy"></span>
-    <span class="prop rise dk" style="--x:4%;--y:72%;--s:40px;--d:-60;--t:8s;--dl:-5s"><img src="assets/img/rf-bubble.webp" width="160" height="159" alt="" loading="lazy"></span>
-    <span class="prop rise" style="--x:96%;--y:92%;--s:56px;--d:-60;--t:10s;--dl:-2s"><img src="assets/img/rf-bubble.webp" width="160" height="159" alt="" loading="lazy"></span>
-    <span class="prop dk" style="--x:96%;--y:80%;--s:130px;--d:-14;--z:.1;--t:5s"><img src="assets/img/f-jelly.webp" width="200" height="252" alt="" loading="lazy"></span>
-    <span class="prop grime dk" style="--x:4%;--y:56%;--s:110px;--o:.8;--z:.08"><img src="assets/img/gz-water.webp" width="240" height="249" alt="" loading="lazy"></span>
-  </div>
-  <div class="wrap">
-    <div class="realm-head"><span class="realm-badge" aria-hidden="true">3</span><p><b>The Deep Waters</b><span>Realm 3 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FCD34D"/></svg>Reached at 2,500 XP</span></div>
-    <div class="split">
-      <div>
-        <h2 id="h-waters">A real game, not a chore chart</h2>
-        <p class="lead">A live map of your own streets, a camera that turns litter into progress, and creatures to hunt in augmented reality.</p>
-      </div>
-      <div class="guide" style="margin-top:0"><img src="assets/img/bloop.webp" width="520" height="715" alt="" loading="lazy" style="width:96px"><p><b>Bloop guides this realm</b>The empath. Feels every bit of grime in the water, and every bit you clear.</p></div>
-    </div>
-    <figure class="ar-frame">
-      <img src="assets/img/ar.webp" width="1200" height="540" alt="AR Trashure Hunt: a Trashure creature appears in a real playground, with the water gun ready to capture it" loading="lazy">
-      <figcaption>Screens from the build in development. Details may change.</figcaption>
-    </figure>
-    <div class="features">
-      <div class="feature"><span class="ico"><img src="assets/img/i-home.webp" width="160" height="125" alt="" loading="lazy"></span><div><h3>Live map</h3><p>Your neighbourhood becomes the board. Grime Zones show where help is needed, at zone level only.</p></div></div>
-      <div class="feature"><span class="ico"><img src="assets/img/i-trashcam.webp" width="160" height="57" alt="" loading="lazy"></span><div><h3>Trash-Cam</h3><p>Photo checks confirm the cleanup really happened. No couch farming.</p></div></div>
-      <div class="feature"><span class="ico"><img src="assets/img/watergun.webp" width="360" height="443" alt="" loading="lazy"></span><div><h3>AR Trashure Hunt</h3><p>Real cleanups unlock hidden Trashures. Spray, capture and collect them with your water gun.</p></div></div>
-      <div class="feature"><span class="ico"><img src="assets/img/i-captured.webp" width="160" height="162" alt="" loading="lazy"></span><div><h3>Grow your Elemonster</h3><p>Pick one of five teams. Progress is earned by cleaning, never bought.</p></div></div>
-    </div>
-    <div class="picker" id="team" style="--mc:#2EBD8A">
-      <h3>Choose your Elemonster</h3>
-      <p>Your partner on the quest to defeat King Grime. Five teams, one for every element.</p>
-      <div class="roster" role="group" aria-label="The five Elemonsters">
-        <button class="mon" type="button" aria-pressed="true" data-id="sproutz" style="--mc:#2EBD8A"><img src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy"><b>Sproutz</b><span>Earth Team</span></button>
-        <button class="mon" type="button" aria-pressed="false" data-id="bloop" style="--mc:#4BA3E3"><img src="assets/img/bloop.webp" width="520" height="715" alt="" loading="lazy"><b>Bloop</b><span>Water Team</span></button>
-        <button class="mon" type="button" aria-pressed="false" data-id="blazo" style="--mc:#F5961E"><img src="assets/img/blazo.webp" width="509" height="736" alt="" loading="lazy"><b>Blazo</b><span>Fire Team</span></button>
-        <button class="mon" type="button" aria-pressed="false" data-id="wispo" style="--mc:#A78BFA"><img src="assets/img/wispo.webp" width="520" height="505" alt="" loading="lazy"><b>Wispo</b><span>Air Team</span></button>
-        <button class="mon" type="button" aria-pressed="false" data-id="cosmix" style="--mc:#D94FAA"><img src="assets/img/cosmix.webp" width="520" height="540" alt="" loading="lazy"><b>Cosmix</b><span>Space Team</span></button>
-      </div>
-      <div class="mon-detail" aria-live="polite">
+<!-- ============ PLAY ============ -->
+<section class="play sec" id="play" aria-labelledby="h-play">
+  <div class="wrap center">
+    <span class="eyebrow"><img src="assets/img/watergun.webp" alt="">Play it now</span>
+    <h2 class="h2" id="h-play">Clear the Grime Zone</h2>
+    <p class="sub">A 45-second taste of the game. Clean up the park, then hunt the Trashure that appears. Careful: some things a real hunter never touches.</p>
+    <div class="arena" id="arena">
+      <div class="haze" id="haze"></div>
+      <img class="zone" id="zone" src="assets/img/gz-earth.webp" alt="">
+      <div class="bin" id="bin">♻</div>
+      <div class="bar"><span class="pill" id="aTask">Clean up: 0 / 6</span><span class="pill" id="aXp">XP 0</span><span class="pill t" id="aTime">⏱ 45</span></div>
+      <div class="warn" id="warn" hidden></div>
+      <img class="gun" id="gun" src="assets/img/watergun.webp" alt="" hidden>
+      <div class="over" id="over">
         <div>
-          <h4 id="mName">Sproutz</h4>
-          <p class="tl" id="mTag">Earth Guardian. Stubborn heart. Grows with you.</p>
-          <p class="meta"><span id="mTeam">Earth Team</span><span id="mEl">Nature, growth, roots</span><span id="mStart">Starts as a Seed</span></p>
-          <p class="hide"><b>Hiding:</b> <span id="mHide">Buried under leaves in a forest creek…</span></p>
+          <h3>Ready, Hunter?</h3>
+          <p>Tap each piece of litter to drop it in the bin. When the park is clean, a Trashure shows up: tap it to spray it with your Water Gun.</p>
+          <button class="btn" id="startBtn">Start the cleanup</button>
         </div>
-        <ol class="evo" aria-label="Evolution stages">
-          <li><span class="orb"><img id="mEgg" src="assets/img/egg-earth.webp" width="220" height="317" alt="" loading="lazy"></span><b id="mS1">Seed</b>0 XP</li>
-          <li><span class="orb lock" aria-hidden="true">?</span><b>Baby</b>500 XP</li>
-          <li><span class="orb"><img id="mGrown" src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy"></span><b>Grown</b>2,500 XP</li>
-          <li><span class="orb lock" aria-hidden="true">?</span><b>Realm Keeper</b>10,000 XP</li>
-        </ol>
       </div>
     </div>
-    <div class="skins" aria-label="Map skins change as you travel inward">
-      <figure style="--rc:var(--water);--c:var(--water)"><div class="phone"><div class="phone-screen"><img src="assets/img/map-water.webp" width="560" height="1213" alt="Map in the Deep Waters skin" loading="lazy"></div></div><figcaption>Deep Waters</figcaption></figure>
-      <figure style="--rc:var(--earth);--c:var(--earth)"><div class="phone"><div class="phone-screen"><img src="assets/img/map-earth.webp" width="560" height="1213" alt="Map in the Green Lands skin" loading="lazy"></div></div><figcaption>Green Lands</figcaption></figure>
-      <figure style="--rc:var(--fire);--c:var(--fire)"><div class="phone"><div class="phone-screen"><img src="assets/img/map-fire.webp" width="560" height="1213" alt="Map in the Ember Fields skin" loading="lazy"></div></div><figcaption>Ember Fields</figcaption></figure>
+    <p class="playnote">This is a mini-game on the website, just for fun. In the real game you clean real litter, and Trash-Cam checks your photo.</p>
+  </div>
+</section>
+
+<!-- ============ APP SCREENS ============ -->
+<section class="screens sec" id="app" aria-labelledby="h-app">
+  <div class="wrap center">
+    <span class="eyebrow" style="--c:var(--air)"><img src="assets/img/i-captured.webp" alt="">Inside the game</span>
+    <h2 class="h2" id="h-app">Your street is the game board</h2>
+    <p class="sub">A live map of your own neighbourhood, a camera that turns litter into progress, and creatures to hunt in augmented reality.</p>
+    <div class="phones">
+      <figure class="phone"><img src="assets/img/map-air.webp" width="560" height="1213" alt="Map in the Sky Realm skin" loading="lazy"><figcaption>Sky Realm</figcaption></figure>
+      <figure class="phone"><img src="assets/img/map-water.webp" width="560" height="1213" alt="Map in the Deep Waters skin" loading="lazy"><figcaption>Deep Waters</figcaption></figure>
+      <figure class="phone"><img src="assets/img/map-earth.webp" width="560" height="1213" alt="Map in the Green Lands skin" loading="lazy"><figcaption>Green Lands</figcaption></figure>
+      <figure class="phone"><img src="assets/img/map-fire.webp" width="560" height="1213" alt="Map in the Ember Fields skin" loading="lazy"><figcaption>Ember Fields</figcaption></figure>
+    </div>
+    <div class="feat" style="text-align:left">
+      <div><h3>Live map</h3><p>Your neighbourhood becomes the board. Grime Zones show where help is needed, at zone level only.</p></div>
+      <div><h3>Trash-Cam</h3><p>A photo check confirms the cleanup really happened. No couch farming.</p></div>
+      <div><h3>AR Trashure Hunt</h3><p>Real cleanups unlock hidden Trashures. Spray them, free the Compos, grow your collection.</p></div>
+      <div><h3>Grow your Elemonster</h3><p>Pick one of five teams. Progress is earned by cleaning, never bought.</p></div>
+    </div>
+    <p class="fine" style="text-align:center">Screens from the build in development. Details may change.</p>
+  </div>
+</section>
+
+<!-- ============ BOSS ============ -->
+<section class="boss sec" id="boss" aria-labelledby="h-boss">
+  <div class="wrap">
+    <div class="bossfield" id="bossfield">
+      <div class="rays"></div>
+      <img class="orbo" id="bossOrbo" src="assets/img/orbo.webp" width="520" height="566" alt="">
+      <button class="kg" id="kg" aria-label="Splash King Grime with water"><img src="assets/img/kinggrime.webp" width="460" height="458" alt="King Grime"></button>
+    </div>
+    <div>
+      <span class="eyebrow" style="--c:#C9A6FF"><img src="assets/img/grime-space.webp" alt="">Boss battle</span>
+      <h2 class="h2" id="h-boss">No villains. Only neglect.</h2>
+      <p class="sub">King Grime is not evil. He is what forgotten trash becomes. Every cleanup shrinks him, and somewhere inside, Orbo is waiting. Splash him and see.</p>
+      <div class="meter"><label><span>King Grime's grime</span><span id="kgPct">100%</span></label><div><b id="kgBar"></b></div></div>
+      <p class="fine" id="kgMsg" style="color:#CDB9F5" aria-live="polite">Tap King Grime to splash him.</p>
     </div>
   </div>
 </section>
 
-<!-- REALM 4: GREEN LANDS / FAMILIES & SCHOOLS -->
-<section class="realm" id="lands" data-realm="4" data-name="Green Lands" aria-labelledby="h-lands">
-  <div class="scene" aria-hidden="true">
-    <span class="prop" style="--x:93%;--y:7%;--s:130px;--r:-35deg;--d:6;--z:-.15;--t:4s"><img src="assets/img/rf-leaf.webp" width="200" height="249" alt="" loading="lazy"></span>
-    <span class="prop dk" style="--x:4%;--y:34%;--s:120px;--r:40deg;--d:-6;--z:-.1;--t:4.6s"><img src="assets/img/rf-leaf.webp" width="200" height="249" alt="" loading="lazy"></span>
-    <span class="prop" style="--x:6%;--y:90%;--s:110px;--r:170deg;--d:4;--z:.1;--t:3.8s"><img src="assets/img/rf-leaf.webp" width="200" height="249" alt="" loading="lazy"></span>
-    <span class="prop dk" style="--x:96%;--y:52%;--s:100px;--r:70deg;--d:8;--o:.85;--z:-.06;--t:6s"><img src="assets/img/rf-bottle.webp" width="200" height="309" alt="" loading="lazy"></span>
-    <span class="prop grime dk" style="--x:95%;--y:90%;--s:120px;--o:.8;--z:.1"><img src="assets/img/gz-earth.webp" width="240" height="258" alt="" loading="lazy"></span>
-  </div>
+<!-- ============ FAMILIES & SCHOOLS ============ -->
+<section class="fam sec" id="families" aria-labelledby="h-fam">
   <div class="wrap">
-    <div class="realm-head"><span class="realm-badge" aria-hidden="true">4</span><p><b>The Green Lands</b><span>Realm 4 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FCD34D"/></svg>Reached at 5,000 XP</span></div>
-    <div class="split">
-      <div>
-        <h2 id="h-lands">Screen time that ends outside</h2>
-        <p class="lead">Trashure-Hunters is built to get families and classes out the door together, and to make looking after a place feel like winning.</p>
-        <div class="bridge"><span><span class="tag rw">Real world</span><b>Time outside, together</b></span><span class="arr" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="tag ge">Gamification experience</span><b>Rewards for doing</b></span></div>
-      </div>
-      <div class="guide" style="margin-top:0"><img src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy" style="width:92px"><p><b>Sproutz guides this realm</b>The gentle giant who leads with love. The Green Lands are his home, and the hardest place to see dimmed.</p></div>
+    <div class="center">
+      <span class="eyebrow"><img src="assets/img/compo-fluff.webp" alt="">Families &amp; schools</span>
+      <h2 class="h2" id="h-fam">Screen time that ends outside</h2>
+      <p class="sub">Trashure-Hunters is built to get families and classes out the door together, and to make looking after a place feel like winning.</p>
     </div>
-    <div class="duo">
-      <article class="panel">
-        <img src="assets/img/photo-team.webp" width="800" height="800" alt="Two pairs of hands tying up a full rubbish bag" loading="lazy">
-        <div class="panel-body">
-          <h3>For families</h3>
-          <p>Play together on a weekend walk, a beach day or the way to school.</p>
-          <ul class="ticks">
-            <li>Designed for a grown-up and a child to play side by side</li>
-            <li>Rewards for doing, not for buying or endless scrolling</li>
-            <li>Habits that stick: sorting, recycling, leaving places better</li>
-          </ul>
-        </div>
-      </article>
-      <article class="panel">
-        <img src="assets/img/photo-park.webp" width="1000" height="562" alt="A tidy park path in morning light" loading="lazy">
-        <div class="panel-body">
-          <h3>For schools and educators</h3>
-          <p>A hands-on way into sustainability that pupils actually want to do.</p>
-          <ul class="ticks">
-            <li>Class and school team challenges for eco-clubs, Earth Day or service learning</li>
-            <li>No chat and avatar-only teammates, so it fits a supervised setting</li>
-            <li>I'm looking for a small number of schools to help shape it</li>
-          </ul>
-          <a class="btn btn-line btn-sm" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20school%20interest&amp;body=Hi%20Dave%2C%0A%0AOur%20school%20is%20interested%20in%20Trashure-Hunters.%0A%0ASchool%3A%0ACity%2Fcountry%3A%0AAge%20group%3A%0A">Email me about your school</a>
-        </div>
-      </article>
+    <div class="two-col">
+      <div class="panel"><img src="assets/img/photo-team.webp" width="800" height="800" alt="Hands tying a full bag of collected litter" loading="lazy"><div class="in">
+        <h3>For families</h3><p>Play together on a weekend walk, a beach day or the way to school.</p>
+        <ul><li>Designed for a grown-up and a child to play side by side</li><li>Rewards for doing, not for buying or endless scrolling</li><li>Habits that stick: sorting, recycling, leaving places better</li></ul>
+      </div></div>
+      <div class="panel"><img src="assets/img/photo-park.webp" width="1000" height="562" alt="A park path with a bag of collected litter" loading="lazy"><div class="in">
+        <h3>For schools and educators</h3><p>A hands-on way into sustainability that pupils actually want to do.</p>
+        <ul><li>Class and school team challenges for eco-clubs, Earth Day or service learning</li><li>No chat, and avatar-only teammates, so it fits a supervised setting</li><li>I'm looking for a small number of schools to help shape it</li></ul>
+        <a class="btn blue sm" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20school%20interest&amp;body=Hi%20Dave%2C%0A%0AOur%20school%20is%20interested%20in%20Trashure-Hunters.%0A%0ASchool%3A%0ACity%2Fcountry%3A%0AAge%20group%3A%0A">Email me about your school</a>
+      </div></div>
     </div>
   </div>
 </section>
 
-<!-- REALM 5: EMBER FIELDS / SAFETY -->
-<section class="realm" id="embers" data-realm="5" data-name="Ember Fields" aria-labelledby="h-embers">
-  <div class="scene" aria-hidden="true">
-    <div class="motes" data-motes="16" style="--mc:#FFB347"></div>
-    <span class="prop" style="--x:92%;--y:8%;--s:96px;--d:-14;--o:.55;--z:-.2;--t:2.6s"><img src="assets/img/rf-flame.webp" width="200" height="498" alt="" loading="lazy"></span>
-    <span class="prop dk" style="--x:5%;--y:94%;--s:190px;--r:-10deg;--z:.12"><img src="assets/img/rf-charcoal.webp" width="260" height="336" alt="" loading="lazy"></span>
-    <span class="prop" style="--x:96%;--y:95%;--s:170px;--r:190deg;--z:.08"><img src="assets/img/rf-charcoal.webp" width="260" height="336" alt="" loading="lazy"></span>
-    <span class="prop dk" style="--x:4%;--y:30%;--s:110px;--r:-8deg;--d:5;--o:.9;--z:-.1;--t:5s"><img src="assets/img/rf-barrel.webp" width="200" height="337" alt="" loading="lazy"></span>
-    <span class="prop grime dk" style="--x:96%;--y:52%;--s:110px;--o:.8;--z:.06"><img src="assets/img/gz-fire.webp" width="240" height="260" alt="" loading="lazy"></span>
-  </div>
+<!-- ============ HUNTER'S CODE ============ -->
+<section class="code sec" id="code" aria-labelledby="h-code">
   <div class="wrap">
-    <div class="realm-head"><span class="realm-badge" aria-hidden="true">5</span><p><b>The Ember Fields</b><span>Realm 5 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FCD34D"/></svg>Reached at 8,000 XP</span></div>
-    <div class="split">
-      <div>
-        <h2 id="h-embers">Our safety promises</h2>
-        <p class="lead">These are the rules the game is being built to, for parents and teachers to hold us to.</p>
-      </div>
-      <div class="guide" style="margin-top:0"><img src="assets/img/blazo.webp" width="509" height="736" alt="" loading="lazy" style="width:88px"><p><b>Blazo guards this realm</b>The hothead with a heart. Fiercely loyal to the people he protects.</p></div>
+    <div class="center">
+      <span class="eyebrow"><img src="assets/img/blazo.webp" alt="">The Hunter's Code</span>
+      <h2 class="h2" id="h-code">Our safety promises</h2>
+      <p class="sub">These are the rules the game is being built to, for parents and teachers to hold us to.</p>
     </div>
-
     <div class="promises">
-      <div class="promise">
-        <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 5l14 5v10c0 9-6 16-14 19C14 36 8 29 8 20V10z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M16 22l4.5 4.5L29 18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div><h3>A parent says yes first</h3><p>Players under 13 need a parent or guardian's consent before the camera or location is switched on.</p></div>
-      </div>
-      <div class="promise">
-        <svg viewBox="0 0 44 44" aria-hidden="true"><rect x="8" y="13" width="28" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="22" cy="23" r="5.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M16 13l2.5-4h7l2.5 4" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></svg>
-        <div><h3>The camera looks for trash</h3><p>Trash-Cam checks the litter in the photo, not faces. Photos are deleted once the cleanup is verified.</p></div>
-      </div>
-      <div class="promise">
-        <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 38s12-10.5 12-20a12 12 0 10-24 0c0 9.5 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle cx="22" cy="18" r="4" fill="currentColor"/></svg>
-        <div><h3>No exact locations shared</h3><p>Location places Grime Zones on the map. Other players never see where a child is.</p></div>
-      </div>
-      <div class="promise">
-        <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M9 11h26v17H20l-7 6v-6H9z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M8 38L36 8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
-        <div><h3>No chat with strangers</h3><p>There is no in-game chat. Teammates appear as avatars only.</p></div>
-      </div>
-      <div class="promise">
-        <svg viewBox="0 0 44 44" aria-hidden="true"><rect x="7" y="10" width="30" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M15 38h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M9 34L35 8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
-        <div><h3>No ads aimed at kids</h3><p>We won't show advertising to children, and we won't sell or rent anyone's data.</p></div>
-      </div>
-      <div class="promise">
-        <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="14" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M22 14v8l5 4" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
-        <div><h3>No tricks to keep them hooked</h3><p>No pay-to-win, no countdown pressure and no loot boxes. Progress comes from cleaning.</p></div>
-      </div>
+      <div class="promise" style="--pc:#3DA7F9"><div class="ic">👨‍👩‍👧</div><h3>A parent says yes first</h3><p>Players under 13 need a parent or guardian's consent before the camera or location is switched on.</p></div>
+      <div class="promise" style="--pc:#7F4DE2"><div class="ic">📸</div><h3>The camera looks for trash</h3><p>Trash-Cam checks the litter in the photo, not faces. Photos are deleted once the cleanup is verified.</p></div>
+      <div class="promise" style="--pc:#28E4B1"><div class="ic">📍</div><h3>No exact locations shared</h3><p>Location places Grime Zones on the map. Other players never see where a child is.</p></div>
+      <div class="promise" style="--pc:#FC71EA"><div class="ic">🤐</div><h3>No chat with strangers</h3><p>There is no in-game chat. Teammates appear as avatars only.</p></div>
+      <div class="promise" style="--pc:#FF8400"><div class="ic">🚫</div><h3>No ads aimed at kids</h3><p>We won't show advertising to children, and we won't sell or rent anyone's data.</p></div>
+      <div class="promise" style="--pc:#FFC83D"><div class="ic">🎯</div><h3>No tricks to keep them hooked</h3><p>No pay-to-win, no countdown pressure and no loot boxes. Progress comes from cleaning.</p></div>
     </div>
-    <p class="note">The full privacy policy is being written now and will be published before any family can join the beta. Questions in the meantime: <a href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20privacy%20question">dave@3shamrocks.com</a>.</p>
-
-    <div class="outdoor">
-      <img src="assets/img/watergun.webp" width="360" height="443" alt="" loading="lazy">
-      <div>
-        <p style="margin-bottom:10px"><span class="tag rw">Real world</span></p>
-        <h3>Out in the real world, the game teaches these first</h3>
-        <ul>
-          <li>Hunt with a grown-up nearby</li>
-          <li>Wear gloves or use a grabber</li>
-          <li>Never touch glass, needles or anything sharp</li>
-          <li>Stay away from roads, water edges and private property</li>
-          <li>If in doubt, leave it and tell an adult</li>
-          <li>Wash your hands when you're done</li>
-        </ul>
-      </div>
+    <div class="rules">
+      <img src="assets/img/watergun.webp" width="360" height="443" alt="">
+      <div><h3>Out in the real world, the game teaches these first</h3>
+        <ul><li>Hunt with a grown-up nearby</li><li>Wear gloves or use a grabber</li><li>Never touch glass, needles or anything sharp</li><li>Stay away from roads, water edges and private property</li><li>If in doubt, leave it and tell an adult</li><li>Wash your hands when you're done</li></ul></div>
     </div>
+    <p class="fine">The full privacy policy is being written now and will be published before any family can join the beta. Questions in the meantime: <a href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20privacy%20question">dave@3shamrocks.com</a>.</p>
   </div>
 </section>
 
-<!-- REALM 6: TEMPLE OF LIGHT / JOIN + PARTNERS -->
-<section class="realm" id="temple" data-realm="6" data-name="Temple of Light" data-light aria-labelledby="h-join">
-  <div class="scene" aria-hidden="true">
-    <div class="motes" data-motes="18" style="--mc:#FFE7A3;--h:420px;bottom:auto;height:440px"></div>
-    <span class="prop dk" style="--x:10%;--y:12%;--s:90px;--d:-6;--z:-.15;--t:3s"><img src="assets/img/compo-fluid.webp" width="220" height="257" alt="" loading="lazy"></span>
-    <span class="prop dk" style="--x:90%;--y:11%;--s:84px;--d:6;--z:-.2;--t:3.4s"><img src="assets/img/compo-cosmic.webp" width="220" height="248" alt="" loading="lazy"></span>
-  </div>
-  <div class="wrap" style="padding-top:150px">
-    <div class="realm-head" style="justify-content:center"><span class="realm-badge" aria-hidden="true">6</span><p><b>The Temple of Light</b><span>Realm 6 of 6</span></p><span class="xp-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#E8A400"/></svg>The centre: 10,000 XP</span></div>
-    <div class="join-head" id="join">
-      <div class="orbo-stage" aria-hidden="true">
-        <span class="rays"></span>
-        <img class="cp" src="assets/img/compo-leaf.webp" width="220" height="243" alt="" loading="lazy" style="--cx:calc(-150px * var(--sx,1));--cy:-20px">
-        <img class="cp" src="assets/img/compo-fluid.webp" width="220" height="257" alt="" loading="lazy" style="--cx:calc(150px * var(--sx,1));--cy:-10px;--dl:-1s">
-        <img class="cp" src="assets/img/compo-cosmic.webp" width="220" height="248" alt="" loading="lazy" style="--cx:calc(-128px * var(--sx,1));--cy:48px;--dl:-2s">
-        <img class="cp" src="assets/img/compo-fluff.webp" width="220" height="207" alt="" loading="lazy" style="--cx:calc(130px * var(--sx,1));--cy:54px;--dl:-1.5s">
-        <img class="orbo" src="assets/img/orbo.webp" width="520" height="566" alt="" loading="lazy">
-        <img class="cell" src="assets/img/light-cell.webp" width="260" height="258" alt="" loading="lazy">
-      </div>
-      <p class="sr">Orbo, the guardian of the Temple of Light, surrounded by Compos.</p>
-      <h2 id="h-join">Join the hunt</h2>
-      <p class="lead">We'll email you when the beta opens to families, and only for that. Grown-ups only, please: kids, ask a parent to sign up for you.</p>
+<!-- ============ JOIN ============ -->
+<section class="join sec" id="join" aria-labelledby="h-join">
+  <div class="sun"></div>
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow" style="--c:#C27C00"><img src="assets/img/th-icon.webp" alt="">Join the hunt</span>
+      <h2 class="h2" id="h-join">The hunt starts with you</h2>
+      <p class="sub">We'll email you when the beta opens to families, and only for that. Grown-ups only, please: kids, ask a parent to sign up for you.</p>
     </div>
-    <div class="join-card">
+    <div class="troop" aria-hidden="true">
+      <img src="assets/img/sproutz.webp" data-say="earth" alt=""><img src="assets/img/bloop.webp" data-say="water" alt=""><img src="assets/img/cosmix.webp" data-say="space" alt=""><img src="assets/img/blazo.webp" data-say="fire" alt=""><img src="assets/img/wispo.webp" data-say="air" alt="">
+    </div>
+    <div class="signup">
       <h3>Get on the waitlist</h3>
-      <p>The button opens a ready-to-send email in your own mail app. Nothing is sent until you press send, and we don't collect anything on this page.</p>
-      <div class="actions">
-        <a class="btn btn-primary" href="mailto:dave@3shamrocks.com?subject=Join%20the%20hunt%3A%20Trashure-Hunters%20waitlist&amp;body=Hi%2C%0A%0APlease%20add%20me%20to%20the%20Trashure-Hunters%20waitlist.%0A%0AI%27m%20a%20(parent%20%2F%20teacher%20%2F%20other)%3A%0ACity%20and%20country%3A%0A%0AI%20understand%20you%27ll%20only%20use%20this%20address%20to%20tell%20me%20about%20the%20beta.">Email to join the waitlist</a>
-        <button class="btn btn-line" type="button" id="copyBtn" data-email="dave@3shamrocks.com">Copy email address</button>
+      <p>The button opens a ready-to-send email in your own mail app. Nothing is sent until you press send, and this page collects nothing.</p>
+      <div class="ctas">
+        <a class="btn" href="mailto:dave@3shamrocks.com?subject=Join%20the%20hunt%3A%20Trashure-Hunters%20waitlist&amp;body=Hi%2C%0A%0APlease%20add%20me%20to%20the%20Trashure-Hunters%20waitlist.%0A%0AI%27m%20a%20(parent%20%2F%20teacher%20%2F%20other)%3A%0ACity%20and%20country%3A%0A%0AI%20understand%20you%27ll%20only%20use%20this%20address%20to%20tell%20me%20about%20the%20beta.">Email to join the waitlist</a>
+        <button class="btn light" id="copyBtn" data-email="dave@3shamrocks.com">Copy email address</button>
       </div>
-      <p class="fine">Prefer to write it yourself? <b>dave@3shamrocks.com</b> <span class="copied" id="copyMsg" role="status" aria-live="polite"></span></p>
+      <small><span id="copyMsg" aria-live="polite"></span> Prefer to write it yourself? dave@3shamrocks.com</small>
     </div>
-
-    <div class="partners" id="partners">
-      <h2>Bring the hunt to your community</h2>
-      <p class="lead">I'm looking for the first partners to help shape where and how the game shows up.</p>
-      <div class="bridge"><span><span class="tag rw">Real world</span><b>Community cleanups and events</b></span><span class="arr" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="tag ge">Gamification experience</span><b>Grime Zones and event bonuses for players</b></span></div>
-      <ul class="p-list">
-        <li class="p-item" style="--pc:#E7F8F0">
-          <span class="mark"><img src="assets/img/sproutz.webp" width="496" height="702" alt="" loading="lazy"></span>
-          <div><h3>Schools and youth groups</h3><p>Pilot class challenges, shape the educator tools, and give pupils a reason to look after their grounds.</p>
-          <a class="more" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20school%20or%20youth%20group%20pilot">Talk to me about a pilot</a></div>
-        </li>
-        <li class="p-item" style="--pc:#FFF0DC">
-          <span class="mark"><img src="assets/img/blazo.webp" width="509" height="736" alt="" loading="lazy"></span>
-          <div><h3>Sponsors and CSR teams</h3><p>Rotary and Lions clubs, local businesses and company volunteer days: sponsor a community cleanup or a neighbourhood's Grime Zones.</p>
-          <a class="more" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20sponsorship%20and%20CSR">Ask about sponsoring</a></div>
-        </li>
-        <li class="p-item" style="--pc:#E6F3FC">
-          <span class="mark"><img src="assets/img/bloop.webp" width="520" height="715" alt="" loading="lazy"></span>
-          <div><h3>Cities, parks and NGOs</h3><p>Point young players at the places that need it most, and get a clear picture of verified cleanups in your area.</p>
-          <a class="more" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20city%2C%20park%20or%20NGO%20partnership">Start a conversation</a></div>
-        </li>
-        <li class="p-item" style="--pc:#FBE8F4">
-          <span class="mark"><img src="assets/img/cosmix.webp" width="520" height="540" alt="" loading="lazy"></span>
-          <div><h3>Investors and press</h3><p>A family game and a story world from one studio. I'm happy to share the deck and the build.</p>
-          <a class="more" href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20investor%20or%20press%20enquiry">Request the deck</a></div>
-        </li>
-      </ul>
-      <p class="honest">Every link here opens an email to Dave Markovich, the game's creator. I'll only show partner names once a partnership is real and agreed.</p>
+    <div class="score" id="score">
+      <img src="assets/img/i-captured.webp" alt="">
+      <div><b id="scoreLine">Your visit: 0 XP</b>
+        <div class="bdg"><span data-b="litter">Litter Lifter</span><span data-b="met5">Met the Five</span><span data-b="river">River Rider</span><span data-b="hunt">Compo Freer</span><span data-b="boss">Grime Buster</span></div>
+        <small>Website XP is just for fun. It isn't saved anywhere, and it doesn't carry over to the game.</small></div>
     </div>
   </div>
 </section>
 
+<!-- ============ PARTNERS ============ -->
+<section class="join sec" id="partners" aria-labelledby="h-partners" style="padding-top:20px;background:#FFF7E8">
+  <div class="wrap">
+    <div class="center">
+      <h2 class="h2" id="h-partners">Bring the hunt to your community</h2>
+      <p class="sub">I'm looking for the first partners to help shape where and how the game shows up: community cleanups and events in the real world, Grime Zones and event bonuses in the game.</p>
+    </div>
+    <div class="partners">
+      <div class="pcard"><img src="assets/img/sproutz.webp" alt=""><h3>Schools and youth groups</h3><p>Pilot class challenges, shape the educator tools, and give pupils a reason to look after their grounds.</p><a href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20school%20or%20youth%20group%20pilot">Talk to me about a pilot →</a></div>
+      <div class="pcard"><img src="assets/img/blazo.webp" alt=""><h3>Sponsors and CSR teams</h3><p>Rotary and Lions clubs, local businesses and company volunteer days: sponsor a community cleanup or a neighbourhood's Grime Zones.</p><a href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20sponsorship%20and%20CSR">Ask about sponsoring →</a></div>
+      <div class="pcard"><img src="assets/img/bloop.webp" alt=""><h3>Cities, parks and NGOs</h3><p>Point young players at the places that need it most, and get a clear picture of verified cleanups in your area.</p><a href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20city%2C%20park%20or%20NGO%20partnership">Start a conversation →</a></div>
+      <div class="pcard"><img src="assets/img/cosmix.webp" alt=""><h3>Investors and press</h3><p>A family game and a story world from one studio. I'm happy to share the deck and the build.</p><a href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters%3A%20investor%20or%20press%20enquiry">Request the deck →</a></div>
+    </div>
+    <p class="fine center">Every link here opens an email to Dave Markovich, the game's creator. I'll only show partner names once a partnership is real and agreed.</p>
+  </div>
+</section>
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="f-brand"><img src="assets/img/logo.webp" width="640" height="294" alt="Trashure-Hunters" loading="lazy"><img src="assets/img/studio.webp" width="360" height="53" alt="3Shamrocks Studio" loading="lazy"></div>
-    <nav aria-label="Footer">
-      <ul>
-        <li><a href="#embers">Safety promises</a></li>
-        <li><a href="#lands">Families &amp; schools</a></li>
-        <li><a href="#partners">Partners</a></li>
-        <li><a href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters">Contact</a></li>
-      </ul>
-    </nav>
-    <small>This site sets no cookies and uses no analytics or trackers.<br>Trashure-Hunters&trade; &copy; 2026 3Shamrocks Studio. Clean the World. Win the Game.</small>
+    <img src="assets/img/logo.webp" width="640" height="294" alt="Trashure-Hunters">
+    <nav aria-label="Footer"><a href="#code">Safety promises</a><a href="#families">Families &amp; schools</a><a href="#partners">Partners</a><a href="mailto:dave@3shamrocks.com?subject=Trashure-Hunters">Contact</a></nav>
+    <p>This site sets no cookies and uses no analytics or trackers. Trashure-Hunters&trade; &copy; 2026 3Shamrocks Studio. Clean the World. Win the Game.</p>
   </div>
 </footer>
 
-<script>
-(function(){
-  var realms=[].slice.call(document.querySelectorAll('.realm'));
-  var hud=document.getElementById('hud'),bar=document.getElementById('hudBar'),depth=document.getElementById('hudDepth'),rail=document.getElementById('rail');
-  var links=[].slice.call(rail.querySelectorAll('a'));
-  var root=document.documentElement;
-
-  function setActive(sec){
-    var n=sec?+sec.dataset.realm:0;
-    links.forEach(function(a,i){ if(i===n-1){a.setAttribute('aria-current','step');}else{a.removeAttribute('aria-current');} });
-    var c=sec?getComputedStyle(sec).getPropertyValue('--c').trim():'';
-    if(c){hud.style.setProperty('--c',c);}
-    depth.textContent=sec?(n+'/6 '+sec.dataset.name):'';
-    var light=!!(sec&&sec.hasAttribute('data-light'));
-    rail.classList.toggle('show',!!sec);
-    rail.classList.toggle('on-light',light);
-  }
-
-  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var hero=document.querySelector('.hero'),worlds=document.getElementById('worlds');
-  var depthEls=[hero,worlds].concat(realms);
-
-  // Cosmic Void stars: same layout formula as the game's intro scene (40 stars, sin-based positions, size 1-3px)
-  [].forEach.call(document.querySelectorAll('.tw[data-stars]'),function(box){
-    var n=+box.getAttribute('data-stars'),h='';
-    for(var t=0;t<n;t++){
-      var x=(0.5*Math.sin(91.7*t)+0.5)*100,y=(0.5*Math.sin(47.3*t)+0.5)*100,s=1+t%3;
-      h+='<i style="left:'+x.toFixed(2)+'%;top:'+y.toFixed(2)+'%;--z:'+s+'px;--t:'+(2.4+(t%5)*.5)+'s;--dl:-'+((t*0.37)%3).toFixed(2)+'s"></i>';
-    }
-    box.innerHTML=h;
-  });
-  // Rising embers / light motes (the game's rising particle layer)
-  [].forEach.call(document.querySelectorAll('.motes[data-motes]'),function(box){
-    var n=+box.getAttribute('data-motes'),h='';
-    function r(i,k){var o=43758.5453*Math.sin(12.9898*i+78.233*k);return o-Math.floor(o);}
-    for(var i=0;i<n;i++){
-      h+='<i style="left:'+(r(i,1)*100).toFixed(1)+'%;--z:'+(3+r(i,2)*4).toFixed(1)+'px;--t:'+(6+r(i,3)*6).toFixed(1)+'s;--dl:-'+(r(i,4)*10).toFixed(1)+'s;--wx:'+((r(i,5)-.5)*80).toFixed(0)+'px"></i>';
-    }
-    box.innerHTML=h;
-  });
-
-  if('IntersectionObserver' in window){
-    var vis=new IntersectionObserver(function(es){
-      es.forEach(function(e){ e.target.classList.toggle('on',e.isIntersecting); if(e.isIntersecting){e.target.classList.add('seen');} });
-    },{rootMargin:'0px'});
-    realms.forEach(function(r){vis.observe(r);});
-    vis.observe(hero);
-  } else {
-    realms.concat([hero]).forEach(function(r){r.classList.add('on','seen');});
-  }
-
-  // Team picker: Elemonster facts as defined in the game build (th-mvp ELEMONSTERS)
-  var MONS={
-    sproutz:{n:'Sproutz',team:'Earth',el:'Nature, growth, roots',s1:'Seed',tag:'Earth Guardian. Stubborn heart. Grows with you.',hide:'Buried under leaves in a forest creek…',egg:'egg-earth',eh:317,img:'sproutz',w:496,h:702,c:'#2EBD8A'},
-    bloop:{n:'Bloop',team:'Water',el:'Oceans, rivers, flow',s1:'Egg',tag:'Water Keeper. Feels everything. Never gives up.',hide:'Deep in a tide pool…',egg:'egg-water',eh:307,img:'bloop',w:520,h:715,c:'#4BA3E3'},
-    blazo:{n:'Blazo',team:'Fire',el:'Heat, energy, passion',s1:'Egg',tag:'Fire Spirit. Born bold. Burns brightest for friends.',hide:'In a crack of volcanic rock…',egg:'egg-fire',eh:335,img:'blazo',w:509,h:736,c:'#F5961E'},
-    wispo:{n:'Wispo',team:'Air',el:'Wind, sky, freedom',s1:'Egg',tag:'Air Wanderer. Everywhere at once. Hides a brave heart.',hide:'Inside a storm cloud…',egg:'egg-air',eh:270,img:'wispo',w:520,h:505,c:'#A78BFA'},
-    cosmix:{n:'Cosmix',team:'Space',el:'Cosmos, wisdom, mystery',s1:'Egg',tag:'Space Sage. Oldest soul. Sees what others miss.',hide:'Drifting in deep space…',egg:'egg-space',eh:275,img:'cosmix',w:520,h:540,c:'#D94FAA'}
-  };
-  var picker=document.getElementById('team');
-  if(picker){
-    var btns=[].slice.call(picker.querySelectorAll('.mon'));
-    function $(id){return document.getElementById(id);}
-    btns.forEach(function(b){
-      b.addEventListener('click',function(){
-        var m=MONS[b.getAttribute('data-id')]; if(!m){return;}
-        btns.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});
-        picker.style.setProperty('--mc',m.c);
-        $('mName').textContent=m.n; $('mTag').textContent=m.tag; $('mTeam').textContent=m.team+' Team';
-        $('mEl').textContent=m.el; $('mStart').textContent='Starts as '+(m.s1==='Seed'?'a Seed':'an Egg');
-        $('mHide').textContent=m.hide; $('mS1').textContent=m.s1;
-        var e=$('mEgg'); e.src='assets/img/'+m.egg+'.webp'; e.height=m.eh;
-        var g=$('mGrown'); g.src='assets/img/'+m.img+'.webp'; g.width=m.w; g.height=m.h;
-      });
-    });
-  }
-
-  function parallax(){
-    if(reduce){return;}
-    var vh=window.innerHeight;
-    for(var i=0;i<depthEls.length;i++){
-      var el=depthEls[i]; if(!el){continue;}
-      var r=el.getBoundingClientRect();
-      if(r.bottom>-100&&r.top<vh+100){
-        var p=el===hero?r.top:(r.top+r.height/2-vh/2);
-        el.style.setProperty('--p',Math.max(-700,Math.min(700,p)).toFixed(0)+'px');
-      }
-    }
-  }
-
-  var ticking=false;
-  function onScroll(){
-    ticking=false;
-    var mid=window.innerHeight*0.45,cur=null;
-    for(var i=0;i<realms.length;i++){ var r=realms[i].getBoundingClientRect(); if(r.top<=mid&&r.bottom>mid){cur=realms[i];break;} }
-    setActive(cur);
-    var max=root.scrollHeight-window.innerHeight;
-    bar.style.transform='scaleX('+(max>0?Math.min(1,window.scrollY/max):0)+')';
-    var t=document.getElementById('temple').getBoundingClientRect().top;
-    hud.classList.toggle('is-light',t<=300);
-    parallax();
-  }
-  window.addEventListener('scroll',function(){ if(!ticking){ticking=true;requestAnimationFrame(onScroll);} },{passive:true});
-  window.addEventListener('resize',onScroll,{passive:true});
-  onScroll();
-
-  var copyBtn=document.getElementById('copyBtn'),copyMsg=document.getElementById('copyMsg');
-  copyBtn.addEventListener('click',function(){
-    var email=copyBtn.getAttribute('data-email');
-    function done(ok){copyMsg.textContent=ok?'Copied':'Select the address to copy it';}
-    try{
-      if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(email).then(function(){done(true);},function(){done(false);});}
-      else{done(false);}
-    }catch(err){done(false);}
-  });
-})();
-</script>
-<!-- 3Shamrocks audio: original studio sound, nothing plays before a tap -->
 <script src="assets/audio/s3-audio.js"></script>
 <script>
-(function(){if(!window.S3Audio)return;
-var A=S3Audio.create({base:'assets/audio/',name:'th',lead:0.1,loopLen:72,musicGain:0.5,sfxGain:0.7,store:{sfx:'s3_sfx'},sprite:{"earth":[0.1,0.3975],"water":[0.7475,0.4179],"fire":[1.4154,0.3973],"air":[2.0627,0.4451],"space":[2.7577,0.4975]}});
-var B=S3Audio.mount(A,{music:true,label:'Play theme'});B.style.cssText+='--s3a-bg:#0A0A2E;--s3a-fg:#FFF7E8;--s3a-accent:#FF6C00;--s3a-font:Fredoka,system-ui,sans-serif;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 6px 20px rgba(0,0,0,.3)';
-/* one soft element sound when a different Elemonster is chosen */
-var EL={sproutz:'earth',bloop:'water',blazo:'fire',wispo:'air',cosmix:'space'},sel=document.querySelector('.mon[aria-pressed="true"]'),cur=sel&&sel.getAttribute('data-id');
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.mon[data-id]');if(!b)return;var id=b.getAttribute('data-id');if(id!==cur&&EL[id])A.play(EL[id]);cur=id;});
+(function () {
+  'use strict';
+  var D = document, W = window;
+  var $ = function (id) { return D.getElementById(id); };
+  var qa = function (s, r) { return [].slice.call((r || D).querySelectorAll(s)); };
+  var reduce = W.matchMedia && W.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- sound (theme + element sounds, only after a tap) ---------- */
+  var A = null;
+  if (W.S3Audio) {
+    A = S3Audio.create({ base: 'assets/audio/', name: 'th', lead: 0.1, loopLen: 72, musicGain: 0.5, sfxGain: 0.7, store: { sfx: 's3_sfx' },
+      sprite: { earth: [0.1, 0.3975], water: [0.7475, 0.4179], fire: [1.4154, 0.3973], air: [2.0627, 0.4451], space: [2.7577, 0.4975] } });
+    var B = S3Audio.mount(A, { music: true, label: 'Play theme' });
+    B.style.cssText += ';left:auto;right:14px;bottom:14px;--s3a-bg:#0A0A2E;--s3a-fg:#FFF7E8;--s3a-accent:#FF6C00;--s3a-font:Fredoka,system-ui,sans-serif;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 6px 20px rgba(0,0,0,.3)';
+  }
+  function sfx(k) { try { if (A && k) A.play(k); } catch (e) {} }
+
+  /* ---------- visit score: website mini-game, kept in memory only ---------- */
+  var xp = 0, tc = 0, badges = {};
+  var hud = $('hud');
+  var BADGE = { litter: 'Litter Lifter', met5: 'Met the Five', river: 'River Rider', hunt: 'Compo Freer', boss: 'Grime Buster' };
+  function render() {
+    var lv = Math.floor(xp / 100) + 1;
+    $('hudLv').textContent = 'Hunter Lv ' + lv;
+    $('hudXp').style.width = (xp % 100) + '%';
+    $('hudTc').textContent = tc;
+    $('scoreLine').textContent = 'Your visit: ' + xp + ' XP · Hunter Lv ' + lv;
+    qa('#score [data-b]').forEach(function (s) { s.classList.toggle('got', !!badges[s.getAttribute('data-b')]); });
+  }
+  function toast(html, img) {
+    var box = $('toasts'), t = D.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = (img ? '<img src="assets/img/' + img + '.webp" alt="">' : '') + '<span>' + html + '</span>';
+    box.appendChild(t);
+    while (box.children.length > (W.innerWidth < 760 ? 2 : 3)) box.removeChild(box.firstChild);
+    setTimeout(function () { t.classList.add('out'); setTimeout(function () { t.remove(); }, 400); }, 2600);
+  }
+  function fly(x, y) {
+    if (reduce || x == null) return;
+    var r = hud.getBoundingClientRect();
+    for (var i = 0; i < 6; i++) {
+      var s = D.createElement('i'); s.className = 'spark';
+      s.style.left = x + 'px'; s.style.top = y + 'px';
+      s.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px'); s.style.setProperty('--dy', (Math.random() * 120 - 60) + 'px');
+      D.body.appendChild(s); setTimeout(s.remove.bind(s), 800);
+    }
+    var c = D.createElement('i'); c.className = 'flycoin';
+    c.style.left = (x - 12) + 'px'; c.style.top = (y - 12) + 'px'; D.body.appendChild(c);
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+      c.style.transform = 'translate(' + (r.left + 150 - x) + 'px,' + (r.top + 18 - y) + 'px) scale(.6)'; c.style.opacity = '.4';
+    }); });
+    setTimeout(function () { c.remove(); }, 850);
+  }
+  function earn(n, coins, why, img, x, y) {
+    var before = Math.floor(xp / 100);
+    xp += n; tc += coins || 0;
+    hud.classList.add('show'); hud.classList.remove('bump'); void hud.offsetWidth; hud.classList.add('bump');
+    fly(x, y);
+    if (why) toast(why + ' <b>+' + n + ' XP</b>', img);
+    if (Math.floor(xp / 100) > before) setTimeout(function () { toast('Level up! You are now a <b>Lv ' + (Math.floor(xp / 100) + 1) + ' Hunter</b>', 'i-captured'); }, 500);
+    render();
+  }
+  function badge(k, img) {
+    if (badges[k]) return;
+    badges[k] = 1;
+    setTimeout(function () { toast('Badge unlocked: <b>' + BADGE[k] + '</b>', img || 'i-captured'); }, 700);
+    render();
+  }
+  function xy(e, el) {
+    if (e && e.clientX) return [e.clientX, e.clientY];
+    var r = (el || e.currentTarget).getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2];
+  }
+
+  /* ---------- loader ---------- */
+  function hideLoader() { var l = $('loader'); if (l) l.classList.add('done'); }
+  if (reduce) hideLoader(); else { W.addEventListener('load', function () { setTimeout(hideLoader, 450); }); setTimeout(hideLoader, 2500); }
+
+  /* ---------- nav ---------- */
+  var nav = $('nav'), burger = $('burger');
+  function closeMenu() { D.body.classList.remove('menu-open'); burger.setAttribute('aria-expanded', 'false'); }
+  burger.addEventListener('click', function () {
+    var open = D.body.classList.toggle('menu-open'); burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  qa('#mmenu a').forEach(function (a) { a.addEventListener('click', closeMenu); });
+  D.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+
+  /* ---------- stars ---------- */
+  qa('.tw[data-stars]').forEach(function (box) {
+    var n = +box.getAttribute('data-stars'), h = '';
+    for (var t = 0; t < n; t++) {
+      var x = (0.5 * Math.sin(91.7 * t) + 0.5) * 100, y = (0.5 * Math.sin(47.3 * t) + 0.5) * 100;
+      h += '<i style="left:' + x.toFixed(2) + '%;top:' + y.toFixed(2) + '%;--z:' + (1 + t % 3) + 'px;--t:' + (2.4 + (t % 5) * .5) + 's;--dl:-' + ((t * .37) % 3).toFixed(2) + 's"></i>';
+    }
+    box.innerHTML = h;
+  });
+
+  /* ---------- hero carousel ---------- */
+  var slides = qa('.slide'), dots = qa('.dots button'), cur = 0, timer = null, stage = $('stage');
+  function go(i) {
+    cur = (i + slides.length) % slides.length;
+    slides.forEach(function (s, k) { s.classList.toggle('on', k === cur); s.setAttribute('aria-hidden', k === cur ? 'false' : 'true'); });
+    dots.forEach(function (d, k) { d.setAttribute('aria-current', k === cur ? 'true' : 'false'); });
+  }
+  var touched = false; // once a visitor interacts with the hero, never move the slide under them
+  function auto() { clearInterval(timer); if (!reduce && !touched) timer = setInterval(function () { go(cur + 1); }, 7000); }
+  stage.addEventListener('pointerdown', function () { touched = true; clearInterval(timer); });
+  dots.forEach(function (d, k) { d.addEventListener('click', function () { go(k); }); });
+  $('prev').addEventListener('click', function () { go(cur - 1); });
+  $('next').addEventListener('click', function () { go(cur + 1); });
+  stage.addEventListener('mouseenter', function () { clearInterval(timer); });
+  stage.addEventListener('mouseleave', function () { if (!touched) auto(); });
+  var sx = null;
+  stage.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', function (e) {
+    if (sx == null) return; var dx = e.changedTouches[0].clientX - sx; sx = null;
+    if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+  go(0); auto();
+  // mouse parallax on the key art
+  if (!reduce) stage.addEventListener('mousemove', function (e) {
+    var r = stage.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+    stage.style.setProperty('--mx', (-px * 18).toFixed(1) + 'px'); stage.style.setProperty('--my', (-py * 12).toFixed(1) + 'px');
+    stage.style.setProperty('--mx2', (px * 26).toFixed(1) + 'px'); stage.style.setProperty('--my2', (py * 18).toFixed(1) + 'px');
+  });
+  // hero litter
+  var litter = qa('.hero .litter'), cleaned = 0;
+  litter.forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      if (b.classList.contains('gone')) return;
+      b.classList.add('gone'); cleaned++; sfx('earth');
+      var p = xy(e, b);
+      earn(10, 1, cleaned < litter.length ? 'Litter picked up!' : 'Park clean!', 'rf-bottle', p[0], p[1]);
+      if (cleaned === litter.length) { $('hint').textContent = 'The park is clean. Nice work, Hunter!'; badge('litter'); }
+    });
+  });
+
+  /* ---------- characters say hi ---------- */
+  D.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-say]');
+    if (!t) return;
+    sfx(t.getAttribute('data-say'));
+    var img = t.tagName === 'IMG' ? t : t.querySelector('img');
+    if (img && !reduce && img.animate) img.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12,.88)' }, { transform: 'translateY(-18px) scale(1.04)' }, { transform: 'scale(1)' }], { duration: 600, easing: 'cubic-bezier(.2,1.6,.4,1)', composite: 'add' });
+  });
+
+  /* ---------- roster ---------- */
+  var MONS = { // facts as defined in the game build (th-mvp ELEMONSTERS)
+    sproutz: { n: 'Sproutz', team: 'Earth', el: 'Nature, growth, roots', s1: 'Seed', tag: 'Earth Guardian. Stubborn heart. Grows with you.', hide: 'Buried under leaves in a forest creek…', egg: 'egg-earth', img: 'sproutz', c: '#28E4B1', say: 'earth' },
+    bloop: { n: 'Bloop', team: 'Water', el: 'Oceans, rivers, flow', s1: 'Egg', tag: 'Water Keeper. Feels everything. Never gives up.', hide: 'Deep in a tide pool…', egg: 'egg-water', img: 'bloop', c: '#3DA7F9', say: 'water' },
+    blazo: { n: 'Blazo', team: 'Fire', el: 'Heat, energy, passion', s1: 'Egg', tag: 'Fire Spirit. Born bold. Burns brightest for friends.', hide: 'In a crack of volcanic rock…', egg: 'egg-fire', img: 'blazo', c: '#FF8400', say: 'fire' },
+    wispo: { n: 'Wispo', team: 'Air', el: 'Wind, sky, freedom', s1: 'Egg', tag: 'Air Wanderer. Everywhere at once. Hides a brave heart.', hide: 'Inside a storm cloud…', egg: 'egg-air', img: 'wispo', c: '#A47BFF', say: 'air' },
+    cosmix: { n: 'Cosmix', team: 'Space', el: 'Cosmos, wisdom, mystery', s1: 'Egg', tag: 'Space Sage. Oldest soul. Sees what others miss.', hide: 'Drifting in deep space…', egg: 'egg-space', img: 'cosmix', c: '#FC71EA', say: 'space' }
+  };
+  var mcards = qa('.mcard'), met = {}, metN = 0;
+  mcards.forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      var id = b.getAttribute('data-id'), m = MONS[id]; if (!m) return;
+      mcards.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      b.classList.remove('boing'); void b.offsetWidth; b.classList.add('boing');
+      sfx(m.say);
+      var sh = $('sheet'); sh.style.setProperty('--mc', m.c);
+      $('sName').textContent = m.n; $('sTag').textContent = m.tag; $('sTeam').textContent = m.team + ' Team';
+      $('sEl').textContent = m.el; $('sStart').textContent = 'Starts as ' + (m.s1 === 'Seed' ? 'a Seed' : 'an Egg');
+      $('sHide').textContent = m.hide; $('sS1').textContent = m.s1;
+      $('sEgg').src = 'assets/img/' + m.egg + '.webp';
+      $('sGrown').src = $('sBig').src = 'assets/img/' + m.img + '.webp'; $('sBig').alt = m.n;
+      if (!met[id]) {
+        met[id] = 1; metN++; b.classList.add('was-met');
+        var p = xy(e, b);
+        earn(20, 2, 'You met <b>' + m.n + '</b>!', m.img, p[0], p[1]);
+        if (metN === 5) badge('met5', 'cosmix');
+      }
+    });
+  });
+
+  /* ---------- reveal on scroll ---------- */
+  var reached = {};
+  if ('IntersectionObserver' in W) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) en.target.classList.add('in'); });
+    }, { threshold: .18 });
+    qa('.reveal').forEach(function (el) { io.observe(el); });
+  } else qa('.reveal').forEach(function (el) { el.classList.add('in'); });
+
+  /* ---------- the River of Three ---------- */
+  var river = $('river'), flow = $('flow'), core = $('flowCore'), glow = $('flowGlow'), realms = qa('.realm'), rail = $('rail'), railA = qa('#rail a'), len = 0;
+  function buildRiver() {
+    var w = river.offsetWidth, h = river.offsetHeight;
+    flow.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    var d = 'M ' + (w / 2) + ' 0', seg = h / 12;
+    for (var i = 1; i <= 12; i++) {
+      var y = seg * i, x = w / 2 + (i % 2 ? 1 : -1) * Math.min(w * .32, 380);
+      d += ' Q ' + x.toFixed(0) + ' ' + (y - seg / 2).toFixed(0) + ' ' + (w / 2) + ' ' + y.toFixed(0);
+    }
+    core.setAttribute('d', d); glow.setAttribute('d', d);
+    len = core.getTotalLength();
+    [core, glow].forEach(function (p) { p.style.strokeDasharray = len; });
+    drawRiver();
+  }
+  function drawRiver() {
+    if (!len) return;
+    var r = river.getBoundingClientRect(), vh = W.innerHeight;
+    var p = Math.max(0, Math.min(1, (vh * .6 - r.top) / r.height));
+    var off = reduce ? 0 : len * (1 - p);
+    core.style.strokeDashoffset = off; glow.style.strokeDashoffset = off;
+    var mid = vh * .5, on = -1;
+    realms.forEach(function (s, k) { var b = s.getBoundingClientRect(); if (b.top <= mid && b.bottom > mid) on = k; });
+    rail.classList.toggle('show', on > -1);
+    railA.forEach(function (a, k) { if (k === on) a.setAttribute('aria-current', 'step'); else a.removeAttribute('aria-current'); });
+    if (on > -1 && !reached[on]) {
+      reached[on] = 1;
+      var nm = realms[on].getAttribute('data-name');
+      earn(15, 1, 'Realm reached: <b>' + nm + '</b>', ['cosmix', 'wispo', 'bloop', 'sproutz', 'blazo', 'th-icon'][on]);
+      if (on === realms.length - 1) badge('river', 'light-cell');
+    }
+  }
+  var tick = false;
+  function onScroll() {
+    tick = false;
+    nav.classList.toggle('solid', W.scrollY > 40);
+    drawRiver();
+  }
+  W.addEventListener('scroll', function () { if (!tick) { tick = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  var rt; W.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(buildRiver, 150); });
+  W.addEventListener('load', buildRiver);
+  buildRiver(); onScroll();
+
+  /* ---------- two worlds slider ---------- */
+  var cmp = $('compare'), cbtn = $('cmpBtn'), dragging = false;
+  function setCut(p) { p = Math.max(0, Math.min(100, p)); cmp.style.setProperty('--cut', p + '%'); cbtn.setAttribute('aria-valuenow', Math.round(p)); }
+  function fromX(x) { var r = cmp.getBoundingClientRect(); setCut((x - r.left) / r.width * 100); }
+  cmp.addEventListener('pointerdown', function (e) { dragging = true; fromX(e.clientX); try { cmp.setPointerCapture(e.pointerId); } catch (er) {} });
+  cmp.addEventListener('pointermove', function (e) { if (dragging) fromX(e.clientX); });
+  ['pointerup', 'pointercancel'].forEach(function (n) { cmp.addEventListener(n, function () { dragging = false; }); });
+  cbtn.addEventListener('keydown', function (e) {
+    var v = +cbtn.getAttribute('aria-valuenow');
+    if (e.key === 'ArrowLeft') { setCut(v - 5); e.preventDefault(); } else if (e.key === 'ArrowRight') { setCut(v + 5); e.preventDefault(); }
+  });
+
+  /* ---------- playable: Clear the Grime Zone ---------- */
+  var arena = $('arena'), over = $('over'), haze = $('haze'), zone = $('zone'), gun = $('gun'), warn = $('warn');
+  var ITEMS = [
+    ['rf-bottle', 14, 62, 0], ['rf-wrapper', 30, 78, 20], ['rf-bottle', 58, 72, -60], ['rf-wrapper', 74, 58, -30],
+    ['rf-bottle', 40, 60, 80], ['rf-wrapper', 20, 46, 50]
+  ];
+  var g = null;
+  function setTask(t) { $('aTask').textContent = t; }
+  function clearArena() { qa('.item,.trashure,.compo,.hp,.splash', arena).forEach(function (n) { n.remove(); }); }
+  function endGame(won) {
+    clearInterval(g.t); g.over = true; gun.hidden = true;
+    var head = won ? 'Zone cleared!' : 'Time\'s up!';
+    var msg = won ? 'You cleaned the park and freed a Compo. In the real game, that park is down your street.'
+      : 'So close. In the real game there is no timer: clean at your own pace, with a grown-up.';
+    over.innerHTML = '<div><h3>' + head + '</h3><p>' + msg + ' You earned <b>' + g.xp + ' XP</b> in this round.</p><button class="btn" id="startBtn">Play again</button></div>';
+    over.hidden = false; $('startBtn').addEventListener('click', start);
+  }
+  function hunt() {
+    setTask('Hunt the Trashure!');
+    gun.hidden = false;
+    var hp = D.createElement('div'); hp.className = 'hp'; hp.innerHTML = '<b></b>'; arena.appendChild(hp);
+    var t = D.createElement('button'); t.className = 'trashure'; t.setAttribute('aria-label', 'Spray the Trashure with your Water Gun');
+    t.innerHTML = '<img src="assets/img/grime-space.webp" alt="">'; arena.appendChild(t);
+    var life = 5;
+    t.addEventListener('click', function (e) {
+      if (g.over) return;
+      life--; sfx('water');
+      gun.classList.add('fire'); setTimeout(function () { gun.classList.remove('fire'); }, 120);
+      var ar = arena.getBoundingClientRect(), p = xy(e, t), s = D.createElement('i');
+      s.className = 'splash'; s.style.left = (p[0] - ar.left) + 'px'; s.style.top = (p[1] - ar.top) + 'px'; arena.appendChild(s);
+      setTimeout(function () { s.remove(); }, 460);
+      hp.firstChild.style.width = (life / 5 * 100) + '%';
+      if (life <= 0) {
+        t.remove(); hp.remove();
+        var c = D.createElement('img'); c.className = 'compo'; c.src = 'assets/img/compo-fluff.webp'; c.alt = 'A freed Compo'; arena.appendChild(c);
+        g.xp += 30; $('aXp').textContent = 'XP ' + g.xp; setTask('Compo freed!');
+        earn(30, 3, 'Trashure caught! A Compo is free.', 'compo-fluff', p[0], p[1]);
+        badge('hunt', 'compo-fluff');
+        setTimeout(function () { endGame(true); }, 1600);
+      }
+    });
+  }
+  function start() {
+    clearArena(); over.hidden = true; warn.hidden = true; gun.hidden = true;
+    haze.style.opacity = 1; zone.style.opacity = 1; zone.style.transform = 'translate(-50%,-50%) scale(1)';
+    g = { left: ITEMS.length, xp: 0, time: 45, over: false };
+    setTask('Clean up: 0 / ' + ITEMS.length); $('aXp').textContent = 'XP 0'; $('aTime').textContent = '⏱ 45';
+    ITEMS.forEach(function (it, k) {
+      var b = D.createElement('button'); b.className = 'item'; b.setAttribute('aria-label', 'Pick up litter ' + (k + 1));
+      b.style.left = it[1] + '%'; b.style.top = it[2] + '%';
+      b.innerHTML = '<img src="assets/img/' + it[0] + '.webp" alt="" style="transform:rotate(' + it[3] + 'deg)">';
+      b.addEventListener('click', function (e) {
+        if (g.over || b.classList.contains('gone')) return;
+        b.classList.add('gone'); sfx('earth');
+        var bin = $('bin'); bin.classList.remove('gulp'); void bin.offsetWidth; bin.classList.add('gulp');
+        g.left--; g.xp += 10; $('aXp').textContent = 'XP ' + g.xp;
+        var done = ITEMS.length - g.left; setTask('Clean up: ' + done + ' / ' + ITEMS.length);
+        haze.style.opacity = (g.left / ITEMS.length * .9 + .1).toFixed(2);
+        zone.style.transform = 'translate(-50%,-50%) scale(' + (0.4 + .6 * g.left / ITEMS.length) + ')';
+        var p = xy(e, b); earn(10, 1, null, null, p[0], p[1]);
+        if (!g.left) { haze.style.opacity = 0; zone.style.opacity = 0; toast('The park is clean! Now <b>hunt the Trashure</b>.', 'watergun'); setTimeout(hunt, 600); }
+      });
+      arena.appendChild(b);
+    });
+    // a hazard a real hunter never touches
+    var hz = D.createElement('button'); hz.className = 'item'; hz.setAttribute('aria-label', 'A leaking barrel');
+    hz.style.left = '48%'; hz.style.top = '40%'; hz.style.width = '7%';
+    hz.innerHTML = '<img src="assets/img/rf-barrel.webp" alt="">';
+    hz.addEventListener('click', function () {
+      if (g.over) return;
+      warn.textContent = '⚠️ Stop! Never touch barrels, glass, needles or anything sharp. Leave it and tell a grown-up.';
+      warn.hidden = false; setTimeout(function () { warn.hidden = true; }, 3200);
+    });
+    arena.appendChild(hz);
+    g.t = setInterval(function () { g.time--; $('aTime').textContent = '⏱ ' + g.time; if (g.time <= 0) endGame(false); }, 1000);
+  }
+  $('startBtn').addEventListener('click', start);
+
+  /* ---------- boss: splash King Grime ---------- */
+  var kg = $('kg'), kgHp = 100, field = $('bossfield');
+  kg.addEventListener('click', function (e) {
+    if (kgHp <= 0) return;
+    kgHp -= 10; sfx('water');
+    kg.classList.add('hit'); setTimeout(function () { kg.classList.remove('hit'); }, 110);
+    $('kgBar').style.width = kgHp + '%'; $('kgPct').textContent = kgHp + '%';
+    var p = xy(e, kg); earn(5, 0, null, null, p[0], p[1]);
+    $('kgMsg').textContent = kgHp > 50 ? 'Keep splashing! Every cleanup counts.' : kgHp > 0 ? 'He\'s shrinking! Something is glowing inside…' : '';
+    if (kgHp <= 0) {
+      kg.classList.add('beaten'); field.classList.add('won'); $('bossOrbo').classList.add('free'); sfx('space');
+      $('kgMsg').textContent = 'Orbo is free! In the real game, it takes a whole community of cleanups to do this.';
+      earn(50, 5, 'King Grime is gone. <b>Orbo shines again!</b>', 'orbo');
+      badge('boss', 'orbo');
+    }
+  });
+
+  /* ---------- copy email ---------- */
+  var copyBtn = $('copyBtn'), copyMsg = $('copyMsg');
+  copyBtn.addEventListener('click', function () {
+    var email = copyBtn.getAttribute('data-email');
+    function done(ok) { copyMsg.textContent = ok ? 'Copied!' : 'Select the address to copy it.'; }
+    try {
+      if (navigator.clipboard && W.isSecureContext) navigator.clipboard.writeText(email).then(function () { done(true); }, function () { done(false); });
+      else done(false);
+    } catch (err) { done(false); }
+  });
+
+  render();
+  setTimeout(function () { hud.classList.add('show'); }, 2600);
 })();
 </script>
 </body>
