@@ -1,8 +1,8 @@
-/* J8NIX 9.0.0 service worker: offline shell + web push. Never caches API data. */
-var CACHE = 'j8nix-v9.0.0';
-var SHELL = ['./', 'index.html', 'app.css?v=9.0.0', 'app.js?v=9.0.0', 'shell.js?v=9.0.0', 'j8-data.js?v=9.0.0', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
+/* J8NIX 10.0.0 service worker: offline shell + web push. Never caches API data. */
+var CACHE = 'j8nix-v10.0.0';
+var SHELL = ['./', 'index.html', 'app.css?v=10.0.0', 'v11.css?v=10.0.0', 'app.js?v=10.0.0', 'v11.js?v=10.0.0', 'shell.js?v=10.0.0', 'j8-data.js?v=10.0.0', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/j8nix.png', 'brand/studio.png',
-  'icons/wm-midnight.svg', 'icons/wm-sky.svg', 'icons/icon.svg', 'icons/icon-192.png', 'icons/badge-96.png', 'icons/apple-touch-icon.png'];
+  'icons/logo-lockup.png', 'icons/mark-8.svg', 'icons/icon.svg', 'icons/icon-192.png', 'icons/badge-96.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
