@@ -2,7 +2,7 @@
 
 **What this is.** The studio look as it ships today on 3shamrocks.com, read from the page code. Every page, report, doc, deck or J8NIX surface built for Dave or a client in the studio brand uses these values (BRAIN.md §−6.L, 15 Nov 08:32: "the live site wins until the spec is updated").
 
-**Source (read 16 Nov 2026, night shift):** `sprint/index.html` lines 12–154 (`:root` at line 25). Cross-checked against `index.html` `:root` (homepage): same colours, fonts, radius and easing; the homepage adds `--violet-3` and `--panel` (listed below).
+**Source (read 16 Nov 2026, night shift):** `sprint/index.html` lines 12–155 (`:root` at line 25). Cross-checked against `index.html` `:root` (homepage): same colours, fonts, radius and easing; the homepage adds `--violet-3` and `--panel` (listed below).
 
 **Supersedes for studio pages:** 3s-status `design-systems/3shamrocks-studio/DESIGN-SYSTEM.md` v4.0 §2 colours, fonts (Syne / Inter / Space Grotesk) and radius (14px). That file is read-only history; its architecture (one brand block per product, shared components) still holds. Product brands (SH✡MER, LickPick, J8NIX…) keep their own brand files: this sheet is the **studio** brand only.
 
@@ -15,8 +15,8 @@
 | `--surface-2` | `#151024` | raised surface (sprint page) | — |
 | `--panel` | `rgba(255,255,255,.045)` | homepage panels | — |
 | `--ink` | `#f6f4ff` | headings, body on dark | 19.30:1 on `#000` · 17.99:1 on surface |
-| `--ink-2` | `rgba(236,232,255,.76)` | lede, secondary text | 9.91:1 on `#000` · 9.56:1 on surface |
-| `--ink-3` | `rgba(236,232,255,.56)` | eyebrows, muted labels | 5.57:1 on `#000` · 5.55:1 on surface |
+| `--ink-2` | `rgba(236,232,255,.76)` | lede, secondary text | 9.94:1 on `#000` · 9.56:1 on surface |
+| `--ink-3` | `rgba(236,232,255,.56)` | eyebrows, muted labels | 5.57:1 on `#000` · 5.56:1 on surface |
 | `--violet` | `#8239ea` | brand accent, hero glow `rgba(130,57,234,.30)` | 3.72:1 on `#000` → large text / UI only; white on it 5.64:1 |
 | `--violet-2` | `#b07cff` | accent text on dark (h1 line 2), focus ring, button glow | 7.17:1 on `#000` |
 | `--violet-3` | `#d9c4ff` | homepage only, light accent | — |
