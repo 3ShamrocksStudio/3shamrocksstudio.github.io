@@ -1,6 +1,6 @@
 /* J8NIX 11.0.0 service worker: offline shell + web push. Never caches API data. */
-var CACHE = 'j8nix-v11.0.0-3';
-var SHELL = ['./', 'index.html', 'app.css?v=11.0.0-3', 'v11.css?v=11.0.0-3', 'j11.css?v=11.0.0-3', 'app.js?v=11.0.0-3', 'j11.js?v=11.0.0-3', 'shell.js?v=11.0.0-3', 'j8-data.js?v=11.0.0-3', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
+var CACHE = 'j8nix-v11.0.0-4';
+var SHELL = ['./', 'index.html', 'app.css?v=11.0.0-4', 'v11.css?v=11.0.0-4', 'j11.css?v=11.0.0-4', 'app.js?v=11.0.0-4', 'j11.js?v=11.0.0-4', 'shell.js?v=11.0.0-4', 'j8-data.js?v=11.0.0-4', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/j8nix.png', 'brand/studio.png',
   'icons/logo-lockup.png', 'icons/mark-8.svg', 'icons/icon.svg', 'icons/icon-192.png', 'icons/badge-96.png', 'icons/apple-touch-icon.png'];
 
