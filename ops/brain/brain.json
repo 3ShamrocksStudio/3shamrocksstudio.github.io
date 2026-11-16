@@ -1,7 +1,7 @@
 {
   "version": 3,
   "updated": "2026-11-15T17:40+02:00",
-  "last_run": "2026-11-15T16:30+02:00",
+  "last_run": "2026-11-16T02:08+02:00",
   "goal": {
     "target_usd": 1000000,
     "deadline": "2027-04-21",
@@ -5450,6 +5450,34 @@
         }
       ],
       "verifier": "independent sonnet agent re-ran both test suites, each fixture, and old-vs-new on 12 3S fixtures: PASS"
+    },
+    {
+      "at": "2026-11-16T02:08+02:00",
+      "seat": "CDO",
+      "models": {
+        "opus": "orchestrator",
+        "sonnet": "verifier"
+      },
+      "steps": [
+        {
+          "text": "3SDS live token sheet + genome violet-3",
+          "seat": "CDO",
+          "model": "opus",
+          "evidence": "https://github.com/3ShamrocksStudio/3shamrocksstudio.github.io/commit/26b0366"
+        }
+      ],
+      "loose_ends_closed": [
+        "le-1115-3sds-doc"
+      ],
+      "loose_ends_advanced": [],
+      "skipped": [
+        {
+          "what": "2 more revision items",
+          "why": "all remaining OPEN items blocked on Dave or Mac/Firebase access"
+        }
+      ],
+      "verifier": "sonnet PASS (after 1 fix)",
+      "dave_input_since_last": "none new"
     }
   ],
   "morning_note": {
@@ -6522,12 +6550,12 @@
       "product": "studio",
       "pod": "Studio and brand",
       "title": "3SDS v4.0 spec (3s-status) disagrees with the live studio site (fonts, radius, palette)",
-      "status": "open",
-      "next_action": "CDO: write a 3SDS v4.1 token sheet from sprint/index.html into this repo (ops/brain/brandos/3SDS-LIVE.md) and point every page builder at it; 3s-status is read-only",
+      "status": "done",
+      "next_action": "Watch: any studio page or doc build cites ops/brain/brandos/3SDS-LIVE.md; update the sheet in the same commit when the live site changes",
       "owner_seat": "CDO",
       "blocker": "",
-      "evidence": "sprint/index.html :root vs 3s-status design-systems/3shamrocks-studio/DESIGN-SYSTEM.md §2",
-      "updated": "2026-11-15T08:58+02:00"
+      "evidence": "site 4752ab9 + 26b0366, ops/brain/brandos/3SDS-LIVE.md (internal), sonnet verifier PASS",
+      "updated": "2026-11-16T02:30+02:00"
     }
   ],
   "pods": [
@@ -6703,6 +6731,16 @@
       "blocked": "subjUid live rules (Firebase credential); Brand OS P4 template already being drafted by a concurrent run (T6 pending), left to it",
       "note": "Duplicate CV reminder: this run scheduled one before seeing the 03:00 shift's; deleting/disabling it was refused by the permission check, so Dave may get the 10:00 reminder twice. last_run left unchanged so daytime shifts are not run-locked.",
       "made_up_by": "Night shift 14→15 Nov 23:00 (scheduled run)"
+    },
+    {
+      "date": "2026-11-16",
+      "run": "3s night shift (scheduled, Mon 02:08 Israel)",
+      "start": "02:08 Israel (00:08Z)",
+      "end": "02:16 Israel",
+      "done": "Messages: 0 new; t-cv-access reminder note closed (done). Brand OS / CDO: 3SDS live token sheet ops/brain/brandos/3SDS-LIVE.md from sprint/index.html (4752ab9, fix 26b0366), genome-3s gains violet-3; scorer 10/10, 0 FP; sonnet verifier PASS. Ledger: 1 DONE, AI brand film re-classed BLOCKED (Dave) per BRAIN §-8.8 (3s-status 10ae662)",
+      "blocked": "Only 1 revision closed (target 3): every other OPEN ledger line waits on Dave or on Mac/Firebase access (subjUid credential, LickPick folder, TH APK, Android testers, i18n-circles needs app update GO). Token budget §-8 applied: no filler work.",
+      "next": "Brand OS scorer: homepage scores 0 because portfolio tiles use product brand colours/fonts; add a product-brand scope (data-brand blocks) so the studio genome judges only studio chrome",
+      "made_up_by": "Night shift 16 Nov 02:08 (scheduled run)"
     }
   ],
   "funnel": {
