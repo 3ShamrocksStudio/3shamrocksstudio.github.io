@@ -1,7 +1,7 @@
 {
   "version": 3,
-  "updated": "2026-11-16T12:55+02:00",
-  "last_run": "2026-11-16T12:55+02:00",
+  "updated": "2026-11-16T16:25+02:00",
+  "last_run": "2026-11-16T16:25+02:00",
   "goal": {
     "target_usd": 1000000,
     "deadline": "2027-04-21",
@@ -3102,6 +3102,11 @@
       "decision": "Kill-test #3 HOLD (no new founder notes or contact sourcing this desk): send-first rule active (40 outreach/LinkedIn drafts pending > 30), and 17 edited LinkedIn notes + 74 items wait on Dave's LinkedIn export. Sourcing 10 more contacts now adds to a queue that is not moving. Cheapest disproof: the export arrives and the queue drains below 30, then sourcing resumes.",
       "where": "j8_approvals counts 16 Nov 12:49; j8_rank top item t-li-history-export (unlocks 74)",
       "check": "2026-11-18"
+    },
+    {
+      "at": "2026-11-16T16:25+02:00",
+      "by": "Claude (brain shift)",
+      "decision": "No new drafts (send-first rule: >30 pending). Fixed the lead order so the studio email sign-in shows as the blocker of the 14 held sends; no extra push because the sender already asked today."
     }
   ],
   "learnings": [
@@ -5598,6 +5603,27 @@
       ],
       "verifier": "none (state-only run, no shipped change)",
       "dave_input_since_last": "none"
+    },
+    {
+      "at": "2026-11-16T16:25+02:00",
+      "seat": "CEO-office",
+      "models": {
+        "opus": "orchestrator",
+        "sonnet": "verifier"
+      },
+      "steps": [
+        {
+          "text": "Brain shift 16:13: 0 new J8NIX messages; 0 hard lint flags on approved/queued drafts; booked $0 (money summary)",
+          "seat": "CEO-office",
+          "evidence": "j8_messages status new = 0; j8_draft_lint 16 Nov 16:20"
+        },
+        {
+          "text": "14 approved emails/applications that the Mac sender holds for 'studio email signed out' now carry blocker t-studio-gmail-signin-1116, so J8NIX shows that 2-min sign-in as Dave's #2 ask (unlocks 14) instead of showing the emails as unblocked",
+          "seat": "COO",
+          "evidence": "j8_rank pos 2 unlocks 14; independent verifier PASS 16 Nov"
+        }
+      ],
+      "note": "Gate: no new messages; cloud runs never send; all approved sends wait on Dave's Mac sign-in (already asked 3x today by the sender, so no new push)."
     }
   ],
   "morning_note": {
@@ -6712,6 +6738,18 @@
       "blocker": null,
       "evidence": "email-1112-f09/f13/f16/f17 approved 12 Nov, result 'Waiting: recipient's weekend'; cron 41 9,15 Asia/Jerusalem",
       "updated": "2026-11-16T12:55+02:00"
+    },
+    {
+      "id": "le-1116-sender-cv",
+      "title": "Mac sender reports CV not reachable (Downloads not attached to its run) although t-cv-access is done and BRAIN lesson says the sender already has Downloads",
+      "product": "p-jobs",
+      "owner_seat": "CTO",
+      "pod": "COO",
+      "status": "open",
+      "blocker": "team-side: sender task folder config on the Mac (not a Dave ask)",
+      "next_action": "Next Mac sender run: check the attached folders of the sender task and point it at the CV path; do not ask Dave again",
+      "evidence": "j8_approvals result 16 Nov 15:45 on 8 applications",
+      "updated": "2026-11-16T16:25+02:00"
     }
   ],
   "pods": [
