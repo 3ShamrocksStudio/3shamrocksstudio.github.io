@@ -51,5 +51,25 @@ for s in URGENCY:
     urg_ok += good
     print("urgency unit  %-34r %s" % (s, "CAUGHT" if good else "MISSED"))
 
-print("\nPlanted errors caught: %d/10 | false positives on clean: %d/2 | urgency unit: %d/%d" % (caught, fp, urg_ok, len(URGENCY)))
-sys.exit(0 if caught == 10 and fp == 0 and urg_ok == len(URGENCY) else 1)
+# v0.3 product-brand scope: a tile in its own product brand is not judged by the studio genome,
+# but studio chrome next to it still is, and data-brand="studio" is not scoped out.
+print()
+scope_ok = 0
+r = scorer.score(os.path.join(FX, "scope-01-portfolio-tile.html"), G)
+good = not r["violations"] and r["verdict"] == "PASS" and r.get("scoped_out", {}).get("images") == 1 \
+    and r["scoped_out"].get("css_rules") == 2 and r["scoped_out"].get("font_links") == 1
+scope_ok += good
+print("scope unit    %-34s %s" % ("tile scoped out, studio judged", "OK" if good else "WRONG %s %s" % (r["violations"], r.get("scoped_out"))))
+r = scorer.score(os.path.join(FX, "scope-02-leak-outside.html"), G)
+hit = [v for v in r["violations"] if v["check"] == "colour" and v["found"] == "#ff7a00"]
+good = len(r["violations"]) == 1 and len(hit) == 1 and r["verdict"] == "SEND BACK"
+scope_ok += good
+print("scope unit    %-34s %s" % ("leak outside the tile caught", "OK" if good else "WRONG %s" % r["violations"]))
+r = scorer.score(os.path.join(FX, "scope-01-portfolio-tile.html"), G, ["#nothing-matches"])
+r2 = scorer.score(os.path.join(FX, "planted-01-colour-orange.html"), G, ["div"])
+good = r2.get("scoped_out") is not None and r2["verdict"] == "PASS" and not r["violations"]
+scope_ok += good
+print("scope unit    %-34s %s" % ("--product-region selector", "OK" if good else "WRONG %s" % r2))
+
+print("\nPlanted errors caught: %d/10 | false positives on clean: %d/2 | urgency unit: %d/%d | scope unit: %d/3" % (caught, fp, urg_ok, len(URGENCY), scope_ok))
+sys.exit(0 if caught == 10 and fp == 0 and urg_ok == len(URGENCY) and scope_ok == 3 else 1)

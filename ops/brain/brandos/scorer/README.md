@@ -1,10 +1,10 @@
-# 3S Brand QA scorer v0.2
+# 3S Brand QA scorer v0.3
 
 Program #1 Brand OS, module 3 (Precision QA gate). Scores one asset (.html, .svg, .txt, .md) against a brand genome and returns a 0-100 Brand Consistency Score, pass/fail per check, and every violation with a reason and a fix hint. Python 3, stdlib only. Demonstrated on 3Shamrocks Studio's own brand.
 
 ## Run
 ```
-python3 scorer.py path/to/asset.html [--genome genome-3s.json] [--out report.json]
+python3 scorer.py path/to/asset.html [--genome genome-3s.json] [--out report.json] [--product-region '#work' ...]
 python3 tests/run_tests.py
 ```
 Exit code 0 = at or above threshold (goes on to Dave's taste gate), 1 = goes back automatically.
@@ -26,6 +26,16 @@ Score = 100 minus penalties. Each violation costs a fixed amount, capped per che
 | claims | Percentages, multipliers, #1/No. 1, TIME, doubled/tripled/halved, "award-winning", customer counts, with no `data-source` attribute on the element or an ancestor and no `[source: ...]` tag in the same block/paragraph | 16 | 30 |
 | claims (ledger, v0.2) | Only when the genome has `claims.ledger` (a claims-ledger.md next to the genome). A block citing `claims-ledger.md#Cn` (data-source or `[source: ...]`) is flagged `unknown-claim-id` if Cn is not in the ledger, and `claim-mismatch` for any number not in that row's approved wording ("1,200" and "1200" match). `banned-claim` for cures/treats/prevents/diagnoses, doctor-approved, FDA-approved, clinically proven in any block, unless negated ("does not diagnose or treat"). No ledger in the genome: none of this runs, results are the same as v0.1 | 16 | 30 (shared with claims) |
 | logo | An `img`/`image` that looks like a logo with no alt text, or a file outside the approved logo list | 18 | 30 |
+
+## Product-brand scope (v0.3, night 16 Nov)
+A studio page shows products in their own brands (portfolio tiles, product screens). Those parts are not studio chrome, so the studio genome must not judge their colours, fonts or logos.
+- Markup inside an element with `data-brand="<id>"` is scoped out when `<id>` is not in the genome's `scope.own_brand_ids` (`studio`, `3s`, `3shamrocks`). A page with no such attribute can name regions with `--product-region` (simple selectors: `tag`, `#id`, `.class`; repeatable) or `scope.product_regions` in the genome.
+- Scoped out: inline styles, SVG colour attributes, font attributes, images (logo check) and font links inside the region; `<style>` rules whose every selector names a tag, class or id seen only inside regions; and a loaded font family used only by those rules. Contrast pairs from those rules go with them.
+- Still checked everywhere: voice and claims (the studio publishes those words).
+- Every scoped-out item is counted in the report's `scoped_out`, so nothing disappears silently.
+- No region on the page: results are byte-identical to v0.2 (checked on index.html, sprint, audit and all fixtures). Pages that already mark the whole page `data-brand="shomer"` (shomer-pilot.html) are now scoped out as SH✡MER's own brand: score them with a SH✡MER genome instead.
+- Homepage with `--product-region '#work' --product-region '#identity'`: 225 CSS rules, 104 inline styles, 92 SVG colour attributes, 52 images and 1 font link scoped out; what remains is studio chrome (shared phone frames, hero, buttons, client logos, stats) and is listed in `reports/home-scoped.json`. It still scores 0: those findings are real work for the studio site, not product noise.
+- Tests: `tests/run_tests.py` adds 3 scope units (tile scoped out with studio chrome still judged, an off-palette colour next to a tile still caught, `--product-region`).
 
 ## Limits (v0.2)
 - Static analysis of source only. No rendered pixels: colours set by a stylesheet in another file, JS, images, or `var()` chains are not resolved.

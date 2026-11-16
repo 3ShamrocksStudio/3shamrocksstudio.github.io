@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
-"""3S Brand OS - Brand QA scorer v0.2 (static analysis, stdlib only).
+"""3S Brand OS - Brand QA scorer v0.3 (static analysis, stdlib only).
 
 Usage: python3 scorer.py ASSET [--genome genome-3s.json] [--out report.json]
+       [--product-region SEL ...]
+v0.3: product-brand scope. Markup inside an element with data-brand="<other
+brand>" (or matching a --product-region simple selector: tag, #id, .class)
+is a product's own brand: its colours, fonts, logos and contrast are not
+judged against this genome (voice and claims still are). CSS rules whose
+selectors only target such markup are scoped out too. Everything scoped out
+is counted in the report under "scoped_out".
 ASSET is .html/.htm/.svg/.txt/.md. Prints a JSON report. Exit 0 = at/above
 threshold with no violations that force a send-back, 1 = goes back.
 """
@@ -100,8 +107,13 @@ def contrast(a, b):
 
 # --------------------------------------------------------------------- parsing
 class Doc(HTMLParser):
-    def __init__(self):
+    def __init__(self, regions=(), own_ids=()):
         super().__init__(convert_charrefs=True)
+        self.regions = [parse_simple_sel(r) for r in regions]
+        self.own_ids = {o.lower() for o in own_ids}
+        self.scope = []          # parallel to stack: True = inside a product-brand region
+        self.cls_in, self.cls_out = set(), set()   # class/id tokens seen inside / outside regions
+        self.scoped_out = {"inline_styles": 0, "svg_colour_attrs": 0, "font_attrs": 0, "images": 0, "font_links": 0}
         self.stack = []          # (tag, attrs, blockid)
         self.styles = []         # css text from <style>
         self.style_attrs = []    # (tag, style string)
@@ -115,19 +127,33 @@ class Doc(HTMLParser):
         self._bid = 0
         self._in = []            # raw-text containers
 
+    def _is_region(self, tag, a):
+        b = a.get("data-brand", "").strip().lower()
+        if b and b not in self.own_ids:
+            return True
+        return any(sel_match(tag, a, r) for r in self.regions)
+
     def handle_starttag(self, tag, attrs):
         a = {k: (v if v is not None else "") for k, v in attrs}
+        sc = (self.scope[-1] if self.scope else False) or self._is_region(tag, a)
+        toks = {tag} | {"." + c for c in a.get("class", "").split()} | ({"#" + a["id"]} if a.get("id") else set())
+        (self.cls_in if sc else self.cls_out).update(toks)
         if tag in ("img", "image"):
-            self.imgs.append((tag, a))
+            if sc: self.scoped_out["images"] += 1
+            else: self.imgs.append((tag, a))
         if tag == "link" and a.get("href"):
-            self.links.append(a["href"])
+            if sc and "family=" in a["href"]: self.scoped_out["font_links"] += 1
+            elif not sc: self.links.append(a["href"])
         if "style" in a:
-            self.style_attrs.append((tag, a["style"]))
+            if sc: self.scoped_out["inline_styles"] += 1
+            else: self.style_attrs.append((tag, a["style"]))
         for k in ("fill", "stroke", "stop-color", "color", "flood-color"):
             if k in a:
-                self.attr_colours.append((k, a[k]))
+                if sc: self.scoped_out["svg_colour_attrs"] += 1
+                else: self.attr_colours.append((k, a[k]))
         if "font-family" in a:
-            self.font_attrs.append(a["font-family"])
+            if sc: self.scoped_out["font_attrs"] += 1
+            else: self.font_attrs.append(a["font-family"])
         if tag in VOID:
             return
         bid = self.stack[-1][2] if self.stack else 0
@@ -135,6 +161,7 @@ class Doc(HTMLParser):
             self._bid += 1
             bid = self._bid
         self.stack.append((tag, a, bid))
+        self.scope.append(sc)
         if tag in ("style", "script"):
             self._in.append(tag)
 
@@ -142,6 +169,7 @@ class Doc(HTMLParser):
         self.handle_starttag(tag, attrs)
         if tag not in VOID and self.stack and self.stack[-1][0] == tag:
             self.stack.pop()
+            self.scope.pop()
 
     def handle_endtag(self, tag):
         if tag in VOID:
@@ -149,6 +177,7 @@ class Doc(HTMLParser):
         for i in range(len(self.stack) - 1, -1, -1):
             if self.stack[i][0] == tag:
                 del self.stack[i:]
+                del self.scope[i:]
                 break
         if self._in and self._in[-1] == tag:
             self._in.pop()
@@ -170,6 +199,43 @@ class Doc(HTMLParser):
                 if a["data-source"] not in self.cites[bid]:
                     self.cites[bid].append(a["data-source"])
 
+def parse_simple_sel(sel):
+    """'section#work.big' -> (tag|None, id|None, {classes})."""
+    m = re.fullmatch(r"\s*([a-zA-Z][\w-]*)?((?:[#.][\w-]+)*)\s*", sel)
+    if not m or not (m.group(1) or m.group(2)):
+        raise ValueError("product region must be a simple selector (tag, #id, .class): %r" % sel)
+    parts = re.findall(r"([#.])([\w-]+)", m.group(2))
+    ids = [v for k, v in parts if k == "#"]
+    return (m.group(1).lower() if m.group(1) else None, ids[0] if ids else None, {v for k, v in parts if k == "."})
+
+def sel_match(tag, a, r):
+    t, i, cls = r
+    return (t is None or t == tag) and (i is None or a.get("id") == i) and cls <= set(a.get("class", "").split())
+
+def scope_css(css, cls_in, cls_out):
+    """Blank the bodies of rules whose every selector targets only product-region markup.
+    A selector part is product-only when it names at least one tag, class or id seen only
+    inside product regions (a tag seen anywhere outside, like h2, never counts). Returns (css with those bodies blanked, scoped css text, rule count)."""
+    only_in = cls_in - cls_out
+    scoped, n = [], 0
+    def sub(m):
+        nonlocal n
+        sel, body = m.group(1), m.group(2)
+        parts = [p for p in sel.split(",") if p.strip()]
+        if not parts or "@" in sel:
+            return m.group(0)
+        def product_only(p):
+            q = re.sub(r":root\b", " html ", p)
+            q = re.sub(r"\[[^\]]*\]|::?[\w-]+(\([^)]*\))?", " ", q)
+            toks = set(re.findall(r"[#.]?(?<![\w-])[a-zA-Z][\w-]*", q))
+            return bool(toks & only_in)
+        if all(product_only(p) for p in parts):
+            n += 1; scoped.append(body)
+            return sel + "{}"
+        return m.group(0)
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    return re.sub(r"([^{}]+)\{([^{}]*)\}", sub, css), "\n".join(scoped), n
+
 # ---------------------------------------------------------------------- checks
 def css_decls(css):
     """Yield (prop, value) pairs from css text (ignores selectors)."""
@@ -188,13 +254,34 @@ def snippet(text, m, w=40):
     s = max(0, m.start() - w); e = min(len(text), m.end() + w)
     return re.sub(r"\s+", " ", text[s:e]).strip()
 
-def run(path, genome):
+def run(path, genome, regions=(), scoped_out=None):
     ext = os.path.splitext(path)[1].lower()
     raw = open(path, encoding="utf-8", errors="replace").read()
     is_markup = ext in (".html", ".htm", ".svg")
-    doc = Doc()
+    sg = genome.get("scope", {})
+    doc = Doc(list(sg.get("product_regions", [])) + list(regions), sg.get("own_brand_ids", []))
     if is_markup:
         doc.feed(raw)
+        if doc.cls_in:
+            nrules, scoped_txt, kept = 0, [], []
+            for css in doc.styles:
+                k, st, n = scope_css(css, doc.cls_in, doc.cls_out)
+                kept.append(k); scoped_txt.append(st); nrules += n
+            doc.styles = kept
+            doc.scoped_out["css_rules"] = nrules
+            # a loaded font family used only by scoped-out rules belongs to the product too
+            unscoped_all = " ".join(kept + [s for _, s in doc.style_attrs])
+            scoped_all = " ".join(scoped_txt)
+            links = []
+            for href in doc.links:
+                fams = [f.replace("+", " ") for f in re.findall(r"family=([^&:]+)", href)]
+                if fams and all(re.search(re.escape(f), scoped_all, re.I) and not re.search(re.escape(f), unscoped_all, re.I) for f in fams):
+                    doc.scoped_out["font_links"] += 1
+                else:
+                    links.append(href)
+            doc.links = links
+        if scoped_out is not None:
+            scoped_out.update({k: v for k, v in doc.scoped_out.items() if v})
         paras = {}
         for bid, t, src in doc.texts:
             paras[bid] = paras.get(bid, "")
@@ -406,12 +493,13 @@ def load_ledger(path):
             out[m.group(1).upper()] = m.group(2)
     return out
 
-def score(asset, genome_path):
+def score(asset, genome_path, regions=()):
     genome = json.load(open(genome_path))
     lf = genome.get("claims", {}).get("ledger")
     if lf:
         genome["_ledger"] = load_ledger(os.path.join(os.path.dirname(os.path.abspath(genome_path)), lf))
-    V = run(asset, genome)
+    so = {}
+    V = run(asset, genome, regions, so)
     sc = genome["scoring"]
     total, checks = 0, {}
     for c in CHECKS:
@@ -423,15 +511,18 @@ def score(asset, genome_path):
     s = max(0, 100 - total)
     th = sc["pass_threshold"]
     return {"asset": asset, "genome": genome["brand"], "score": s, "threshold": th,
-            "verdict": "PASS" if s >= th else "SEND BACK", "checks": checks, "violations": V}
+            "verdict": "PASS" if s >= th else "SEND BACK", "checks": checks, "violations": V,
+            **({"scoped_out": so} if so else {})}
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("asset")
     ap.add_argument("--genome", default=os.path.join(HERE, "genome-3s.json"))
     ap.add_argument("--out")
+    ap.add_argument("--product-region", action="append", default=[],
+                    help="simple selector (tag, #id, .class) of markup in a product's own brand; repeatable")
     a = ap.parse_args()
-    rep = score(a.asset, a.genome)
+    rep = score(a.asset, a.genome, a.product_region)
     out = json.dumps(rep, indent=2, ensure_ascii=False)
     if a.out:
         open(a.out, "w").write(out + "\n")
