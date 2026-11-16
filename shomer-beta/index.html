@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <!--
-  SH✡MER closed-test join page (staging, noindex). 14 Nov 2026.
+  SH✡MER closed-test join page (staging, noindex). 14 Nov 2026. Restyled 16 Nov 2026 per Dave's note
+  ("deeper branding, style and design. looks quite very boring and unbranded!"): full-bleed photo hero,
+  badge + wordmark, gold-numbered step cards with real SH✡MER scene photos, closing key-visual band.
+  Text, links and the GROUP_URL logic are unchanged.
   NEEDS YOUR EYES (Dave): (1) the Hebrew wording; (2) GROUP_URL below stays empty until you create
   the Google Group for testers and paste its link here. While it is empty, step 1 sends people to
   comment "בודק" on Instagram and the team replies with the link by hand.
   Brand tokens: shomer-app/BRAND.md (navy base, gold accents, no red: red is SOS only). Badge: SHOMER_logo_big.png, resized only.
+  Wordmark: shomer-app/Brand/SVG/SHOMER.APP_WHITE.svg, unchanged. Photos: shomer-app SHOMER-hero-alley, hero-following,
+  hero-bullying, scenario-family, SHOMER-KeyVisual (resized/compressed only).
 -->
 <html lang="he" dir="rtl">
 <head>
@@ -18,94 +23,186 @@
 <link rel="icon" type="image/png" href="shomer-badge.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&family=Inter:wght@500;700&display=swap">
+<link rel="preload" as="image" href="hero-alley.jpg">
 <style>
 :root{
-  --n0:#060F1E;--n1:#0A1628;--n2:#101E34;--n3:#162440;--n4:#1C2C4E;
-  --g2:#C09020;--g3:#E0A828;--g4:#F5C840;
-  --p1:#5C6B82;--p3:#B6C2D6;
+  --n0:#060F1E;--n1:#0A1628;--n2:#101E34;--n3:#162440;--n4:#1C2C4E;--n5:#243460;--n6:#2E4070;
+  --g1:#9A6C1A;--g2:#C09020;--g3:#E0A828;--g4:#F5C840;
+  --p1:#5C6B82;--p2:#8392AB;--p3:#B6C2D6;--p4:#E6ECF6;
   --tx0:#F0F4FF;--tx1:#C8D4E8;--tx2:#8898B8;
   --gold:linear-gradient(135deg,#C09020 0%,#E0A828 60%,#F5C840 100%);
   --font:'Heebo','Inter',system-ui,sans-serif;
+  --e3:0 22px 48px -20px rgba(0,0,0,.85),0 2px 0 rgba(255,255,255,.03) inset;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--n1);background-image:radial-gradient(120% 60% at 50% 0%,var(--n3) 0%,var(--n1) 60%,var(--n0) 100%);background-repeat:no-repeat;background-color:var(--n0);color:var(--tx0);font:400 17px/1.6 var(--font);min-height:100vh}
+body{margin:0;background:var(--n1);color:var(--tx0);font:400 17px/1.6 var(--font);min-height:100vh;overflow-x:hidden}
+img{max-width:100%}
 a{color:var(--g3)}
-.wrap{max-width:620px;margin:0 auto;padding:0 16px}
-header{padding:28px 0 8px;text-align:center}
-header img{width:96px;height:96px;display:block;margin:0 auto 10px}
-.kick{display:inline-block;font:700 13px/1 var(--font);letter-spacing:.04em;color:var(--n1);background:var(--gold);padding:8px 12px;border-radius:999px}
-h1{font:800 clamp(30px,8vw,42px)/1.15 var(--font);margin:16px 0 10px}
-.lead{color:var(--tx1);margin:0 auto;max-width:520px}
-.lead b{color:var(--tx0)}
-ol.steps{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:14px;counter-reset:s}
-.step{background:var(--n2);border:1px solid var(--n4);border-radius:16px;padding:18px 18px 20px;position:relative}
-.step .n{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--gold);color:var(--n1);font:800 19px/1 var(--font);margin-bottom:10px}
-.step h2{font:700 20px/1.3 var(--font);margin:0 0 6px}
-.step p{margin:0 0 12px;color:var(--tx1)}
-.step small{display:block;color:var(--tx2);font-size:14px;margin-top:10px}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 18px;border-radius:12px;background:var(--gold);color:var(--n1);font:800 17px/1.2 var(--font);text-decoration:none;text-align:center}
-.btn.ghost{background:var(--n4);color:var(--tx0);border:1px solid var(--p1);font-weight:700}
-.btn:focus-visible{outline:3px solid var(--g4);outline-offset:3px}
 bdi.l{font-family:'Inter',system-ui,sans-serif}
-h3{font:700 22px/1.3 var(--font);margin:36px 0 12px}
-details{background:var(--n2);border:1px solid var(--n4);border-radius:12px;padding:14px 16px;margin-bottom:8px}
-summary{font-weight:700;cursor:pointer}
-details p{margin:8px 0 0;color:var(--tx1)}
-.note{margin:28px 0 0;padding:14px 16px;border-radius:12px;border:1px solid var(--g2);color:var(--tx1);font-size:15px}
-footer{margin:40px 0 32px;text-align:center;color:var(--tx2);font-size:14px;line-height:1.8}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+.wrap.wide{max-width:1100px}
+
+/* ---------- Hero: full-bleed SH✡MER scene, night-blue overlay ---------- */
+.hero{position:relative;overflow:hidden;isolation:isolate;background:var(--n1)}
+.hero-img{position:absolute;inset:0 0 auto;width:100%;height:min(150vw,600px);object-fit:cover;object-position:74% 30%;z-index:-2}
+.hero::before{content:"";position:absolute;inset:0 0 auto;height:min(150vw,600px);z-index:-1;background:
+  linear-gradient(180deg,rgba(6,15,30,.78) 0%,rgba(6,15,30,.15) 14%,rgba(10,22,40,.05) 40%,rgba(10,22,40,.55) 62%,rgba(10,22,40,.92) 80%,var(--n1) 100%)}
+.hero::after{content:"";position:absolute;inset:auto 0 0;height:1px;background:linear-gradient(90deg,transparent,var(--g2),transparent);opacity:.6}
+.hero-in{max-width:720px;margin:0 auto;padding:max(16px,env(safe-area-inset-top)) 16px 40px;text-align:center}
+.brandbar{display:flex;justify-content:center}
+.brandbar img{height:26px;width:auto;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
+.hero-gap{height:min(84vw,330px)}
+.badge{width:112px;height:112px;display:block;margin:0 auto 14px;filter:drop-shadow(0 0 22px rgba(224,168,40,.35)) drop-shadow(0 8px 18px rgba(0,0,0,.7))}
+.kick{display:inline-block;font:700 13px/1 var(--font);letter-spacing:.04em;color:var(--n1);background:var(--gold);padding:9px 14px;border-radius:999px;box-shadow:0 6px 18px -6px rgba(224,168,40,.55)}
+h1{font:900 clamp(32px,9vw,52px)/1.1 var(--font);margin:16px 0 14px;letter-spacing:-.01em;text-shadow:0 2px 18px rgba(0,0,0,.6)}
+h1 .gold{background:var(--gold);-webkit-background-clip:text;background-clip:text;color:var(--g3);-webkit-text-fill-color:transparent;text-shadow:none;white-space:nowrap}
+.lead{color:var(--tx1);margin:0 auto;max-width:560px;font-size:17.5px}
+.lead b{color:var(--g4);font-weight:700}
+
+/* ---------- Divider with the gold star ---------- */
+.divider{display:flex;align-items:center;justify-content:center;gap:14px;margin:34px auto 26px;max-width:420px;padding:0 16px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--g2))}
+.divider::after{background:linear-gradient(90deg,var(--g2),transparent)}
+.divider svg{width:30px;height:30px;color:var(--g3);flex:none}
+
+/* ---------- Steps as brand cards ---------- */
+.steps-sec{position:relative}
+.steps-sec::before{content:"";position:absolute;inset:-40px 0 auto;height:620px;z-index:-1;pointer-events:none;opacity:.05;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23E0A828' stroke-width='1.2'%3E%3Cpolygon points='50,6 88,72 12,72'/%3E%3Cpolygon points='50,94 12,28 88,28'/%3E%3C/svg%3E") center/520px no-repeat}
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:20px}
+.step{position:relative;display:flex;flex-direction:column;background:linear-gradient(180deg,var(--n3) 0%,var(--n2) 100%);border:1px solid rgba(224,168,40,.22);border-radius:16px;overflow:hidden;box-shadow:var(--e3)}
+.step::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--gold);z-index:2}
+.step .ph{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--n0)}
+.step .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.step .ph img.lift{filter:brightness(1.3) contrast(1.05)}
+.step .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,15,30,.15) 0%,rgba(6,15,30,0) 40%,rgba(22,36,64,.85) 85%,var(--n3) 100%)}
+.step .body{position:relative;display:flex;flex-direction:column;flex:1;padding:0 18px 20px;margin-top:-34px}
+.step .hd{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.step .n{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:14px;background:var(--gold);color:var(--n1);font:900 24px/1 var(--font);box-shadow:0 0 0 4px var(--n3),0 10px 22px -8px rgba(224,168,40,.6)}
+.step .ic{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;border:1px solid rgba(224,168,40,.55);background:rgba(6,15,30,.75);color:var(--g3)}
+.step .ic svg{width:22px;height:22px}
+.step h2{font:800 21px/1.3 var(--font);margin:0 0 6px}
+.step p{margin:0 0 16px;color:var(--tx1)}
+.step .btn{margin-top:auto}
+.step small{display:block;color:var(--tx2);font-size:14px;line-height:1.55;margin-top:12px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:54px;padding:10px 18px;border-radius:12px;background:var(--gold);color:var(--n1);font:800 17px/1.25 var(--font);text-decoration:none;text-align:center;box-shadow:0 10px 24px -12px rgba(224,168,40,.7);transition:transform .15s ease,filter .15s ease}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:rgba(28,44,78,.9);color:var(--tx0);border:1px solid var(--g2);box-shadow:none;font-weight:700}
+.btn.ghost:hover{background:var(--n5)}
+.btn:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--g4);outline-offset:3px}
+
+/* ---------- FAQ ---------- */
+h3{font:800 26px/1.3 var(--font);margin:48px 0 16px;display:flex;align-items:center;gap:12px}
+h3::before{content:"";width:6px;height:26px;border-radius:3px;background:var(--gold)}
+details{background:var(--n2);border:1px solid var(--n4);border-inline-start:3px solid var(--g2);border-radius:12px;padding:0;margin-bottom:10px;transition:border-color .15s}
+details[open]{border-color:rgba(224,168,40,.35);border-inline-start-color:var(--g3);background:var(--n3)}
+summary{font-weight:700;cursor:pointer;list-style:none;padding:15px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";flex:none;width:9px;height:9px;border-right:2px solid var(--g3);border-bottom:2px solid var(--g3);transform:rotate(45deg);margin-top:-4px;transition:transform .2s}
+details[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+details p{margin:0;padding:0 16px 16px;color:var(--tx1)}
+
+/* ---------- Closing band: key visual ---------- */
+.band{position:relative;isolation:isolate;overflow:hidden;margin-top:56px;min-height:440px;display:flex;align-items:flex-end;background:var(--n0)}
+.band-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:56% 30%;z-index:-2}
+.band::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--n1) 0%,rgba(10,22,40,.25) 22%,rgba(6,15,30,.15) 45%,rgba(6,15,30,.85) 78%,var(--n0) 100%)}
+.band-in{width:100%;max-width:720px;margin:0 auto;padding:0 16px 28px;text-align:center}
+.band-in img{height:30px;width:auto;display:block;margin:0 auto 16px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.7))}
+.note{margin:0;padding:16px 18px;border-radius:14px;border:1px solid var(--g2);background:rgba(10,22,40,.82);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:var(--tx1);font-size:16px}
+.note a{color:var(--g4);font-weight:700;word-break:break-all}
+
+footer{background:var(--n0);padding:22px 16px max(30px,env(safe-area-inset-bottom));text-align:center;color:var(--tx2);font-size:14px;line-height:1.9;border-top:1px solid rgba(192,144,32,.35)}
 footer a{color:var(--p3)}
+
+@media (min-width:900px){
+  .hero-gap{height:250px}
+  .hero-img,.hero::before{height:100%}
+  .hero::before{background:linear-gradient(180deg,rgba(6,15,30,.6) 0%,rgba(6,15,30,.1) 14%,rgba(10,22,40,.1) 30%,rgba(10,22,40,.8) 48%,rgba(10,22,40,.96) 60%,var(--n1) 78%)}
+  .hero-img{object-position:60% 30%}
+  .badge{width:128px;height:128px}
+  ol.steps{grid-template-columns:repeat(3,1fr)}
+  .band{min-height:600px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<header>
-  <img src="shomer-badge.png" alt="SH✡MER" width="96" height="96">
-  <span class="kick">בדיקה סגורה · אנדרואיד</span>
-  <h1>מצטרפים לבדיקה של SH✡MER</h1>
-  <p class="lead">SH✡MER נמצאת בבדיקה סגורה ב-Google Play. לפני ש-Google מאפשרת לפתוח אותה לכולם, צריך <b>לפחות 12 בודקים שמשאירים אותה מותקנת 14 יום ברציפות</b>. ההשתתפות חינם. שלושה צעדים, וזה מאחוריכם.</p>
+<header class="hero">
+  <img class="hero-img" src="hero-alley.jpg" alt="" width="1280" height="720" fetchpriority="high">
+  <div class="hero-in">
+    <div class="brandbar"><img src="shomer-wordmark.svg" alt="" width="120" height="28"></div>
+    <div class="hero-gap" aria-hidden="true"></div>
+    <img class="badge" src="shomer-badge.png" alt="SH✡MER" width="96" height="96">
+    <span class="kick">בדיקה סגורה · אנדרואיד</span>
+    <h1>מצטרפים לבדיקה של <span class="gold">SH✡MER</span></h1>
+    <p class="lead">SH✡MER נמצאת בבדיקה סגורה ב-Google Play. לפני ש-Google מאפשרת לפתוח אותה לכולם, צריך <b>לפחות 12 בודקים שמשאירים אותה מותקנת 14 יום ברציפות</b>. ההשתתפות חינם. שלושה צעדים, וזה מאחוריכם.</p>
+  </div>
 </header>
 
 <main>
+<div class="divider" aria-hidden="true"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"><polygon points="50,6 88,72 12,72"/><polygon points="50,94 12,28 88,28"/></svg></div>
+
+<section class="steps-sec">
+<div class="wrap wide">
 <ol class="steps">
   <li class="step">
-    <span class="n">1</span>
+    <div class="ph"><img src="step-1-friends.jpg" alt="" width="800" height="450" loading="lazy"></div>
+    <div class="body">
+    <div class="hd"><span class="n">1</span><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span></div>
     <h2>מצטרפים לקבוצת הבודקים</h2>
     <p>עם חשבון ה-Gmail שמחובר ל-Google Play בטלפון שלכם. ההצטרפות לקבוצה היא מה שפותח לכם את הגישה.</p>
     <a class="btn" id="group" href="https://www.instagram.com/shomer.app/" target="_blank" rel="noopener">כתבו "בודק" באינסטגרם ונצרף אתכם</a>
     <small id="group-note">כתבו "בודק" בתגובה לפוסט של <bdi class="l">@shomer.app</bdi> או בהודעה פרטית, ושלחו את כתובת ה-Gmail שמחוברת ל-Google Play. נצרף אתכם ונעדכן כשאפשר להמשיך לצעד 2.</small>
+    </div>
   </li>
   <li class="step">
-    <span class="n">2</span>
+    <div class="ph"><img src="step-2-student.jpg" alt="" width="800" height="450" loading="lazy"></div>
+    <div class="body">
+    <div class="hd"><span class="n">2</span><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></span></div>
     <h2>מאשרים את הבדיקה</h2>
     <p>פותחים את עמוד הבדיקה ולוחצים <bdi class="l">"Become a tester"</bdi> (להפוך לבודק/ת).</p>
     <a class="btn ghost" href="https://play.google.com/apps/testing/il.co.shomerapp" target="_blank" rel="noopener">לעמוד הבדיקה ב-Google Play</a>
     <small>העמוד נפתח רק אחרי צעד 1, ורק עם אותו חשבון Gmail.</small>
+    </div>
   </li>
   <li class="step">
-    <span class="n">3</span>
+    <div class="ph"><img class="lift" src="step-3-family.jpg" alt="" width="800" height="450" loading="lazy"></div>
+    <div class="body">
+    <div class="hd"><span class="n">3</span><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2.5"/><path d="M12 6v8"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M10 18h4"/></svg></span></div>
     <h2>מתקינים ונשארים 14 יום</h2>
     <p>בעמוד הבדיקה לוחצים על הקישור להורדה מ-Google Play ומתקינים. משאירים את SH✡MER מותקנת 14 יום ופותחים אותה מדי פעם. אם משהו לא ברור, ספרו לנו.</p>
     <a class="btn ghost" href="https://play.google.com/store/apps/details?id=il.co.shomerapp" target="_blank" rel="noopener">SH✡MER ב-Google Play</a>
     <small>הקישור הזה עובד רק אחרי צעד 2. חשוב להישאר בבדיקה עד סוף 14 הימים.</small>
+    </div>
   </li>
 </ol>
+</div>
+</section>
 
+<div class="wrap">
 <h3>שאלות</h3>
 <details><summary>מה זה SH✡MER?</summary><p>אפליקציית ביטחון אישי וקהילתי: כפתור SOS ששולח את המיקום שלכם לאנשים שבחרתם, מעגלי "השומרים שלי", מפת בטיחות עם נתוני משטרה ומדריך חירום.</p></details>
 <details><summary>יש גרסה לאייפון?</summary><p>עדיין לא. הבדיקה כרגע לאנדרואיד בלבד.</p></details>
 <details><summary>למה דווקא 14 יום?</summary><p>זה הכלל של Google לאפליקציות חדשות: 12 בודקים לפחות, 14 יום ברציפות, לפני שאפשר לבקש לפתוח את האפליקציה לכולם.</p></details>
 <details><summary>זה מחליף את 100 · 101 · 102?</summary><p>לא. SH✡MER משלימה את 100 · 101 · 102, לא מחליפה אותם. בחירום, תמיד מתקשרים קודם.</p></details>
+</div>
 
-<p class="note">שאלה או תקלה? <a href="mailto:support@shomer-app.co.il?subject=%D7%91%D7%93%D7%99%D7%A7%D7%AA%20SH%E2%9C%A1MER">support@shomer-app.co.il</a></p>
+<section class="band">
+  <img class="band-img" src="band-keyvisual.jpg" alt="" width="1280" height="720" loading="lazy">
+  <div class="band-in">
+    <img src="shomer-wordmark.svg" alt="" width="130" height="30" loading="lazy">
+    <p class="note">שאלה או תקלה? <a href="mailto:support@shomer-app.co.il?subject=%D7%91%D7%93%D7%99%D7%A7%D7%AA%20SH%E2%9C%A1MER">support@shomer-app.co.il</a></p>
+  </div>
+</section>
 </main>
 
 <footer>
   SH✡MER · <bdi class="l">3Shamrocks Studio</bdi><br>
   <a href="https://www.shomer-app.co.il/privacy.html">מדיניות פרטיות</a> · <a href="https://www.instagram.com/shomer.app/" target="_blank" rel="noopener"><bdi class="l">@shomer.app</bdi></a>
 </footer>
-</div>
 <script>
 /* NEEDS YOUR EYES: paste the Google Group link here once the testers group exists (https://groups.google.com/g/...). */
 var GROUP_URL = '';
