@@ -288,7 +288,12 @@ var J8 = (function () {
           var x = num(a.order), y = num(b.order); return (x == null ? 99 : x) - (y == null ? 99 : y) || String(a.name).localeCompare(String(b.name));
         });
       },
-      get: function (id) { return data.projects[id] ? Object.assign({ id: id }, data.projects[id]) : null; }
+      get: function (id) { return data.projects[id] ? Object.assign({ id: id }, data.projects[id]) : null; },
+      /* 11.0: onboarding puts a member's goal on the project that serves it (admins only, RLS j8_projects_admin_upd) */
+      setMilestone: function (id, text, at) {
+        var t = String(text || '').trim().slice(0, 140); if (!t || !/^\d{4}-\d\d-\d\d$/.test(String(at || ''))) return rej('empty');
+        return update('projects', id, { milestone: t, milestone_at: at, milestone_by: 'team', milestone_src: 'J8NIX onboarding ' + now().slice(0, 10) });
+      }
     },
 
     tasks: {
