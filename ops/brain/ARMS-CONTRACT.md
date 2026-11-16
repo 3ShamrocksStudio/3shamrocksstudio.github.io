@@ -93,6 +93,14 @@ Dave approves each template once; messages built from it then go out without a p
 - Per-item categories never use a template, whatever it says: any price, quote, contract or invoice · the first reply to a live prospect · anything to past clients, friends or family · any new public claim or number. Those drafts stay `status:"pending"` exactly as in §3, and get `per_item:true` if they carry a `template_id`.
 - Never: spending money · fake urgency or invented facts · posting on accounts outside the brand list.
 
+## 3z. Zero-defect gate for every outgoing message (Dave, 16 Nov 2026: "never let anything like this happen")
+Binds every drafting run and every sender, before a draft is saved and again right before it is sent or shown to Dave as ready.
+1. Run `select hard, flags from public.j8_draft_lint where id = '<id>'`. A row with `hard = true` is never sent and never shown as ready: fix the text (drafting run) or hold it with result "Held: <flags>" (sender). `CHECK:` flags get a human look and a one-line `warn`.
+2. The lint catches: the same person contacted twice (any channel, open or sent in the last 30 days), two greetings or two self-intros (two versions stuck together), a repeated sentence, placeholders, doubled punctuation, a nameless greeting, "we" voice (EN/HE), and a second person at the same company.
+3. One person, one message at a time. A second channel to the same person is only a follow-up: save it `pending` with `extra.followup_of = <first id>` and a `warn` saying when it may go (no reply by a set date). Never queue or approve two first-touch messages to one person.
+4. Read the final text once, top to bottom, as the recipient will see it: right name, right company, one version only, every sentence whole, first person singular, correct facts for that day.
+5. When a run edits a draft Dave already approved (only to fix a defect), change only the broken words, keep his wording, bump `version`, and tell him in one line what changed.
+
 ## 3b. Drafts from an approved template: queued → hold → send
 
 - A draft built from an APPROVED template fills only the `{placeholders}` (each with a sourced fact checked within 7 days) and, unless its channel is LinkedIn (then `pending` + `label:"Send by hand"`), is created with `template_id`, `status:"queued"`, `queued_at`, `hold_until` = created/queued_at + 6 h.
