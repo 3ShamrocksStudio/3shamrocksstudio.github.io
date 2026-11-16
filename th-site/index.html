@@ -79,6 +79,7 @@ p{margin:0}
 .menu-open .burger i:nth-child(1){top:24px;transform:rotate(45deg)}
 .menu-open .burger i:nth-child(2){opacity:0}
 .menu-open .burger i:nth-child(3){top:24px;transform:rotate(-45deg)}
+.menu-open .hud,.menu-open .s3btn{visibility:hidden}
 .mmenu{position:fixed;inset:0;z-index:55;display:none;flex-direction:column;justify-content:center;gap:10px;padding:90px 28px 40px;
   background:radial-gradient(circle at 50% 30%,#3A1F8A,#0A0A2E 70%)}
 .menu-open .mmenu{display:flex}
@@ -179,9 +180,9 @@ p{margin:0}
   .copy{position:relative;left:auto;bottom:auto}
   .b1,.b2,.b3{width:104px;top:-34px;bottom:auto;right:-4px}
   .hero .stage{margin-top:30px}
-  .card .litter:nth-of-type(1){left:6%!important;top:178px!important}
-  .card .litter:nth-of-type(2){left:34%!important;top:196px!important}
-  .card .litter:nth-of-type(3){left:58%!important;top:186px!important}
+  .card .litter:nth-of-type(1){left:6%!important;top:128px!important}
+  .card .litter:nth-of-type(2){left:34%!important;top:150px!important}
+  .card .litter:nth-of-type(3){left:58%!important;top:136px!important}
   .hud{left:10px;bottom:10px;padding:6px 10px 6px 6px;gap:7px}.hud img{width:32px;height:32px}.hud .xpbar{width:58px}.hud .lv{font-size:11px}.hud .coins{font-size:15px}
   .toasts{top:74px}.toast{font-size:14px;padding:9px 12px}.toast img{width:30px;height:30px}
   .dots{bottom:-34px}.arrows{display:none}
@@ -191,6 +192,7 @@ p{margin:0}
 
 /* ---------- section scaffolding ---------- */
 section{position:relative}
+section[id]{scroll-margin-top:84px}
 .sec{padding:110px 0}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font:600 15px Fredoka,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
 .eyebrow img{width:34px;height:34px;object-fit:contain}
@@ -278,14 +280,14 @@ section{position:relative}
 .realm-rail a{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.35);display:block;position:relative;transition:.3s}
 .realm-rail a[aria-current]{background:var(--sun);transform:scale(1.4)}
 .realm-rail a span{position:absolute;right:24px;top:50%;transform:translateY(-50%);white-space:nowrap;font:600 13px Fredoka;background:#0A0A2E;padding:4px 10px;border-radius:999px;opacity:0;transition:.2s}
-.realm-rail a:hover span,.realm-rail a[aria-current] span{opacity:1}
+.realm-rail a:hover span,.realm-rail a:focus-visible span{opacity:1}
 @media (max-width:860px){.realm-rail{display:none}}
 
 /* ---------- two worlds slider ---------- */
 .two{background:#FFF7E8;color:var(--ink)}
 .two .eyebrow{color:#D9730D}
 .compare{position:relative;margin:44px auto 0;max-width:1000px;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;box-shadow:0 20px 50px rgba(20,39,46,.25);user-select:none;touch-action:pan-y}
-.compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;pointer-events:none}
 .compare .game{clip-path:inset(0 0 0 var(--cut,50%))}
 .compare .handle{position:absolute;top:0;bottom:0;left:var(--cut,50%);width:4px;background:#fff;transform:translateX(-2px);box-shadow:0 0 18px rgba(0,0,0,.4)}
 .compare .handle button{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:62px;height:62px;border-radius:50%;border:0;cursor:ew-resize;
@@ -716,8 +718,8 @@ footer p{font-size:13px;opacity:.7;max-width:420px}
     <h2 class="h2" id="h-how">The litter is real. So is the magic.</h2>
     <p class="sub">The park, the litter and the grown-up beside you are real. The quest, the XP and the Elemonster are the game. Drag the slider to switch worlds.</p>
     <div class="compare" id="compare">
-      <img src="assets/img/photo-park.webp" width="1000" height="562" alt="A real park path with litter beside it">
-      <img class="game" src="assets/img/ar.webp" width="1200" height="540" alt="The same idea in the game: a Trashure to hunt in augmented reality">
+      <img src="assets/img/photo-park.webp" width="1000" height="562" alt="A real park path with litter beside it" draggable="false">
+      <img class="game" draggable="false" src="assets/img/ar.webp" width="1200" height="540" alt="The same idea in the game: a Trashure to hunt in augmented reality">
       <span class="lab l">Real world</span><span class="lab r">Game world</span>
       <div class="handle"><button id="cmpBtn" role="slider" aria-label="Switch between real world and game world" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">⇆</button></div>
     </div>
@@ -912,7 +914,7 @@ footer p{font-size:13px;opacity:.7;max-width:420px}
   if (W.S3Audio) {
     A = S3Audio.create({ base: 'assets/audio/', name: 'th', lead: 0.1, loopLen: 72, musicGain: 0.5, sfxGain: 0.7, store: { sfx: 's3_sfx' },
       sprite: { earth: [0.1, 0.3975], water: [0.7475, 0.4179], fire: [1.4154, 0.3973], air: [2.0627, 0.4451], space: [2.7577, 0.4975] } });
-    var B = S3Audio.mount(A, { music: true, label: 'Play theme' });
+    var B = S3Audio.mount(A, { music: true, label: 'Play theme' }); B.classList.add('s3btn');
     B.style.cssText += ';left:auto;right:14px;bottom:14px;--s3a-bg:#0A0A2E;--s3a-fg:#FFF7E8;--s3a-accent:#FF6C00;--s3a-font:Fredoka,system-ui,sans-serif;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 6px 20px rgba(0,0,0,.3)';
   }
   function sfx(k) { try { if (A && k) A.play(k); } catch (e) {} }
@@ -1004,7 +1006,9 @@ footer p{font-size:13px;opacity:.7;max-width:420px}
     dots.forEach(function (d, k) { d.setAttribute('aria-current', k === cur ? 'true' : 'false'); });
   }
   var touched = false; // once a visitor interacts with the hero, never move the slide under them
-  function auto() { clearInterval(timer); if (!reduce && !touched) timer = setInterval(function () { go(cur + 1); }, 7000); }
+  var heroVis = true;
+  function auto() { clearInterval(timer); if (!reduce && !touched && heroVis && W.innerWidth > 760) timer = setInterval(function () { go(cur + 1); }, 7000); }
+  if ('IntersectionObserver' in W) new IntersectionObserver(function (es) { heroVis = es[0].isIntersecting; if (heroVis) auto(); else clearInterval(timer); }).observe(stage);
   stage.addEventListener('pointerdown', function () { touched = true; clearInterval(timer); });
   dots.forEach(function (d, k) { d.addEventListener('click', function () { go(k); }); });
   $('prev').addEventListener('click', function () { go(cur - 1); });
@@ -1044,6 +1048,14 @@ footer p{font-size:13px;opacity:.7;max-width:420px}
     var img = t.tagName === 'IMG' ? t : t.querySelector('img');
     if (img && !reduce && img.animate) img.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12,.88)' }, { transform: 'translateY(-18px) scale(1.04)' }, { transform: 'scale(1)' }], { duration: 600, easing: 'cubic-bezier(.2,1.6,.4,1)', composite: 'add' });
   });
+
+  qa('img[data-say]').forEach(function (im) {
+    im.setAttribute('tabindex', '0'); im.setAttribute('role', 'button');
+    if (!im.getAttribute('alt')) im.setAttribute('aria-label', 'Say hi');
+    im.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); im.click(); } });
+  });
+  var troop = D.querySelector('.troop'); if (troop) troop.removeAttribute('aria-hidden');
+  qa('.troop img').forEach(function (im, k) { im.setAttribute('aria-label', ['Sproutz', 'Bloop', 'Cosmix', 'Blazo', 'Wispo'][k] + ' says hi'); });
 
   /* ---------- roster ---------- */
   var MONS = { // facts as defined in the game build (th-mvp ELEMONSTERS)
@@ -1112,7 +1124,7 @@ footer p{font-size:13px;opacity:.7;max-width:420px}
     if (on > -1 && !reached[on]) {
       reached[on] = 1;
       var nm = realms[on].getAttribute('data-name');
-      earn(15, 1, 'Realm reached: <b>' + nm + '</b>', ['cosmix', 'wispo', 'bloop', 'sproutz', 'blazo', 'th-icon'][on]);
+      earn(15, 1);
       if (on === realms.length - 1) badge('river', 'light-cell');
     }
   }
@@ -1131,7 +1143,7 @@ footer p{font-size:13px;opacity:.7;max-width:420px}
   var cmp = $('compare'), cbtn = $('cmpBtn'), dragging = false;
   function setCut(p) { p = Math.max(0, Math.min(100, p)); cmp.style.setProperty('--cut', p + '%'); cbtn.setAttribute('aria-valuenow', Math.round(p)); }
   function fromX(x) { var r = cmp.getBoundingClientRect(); setCut((x - r.left) / r.width * 100); }
-  cmp.addEventListener('pointerdown', function (e) { dragging = true; fromX(e.clientX); try { cmp.setPointerCapture(e.pointerId); } catch (er) {} });
+  cmp.addEventListener('pointerdown', function (e) { e.preventDefault(); dragging = true; fromX(e.clientX); try { cmp.setPointerCapture(e.pointerId); } catch (er) {} });
   cmp.addEventListener('pointermove', function (e) { if (dragging) fromX(e.clientX); });
   ['pointerup', 'pointercancel'].forEach(function (n) { cmp.addEventListener(n, function () { dragging = false; }); });
   cbtn.addEventListener('keydown', function (e) {
