@@ -16,9 +16,9 @@
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preload" href="vendor/fonts/heebo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="app.css?v=11.0.0">
-<link rel="stylesheet" href="v11.css?v=11.0.0">
-<link rel="stylesheet" href="j11.css?v=11.0.0">
+<link rel="stylesheet" href="app.css?v=11.0.0-2">
+<link rel="stylesheet" href="v11.css?v=11.0.0-2">
+<link rel="stylesheet" href="j11.css?v=11.0.0-2">
 </head>
 <body>
 <!-- J8NIX PWA 11.0.0 (16 Nov 2026): the 6.1 layout (Chat · Next · List · Flow) on the 10.1 engine, j11.js + j11.css. Revert to 10.1.0: index-10.1.0.html + sw-10.1.0.js (see j8nix-v12/SHIPPED-12.md).
@@ -141,8 +141,8 @@
 </div>
 <div id="app" class="app" hidden>
  <nav class="rail" id="nav" aria-label="Main">
-  <span class="wm"><img src="icons/logo-lockup.png" alt="J8NIX" width="140" height="58"></span><span class="tagl">Smart operations OS, only smarter</span>
-  <button class="kbar" data-a="ask-open" aria-haspopup="dialog"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><span id="kbarL">Search or ask</span><kbd aria-hidden="true">/</kbd></button>
+  <span class="wm"><img src="icons/logo-lockup.png" alt="J8NIX" width="140" height="58"></span><button class="sidec" id="sideC" type="button" aria-expanded="true" aria-label="Collapse the sidebar"><svg class="ico" aria-hidden="true"><use href="#i-back"/></svg></button><span class="tagl">Smart operations OS, only smarter</span>
+  <button class="kbar" data-a="ask-open" aria-haspopup="dialog"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><span id="kbarL">Search or ask</span><kbd aria-hidden="true">⌘K</kbd></button>
   <div class="places">
    <button data-nav="chat"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span class="lbl">Chat</span><span class="count" id="cN" hidden></span></button>
    <button data-nav="next"><svg class="ico" aria-hidden="true"><use href="#i-compass"/></svg><span class="lbl">Next</span><span class="count" id="nN" hidden></span><span class="sr" id="nNs"></span></button>
@@ -150,6 +150,8 @@
    <button data-nav="flow"><svg class="ico" aria-hidden="true"><use href="#i-flow"/></svg><span class="lbl">Flow</span></button>
    <button data-nav="me" class="meTab"><svg class="ico" aria-hidden="true"><use href="#i-you"/></svg><span class="lbl">Me</span></button>
   </div>
+  <button class="j8t" id="j8T" type="button" data-a="x-j8" aria-pressed="false"><span class="j8o"><img src="icons/mark-8.svg" alt="" width="12" height="27"></span><span class="lbl" id="j8TL">J8 panel</span><kbd aria-hidden="true">\</kbd></button>
+  <div class="sideg" id="sideG"></div>
   <div class="pins" id="pins"></div>
   <button class="teampill" id="teamPillD" data-a="nav" data-id="me"><i class="ldot" aria-hidden="true"></i><span id="teamLD">Team</span></button><button class="user" data-a="nav" data-id="me" id="userBtn"><span class="av" id="userAv" aria-hidden="true">·</span><span class="un"><b id="userN">Me</b><span id="userO"></span></span></button>
  </nav>
@@ -203,10 +205,10 @@
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="toastMsg"></span><button id="undo" hidden><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg><span id="undoL">Undo</span></button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=11.0.0"></script>
-<script src="app.js?v=11.0.0"></script>
-<script src="j11.js?v=11.0.0"></script>
-<script src="shell.js?v=11.0.0"></script>
+<script src="j8-data.js?v=11.0.0-2"></script>
+<script src="app.js?v=11.0.0-2"></script>
+<script src="j11.js?v=11.0.0-2"></script>
+<script src="shell.js?v=11.0.0-2"></script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>
