@@ -1,7 +1,7 @@
 {
   "version": 3,
   "updated": "2026-11-16T16:25+02:00",
-  "last_run": "2026-11-16T22:20+02:00",
+  "last_run": "2026-11-16T23:58+02:00",
   "goal": {
     "target_usd": 1000000,
     "deadline": "2027-04-21",
@@ -6980,6 +6980,16 @@
       "not_done": "3) J8NIX 11.1 Hebrew desktop pass at 1440/1920 + AUDIT-6.1 open items, 4) Trashure Hunters team-day offer (HE, TH brand, feature list for a team mode; build stays parked), 5) LickPick 'Licks Worth Keeping' Day 3. Reason: the source files named in the agenda (/mnt/user-data/outputs/j8nix-v12/AUDIT-6.1.md, ig-lessons/SERIES.md, repositioning-1116/REPORT.md, shomer-alarm-fix/REPORT.md) are on Dave's Mac outputs and not reachable from the cloud; the iPhone text was written from the live app code instead.",
       "handover": "23:37 run: take 3 (J8NIX RTL pass at 1440/1920 on https://3shamrocks.com/j8/ ?lang=he; if AUDIT-6.1.md is still unreachable, audit from the live app and fix only clear RTL defects, minimal change, bump ?v= cache, verify live) then 4 (staged page, e.g. /th-site/team-day/ noindex, TH brand from th-site tokens). 03:37 run: 5 (needs the Mac series pipeline, likely blocked in cloud) and pre-raise target research from accelerator cohort pages directly. Council letters: when t-shomer-b69-upload is done, the alert chain must still be verified before anyone removes the HOLD result; never clear blocked_by.",
       "made_up_by": "Night shift 16 Nov 22:06 (manual fire)"
+    },
+    {
+      "date": "2026-11-16",
+      "run": "3s night shift (scheduled, 23:37 slot)",
+      "start": "23:38 Israel (21:38Z)",
+      "end": "00:00 Israel",
+      "done": "J8NIX Hebrew desktop pass at 1440/1920 (handover item 3, audited from the live app; AUDIT-6.1.md still on the Mac). Found a live defect: at >=1024 px the hidden app shell was forced visible by j11.css:284 (display:grid!important beat [hidden]{display:none!important}) and painted over the sign-in screen, so no one signed out could sign in on a computer, in any language. Fix 3583726: selector .app:not([hidden]) + j11.css ?v=11.1.1 + sw cache j8nix-v11.1.1. Live md5 = repo for j11.css/index.html/sw.js; Playwright 1440/1920/390, HE+EN: centre of #email hits the input, 0 page errors, signed-in grid layout unchanged. Sonnet verifier PASS 5/5. Hebrew RTL of the signed-out view otherwise fine (sidebar right, no sideways scroll); sign-in strings stay English in Hebrew mode (not translated, NOT a layout defect; left for a later pass). Messages: 0 new.",
+      "not_done": "Signed-in Hebrew desktop screens: the cloud cannot sign in (email link), so not audited. 4) TH team-day offer: no source for the offer or team-mode features in brain.json or repos (repositioning-1116/REPORT.md is on the Mac); not invented. 5) LickPick Day 3: Mac pipeline.",
+      "handover": "03:37 run: pre-raise targets from accelerator cohort pages (ops/brain/raise-targets-1116.md). Optional small step: translate the J8NIX sign-in screen strings (index.html #auth) into Hebrew via the existing L11 table, minimal change.",
+      "made_up_by": "Night shift 16 Nov 23:38 (scheduled run)"
     }
   ],
   "funnel": {
