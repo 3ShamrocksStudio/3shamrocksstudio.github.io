@@ -134,6 +134,9 @@ Every sending arm reads it right before each send. Arms never flip `paused` or `
 
 Doc id = the lower-case email address. Shape: `{ email, at: ISO, source: "reply 'remove' in thread …" | "Dave", by }`. Written by the inbox watcher the same day a removal request arrives (or by Dave). Arms never delete these docs. Any email to an address in `optout` is never drafted or sent; existing pending/queued docs to it → `killed` with result "Opted out (§30A)".
 
+## 3e. Team Chrome jobs on Dave's Mac (Dave, 16 Nov 2026: "do it", "you do it")
+Steps that need Dave's signed-in Chrome but are NOT messages are team work, never Dave's: they are `j8_tasks` rows with `owner` = the team code and `extra.mac_chrome = true`. The Mac sender run, after its sends (same run, same caps on time), takes the open ones in rank order: select id, title, action, link from public.j8_tasks where org_id = :org and status = 'open' and owner <> 'dave' and (extra->>'mac_chrome')::boolean is true; does exactly the `action`, never types a password, never pays, stops at any sign-in or captcha (then one 🟠 task for Dave with the 1-step sign-in), and marks the task done with evidence in the run summary. Nothing in this section sends a message to anyone.
+
 ## 4. `projects`
 
 Doc id = project id (same ids the inbox `p` field uses). Shape:
