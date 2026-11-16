@@ -118,7 +118,7 @@ function stepsCard(N){var L=N.slice(0,4);
 function qaCol(){return '<section class="h11-qa">'+[['project','fplus','qProject'],['memo','mic','qMemo'],['reminder','alarm','qRem'],['audit','audit','qAudit']].map(function(q){return '<button class="card11" data-a="v11-q" data-id="'+q[0]+'"><span class="well11 r royal">'+I(q[1])+'</span><span>'+esc(tt(q[2]))+'</span></button>';}).join('')+'</section>';}
 
 /* =================== 11.0.0: the 6.1 layout (Chat · Next · List · Flow) =================== */
-Object.assign(L11.en,{next:'Next',chat:'Chat',list:'List',flow:'Flow',me:'Me',inbox:'Drafts',projects:'Projects',calendar:'Timeline',
+Object.assign(L11.en,{sending:'Sending…',delivered:'Delivered',replyHere:'J8 and the team will reply here, usually within the hour.',withTeamL:'With the team now. The reply comes here.',stuck:'Still connecting. Check your connection.',next:'Next',chat:'Chat',list:'List',flow:'Flow',me:'Me',inbox:'Drafts',projects:'Projects',calendar:'Timeline',
   chatSub:'J8 and the team',dtf:'Do this first',unlocks:'Unlocks {n}',justUnl:'Just unlocked',frees2:'Frees {x}',doIt:'Do it',review:'Review',nn:'Not needed',
   waitN:'{n} wait on you',wait1:'1 waits on you',else:'Everything else',cmtL:'Comment on this',cmtP:'Comment on this',send:'Send',
   drafts:'Drafts',lsub:'{p} projects · {d} drafts',f_map:'Map',f_time:'Timeline',f_ins:'Insights',f_team:'Teams',f_num:'Numbers',
@@ -134,7 +134,7 @@ Object.assign(L11.en,{next:'Next',chat:'Chat',list:'List',flow:'Flow',me:'Me',in
   o2h:'What serves each goal?',o2j:'Pick the project that moves each goal.',noProj:'Not tied to a project yet',repl:'Replaces: {x}',notAdmin:'Saved to your goals. An admin can put it on the project.',noGoalsYet:'No goals yet. Go back to add one, or skip.',
   o3h:'How J8 helps',h1:'Prioritises: what unlocks the most goes first',h2:'Plans your day to fit your time',h3:'Re-plans when things move',h4:'Checks in when something needs you',perDay:'Time for you each day',
   o4h:'Stay in the loop',o5h:'Your first step',o5j:'Here is the one thing to do first.',o5none:'Nothing waits on you yet. J8 adds steps as the team works.',goNow:'Go to it',saved:'Goals saved',saveFail:'Couldn’t save to the project: {e}'});
-Object.assign(L11.he,{next:'הבא',chat:'צ׳אט',list:'רשימה',flow:'זרימה',me:'אני',inbox:'טיוטות',projects:'פרויקטים',calendar:'ציר זמן',
+Object.assign(L11.he,{sending:'שולח…',delivered:'נמסר',replyHere:'J8 והצוות יענו כאן, בדרך כלל תוך שעה.',withTeamL:'אצל הצוות עכשיו. התשובה תגיע כאן.',stuck:'עדיין מתחבר. כדאי לבדוק את החיבור.',next:'הבא',chat:'צ׳אט',list:'רשימה',flow:'זרימה',me:'אני',inbox:'טיוטות',projects:'פרויקטים',calendar:'ציר זמן',
   chatSub:'J8 והצוות',dtf:'קודם כל זה',unlocks:'משחרר {n}',justUnl:'השתחרר עכשיו',frees2:'משחרר {x}',doIt:'לבצע',review:'לעבור',nn:'לא צריך',
   waitN:'{n} מחכים לך',wait1:'אחד מחכה לך',else:'כל השאר',cmtL:'הערה על זה',cmtP:'הערה על זה',send:'שליחה',
   drafts:'טיוטות',lsub:'{p} פרויקטים · {d} טיוטות',f_map:'מפה',f_time:'ציר זמן',f_ins:'תובנות',f_team:'צוותים',f_num:'מספרים',
@@ -171,7 +171,7 @@ setJ8=function(){document.body.dataset.j8='closed';};document.body.dataset.j8='c
 var rn0=renderNav;
 renderNav=function(){try{rn0();}catch(e){}var pl=curPlace();
   [].forEach.call(document.querySelectorAll('#nav [data-nav]'),function(b){var k=b.dataset.nav;if(k===pl)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');var l=b.querySelector('.lbl');if(l)l.textContent=tt(k);});
-  var N=connected?myQueue().length:0,A=connected?apPending().length:0,C=connected?askRows().length:0;
+  var N=connected?myQueue().length:0,A=connected?apPending().length:0,RL=connected?replyLines():0;if(connected&&(UI.v==='chat'||document.body.dataset.j8==='open'))ls('j8-seenR',RL);var sr=ls('j8-seenR'),C=connected?askRows().length+(isNum(sr)?Math.max(0,RL-sr):0):0;
   [['nN',N],['tN',A],['cN',C]].forEach(function(x){var e=$(x[0]);if(e){e.textContent=x[1]?badge(x[1]):'';e.hidden=!x[1];e.classList.remove('due');}});
   var c=J8.control.get(),off=c&&c.paused;['teamL','teamLD'].forEach(function(id){var e=$(id);if(e)e.textContent=tt(off?'teamOff':'teamOn');});
   ['teamPill','teamPillD'].forEach(function(id){var e=$(id);if(e)e.classList.toggle('off',!!off);});
@@ -192,7 +192,7 @@ function bar12(i){var g=doTarget(i),k=esc(i.key),dec=!!(i.batch||i.ap||i.held),l
   else prim='<button class="b12 pri" data-a="do" data-k="'+k+'"><span>'+esc(lab)+'</span>'+I('do','flip')+'</button>';
   var dn=!doing&&(i.task||(i.p&&i.move))?'<button class="b12" data-a="done" data-k="'+k+'">'+I('check')+'<span>'+esc(tt('done'))+'</span></button>':'';
   return '<div class="bar12'+(dn?'':' three')+'" role="group" aria-label="'+esc(t('actions'))+'">'+prim+dn+'<button class="b12" data-a="later" data-k="'+k+'">'+I('later')+'<span>'+esc(tt('later'))+'</span></button><button class="b12" data-a="no" data-k="'+k+'">'+I('no')+'<span>'+esc(tt('nn'))+'</span></button></div>';}
-function skel(n,hero){var o=hero?'<div class="sk12 hero"></div>':'';for(var k=0;k<n;k++)o+='<div class="sk12"></div>';return '<div class="skw12" role="status" aria-label="'+esc(t('loading'))+'">'+o+'</div>';}
+function skel(n,hero){if(Date.now()-BOOT12>12000)return '<section class="empty12 stuck12" role="status">'+I('wifi')+'<span>'+esc(tt('stuck'))+'</span><button class="b12" data-a="retry">'+I('refresh')+'<span>'+esc(t('tryAgain'))+'</span></button></section>';var o=hero?'<div class="sk12 hero"></div>':'';for(var k=0;k<n;k++)o+='<div class="sk12"></div>';return '<div class="skw12" role="status" aria-label="'+esc(t('loading'))+'">'+o+'</div>';}
 
 /* ---------- Next: Do this first · Then · Everything else ---------- */
 function myGoals(G){var o={},L=[];try{o=J8.prefs.get()||{};}catch(e){}var P=Array.isArray(o.goals)?o.goals:(ls('j8-goals')||[]);
@@ -231,13 +231,18 @@ function vNext(){var N=connected?myQueue():[],desk=isDesk();
   return h+'<div class="next12">'+m+'</div>';}
 
 /* ---------- Chat: J8 and the team ---------- */
-function stLabel(s){return s==='done'?tt('doneW'):s==='routed'?tt('withTeam'):tt('sentW');}
+function stLabel(s,x){return x&&!x.at?tt('sending'):s==='done'?tt('doneW'):s==='routed'?tt('withTeam'):tt('delivered');}
+/* 11.0.1: a typing state only while a live answer is really on its way (brain on, at most 60 s); otherwise one quiet line */
+function replyLines(){var n=0;J8.inbox.list(60).forEach(function(x){n+=teamLines(x).length;});return n;}
 function chatLog(){var L=J8.inbox.list(40).slice().reverse(),h='',day='',brain=J8.control.brainEnabled(),now=Date.now();
   L.forEach(function(x,ix){var ms=pd(x.at),k=isNaN(ms)?'':ymd(new Date(ms));if(k&&k!==day){day=k;h+='<p class="day12"><span>'+esc(k===ymd(new Date())?tt('today'):dayStr(new Date(ms)))+'</span></p>';}
     var tg=msgTarget(Object.assign({id:x.id},x)),ab=tg.msg?'':targetTitle(tg).title,st=x.status||'new';
-    h+='<div class="me12"><div class="bub12 mine">'+(ab?'<p class="ab12">'+I('link')+'<bdi dir="auto">'+esc(cut(ab,44))+'</bdi></p>':'')+'<p dir="auto">'+esc(x.text)+'</p><span class="tm12"><bdi>'+esc(tm1(x.at))+'</bdi> · '+esc(stLabel(st))+'</span></div></div>';
-    teamLines(x).forEach(function(l){var v=sevOf(l.x)||sevLegacy(l.x);h+='<div class="j812"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12'+(v?' lv-'+v:'')+'">'+(v?sevChip(v):'')+'<div dir="auto">'+md(sevStrip(l.x))+'</div>'+(l.t?'<span class="tm12"><bdi>'+esc(l.t)+'</bdi></span>':'')+'</div></div>';});
-    if(st!=='done'&&ix>=L.length-3&&!isNaN(ms)&&now-ms<12*36e5&&(st==='routed'||!teamLines(x).length))h+='<div class="j812 typing12'+(st==='routed'?' still12':'')+'" role="status"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12">'+(st==='routed'?'':'<span class="dots12" aria-hidden="true"><i></i><i></i><i></i></span>')+'<small>'+esc(st==='routed'?tt('withTeam'):brain?tt('thinking'):tt('got'))+'</small></div></div>';});
+    h+='<div class="me12"><div class="bub12 mine">'+(ab?'<p class="ab12">'+I('link')+'<bdi dir="auto">'+esc(cut(ab,44))+'</bdi></p>':'')+'<p dir="auto">'+esc(x.text)+'</p><span class="tm12"><bdi>'+esc(tm1(x.at))+'</bdi> · '+esc(stLabel(st,x))+'</span></div></div>';
+    teamLines(x).forEach(function(l,j){var v=sevOf(l.x)||sevLegacy(l.x),key=x.id+'#'+j,nw=UI.seenL&&!UI.seenL[key];if(UI.seenL)UI.seenL[key]=1;h+='<div class="j812'+(nw?' new12':'')+'"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12'+(v?' lv-'+v:'')+'">'+(v?sevChip(v):'')+'<div dir="auto">'+md(sevStrip(l.x))+'</div>'+(l.t?'<span class="tm12"><bdi>'+esc(l.t)+'</bdi></span>':'')+'</div></div>';});
+    if(ix===L.length-1&&st!=='done'){var bp=brain&&UI.brainPend&&UI.brainPend.id===x.id&&now-UI.brainPend.t<6e4&&teamLines(x).length<2;
+      h+=bp?'<div class="j812 typing12" role="status"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12"><span class="dots12" aria-hidden="true"><i></i><i></i><i></i></span><small>'+esc(tt('thinking'))+'</small></div></div>'
+        :'<p class="wait12" role="status">'+I('time')+'<span>'+esc(st==='routed'?tt('withTeamL'):tt('replyHere'))+'</span></p>';}});
+  if(!UI.seenL){UI.seenL={};L.forEach(function(x){teamLines(x).forEach(function(l,j){UI.seenL[x.id+'#'+j]=1;});});}
   return h||'<p class="empty12">'+g8i()+'<span>'+esc(tt('noMsg'))+'</span></p>';}
 function vChat(){var M=connected?movedN():null,h=ph(tt('chat'),esc(tt('chatSub')));
   if(!connected)return h+skel(4);
@@ -297,7 +302,7 @@ function celebrate(h,p){if($('cel12'))return;var d=document.createElement('div')
   document.body.appendChild(d);d.addEventListener('click',function(){d.remove();});setTimeout(function(){if(d.parentNode)d.remove();},RM()?2200:2800);}
 window.j8cel=celebrate;window.j8goals=goalsAll;
 render=function(focus){var m=$('main');if(!m)return;if(VMAP[UI.v])UI.v=VMAP[UI.v];view=UI.v;renderTop();renderNav();
- if(!focus&&busyMain())return;
+ if(!focus&&inputBusy()){UI.pendR=1;return;}
  [].forEach.call(m.querySelectorAll('textarea[id]'),function(x){TYPING[x.id]=x.value;});parkMe();parkJ8();
  if(focus)animate();
  var y=m.scrollTop,v=UI.v,md=$('mdd'),my=md?md.scrollTop:0;UI.chatStick=v==='chat'&&m.scrollHeight-m.scrollTop-m.clientHeight<80;
@@ -310,7 +315,12 @@ render=function(focus){var m=$('main');if(!m)return;if(VMAP[UI.v])UI.v=VMAP[UI.v
  try{var hs=hashOf();if(location.hash!==hs&&!/token/.test(location.hash))history.replaceState(null,'',location.pathname+location.search+hs);}catch(e){}
  if(UI.gsheet&&UI.gsheet.k==='thread'&&!$('gsheet').hidden){var g=$('gth');if(!g||document.activeElement!==g){threadSheet(UI.gsheet.tg);lint($('gsheet'));}}
  after12(v,focus);obMaybe();};
-var rsT=null;window.addEventListener('resize',function(){clearTimeout(rsT);rsT=setTimeout(function(){if(UI.v==='next')render();},150);});
+var rsT=null,rsW=innerWidth;window.addEventListener('resize',function(){if(innerWidth===rsW)return;rsW=innerWidth;clearTimeout(rsT);rsT=setTimeout(function(){render();},150);}); /* 11.0.1: a keyboard only changes the height: never re-render for it */
+/* 11.0.1: never rebuild a screen while you are typing in it (empty or not); catch up right after you leave the field */
+function inputBusy(){var a=document.activeElement,m=$('main');if(!a||!m||!/^(TEXTAREA|INPUT|SELECT)$/.test(a.tagName)||/^(checkbox|radio|button|submit)$/.test(a.type||''))return false;return m.contains(a);}
+busyMain=inputBusy;
+document.addEventListener('focusout',function(){if(!UI.pendR)return;setTimeout(function(){if(UI.pendR&&!inputBusy()){UI.pendR=0;render();}},350);});
+var BOOT12=Date.now();setTimeout(function(){if(!connected)render();},12100);
 
 /* Done on "Do this first": the card checks off, then the next step slides up (and says when it was just unlocked) */
 window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('#hero12 [data-a=done]');if(!el)return;var k=el.dataset.k,i=rowByKey(k);if(!i)return;
@@ -320,7 +330,7 @@ window.addEventListener('click',function(e){var el=e.target.closest&&e.target.cl
 /* Chat composer */
 document.addEventListener('submit',function(e){var f=e.target;if(!f||f.id!=='chatF')return;e.preventDefault();var i=$('chatIn'),v=String(i&&i.value||'').trim();if(!v)return;
   if(!J8.status().connected){toast(t('notConn'));return;}i.value='';TYPING.chatIn='';var b=$('chatGo');if(b)b.disabled=true;
-  J8.inbox.send('p-general',v).then(function(){if($('chatGo'))$('chatGo').disabled=false;i.blur();UI.chatStick=true;render();var m=$('main');m.scrollTop=m.scrollHeight;},function(er){if($('chatGo'))$('chatGo').disabled=false;toast(t('couldNot',{e:er&&er.code||'error'}));});},true);
+  var bpT=Date.now();J8.inbox.send('p-general',v).then(function(id){if(J8.control.brainEnabled()){UI.brainPend={id:id,t:bpT};setTimeout(render,61e3);}if($('chatGo'))$('chatGo').disabled=false;i.blur();UI.chatStick=true;render();var m=$('main');m.scrollTop=m.scrollHeight;},function(er){if($('chatGo'))$('chatGo').disabled=false;toast(t('couldNot',{e:er&&er.code||'error'}));});},true);
 document.addEventListener('keydown',function(e){var x=e.target;if(x&&x.id==='chatIn'&&e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&isDesk()){e.preventDefault();var f=$('chatF');if(f.requestSubmit)f.requestSubmit();}});
 document.addEventListener('input',function(e){var x=e.target;if(x&&x.tagName==='TEXTAREA'&&x.closest('.cb12,.comp12')){x.style.height='auto';x.style.height=Math.min(160,x.scrollHeight+2)+'px';}});
 
@@ -329,7 +339,7 @@ document.addEventListener('input',function(e){var x=e.target;if(x&&x.tagName==='
  document.addEventListener('touchstart',function(e){var m=$('main');if(busy||!m||isDesk()||!m.contains(e.target)||m.scrollTop>0||e.touches.length!==1||e.target.closest('textarea,input,select'))return;y0=e.touches[0].clientY;dy=0;},{passive:true});
  document.addEventListener('touchmove',function(e){if(y0==null)return;dy=e.touches[0].clientY-y0;if(dy<=0){bar().style.setProperty('--p',0);return;}var b=bar();b.classList.add('on');b.style.setProperty('--p',Math.min(1,dy/90).toFixed(3));b.classList.toggle('ready',dy>90);},{passive:true});
  document.addEventListener('touchend',function(){if(y0==null)return;y0=null;var b=bar();if(dy>90&&!busy){busy=true;b.classList.add('spin');toast(tt('refreshing'));
-   J8.reload().then(function(){toast(tt('upToDate'));},function(){toast(t('notConn'));}).then(function(){busy=false;b.classList.remove('on','spin','ready');});}else b.classList.remove('on','ready');dy=0;},{passive:true});})();
+   Promise.race([J8.reload(),new Promise(function(_,rj){setTimeout(function(){rj('timeout');},1e4);})]).then(function(){toast(tt('upToDate'));},function(){toast(t('notConn'));}).then(function(){busy=false;b.classList.remove('on','spin','ready');});}else b.classList.remove('on','ready');dy=0;},{passive:true});})();
 
 /* ---------- onboarding: role · goals · projects · how J8 helps · alerts · first step (6 screens) ---------- */
 var OB={on:false,s:0,seen:false,role:null,goals:null};var OBN=6;

@@ -208,9 +208,6 @@ body[data-v=chat] main>*{flex:none}
 .dots12{display:inline-flex;gap:4px}.dots12 i{width:7px;height:7px;border-radius:50%;background:var(--ai);animation:dot12 1.2s ease-in-out infinite}
 .dots12 i:nth-child(2){animation-delay:.15s}.dots12 i:nth-child(3){animation-delay:.3s}
 @keyframes dot12{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-4px);opacity:1}}
-.typing12 .av12 .g8{animation:think12 1.6s ease-in-out infinite}
-.typing12.still12 .av12 .g8{animation:none}
-@keyframes think12{50%{transform:rotate(180deg)}}
 .comp12{position:sticky;bottom:0;z-index:2;display:flex;align-items:flex-end;gap:8px;margin:0 -4px;padding:8px 4px 6px;background:linear-gradient(transparent,var(--page) 30%)}
 .comp12 textarea{flex:1;min-width:0;min-height:52px;max-height:160px;padding:14px 18px;border:0;border-radius:26px;background:#fff;box-shadow:var(--sh);resize:none;font:400 1rem/1.4 var(--text);color:var(--navy)}
 .comp12 textarea::placeholder{color:var(--slate)}
@@ -446,3 +443,9 @@ kbd{font:600 .75rem/1 var(--text);padding:3px 6px;border-radius:6px;background:v
  #j8p .j8sub{margin-bottom:2px}#j8p .msgs{padding-top:8px}
 }
 @media (min-width:1024px){.dp12 .cols3{display:flex!important;flex-direction:column;gap:12px}.dp12 .cols3>section{width:auto}}
+
+/* 11.0.1: a calm chat — quiet status instead of fake typing, a soft entrance for new replies */
+.wait12{display:flex;align-items:center;gap:8px;align-self:center;margin:4px 0;padding:6px 14px;border-radius:var(--pill);background:#fff;color:var(--slate);font:500 .8125rem/1.35 var(--text);box-shadow:var(--sh1)}
+.wait12 .ico{width:15px;height:15px;flex:none}
+.j812.new12{animation:up12 .4s var(--ease) both}
+.stuck12 .b12{margin-inline-start:auto}
