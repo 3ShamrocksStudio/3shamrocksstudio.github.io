@@ -293,7 +293,10 @@ var J8 = (function () {
       setMilestone: function (id, text, at) {
         var t = String(text || '').trim().slice(0, 140); if (!t || !/^\d{4}-\d\d-\d\d$/.test(String(at || ''))) return rej('empty');
         return update('projects', id, { milestone: t, milestone_at: at, milestone_by: 'team', milestone_src: 'J8NIX onboarding ' + now().slice(0, 10) });
-      }
+      },
+      /* 11.1: the member's own plan from the J8 interview (admins only, RLS j8_projects_admin_ins/upd); never deletes */
+      add: function (id, doc) { if (data.projects[id]) return rej('exists'); return insert('projects', id, Object.assign({ links: [], hidden: false, blocked_by: [], extra: {} }, doc)); },
+      edit: function (id, patch) { var p = {}; ['name', 'milestone', 'milestone_at', 'now'].forEach(function (k) { if (k in patch) p[k] = patch[k]; }); if (p.name != null && !String(p.name).trim()) return rej('empty'); return update('projects', id, p); }
     },
 
     tasks: {
@@ -304,7 +307,10 @@ var J8 = (function () {
       done: function (id) { return update('tasks', id, { status: 'done' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); },
       undo: function (id) { return update('tasks', id, { status: 'open' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); },
       /* 7.1 Not needed: the existing 'dropped' status (never deleted); undo() reopens it */
-      drop: function (id) { return update('tasks', id, { status: 'dropped' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); }
+      drop: function (id) { return update('tasks', id, { status: 'dropped' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); },
+      /* 11.1: starter steps from the J8 interview (members, RLS j8_tasks_ins) and edits to them (title, minutes) */
+      add: function (id, doc) { if (data.tasks[id]) return rej('exists'); return insert('tasks', id, Object.assign({ owner: 'dave', status: 'open', blocked_by: [] }, doc)); },
+      edit: function (id, patch) { var p = {}; ['title', 'action', 'minutes'].forEach(function (k) { if (k in patch) p[k] = patch[k]; }); if (p.title != null && !String(p.title).trim()) return rej('empty'); return update('tasks', id, p); }
     },
 
     /* 7.1: Dave's Later (come_back_at), Not needed and Done on one Today item. id = the app's item key (tk-…, mv-…, b-…).

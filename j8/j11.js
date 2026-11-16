@@ -203,10 +203,13 @@ function goalsStrip(){var S=goalsShown(),L=S.L;
   return '<section class="gs12" aria-label="'+esc(tt('goals'))+'"><ul>'+L.map(function(g){var pin=S.pin===g.id;
     return '<li class="'+(pin?'pin':'')+'"><button class="g" data-a="'+(g.pid?'proj':'nav')+'" data-id="'+esc(g.pid||(g.id==='money'?'money':'next'))+'"><span class="gr">'+ring(40,5,g.pct,null,g.col)+'</span><span class="gt"><b dir="auto">'+esc(cut(g.t,42))+'</b><small class="'+(g.over?'od':'')+'"><bdi>'+esc(gDue(g))+'</bdi></small></span></button>'
      +'<button class="gpin" data-a="v11-pin" data-id="'+esc(g.id)+'" aria-pressed="'+pin+'" aria-label="'+esc(pin?tt('pinned'):tt('pin'))+'">'+I('pin')+'</button></li>';}).join('')+'</ul></section>';}
+function planTag(i){return i&&i.task&&i.task.source==='j8nix-plan'?'<p class="plan12"><span class="chip12 new sm">'+I('check')+'<bdi>'+esc(tt('yourPlan'))+'</bdi></span><button type="button" class="lnk" data-a="x12-tedit" data-id="'+esc(i.task.id)+'">'+I('edit')+'<span>'+esc(tt('editIt'))+'</span></button></p>':'';}
+function px(o,k){return o?(o[k]!=null?o[k]:(o.extra||{})[k]):undefined;}
+function projPlanTag(p){return p&&px(p,'plan')?'<p class="plan12"><span class="chip12 new sm">'+I('check')+'<bdi>'+esc(tt('yourPlan'))+'</bdi></span>'+(J8.orgs.can('admin')?'<button type="button" class="lnk" data-a="x12-pedit" data-id="'+esc(p.id)+'">'+I('edit')+'<span>'+esc(tt('editIt'))+'</span></button>':'')+'</p>':'';}
 function heroCard(i,ix){var n=nextOf(i),k=esc(i.key),pid=rowPid(i),p=pobj(pid),ul=i.ul.length,unl=UI.unl&&(i.ids||[]).some(function(x){return UI.unl.indexOf(x)>-1;});
   return '<section class="hero12'+(UI.arriveK===i.key?' arrive':'')+'" id="hero12" data-k="'+k+'" aria-labelledby="heroT">'
    +'<div class="eb12"><span class="dtf">'+g8i()+'<span>'+esc(ix>0?tt('selN',{n:ix+1}):tt('dtf'))+'</span></span>'+(unl?chip12('new','unlock',esc(tt('justUnl'))):'')+(ul?chip12('unl','key',esc(tt('unlocks',{n:ul}))):'')+(isNum(i.mins)?chip12('','time',esc(tt('min',{n:i.mins}))):'')+'</div>'
-   +'<h3 id="heroT" class="ht12" dir="auto">'+esc(cap1(n.what))+'</h3>'
+   +'<h3 id="heroT" class="ht12" dir="auto">'+esc(cap1(n.what))+'</h3>'+planTag(i)
    +(ul?'<p class="fr12">'+I('unlock')+'<span dir="auto">'+esc(tt('frees2',{x:freesTxt(i)}))+'</span></p>':'')
    +(p&&pid!=='p-general'?'<p class="pj12">'+ptile(pid,'sm')+'<bdi dir="auto">'+esc(p.name)+'</bdi></p>':'')
    +bar12(i)+cbox12(i)+'</section>';}
@@ -306,7 +309,7 @@ render=function(focus){var m=$('main');if(!m)return;if(VMAP[UI.v])UI.v=VMAP[UI.v
  [].forEach.call(m.querySelectorAll('textarea[id]'),function(x){TYPING[x.id]=x.value;});parkMe();parkJ8();
  if(focus)animate();
  var y=m.scrollTop,v=UI.v,md=$('mdd'),my=md?md.scrollTop:0;UI.chatStick=v==='chat'&&m.scrollHeight-m.scrollTop-m.clientHeight<80;
- m.innerHTML=v==='next'?vNext():v==='chat'?vChat():v==='inbox'?listWrap('drafts',vInbox()):v==='qitem'?vQitem():v==='projects'||v==='dept'?listWrap('proj',vProjects()):v==='proj'?vProj():v==='draft'?draftCheck()+vDraft10()
+ m.innerHTML=v==='next'?vNext():v==='chat'?vChat():v==='inbox'?listWrap('drafts',vInbox()):v==='qitem'?vQitem():v==='projects'||v==='dept'?listWrap('proj',vProjects()):v==='proj'?projPlanTag(pobj(UI.proj))+vProj():v==='draft'?draftCheck()+vDraft10()
   :v==='flow'?flowWrap(UI.fseg==='time'||UI.fseg==='num'?'map':UI.fseg):v==='calendar'?flowWrap('time'):v==='money'?flowWrap('num'):v==='ltasks'?listD('tasks'):v==='me'?vMe():vNext();
  document.body.dataset.homej8='0';document.body.dataset.v=v;
  slotMe();if(v==='me'){meWords();renderPrefs();renderSeat();renderTheme();}lint(m);
@@ -341,59 +344,185 @@ document.addEventListener('input',function(e){var x=e.target;if(x&&x.tagName==='
  document.addEventListener('touchend',function(){if(y0==null)return;y0=null;var b=bar();if(dy>90&&!busy){busy=true;b.classList.add('spin');toast(tt('refreshing'));
    Promise.race([J8.reload(),new Promise(function(_,rj){setTimeout(function(){rj('timeout');},1e4);})]).then(function(){toast(tt('upToDate'));},function(){toast(t('notConn'));}).then(function(){busy=false;b.classList.remove('on','spin','ready');});}else b.classList.remove('on','ready');dy=0;},{passive:true});})();
 
-/* ---------- onboarding: role · goals · projects · how J8 helps · alerts · first step (6 screens) ---------- */
-var OB={on:false,s:0,seen:false,role:null,goals:null};var OBN=6;
+/* ---------- 11.1.0 onboarding: a J8 interview (scripted, branching; not live AI) that sets up your plan ---------- */
+Object.assign(L11.en,{tour:'Re-plan with J8',
+  iq_purpose:'Hi, I’m J8. What do you want J8NIX to run for you? Pick all that fit.',iq_who:'Got it. What is your role, and where is the business today?',
+  iq_sales:'Sales: what do you sell, what is your monthly target, and where do you sell?',iq_raise:'Raising money: which round, how much, and by when?',iq_launch:'Launch: what are you launching, and when?',
+  iq_mkt:'Marketing: which channels, and how often do you want to post?',iq_team:'Team: how big is it, and what are the main projects?',iq_personal:'Work goals: what area do you want to move?',iq_other:'Tell me in one line what you want J8NIX to run.',
+  iq_goals:'Now your goals: 1 to 3, each with a number and a deadline. I plan toward these.',iq_time:'How much time a day do you give J8NIX, and when should I check in?',iq_rules:'Last one: what may I do without asking you, and what always needs your OK?',
+  p_sales:'Get clients and sales',p_launch:'Launch a product',p_raise:'Raise money',p_mkt:'Grow marketing and content',p_team:'Run a team and projects',p_personal:'Hit personal work goals',p_other:'Other',
+  r_other:'Other',st_idea:'Idea',st_build:'Building',st_live:'Launched',st_rev:'Making money',st_scale:'Scaling',roleH:'Role',stageH:'Stage',
+  f_what:'What you sell',f_target:'Monthly target (your words, e.g. 10 clients)',f_chan:'Channels',f_round:'Round',f_amount:'Target amount',f_date:'Target date',f_product:'Product',f_ldate:'Launch date',f_cad:'Cadence',f_size:'Team size',f_projects:'Main projects',f_area:'Area',f_otherW:'What should it run?',
+  ch_email:'Email',ch_li:'LinkedIn',ch_ig:'Instagram',ch_calls:'Calls',ch_ads:'Ads',ch_ref:'Referrals',cad_d:'Daily',cad_3:'3 a week',cad_w:'Weekly',rd_pre:'Pre-seed',rd_seed:'Seed',rd_a:'Series A',rd_other:'Other',
+  sz_1:'1–3',sz_2:'4–10',sz_3:'11+',own:'Or type your own',gGoal:'Goal',gNum:'Number',gDate:'Deadline',gFor:'For',
+  capH:'Time a day',amH:'Morning brief',pmH:'Evening review',off:'Off',autoH:'J8 may, without asking',askH:'Always needs my OK',
+  a_research:'Research and lists',a_drafts:'Write drafts (they still wait for you)',a_remind:'Remind me',a_follow:'Follow-ups from templates you approved',
+  k_send:'Anything sent to a person',k_price:'Prices and quotes',k_posts:'Public posts',k_spend:'Spending money',
+  asForm:'Show as a form',asChat:'Show as a chat',build:'Set up my plan',building:'Setting up your plan…',pickOne:'Pick at least one.',
+  sumH:'Here’s what I set up for you',sumJ:'This is your plan, from your answers. Tap anything to change it.',yourPlan:'Your plan',sumProj:'Projects',sumSteps:'{n} steps',sumFirst:'Do this first',sumCheck:'Check-ins',sumRules:'Approval rules',
+  noDated:'No dated goal yet',needAdmin:'Only an admin can add projects, so your steps are saved without one.',goNext:'Go to Next',editIt:'Edit',save:'Save',stepT:'Step',minsL:'Minutes',nameL:'Name',msL:'Goal',dateL:'Date',saved2:'Saved',
+  whyPlan:'Step {n} of {m} toward: {g}',pn_sales:'Sales',pn_raise:'Raise',pn_launch:'Launch',pn_mkt:'Marketing',pn_team:'Team and projects',pn_personal:'My work goals',pn_other:'My plan',
+  langH:'Language',back:'Back',none:'None',formH:'Set up your plan'});
+Object.assign(L11.he,{tour:'לתכנן מחדש עם J8',
+  iq_purpose:'היי, אני J8. מה תרצו ש־J8NIX ינהל בשבילכם? אפשר לבחור כמה.',iq_who:'הבנתי. מה התפקיד שלך, ואיפה העסק עומד היום?',
+  iq_sales:'מכירות: מה אתם מוכרים, מה היעד החודשי, ואיפה מוכרים?',iq_raise:'גיוס: איזה סבב, כמה, ועד מתי?',iq_launch:'השקה: מה משיקים, ומתי?',
+  iq_mkt:'שיווק: באילו ערוצים, וכמה פעמים לפרסם?',iq_team:'צוות: כמה אנשים, ומה הפרויקטים העיקריים?',iq_personal:'יעדי עבודה: איזה תחום רוצים לקדם?',iq_other:'ספרו לי בשורה אחת מה J8NIX צריך לנהל.',
+  iq_goals:'עכשיו היעדים: 1 עד 3, לכל אחד מספר ותאריך. אני מתכנן לקראתם.',iq_time:'כמה זמן ביום תתנו ל־J8NIX, ומתי לבדוק איתכם?',iq_rules:'אחרון: מה מותר לי בלי לשאול, ומה תמיד צריך את האישור שלך?',
+  p_sales:'להביא לקוחות ומכירות',p_launch:'להשיק מוצר',p_raise:'לגייס כסף',p_mkt:'לגדל שיווק ותוכן',p_team:'לנהל צוות ופרויקטים',p_personal:'יעדי עבודה אישיים',p_other:'אחר',
+  r_other:'אחר',st_idea:'רעיון',st_build:'בבנייה',st_live:'הושק',st_rev:'מכניס כסף',st_scale:'בצמיחה',roleH:'תפקיד',stageH:'שלב',
+  f_what:'מה מוכרים',f_target:'יעד חודשי (במילים שלך, למשל 10 לקוחות)',f_chan:'ערוצים',f_round:'סבב',f_amount:'סכום יעד',f_date:'תאריך יעד',f_product:'מוצר',f_ldate:'תאריך השקה',f_cad:'תדירות',f_size:'גודל צוות',f_projects:'פרויקטים עיקריים',f_area:'תחום',f_otherW:'מה לנהל?',
+  ch_email:'מייל',ch_li:'לינקדאין',ch_ig:'אינסטגרם',ch_calls:'שיחות',ch_ads:'מודעות',ch_ref:'המלצות',cad_d:'כל יום',cad_3:'3 בשבוע',cad_w:'פעם בשבוע',rd_pre:'פרי־סיד',rd_seed:'סיד',rd_a:'סבב A',rd_other:'אחר',
+  sz_1:'1–3',sz_2:'4–10',sz_3:'11+',own:'או לכתוב בעצמך',gGoal:'יעד',gNum:'מספר',gDate:'תאריך יעד',gFor:'עבור',
+  capH:'זמן ביום',amH:'סיכום בוקר',pmH:'סיכום ערב',off:'כבוי',autoH:'J8 רשאי, בלי לשאול',askH:'תמיד צריך את האישור שלי',
+  a_research:'מחקר ורשימות',a_drafts:'לכתוב טיוטות (הן עדיין מחכות לך)',a_remind:'להזכיר לי',a_follow:'פולואפים מתבניות שאישרת',
+  k_send:'כל דבר שנשלח לאדם',k_price:'מחירים והצעות',k_posts:'פוסטים פומביים',k_spend:'הוצאת כסף',
+  asForm:'להציג כטופס',asChat:'להציג כצ׳אט',build:'להכין את התוכנית',building:'מכין את התוכנית…',pickOne:'צריך לבחור לפחות אחד.',
+  sumH:'זה מה שהכנתי בשבילך',sumJ:'זו התוכנית שלך, מהתשובות שלך. אפשר לשנות כל דבר.',yourPlan:'התוכנית שלך',sumProj:'פרויקטים',sumSteps:'{n} צעדים',sumFirst:'קודם כל זה',sumCheck:'בדיקות',sumRules:'כללי אישור',
+  noDated:'עוד אין יעד עם תאריך',needAdmin:'רק מנהל יכול להוסיף פרויקטים, אז הצעדים נשמרו בלי פרויקט.',goNext:'למסך הבא',editIt:'לערוך',save:'לשמור',stepT:'צעד',minsL:'דקות',nameL:'שם',msL:'יעד',dateL:'תאריך',saved2:'נשמר',
+  whyPlan:'צעד {n} מתוך {m} לקראת: {g}',pn_sales:'מכירות',pn_raise:'גיוס',pn_launch:'השקה',pn_mkt:'שיווק',pn_team:'צוות ופרויקטים',pn_personal:'יעדי העבודה שלי',pn_other:'התוכנית שלי',
+  langH:'שפה',back:'חזרה',none:'אין',formH:'להכין את התוכנית שלך'});
+/* starter steps per purpose: [title EN, title HE, minutes]; each step waits on the one before it (unlock order) */
+var TPL={sales:[['Write your one-line offer','לכתוב את ההצעה בשורה אחת',20],['List 20 ideal buyers','לרשום 20 קונים מתאימים',45],['Write the first outreach message','לכתוב את הודעת הפנייה הראשונה',20],['Send to the first 10 (after your OK)','לשלוח ל־10 הראשונים (אחרי האישור שלך)',30],['Book 3 calls','לקבוע 3 שיחות',30],['Send the first proposal','לשלוח את ההצעה הראשונה',45]],
+ raise:[['Draft the pitch deck','לכתוב את מצגת המשקיעים',120],['Build the investor list (30 names)','לבנות רשימת משקיעים (30 שמות)',60],['Ask for 5 warm intros','לבקש 5 היכרויות חמות',30],['Hold the first 5 meetings','לקיים את 5 הפגישות הראשונות',60],['Follow up and collect feedback','לעשות פולואפ ולאסוף משוב',30],['Get to a term sheet','להגיע ל־term sheet',60]],
+ launch:[['Lock the launch scope','לנעול את היקף ההשקה',30],['Fix the top 3 blockers','לתקן את 3 החוסמים העיקריים',90],['Recruit 10 testers','לגייס 10 בודקים',45],['Write the launch page','לכתוב את דף ההשקה',60],['Pick the launch day and channels','לבחור יום השקה וערוצים',20],['Launch and collect first feedback','להשיק ולאסוף משוב ראשון',60]],
+ mkt:[['Pick 2 channels and a cadence','לבחור 2 ערוצים ותדירות',20],['Write 5 post ideas','לכתוב 5 רעיונות לפוסטים',30],['Make the first 3 posts','להכין את 3 הפוסטים הראשונים',90],['Schedule the next 2 weeks','לתזמן את השבועיים הקרובים',30],['Review what worked','לבדוק מה עבד',20]],
+ team:[['List every project and its owner','לרשום כל פרויקט ומי אחראי',30],['Set one next step per project','לקבוע צעד הבא לכל פרויקט',30],['Set a weekly check-in','לקבוע בדיקה שבועית',15],['Clear the blocked items','לשחרר את מה שתקוע',30]],
+ personal:[['Write the goal in one line','לכתוב את היעד בשורה אחת',10],['Break it into 3 milestones','לפרק ל־3 אבני דרך',20],['Block time in your week','לשריין זמן בשבוע',15],['Do the first step','לעשות את הצעד הראשון',30]],
+ other:[['Describe the outcome you want','לתאר את התוצאה שרוצים',10],['List the first 3 steps','לרשום את 3 הצעדים הראשונים',20],['Do the first step','לעשות את הצעד הראשון',30]]};
+var PURP=['sales','launch','raise','mkt','team','personal','other'];
+var OB={on:false,i:0,form:false,seen:false,stage:'ask',A:null,made:null,typing:0};
 function obDone(){if(ls('j8-ob'))return true;try{return !!(J8.prefs.get()||{}).onboarded;}catch(e){return false;}}
 function obMaybe(){if(OB.on||OB.seen||!connected||obDone())return;OB.seen=true;obOpen(0);}
-function obLoad(){var o={};try{o=J8.prefs.get()||{};}catch(e){}OB.role=o.role||ls('j8-role')||null;var G=Array.isArray(o.goals)?o.goals:(ls('j8-goals')||[]);OB.goals=(G&&G.length?G:[{t:'',at:'',pid:''}]).map(function(g){return {t:g.t||'',at:g.at||'',pid:g.pid||''};}).slice(0,3);}
-function obOpen(s){OB.on=true;OB.s=s||0;obLoad();var el=$('ob11');if(!el){el=document.createElement('div');el.id='ob11';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','obH');document.body.appendChild(el);}el.hidden=false;obRender();}
+function A0(){var o={};try{o=J8.prefs.get()||{};}catch(e){}var a=o.plan&&typeof o.plan==='object'?o.plan:{};
+  return {purposes:Array.isArray(a.purposes)?a.purposes.slice():[],purposeOther:a.purposeOther||'',role:o.role||a.role||'',roleOther:a.roleOther||'',stage:a.stage||'',f:JSON.parse(JSON.stringify(a.f||{})),
+    goals:[{t:'',n:'',at:'',p:''}],cap:capMin()||60,checkin:Object.assign({am:'08:30',pm:''},a.checkin||o.checkin||{}),rules:Object.assign({auto:['research','drafts','remind'],ask:['send','price','posts','spend']},a.rules||o.rules||{})};}
+function qs(){var A=OB.A,L=['purpose','who'];A.purposes.slice(0,3).forEach(function(p){L.push('f-'+p);});return L.concat(['goals','time','rules']);}
+function F(p){return OB.A.f[p]=OB.A.f[p]||{};}
+function getP(path){var o=OB.A;path.split('.').forEach(function(k){o=o==null?undefined:o[k];});return o;}
+function setP(path,v){var ks=path.split('.'),o=OB.A;ks.slice(0,-1).forEach(function(k){if(o[k]==null||typeof o[k]!=='object')o[k]={};o=o[k];});o[ks[ks.length-1]]=v;}
+function chips(path,opts,multi,lab){var cur=getP(path);return '<div class="chq12" role="group"'+(lab?' aria-label="'+esc(lab)+'"':'')+'>'+opts.map(function(o){var on=multi?(cur||[]).indexOf(o[0])>-1:cur===o[0];
+  return '<button type="button" class="chp12" data-a="v11-ob" data-id="c|'+path+'|'+o[0]+'|'+(multi?1:0)+'" aria-pressed="'+on+'">'+(o[2]?I(o[2]):'')+'<span>'+esc(o[1])+'</span></button>';}).join('')+'</div>';}
+function fin(path,lab,type,ph){var id='ob-'+path.replace(/\W/g,'-'),v=getP(path)||'';return '<label class="fl12" for="'+id+'"><span>'+esc(lab)+'</span><input id="'+id+'" data-ob="'+path+'" type="'+(type||'text')+'" dir="'+(type==='date'?'ltr':'auto')+'"'+(type==='date'?' min="'+ymd(new Date())+'"':' maxlength="140"')+' value="'+esc(v)+'"'+(ph?' placeholder="'+esc(ph)+'"':'')+'></label>';}
+function opts(pfx,keys){return keys.map(function(k){return [k,tt(pfx+k)];});}
+function goalSeed(){var A=OB.A,G=A.goals.filter(function(g){return g.t||g.n||g.at;});if(G.length)return;var S=[];
+  A.purposes.forEach(function(p){var f=A.f[p]||{};if(p==='raise'&&(f.amount||f.date))S.push({t:tt('pn_raise')+(f.round&&f.round!=='other'?' · '+tt('rd_'+f.round):''),n:f.amount||'',at:f.date||'',p:p});
+    else if(p==='launch'&&(f.product||f.date))S.push({t:tt('pn_launch')+(f.product?': '+f.product:''),n:'',at:f.date||'',p:p});
+    else if(p==='sales'&&f.target)S.push({t:tt('pn_sales')+(f.what?': '+f.what:''),n:f.target,at:'',p:p});});
+  if(S.length)A.goals=S.slice(0,3);}
+function field(q){var A=OB.A;
+  if(q==='purpose')return chips('purposes',PURP.map(function(p){return [p,tt('p_'+p),{sales:'money',launch:'rocket',raise:'up',mkt:'megaphone',team:'team',personal:'target',other:'plus'}[p]];}),true)+(A.purposes.indexOf('other')>-1?fin('purposeOther',tt('own'),'text'):'');
+  if(q==='who')return '<p class="ql12">'+esc(tt('roleH'))+'</p>'+chips('role',[['founder',tt('r_founder'),'rocket'],['pm',tt('r_pm'),'board'],['mkt',tt('r_mkt'),'megaphone'],['solo',tt('r_solo'),'wrench'],['other',tt('r_other'),'plus']],false,tt('roleH'))+(A.role==='other'?fin('roleOther',tt('own'),'text'):'')
+    +'<p class="ql12">'+esc(tt('stageH'))+'</p>'+chips('stage',opts('st_',['idea','build','live','rev','scale']),false,tt('stageH'));
+  var m=q.match(/^f-(\w+)$/);if(m){var p=m[1],b='f.'+p+'.';F(p);
+    if(p==='sales')return fin(b+'what',tt('f_what'))+fin(b+'target',tt('f_target'))+'<p class="ql12">'+esc(tt('f_chan'))+'</p>'+chips(b+'channels',opts('ch_',['email','li','ig','calls','ads','ref']),true,tt('f_chan'))+fin(b+'chanOther',tt('own'));
+    if(p==='raise')return '<p class="ql12">'+esc(tt('f_round'))+'</p>'+chips(b+'round',opts('rd_',['pre','seed','a','other']),false,tt('f_round'))+fin(b+'amount',tt('f_amount'))+fin(b+'date',tt('f_date'),'date');
+    if(p==='launch')return fin(b+'product',tt('f_product'))+fin(b+'date',tt('f_ldate'),'date');
+    if(p==='mkt')return '<p class="ql12">'+esc(tt('f_chan'))+'</p>'+chips(b+'channels',opts('ch_',['li','ig','email','ads','ref']),true,tt('f_chan'))+fin(b+'chanOther',tt('own'))+'<p class="ql12">'+esc(tt('f_cad'))+'</p>'+chips(b+'cadence',opts('cad_',['d','3','w']),false,tt('f_cad'));
+    if(p==='team')return '<p class="ql12">'+esc(tt('f_size'))+'</p>'+chips(b+'size',opts('sz_',['1','2','3']),false,tt('f_size'))+fin(b+'projects',tt('f_projects'));
+    if(p==='personal')return fin(b+'area',tt('f_area'));
+    return fin(b+'what',tt('f_otherW'));}
+  if(q==='goals'){goalSeed();return '<div class="gin12">'+A.goals.map(function(g,k){return '<div class="gi12 g3"><span class="gk">'+esc(tt('gT',{n:k+1}))+'</span>'+fin('goals.'+k+'.t',tt('gGoal'),'text',tt('gPh'))+fin('goals.'+k+'.n',tt('gNum'))+fin('goals.'+k+'.at',tt('gDate'),'date')
+      +(A.purposes.length>1?'<label class="fl12" for="ob-gp-'+k+'"><span>'+esc(tt('gFor'))+'</span><select id="ob-gp-'+k+'" data-ob="goals.'+k+'.p">'+A.purposes.map(function(p){return '<option value="'+p+'"'+(g.p===p?' selected':'')+'>'+esc(tt('p_'+p))+'</option>';}).join('')+'</select></label>':'')+'</div>';}).join('')
+    +(A.goals.length<3?'<button type="button" class="lnk12" data-a="v11-ob" data-id="addg">'+I('plus')+'<span>'+esc(tt('addG'))+'</span></button>':'')+'</div>';}
+  if(q==='time')return '<p class="ql12">'+esc(tt('capH'))+'</p>'+chips('cap',[[30,'30 '+tt('minsL').toLowerCase().slice(0,3)],[60,tt('hrs',{n:1})],[120,tt('hrs',{n:2})],[180,tt('hrs',{n:3})]].map(function(x){return [String(x[0]),x[1]];}),false,tt('capH'))
+    +'<p class="ql12">'+esc(tt('amH'))+'</p>'+chips('checkin.am',[['',tt('off')],['07:30','07:30'],['08:30','08:30'],['09:30','09:30']],false,tt('amH'))
+    +'<p class="ql12">'+esc(tt('pmH'))+'</p>'+chips('checkin.pm',[['',tt('off')],['17:30','17:30'],['18:30','18:30'],['21:00','21:00']],false,tt('pmH'));
+  if(q==='rules')return '<p class="ql12">'+esc(tt('autoH'))+'</p>'+chips('rules.auto',opts('a_',['research','drafts','remind','follow']),true,tt('autoH'))+'<p class="ql12">'+esc(tt('askH'))+'</p>'+chips('rules.ask',opts('k_',['send','price','posts','spend']),true,tt('askH'));
+  return '';}
+function ansText(q){var A=OB.A,j=function(L){return L.filter(Boolean).join(' · ');};
+  if(q==='purpose')return j(A.purposes.map(function(p){return p==='other'&&A.purposeOther?A.purposeOther:tt('p_'+p);}));
+  if(q==='who')return j([A.role==='other'?A.roleOther:A.role?tt('r_'+A.role):'',A.stage?tt('st_'+A.stage):'']);
+  var m=q.match(/^f-(\w+)$/);if(m){var f=A.f[m[1]]||{};return j([f.what,f.target,f.product,f.area,f.projects,f.round?tt('rd_'+f.round):'',f.amount,f.date,f.size?tt('sz_'+f.size):'',f.cadence?tt('cad_'+f.cadence):'',(f.channels||[]).map(function(c){return tt('ch_'+c);}).join(', '),f.chanOther])||tt('none');}
+  if(q==='goals')return j(A.goals.filter(function(g){return g.t;}).map(function(g){return g.t+(g.n?' ('+g.n+')':'')+(g.at?' · '+dayShort(new Date(g.at+'T12:00:00')):'');}))||tt('none');
+  if(q==='time')return j([tt('hrs',{n:+A.cap/60}),A.checkin.am?tt('amH')+' '+A.checkin.am:'',A.checkin.pm?tt('pmH')+' '+A.checkin.pm:'']);
+  if(q==='rules')return j([A.rules.auto.length+' ✓',A.rules.ask.length+' ✋']);return '';}
+function obCollect(){var el=$('ob11');if(!el||!OB.A)return;[].forEach.call(el.querySelectorAll('[data-ob]'),function(x){setP(x.dataset.ob,x.value.trim());});if(typeof OB.A.cap==='string')OB.A.cap=+OB.A.cap||60;}
+function obOpen(s){OB.on=true;OB.A=A0();OB.made=null;OB.stage='ask';OB.form=false;var L=qs();OB.i=Math.max(0,Math.min(L.length-1,+s||0));var el=$('ob11');if(!el){el=document.createElement('div');el.id='ob11';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','obH');document.body.appendChild(el);}el.hidden=false;OB.typing=Date.now();obRender();}
 function obClose(){OB.on=false;var el=$('ob11');if(el)el.hidden=true;ls('j8-ob',1);try{if(J8.prefs&&J8.status().connected)J8.prefs.set({onboarded:new Date().toISOString()}).catch(function(){});}catch(e){}}
-function dots(){var o='<div class="dots11" aria-hidden="true">';for(var k=0;k<OBN;k++)o+='<i class="'+(k===OB.s?'on':'')+'"></i>';return o+'</div>';}
-function prom(ic,cls,txt){return '<li><span class="well11 r big '+cls+'">'+I(ic)+'</span><span>'+esc(txt)+'</span></li>';}
-function j8say(txt){return '<div class="say11"><span class="j8av11"><img src="icons/mark-8.svg" alt="" width="12" height="27"></span><p>'+esc(txt)+'</p></div>';}
-function obCollect(){if(OB.s!==1&&OB.s!==2)return;var el=$('ob11');if(!el)return;OB.goals.forEach(function(g,k){var a=el.querySelector('#og-t-'+k),b=el.querySelector('#og-d-'+k),c=el.querySelector('#og-p-'+k);if(a)g.t=a.value.trim().slice(0,140);if(b)g.at=b.value;if(c)g.pid=c.value;});}
-function goalsReady(){return OB.goals.filter(function(g){return g.t&&/^\d{4}-\d\d-\d\d$/.test(g.at);});}
-function obSave(){var G=goalsReady().map(function(g){return {t:g.t,at:g.at,pid:g.pid||null};}),pf={goals:G};if(OB.role)pf.role=OB.role;ls('j8-goals',G);if(OB.role)ls('j8-role',OB.role);
-  try{if(J8.prefs&&J8.status().connected)J8.prefs.set(pf).catch(function(){});}catch(e){}
-  if(!J8.orgs.can('admin'))return Promise.resolve();
-  return seq(G.filter(function(g){var p=g.pid&&pobj(g.pid);return p&&!(p.milestone===g.t&&dday(p.milestone_at)===g.at);}).map(function(g){return g;}),function(g){return J8.projects.setMilestone(g.pid,g.t,g.at).catch(function(er){toast(tt('saveFail',{e:er&&er.code||'error'}));throw er;});});}
-function obRender(){var el=$('ob11'),s=OB.s,b='',nav,today=ymd(new Date());
-  if(s===0){b='<div class="obhero sm"><img src="icons/logo-lockup.png" alt="J8NIX" width="280" height="116"></div><div class="obb">'+dots()+'<h2 id="obH">'+esc(tt('o0h'))+'</h2><p class="sub11">'+esc(tt('o0p'))+'</p><div class="roles12">'
-    +[['founder','rocket'],['pm','board'],['mkt','megaphone'],['solo','wrench']].map(function(r){return '<button class="card11 role12" data-a="x12-role" data-id="'+r[0]+'" aria-pressed="'+(OB.role===r[0])+'"><span class="well11 r royal">'+I(r[1])+'</span><span>'+esc(tt('r_'+r[0]))+'</span>'+(OB.role===r[0]?I('check','ck'):'')+'</button>';}).join('')+'</div>';}
-  else if(s===1){var A=goalsAll().filter(function(g){return g.id.indexOf('g-')!==0;}),P=gprefs(),W=P.watch&&P.watch.length?P.watch:A.slice(0,3).map(function(g){return g.id;});
-    b='<div class="obb">'+dots()+j8say(tt('o1j'))+'<h2 id="obH">'+esc(tt('o1h'))+'</h2><div class="gin12">'+OB.goals.map(function(g,k){return '<div class="gi12"><label for="og-t-'+k+'">'+esc(tt('gT',{n:k+1}))+'</label><input id="og-t-'+k+'" type="text" maxlength="140" dir="auto" value="'+esc(g.t)+'" placeholder="'+esc(tt('gPh'))+'"><label class="dl" for="og-d-'+k+'">'+I('cal')+'<span>'+esc(tt('gD'))+'</span></label><input id="og-d-'+k+'" type="date" min="'+today+'" value="'+esc(g.at)+'"></div>';}).join('')
-    +(OB.goals.length<3?'<button class="lnk12" data-a="x12-ob" data-id="add">'+I('plus')+'<span>'+esc(tt('addG'))+'</span></button>':'')+'</div>'
-    +(A.length?'<h3>'+esc(tt('onBoard'))+'</h3><ul class="gl11 ob">'+A.slice(0,4).map(function(g){var on=W.indexOf(g.id)>-1;return '<li><button class="g" data-a="v11-ob" data-id="w-'+esc(g.id)+'" aria-pressed="'+on+'"><span class="gr">'+ring(36,4,g.pct,null,g.col)+'</span><span class="gt"><b dir="auto">'+esc(cut(g.t,50))+'</b><small><bdi dir="auto">'+esc(g.sub)+'</bdi> · <bdi>'+esc(gDue(g))+'</bdi></small></span><span class="ck">'+I(on?'done':'plus')+'<span class="sr">'+esc(on?tt('watching'):tt('watch'))+'</span></span></button></li>';}).join('')+'</ul>':'');}
-  else if(s===2){var G=goalsReady(),PL=liveP().filter(function(p){return !isDoneP(p)&&p.id!=='p-general';}),adm=J8.orgs.can('admin');
-    b='<div class="obb">'+dots()+j8say(tt('o2j'))+'<h2 id="obH">'+esc(tt('o2h'))+'</h2>'+(G.length?'<div class="gin12">'+OB.goals.map(function(g,k){if(!(g.t&&g.at))return '';var cp=g.pid&&pobj(g.pid);
-      return '<div class="gi12 pj"><label for="og-p-'+k+'"><b dir="auto">'+esc(g.t)+'</b><small><bdi>'+esc(dayShort(new Date(g.at+'T12:00:00')))+'</bdi></small></label><select id="og-p-'+k+'" data-a2="ob-pid"><option value="">'+esc(tt('noProj'))+'</option>'+PL.map(function(p){return '<option value="'+esc(p.id)+'"'+(g.pid===p.id?' selected':'')+'>'+esc(p.name)+'</option>';}).join('')+'</select>'
-       +(cp&&cp.milestone&&cp.milestone!==g.t?'<small class="rp">'+esc(tt('repl',{x:cut(cp.milestone,60)}))+'</small>':'')+'</div>';}).join('')+'</div>'+(adm?'':'<p class="sub11">'+esc(tt('notAdmin'))+'</p>'):'<p class="sub11">'+esc(tt('noGoalsYet'))+'</p>');}
-  else if(s===3){var cap=capMin();b='<div class="obb">'+dots()+j8say(J8.control.brainEnabled()?tt('live'):tt('hour'))+'<h2 id="obH">'+esc(tt('o3h'))+'</h2><ul class="prom11">'+prom('order','royal',tt('h1'))+prom('plan','nx',tt('h2'))+prom('repeat','vi',tt('h3'))+prom('now','ok',tt('h4'))+'</ul>'
-    +'<h3>'+esc(tt('perDay'))+'</h3><div class="seg11">'+[60,120,180,240].map(function(c){return '<button class="opt11" data-a="v11-ob" data-id="cap-'+c+'" aria-pressed="'+(cap===c)+'">'+esc(tt('hrs',{n:c/60}))+'</button>';}).join('')+'</div>';}
-  else if(s===4){b='<div class="obb">'+dots()+j8say(tt('ob5j'))+'<h2 id="obH">'+esc(tt('o4h'))+'</h2><div class="qa11"><button class="card11" data-a="v11-ob" data-id="push"><span class="well11 r royal">'+I('now')+'</span><span>'+esc(tt('ob5a'))+'</span></button>'
-    +(/android/i.test(navigator.userAgent)?'<a class="card11" href="app/"><span class="well11 r royal">'+I('phone')+'</span><span>'+esc(tt('ob5b'))+'</span></a>':'<p class="sub11">'+I('phone')+esc(tt('ob5c'))+'</p>')+'</div>'
-    +'<h3>'+esc(tt('ob4l'))+'</h3><div class="seg11"><button class="opt11" data-a="v11-ob" data-id="lang-en" aria-pressed="'+(LANG!=='he')+'" lang="en">English</button><button class="opt11" data-a="v11-ob" data-id="lang-he" aria-pressed="'+(LANG==='he')+'" lang="he">עברית</button></div>';}
-  else{var N=connected?myQueue():[],i=N[0];b='<div class="obb">'+dots()+j8say(i?tt('o5j'):tt('o5none'))+'<h2 id="obH">'+esc(tt('o5h'))+'</h2>'
-    +(i?'<section class="hero12 obh"><div class="eb12"><span class="dtf">'+g8i()+'<span>'+esc(tt('dtf'))+'</span></span>'+(i.ul.length?chip12('unl','key',esc(tt('unlocks',{n:i.ul.length}))):'')+(isNum(i.mins)?chip12('','time',esc(tt('min',{n:i.mins}))):'')+'</div><h3 class="ht12" dir="auto">'+esc(cap1(nextOf(i).what))+'</h3>'+(i.ul.length?'<p class="fr12">'+I('unlock')+'<span dir="auto">'+esc(tt('frees2',{x:freesTxt(i)}))+'</span></p>':'')+'</section>':'');}
-  nav='<div class="obnav">'+(s?'<button class="btn11 icon" data-a="v11-ob" data-id="back" aria-label="'+esc(tt('obBack'))+'">'+I('back','flip')+'</button>':'')+'<button class="btn11 pri grow" data-a="v11-ob" data-id="'+(s<OBN-1?'next':'end')+'"><span>'+esc(s===0?tt('obStart'):s<OBN-1?tt('obNext'):tt('goNow'))+'</span>'+I('do','flip')+'</button></div>'
-   +(s<OBN-1?'<button class="obskip" data-a="v11-ob" data-id="end">'+esc(tt('obSkip'))+'</button>':'');
-  el.className='ob11 s'+s;el.innerHTML=b+nav+'</div>';var f=el.querySelector('#obH');if(f){f.setAttribute('tabindex','-1');f.focus({preventScroll:true});}}
-function obAct(id){obCollect();
-  if(id==='next'){if(OB.s===0&&OB.role){ls('j8-role',OB.role);try{if(J8.status().connected)J8.prefs.set({role:OB.role}).catch(function(){});}catch(e){}}
-    if(OB.s===2){obSave().then(function(){if(goalsReady().length)toast(tt('saved'));},function(){});}
-    OB.s=Math.min(OBN-1,OB.s+1);obRender();}
-  else if(id==='back'){OB.s=Math.max(0,OB.s-1);obRender();}
-  else if(id==='end'){if(OB.s===1||OB.s===2)obSave().catch(function(){});obClose();UI.stack=[];navTo('next');}
-  else if(id==='add'){if(OB.goals.length<3)OB.goals.push({t:'',at:'',pid:''});obRender();var x=$('og-t-'+(OB.goals.length-1));if(x)x.focus();}
-  else if(id.indexOf('w-')===0){var gid=id.slice(2),G=goalsAll(),P=gprefs(),W=(P.watch&&P.watch.length?P.watch:G.slice(0,3).map(function(g){return g.id;})).slice(),k=W.indexOf(gid);if(k>-1)W.splice(k,1);else W.push(gid);gsave({goalWatch:W});obRender();}
-  else if(id.indexOf('cap-')===0){var c=+id.slice(4);ls('j8-cap',c);try{if(J8.prefs&&J8.status().connected)J8.prefs.set({cap:c}).catch(function(){});}catch(e){}obRender();}
+function j8say(txt,id){return '<div class="say11"'+(id?' id="'+id+'"':'')+'><span class="j8av11"><img src="icons/mark-8.svg" alt="" width="12" height="27"></span><p dir="auto">'+esc(txt)+'</p></div>';}
+function mesay(txt){return '<div class="me12"><div class="bub12 mine"><p dir="auto">'+esc(txt)+'</p></div></div>';}
+function obHead(){return '<div class="obtop12"><span class="j8av11 sm"><img src="icons/mark-8.svg" alt="" width="10" height="22"></span><b>J8</b><span class="sp"></span>'
+  +(OB.stage==='ask'?'<button type="button" class="obsw" data-a="v11-ob" data-id="mode" aria-pressed="'+OB.form+'">'+I(OB.form?'chat':'steps')+'<span>'+esc(OB.form?tt('asChat'):tt('asForm'))+'</span></button>':'')
+  +'<button type="button" class="obsw" data-a="v11-ob" data-id="'+(LANG==='he'?'lang-en':'lang-he')+'" lang="'+(LANG==='he'?'en':'he')+'">'+(LANG==='he'?'English':'עברית')+'</button><button type="button" class="obx" data-a="v11-ob" data-id="end" aria-label="'+esc(tt('k_esc'))+'">'+I('x')+'</button></div>';}
+function obRender(){var el=$('ob11');if(!el)return;var L=qs(),h='';
+  if(OB.stage==='sum'){h=obHead()+'<div class="obb wide">'+obSummary()+'</div>';}
+  else if(OB.stage==='busy'){h=obHead()+'<div class="obb wide"><div class="j812 typing12" role="status"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12"><span class="dots12" aria-hidden="true"><i></i><i></i><i></i></span><small>'+esc(tt('building'))+'</small></div></div></div>';}
+  else if(OB.form){h=obHead()+'<form class="obb wide obform12" id="obF" novalidate><h2 id="obH">'+esc(tt('formH'))+'</h2>'+L.map(function(q,k){return '<fieldset class="fs12"><legend dir="auto"><span class="qn">'+(k+1)+'</span>'+esc(tt('iq_'+q.replace(/^f-/,'')))+'</legend>'+field(q)+'</fieldset>';}).join('')
+    +'<p class="err12" role="alert">'+(OB.err?esc(OB.err):'')+'</p><div class="obnav"><button type="button" class="btn11 pri grow" data-a="v11-ob" data-id="build">'+I('check')+'<span>'+esc(tt('build'))+'</span></button></div></form>';}
+  else{var q=L[OB.i],hist='';for(var k=0;k<OB.i;k++)hist+=j8say(tt('iq_'+L[k].replace(/^f-/,'')))+mesay(ansText(L[k]));
+    var fresh=!RM()&&Date.now()-OB.typing<700;
+    h=obHead()+'<div class="obb wide obchat12"><div class="dots11" aria-hidden="true">'+L.map(function(x,k){return '<i class="'+(k===OB.i?'on':k<OB.i?'done':'')+'"></i>';}).join('')+'</div>'+hist
+     +(fresh?'<div class="j812 typing12 tmp"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12"><span class="dots12" aria-hidden="true"><i></i><i></i><i></i></span></div></div>':'')
+     +'<div class="qnow12'+(fresh?' wait':'')+'"><h2 id="obH" class="sr">'+esc(tt('iq_'+q.replace(/^f-/,'')))+'</h2>'+j8say(tt('iq_'+q.replace(/^f-/,'')))+'<div class="ans12">'+field(q)+'</div><p class="err12" role="alert">'+(OB.err?esc(OB.err):'')+'</p>'
+     +'<div class="obnav">'+(OB.i?'<button type="button" class="btn11 icon" data-a="v11-ob" data-id="back" aria-label="'+esc(tt('back'))+'">'+I('back','flip')+'</button>':'')+'<button type="button" class="btn11 pri grow" data-a="v11-ob" data-id="'+(OB.i<L.length-1?'next':'build')+'"><span>'+esc(OB.i<L.length-1?tt('obNext'):tt('build'))+'</span>'+I('do','flip')+'</button></div></div></div>';
+    if(fresh){clearTimeout(obRender.t);obRender.t=setTimeout(function(){OB.typing=0;var t=el.querySelector('.typing12.tmp'),w=el.querySelector('.qnow12.wait');if(t)t.remove();if(w)w.classList.remove('wait');},650);}}
+  el.className='ob11 ob12 '+(OB.stage==='sum'?'sum':'q'+OB.i);el.innerHTML=h;
+  var c=el.querySelector('.obchat12');if(c)el.scrollTop=el.scrollHeight;var f=el.querySelector('#obH');if(f){f.setAttribute('tabindex','-1');f.focus({preventScroll:true});}}
+function obValid(q){OB.err='';if(q==='purpose'&&!OB.A.purposes.length){OB.err=tt('pickOne');return false;}return true;}
+function goalTxt(g){return g.t+(g.n?' · '+g.n:'');}
+function pName(pu){var A=OB.A,f=A.f[pu]||{};return pu==='sales'?tt('pn_sales')+(f.what?': '+f.what:''):pu==='raise'?tt('pn_raise')+(f.round&&f.round!=='other'?' · '+tt('rd_'+f.round):''):pu==='launch'?tt('pn_launch')+(f.product?': '+f.product:''):pu==='other'?(A.purposeOther||tt('pn_other')):tt('pn_'+pu);}
+function nowTxt(pu){var t=ansText('f-'+pu);return tt('yourPlan')+(t&&t!==tt('none')?': '+t:'');}
+function rawTasks(){var R=J8.raw('tasks')||{};return Object.keys(R).map(function(id){return Object.assign({id:id},R[id]);});}
+function planBuild(){var A=OB.A,adm=J8.orgs.can('admin'),st=Date.now().toString(36),td=ymd(new Date()),P=[],E=[],T=[],fail=0;
+  var gen=PR['p-general']?'p-general':null;
+  A.purposes.forEach(function(pu){var ex=liveP().filter(function(p){return px(p,'plan')&&px(p,'purpose')===pu;})[0],goal=A.goals.filter(function(g){return g.t&&/^\d{4}-\d\d-\d\d$/.test(g.at||'')&&(g.p||A.purposes[0])===pu;})[0];
+    var pid=ex?ex.id:adm?'p-plan-'+pu+'-'+st:gen;
+    if(!ex&&adm)P.push({id:pid,doc:{name:pName(pu),unit_id:null,stage:1,status:'active',now:nowTxt(pu),order:60,milestone:goal?goalTxt(goal):null,milestone_at:goal?goal.at:null,milestone_by:goal?'dave':null,milestone_src:goal?'Your plan · J8NIX '+td:null,extra:{plan:true,purpose:pu,answers:A.f[pu]||{}}}});
+    else if(ex&&goal&&!ex.milestone&&adm)E.push({id:ex.id,patch:{milestone:goalTxt(goal),milestone_at:goal.at}});
+    var have={},prev=null;rawTasks().forEach(function(t){if(px(t,'plan')&&px(t,'purpose')===pu&&px(t,'tpl'))have[px(t,'tpl')]=t.id;});
+    var S=TPL[pu]||TPL.other;S.forEach(function(s,k){var key=pu+'-'+k;if(have[key]){prev=have[key];return;}var id='t-plan-'+pu+'-'+(k+1)+'-'+st;
+      T.push({id:id,doc:{project_id:pid,title:s[LANG==='he'?1:0],action:'',why:tt('whyPlan',{n:k+1,m:S.length,g:goal?goalTxt(goal):pName(pu)}),minutes:s[2],owner:'dave',status:'open',source:'j8nix-plan',by:'J8NIX plan (yours)',blocked_by:prev?[prev]:[],extra:{plan:true,purpose:pu,tpl:key}}});prev=id;});});
+  var G=A.goals.filter(function(g){return g.t&&/^\d{4}-\d\d-\d\d$/.test(g.at||'');}).map(function(g){var pu=g.p||A.purposes[0],p=liveP().filter(function(x){return px(x,'plan')&&px(x,'purpose')===pu;})[0],np=P.filter(function(x){return x.doc.extra.purpose===pu;})[0];return {t:goalTxt(g),at:g.at,pid:(p&&p.id)||(np&&np.id)||null};});
+  var pf={role:A.role==='other'?(A.roleOther||'other'):A.role,goals:G,cap:+A.cap||60,checkin:A.checkin,rules:A.rules,planAt:new Date().toISOString(),onboarded:new Date().toISOString(),
+    plan:{purposes:A.purposes,purposeOther:A.purposeOther,role:A.role,roleOther:A.roleOther,stage:A.stage,f:A.f,checkin:A.checkin,rules:A.rules}};
+  ls('j8-cap',pf.cap);ls('j8-goals',G);ls('j8-ob',1);
+  var w=function(fn){return function(x){return fn(x).catch(function(e){fail++;throw e;});};};
+  return Promise.resolve(J8.prefs.set(pf)).catch(function(){fail++;})
+   .then(function(){return seq(P,w(function(x){return J8.projects.add(x.id,x.doc);}));})
+   .then(function(){return seq(E,w(function(x){return J8.projects.edit(x.id,x.patch);}));})
+   .then(function(){return seq(T,w(function(x){return J8.tasks.add(x.id,x.doc);}));})
+   .then(function(){return {P:P,T:T,adm:adm,fail:fail};});}
+function obSummary(){var M=OB.made||{P:[],T:[]},A=OB.A,N=myQueue(),first=N[0],by={};
+  M.T.forEach(function(x){var p=x.doc.extra.purpose;(by[p]=by[p]||[]).push(x);});
+  var rows=A.purposes.map(function(pu,k){var p=liveP().filter(function(x){return px(x,'plan')&&px(x,'purpose')===pu;})[0],L=by[pu]||[];
+    return '<li class="sm12" style="--i:'+k+'"><span class="well11 r royal">'+I({sales:'money',launch:'rocket',raise:'up',mkt:'megaphone',team:'team',personal:'target',other:'plus'}[pu])+'</span><span class="rt12"><b dir="auto">'+esc(p?p.name:pName(pu))+'</b><small dir="auto">'+esc(p&&p.milestone?p.milestone+' · '+dlabel(p.milestone_at):tt('noDated'))+'</small><small>'+esc(tt('sumSteps',{n:L.length}))+(L.length?': '+esc(L.slice(0,2).map(function(x){return x.doc.title;}).join(' → '))+(L.length>2?' →…':''):'')+'</small></span>'
+     +(p&&J8.orgs.can('admin')?'<button type="button" class="ib12" data-a="x12-pedit" data-id="'+esc(p.id)+'" aria-label="'+esc(tt('editIt')+' '+p.name)+'">'+I('edit')+'</button>':'')+'</li>';}).join('');
+  var R=A.rules,ck=[A.checkin.am?tt('amH')+' '+A.checkin.am:'',A.checkin.pm?tt('pmH')+' '+A.checkin.pm:''].filter(Boolean).join(' · ')||tt('off');
+  return '<h2 id="obH" class="sumh12">'+esc(tt('sumH'))+'</h2>'+j8say(tt('sumJ'))+'<span class="chip12 new">'+I('check')+'<bdi>'+esc(tt('yourPlan'))+'</bdi></span>'
+   +(M.adm===false?'<p class="sub11">'+esc(tt('needAdmin'))+'</p>':'')+(M.fail?'<p class="err12" role="alert">'+esc(tt('saveFail',{e:M.fail}))+'</p>':'')
+   +'<h3 class="sh12">'+esc(tt('sumProj'))+'</h3><ul class="sum12">'+rows+'</ul>'
+   +(first?'<h3 class="sh12">'+esc(tt('sumFirst'))+'</h3><div class="sm12 one" style="--i:'+(A.purposes.length+1)+'"><span class="well11 r nx">'+I('compass')+'</span><span class="rt12"><b dir="auto">'+esc(cap1(nextOf(first).what))+'</b><small>'+(first.ul.length?esc(tt('unlocks',{n:first.ul.length}))+' · ':'')+(isNum(first.mins)?esc(tt('min',{n:first.mins})):'')+'</small></span>'+(first.task&&first.task.source==='j8nix-plan'?'<button type="button" class="ib12" data-a="x12-tedit" data-id="'+esc(first.task.id)+'" aria-label="'+esc(tt('editIt'))+'">'+I('edit')+'</button>':'')+'</div>':'')
+   +'<ul class="sum12 kv"><li class="sm12" style="--i:'+(A.purposes.length+2)+'"><span class="well11 r">'+I('alarm')+'</span><span class="rt12"><b>'+esc(tt('sumCheck'))+'</b><small>'+esc(ck)+' · '+esc(tt('hrs',{n:+A.cap/60}))+'</small></span></li>'
+   +'<li class="sm12" style="--i:'+(A.purposes.length+3)+'"><span class="well11 r vi">'+I('shield')+'</span><span class="rt12"><b>'+esc(tt('sumRules'))+'</b><small>'+esc(tt('autoH'))+': '+esc(R.auto.map(function(x){return tt('a_'+x);}).join(', ')||tt('none'))+'</small><small>'+esc(tt('askH'))+': '+esc(R.ask.map(function(x){return tt('k_'+x);}).join(', ')||tt('none'))+'</small></span></li></ul>'
+   +'<div class="obnav"><button type="button" class="btn11" data-a="v11-ob" data-id="push">'+I('now')+'<span>'+esc(tt('ob5a'))+'</span></button><button type="button" class="btn11 pri grow" data-a="v11-ob" data-id="go">'+I('compass')+'<span>'+esc(tt('goNext'))+'</span></button></div>';}
+function obAct(id){obCollect();var L=qs();
+  if(id==='next'){if(!obValid(L[OB.i])){obRender();return;}OB.i=Math.min(qs().length-1,OB.i+1);OB.typing=Date.now();obRender();}
+  else if(id==='back'){OB.err='';OB.i=Math.max(0,OB.i-1);obRender();}
+  else if(id==='mode'){OB.form=!OB.form;OB.err='';obRender();}
+  else if(id==='addg'){if(OB.A.goals.length<3)OB.A.goals.push({t:'',n:'',at:'',p:OB.A.purposes[0]||''});obRender();var x=$('ob-goals-'+(OB.A.goals.length-1)+'-t');if(x)x.focus();}
+  else if(id==='build'){if(!OB.A.purposes.length){OB.err=tt('pickOne');if(!OB.form)OB.i=0;obRender();return;}if(!J8.status().connected){toast(t('notConn'));return;}
+    OB.A.goals.forEach(function(g){if(!g.p)g.p=OB.A.purposes[0];});OB.stage='busy';obRender();
+    planBuild().then(function(m){OB.made=m;OB.stage='sum';animate();render();obRender();},function(){OB.stage='ask';toast(t('couldNot',{e:'error'}));obRender();});}
+  else if(id==='go'||id==='end'){obClose();UI.stack=[];UI.focusK=null;navTo('next');}
+  else if(id==='push'){var pb=$('pushBtn');if(pb)pb.click();}
   else if(id==='lang-en'||id==='lang-he'){setLang(id.slice(5));renderAll();obRender();}
-  else if(id==='push'){var pb=$('pushBtn');if(pb)pb.click();}}
+  else if(id.indexOf('c|')===0){var z=id.split('|'),path=z[1],v=z[2],multi=z[3]==='1',cur=getP(path);
+    if(multi){cur=Array.isArray(cur)?cur.slice():[];var k=cur.indexOf(v);if(k>-1)cur.splice(k,1);else cur.push(v);setP(path,cur);}else setP(path,path==='cap'?+v:(cur===v&&path!=='checkin.am'&&path!=='checkin.pm'?'':v));
+    if(path==='purposes')OB.err='';var y=$('ob11').scrollTop;obRender();$('ob11').scrollTop=y;var b=document.querySelector('#ob11 [data-id="'+id.replace(/"/g,'')+'"]');if(b)b.focus({preventScroll:true});}}
+/* edit your plan: a step (title, minutes) or a plan project (name, goal, date) */
+function editSheet(kind,id){var o=kind==='t'?J8.tasks.get(id):pobj(id);if(!o)return;UI.gsheet={k:'edit12'};
+  var f=kind==='t'?'<label class="fl12" for="e12a"><span>'+esc(tt('stepT'))+'</span><input id="e12a" dir="auto" maxlength="140" value="'+esc(o.title||'')+'"></label><label class="fl12" for="e12b"><span>'+esc(tt('minsL'))+'</span><input id="e12b" type="number" min="1" max="600" value="'+esc(o.minutes||'')+'"></label>'
+   :'<label class="fl12" for="e12a"><span>'+esc(tt('nameL'))+'</span><input id="e12a" dir="auto" maxlength="80" value="'+esc(o.name||'')+'"></label><label class="fl12" for="e12b"><span>'+esc(tt('msL'))+'</span><input id="e12b" dir="auto" maxlength="140" value="'+esc(o.milestone||'')+'"></label><label class="fl12" for="e12c"><span>'+esc(tt('dateL'))+'</span><input id="e12c" type="date" dir="ltr" value="'+esc(dday(o.milestone_at||''))+'"></label>';
+  gOpen('<h2 id="gTitle">'+esc(tt('editIt'))+' · <span class="chip12 new">'+esc(tt('yourPlan'))+'</span></h2><form id="ed12" data-kind="'+kind+'" data-id="'+esc(id)+'" class="ed12">'+f+'<div class="obnav"><button type="button" class="btn11" data-a="gclose">'+esc(t('close'))+'</button><button type="submit" class="btn11 pri grow">'+I('check')+'<span>'+esc(tt('save'))+'</span></button></div></form>');}
+document.addEventListener('submit',function(e){var f=e.target;if(!f||f.id!=='ed12')return;e.preventDefault();var k=f.dataset.kind,id=f.dataset.id,a=$('e12a').value.trim(),b=$('e12b').value.trim(),c=$('e12c')?$('e12c').value:'';
+  var p=k==='t'?J8.tasks.edit(id,{title:a,minutes:+b||null}):J8.projects.edit(id,{name:a,milestone:b||null,milestone_at:c||null});
+  p.then(function(){gClose();toast(tt('saved2'));if(OB.on)obRender();render();},function(er){toast(t('couldNot',{e:er&&er.code||'error'}));});},true);
+window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a=x12-tedit],[data-a=x12-pedit]');if(!el)return;e.preventDefault();e.stopPropagation();editSheet(el.dataset.a==='x12-tedit'?'t':'p',el.dataset.id);},true);
+
 window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a^="v11-"],[data-a^="x12-"]');if(!el)return;e.preventDefault();e.stopPropagation();var a=el.dataset.a,id=el.dataset.id||'',k=el.dataset.k;
   if(a==='v11-pin'){var P=gprefs();gsave({goalPin:P.pin===id?null:id});if(OB.on)obRender();render();return;}
   if(a==='v11-ob')obAct(id);else if(a==='v11-tour'){closeSheet();obOpen(0);}
   else if(a==='x12-ob'){closeSheet();obOpen(+id||0);}
-  else if(a==='x12-role'){OB.role=id;obRender();}
   else if(a==='x12-row'){UI.open['r12'+k]=!UI.open['r12'+k];render();var b=document.querySelector('[data-a=x12-row][data-k="'+(window.CSS&&CSS.escape?CSS.escape(k):k)+'"]');if(b)b.focus({preventScroll:true});}
   else if(a==='x12-lseg'){UI.lseg=id;UI.stack=[];navTo(id==='drafts'?'inbox':id==='tasks'?'ltasks':'projects');}
   else if(a==='x12-fseg'){UI.fseg=id;UI.stack=[];navTo(id==='time'?'calendar':id==='num'?'money':'flow');}
@@ -465,13 +594,13 @@ function drow12(a,sel,on){var id=esc(a.id),tx=String(J8.approvals.textOf(a)||'')
 function msgHTML(x){var h='<div class="me12"><div class="bub12 mine"><p dir="auto">'+esc(x.text)+'</p><span class="tm12"><bdi>'+esc(tm1(x.at))+'</bdi> · '+esc(stLabel(x.status||'new'))+'</span></div></div>';
   teamLines(x).forEach(function(l){var v=sevOf(l.x)||sevLegacy(l.x);h+='<div class="j812"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12'+(v?' lv-'+v:'')+'">'+(v?sevChip(v):'')+'<div dir="auto">'+md(sevStrip(l.x))+'</div>'+(l.t?'<span class="tm12"><bdi>'+esc(l.t)+'</bdi></span>':'')+'</div></div>';});return h;}
 function taskDetail(i){var n=nextOf(i),pid=rowPid(i),p=pobj(pid),T=i.task?J8.inbox.forTask(i.task.id).slice(0,3).reverse():i.c?[i.c]:[];
-  return '<article class="dd12"><div class="eb12">'+urgChip(i)+(i.ul.length?chip12('unl','key',esc(tt('unlocks',{n:i.ul.length}))):'')+(isNum(i.mins)?chip12('','time',esc(tt('min',{n:i.mins}))):'')+'</div><h3 class="ht12" id="dpH" tabindex="-1" dir="auto">'+esc(cap1(n.what))+'</h3>'
+  return '<article class="dd12"><div class="eb12">'+urgChip(i)+(i.ul.length?chip12('unl','key',esc(tt('unlocks',{n:i.ul.length}))):'')+(isNum(i.mins)?chip12('','time',esc(tt('min',{n:i.mins}))):'')+'</div><h3 class="ht12" id="dpH" tabindex="-1" dir="auto">'+esc(cap1(n.what))+'</h3>'+planTag(i)
    +(p&&pid!=='p-general'?'<p class="pj12">'+ptile(pid,'sm')+'<bdi dir="auto">'+esc(p.name)+'</bdi></p>':'')+(i.ul.length?'<p class="fr12">'+I('unlock')+'<span dir="auto">'+esc(tt('frees2',{x:freesTxt(i)}))+'</span></p>':'')+whyLine(i)+facts(i)+bar12(i)+cbox12(i)
    +(T.length?'<section class="th12"><h4>'+esc(tt('notes'))+'</h4><div class="log12">'+T.map(msgHTML).join('')+'</div></section>':'')+'</article>';}
 function md12(list,detail,label){return '<div class="md12"><section class="ml12 pane12" aria-label="'+esc(label)+'">'+list+'</section><section class="dp12 pane12" id="dp12" aria-label="'+esc(label)+' · '+esc(tt('open'))+'"><div class="dpi">'+(detail||'<p class="empty12">'+I('fwd','flip')+'<span>'+esc(tt('pick'))+'</span></p>')+'</div></section></div>';}
 function projMD(){var P=liveP().filter(function(p){return !isDoneP(p);}).sort(function(a,b){return (a.status==='parked')-(b.status==='parked');});if(!P.length)return md12('<p class="empty12">'+esc(t('other'))+'</p>','',tt('projects'));
   if(!UI.proj||!P.some(function(p){return p.id===UI.proj;}))UI.proj=P[0].id;UI.pseg=UI.pseg||'act';
-  var d='';try{d=vProj().replace(/id="pageH"/g,'id="dpH"');}catch(e){d='';}
+  var d='';try{d=projPlanTag(pobj(UI.proj))+vProj().replace(/id="pageH"/g,'id="dpH"');}catch(e){d='';}
   return md12('<ul class="ll12">'+P.map(function(p){return prow12(p,p.id===UI.proj);}).join('')+'</ul>',d,tt('projects'));}
 function tasksMD(){var N=myQueue();if(!N.length)return md12('<p class="empty12">'+I('done')+'<span>'+esc(tt('clear'))+'</span></p>','',tt('tasks'));
   var s=N.filter(function(x){return x.key===UI.tsel;})[0]||N[0];UI.tsel=s.key;
