@@ -2,7 +2,26 @@
 (function () {
   'use strict';
   var $ = function (s) { return document.querySelector(s); };
-  function msg(t, err) { var m = $('#amsg'); m.textContent = t || ''; m.classList.toggle('err', !!err); }
+  /* 11.1.2: the sign-in screen follows the saved language (Hebrew), like the rest of the app */
+  var HE = document.documentElement.lang === 'he';
+  var TR = { 'Sending…': 'שולח…', 'Could not send. Try again.': 'לא נשלח. כדאי לנסות שוב.', 'Signing in…': 'נכנסים…',
+    'Type the code from the email.': 'צריך להקליד את הקוד מהמייל.',
+    'That didn\'t work. Check the code, or ask for a new email.': 'זה לא עבד. כדאי לבדוק את הקוד, או לבקש מייל חדש.',
+    'That sign-in link has expired. Ask for a new one.': 'פג התוקף של קישור הכניסה. אפשר לבקש קישור חדש.' };
+  function T(s) { return (HE && TR[s]) || s; }
+  function msg(t, err) { var m = $('#amsg'); m.textContent = T(t || ''); m.classList.toggle('err', !!err); }
+  (function heAuth() {
+    if (!HE) return;
+    function set(s, v, html) { var e = $(s); if (e) { if (html) e.innerHTML = v; else e.textContent = v; } }
+    set('label[for="email"]', 'המייל שלך בעבודה'); set('#fEmail button[type="submit"]', 'לשלוח לי קישור כניסה במייל');
+    set('#fPaste .lead', 'כדאי לבדוק את המייל.'); set('label[for="code"]', 'הקוד מהמייל'); set('#fPaste button[type="submit"]', 'כניסה');
+    set('#fPaste summary', 'אין קוד? אפשר להדביק את הקישור');
+    set('#fPaste .hint', 'לוחצים לחיצה ארוכה על הקישור במייל ← העתקה ← מדביקים כאן, ואז כניסה.');
+    var pl = $('#pasteLink'); if (pl) pl.placeholder = 'להדביק כאן את הקישור';
+    set('#again', 'להשתמש במייל אחר');
+    set('#iosHint', 'באייפון: קודם שיתוף ← <b>הוספה למסך הבית</b>, ואז לפתוח את J8NIX משם.', true);
+    set('#apkHint', 'באנדרואיד: <a href="app/"><b>להוריד את אפליקציית J8NIX</b></a>, ואז להיכנס שם.', true);
+  })();
   function note(t) { if (window.toast) window.toast(t); else msg(t); }
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
   var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
