@@ -42,3 +42,24 @@ The phone alert shows only the last line, so that line must stand on its own.
 - **Reply bubbles and Next** show the tag as a chip; old lines without a tag show no chip (or 🟠 when they say NEEDS YOUR EYES).
 - **Alerts** (`j8private.push_on_change`): title = tag + short title with plain team names (e.g. "🟠 SH✡MER app · needs you today", "🟢 Done · Night shift", "🟢 Done · Sales team"). New drafts are always 🟠. Failed runs are 🟠, or 🔴 when the summary reports a security problem or a live outage (security, breach, leak, outage, site/app down). 23:00–07:00 Israel only a 🔴 team reply line or a 🔴 failed run pushes; everything else is logged in the outbox as "quiet hours" and shows in the app. Untagged replies are 🟢 (🟠 if they say NEEDS YOUR EYES / WHAT YOU DO); untagged finished runs are 🟢. `j8.no_push` still silences everything; Dave's own messages never push.
 - **App** (5.1.1): a draft batch due today shows 🔴 in the app only (no night push). Held sends are grouped by the one action Dave must take ("Allow CV access on the Mac (6 applications)"), and a project "you" line that repeats a listed batch or held send is left out. Next and "Needs you" use one list and one order.
+
+## Writing a step for Dave (J8NIX 11.3)
+
+Binding for every arm, from 17 Nov 2026 (Dave: "users must have clear instructions, only when J8NIX can't do it itself, or when the system needs to be connected by users").
+
+**Create a Dave step ONLY when J8NIX cannot do it itself:** an account, a password or a sign-in, a payment, a signature, something on his own phone or Mac, approving content in his name, or connecting a service. Everything else the team does, then reports with a 🟢 line.
+
+A step is one j8_tasks row (owner 'dave'). Every field is required:
+
+| Field | Rule | Good | Bad |
+|---|---|---|---|
+| title | A plain imperative sentence, complete, ≤70 characters. Says what and the outcome. Never "Decide on X" without the options and my recommendation in the action. | Open an Upwork account so the team can send 13 proposals | Decide on the Apple Developer account |
+| action | 2–6 numbered steps, one per line ("1. …\n2. …"), with the exact button and menu names. A decision lists the options and the team's recommendation. | 1. Tap the button: it opens Upwork sign-up.\n2. Choose "I'm a freelancer".\n3. Sign up with dave@3shamrocks.com.\n4. Reply "done" in Chat. | Reply 'OK all', or 'OK' plus post numbers, or notes |
+| link | Opens the exact page where the first step happens. | https://www.upwork.com/nx/signup/ | (none), or a home page |
+| link_text | Names the destination. | Open Upwork sign-up | Open, Link, Do it |
+| minutes | A real estimate. | 20 | (none) |
+| why | One line: what it unlocks or earns. | Unlocks 13 proposals the team has queued. | (a paragraph) |
+
+Never mention, in anything Dave reads: container or file paths, repo files, internal ids (t-…, ap-…, batch ids), table names, tool names, "arm", "QA", "staging".
+
+The app shows only steps that have an action (and promotes to "Do this first" only steps that also have a link), so a step that breaks these rules is invisible. A project "you" line is shown as a step only when it starts with 🔴/🟠 and has you_link; otherwise write a task.

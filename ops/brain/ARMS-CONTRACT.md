@@ -184,3 +184,7 @@ The page exposes `window.J8` (script `#j8-data-api`, source also in `j8nix-data-
 2. IG engagement arm: stop reading the old IG Engagement Queue `queue`; draft into `approvals` (`kind:"other"`, `label:"IG Comment"`, `batch:"ig-<mmdd>"`) and send only approved/edited ones. The old queue still holds its docs (not modified); treat it as frozen to avoid double posting `li-3s-comment-01`.
 3. Revenue/stand-up arms: update `money/summary` and the `projects` they touched; new outreach drafts go to `approvals`, not into the to-do `copy` fields.
 4. ops/brain/brain.json stays the arms' long-form memory; J8NIX `projects` is the short live view Dave reads.
+
+## J8NIX 11.3 (17 Nov 2026)
+• A step for Dave follows J8NIX-COMMS.md "Writing a step for Dave (J8NIX 11.3)": only what J8NIX cannot do itself; title ≤70 characters, 2–6 numbered steps in action, exact link, link_text, minutes, one-line why. The app hides any Dave task without an action, and a project "you" line without 🔴/🟠 and you_link.
+• The morning run writes today's plan to public.j8_day; see J8NIX-DATA.md "Today's plan (j8_day, J8NIX 11.3)".
