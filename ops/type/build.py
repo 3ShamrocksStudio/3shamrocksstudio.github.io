@@ -45,7 +45,7 @@ def trefoil(cx, cy, size):
     out = pathops.Path()
     for k in range(3):
         a = math.pi / 6 + k * 2 * math.pi / 3
-        c = circle(cx + d * math.cos(a), cy + size * 0.12 + d * math.sin(a), r)
+        c = circle(cx + d * math.cos(a), cy + size * 0.22 + d * math.sin(a), r)
         out = pathops.op(out, c, pathops.PathOp.UNION, fix_winding=True, clockwise=True)
     return out
 
@@ -92,7 +92,7 @@ def replace_dots(path, char, maker, xh):
         w, h = b[2] - b[0], b[3] - b[1]
         small = abs(c.area) < (xh * 0.30) ** 2 and max(w, h) < xh * 0.45
         if small and not c.clockwise is None:
-            s = max(w, h) * 1.25
+            s = max(w, h) * (1.05 if maker is trefoil else 1.25)
             dot = maker((b[0] + b[2]) / 2, (b[1] + b[3]) / 2, s)
             out = pathops.op(out, dot, pathops.PathOp.UNION, fix_winding=True, clockwise=True); changed = True
         else:
@@ -106,7 +106,8 @@ def treat_cut(path, ctx, char):
     xmin, ymin, xmax, ymax = bbox(path)
     if xmax - xmin < 1:
         return path
-    c = min(ctx['upm'] * 0.17, (xmax - xmin) * 0.40, (ymax - ymin) * 0.40)
+    he = bool(char) and 0x5d0 <= ord(char) <= 0x5ea
+    c = min(ctx['upm'] * (0.10 if he else 0.17), (xmax - xmin) * 0.40, (ymax - ymin) * 0.40)
     m = 2
     clip = poly([(xmin - m, ymin - m), (xmin - m, ymax - c), (xmin + c, ymax + m), (xmax + m, ymax + m), (xmax + m, ymin + c), (xmax - c, ymin - m)][::-1])
     return pathops.op(path, clip, pathops.PathOp.INTERSECTION, fix_winding=True, clockwise=True)
@@ -130,7 +131,7 @@ def treat_leaf(path, ctx, char):
     xmin, ymin, xmax, ymax = bbox(path)
     if xmax - xmin < 1 or ymax - ymin < ctx['xh'] * 0.5:
         return path
-    g = ctx['upm'] * 0.026
+    g = ctx['upm'] * 0.042
     # circle through (xmin, y0) and (xmax, y1), radius R, centre below-right -> gently rising vein
     top = min(ymax, ctx['cap'])
     y0, y1 = ymin + (top - ymin) * 0.30, ymin + (top - ymin) * 0.58
@@ -147,6 +148,18 @@ def treat_leaf(path, ctx, char):
     cx, cy = mx - ux * hh, my - uy * hh
     ring = pathops.op(circle(cx, cy, R + g / 2, 360), circle(cx, cy, R - g / 2, 360), pathops.PathOp.DIFFERENCE, fix_winding=True, clockwise=True)
     return pathops.op(path, ring, pathops.PathOp.DIFFERENCE, fix_winding=True, clockwise=True)
+
+
+def drop_slivers(path, ctx):
+    lim = (ctx['upm'] * 0.03) ** 2
+    out = pathops.Path(); dropped = False
+    for c in path.contours:
+        b = c.bounds
+        if abs(c.area) < lim or min(b[2]-b[0], b[3]-b[1]) < ctx['upm'] * 0.02:
+            dropped = True; continue
+        cp = pathops.Path(); c.draw(cp.getPen())
+        out = pathops.op(out, cp, pathops.PathOp.XOR, fix_winding=True, clockwise=True)
+    return out if dropped else path
 
 
 def build(src, family, treat, skew_deg=0.0):
@@ -171,7 +184,7 @@ def build(src, family, treat, skew_deg=0.0):
         p = glyph_path(gs, gn)
         if p.area == 0:
             continue
-        p = treat(p, ctx, rev.get(gn, ''))
+        p = drop_slivers(treat(p, ctx, rev.get(gn, '')), ctx)
         tp = TTGlyphPen(None)
         pen = Cu2QuPen(tp, 1.0, reverse_direction=False)
         if k:
