@@ -936,7 +936,7 @@ function listExtra(seg){if(!connected)return '';var adm=J8.orgs.can('admin');
   if(seg==='proj'&&!liveP().filter(function(p){return !isDoneP(p);}).length)return '<div class="lx13"><section class="empty12 e13">'+I('proj')+'<span>'+esc(tt('emptyProj'))+'</span>'+newCTA(adm?'project':'reqproj',adm?tt('emptyProjA'):tt('nReqProj'))+'</section></div>';
   if(seg==='tasks'&&!myQueue().length)return '<div class="lx13"><section class="empty12 e13">'+I('steps')+'<span>'+esc(tt('emptyNext'))+'</span><button class="b12 pri ai sm cta13" data-a="x13-lineup">'+I('plan')+'<span>'+esc(tt('lineUp'))+'</span></button>'+newCTA('step',tt('nStep'))+'</section></div>';
   return '';}
-var lw13=listWrap;listWrap=function(seg,html){var h=lw13(seg,html);return h+listExtra(seg==='drafts'?'drafts':'proj');};
+var lw13=listWrap;listWrap=function(seg,html){var h=lw13(seg,html);return D12()?h:h+listExtra(seg==='drafts'?'drafts':'proj');}; /* desktop: listD puts it inside the list pane */
 var ld13=listD;listD=function(seg){var h=ld13(seg),x=listExtra(seg);if(!x)return h;var j=h.indexOf('</section><section class="dp12');if(j<0)return h+x; /* desktop: inside the list pane, under the list */
   var i=h.lastIndexOf('<section class="ml12',j),body=h.slice(i,j);if(/<p class="empty12">/.test(body)&&/class="e13/.test(x))body=body.replace(/<p class="empty12">[\s\S]*?<\/p>/,'');return h.slice(0,i)+body+x+h.slice(j);};
 
