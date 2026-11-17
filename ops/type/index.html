@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>3Shamrocks type · 3 directions</title>
+<style>
+@font-face{font-family:"3S Cut";src:url(fonts/3SCut.woff2) format("woff2");font-display:block}
+@font-face{font-family:"3S Band";src:url(fonts/3SBand.woff2) format("woff2");font-display:block}
+@font-face{font-family:"3S Leaf";src:url(fonts/3SLeaf.woff2) format("woff2");font-display:block}
+:root{--ink:#16112E;--paper:#FFFFFF;--read:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--read);-webkit-text-size-adjust:100%}
+img{display:block;max-width:100%}
+.bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:16px;padding:10px 16px;background:#fff;border-bottom:2px solid var(--ink)}
+.bar img{height:22px;width:auto}
+.bar nav{margin-left:auto;display:flex;gap:4px}
+.bar a{font:700 14px/1 var(--read);color:var(--ink);text-decoration:none;padding:9px 12px;border:2px solid var(--ink)}
+.bar a:hover,.bar a:focus-visible{background:var(--ink);color:#fff;outline:none}
+.intro{padding:40px 16px 32px;max-width:1180px;margin:0 auto}
+.intro h1{font:400 clamp(34px,6vw,64px)/1.02 "3S Cut",var(--read);margin:0 0 14px;letter-spacing:-.01em}
+.intro p{margin:0;max-width:680px;font-size:17px}
+.intro .how{display:flex;flex-wrap:wrap;gap:0;margin-top:22px;border:2px solid var(--ink);max-width:820px}
+.intro .how div{flex:1 1 200px;padding:12px 14px;border-right:2px solid var(--ink);font-size:14px}
+.intro .how div:last-child{border-right:0}
+.intro .how b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+
+.dir{padding:48px 16px 56px;background:var(--bg);color:var(--fg);border-top:2px solid var(--ink)}
+.wrap{max-width:1180px;margin:0 auto}
+.head{display:grid;grid-template-columns:auto 1fr;gap:6px 22px;align-items:end;margin-bottom:26px}
+.letter{grid-row:span 2;font:400 clamp(96px,16vw,180px)/.8 var(--disp);color:var(--a1)}
+.name{font:400 clamp(30px,5vw,52px)/1 var(--disp);margin:0}
+.mood{margin:0;font-size:17px;max-width:560px}
+.spec{font:400 clamp(44px,8.6vw,112px)/.98 var(--disp);margin:6px 0 10px;letter-spacing:var(--track,0)}
+.spec.he{direction:rtl;text-align:right}
+.abc{font:400 clamp(20px,3vw,30px)/1.25 var(--disp);word-break:break-word;opacity:.92;margin:0 0 30px}
+.made{font-size:13px;margin:0 0 30px;max-width:760px;opacity:.85}
+
+.pal{display:grid;grid-template-columns:repeat(5,1fr);border:2px solid var(--line);margin-bottom:34px}
+.sw{min-height:132px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--c);color:var(--t);border-right:2px solid var(--line)}
+.sw:last-child{border-right:0}
+.sw b{font:700 13px/1.2 var(--read);letter-spacing:.06em;text-transform:uppercase}
+.sw span{font-size:13px;line-height:1.35}
+.sw code{font:600 12px/1 ui-monospace,Menlo,monospace;opacity:.85;margin-top:6px}
+
+.frames{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.frame{border:2px solid var(--line);background:var(--fbg);color:var(--ffg);overflow:hidden;position:relative;min-height:380px;display:flex;flex-direction:column}
+.cap{font:700 12px/1 var(--read);letter-spacing:.08em;text-transform:uppercase;padding:10px 14px;border-bottom:2px solid var(--line);background:var(--bg);color:var(--fg)}
+.fbody{padding:26px 22px 24px;flex:1;display:flex;flex-direction:column;gap:14px;position:relative}
+.fbody>*{position:relative;z-index:1}
+.fbody>.slash,.fbody>.vein,.fbody>.bands{position:absolute}
+.fbody .logo{height:20px;width:auto}
+.fbody h3{margin:0;font:400 clamp(32px,4.2vw,50px)/1 var(--disp);letter-spacing:var(--track,0)}
+.fbody p{margin:0;font-size:15px;max-width:440px}
+.btn{align-self:flex-start;font:700 15px/1 var(--read);padding:14px 20px;background:var(--btn);color:var(--btnt);border:0;text-decoration:none}
+.he{direction:rtl;text-align:right}
+.he .btn{align-self:flex-end}
+.badge{width:76px;height:76px}
+.star{color:#E0A828}
+.note{margin:26px 0 0;font-size:14px;max-width:760px}
+
+/* A · Cut */
+#a{--bg:#FFFDF6;--fg:#16112E;--line:#16112E;--disp:"3S Cut",var(--read);--a1:#8239EA;--fbg:#FFFFFF;--ffg:#16112E;--btn:#FF5B4A;--btnt:#16112E}
+#a .wipe{display:inline-block;animation:cut 1.1s cubic-bezier(.2,.7,.1,1) both}
+#a .wipe:nth-child(2){animation-delay:.12s}#a .wipe:nth-child(3){animation-delay:.24s}
+@keyframes cut{from{clip-path:polygon(0 0,0 0,0 100%,0 100%);transform:translateX(-18px)}to{clip-path:polygon(0 0,140% 0,100% 100%,0 100%);transform:none}}
+#a .slash{position:absolute;right:-30px;bottom:-30px;width:170px;height:170px;z-index:0;background:linear-gradient(135deg,transparent 49%,#2FCB6B 49% 58%,transparent 58% 66%,#FFC530 66% 75%,transparent 75%)}
+#a .nat{--fbg:#F3FBEF}
+#a .nat .btn{--btn:#2FCB6B}
+
+/* B · Band */
+#b{--bg:#FFE14D;--fg:#15112A;--line:#15112A;--disp:"3S Band",var(--read);--a1:#6D28FF;--fbg:#FFFFFF;--ffg:#15112A;--btn:#6D28FF;--btnt:#FFFFFF;--track:.01em}
+#b .spec,#b .fbody h3,#b .name,#b .letter{text-transform:uppercase}
+#b .bands{position:absolute;inset:auto 0 0 0;height:84px;overflow:hidden}
+#b .bands i{position:absolute;left:-30%;width:160%;height:22px;transform:skewX(-7deg)}
+#b .bands i:nth-child(1){top:0;background:#6D28FF;animation:sweep 3.2s linear infinite}
+#b .bands i:nth-child(2){top:30px;background:#A3F23C;animation:sweep 3.2s linear infinite reverse}
+#b .bands i:nth-child(3){top:60px;background:#FF4F6E;animation:sweep 4.4s linear infinite}
+#b .bands i::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 120px,rgba(255,255,255,.55) 120px 132px)}
+@keyframes sweep{from{transform:translateX(0) skewX(-7deg)}to{transform:translateX(18%) skewX(-7deg)}}
+#b .nat{--fbg:#EFFFE0}
+#b .nat .btn{--btn:#A3F23C;--btnt:#15112A}
+
+/* C · Leaf */
+#c{--bg:#FFF6E4;--fg:#1C2B22;--line:#1C2B22;--disp:"3S Leaf",var(--read);--a1:#1F9D55;--fbg:#FFFFFF;--ffg:#1C2B22;--btn:#F8B42C;--btnt:#1C2B22}
+#c .vein{position:absolute;right:0;bottom:0;width:46%;height:42%;pointer-events:none;z-index:0}
+#c .vein path{fill:none;stroke:#1F9D55;stroke-width:3;stroke-linecap:round;stroke-dasharray:640;stroke-dashoffset:640;animation:draw 2.4s .3s ease-out forwards}
+#c .vein .lf{fill:#3BA6E0;stroke:none;opacity:0;animation:pop .6s 2.2s ease-out forwards}
+#c .vein .lf2{fill:#F8B42C;animation-delay:2.45s}
+#c .vein .lf3{fill:#E5684A;animation-delay:2.7s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1}}
+#c .nat{--fbg:#F1FAF0}
+#c .nat .btn{--btn:#1F9D55;--btnt:#FFFFFF}
+
+.foot{padding:28px 16px 40px;border-top:2px solid var(--ink);font-size:13px}
+.foot .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center}
+.foot img{height:14px;width:auto;opacity:.6}
+.foot a{color:var(--ink)}
+
+@media (max-width:820px){
+  .frames{grid-template-columns:1fr}
+  .pal{grid-template-columns:repeat(2,1fr)}
+  .sw{border-bottom:2px solid var(--line);min-height:104px}
+  .sw:nth-child(2n){border-right:0}
+  .sw:last-child{grid-column:span 2}
+  .head{grid-template-columns:1fr}
+  .letter{grid-row:auto}
+  .bar .t{display:none}
+  .intro .how div{border-right:0;border-bottom:2px solid var(--ink)}
+  .intro .how div:last-child{border-bottom:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important}
+  #c .vein path{stroke-dashoffset:0}#c .vein .lf{opacity:1}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <img src="img/3s-black.png" alt="3Shamrocks Studio" width="150" height="22">
+  <span class="t" style="font-weight:700;font-size:14px">Type + colour · 3 directions</span>
+  <nav aria-label="Directions"><a href="#a">A<span class="t"> · Cut</span></a><a href="#b">B<span class="t"> · Band</span></a><a href="#c">C<span class="t"> · Leaf</span></a></nav>
+</header>
+
+<section class="intro">
+  <h1>Three faces only we have.</h1>
+  <p>Each direction is a display typeface of our own, cut from open-licence letters and reshaped so no other site uses it, with a brighter colour world around it. Each one is shown on the studio home and on the SH✡MER Nature page, in English and Hebrew.</p>
+  <div class="how">
+    <div><b>1 · Look</b>Scroll A, B and C on your phone.</div>
+    <div><b>2 · Pick</b>Reply in J8NIX: “A”, “B” or “C”, plus anything to change.</div>
+    <div><b>3 · Then</b>The team finishes the full typeface and rolls it out everywhere.</div>
+  </div>
+</section>
+
+<!-- A -->
+<section class="dir" id="a" aria-labelledby="a-n">
+  <div class="wrap">
+    <div class="head">
+      <div class="letter" aria-hidden="true">A</div>
+      <h2 class="name" id="a-n">3S Cut</h2>
+      <p class="mood">Confident craft. Every letter has two diagonal cuts, like a designer’s blade, and the dots on i, j and ! are tiny shamrocks.</p>
+    </div>
+    <p class="spec"><span class="wipe">From</span> <span class="wipe">rough idea</span> <span class="wipe">to product.</span></p>
+    <p class="spec he" lang="he">מרעיון גולמי למוצר.</p>
+    <p class="abc">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 !? אבגדהוזחטיכלמנסעפצקרשת</p>
+    <p class="made">Made from: Secular One (open licence), every glyph re-cut at the top-left and bottom-right corners, new shamrock dots, renamed “3S Cut”. Hebrew and Latin in one family.</p>
+    <div class="pal" role="list" aria-label="Colours for A">
+      <div class="sw" role="listitem" style="--c:#8239EA;--t:#fff"><b>Purple</b><span>Imagination and craft: the studio’s signature</span><code>#8239EA</code></div>
+      <div class="sw" role="listitem" style="--c:#2FCB6B;--t:#16112E"><b>Shamrock</b><span>Growth and “go”: progress, success</span><code>#2FCB6B</code></div>
+      <div class="sw" role="listitem" style="--c:#FF5B4A;--t:#16112E"><b>Coral</b><span>Warmth and action: the one button per screen</span><code>#FF5B4A</code></div>
+      <div class="sw" role="listitem" style="--c:#FFC530;--t:#16112E"><b>Sun</b><span>Optimism: highlights and new things</span><code>#FFC530</code></div>
+      <div class="sw" role="listitem" style="--c:#16112E;--t:#fff"><b>Ink</b><span>Trust and calm reading: text only</span><code>#16112E</code></div>
+    </div>
+    <div class="frames">
+      <div class="frame">
+        <div class="cap">Studio home</div>
+        <div class="fbody">
+          <div class="slash" aria-hidden="true"></div>
+          <img class="logo" src="img/3s-black.png" alt="3Shamrocks Studio" width="136" height="20">
+          <h3>From a rough idea to a product people love.</h3>
+          <p>I take an idea and turn it into a real, finished product: the brand, the interface and the working app.</p>
+          <a class="btn" href="#a">See the work</a>
+        </div>
+      </div>
+      <div class="frame nat he" lang="he">
+        <div class="cap">SH<span class="star">✡</span>MER Nature</div>
+        <div class="fbody">
+          <img class="badge" src="img/nature-badge.png" alt="SH✡MER Nature" width="76" height="76">
+          <h3>שומרים על מי שאין לו קול.</h3>
+          <p>SH✡MER Nature בבנייה. עוד לא זמין להורדה.</p>
+          <a class="btn" href="#a">ל-SH✡MER</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- B -->
+<section class="dir" id="b" aria-labelledby="b-n">
+  <div class="wrap">
+    <div class="head">
+      <div class="letter" aria-hidden="true">B</div>
+      <h2 class="name" id="b-n">3S Band</h2>
+      <p class="mood">Energy and play. Tall capitals that lean forward, split into three bands: three shamrocks, three speeds. Made for big, loud headlines in capitals.</p>
+    </div>
+    <p class="spec">From rough idea to product.</p>
+    <p class="spec he" lang="he">מרעיון גולמי למוצר.</p>
+    <p class="abc">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 !? אבגדהוזחטיכלמנסעפצקרשת</p>
+    <p class="made">Made from: Karantina Bold (open licence), every glyph cut into bands and leaned 7°, renamed “3S Band”. Capitals for headlines; small letters are kept for short labels only.</p>
+    <div class="pal" role="list" aria-label="Colours for B">
+      <div class="sw" role="listitem" style="--c:#6D28FF;--t:#fff"><b>Electric violet</b><span>Bold ideas: the studio’s colour, turned up</span><code>#6D28FF</code></div>
+      <div class="sw" role="listitem" style="--c:#A3F23C;--t:#15112A"><b>Lime</b><span>Fresh, alive, “new”: success and progress</span><code>#A3F23C</code></div>
+      <div class="sw" role="listitem" style="--c:#FF4F6E;--t:#15112A"><b>Hot coral</b><span>Excitement: offers and calls to act</span><code>#FF4F6E</code></div>
+      <div class="sw" role="listitem" style="--c:#FFE14D;--t:#15112A"><b>Sun yellow</b><span>Joy and attention: the background of the brand</span><code>#FFE14D</code></div>
+      <div class="sw" role="listitem" style="--c:#15112A;--t:#fff"><b>Ink</b><span>Clarity: text only</span><code>#15112A</code></div>
+    </div>
+    <div class="frames">
+      <div class="frame">
+        <div class="cap">Studio home</div>
+        <div class="fbody">
+          <img class="logo" src="img/3s-black.png" alt="3Shamrocks Studio" width="136" height="20">
+          <h3>From a rough idea to a product people love.</h3>
+          <p>I take an idea and turn it into a real, finished product: the brand, the interface and the working app.</p>
+          <a class="btn" href="#b">See the work</a>
+          <div style="height:84px" aria-hidden="true"></div>
+          <div class="bands" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="frame nat he" lang="he">
+        <div class="cap">SH<span class="star">✡</span>MER Nature</div>
+        <div class="fbody">
+          <img class="badge" src="img/nature-badge.png" alt="SH✡MER Nature" width="76" height="76">
+          <h3>שומרים על מי שאין לו קול.</h3>
+          <p>SH✡MER Nature בבנייה. עוד לא זמין להורדה.</p>
+          <a class="btn" href="#b">ל-SH✡MER</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- C -->
+<section class="dir" id="c" aria-labelledby="c-n">
+  <div class="wrap">
+    <div class="head">
+      <div class="letter" aria-hidden="true">C</div>
+      <h2 class="name" id="c-n">3S Leaf</h2>
+      <p class="mood">Warm and alive. Soft round letters with one rising curve through every glyph, like the vein of a leaf. The dots are small leaves.</p>
+    </div>
+    <p class="spec">From rough idea to product.</p>
+    <p class="spec he" lang="he">מרעיון גולמי למוצר.</p>
+    <p class="abc">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 !? אבגדהוזחטיכלמנסעפצקרשת</p>
+    <p class="made">Made from: Varela Round (open licence), every glyph cut by one rising curve, new leaf dots, renamed “3S Leaf”. Hebrew and Latin in one family.</p>
+    <div class="pal" role="list" aria-label="Colours for C">
+      <div class="sw" role="listitem" style="--c:#1F9D55;--t:#fff"><b>Leaf</b><span>Life, growth, nature: the main colour</span><code>#1F9D55</code></div>
+      <div class="sw" role="listitem" style="--c:#3BA6E0;--t:#1C2B22"><b>Sky</b><span>Openness and calm: water, coast, info</span><code>#3BA6E0</code></div>
+      <div class="sw" role="listitem" style="--c:#F8B42C;--t:#1C2B22"><b>Sun</b><span>Happiness and warmth: buttons and highlights</span><code>#F8B42C</code></div>
+      <div class="sw" role="listitem" style="--c:#E5684A;--t:#1C2B22"><b>Clay</b><span>Earth and care: animals, trails, people</span><code>#E5684A</code></div>
+      <div class="sw" role="listitem" style="--c:#1C2B22;--t:#fff"><b>Forest ink</b><span>Trust: text only</span><code>#1C2B22</code></div>
+    </div>
+    <div class="frames">
+      <div class="frame">
+        <div class="cap">Studio home</div>
+        <div class="fbody">
+          <svg class="vein" viewBox="0 0 400 260" aria-hidden="true"><path d="M10 250 C 120 230, 260 160, 390 20"/><ellipse class="lf" cx="150" cy="200" rx="22" ry="9" transform="rotate(-35 150 200)"/><ellipse class="lf lf2" cx="250" cy="150" rx="22" ry="9" transform="rotate(-50 250 150)"/><ellipse class="lf lf3" cx="335" cy="80" rx="22" ry="9" transform="rotate(-60 335 80)"/></svg>
+          <img class="logo" src="img/3s-black.png" alt="3Shamrocks Studio" width="136" height="20">
+          <h3>From a rough idea to a product people love.</h3>
+          <p>I take an idea and turn it into a real, finished product: the brand, the interface and the working app.</p>
+          <a class="btn" href="#c">See the work</a>
+        </div>
+      </div>
+      <div class="frame nat he" lang="he">
+        <div class="cap">SH<span class="star">✡</span>MER Nature</div>
+        <div class="fbody">
+          <img class="badge" src="img/nature-badge.png" alt="SH✡MER Nature" width="76" height="76">
+          <h3>שומרים על מי שאין לו קול.</h3>
+          <p>SH✡MER Nature בבנייה. עוד לא זמין להורדה.</p>
+          <a class="btn" href="#c">ל-SH✡MER</a>
+        </div>
+      </div>
+    </div>
+    <p class="note">Body text in all three stays a quiet reading face for now; it is chosen together with the direction you pick.</p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <img src="img/3s-black.png" alt="" width="95" height="14">
+    <span>© 2026 3Shamrocks Studio. All rights reserved. Direction drafts, not in use anywhere yet.</span>
+    <span>Typeface licences: <a href="fonts/OFL-3SCut-base-SecularOne.txt">A</a> · <a href="fonts/OFL-3SBand-base-Karantina.txt">B</a> · <a href="fonts/OFL-3SLeaf-base-VarelaRound.txt">C</a> (SIL Open Font License 1.1)</span>
+  </div>
+</footer>
+</body>
+</html>
