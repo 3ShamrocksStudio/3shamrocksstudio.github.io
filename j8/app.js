@@ -42,17 +42,24 @@ function sevChip(v){return v&&SEV[v]?'<span class="sv sv-'+v+'"><i class="sd sd-
 /* 6.1: every colour cited from its brand file (/mnt/user-data/outputs/ds/*.md, assets/brand-v3/j8nix/BRAND.md, a11y/index.html :root).
    Studio-run projects (site, services, payments, grants/CSR, LinkedIn, HealthTech page, the accessibility checker) wear the studio brand.
    No brand file → no entry (falls back to j8_projects.color). Badges: real PNG logos, resized only (j8/brand/). */
-var PCOL={'p-shomer':['#E0A828','#0C1B3A'],'p-ios':['#E0A828','#0C1B3A'],'p-tnufa':['#E0A828','#0C1B3A'],'p-command':['#FC9918','#0C1B3A'],'p-nature':['#2F8540','#4FA85C'],
- 'p-lickpick':['#FFE600','#FF2E88'],'p-site':['#8239EA','#3DCC6E'],'p-services':['#8239EA','#3DCC6E'],'p-payments':['#8239EA','#3DCC6E'],'p-csr':['#8239EA','#3DCC6E'],
- 'p-linkedin':['#8239EA','#3DCC6E'],'p-healthtech':['#8239EA','#3DCC6E'],'p-a11y':['#8239EA','#B07CFF'],
- 'p-th':['#FF6C00','#0A0A2E'],'p-chore':['#5B23C8','#F5B92E'],'p-fairent':['#1A1633','#FFE53D'],'p-j8nix':['#2A44C6','#2AB9FF'],'p-general':['#9AA6BF','#9AA6BF']};
-var PBADGE={'p-shomer':'shomer','p-ios':'shomer','p-tnufa':'shomer','p-command':'shomer','p-nature':'nature','p-lickpick':'lickpick','p-th':'th','p-chore':'chore','p-milo':'milo','p-ig':'media','p-j8nix':'j8nix',
+/* 11.3.0 (Dave 17 Nov): project colours come only from the J8NIX palette (no pink, no yellow) */
+var PCOL={'p-shomer':['#FF9700','#202663'],'p-ios':['#FF9700','#202663'],'p-tnufa':['#FF9700','#202663'],'p-command':['#FF9700','#202663'],'p-nature':['#32CC00','#32CC00'],
+ 'p-lickpick':['#FF9700','#202663'],'p-site':['#202663','#838EB7'],'p-services':['#202663','#838EB7'],'p-payments':['#202663','#838EB7'],'p-csr':['#202663','#838EB7'],
+ 'p-linkedin':['#202663','#838EB7'],'p-healthtech':['#202663','#838EB7'],'p-a11y':['#202663','#838EB7'],
+ 'p-th':['#FF9700','#202663'],'p-chore':['#2A44C6','#FF9700'],'p-fairent':['#202663','#FF9700'],'p-j8nix':['#2A44C6','#2AB9FF'],'p-general':['#838EB7','#838EB7']};
+var PAL13=['#2A44C6','#2AB9FF','#32CC00','#FF9700','#9500FF','#202663','#838EB7','#586475'];
+function snap13(h){var m=String(h||'').replace('#','');if(m.length===3)m=m.replace(/./g,'$&$&');if(!/^[0-9a-f]{6}$/i.test(m.slice(0,6)))return null;m=m.slice(0,6).toUpperCase();if(PAL13.indexOf('#'+m)>-1)return '#'+m;
+ var r=parseInt(m.substr(0,2),16)/255,g=parseInt(m.substr(2,2),16)/255,b=parseInt(m.substr(4,2),16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn,l=(mx+mn)/2,s=d?d/(1-Math.abs(2*l-1)):0,H=0;
+ if(s<.22||d<.08)return l<.3?'#202663':l<.6?'#586475':'#838EB7';if(l<.2)return '#202663';
+ H=mx===r?60*(((g-b)/d)%6):mx===g?60*((b-r)/d+2):60*((r-g)/d+4);if(H<0)H+=360;
+ if(H>=250&&H<345)return '#202663';var A=[[35,'#FF9700'],[105,'#32CC00'],[200,'#2AB9FF'],[230,'#2A44C6'],[395,'#FF9700']],best=null,bd=1e9;A.forEach(function(x){var dd=Math.abs(H-x[0]);if(dd<bd){bd=dd;best=x[1];}});return best;}
+var PBADGE={'p-shomer':'shomer','p-ios':'shomer','p-tnufa':'shomer','p-command':'shomer','p-nature':'nature','p-lickpick':'lickpick','p-th':'th','p-chore':'chore','p-milo':'milo','p-ig':'media','p-j8nix':'j8nix-2026-11-17',
  'p-site':'studio','p-services':'studio','p-payments':'studio','p-csr':'studio','p-linkedin':'studio','p-healthtech':'studio','p-a11y':'studio'};
 function lum(h){var m=String(h).replace('#','');if(m.length!==6)return .5;return [0,2,4].map(function(i){var c=parseInt(m.substr(i,2),16)/255;return c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4);}).reduce(function(s,c,i){return s+c*[.2126,.7152,.0722][i];},0);}
 /* 6.1: a stripe must show on its background: when the brand's first colour is too faint for this theme, its second colour leads */
 function pcol(id){var c=pcolRaw(id);if(!c)return null;var dk=document.documentElement.dataset.theme==='dark'||(document.documentElement.dataset.theme==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches);
  if(!dk&&lum(c[0])>.6&&c[1]&&lum(c[1])<=.6)return [c[1],c[0]];if(dk&&lum(c[0])<.04&&c[1]&&lum(c[1])>=.04)return [c[1],c[0]];return c;}
-function pcolRaw(id){if(!id)return null;if(PCOL[id])return PCOL[id];var c=(PR[id]||{}).color;return /^#[0-9a-f]{3,8}$/i.test(String(c||''))?[c,c]:null;}
+function pcolRaw(id){if(!id)return null;if(PCOL[id])return PCOL[id];var c=snap13((PR[id]||{}).color);return c?[c,c]:null;}
 function pm(id){var b=id&&PBADGE[id];if(b)return '<img class="pb" src="brand/'+b+'.png" alt="" width="18" height="18" loading="lazy" decoding="async">';var c=pcol(id);return c?'<i class="pm" style="--pc:'+c[0]+';--pc2:'+c[1]+'" aria-hidden="true"></i>':'';}
 function pcStyle(id){var c=pcol(id);return c?';--pc:'+c[0]:'';}
 var SEVC={r:'var(--r)',o:'var(--o)',g:'var(--ok)'};
@@ -106,7 +113,7 @@ var GR=[['money','Money','#9A5B00'],['approve','Approve','#1F5BFF'],['projects',
 var GC={};GR.forEach(function(g){GC[g[0]]=g;});
 var ST={wait:'Waiting on you',prog:'In progress',done:'Done',stuck:'Stuck',park:'Parked',kill:'Killed'};
 var NOUN={application:'applications',email:'emails',linkedin:'LinkedIn notes',post:'posts',invoice:'invoices',template:'templates',other:'drafts'};
-function shortWhat(y){var t=headline(y),m=t.match(/^(.+?[^.\s])(\.\s|;\s| — )/);if(m)t=m[1];t=t.replace(/\s*\([^)]*\)\s*\.?$/,'').replace(/\.$/,'');return cut(t,90);}
+function shortWhat(y,full){var t=headline(y),m=t.match(/^(.+?[^.\s])(\.\s|;\s| — )/);if(m)t=m[1];t=t.replace(/\s*\([^)]*\)\s*\.?$/,'').replace(/\.$/,'');return full?t:cut(t,90);} /* 11.3: a Dave headline is never cut */
 function cap1(s){s=String(s||'');return s.charAt(0).toUpperCase()+s.slice(1);}
 function apWho(a){return cut(a.to||a.subject||a.id,60);}
 function apKind(a){return (KIND[a.kind]||KIND.other)[0];}
@@ -202,11 +209,11 @@ function rows(){var R=[],ida=function(L){return L.map(function(a){return a.id;})
  tasksAll().forEach(function(t){if(t.status==='done')return;var p=pobj(t.project_id),dv=t.owner==='dave',bl=openBlk(t.id).length>0,tm=DEPT[t.owner]||t.owner||'Team';
   R.push({key:'tk-'+t.id,g:dv?(moneyP(p)?'money':'projects'):'team',st:dv?'wait':bl?'stuck':'prog',sev:dv?(t.sev==='r'?'r':'o'):null,title:t.title,sub:(p?p.name:'Studio')+(dv?'':' · '+tm),full:t.action||'',own:dv?'dave':tm,task:t,ids:[t.id],since:dt(t.created_at),due:dt(t.due)});});
  projList().filter(function(p){return p.id!=='p-general';}).forEach(function(p){var y=coveredYou(p)?'':youReal(p),pk=p.status==='parked',g=pk?'later':isMoneyProj(p)&&y?'money':'projects';
-  R.push({key:'mv-'+p.id,g:g,st:pk?'park':y?'wait':'prog',sev:y?sevOf(p.you)||'o':null,title:y?shortWhat(y):p.name,sub:y?p.name+(stageName(p.stage)?' · '+stageName(p.stage):''):cut(shortWhat(p.now||''),70)||stageName(p.stage),full:y,own:y?'dave':dept(p),why:whyMove(p),p:p,move:!!y,ids:[p.id],since:dt(p.updated)});});
+  R.push({key:'mv-'+p.id,g:g,st:pk?'park':y?'wait':'prog',sev:y?sevOf(p.you)||'o':null,title:y?shortWhat(y,1):p.name,sub:y?p.name+(stageName(p.stage)?' · '+stageName(p.stage):''):cut(shortWhat(p.now||''),70)||stageName(p.stage),full:y,own:y?'dave':dept(p),why:whyMove(p),p:p,move:!!y,ids:[p.id],since:dt(p.updated)});});
  batches().forEach(function(b){if(b.items.length===1&&b.items[0].kind==='invoice')return;var ds=b.items.map(dueOf).filter(Boolean).sort(function(x,y){return x-y;});
   R.push({key:'b-'+b.id,g:'approve',st:'wait',sev:ds[0]&&ds[0]<=eod()?'r':'o',since:b.items.map(function(a){return dt(a.created);}).filter(Boolean).sort(function(x,y){return x-y;})[0]||null,title:b.items.length+' '+nounOf(b.items)+' to send',sub:b.label,own:'dave',due:ds[0]||null,batch:b,ids:ida(b.items)});});
  held().forEach(function(h){var n=h.items.length+' '+nounOf(h.items);R.push({key:h.key,g:'team',st:h.dave?'wait':'stuck',sev:h.dave?'o':null,title:h.dave?cut(h.why,70)+' ('+n+')':n.replace(/^(\d+) /,'$1 approved ')+' held',sub:h.dave?'Approved; '+(h.items.length===1?'it goes':'they go')+' out once you do this':cut(h.why,70),own:h.dave?'dave':'Team',held:h,ids:ida(h.items)});});
- J8.inbox.list().forEach(function(x){var a=isAsk(x),st=a?'wait':x.status==='done'?'done':'prog';
+ J8.inbox.list().forEach(function(x){var a=false /* 11.3: a reply fragment is never a step for Dave */,st=a?'wait':x.status==='done'?'done':'prog';
   R.push({key:'c-'+x.p+'-'+String(x.at),ids:[],g:'team',st:st,sev:a?sevOf(J8.inbox.lastReply(x))||'o':null,full:a?askLine(x):'',title:a?askShort(askLine(x)):pname(x.p)+(st==='done'?' · done':' · with the team'),sub:a?pname(x.p)+' team asks':cut(lastClean(x),80),own:a?'dave':dept(PR[x.p]||{}),c:x,ask:a,at:x.at,since:x.at?new Date(x.at):null});});
  var ot=oldTasks();if(ot.length)R.push({key:'old',g:'later',st:'park',title:ot.length+' older to-do items',sub:'From 3–11 Nov. Tick what is done.',own:'dave',tasks:ot});
  return R.sort(function(a,b){return GR.map(function(g){return g[0];}).indexOf(a.g)-GR.map(function(g){return g[0];}).indexOf(b.g)||ORD[a.st]-ORD[b.st];});}
@@ -218,7 +225,7 @@ function today(){return queue().slice(0,5);}
 function nextOf(i){
  if(i.task){var t=i.task;return {what:t.title,why:t.why||'',u:t.link||'',t:t.link_text||'Open it',jump:null};}
  if(i.p){var p=i.p,u=p.you_link||p.link,t=p.you_link?(p.you_link_text||'Open it'):(p.link_text||'Open it');return {what:i.title,why:i.why,u:u,t:t};}
- if(i.batch)return {what:'Decide '+i.title.replace(/ to send$/,''),why:'They go out only after your Send. '+i.batch.label+'.',jump:'list-'+i.key,t:'Open the '+i.batch.items.length};
+ if(i.batch)return {what:'Approve or kill '+i.title.replace(/ to send$/,''),why:'They go out only after your Send. '+i.batch.label+'.',jump:'list-'+i.key,t:'Open the '+i.batch.items.length};
  if(i.held)return {what:i.title,why:i.sub+'.',jump:'list-'+i.key,t:'See what waits'};
  if(i.c)return {what:i.title,why:'The team waits for your answer on '+pname(i.c.p)+'.',jump:'list-'+i.key,t:'Answer the team'};
  if(i.ap)return {what:i.title,why:'Money in: '+(i.ap.warn?cut(i.ap.warn,90):'payment request ready.'),jump:'list-'+i.key,t:'Open it'};
@@ -483,7 +490,7 @@ function unitsSorted(){return J8.units.departments().slice().sort(function(a,b){
 function firstNum(L){var m=Infinity;L.forEach(function(v){if(v<m)m=v;});return m;}
 /* =====================================================================================================================
    J8NIX 7.1.0 (14 Nov 2026): the v7.1 design on live data. Four places, one job each, one hue each:
-   Today (amber = you) · Studio (blue = places) · Flow (teal = progress) · Talk (orchid = people). Red = alarm only.
+   Today (amber = you) · Studio (blue = places) · Flow (teal = progress) · Talk (slate = people). Red = alarm only.
    Every screen answers 4 questions in one brief: where you are, what you see, what is needed (amber), what you get (teal).
    The data logic above is unchanged from 6.1.2 (rows, unlocks, needs, mentor, notes with routing, Control).
    Plan + screen → code → data map: ops/brain/J8NIX-V6-PLAN.md §7.1. Revert: index-6.1.2.html (one line in the plan).
@@ -644,7 +651,7 @@ function whenStr(ms){var d=new Date(ms);if(isNaN(d))return '';var td=ymd(new Dat
  if(k===td)return (LANG==='he'?'היום ':'today ')+hm2(ms);if(k===tm1)return (LANG==='he'?'מחר ':'tomorrow ')+hm2(ms);return dayStr(d)+' '+hm2(ms);}
 
 /* ---------- icons, tiles, small parts ---------- */
-var TBG={shomer:'#0C1B3A',nature:'#EEF6EE',lickpick:'#15111F',th:'#0A0A2E',chore:'#F6F1FF',milo:'#CFE3EA',media:'#F4F7FB',j8nix:'#2A44C6',studio:'#F3EAFE'};
+var TBG={shomer:'#0C1B3A',nature:'#EEF6EE',lickpick:'#15111F',th:'#0A0A2E',chore:'#F6F1FF',milo:'#CFE3EA',media:'#F4F7FB',j8nix:'#2A44C6','j8nix-2026-11-17':'#FFFFFF',studio:'#F3EAFE'};
 function tile(pid,cls){var b=pid&&PBADGE[pid];cls='tile'+(cls?' '+cls:'');
  if(b)return '<span class="'+cls+'" style="background:'+TBG[b]+'"><img src="brand/'+b+'.png" alt="" width="64" height="64" loading="lazy" decoding="async"></span>';
  var c=pcolRaw(pid);if(!c||pid==='p-general')return '<span class="'+cls+' plain">'+ic('studio')+'</span>';
@@ -892,7 +899,7 @@ function numbersHTML(){var m=J8.money.summary()||{},b=isNum(m.booked_usd)?m.book
   +'<div class="kpi"><span>Sent</span><b>'+sn+'</b><small>'+ap+' approved, not out yet</small></div></div>';
  var t0=new Date(START+'T12:00:00').getTime(),t1=new Date(MS[5][1]+'T12:00:00').getTime(),x=function(d){return Math.max(0,Math.min(100,(new Date(d+'T12:00:00').getTime()-t0)/(t1-t0)*100));},tn=Math.max(0,Math.min(100,(Date.now()-t0)/(t1-t0)*100)),nx=MS.filter(function(s){return b<s[2];})[0];
  h+='<section class="st"><h3>Milestones</h3><ol class="msl">'+MS.map(function(s){return '<li class="'+(b>=s[2]?'r':'')+(nx&&nx[0]===s[0]?' nx':'')+'"><b>'+s[0].replace('M','Milestone ')+'</b><span>'+usd(s[2])+' by '+fdate(s[1])+'</span>'+(b>=s[2]?chip('done','check','Reached'):nx&&nx[0]===s[0]?chip('you','today','Next'):'')+'</li>';}).join('')+'</ol></section>';
- var P=projList().filter(function(p){return p.id!=='p-general';}),SC=['#9500FF','#2A44C6','#00C2A8','#E23FD0','#2AB9FF','#32CC00'] /* 8.1: the v5 stage spectrum */,sg=J8.projects.STAGES.map(function(s,i){return {k:FSTG[i],v:P.filter(function(p){return p.stage===i+1;}).length,c:SC[i]};});
+ var P=projList().filter(function(p){return p.id!=='p-general';}),SC=['#838EB7','#2A44C6','#202663','#FF9700','#2AB9FF','#32CC00'] /* 11.3: stage spectrum from the J8NIX palette */,sg=J8.projects.STAGES.map(function(s,i){return {k:FSTG[i],v:P.filter(function(p){return p.stage===i+1;}).length,c:SC[i]};});
  var ns=P.filter(function(p){return !isNum(p.stage);}).length;if(ns)sg.push({k:'No stage',v:ns,c:'#D8D8D8'});
  h+='<div class="pair"><section class="st"><h3>Projects by stage</h3>'+donut(sg,'Projects by stage')+'</section>'
   +'<section class="st"><h3>Drafts</h3>'+donut([{k:'Waiting',v:wt,c:'#FF9700',keep:1},{k:'Approved',v:ap,c:'#586475',keep:1},{k:'Sent',v:sn,c:'#32CC00',keep:1},{k:'Killed',v:kl,c:'#C9D0E4',keep:1}],'Drafts by status')+'</section></div>';
@@ -1512,7 +1519,7 @@ function vNow(){var h='<header class="ph"><div><h2 id="pageH" tabindex="-1">'+es
  if(!connected)return h+'</div></header><p class="lead" role="status">'+t('loadingDay')+'</p><div class="skel"></div><div class="skel"></div>';
  var nf=nextFixed();h+='<p class="sub">'+(nf?'<button class="lnk" data-a="jump" data-id="'+esc(nf.jump==='stats'?'money':nf.jump||'calendar')+'"><span>'+esc(t('xNextFixed',{x:''}))+'<bdi dir="auto">'+esc(evWhen(nf)+' '+cut(nf.title,60))+'</bdi></span></button>':esc(t('xNoFixed')))+'</p></div>';
  var N=myQueue(),cap=capMin(),TL=todayList(N),L=TL.L,tot=sumMins(L.map(function(i){return {mins:minsI(i)};}));
- h+='<button class="btn pri" data-a="x-plan">'+ic('plan')+'<span>'+t('xPlan')+'</span></button></header>';
+ h+='</header>'; /* 11.3: "Plan my day" removed (Dave 17 Nov); the Today panel on Next replaces it */
  if(J8.status().error==='offline'){var sa=UI.syncedAt?hm2(UI.syncedAt):'—';h+='<p class="held">'+ic('wifi')+'<span>'+esc(t('noConnP',{t:sa}))+'</span> <button class="lnk" data-a="retry">'+t('tryAgain')+'</button></p>';}
  if(!N.length){var D0=doneToday();return h+'<section class="empty10"><p>'+esc(t('xNothing'))+(nf?' '+esc(t('xNextFixed',{x:''}))+'<bdi dir="auto">'+esc(evWhen(nf)+' '+nf.title)+'</bdi>':'')+'</p><button class="btn" data-a="nav" data-id="projects">'+t('xOpen')+': '+t('projects')+'</button></section>'+kpis()+doneBlock(D0,false);}
  var pc=Math.min(100,tot/cap*100),over=tot>cap;
@@ -1616,7 +1623,7 @@ function vCal(){var h='<header class="ph"><div><h2 id="pageH" tabindex="-1">'+es
  E.forEach(function(e){var x=D.filter(function(dd){return dd.key===e.day;})[0];if(x)x.ev.push(e);});
  h+='<ol class="mweek">'+D.slice(0,7).map(function(dd,k){var n=dd.ev.length;return '<li class="'+(k===0?'td':'')+'"><span>'+esc(dayShort(dd.d))+'</span><span class="dots" role="img" aria-label="'+n+'">'+'<i></i>'.repeat(Math.min(4,n))+'</span></li>';}).join('')+'</ol>';
  var nd=tasksAll().filter(function(x){return x.owner==='dave'&&(!x.status||x.status==='open')&&!x.due;});
- if(nd.length)h+='<div class="nodate"><span>'+esc(t('xCalNoDate'))+' · <bdi>'+nd.length+'</bdi></span><button class="btn" data-a="x-plan">'+ic('plan')+'<span>'+t('xCalPlan')+'</span></button></div>';
+ if(nd.length)h+='<div class="nodate"><span>'+esc(t('xCalNoDate'))+' · <bdi>'+nd.length+'</bdi></span></div>';
  h+='<p class="lead">'+esc(t('xCalConn'))+' <button class="lnk" data-a="nav" data-id="me">'+t('xConn')+'</button></p>';
  var has=D.filter(function(dd){return dd.ev.length;});if(!has.length)return h+'<section class="empty10"><p>'+esc(t('xCalNone'))+'</p></section>';
  h+='<div class="agenda">'+has.map(function(dd){dd.ev.sort(function(a,b){return (a.time||'99').localeCompare(b.time||'99');});var k='cd'+dd.key,L=UI.open[k]?dd.ev:dd.ev.slice(0,8);
@@ -1648,12 +1655,12 @@ function meWords(){var W={mSendH:LANG==='he'?'שליחה על ידי צוות ה
 /* ---------- J8 panel: at most 2 cards about what is on screen, then Ask (the team thread, composer pinned) ---------- */
 function j8Card(key,what,why,act,actId,actData){if(snoozed('j8c-'+key))return null;return {k:key,h:'<article class="j8card" data-key="'+esc(key)+'"><p class="w" dir="auto">'+what+'</p><p class="y" dir="auto">'+esc(why)+'</p><div class="acts">'+(act?'<button class="lk" data-a="'+act+'"'+(actId?' data-id="'+esc(actId)+'"':'')+(actData?' data-k="'+esc(actData)+'"':'')+'>'+esc(t('xDoIt'))+'</button>':'')+'<button class="lk" data-a="x-snz" data-id="'+esc(key)+'">'+t('xNotNow')+'</button><button class="lk" data-a="x-why" data-id="'+esc(key)+'" aria-expanded="'+(UI.open['why-'+key]?'true':'false')+'">'+t('xWhy')+'</button></div>'+(UI.open['why-'+key]?'<p class="src">'+esc(t('xWhySrc',{t:UI.syncedAt?hm2(UI.syncedAt):'—'}))+'</p>':'')+'</article>'};}
 function j8Cards(){if(!connected)return [];var C=[],pl=curPlace(),v=UI.v,N=myQueue();
- if(v==='now'&&N.length){var cap=capMin(),tot=sumMins(N.map(function(i){return {mins:minsI(i)};}));if(tot>cap&&!planToday())C.push(j8Card('plan',esc(t('xCPlanW',{n:N.length,a:dur(tot),b:dur(cap)})),t('xCPlanY'),'x-plan'));
+ if(v==='now'&&N.length){var cap=capMin(),tot=sumMins(N.map(function(i){return {mins:minsI(i)};}));
   var mi=N.filter(function(i){return i.money;})[0];if(mi)C.push(j8Card('money-'+mi.key,esc(t('xCMonW',{x:cap1(nextOf(mi).what)})),t('xCMonY'),'x-goitem',null,mi.key));}
  else if(v==='money'){var mi2=N.filter(function(i){return i.money;})[0];if(mi2)C.push(j8Card('money-'+mi2.key,esc(t('xCMonW',{x:cap1(nextOf(mi2).what)})),t('xCMonY'),'x-goitem',null,mi2.key));}
  else if(v==='proj'){var p=pobj(UI.proj),hh=p&&healthOf(p);if(hh)C.push(j8Card('risk-'+p.id,esc(p.name+': '+hh.w),t('xCWeakY'),'x-pseg','rev'));}
  else if(pl==='inbox'&&(UI.dids||[]).length){var cur=(UI.dids||[]).filter(isPend)[0];if(cur)C.push(j8Card('dr-'+cur,esc(t('xCDrW',{x:apWho(Object.assign({id:cur},AP[cur]))})),(AP[cur]&&AP[cur].to)?t('xChkTo',{x:cut(AP[cur].to,60)}):t('xChkNoTo'),null));}
- else if(v==='calendar'){var nd=tasksAll().filter(function(x){return x.owner==='dave'&&(!x.status||x.status==='open')&&!x.due;}).length;if(nd)C.push(j8Card('cal',esc(t('xCCalW',{n:nd})),t('xCCalY'),'x-plan'));}
+ else if(v==='calendar'){var nd=tasksAll().filter(function(x){return x.owner==='dave'&&(!x.status||x.status==='open')&&!x.due;}).length;}
  else if(v==='projects'){var M=mineBy(),W=liveP().map(function(p){return {p:p,h:healthOf(p)};}).filter(function(x){return x.h;}).sort(function(a,b){return (b.h.k==='over'?999:b.h.d||0)-(a.h.k==='over'?999:a.h.d||0);})[0];if(W)C.push(j8Card('weak-'+W.p.id,esc(W.p.name+': '+W.h.w),t('xCWeakY'),'proj',W.p.id));}
  return C.filter(Boolean).slice(0,2);}
 function j8Open(){return document.body.dataset.j8==='open';}

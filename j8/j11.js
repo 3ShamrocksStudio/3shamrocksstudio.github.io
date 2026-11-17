@@ -11,7 +11,7 @@ var L11={en:{now:'Home',inbox:'Approve',steps:'Steps',projects:'Projects',calend
   week:'Week',all:'All',noEv:'Nothing dated this week',clear:'All clear. Nothing waits on you.',then:'Then',more:'+{n} more',
   qProject:'New project',qMemo:'Record voice memo',qRem:'New reminder',qAudit:'Audit projects',
   pProject:'New project: ',pRem:'Remind me ',pAudit:'Audit all projects: where each one stands vs the goal, what blocks money, and the one next step for each.',pMemo:'Voice memo: ',
-  listening:'Listening… speak now',stepsH:'Your next step',ofN:'{a} of {b}',planDay:'Plan my day',teamOn:'Team on',teamOff:'Team paused',
+  listening:'Listening… speak now',stepsH:'Your next step',ofN:'{a} of {b}',teamOn:'Team on',teamOff:'Team paused',
   tour:'Show me around',obSkip:'Skip',obNext:'Next',obStart:'Start',obDone:'Let’s go',obBack:'Back',
   ob1h:'Meet J8',ob1p:'Your copilot for the business.',ob1a:'Your goal, always in view',ob1b:'One next step at a time',ob1c:'Nothing goes out without your OK',
   ob2h:'Your goal',ob2j:'This is the goal I steer us toward.',ob2a:'Big goal',ob2b:'First milestone',ob2c:'Booked so far',ob2n:'To change a goal, tell J8 in the chat.',by:'by {d}',asOf:'as of {d}',
@@ -29,7 +29,7 @@ var L11={en:{now:'Home',inbox:'Approve',steps:'Steps',projects:'Projects',calend
   week:'שבוע',all:'הכל',noEv:'אין תאריכים השבוע',clear:'הכל נקי. שום דבר לא מחכה לך.',then:'אחר כך',more:'עוד {n}',
   qProject:'פרויקט חדש',qMemo:'הקלטה קולית',qRem:'תזכורת חדשה',qAudit:'בדיקת פרויקטים',
   pProject:'פרויקט חדש: ',pRem:'תזכיר לי ',pAudit:'תבדוק את כל הפרויקטים: איפה כל אחד עומד מול היעד, מה חוסם כסף, והצעד הבא לכל אחד.',pMemo:'הקלטה: ',
-  listening:'מקשיב… אפשר לדבר',stepsH:'הצעד הבא שלך',ofN:'{a} מתוך {b}',planDay:'לתכנן את היום',teamOn:'הצוות עובד',teamOff:'הצוות בהשהיה',
+  listening:'מקשיב… אפשר לדבר',stepsH:'הצעד הבא שלך',ofN:'{a} מתוך {b}',teamOn:'הצוות עובד',teamOff:'הצוות בהשהיה',
   tour:'סיור קצר',obSkip:'דלג',obNext:'הבא',obStart:'מתחילים',obDone:'יאללה',obBack:'חזרה',
   ob1h:'הכירו את J8',ob1p:'טייס המשנה של העסק.',ob1a:'היעד תמיד מול העיניים',ob1b:'צעד אחד בכל פעם',ob1c:'שום דבר לא יוצא בלי האישור שלך',
   ob2h:'היעד שלך',ob2j:'זה היעד שאני מכוון אליו.',ob2a:'היעד הגדול',ob2b:'אבן דרך ראשונה',ob2c:'נסגר עד עכשיו',ob2n:'לשינוי יעד, כתבו ל־J8 בצ׳אט.',by:'עד {d}',asOf:'נכון ל־{d}',
@@ -208,7 +208,7 @@ function px(o,k){return o?(o[k]!=null?o[k]:(o.extra||{})[k]):undefined;}
 function projPlanTag(p){return p&&px(p,'plan')?'<p class="plan12"><span class="chip12 new sm">'+I('check')+'<bdi>'+esc(tt('yourPlan'))+'</bdi></span>'+(J8.orgs.can('admin')?'<button type="button" class="lnk" data-a="x12-pedit" data-id="'+esc(p.id)+'">'+I('edit')+'<span>'+esc(tt('editIt'))+'</span></button>':'')+'</p>':'';}
 function heroCard(i,ix){var n=nextOf(i),k=esc(i.key),pid=rowPid(i),p=pobj(pid),ul=i.ul.length,unl=UI.unl&&(i.ids||[]).some(function(x){return UI.unl.indexOf(x)>-1;});
   return '<section class="hero12'+(UI.arriveK===i.key?' arrive':'')+'" id="hero12" data-k="'+k+'" aria-labelledby="heroT">'
-   +'<div class="eb12"><span class="dtf">'+g8i()+'<span>'+esc(ix>0?tt('selN',{n:ix+1}):tt('dtf'))+'</span></span>'+(unl?chip12('new','unlock',esc(tt('justUnl'))):'')+(ul?chip12('unl','key',esc(tt('unlocks',{n:ul}))):'')+(isNum(i.mins)?chip12('','time',esc(tt('min',{n:i.mins}))):'')+'</div>'
+   +'<div class="eb12"><span class="dtf">'+g8i()+'<span>'+esc(ix>0||!promo13(i)?tt('selN',{n:(ix||0)+1}):tt('dtf'))+'</span></span>'+(unl?chip12('new','unlock',esc(tt('justUnl'))):'')+(ul?chip12('unl','key',esc(tt('unlocks',{n:ul}))):'')+(isNum(i.mins)?chip12('','time',esc(tt('min',{n:i.mins}))):'')+'</div>'
    +'<h3 id="heroT" class="ht12" dir="auto">'+esc(cap1(n.what))+'</h3>'+planTag(i)
    +(ul?'<p class="fr12">'+I('unlock')+'<span dir="auto">'+esc(tt('frees2',{x:freesTxt(i)}))+'</span></p>':'')
    +(p&&pid!=='p-general'?'<p class="pj12">'+ptile(pid,'sm')+'<bdi dir="auto">'+esc(p.name)+'</bdi></p>':'')
@@ -223,13 +223,14 @@ function groups12(R,off){var by={},order=[];R.forEach(function(i){var u=unitOf(p
     return '<details class="grp12" data-k="'+esc(key)+'" data-was="'+(op?1:0)+'"'+(op?' open':'')+'><summary><span class="gn" dir="auto">'+esc(g.nm)+'</span><span class="gw"><bdi>'+esc(g.L.length===1?tt('wait1'):tt('waitN',{n:g.L.length}))+'</bdi></span>'+I('down','chev')+'</summary>'
      +(op?'<ol class="rows12">'+g.L.map(function(i,j){return row12(i,start+j+1);}).join('')+'</ol>':'')+'</details>';}).join('');}
 function vNext(){var N=connected?myQueue():[],desk=isDesk();
-  var h=ph(tt('next'),connected?esc(N.length===1?tt('wait1'):N.length?tt('waitN',{n:N.length}):''):'',N.length>1?'<button class="lnk12" data-a="x-plan">'+I('plan')+'<span>'+esc(tt('planDay'))+'</span></button>':'');
+  var h=ph(tt('next'),connected?esc(N.length===1?tt('wait1'):N.length?tt('waitN',{n:N.length}):''):'','');
   if(!connected)return h+skel(3,true);
   if(J8.status().error==='offline'){var sa=UI.syncedAt?hm2(UI.syncedAt):'—';h+='<p class="held">'+I('wifi')+'<span>'+esc(t('noConnP',{t:sa}))+'</span> <button class="lnk" data-a="retry">'+t('tryAgain')+'</button></p>';}
   var m='';if(!desk)m+=goalsStrip();
-  m+=N.length?heroCard(N[0]):'<section class="hero12 clear"><p>'+I('done')+'<span>'+esc(tt('clear'))+'</span></p></section>';
-  if(N.length>1)m+='<h3 class="sh12">'+esc(tt('then'))+'</h3><ol class="rows12">'+N.slice(1,4).map(function(i,k){return row12(i,k+2);}).join('')+'</ol>';
-  var R=N.slice(4);if(R.length)m+='<h3 class="sh12">'+esc(tt('else'))+' <span class="n12"><bdi>'+R.length+'</bdi></span></h3>'+groups12(R,4);
+  var H0=N.length&&promo13(N[0])?1:0; /* 11.3: Do this first only for a real step with how-to and a link (or drafts to OK) */
+  m+=H0?heroCard(N[0]):N.length?'':'<section class="hero12 clear"><p>'+I('done')+'<span>'+esc(tt('clear'))+'</span></p></section>';
+  if(N.length>H0)m+='<h3 class="sh12">'+esc(H0?tt('then'):tt('needsH'))+'</h3><ol class="rows12">'+N.slice(H0,H0+3).map(function(i,k){return row12(i,k+1+H0);}).join('')+'</ol>';
+  var R=N.slice(H0+3);if(R.length)m+='<h3 class="sh12">'+esc(tt('else'))+' <span class="n12"><bdi>'+R.length+'</bdi></span></h3>'+groups12(R,H0+3);
   if(desk)return h+'<div class="next12 desk"><div class="c1">'+m+'</div><aside class="c2" aria-label="'+esc(tt('goals'))+'">'+goalsCard(true)+okCard(true)+statTiles(true)+'</aside></div>';
   return h+'<div class="next12">'+m+'</div>';}
 
@@ -243,7 +244,7 @@ function chatLog(){var L=J8.inbox.list(40).slice().reverse(),h='',day='',brain=J
     h+='<div class="me12"><div class="bub12 mine">'+(ab?'<p class="ab12">'+I('link')+'<bdi dir="auto">'+esc(cut(ab,44))+'</bdi></p>':'')+'<p dir="auto">'+esc(x.text)+'</p><span class="tm12"><bdi>'+esc(tm1(x.at))+'</bdi> · '+esc(stLabel(st,x))+'</span></div></div>';
     teamLines(x).forEach(function(l,j){var v=sevOf(l.x)||sevLegacy(l.x),key=x.id+'#'+j,nw=UI.seenL&&!UI.seenL[key];if(UI.seenL)UI.seenL[key]=1;h+='<div class="j812'+(nw?' new12':'')+'"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12'+(v?' lv-'+v:'')+'">'+(v?sevChip(v):'')+'<div dir="auto">'+md(sevStrip(l.x))+'</div>'+(l.t?'<span class="tm12"><bdi>'+esc(l.t)+'</bdi></span>':'')+'</div></div>';});
     if(ix===L.length-1&&st!=='done'){var bp=brain&&UI.brainPend&&UI.brainPend.id===x.id&&now-UI.brainPend.t<6e4&&teamLines(x).length<2;
-      h+=bp?'<div class="j812 typing12" role="status"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12"><span class="dots12" aria-hidden="true"><i></i><i></i><i></i></span><small>'+esc(tt('thinking'))+'</small></div></div>'
+      h+=bp?'<div class="j812 typing12" role="status"><span class="av12 wk13" aria-hidden="true">'+w8()+'</span><div class="bub12"><small>'+esc(tt('thinking'))+'</small></div></div>'
         :'<p class="wait12" role="status">'+I('time')+'<span>'+esc(st==='routed'?tt('withTeamL'):tt('replyHere'))+'</span></p>';}});
   if(!UI.seenL){UI.seenL={};L.forEach(function(x){teamLines(x).forEach(function(l,j){UI.seenL[x.id+'#'+j]=1;});});}
   return h||'<p class="empty12">'+g8i()+'<span>'+esc(tt('noMsg'))+'</span></p>';}
@@ -341,8 +342,8 @@ document.addEventListener('input',function(e){var x=e.target;if(x&&x.tagName==='
 (function(){var y0=null,dy=0,el=null,busy=false;function bar(){if(!el){el=document.createElement('div');el.id='ptr12';el.setAttribute('aria-hidden','true');el.innerHTML='<span>'+I('refresh')+'</span>';document.body.appendChild(el);}return el;}
  document.addEventListener('touchstart',function(e){var m=$('main');if(busy||!m||isDesk()||!m.contains(e.target)||m.scrollTop>0||e.touches.length!==1||e.target.closest('textarea,input,select'))return;y0=e.touches[0].clientY;dy=0;},{passive:true});
  document.addEventListener('touchmove',function(e){if(y0==null)return;dy=e.touches[0].clientY-y0;if(dy<=0){bar().style.setProperty('--p',0);return;}var b=bar();b.classList.add('on');b.style.setProperty('--p',Math.min(1,dy/90).toFixed(3));b.classList.toggle('ready',dy>90);},{passive:true});
- document.addEventListener('touchend',function(){if(y0==null)return;y0=null;var b=bar();if(dy>90&&!busy){busy=true;b.classList.add('spin');toast(tt('refreshing'));
-   Promise.race([J8.reload(),new Promise(function(_,rj){setTimeout(function(){rj('timeout');},1e4);})]).then(function(){toast(tt('upToDate'));},function(){toast(t('notConn'));}).then(function(){busy=false;b.classList.remove('on','spin','ready');});}else b.classList.remove('on','ready');dy=0;},{passive:true});})();
+ document.addEventListener('touchend',function(){if(y0==null)return;y0=null;var b=bar();if(dy>90&&!busy){busy=true;b.classList.add('spin');b.innerHTML='<span>'+w8()+'</span>';toast(tt('refreshing'));
+   Promise.race([J8.reload(),new Promise(function(_,rj){setTimeout(function(){rj('timeout');},1e4);})]).then(function(){toast(tt('upToDate'));},function(){toast(t('notConn'));}).then(function(){busy=false;b.classList.remove('on','spin','ready');b.innerHTML='<span>'+I('refresh')+'</span>';});}else b.classList.remove('on','ready');dy=0;},{passive:true});})();
 
 /* ---------- 11.1.0 onboarding: a J8 interview (scripted, branching; not live AI) that sets up your plan ---------- */
 Object.assign(L11.en,{tour:'Re-plan with J8',
@@ -439,20 +440,20 @@ function ansText(q){var A=OB.A,j=function(L){return L.filter(Boolean).join(' · 
 function obCollect(){var el=$('ob11');if(!el||!OB.A)return;[].forEach.call(el.querySelectorAll('[data-ob]'),function(x){setP(x.dataset.ob,x.value.trim());});if(typeof OB.A.cap==='string')OB.A.cap=+OB.A.cap||60;}
 function obOpen(s){OB.on=true;OB.A=A0();OB.made=null;OB.stage='ask';OB.form=false;var L=qs();OB.i=Math.max(0,Math.min(L.length-1,+s||0));var el=$('ob11');if(!el){el=document.createElement('div');el.id='ob11';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','obH');document.body.appendChild(el);}el.hidden=false;OB.typing=Date.now();obRender();}
 function obClose(){OB.on=false;var el=$('ob11');if(el)el.hidden=true;ls('j8-ob',1);try{if(J8.prefs&&J8.status().connected)J8.prefs.set({onboarded:new Date().toISOString()}).catch(function(){});}catch(e){}}
-function j8say(txt,id){return '<div class="say11"'+(id?' id="'+id+'"':'')+'><span class="j8av11"><img src="icons/mark-8.svg" alt="" width="12" height="27"></span><p dir="auto">'+esc(txt)+'</p></div>';}
+function j8say(txt,id){return '<div class="say11"'+(id?' id="'+id+'"':'')+'><span class="j8av11"><img src="brand/j8nix-mark-8-2026-11-17.svg" alt="" width="12" height="26"></span><p dir="auto">'+esc(txt)+'</p></div>';}
 function mesay(txt){return '<div class="me12"><div class="bub12 mine"><p dir="auto">'+esc(txt)+'</p></div></div>';}
-function obHead(){return '<div class="obtop12"><span class="j8av11 sm"><img src="icons/mark-8.svg" alt="" width="10" height="22"></span><b>J8</b><span class="sp"></span>'
+function obHead(){return '<div class="obtop12"><span class="j8av11 sm"><img src="brand/j8nix-mark-8-2026-11-17.svg" alt="" width="10" height="22"></span><b>J8</b><span class="sp"></span>'
   +(OB.stage==='ask'?'<button type="button" class="obsw" data-a="v11-ob" data-id="mode" aria-pressed="'+OB.form+'">'+I(OB.form?'chat':'steps')+'<span>'+esc(OB.form?tt('asChat'):tt('asForm'))+'</span></button>':'')
   +'<button type="button" class="obsw" data-a="v11-ob" data-id="'+(LANG==='he'?'lang-en':'lang-he')+'" lang="'+(LANG==='he'?'en':'he')+'">'+(LANG==='he'?'English':'עברית')+'</button><button type="button" class="obx" data-a="v11-ob" data-id="end" aria-label="'+esc(tt('k_esc'))+'">'+I('x')+'</button></div>';}
 function obRender(){var el=$('ob11');if(!el)return;var L=qs(),h='';
   if(OB.stage==='sum'){h=obHead()+'<div class="obb wide">'+obSummary()+'</div>';}
-  else if(OB.stage==='busy'){h=obHead()+'<div class="obb wide"><div class="j812 typing12" role="status"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12"><span class="dots12" aria-hidden="true"><i></i><i></i><i></i></span><small>'+esc(tt('building'))+'</small></div></div></div>';}
+  else if(OB.stage==='busy'){h=obHead()+'<div class="obb wide"><div class="j812 typing12" role="status"><span class="av12 wk13" aria-hidden="true">'+w8()+'</span><div class="bub12"><small>'+esc(tt('building'))+'</small></div></div></div>';}
   else if(OB.form){h=obHead()+'<form class="obb wide obform12" id="obF" novalidate><h2 id="obH">'+esc(tt('formH'))+'</h2>'+L.map(function(q,k){return '<fieldset class="fs12"><legend dir="auto"><span class="qn">'+(k+1)+'</span>'+esc(tt('iq_'+q.replace(/^f-/,'')))+'</legend>'+field(q)+'</fieldset>';}).join('')
     +'<p class="err12" role="alert">'+(OB.err?esc(OB.err):'')+'</p><div class="obnav"><button type="button" class="btn11 pri grow" data-a="v11-ob" data-id="build">'+I('check')+'<span>'+esc(tt('build'))+'</span></button></div></form>';}
   else{var q=L[OB.i],hist='';for(var k=0;k<OB.i;k++)hist+=j8say(tt('iq_'+L[k].replace(/^f-/,'')))+mesay(ansText(L[k]));
     var fresh=!RM()&&Date.now()-OB.typing<700;
     h=obHead()+'<div class="obb wide obchat12"><div class="dots11" aria-hidden="true">'+L.map(function(x,k){return '<i class="'+(k===OB.i?'on':k<OB.i?'done':'')+'"></i>';}).join('')+'</div>'+hist
-     +(fresh?'<div class="j812 typing12 tmp"><span class="av12" aria-hidden="true">'+g8i()+'</span><div class="bub12"><span class="dots12" aria-hidden="true"><i></i><i></i><i></i></span></div></div>':'')
+     +(fresh?'<div class="j812 typing12 tmp"><span class="av12 wk13" aria-hidden="true">'+w8()+'</span><div class="bub12"><small>'+esc(tt('thinking'))+'</small></div></div>':'')
      +'<div class="qnow12'+(fresh?' wait':'')+'"><h2 id="obH" class="sr">'+esc(tt('iq_'+q.replace(/^f-/,'')))+'</h2>'+j8say(tt('iq_'+q.replace(/^f-/,'')))+'<div class="ans12">'+field(q)+'</div><p class="err12" role="alert">'+(OB.err?esc(OB.err):'')+'</p>'
      +'<div class="obnav">'+(OB.i?'<button type="button" class="btn11 icon" data-a="v11-ob" data-id="back" aria-label="'+esc(tt('back'))+'">'+I('back','flip')+'</button>':'')+'<button type="button" class="btn11 pri grow" data-a="v11-ob" data-id="'+(OB.i<L.length-1?'next':'build')+'"><span>'+esc(OB.i<L.length-1?tt('obNext'):tt('build'))+'</span>'+I('do','flip')+'</button></div></div></div>';
     if(fresh){clearTimeout(obRender.t);obRender.t=setTimeout(function(){OB.typing=0;var t=el.querySelector('.typing12.tmp'),w=el.querySelector('.qnow12.wait');if(t)t.remove();if(w)w.classList.remove('wait');},650);}}
@@ -574,7 +575,7 @@ function qrow12(i,num,cur){var n=nextOf(i),k=esc(i.key),pid=rowPid(i),p=pobj(pid
   return '<li class="lr12 qr12'+(cur?' sel':'')+'" data-kn="'+k+'"><button class="lm" data-a="x12-focus" data-k="'+k+'" data-kp aria-current="'+(cur?'true':'false')+'"><span class="num12"><bdi>'+num+'</bdi></span><span class="dot12 '+sevCls(i)+'" aria-hidden="true"></span><span class="rt12"><b dir="auto">'+esc(cap1(n.what))+'</b>'+(p&&pid!=='p-general'?'<small dir="auto">'+esc(p.name)+'</small>':'')+'</span>'
    +(i.ul.length?'<span class="chip12 unl sm">'+I('key')+'<bdi>'+i.ul.length+'</bdi><span class="sr"> '+esc(tt('unlocks',{n:i.ul.length}))+'</span></span>':'')+(isNum(i.mins)?'<span class="mn12"><bdi>'+esc(tt('min',{n:i.mins}))+'</bdi></span>':'')+'</button>'
    +'<span class="qa12" role="group" aria-label="'+esc(t('actions'))+'">'+(dn?'<button class="ib12 ok" data-a="done" data-k="'+k+'" aria-label="'+esc(tt('done'))+'" title="'+esc(tt('done'))+' (D)">'+I('check')+'</button>':'')+'<button class="ib12" data-a="later" data-k="'+k+'" aria-label="'+esc(tt('later'))+'" title="'+esc(tt('later'))+'">'+I('later')+'</button><button class="ib12" data-a="comment" data-k="'+k+'" aria-label="'+esc(tt('comment'))+'" title="'+esc(tt('comment'))+' (C)">'+I('comment')+'</button></span></li>';}
-function vNextD(){var N=connected?myQueue():[],h=ph(tt('next'),connected?esc(N.length===1?tt('wait1'):N.length?tt('waitN',{n:N.length}):''):'','<div class="phx12">'+(N.length>1?'<button class="lnk12" data-a="x-plan">'+I('plan')+'<span>'+esc(tt('planDay'))+'</span></button>':'')+'<button class="lnk12 icon" data-a="x12-keys" aria-label="'+esc(tt('keys'))+'"><kbd>?</kbd></button></div>');
+function vNextD(){var N=connected?myQueue():[],h=ph(tt('next'),connected?esc(N.length===1?tt('wait1'):N.length?tt('waitN',{n:N.length}):''):'','<div class="phx12"><button class="lnk12 icon" data-a="x12-keys" aria-label="'+esc(tt('keys'))+'"><kbd>?</kbd></button></div>');
   if(!connected)return h+'<div class="nd12">'+skel(1,true)+skel(6)+'</div>';
   var fi=N.filter(function(x){return x.key===UI.focusK;})[0]||N[0],ix=N.indexOf(fi);if(fi)UI.focusK=fi.key;
   var L='<div class="nf12">'+(fi?heroCard(fi,ix):'<section class="hero12 clear"><p>'+I('done')+'<span>'+esc(tt('clear'))+'</span></p></section>')+(ix>0?'<button class="lnk12" data-a="x12-focus" data-k="'+esc(N[0].key)+'">'+I('back','flip')+'<span>'+esc(tt('back1'))+'</span></button>':'')
@@ -643,7 +644,7 @@ window.j8keys=keysOpen;
 /* command palette: the 9.0 Search or ask, with the new places and actions */
 var ai0=askItems;askItems=function(q){var Q=String(q||'').trim().toLowerCase(),IC={next:'compass',chat:'chat',list:'steps',flow:'flow',me:'you'};
   var R=ai0(q).filter(function(r){return !(r.g==='places'&&/^nav:(inbox|projects|calendar)$/.test(r.id));}).map(function(r){if(r.g==='places'){var k=r.id.slice(4);r.ic=IC[k]||r.ic||'fwd';r.l=tt(k);}return r;});
-  [['act:plan','plan','planDay'],['act:j8','talk','openJ8'],['act:keys','help','keys'],['act:goals','target','setGoals'],['act:drafts','inbox','drafts']].forEach(function(a){var l=tt(a[2]);if(!Q||l.toLowerCase().indexOf(Q)>-1)R.push({g:'acts',id:a[0],ic:a[1],l:l});});return R.slice(0,14);};
+  [['act:j8','talk','openJ8'],['act:keys','help','keys'],['act:goals','target','setGoals'],['act:drafts','inbox','drafts']].forEach(function(a){var l=tt(a[2]);if(!Q||l.toLowerCase().indexOf(Q)>-1)R.push({g:'acts',id:a[0],ic:a[1],l:l});});return R.slice(0,14);};
 var ac0=askCmd;askCmd=function(id){if(String(id).indexOf('act:')!==0)return ac0(id);gClose();var a=id.slice(4);
   if(a==='plan')planSheet();else if(a==='j8'){if(D12())setJ8(true,true);else navTo('chat');}else if(a==='keys')keysOpen();else if(a==='goals')obOpen(1);else if(a==='drafts'){UI.lseg='drafts';navTo('list');}};
 
@@ -727,7 +728,7 @@ Object.assign(L11.en,{lineUp:'Line up next steps',lining:'J8 is lining up your n
   unpin:'Unpin',moveUp:'Move up',moveDown:'Move down',moreA:'More',pinnedH:'Pinned',needsMost:'Needs you most',pinHint:'Pin a project from its page to keep it here.',pinnedT:'{x} pinned',unpinnedT:'{x} unpinned',pinProj:'Pin',unpinProj:'Pinned · tap to unpin',pinGoal:'Pin to top',unpinGoal:'Pinned · tap to unpin',
   newB:'New',newH:'Create',nGoal:'Goal',nGoalP:'A target with a number and a deadline. J8 offers to plan it.',nProj:'Project',nProjP:'The thing that serves a goal, with milestones.',
   nReqProj:'Request a project',nReqProjP:'Only an admin adds projects. This asks J8 to add it.',nStep:'Step',nStepP:'One to-do with an estimate. It can belong to a project and wait on another step.',
-  nNote:'Note to J8',nNoteP:'A request or instruction. The team acts on it.',nDraft:'Draft message',nDraftP:'An outreach idea. J8 writes it properly; you OK the final draft.',
+  nNote:'Note to J8',nNoteP:'A request or instruction. The team acts on it.',nDraft:'Draft idea',nDraftP:'An outreach idea. J8 writes it properly; you OK the final draft.',
   nPlan:'Plan with J8',nPlanP:'J8 asks a few questions and adds what is missing to your plan.',
   fGoalT:'Goal',fGoalPh:'e.g. 10 paying clients',fNum:'Number (optional)',fDue:'Deadline',fProj:'Project',fNone:'No project',fMins:'Minutes',fAfter:'Waits on (optional)',fNoBlock:'Nothing',
   fName:'Name',fGoalL:'Goal it serves (optional)',fMs:'First milestone (optional)',fMsAt:'Milestone date',fText:'Your note',fTo:'To whom',fToPh:'e.g. Head of Product at Acme',fChan:'Channel',fIdea:'What should it say?',
@@ -747,7 +748,7 @@ Object.assign(L11.he,{lineUp:'לסדר את הצעדים הבאים',lining:'J8 
   unpin:'לבטל הצמדה',moveUp:'למעלה',moveDown:'למטה',moreA:'עוד',pinnedH:'מוצמדים',needsMost:'הכי צריכים אותך',pinHint:'אפשר להצמיד פרויקט מהעמוד שלו.',pinnedT:'{x} הוצמד',unpinnedT:'ההצמדה של {x} בוטלה',pinProj:'להצמיד',unpinProj:'מוצמד · לחיצה מבטלת',pinGoal:'להצמיד למעלה',unpinGoal:'מוצמד · לחיצה מבטלת',
   newB:'חדש',newH:'ליצור',nGoal:'יעד',nGoalP:'מטרה עם מספר ותאריך. J8 מציע לתכנן אותה.',nProj:'פרויקט',nProjP:'מה שמשרת יעד, עם אבני דרך.',
   nReqProj:'לבקש פרויקט',nReqProjP:'רק מנהל מוסיף פרויקטים. זה מבקש מ־J8 להוסיף.',nStep:'צעד',nStepP:'משימה אחת עם הערכת זמן. אפשר לשייך לפרויקט ולצעד שהיא מחכה לו.',
-  nNote:'הודעה ל־J8',nNoteP:'בקשה או הנחיה. הצוות פועל לפיה.',nDraft:'טיוטת הודעה',nDraftP:'רעיון לפנייה. J8 כותב אותו כמו שצריך; את הטיוטה הסופית את/ה מאשר/ת.',
+  nNote:'הודעה ל־J8',nNoteP:'בקשה או הנחיה. הצוות פועל לפיה.',nDraft:'רעיון לטיוטה',nDraftP:'רעיון לפנייה. J8 כותב אותו כמו שצריך; את הטיוטה הסופית את/ה מאשר/ת.',
   nPlan:'לתכנן עם J8',nPlanP:'J8 שואל כמה שאלות ומוסיף לתוכנית מה שחסר.',
   fGoalT:'יעד',fGoalPh:'למשל 10 לקוחות משלמים',fNum:'מספר (לא חובה)',fDue:'תאריך יעד',fProj:'פרויקט',fNone:'בלי פרויקט',fMins:'דקות',fAfter:'מחכה ל (לא חובה)',fNoBlock:'כלום',
   fName:'שם',fGoalL:'היעד שהוא משרת (לא חובה)',fMs:'אבן דרך ראשונה (לא חובה)',fMsAt:'תאריך אבן הדרך',fText:'ההודעה שלך',fTo:'למי',fToPh:'למשל מנהלת מוצר באקמה',fChan:'ערוץ',fIdea:'מה לכתוב?',
@@ -784,7 +785,7 @@ var pt0=planTag;planTag=function(i){var h=pt0(i);if(i&&i.task&&i.task.source==='
 function pinsRender(){var el=$('pins');if(!el||!connected)return;var a=projPins(),mn=UI.pmenu;
   if(a.length){el.innerHTML='<p class="ph6">'+esc(tt('pinnedH'))+'</p><ul class="pl13" aria-label="'+esc(tt('pinnedH'))+'">'+a.map(function(id,j){var p=pobj(id);return '<li draggable="true" data-pid="'+esc(id)+'" title="'+esc(tt('dragHint')||'')+'"><button data-a="proj" data-id="'+esc(id)+'"'+(UI.proj===id&&/^(proj|projects)$/.test(UI.v)?' aria-current="page"':'')+'>'+ptile(id,'sm')+'<span class="lbl" dir="auto">'+esc(p.name)+'</span></button><button class="pm13" data-a="x13-pmenu" data-id="'+esc(id)+'" aria-expanded="'+(mn===id)+'" aria-label="'+esc(tt('moreA')+': '+p.name)+'">'+I('dots')+'</button>'
     +(mn===id?'<span class="pmm13" role="group" aria-label="'+esc(p.name)+'"><button data-a="x13-punpin" data-id="'+esc(id)+'">'+I('pin')+'<span>'+esc(tt('unpin'))+'</span></button>'+(j>0?'<button data-a="x13-pup" data-id="'+esc(id)+'">'+I('up')+'<span>'+esc(tt('moveUp'))+'</span></button>':'')+(j<a.length-1?'<button data-a="x13-pdown" data-id="'+esc(id)+'">'+I('down')+'<span>'+esc(tt('moveDown'))+'</span></button>':'')+'</span>':'')+'</li>';}).join('')+'</ul>';return;}
-  var P=liveP().filter(function(p){return p.status!=='parked'&&!isDoneP(p);}).sort(function(x,y){return projNeed(y.id).length-projNeed(x.id).length||stageOf(y)-stageOf(x);}).slice(0,5);
+  var P=liveP().filter(function(p){return p.status!=='parked'&&!isDoneP(p)&&projNeed(p.id).length>0;}).sort( /* 11.3: only projects that really wait on you */function(x,y){return projNeed(y.id).length-projNeed(x.id).length||stageOf(y)-stageOf(x);}).slice(0,5);
   el.innerHTML=P.length?'<p class="ph6">'+esc(tt('needsMost'))+'</p>'+P.map(function(p){return '<button data-a="proj" data-id="'+esc(p.id)+'">'+ptile(p.id,'sm')+'<span class="lbl" dir="auto">'+esc(p.name)+'</span></button>';}).join('')+'<p class="phint13">'+esc(tt('pinHint'))+'</p>':'';}
 Object.assign(L11.en,{dragHint:'Drag to reorder',seePosts:'See the {n} posts to copy'});Object.assign(L11.he,{dragHint:'גוררים כדי לשנות סדר',seePosts:'לראות את {n} הפוסטים להעתקה'});
 var sr13=sideRender;sideRender=function(){sr13();pinsRender();var sg=$('sideG');if(sg&&connected&&!sg.querySelector('[data-a=x13-mem]'))sg.insertAdjacentHTML('beforeend','<button class="sg mem13" data-a="x13-mem"'+(UI.v==='mem'?' aria-current="page"':'')+'>'+I('bulb')+'<span class="lbl">'+esc(tt('memH'))+'</span></button>');var nb=$('newD');if(nb){var l=nb.querySelector('.lbl');if(l)l.textContent=tt('newB');}var nt=$('newB');if(nt)nt.setAttribute('aria-label',tt('newH'));};
@@ -821,7 +822,7 @@ function landsEmpty(i,g){if(g.talk)return true;
   return false;}
 function itemSheetHTML(i){return '<h2 id="gTitle" class="sr">'+esc(tt('detail'))+'</h2><div class="it13" data-k="'+esc(i.key)+'" style="'+pcStyle(rowPid(i)).replace(/^;/,'')+'">'+seeLabel(taskDetail(i).replace('id="dpH"','id="itH"'),i)+itemExtra(i)+'</div>';}
 function openItem(k){var i=rowByKey(k);if(!i){toast(tt('clear'));return;}
-  if(D12()){UI.focusK=k;if(UI.v!=='next'){UI.stack=[];nav0('next');}else render();var h=$('hero12');if(h)try{h.scrollIntoView({block:'nearest'});}catch(e){}var ht=$('heroT');if(ht){ht.tabIndex=-1;ht.focus({preventScroll:true});}return;}
+  if(D12()&&myQueue().some(function(x){return x.key===k;})){ /* 11.3: an item that is not on Next opens in a sheet on desktop too */UI.focusK=k;if(UI.v!=='next'){UI.stack=[];nav0('next');}else render();var h=$('hero12');if(h)try{h.scrollIntoView({block:'nearest'});}catch(e){}var ht=$('heroT');if(ht){ht.tabIndex=-1;ht.focus({preventScroll:true});}return;}
   UI.gsheet={k:'item13',key:k};gOpen(itemSheetHTML(lead1(i)),pcol(rowPid(i))?pcol(rowPid(i))[0]:'var(--royal)');lint($('gsheet'));}
 window.j8open=openItem;
 var hc13=heroCard;heroCard=function(i,ix){var h=seeLabel(hc13(i,ix),i),x=itemExtra(i);return x?h.replace(/<\/section>$/,x+'</section>'):h;};
@@ -838,28 +839,29 @@ function fallbackCopy(tx){var ta=document.createElement('textarea');ta.value=tx;
 
 /* ---------- 2. Line up next steps (J8) ---------- */
 function openGoals(){return goalsAll().filter(function(g){return !(isNum(g.pct)&&g.pct>=1);});}
-function lineUpPlan(){var T=rawTasks(),openT=T.filter(function(t){return !t.status||t.status==='open';}),st=stamp(),add=[],pf=prefs0(),iv=pf.interview||(pf.plan&&Array.isArray(pf.plan.purposes)?pf.plan:null),Q=myQueue();
+function lineUpPlan(){var T=rawTasks(),openT=T.filter(function(t){return !t.status||t.status==='open';}),st=stamp(),add=[],ask=[],pf=prefs0(),iv=pf.interview||(pf.plan&&Array.isArray(pf.plan.purposes)?pf.plan:null),Q=myQueue();
   ((iv&&iv.purposes)||[]).forEach(function(pu){var S=TPL[pu]||TPL.other,have={},busy=false,pid=null,last=null;
     T.forEach(function(t){if(!(px(t,'plan')&&px(t,'purpose')===pu))return;var n=+String(px(t,'tpl')||'').split('-').pop();if(isNum(n))have[n]=t;pid=pid||t.project_id||null;if(!t.status||t.status==='open')busy=true;});
     if(busy)return;for(var k=0;k<S.length;k++){if(have[k])last=have[k];else{add.push({id:'t-plan-'+pu+'-'+(k+1)+'-'+st,doc:{project_id:pid,title:S[k][HE()?1:0],why:tt('whyPlan',{n:k+1,m:S.length,g:tt('pn_'+pu)}),minutes:S[k][2],owner:'dave',status:'open',source:'j8nix-plan',by:'J8NIX · '+tt('lineUp'),blocked_by:[],extra:{plan:true,purpose:pu,tpl:pu+'-'+k,pulled:true}}});break;}}});
   myGoalList().forEach(function(g,n){var pid=g.pid&&pobj(g.pid)?g.pid:null,has=Q.some(function(i){return pid?rowPid(i)===pid:(i.task&&px(i.task,'goal')===g.t);})||openT.some(function(t){return t.owner==='dave'&&(pid?t.project_id===pid:px(t,'goal')===g.t);})||add.some(function(a){return pid&&a.doc.project_id===pid;});
-    if(has)return;add.push({id:'t-goal-'+st+'-'+n,doc:{project_id:pid,title:tt('firstStep',{g:cut(g.t,90)}),why:g.t,minutes:10,owner:'dave',status:'open',source:'j8nix-plan',by:'J8NIX · '+tt('lineUp'),blocked_by:[],extra:{plan:true,goal:g.t,pulled:true}}});});
-  var back=Object.keys(LATER).map(function(k){return Object.assign({id:k},LATER[k]);}).filter(function(r){return (r.status==='later'||r.status==='not_needed')&&rowByKey(r.id)&&!Q.some(function(i){return i.key===r.id;});}).slice(0,5);
+    if(has||asked13(g.t))return;ask.push({pid:pid||'p-general',g:g.t});});
+  var back=Object.keys(LATER).map(function(k){return Object.assign({id:k},LATER[k]);}).filter(function(r){return (r.status==='later'||r.status==='not_needed')&&rowByKey(r.id)&&elig13(rowByKey(r.id))&&!Q.some(function(i){return i.key===r.id;});}).slice(0,5);
   var blk=rows().filter(function(i){return i.st==='stuck'&&i.task;}).map(function(i){return lead1(i);}).sort(function(a,b){return b.ul.length-a.ul.length;}).slice(0,4);
-  return {add:add,back:back,blk:blk};}
+  return {add:add,ask:ask,back:back,blk:blk};}
 UI.lu=null;
 function lineUp(auto){if(UI.lu&&UI.lu.st==='run')return;UI.lu={st:'run',t0:Date.now(),auto:!!auto};render();
   var minT=RM()?250:1300,P=lineUpPlan(),fail=0;
   Promise.resolve(J8.status().connected?Promise.race([J8.reload(),new Promise(function(r){setTimeout(r,6000);})]).catch(function(){}):null).then(function(){P=lineUpPlan();
-    return seq(P.add,function(x){return J8.tasks.add(x.id,x.doc).catch(function(e){fail++;});});})
-  .then(function(){var w=Math.max(0,minT-(Date.now()-UI.lu.t0));setTimeout(function(){var made=P.add.filter(function(x){return !!J8.tasks.get(x.id);});UI.lu={st:'done',made:made.map(function(x){return x.doc.title;}),back:P.back,blk:P.blk,fail:fail,auto:!!auto};render();
-    if(made.length)toast(made.length===1?tt('lined1'):tt('linedN',{n:made.length}));},w);});}
+    return seq(P.add,function(x){return J8.tasks.add(x.id,x.doc).catch(function(e){fail++;});}).then(function(){return seq(P.ask,function(x){return J8.inbox.send(x.pid,tt('askFirst',{g:x.g})).then(function(){x.ok=1;},function(){fail++;});});});})
+  .then(function(){var w=Math.max(0,minT-(Date.now()-UI.lu.t0));setTimeout(function(){var made=P.add.filter(function(x){return !!J8.tasks.get(x.id);});UI.lu={st:'done',made:made.map(function(x){return x.doc.title;}),asked:P.ask.filter(function(x){return x.ok;}).map(function(x){return x.g;}),back:P.back,blk:P.blk,fail:fail,auto:!!auto};render();
+    if(made.length)toast(made.length===1?tt('lined1'):tt('linedN',{n:made.length}));else if(UI.lu.asked.length)toast(tt('askedT',{n:UI.lu.asked.length}));},w);});}
 function luCard(){var L=UI.lu;if(!L)return '';
-  if(L.st==='run')return '<section class="lu13 run" role="status" aria-live="polite"><span class="orb" aria-hidden="true">'+g8i()+'<i></i><i></i><i></i></span><div><b>'+esc(tt('lining'))+'</b><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span></div></section>';
-  var h='<section class="lu13" role="status"><header><span class="orb sm" aria-hidden="true">'+g8i()+'</span><b>'+esc(L.made.length?(L.made.length===1?tt('lined1'):tt('linedN',{n:L.made.length})):tt('linedNone'))+'</b><button class="ib12" data-a="x13-luclose" aria-label="'+esc(t('close'))+'">'+I('x')+'</button></header>';
+  if(L.st==='run')return '<section class="lu13 run" role="status" aria-live="polite"><span class="orb wk13" aria-hidden="true">'+w8()+'</span><div><b>'+esc(tt('lining'))+'</b></div></section>';
+  var h='<section class="lu13" role="status"><header><span class="orb sm" aria-hidden="true">'+g8i()+'</span><b>'+esc(L.made.length?(L.made.length===1?tt('lined1'):tt('linedN',{n:L.made.length})):(L.asked&&L.asked.length?tt('askedT',{n:L.asked.length}):tt('linedNone')))+'</b><button class="ib12" data-a="x13-luclose" aria-label="'+esc(t('close'))+'">'+I('x')+'</button></header>';
   if(L.made.length)h+='<h4>'+esc(tt('fromGoals'))+'</h4><ul>'+L.made.map(function(x){return '<li>'+I('plus')+'<span dir="auto">'+esc(x)+'</span></li>';}).join('')+'</ul>';
-  if(L.back.length)h+='<h4>'+esc(tt('putOff'))+'</h4><ul>'+L.back.map(function(r){var i=rowByKey(r.id);return '<li>'+I('later')+'<span dir="auto">'+esc(cut(cap1(i?nextOf(i).what:r.title||''),80))+'</span><button class="b12 sm" data-a="later-now" data-k="'+esc(r.id)+'">'+esc(tt('bringBack'))+'</button></li>';}).join('')+'</ul>';
-  if(L.blk.length)h+='<h4>'+esc(tt('blockedH'))+'</h4><ul>'+L.blk.map(function(i){var b=openBlk(i.task.id).map(function(x){var o=J8.tasks.get(x)||AP[x]||PR[x];return o?(o.title||o.name||apWho(Object.assign({id:x},o))):x;});return '<li>'+I('lock')+'<span dir="auto">'+esc(cut(i.title,70))+'<small>'+esc(tt('waitsOn',{x:cut(b.join(', '),80)}))+(i.ul.length?' · '+esc(tt('unlocks',{n:i.ul.length})):'')+'</small></span></li>';}).join('')+'</ul>';
+  if(L.asked&&L.asked.length)h+='<h4>'+esc(tt('askedH'))+'</h4><ul>'+L.asked.map(function(g){return '<li>'+I('send')+'<span dir="auto">'+esc(tt('askedL',{g:g}))+'</span></li>';}).join('')+'</ul>';
+  if(L.back.length)h+='<h4>'+esc(tt('putOff'))+'</h4><ul>'+L.back.map(function(r){var i=rowByKey(r.id);return '<li>'+I('later')+'<span dir="auto">'+esc(cap1(i?nextOf(i).what:r.title||''))+'</span><button class="b12 sm" data-a="later-now" data-k="'+esc(r.id)+'">'+esc(tt('bringBack'))+'</button></li>';}).join('')+'</ul>';
+  if(L.blk.length)h+='<h4>'+esc(tt('blockedH'))+'</h4><ul>'+L.blk.map(function(i){var b=openBlk(i.task.id).map(function(x){var o=J8.tasks.get(x)||AP[x]||PR[x];return o?(o.title||o.name||apWho(Object.assign({id:x},o))):x;});return '<li>'+I('lock')+'<span dir="auto">'+esc(i.title)+'<small>'+esc(tt('waitsOn',{x:b.join(', ')}))+(i.ul.length?' · '+esc(tt('unlocks',{n:i.ul.length})):'')+'</small></span></li>';}).join('')+'</ul>';
   return h+'</section>';}
 function nextGoal(){var td=ymd(new Date());return openGoals().filter(function(g){return g.day>=td;})[0]||openGoals()[0]||null;}
 function emptyNext(){var G=openGoals(),L=UI.lu;
@@ -1056,6 +1058,112 @@ window.addEventListener('click',function(e){var el=e.target.closest&&e.target.cl
   if(a==='x13-msrc'){threadSheet({msg:id});return;}
   if(a==='x13-mnoted'){UI.memSrc=id;UI.stack=[{v:UI.v}];UI.v='mem';render(true);return;}
   if(a==='x13-mem'||a==='x13-memall'){UI.memSrc=null;if(a==='x13-mem'){UI.stack=[{v:UI.v==='mem'?'me':UI.v}];UI.v='mem';}render(true);return;}},true);
+
+/* ===== 11.3.0 (Dave 17 Nov 16:24): clear leadership, his logo, no pink, light that means something =====
+   A. Next and "Needs you" list only real steps for the member: (a) the member's open, unblocked task with a how-to
+   (or a step the member wrote or chose in their own plan); (b) drafts waiting for OK / Kill; (c) a project "you" line
+   tagged 🔴/🟠 that has a link. Never a team reply fragment, a held send or a project line without a link.
+   Do this first needs a how-to AND a link (or drafts to OK). Every card shows the full title, How as numbered steps,
+   a button named after where it goes, minutes and one muted why line. */
+Object.assign(L11.en,{how13:'How',needsH:'Needs you',openD:'Open {d}',why13:'Why',
+  askFirst:'Line up the first step toward my goal: {g}. If you can do it yourself, do it. If only I can, give me one step with numbered how-to and a direct link.',
+  askedH:'J8 is planning these',askedL:'Asked J8 to plan the first step toward: {g}',askedT:'Asked J8 to plan {n} first steps'});
+Object.assign(L11.he,{how13:'איך',needsH:'מחכה לך',openD:'לפתוח את {d}',why13:'למה',
+  askFirst:'לסדר את הצעד הראשון לקראת היעד שלי: {g}. אם אתם יכולים לעשות אותו בעצמכם, תעשו. אם רק אני יכול/ה, תנו לי צעד אחד עם הוראות ממוספרות וקישור ישיר.',
+  askedH:'J8 מתכנן את אלה',askedL:'ביקשנו מ־J8 לתכנן את הצעד הראשון לקראת: {g}',askedT:'ביקשנו מ־J8 לתכנן {n} צעדים ראשונים'});
+function hasAct13(t){return !!String(t&&t.action||'').trim();}
+function own13(t){return !!t&&(t.source==='j8nix-app'||t.source==='j8nix-plan')&&!(px(t,'goal')&&!hasAct13(t));}
+function okTask13(t){return !!t&&t.owner==='dave'&&(!t.status||t.status==='open')&&!openBlk(t.id).length&&(hasAct13(t)||own13(t));}
+function okMove13(i){var p=i&&i.p;return !!(p&&i.move&&/^[ro]$/.test(sevOf(p.you)||'')&&String(p.you_link||'').trim());}
+function elig13(i){if(!i)return false;if(i.task)return okTask13(i.task);if(i.batch||i.ap)return true;if(i.p)return okMove13(i);return false;}
+function promo13(i){if(!i)return false;if(i.batch||i.ap)return true;if(i.task)return okTask13(i.task)&&hasAct13(i.task)&&!!String(i.task.link||'').trim();return okMove13(i);}
+var needs12=needs;needs=function(){var R=needs12().filter(elig13);return R.filter(promo13).concat(R.filter(function(i){return !promo13(i);}));};
+function steps13(s){s=String(s||'').replace(/\r/g,'').trim();if(!s)return [];var L=s.split(/\n+/).map(function(x){return x.trim();}).filter(Boolean);
+  if(L.length===1){var P=L[0].split(/\s+(?=\d{1,2}[.)]\s)/);if(P.length>1)L=P;}return L;}
+var NUM13=/^\d{1,2}[.)]\s+/;
+function how13(i){var src=i.task?i.task.action:(i.p&&i.move?sevStrip(String(i.p.you||'')).trim():'');var L=steps13(src);if(!L.length)return '';
+  var ti=String(cap1(nextOf(i).what)).replace(/[.\s]+$/,'');if(L.length===1&&L[0].replace(/^\d{1,2}[.)]\s+/,'').replace(/[.\s]+$/,'')===ti)return '';
+  var h='',ol=[],flush=function(){if(ol.length){h+='<ol>'+ol.map(function(x){return '<li dir="auto">'+esc(x)+'</li>';}).join('')+'</ol>';ol=[];}};
+  if(!L.some(function(x){return NUM13.test(x);})&&L.length>1)L=L.map(function(x,k){return (k+1)+'. '+x;});
+  L.forEach(function(x){if(NUM13.test(x))ol.push(x.replace(NUM13,''));else{flush();h+='<p dir="auto">'+esc(x)+'</p>';}});flush();
+  return '<div class="how13"><h4>'+esc(tt('how13'))+'</h4>'+h+'</div>';}
+function why13(i){var w=String(nextOf(i).why||'').trim();return w?'<p class="why13" dir="auto"><b>'+esc(tt('why13'))+':</b> '+esc(w)+'</p>':'';}
+function dom13(u){try{return new URL(u).hostname.replace(/^www\./,'');}catch(e){return '';}}
+function lab13(i,g){var lt=String((i.task?i.task.link_text:i.p?i.p.you_link_text:'')||'').trim();if(lt)return lt;var d=g.href?dom13(g.href):'';return d?tt('openD',{d:d}):tt('open');}
+bar12=function(i){var g=doTarget(i),k=esc(i.key),dec=!!(i.batch||i.ap||i.held),doing=!!UI.doing[i.key],dn=!!(i.task||(i.p&&i.move)),prim='';
+  if(dec)prim='<button class="b12 pri" data-a="do" data-k="'+k+'"><span>'+esc(tt('review'))+'</span>'+I('do','flip')+'</button>';
+  else if(g.href)prim='<a class="b12'+(doing?'':' pri')+'" href="'+esc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'"><span dir="auto">'+esc(lab13(i,g))+'</span>'+I('ext')+'</a>';
+  else if(g.jump)prim='<button class="b12'+(doing?'':' pri')+'" data-a="do" data-k="'+k+'"><span dir="auto">'+esc(lab13(i,g))+'</span>'+I('do','flip')+'</button>';
+  var d=dn?'<button class="b12'+(doing||!prim?' pri':'')+'" data-a="done" data-k="'+k+'">'+I('check')+'<span>'+esc(tt('done'))+'</span></button>':'',n=(prim?1:0)+(d?1:0)+2;
+  return '<div class="bar12'+(n===3?' three':n===2?' two':'')+'" role="group" aria-label="'+esc(t('actions'))+'">'+(doing?d+prim:prim+d)+'<button class="b12" data-a="later" data-k="'+k+'">'+I('later')+'<span>'+esc(tt('later'))+'</span></button><button class="b12" data-a="no" data-k="'+k+'">'+I('no')+'<span>'+esc(tt('nn'))+'</span></button></div>';};
+function body13(i){return how13(i)+why13(i);}
+var hc113=heroCard;heroCard=function(i,ix){var h=hc113(i,ix),b=body13(i),j=h.indexOf('<div class="bar12');return b&&j>-1?h.slice(0,j)+b+h.slice(j):h;};
+var r113=row12;row12=function(i,num){var h=r113(i,num),b=body13(i)+(isNum(i.mins)?'<p class="mn13">'+I('time')+'<span>'+esc(tt('min',{n:i.mins}))+'</span></p>':''),j=h.indexOf('<div class="bar12');return j>-1?h.slice(0,j)+b+h.slice(j):h;};
+var td113=taskDetail;taskDetail=function(i){var h=td113(i),b=body13(i),j=h.indexOf('<div class="bar12');return j>-1?h.slice(0,j)+b+h.slice(j):h;};
+facts=function(i){var w=whereOf(i),dw=dwOf(i.task),a=dw?th('afterSwitch',{s:dwName(dw)}):(doTarget(i).href?t('afterOut'):''); /* How now shows as steps above */
+  if(!w&&!a)return '';return '<dl class="facts">'+(w?'<div class="fact"><dt>'+t('where')+'</dt><dd dir="auto">'+esc(w)+'</dd></div>':'')+(a?'<div class="fact"><dt>'+t('after')+'</dt><dd>'+a+'</dd></div>':'')+'</dl>';};
+function asked13(g){var lim=Date.now()-7*864e5,k=String(g||'').toLowerCase();return J8.inbox.list().some(function(x){return x.status!=='done'&&pd(x.at)>lim&&String(x.text||'').toLowerCase().indexOf(k)>-1;});}
+
+/* D. the logo light moves only when it means something: J8 working = a light travels the 8; boot = one sweep; a step done = one glow */
+var W8P='M142.2 251.7C149.4 251.7 150.6 255.4 150.6 258.8C150.6 266.6 133.9 277.4 133.9 286.2C133.9 290.4 136.7 293.4 142.2 293.4C147.7 293.4 150.6 290.4 150.6 286.2C150.6 277.4 133.9 266.6 133.9 258.8C133.9 255.4 135 251.7 142.2 251.7Z';
+function w8(){return '<svg class="g8 w8" viewBox="131.498 249.537 21.424 46.017" aria-hidden="true"><use href="#eight" x="131.498" y="249.537" width="21.424" height="46.017"/>'+(RM()?'':'<g class="lt8" clip-path="url(#j8clip)"><circle r="4.6" fill="url(#j8light)"><animateMotion dur="3.2s" repeatCount="indefinite" path="'+W8P+'"/></circle></g>')+'</svg>';}
+window.j8w8=w8;
+function sweep13(){if(RM())return;var b=document.body;b.classList.remove('boot13');void b.offsetWidth;b.classList.add('boot13');setTimeout(function(){b.classList.remove('boot13');},1100);}
+function glow13(){if(RM())return;var b=document.body;b.classList.remove('glow13');void b.offsetWidth;b.classList.add('glow13');setTimeout(function(){b.classList.remove('glow13');},800);}
+window.j8glow=glow13;window.j8sweep=sweep13;
+(function(){var n=0,tm=setInterval(function(){var a=$('app');if(a&&!a.hidden&&connected){clearInterval(tm);sweep13();}else if(++n>200)clearInterval(tm);},100);})();
+var md113=markDone;markDone=function(k){var i=rowByKey(k),r=md113.apply(this,arguments);if(i&&(i.task||i.p))glow13();return r;};
+window.j8113={elig:elig13,promo:promo13,steps:steps13};
+/* the legacy inbox list (rendered under List → Drafts) must not cancel an edit in progress: with no reply-fragment rows left, its
+   first row is a draft batch and its detail used to reset UI.editing (found by the 11.2 keyboard test, E edits the open draft) */
+var vi113=vInbox;vInbox=function(){var e=UI.editing,h=vi113.apply(this,arguments);if(D12())UI.editing=e;return h;};
+
+/* ---------- 11.3 TODAY panel (Dave 17 Nov 16:44): replaces "Plan my day". Real data only. ---------- */
+Object.assign(L11.en,{tdToday:'Today',tdRest:'Rest of today',tdEve:'This evening',tdEveP:'Tomorrow’s plan is ready at 08:30',tdUpd:'Updated {t}',tdRefresh:'Refresh',tdUp:'Up to date',
+  tdReplan:'Ask J8 to re-plan the rest of today',tdReplanT:'J8 will re-plan within the hour',tdYou:'You',tdTeam:'Team',tdOf:'{a} of {b} done',tdDoneN:'{n} done',
+  tdYouNext:'You next',tdTeamDid:'Team did today',tdComing:'Coming up today',tdNoYou:'Nothing waits on you right now.',tdNoTeam:'No finished team runs yet today.',tdNoComing:'No more team runs today.',
+  tdEvery:'every hour at :{m}',tdPlanFrom:'From today’s 08:30 plan',tdNoPlan:'No plan for today yet: counts are live, without a total.',tdRunAt:'Ran at {t}',tdNextAt:'At {t} (Israel time)'});
+Object.assign(L11.he,{tdToday:'היום',tdRest:'מה שנשאר מהיום',tdEve:'הערב',tdEveP:'התוכנית של מחר מוכנה ב־08:30',tdUpd:'עודכן {t}',tdRefresh:'רענון',tdUp:'מעודכן',
+  tdReplan:'לבקש מ־J8 לתכנן מחדש את המשך היום',tdReplanT:'J8 יתכנן מחדש בתוך שעה',tdYou:'את/ה',tdTeam:'הצוות',tdOf:'{a} מתוך {b} בוצעו',tdDoneN:'{n} בוצעו',
+  tdYouNext:'הבא שלך',tdTeamDid:'מה הצוות עשה היום',tdComing:'בהמשך היום',tdNoYou:'שום דבר לא מחכה לך כרגע.',tdNoTeam:'עוד אין ריצות צוות שהסתיימו היום.',tdNoComing:'אין עוד ריצות צוות היום.',
+  tdEvery:'כל שעה ב־:{m}',tdPlanFrom:'מהתוכנית של 08:30',tdNoPlan:'עוד אין תוכנית להיום: הספירה חיה, בלי סך הכול.',tdRunAt:'רץ ב־{t}',tdNextAt:'ב־{t} (שעון ישראל)'});
+var ILT=window.Intl?new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Jerusalem',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}):null;
+function ilNow13(){var o={wd:new Date().getDay(),h:new Date().getHours(),m:new Date().getMinutes()};if(!ILT)return o;var W=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];ILT.formatToParts(new Date()).forEach(function(p){if(p.type==='weekday')o.wd=W.indexOf(p.value);if(p.type==='hour')o.h=+p.value;if(p.type==='minute')o.m=+p.value;});return o;}
+function hhmm13(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+function comingToday(){var L=(J8.day&&J8.day.RUNS_DAILY)||[],n=ilNow13(),cur=n.h*60+n.m,R=[];
+  L.forEach(function(r){if(r.days&&r.days.indexOf(n.wd)<0)return;if(r.every!=null){for(var h=Math.max(r.from||0,n.h);h<=(r.to==null?23:r.to);h++){var t=h*60+r.every;if(t>cur){R.push({r:r,t:t,every:1});break;}}return;}
+    (r.at||[]).forEach(function(a){var p=a.split(':'),t=+p[0]*60+(+p[1]);if(t>cur)R.push({r:r,t:t});});});
+  return R.sort(function(a,b){return a.t-b.t;});}
+function noTag13(s){return String(s||'').replace(/^\s*(?:\d{1,2}:\d\d(?:\s*\([^)]*\))?\s*[—-]\s*)?(🔴|🟠|🟢)\s*/u,'').replace(/\s+Do:\s[\s\S]*$/,'').trim();}
+function runsToday13(){return J8.runs.list().filter(function(r){return r.status==='ok'&&isToday(pd(r.ended||r.started));}).sort(function(a,b){return pd(b.ended||b.started)-pd(a.ended||a.started);});}
+function dayCounts13(){var you=tasksAll().filter(function(x){return x.owner==='dave'&&x.status==='done'&&isToday(pd(x.done_at));}).length,
+  sent=J8.approvals.list().filter(function(a){return a.status==='sent'&&isToday(pd(a.sent_at));}).length,runs=runsToday13().length,
+  dp=J8.day?J8.day.today():null,mv=dp&&dp.plan&&Array.isArray(dp.plan.moves)?dp.plan.moves:null,open=0,counted=0;
+  if(mv)mv.forEach(function(m){var id=m&&m.ref_id;if(!id)return;var tk=J8.tasks&&J8.tasks.get(id),ap=AP[id];if(tk){counted++;if(!tk.status||tk.status==='open')open++;}else if(ap){counted++;if(['sent','killed'].indexOf(ap.status)<0)open++;}});
+  var done=you+sent+runs;return {you:you,team:sent+runs,sent:sent,runs:runs,done:done,plan:!!mv,moves:mv||[],open:open,total:mv?done+open:null};}
+function youNext13(){var N=myQueue(),c=dayCounts13(),L=[],seen={};
+  c.moves.forEach(function(m){if(!m||m.owner!=='dave'||!m.ref_id)return;var i=N.filter(function(x){return (x.ids||[]).indexOf(m.ref_id)>-1;})[0];if(i&&!seen[i.key]){seen[i.key]=1;L.push(i);}});
+  N.forEach(function(i){if(!seen[i.key]&&L.length<3){seen[i.key]=1;L.push(i);}});return L.slice(0,3);}
+function todayPanel(){if(!connected)return '';var hr=new Date().getHours(),lab=hr<12?tt('tdToday'):hr<18?tt('tdRest'):tt('tdEve'),c=dayCounts13(),Y=youNext13(),T=runsToday13().slice(0,3),C=comingToday().slice(0,3),he=HE()?1:0;
+  var h='<section class="td13" id="today13" aria-labelledby="tdH"><header><div><h3 id="tdH" dir="auto"><bdi>'+esc(lab)+'</bdi> · <bdi>'+esc(dayStr(new Date()))+'</bdi></h3><p class="upd">'+esc(tt('tdUpd',{t:UI.syncedAt?hm2(UI.syncedAt):'—'}))+'</p>'+(hr>=18?'<p class="eve">'+esc(tt('tdEveP'))+'</p>':'')+'</div>'
+   +'<button type="button" class="b12 sm" data-a="x14-refresh">'+I('refresh')+'<span>'+esc(tt('tdRefresh'))+'</span></button></header>';
+  var pc=function(n){return c.total?Math.max(0,Math.min(100,100*n/c.total)):0;};
+  h+='<div class="prg13" role="img" aria-label="'+esc((c.total!=null?tt('tdOf',{a:c.done,b:c.total}):tt('tdDoneN',{n:c.done}))+' · '+tt('tdYou')+' '+c.you+' · '+tt('tdTeam')+' '+c.team)+'">'
+   +(c.total!=null?'<span class="bar"><i class="y" style="width:'+pc(c.you).toFixed(1)+'%"></i><i class="t" style="width:'+pc(c.team).toFixed(1)+'%"></i></span>':'')
+   +'<span class="lg"><span class="k y"><i></i>'+esc(tt('tdYou'))+' <b>'+c.you+'</b></span><span class="k t"><i></i>'+esc(tt('tdTeam'))+' <b>'+c.team+'</b></span><span class="tot">'+esc(c.total!=null?tt('tdOf',{a:c.done,b:c.total}):tt('tdDoneN',{n:c.done}))+'</span></span>'
+   +(c.plan?'':'<small class="np">'+esc(tt('tdNoPlan'))+'</small>')+'</div><div class="cols13">';
+  h+='<div class="tl13"><h4>'+esc(tt('tdYouNext'))+'</h4>'+(Y.length?'<ul>'+Y.map(function(i){var n=nextOf(i);return '<li><button type="button" data-a="x14-open" data-k="'+esc(i.key)+'"><span class="dot12 '+sevCls(i)+'" aria-hidden="true"></span><span class="tx" dir="auto">'+esc(cap1(n.what))+'</span>'+(isNum(i.mins)?'<small>'+esc(tt('min',{n:i.mins}))+'</small>':'')+'</button></li>';}).join('')+'</ul>':'<p class="no">'+esc(tt('tdNoYou'))+'</p>')+'</div>';
+  h+='<div class="tl13"><h4>'+esc(tt('tdTeamDid'))+'</h4>'+(T.length?'<ul>'+T.map(function(r){return '<li><button type="button" data-a="x14-run" data-id="'+esc(r.id)+'"><time>'+esc(hm2(pd(r.ended||r.started)))+'</time><span class="tx" dir="auto"><b>'+esc(r.arm||tt('tdTeam'))+'</b> '+esc(noTag13(r.summary))+'</span></button></li>';}).join('')+'</ul>':'<p class="no">'+esc(tt('tdNoTeam'))+'</p>')+'</div>';
+  h+='<div class="tl13"><h4>'+esc(tt('tdComing'))+'</h4>'+(C.length?'<ul>'+C.map(function(x,j){return '<li><button type="button" data-a="x14-coming" data-id="'+j+'"><time>'+esc(hhmm13(x.t))+'</time><span class="tx" dir="auto"><b>'+esc(x.r.arm)+'</b> '+esc(x.r.what[he]||x.r.what[0])+(x.every?' · '+esc(tt('tdEvery',{m:String(x.r.every).padStart(2,'0')})):'')+'</span></button></li>';}).join('')+'</ul>':'<p class="no">'+esc(tt('tdNoComing'))+'</p>')+'</div>';
+  return h+'</div><p class="rp13"><button type="button" class="lnk" data-a="x14-replan">'+I('send')+'<span>'+esc(tt('tdReplan'))+'</span></button></p></section>';}
+var vNx14=vNext;vNext=function(){var h=vNx14();if(!connected||UI.v!=='next')return h;return h.replace(/<\/header>/,'</header>'+todayPanel());};
+document.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a^=x14-]');if(!el)return;e.preventDefault();e.stopPropagation();var a=el.dataset.a;
+  if(a==='x14-open'){openItem(el.dataset.k);return;}
+  if(a==='x14-refresh'){el.disabled=true;Promise.race([J8.reload(),new Promise(function(_,rj){setTimeout(function(){rj('timeout');},12000);})]).then(function(){UI.syncedAt=Date.now();NQ=null;render();toast(tt('tdUp'));},function(){toast(t('notConn'));}).then(function(){var b=document.querySelector('[data-a=x14-refresh]');if(b)b.disabled=false;});return;}
+  if(a==='x14-replan'){if(!J8.status().connected){toast(t('notConn'));return;}J8.inbox.send('p-general','Re-plan the rest of today').then(function(){toast(tt('tdReplanT'));},function(x){toast(t('couldNot',{e:x&&x.code||'error'}));});return;}
+  if(a==='x14-run'){var r=J8.runs.list().filter(function(x){return x.id===el.dataset.id;})[0];if(!r)return;UI.gsheet={k:'run14'};gOpen('<h2 id="gTitle" dir="auto">'+esc(r.arm||tt('tdTeam'))+'</h2><p class="sub12">'+esc(tt('tdRunAt',{t:hm2(pd(r.ended||r.started))}))+'</p><p class="lead" dir="auto">'+esc(noTag13(String(r.summary||'').replace(/\s+Do:/,' Do:')))+'</p><button class="btn11 wide" data-a="gclose">'+esc(t('close'))+'</button>','var(--ai)');return;}
+  if(a==='x14-coming'){var x=comingToday()[+el.dataset.id];if(!x)return;UI.gsheet={k:'run14'};gOpen('<h2 id="gTitle">'+esc(x.r.arm)+'</h2><p class="sub12">'+esc(tt('tdNextAt',{t:hhmm13(x.t)}))+'</p><p class="lead" dir="auto">'+esc(x.r.what[HE()?1:0]||x.r.what[0])+'</p><button class="btn11 wide" data-a="gclose">'+esc(t('close'))+'</button>','var(--ai)');return;}},true);
+window.j8today={counts:dayCounts13,coming:comingToday,youNext:youNext13};
 
 /* 11.2: named hooks for the QA harness and the console (read-only helpers and the same actions a tap runs) */
 (function(){var F={openItem:function(){return openItem.apply(null,arguments);},goalsShown:function(){return goalsShown();},goalPins:goalPins,projPins:projPins,myGoalList:myGoalList,editSheet:function(k,i){return editSheet(k,i);},newForm:function(k,e){return newForm(k,e);},memFilter:memFilter,lineUp:lineUp,goalsAll:function(){return goalsAll();},newSheet:newSheet,goalsSheet:goalsSheet};Object.keys(F).forEach(function(n){window[n]=F[n];});})();

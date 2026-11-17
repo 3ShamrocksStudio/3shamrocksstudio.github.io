@@ -69,7 +69,7 @@
   $('#pushBtn').addEventListener('click', function () {
     var b = this; b.disabled = true;
     J8.push.enable().then(function () {
-      navigator.serviceWorker.ready.then(function (r) { r.showNotification('J8NIX alerts are on', { body: 'Team replies, finished work and drafts to OK land here.', icon: 'icons/icon-192.png', badge: 'icons/badge-96.png', tag: 'j8-test' }); });
+      navigator.serviceWorker.ready.then(function (r) { r.showNotification('J8NIX alerts are on', { body: 'Team replies, finished work and drafts to OK land here.', icon: 'icons/j8-192-2026-11-17.png', badge: 'icons/badge-96.png', tag: 'j8-test' }); });
       note('Alerts on for this phone.');
     }).catch(function (er) { note('Couldn\'t turn on alerts (' + er.code + ').'); }).then(pushLabel);
   });

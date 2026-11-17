@@ -3,7 +3,7 @@
    attention, Red = urgent or error, Violet = J8 and AI, Indigo = deep text, Haze = quiet lines, Slate = secondary text, Mist = rules.
    Text on white only in Midnight, Indigo, Slate, Royal, Violet, Red or the -ink shades (all ≥ 4.5:1). Loaded after app.css + v11.css. */
 :root,:root[data-theme]{--done:#32CC00;--done-ink:#237A00;--done-w:#E4F8DA;--money:#FF9700;--money-ink:#9A5200;--money-w:#FFF1DC;
- --urgent:#DD0E3F;--urgent-ink:#B80A33;--urgent-w:#FFE4EA;--ai:#9500FF;--ai-ink:#7A00D1;--ai-w:#F3E6FF;--quiet:#838EB7;--rule:#D8D8D8;
+ --urgent:#DD0E3F;--urgent-ink:#B80A33;--urgent-w:#F2F3F7;--ai:#9500FF;--ai-ink:#7A00D1;--ai-w:#F3E6FF;--quiet:#838EB7;--rule:#D8D8D8;
  --ease:cubic-bezier(.2,.8,.2,1);--spring:cubic-bezier(.34,1.56,.64,1)}
 /* phone nav: 4 places (Me is the avatar) */
 .rail .places{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -644,3 +644,80 @@ mark.kw13{background:rgb(255 255 255 / .22);color:inherit;border-radius:4px;padd
  .nfx12 .cal13{margin-bottom:14px}
 }
 @media (prefers-reduced-motion:reduce){.orb i,.lu13 .bars i{animation:none}}
+
+/* ===== 11.3.0 (Dave 17 Nov 16:24) =====
+   A. a step for you is always readable in full: How as numbered steps, a muted why line, minutes */
+.ht12,.rt12 b,.lr12 .rt12 b,.lu13 li span{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+.rt12 small,.sideg .lbl b{white-space:normal;overflow:visible;text-overflow:clip}
+.how13{margin:12px 0 2px}
+.how13 h4{margin:0 0 6px;font:700 .75rem/1.2 var(--text);letter-spacing:.06em;text-transform:uppercase;color:var(--slate)}
+.how13 ol{margin:0;padding-inline-start:1.5em;display:grid;gap:5px;font:500 .9375rem/1.45 var(--text);color:var(--navy)}
+.how13 ol li{padding-inline-start:2px;overflow-wrap:anywhere}
+.how13 ol li::marker{font-weight:700;color:var(--royal)}
+.how13 p{margin:0 0 6px;font:500 .9375rem/1.45 var(--text);color:var(--navy);overflow-wrap:anywhere}
+.why13{margin:8px 0 0;font:500 .875rem/1.4 var(--text);color:var(--slate);overflow-wrap:anywhere}
+.why13 b{font-weight:600}
+.mn13{display:flex;align-items:center;gap:6px;margin:8px 0 0;color:var(--slate);font:500 .875rem/1.2 var(--text)}
+.mn13 .ico{width:16px;height:16px}
+/* C. Dave's logo: dark on white. The round J8 avatar is the gradient 8 on white with a thin Mist ring */
+.j8o,.rail .j8nav .j8o,.j8t .j8o,.j8av11,.av12,.orb{background:#fff!important;box-shadow:0 0 0 1px #D8D8D8!important}
+.j8h::before,.j8strip::before{background:#fff url(brand/j8nix-mark-8-2026-11-17.svg) center/auto 58% no-repeat!important;box-shadow:0 0 0 1px #D8D8D8!important}
+.orb i{display:none}
+.av12 .g8{width:10px;height:21px}.orb .g8{width:15px;height:32px}.orb.sm .g8{width:12px;height:26px}
+.tile:has(img[src*="j8nix-2026-11-17"]){box-shadow:inset 0 0 0 1px #D8D8D8}
+.wmx13{position:relative;display:inline-block;line-height:0}
+.rail .wm.wmx13{padding:0!important;margin:4px 4px 8px;align-self:flex-start}
+.rail .wm.wmx13 img{height:40px!important;width:auto}
+#tTile.wmx13{width:auto;height:auto;background:none;box-shadow:none}
+#tTile.wmx13 img{width:auto;height:28px;display:block}
+.authtop11 img.wm13{width:min(260px,70vw);height:auto;filter:none}
+/* D. light only when it means something */
+.wmx13::before,.wmx13::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;-webkit-mask:url(brand/j8nix-wordmark-2026-11-17.svg) 0 0/100% 100% no-repeat;mask:url(brand/j8nix-wordmark-2026-11-17.svg) 0 0/100% 100% no-repeat}
+.wmx13::after{background:linear-gradient(100deg,transparent 0 42%,rgb(255 255 255 / .95) 49%,rgb(42 185 255 / .9) 53%,transparent 60% 100%) no-repeat;background-size:300% 100%;background-position:100% 0}
+.wmx13::before{background:radial-gradient(16% 60% at 32.8% 50%,#fff 0,rgb(42 185 255 / .95) 45%,transparent 100%)}
+body.boot13 .wmx13::after{animation:sweep13 .9s cubic-bezier(.3,0,.2,1) 1 both}
+body.glow13 .wmx13::before{animation:glow13 .7s ease-out 1 both}
+body.glow13 .j8o,body.glow13 .hero12 .dtf .g8{animation:glowo13 .7s ease-out 1 both}
+@keyframes sweep13{0%{opacity:1;background-position:100% 0}85%{opacity:1}100%{opacity:0;background-position:0 0}}
+@keyframes glow13{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
+@keyframes glowo13{0%{filter:none}35%{filter:drop-shadow(0 0 6px rgb(42 185 255 / .9))}100%{filter:none}}
+body[data-side=mini] .wmx13::before,body[data-side=mini] .wmx13::after{display:none}
+#ptr12.spin{animation:none;transform:translateY(10px)}
+#ptr12 .w8{width:12px;height:26px}
+@media (prefers-reduced-motion:reduce){.wmx13::before,.wmx13::after,.lt8{display:none!important}body.glow13 .j8o,body.glow13 .hero12 .dtf .g8{animation:none}}
+/* E. empty memory: white + on the blue button; text and button stack on a phone */
+.empty12 .b12 .ico,.empty12 button .ico{color:currentColor}
+.mem0{flex-wrap:wrap}
+.mem0>span{flex:1 1 0;min-width:0}
+@media (max-width:599px){.mem0 .cta13{flex-basis:100%;margin-inline-start:0}}
+/* Today panel (replaces Plan my day) */
+.td13{margin:0 0 16px;padding:16px;border-radius:20px;background:#fff;box-shadow:0 0 0 1px #E4E8F3}
+.td13>header{display:flex;align-items:flex-start;gap:12px}
+.td13>header>div{flex:1;min-width:0}
+.td13 h3{margin:0;font:700 1.125rem/1.3 var(--display);color:var(--midnight)}
+.td13 .upd,.td13 .eve{margin:2px 0 0;font:500 .8125rem/1.3 var(--text);color:var(--slate)}
+.td13>header .b12{flex:none;min-height:40px;padding:0 14px;font-size:.875rem}
+.td13>header .b12 .ico{width:16px;height:16px}
+.prg13{margin:12px 0 4px}
+.prg13 .bar{display:flex;height:10px;border-radius:5px;background:#E4E8F3;overflow:hidden}
+.prg13 .bar i{display:block;height:100%}
+.prg13 .bar i.y{background:#32CC00}.prg13 .bar i.t{background:#9500FF}
+.prg13 .lg{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:8px;font:500 .875rem/1.3 var(--text);color:var(--slate)}
+.prg13 .k{display:inline-flex;align-items:center;gap:6px}.prg13 .k i{width:10px;height:10px;border-radius:50%}
+.prg13 .k.y i{background:#32CC00}.prg13 .k.t i{background:#9500FF}.prg13 .k b{color:var(--midnight)}
+.prg13 .tot{margin-inline-start:auto;color:var(--midnight);font-weight:600}
+.prg13 .np{display:block;margin-top:4px;color:var(--slate);font:500 .75rem/1.3 var(--text)}
+.cols13{display:grid;gap:12px;margin-top:12px}
+.tl13 h4{margin:0 0 6px;font:700 .75rem/1.2 var(--text);letter-spacing:.06em;text-transform:uppercase;color:var(--slate)}
+.tl13 ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.tl13 li button{display:flex;align-items:flex-start;gap:8px;width:100%;min-height:44px;padding:8px;border-radius:12px;text-align:start;color:var(--navy);font:500 .9375rem/1.35 var(--text)}
+.tl13 li button:hover{background:var(--well,#F2F5FC)}
+.tl13 .tx{flex:1;min-width:0;overflow-wrap:anywhere}
+.tl13 .tx b{font-weight:600}
+.tl13 time,.tl13 small{flex:none;color:var(--slate);font:600 .8125rem/1.6 var(--text)}
+.tl13 .dot12{margin-top:7px}
+.tl13 .no{margin:0;padding:4px 8px;color:var(--slate);font:500 .875rem/1.4 var(--text)}
+.rp13{margin:10px 0 0}
+.rp13 .lnk{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:var(--royal);font:600 .875rem/1.2 var(--text)}
+.rp13 .lnk .ico{width:16px;height:16px}
+@media (min-width:1024px){.cols13{grid-template-columns:repeat(3,minmax(0,1fr))}}

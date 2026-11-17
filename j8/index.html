@@ -13,15 +13,16 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="J8NIX">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="icons/j8-icon-2026-11-17.svg">
+<link rel="apple-touch-icon" href="icons/j8-touch-180-2026-11-17.png">
 <link rel="preload" href="vendor/fonts/heebo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="app.css?v=11.2.0">
-<link rel="stylesheet" href="v11.css?v=11.2.0">
-<link rel="stylesheet" href="j11.css?v=11.2.0">
+<link rel="stylesheet" href="app.css?v=11.3.0">
+<link rel="stylesheet" href="v11.css?v=11.3.0">
+<link rel="stylesheet" href="j11.css?v=11.3.0">
 </head>
 <body>
-<!-- J8NIX PWA 11.2.0 (17 Nov 2026): Next items open in place (never an empty list), Line up next steps, colour roles, real pin/unpin, + New, honest Connections, what J8 remembers. Revert to 11.1.2: index-11.1.2.html + sw-11.1.2.js.
+<!-- J8NIX PWA 11.3.0 (17 Nov 2026): clear steps for you (full titles, How as numbered steps, a button named after where it goes; never a reply fragment or a vague project line), no pink, Dave's dark-on-white logo, light only when J8 works / boots / you finish. Revert to 11.2.0: index-11.2.0.html + sw-11.2.0.js.
+     11.2.0 (17 Nov 2026): Next items open in place (never an empty list), Line up next steps, colour roles, real pin/unpin, + New, honest Connections, what J8 remembers. Revert to 11.1.2: index-11.1.2.html + sw-11.1.2.js.
      11.1.0 (16 Nov 2026): onboarding is a J8 interview (or a form) that sets up your plan: projects, starter steps, check-ins, approval rules; Me → Re-plan with J8. Revert to 11.0.1: index-11.0.1.html + sw-11.0.1.js.
      11.0.1 (16 Nov 2026): keyboard no longer closes on Comment (no re-render while typing), calm chat (no fake typing). Revert to 11.0.0: index-11.0.0.html + sw-11.0.0.js.
      11.0.0 (16 Nov 2026): the 6.1 layout (Chat · Next · List · Flow) on the 10.1 engine, j11.js + j11.css. Revert to 10.1.0: index-10.1.0.html + sw-10.1.0.js (see j8nix-v12/SHIPPED-12.md).
@@ -30,7 +31,7 @@
      9.0.0 (15 Nov 2026): v10 layout. Five places (Now · Inbox · Projects · Calendar · Me) plus the J8 panel, on 8.1.1's engine.
      Revert to 8.1.1: index-8.1.1.html (+ app-8.1.1.js, app-8.1.1.css, sw-8.1.1.js). One line in j8nix-v8/SHIPPED-8.md (v10 section).
      Older: 8.1.1 → index-8.1.0.html … index-6.1.2.html. Data: window.J8 (j8-data.js). -->
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
  <symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></symbol>
  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></symbol>
  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5" /><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" /></symbol>
@@ -116,10 +117,11 @@
  <symbol id="i-board" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" /></symbol>
  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4" /><path d="M3 11v-1a4 4 0 0 1 4-4h14" /><path d="m7 22-4-4 4-4" /><path d="M21 13v1a4 4 0 0 1-4 4H3" /></symbol>
  <symbol id="i-order" viewBox="0 0 24 24"><path d="M10 12h11" /><path d="M10 18h11" /><path d="M10 6h11" /><path d="M4 10h2" /><path d="M4 6h1v4" /><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" /></symbol>
-<symbol id="eight" viewBox="79 21 24 48"><path fill="currentColor" d="M 100.554688 64.019531 L 100.554688 58.773438 C 100.554688 55.09375 99.308594 51.472656 97.042969 48.570312 C 96.765625 48.210938 96.289062 48.015625 95.851562 48.132812 C 94.972656 48.367188 94.691406 49.3125 95.132812 49.957031 C 96.886719 52.523438 98.191406 55.367188 98.191406 58.476562 L 98.191406 63.308594 C 95.863281 64.242188 93.398438 64.71875 90.855469 64.71875 C 88.316406 64.71875 85.851562 64.242188 83.523438 63.308594 L 83.523438 59.015625 C 83.523438 53.597656 86.449219 48.488281 91.308594 46.089844 C 97.007812 43.277344 100.554688 37.570312 100.554688 31.21875 L 100.554688 26.164062 C 100.671875 25.628906 100.402344 25.066406 99.882812 24.832031 C 97.035156 23.558594 94 22.910156 90.855469 22.910156 C 87.726562 22.910156 84.699219 23.554688 81.859375 24.820312 C 81.40625 25.023438 81.144531 25.476562 81.164062 25.945312 C 81.160156 25.953125 81.160156 25.964844 81.160156 25.972656 L 81.160156 31.21875 C 81.160156 34.859375 82.386719 38.453125 84.609375 41.339844 C 84.839844 41.640625 85.191406 41.800781 85.542969 41.800781 C 85.953125 41.800781 86.367188 41.589844 86.609375 41.144531 C 86.835938 40.738281 86.734375 40.230469 86.453125 39.863281 C 84.5625 37.394531 83.523438 34.324219 83.523438 31.21875 L 83.523438 26.683594 C 85.851562 25.746094 88.316406 25.273438 90.855469 25.273438 C 93.398438 25.273438 95.863281 25.746094 98.191406 26.683594 L 98.191406 30.976562 C 98.191406 36.394531 95.261719 41.503906 90.40625 43.902344 C 84.707031 46.714844 81.160156 52.421875 81.160156 58.773438 L 81.160156 64.019531 C 81.160156 64.027344 81.160156 64.039062 81.164062 64.046875 C 81.144531 64.515625 81.40625 64.96875 81.859375 65.171875 C 84.699219 66.4375 87.726562 67.082031 90.855469 67.082031 C 93.988281 67.082031 97.015625 66.4375 99.851562 65.171875 C 100.308594 64.96875 100.570312 64.515625 100.550781 64.046875 C 100.550781 64.035156 100.554688 64.027344 100.554688 64.019531 "/></symbol>
+<defs><radialGradient id="j8grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="332.221" gradientTransform="matrix(0.25,0,0,0.252525,24.1300,235.5505) translate(473.613 144.088) rotate(145) scale(1 0.2500)"><stop offset="0.025" stop-color="#5BB6F9"/><stop offset="0.075" stop-color="#57ADF4"/><stop offset="0.125" stop-color="#4075D8"/><stop offset="0.175" stop-color="#3249C2"/><stop offset="0.225" stop-color="#3043BF"/><stop offset="0.275" stop-color="#3244BB"/><stop offset="0.325" stop-color="#313E9B"/><stop offset="0.375" stop-color="#263080"/><stop offset="0.425" stop-color="#273286"/><stop offset="0.475" stop-color="#2B3897"/><stop offset="0.525" stop-color="#2F3FAD"/><stop offset="0.575" stop-color="#2E3EB0"/><stop offset="0.625" stop-color="#2E40B4"/><stop offset="0.675" stop-color="#2F41B8"/><stop offset="0.725" stop-color="#2F42BC"/><stop offset="0.775" stop-color="#3043BE"/><stop offset="0.825" stop-color="#3043BF"/><stop offset="0.975" stop-color="#3043BF"/></radialGradient><radialGradient id="j8light"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".3" stop-color="#2AB9FF"/><stop offset="1" stop-color="#2AB9FF" stop-opacity="0"/></radialGradient><clipPath id="j8clip"><path transform="matrix(1.03796,0,0,1.01695,-5.2366,-4.6173)" d="M 151.675781 291.523438 L 151.675781 286.289062 C 151.675781 282.621094 150.433594 279.007812 148.175781 276.113281 C 147.898438 275.753906 147.425781 275.554688 146.984375 275.671875 C 146.109375 275.90625 145.832031 276.851562 146.269531 277.496094 C 148.019531 280.054688 149.320312 282.894531 149.320312 285.992188 L 149.320312 290.816406 C 146.996094 291.75 144.539062 292.222656 142.003906 292.222656 C 139.46875 292.222656 137.007812 291.75 134.6875 290.816406 L 134.6875 286.53125 C 134.6875 281.125 137.605469 276.03125 142.453125 273.636719 C 148.140625 270.828125 151.675781 265.136719 151.675781 258.796875 L 151.675781 253.757812 C 151.796875 253.222656 151.527344 252.660156 151.007812 252.429688 C 148.167969 251.15625 145.140625 250.507812 142.003906 250.507812 C 138.878906 250.507812 135.859375 251.152344 133.027344 252.414062 C 132.574219 252.617188 132.3125 253.070312 132.332031 253.535156 C 132.332031 253.546875 132.328125 253.554688 132.328125 253.566406 L 132.328125 258.796875 C 132.328125 262.433594 133.550781 266.019531 135.769531 268.898438 C 136 269.199219 136.351562 269.355469 136.703125 269.355469 C 137.109375 269.355469 137.523438 269.148438 137.765625 268.703125 C 137.992188 268.296875 137.890625 267.792969 137.609375 267.421875 C 135.722656 264.960938 134.6875 261.898438 134.6875 258.796875 L 134.6875 254.273438 C 137.007812 253.339844 139.46875 252.867188 142.003906 252.867188 C 144.539062 252.867188 146.996094 253.339844 149.320312 254.273438 L 149.320312 258.558594 C 149.320312 263.960938 146.398438 269.058594 141.550781 271.453125 C 135.867188 274.261719 132.328125 279.953125 132.328125 286.289062 L 132.328125 291.523438 C 132.328125 291.535156 132.332031 291.542969 132.332031 291.550781 C 132.3125 292.019531 132.574219 292.472656 133.027344 292.671875 C 135.859375 293.9375 138.878906 294.578125 142.003906 294.578125 C 145.128906 294.578125 148.148438 293.9375 150.976562 292.671875 C 151.429688 292.472656 151.695312 292.019531 151.675781 291.550781 C 151.675781 291.542969 151.675781 291.53125 151.675781 291.523438 "/></clipPath></defs>
+<symbol id="eight" viewBox="131.498 249.537 21.424 46.017"><path fill="url(#j8grad)" transform="matrix(1.03796,0,0,1.01695,-5.2366,-4.6173)" d="M 151.675781 291.523438 L 151.675781 286.289062 C 151.675781 282.621094 150.433594 279.007812 148.175781 276.113281 C 147.898438 275.753906 147.425781 275.554688 146.984375 275.671875 C 146.109375 275.90625 145.832031 276.851562 146.269531 277.496094 C 148.019531 280.054688 149.320312 282.894531 149.320312 285.992188 L 149.320312 290.816406 C 146.996094 291.75 144.539062 292.222656 142.003906 292.222656 C 139.46875 292.222656 137.007812 291.75 134.6875 290.816406 L 134.6875 286.53125 C 134.6875 281.125 137.605469 276.03125 142.453125 273.636719 C 148.140625 270.828125 151.675781 265.136719 151.675781 258.796875 L 151.675781 253.757812 C 151.796875 253.222656 151.527344 252.660156 151.007812 252.429688 C 148.167969 251.15625 145.140625 250.507812 142.003906 250.507812 C 138.878906 250.507812 135.859375 251.152344 133.027344 252.414062 C 132.574219 252.617188 132.3125 253.070312 132.332031 253.535156 C 132.332031 253.546875 132.328125 253.554688 132.328125 253.566406 L 132.328125 258.796875 C 132.328125 262.433594 133.550781 266.019531 135.769531 268.898438 C 136 269.199219 136.351562 269.355469 136.703125 269.355469 C 137.109375 269.355469 137.523438 269.148438 137.765625 268.703125 C 137.992188 268.296875 137.890625 267.792969 137.609375 267.421875 C 135.722656 264.960938 134.6875 261.898438 134.6875 258.796875 L 134.6875 254.273438 C 137.007812 253.339844 139.46875 252.867188 142.003906 252.867188 C 144.539062 252.867188 146.996094 253.339844 149.320312 254.273438 L 149.320312 258.558594 C 149.320312 263.960938 146.398438 269.058594 141.550781 271.453125 C 135.867188 274.261719 132.328125 279.953125 132.328125 286.289062 L 132.328125 291.523438 C 132.328125 291.535156 132.332031 291.542969 132.332031 291.550781 C 132.3125 292.019531 132.574219 292.472656 133.027344 292.671875 C 135.859375 293.9375 138.878906 294.578125 142.003906 294.578125 C 145.128906 294.578125 148.148438 293.9375 150.976562 292.671875 C 151.429688 292.472656 151.695312 292.019531 151.675781 291.550781 C 151.675781 291.542969 151.675781 291.53125 151.675781 291.523438 "/></symbol>
 </svg>
 <div id="auth" hidden>
- <header class="authtop11"><img src="icons/logo-lockup.png" alt="J8NIX" width="240" height="99"><h1 class="sr">J8NIX</h1><p class="tsub">Smart operations OS, only smarter</p></header>
+ <header class="authtop11"><img class="wm13" src="brand/j8nix-wordmark-2026-11-17.svg" alt="J8NIX" width="240" height="84"><h1 class="sr">J8NIX</h1><p class="tsub">Smart operations OS, only smarter</p></header>
  <main>
   <form id="fEmail" class="step">
    <label for="email">Your work email</label>
@@ -144,7 +146,7 @@
 </div>
 <div id="app" class="app" hidden>
  <nav class="rail" id="nav" aria-label="Main">
-  <span class="wm"><img src="icons/logo-lockup.png" alt="J8NIX" width="140" height="58"></span><button class="sidec" id="sideC" type="button" aria-expanded="true" aria-label="Collapse the sidebar"><svg class="ico" aria-hidden="true"><use href="#i-back"/></svg></button><span class="tagl">Smart operations OS, only smarter</span>
+  <span class="wm wmx13"><img src="brand/j8nix-wordmark-2026-11-17.svg" alt="J8NIX" width="132" height="46"></span><button class="sidec" id="sideC" type="button" aria-expanded="true" aria-label="Collapse the sidebar"><svg class="ico" aria-hidden="true"><use href="#i-back"/></svg></button><span class="tagl">Smart operations OS, only smarter</span>
   <button class="kbar" data-a="ask-open" aria-haspopup="dialog"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><span id="kbarL">Search or ask</span><kbd aria-hidden="true">⌘K</kbd></button>
   <button class="newd13" id="newD" type="button" data-a="x13-new" data-id="" aria-haspopup="dialog"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg><span class="lbl">New</span><kbd aria-hidden="true">N</kbd></button>
   <div class="places">
@@ -154,7 +156,7 @@
    <button data-nav="flow"><svg class="ico" aria-hidden="true"><use href="#i-flow"/></svg><span class="lbl">Flow</span></button>
    <button data-nav="me" class="meTab"><svg class="ico" aria-hidden="true"><use href="#i-you"/></svg><span class="lbl">Me</span></button>
   </div>
-  <button class="j8t" id="j8T" type="button" data-a="x-j8" aria-pressed="false"><span class="j8o"><img src="icons/mark-8.svg" alt="" width="12" height="27"></span><span class="lbl" id="j8TL">J8 panel</span><kbd aria-hidden="true">\</kbd></button>
+  <button class="j8t" id="j8T" type="button" data-a="x-j8" aria-pressed="false"><span class="j8o"><img src="brand/j8nix-mark-8-2026-11-17.svg" alt="" width="12" height="26"></span><span class="lbl" id="j8TL">J8 panel</span><kbd aria-hidden="true">\</kbd></button>
   <div class="sideg" id="sideG"></div>
   <div class="pins" id="pins"></div>
   <button class="teampill" id="teamPillD" data-a="nav" data-id="me"><i class="ldot" aria-hidden="true"></i><span id="teamLD">Team</span></button><button class="user" data-a="nav" data-id="me" id="userBtn"><span class="av" id="userAv" aria-hidden="true">·</span><span class="un"><b id="userN">Me</b><span id="userO"></span></span></button>
@@ -162,7 +164,7 @@
  <header class="top" id="top">
   <div class="top-in">
    <button class="back" id="tBack" data-a="back" hidden><svg class="ico flip" aria-hidden="true"><use href="#i-back"/></svg><span id="tBackL">Back</span></button>
-   <span class="ptile" id="tTile"><img src="icons/logo-lockup.png" alt="J8NIX" width="116" height="48"></span>
+   <span class="ptile wmx13" id="tTile"><img src="brand/j8nix-wordmark-2026-11-17.svg" alt="J8NIX" width="86" height="30"></span>
    <div class="ttl"><h1 id="hdT">Now</h1></div>
    <button class="tbtn new13" id="newB" type="button" data-a="x13-new" data-id="" aria-haspopup="dialog" aria-label="Create" hidden><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></button><button class="teampill" id="teamPill" data-a="nav" data-id="me"><i class="ldot" aria-hidden="true"></i><span id="teamL">Team</span></button><button class="av topav" id="topAv" data-a="nav" data-id="me" aria-label="Me">·</button><button class="tbtn j8b" id="j8Btn" data-a="x-j8" aria-expanded="false" aria-controls="j8p"><svg class="g8" aria-hidden="true"><use href="#eight"/></svg><span class="sr" id="j8BtnL">J8</span><i class="dot" id="j8Dot" hidden></i></button>
   </div>
@@ -209,10 +211,10 @@
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="toastMsg"></span><button id="undo" hidden><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg><span id="undoL">Undo</span></button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=11.2.0"></script>
-<script src="app.js?v=11.2.0"></script>
-<script src="j11.js?v=11.2.0-2"></script>
-<script src="shell.js?v=11.2.0"></script>
+<script src="j8-data.js?v=11.3.0"></script>
+<script src="app.js?v=11.3.0"></script>
+<script src="j11.js?v=11.3.0"></script>
+<script src="shell.js?v=11.3.0"></script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>

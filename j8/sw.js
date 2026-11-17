@@ -1,8 +1,8 @@
-/* J8NIX 11.2.0 service worker: offline shell + web push. Never caches API data. */
-var CACHE = 'j8nix-v11.2.0-2';
-var SHELL = ['./', 'index.html', 'app.css?v=11.2.0', 'v11.css?v=11.2.0', 'j11.css?v=11.2.0', 'app.js?v=11.2.0', 'j11.js?v=11.2.0-2', 'shell.js?v=11.2.0', 'j8-data.js?v=11.2.0', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
-  'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/j8nix.png', 'brand/studio.png',
-  'icons/logo-lockup.png', 'icons/mark-8.svg', 'icons/icon.svg', 'icons/icon-192.png', 'icons/badge-96.png', 'icons/apple-touch-icon.png'];
+/* J8NIX 11.3.0 service worker: offline shell + web push. Never caches API data. */
+var CACHE = 'j8nix-v11.3.0-1';
+var SHELL = ['./', 'index.html', 'app.css?v=11.3.0', 'v11.css?v=11.3.0', 'j11.css?v=11.3.0', 'app.js?v=11.3.0', 'j11.js?v=11.3.0', 'shell.js?v=11.3.0', 'j8-data.js?v=11.3.0', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
+  'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/studio.png',
+  'brand/j8nix-wordmark-2026-11-17.svg', 'brand/j8nix-mark-8-2026-11-17.svg', 'brand/j8nix-2026-11-17.png', 'icons/j8-icon-2026-11-17.svg', 'icons/j8-192-2026-11-17.png', 'icons/badge-96.png', 'icons/j8-touch-180-2026-11-17.png'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));

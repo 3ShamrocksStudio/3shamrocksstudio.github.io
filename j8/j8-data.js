@@ -17,8 +17,8 @@ var J8 = (function () {
   'use strict';
   var SB_URL = 'https://otkvebgrdiayjnqrytrn.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90a3ZlYmdyZGlheWpucXJ5dHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExOTEzMzQsImV4cCI6MjEwNjc2NzMzNH0.-A1KuUXMBx9NMBwUnZx0cS4TwJkjDz86yok5BcEcKsE'; // public anon key; RLS guards every row
-  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout', 'tasks', 'later', 'calendar', 'memory'];
-  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout', tasks: 'j8_tasks', later: 'j8_later', calendar: 'j8_calendar', memory: 'j8_memory' };
+  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout', 'tasks', 'later', 'calendar', 'memory', 'day'];
+  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout', tasks: 'j8_tasks', later: 'j8_later', calendar: 'j8_calendar', day: 'j8_day', memory: 'j8_memory' };
   /* v6 speed: sent/killed drafts load without their bodies (the biggest part of the data); open drafts load in full */
   var OPEN_AP = 'status.is.null,status.in.(pending,approved,edited,queued),kind.eq.template'; /* templates load in full: Control shows their text */
   var LIGHT_AP = 'org_id,id,kind,label,to,channel,product,created,status,template_id,decided_at,decided_by,sent_at,result,rank,batch,batch_label,blocked_by,version,updated_at';
@@ -47,12 +47,14 @@ var J8 = (function () {
       if (q[0].error) throw q[0].error; if (q[1].error) throw q[1].error;
       rows = (q[0].data || []).concat(q[1].data || []);
     } else {
-      var r = await sb.from(TABLE[c]).select(c === 'todo' ? TODO_COLS : '*').eq('org_id', state.org);
-      if (r.error) { if (c === 'tasks' || c === 'later' || c === 'calendar' || c === 'memory') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks / later: a backend without the table still works */
+      var qq = sb.from(TABLE[c]).select(c === 'todo' ? TODO_COLS : '*').eq('org_id', state.org);
+      if (c === 'day') qq = qq.gte('day', new Date(Date.now() - 2 * 864e5).toISOString().slice(0, 10)); /* 11.3: only the last days of the plan */
+      var r = await qq;
+      if (r.error) { if (c === 'tasks' || c === 'later' || c === 'calendar' || c === 'memory' || c === 'day') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks / later: a backend without the table still works */
       rows = r.data || [];
     }
     var o = {}, v = {};
-    rows.forEach(function (row) { o[row.id] = toDoc(row); v[row.id] = row.version; });
+    rows.forEach(function (row) { var k = row.id || row.day; o[k] = toDoc(row); v[k] = row.version; }); /* j8_day is keyed by day */
     data[c] = o; ver[c] = v;
     cache(); emit(c);
   }
@@ -67,6 +69,7 @@ var J8 = (function () {
     if (channel) { sb.removeChannel(channel); channel = null; }
     channel = sb.channel('j8-' + state.org);
     COLS.forEach(function (c) {
+      if (c === 'day') return; /* 11.3: j8_day changes once a day; the 60 s poll and Refresh pick it up */
       channel.on('postgres_changes', { event: '*', schema: 'public', table: TABLE[c], filter: 'org_id=eq.' + state.org }, function () { reloadSoon(c); });
     });
     channel.subscribe();
@@ -335,6 +338,20 @@ var J8 = (function () {
     /* 7.1: Dave's Later (come_back_at), Not needed and Done on one Today item. id = the app's item key (tk-…, mv-…, b-…).
        One row per item; a new decision overwrites the old one (status 'open' = undone). Rows are never deleted. */
     /* 11.2: Google Calendar, read-only: the J8 team's morning run writes the next 7 days into j8_calendar (ops/brain/J8NIX-DATA.md) */
+    /* 11.3: today's plan (j8_day, one row per day, written by the 08:30 morning run; read-only here) and the team's
+       daily run times. RUNS_DAILY is the ONE place the app keeps the schedule (Israel time); see ops/brain/J8NIX-DATA.md,
+       "Today's plan (j8_day, J8NIX 11.3)". days: 0 = Sunday … 6 = Saturday; omitted = every day. every: hourly at that minute. */
+    day: {
+      today: function () { var d = new Date(), k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'), x = data.day[k]; return x ? Object.assign({ day: k }, x) : null; },
+      RUNS_DAILY: [
+        { arm: 'Morning plan', at: ['08:30'], what: ['Builds today\u2019s plan', 'בונה את התוכנית של היום'] },
+        { arm: 'Sender', at: ['09:41', '16:41'], days: [0, 1, 2, 3, 4], what: ['Sends what you approved', 'שולח את מה שאישרת'] },
+        { arm: 'Brain shift', at: ['16:13'], what: ['Answers your notes and updates the plan', 'עונה להערות שלך ומעדכן את התוכנית'] },
+        { arm: 'Income hunter', at: ['07:53', '21:53'], what: ['Finds paid work and drafts it for your OK', 'מוצא עבודה בתשלום ומכין טיוטות לאישור'] },
+        { arm: 'Inbox watcher', every: 26, from: 7, to: 23, what: ['Reads your messages and acts on them', 'קורא את ההודעות שלך ופועל לפיהן'] },
+        { arm: 'Night shift', at: ['23:37', '03:37'], what: ['Moves every project forward overnight', 'מקדם כל פרויקט בלילה'] }
+      ]
+    },
     calendar: {
       list: function () { return list('calendar').sort(function (a, b) { return String(a.starts_at).localeCompare(String(b.starts_at)); }); },
       lastSync: function () { var t = null; list('calendar').forEach(function (e) { if (e.synced_at && (!t || String(e.synced_at) > t)) t = String(e.synced_at); }); return t; }
