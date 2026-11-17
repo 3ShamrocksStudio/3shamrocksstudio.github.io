@@ -1,7 +1,7 @@
 {
   "version": 3,
-  "updated": "2026-11-17T08:37+02:00",
-  "last_run": "2026-11-17T08:37+02:00",
+  "updated": "2026-11-17T16:35+02:00",
+  "last_run": "2026-11-17T16:35+02:00",
   "goal": {
     "target_usd": 1000000,
     "deadline": "2027-04-21",
@@ -3130,6 +3130,12 @@
       "at": "2026-11-16T16:25+02:00",
       "by": "Claude (brain shift)",
       "decision": "No new drafts (send-first rule: >30 pending). Fixed the lead order so the studio email sign-in shows as the blocker of the 14 held sends; no extra push because the sender already asked today."
+    },
+    {
+      "at": "2026-11-17T16:35+02:00",
+      "by": "Claude (brain shift)",
+      "decision": "Dave's 17 Nov voice rule applied to every approved outreach draft: 56 LinkedIn notes + 13 founder emails had a sentence explaining the recipient's company; replaced with his own words ('I read about X. Really cool idea.' / 'got curious :)'), approvals kept (defect fix, ARMS §3z.5). 4 dual-channel founders: LinkedIn note set as follow-up of the email (§3z.3). Aidoc form answer No, Connecteam Yes. iOS and LinkedIn-video asks removed (zero spend / 15 Nov social rule).",
+      "check": "2026-11-20: replies to the 13 emails vs 0 before"
     }
   ],
   "learnings": [
@@ -3334,7 +3340,11 @@
       "at": "2026-11-15",
       "text": "Dave killed a note to a founder he had already talked to (Mave). No LinkedIn message is drafted or sent before checking his past LinkedIn chats with that person; identical template notes across leads are not allowed."
     },
-    "16 Nov (Dave): every video/viral piece is professionally branded, always: pro editing and transitions, intros/outros as needed, original brand background music only. No unbranded or stock-music video ever goes up for OK."
+    "16 Nov (Dave): every video/viral piece is professionally branded, always: pro editing and transitions, intros/outros as needed, original brand background music only. No unbranded or stock-music video ever goes up for OK.",
+    {
+      "at": "2026-11-17T16:35+02:00",
+      "text": "17 Nov: Dave got 15+ asks he could not parse ('no idea what you want from me', cut-off headlines, iOS 'what the hell is this'). Rule: a Dave ask exists only if it is one short complete sentence naming the exact action; stale or spend-blocked asks are removed, not left on his list."
+    }
   ],
   "runs": [
     {
@@ -5697,6 +5707,60 @@
       ],
       "verifier": "sonnet subagent",
       "dave_input_since_last": "none"
+    },
+    {
+      "at": "2026-11-17T16:35+02:00",
+      "seat": "CEO-office",
+      "models": {
+        "opus": "orchestrator",
+        "sonnet": "verifier"
+      },
+      "steps": [
+        {
+          "text": "19 Dave notes answered (15 at start + 4 during run); each with a tagged reply line",
+          "seat": "CEO-office",
+          "model": "opus",
+          "evidence": "j8_messages status done/routed"
+        },
+        {
+          "text": "Voice rule: 56 LinkedIn notes + 13 founder emails rewritten to Dave's casual voice, no company explanations",
+          "seat": "CRO",
+          "model": "opus",
+          "evidence": "j8_approvals warn '17 Nov: ... your voice note'"
+        },
+        {
+          "text": "Applications unblocked: comeet allowed, studio email signed in, Aidoc No / Connecteam Yes answers stored; 7 applications + 14 emails ready for Wed 09:41 Mac send",
+          "seat": "CRO",
+          "model": "opus",
+          "evidence": "j8_approvals result 'Waiting: next send run'"
+        },
+        {
+          "text": "2 LinkedIn posts marked posted by hand (studio 5-second, Brand Sprint)",
+          "seat": "CMO",
+          "model": "opus",
+          "evidence": "j8_approvals li-post-1115-studio-2, post-1115-li-brand-sprint status sent"
+        },
+        {
+          "text": "Stale asks removed: p-ig 12 Nov OK question, p-linkedin approve 1-22, p-ios Apple account; p-nature redo task t-3sds-own-typeface (CDO) created",
+          "seat": "COO",
+          "model": "opus",
+          "evidence": "j8_projects you lines; j8_tasks t-3sds-own-typeface"
+        }
+      ],
+      "loose_ends_closed": [],
+      "loose_ends_advanced": [],
+      "skipped": [
+        {
+          "what": "Gmail/Linear sense, improve-research",
+          "why": "token budget: all time went to 19 Dave notes and fixing 69 drafts before tomorrow's send"
+        },
+        {
+          "what": "Hebrew council emails (Hevel Yavne, Megiddo, HaShomer) still retell the recipient's own work",
+          "why": "held anyway (SOS alert chain); fix before release"
+        }
+      ],
+      "verifier": "sonnet subagent: claims 1-4 PASS (no 'I read about X:' left, texts whole, footers kept, follow-ups set); flagged 4 new messages, now answered",
+      "dave_input_since_last": 19
     }
   ],
   "morning_note": {
@@ -8069,6 +8133,139 @@
       "result": "Bar added to t-lickpick-reels-remake; draft back to pending, blocked by the remake until the new video is ready.",
       "at": "2026-11-17",
       "handled": "2026-11-17T14:50+02:00",
+      "status": "done"
+    },
+    {
+      "id": "p-services-1794923041421",
+      "p": "p-services",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-services-1794923048161",
+      "p": "p-services",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-services-1794923168944",
+      "p": "p-services",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-services-1794923171081",
+      "p": "p-services",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-jobs-1794923111611",
+      "p": "p-jobs",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-jobs-1794923139428",
+      "p": "p-jobs",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-jobs-1794923162211",
+      "p": "p-jobs",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-jobs-1794923099170",
+      "p": "p-jobs",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-jobs-1794923158144",
+      "p": "p-jobs",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-jobs-1794923252521",
+      "p": "p-jobs",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-jobs-1794923256138",
+      "p": "p-jobs",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-jobs-1794923060821",
+      "p": "p-jobs",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-jobs-1794923141214",
+      "p": "p-jobs",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-ig-1794923348887",
+      "p": "p-ig",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-linkedin-1794923350539",
+      "p": "p-linkedin",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-nature-1794924957365",
+      "p": "p-nature",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "routed"
+    },
+    {
+      "id": "p-nature-1794924960000",
+      "p": "p-nature",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-ios-1794925007248",
+      "p": "p-ios",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
+      "status": "done"
+    },
+    {
+      "id": "p-ios-1794925009265",
+      "p": "p-ios",
+      "at": "2026-11-17T16:35+02:00",
+      "result": "answered in J8NIX (brain shift 17 Nov 16:35)",
       "status": "done"
     }
   ]
