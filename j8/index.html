@@ -16,12 +16,13 @@
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preload" href="vendor/fonts/heebo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="app.css?v=11.1.0">
-<link rel="stylesheet" href="v11.css?v=11.1.0">
-<link rel="stylesheet" href="j11.css?v=11.1.1">
+<link rel="stylesheet" href="app.css?v=11.2.0">
+<link rel="stylesheet" href="v11.css?v=11.2.0">
+<link rel="stylesheet" href="j11.css?v=11.2.0">
 </head>
 <body>
-<!-- J8NIX PWA 11.1.0 (16 Nov 2026): onboarding is a J8 interview (or a form) that sets up your plan: projects, starter steps, check-ins, approval rules; Me → Re-plan with J8. Revert to 11.0.1: index-11.0.1.html + sw-11.0.1.js.
+<!-- J8NIX PWA 11.2.0 (17 Nov 2026): Next items open in place (never an empty list), Line up next steps, colour roles, real pin/unpin, + New, honest Connections, what J8 remembers. Revert to 11.1.2: index-11.1.2.html + sw-11.1.2.js.
+     11.1.0 (16 Nov 2026): onboarding is a J8 interview (or a form) that sets up your plan: projects, starter steps, check-ins, approval rules; Me → Re-plan with J8. Revert to 11.0.1: index-11.0.1.html + sw-11.0.1.js.
      11.0.1 (16 Nov 2026): keyboard no longer closes on Comment (no re-render while typing), calm chat (no fake typing). Revert to 11.0.0: index-11.0.0.html + sw-11.0.0.js.
      11.0.0 (16 Nov 2026): the 6.1 layout (Chat · Next · List · Flow) on the 10.1 engine, j11.js + j11.css. Revert to 10.1.0: index-10.1.0.html + sw-10.1.0.js (see j8nix-v12/SHIPPED-12.md).
      10.1.0 (16 Nov 2026): Goals across all projects, area-neutral status.
@@ -145,6 +146,7 @@
  <nav class="rail" id="nav" aria-label="Main">
   <span class="wm"><img src="icons/logo-lockup.png" alt="J8NIX" width="140" height="58"></span><button class="sidec" id="sideC" type="button" aria-expanded="true" aria-label="Collapse the sidebar"><svg class="ico" aria-hidden="true"><use href="#i-back"/></svg></button><span class="tagl">Smart operations OS, only smarter</span>
   <button class="kbar" data-a="ask-open" aria-haspopup="dialog"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><span id="kbarL">Search or ask</span><kbd aria-hidden="true">⌘K</kbd></button>
+  <button class="newd13" id="newD" type="button" data-a="x13-new" data-id="" aria-haspopup="dialog"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg><span class="lbl">New</span><kbd aria-hidden="true">N</kbd></button>
   <div class="places">
    <button data-nav="chat"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg><span class="lbl">Chat</span><span class="count" id="cN" hidden></span></button>
    <button data-nav="next"><svg class="ico" aria-hidden="true"><use href="#i-compass"/></svg><span class="lbl">Next</span><span class="count" id="nN" hidden></span><span class="sr" id="nNs"></span></button>
@@ -162,7 +164,7 @@
    <button class="back" id="tBack" data-a="back" hidden><svg class="ico flip" aria-hidden="true"><use href="#i-back"/></svg><span id="tBackL">Back</span></button>
    <span class="ptile" id="tTile"><img src="icons/logo-lockup.png" alt="J8NIX" width="116" height="48"></span>
    <div class="ttl"><h1 id="hdT">Now</h1></div>
-   <button class="teampill" id="teamPill" data-a="nav" data-id="me"><i class="ldot" aria-hidden="true"></i><span id="teamL">Team</span></button><button class="av topav" id="topAv" data-a="nav" data-id="me" aria-label="Me">·</button><button class="tbtn j8b" id="j8Btn" data-a="x-j8" aria-expanded="false" aria-controls="j8p"><svg class="g8" aria-hidden="true"><use href="#eight"/></svg><span class="sr" id="j8BtnL">J8</span><i class="dot" id="j8Dot" hidden></i></button>
+   <button class="tbtn new13" id="newB" type="button" data-a="x13-new" data-id="" aria-haspopup="dialog" aria-label="Create" hidden><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></button><button class="teampill" id="teamPill" data-a="nav" data-id="me"><i class="ldot" aria-hidden="true"></i><span id="teamL">Team</span></button><button class="av topav" id="topAv" data-a="nav" data-id="me" aria-label="Me">·</button><button class="tbtn j8b" id="j8Btn" data-a="x-j8" aria-expanded="false" aria-controls="j8p"><svg class="g8" aria-hidden="true"><use href="#eight"/></svg><span class="sr" id="j8BtnL">J8</span><i class="dot" id="j8Dot" hidden></i></button>
   </div>
  </header>
  <div class="conn" id="status" role="status" hidden></div>
@@ -207,10 +209,10 @@
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="toastMsg"></span><button id="undo" hidden><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg><span id="undoL">Undo</span></button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=11.1.0"></script>
-<script src="app.js?v=11.1.2"></script>
-<script src="j11.js?v=11.1.0"></script>
-<script src="shell.js?v=11.1.2"></script>
+<script src="j8-data.js?v=11.2.0"></script>
+<script src="app.js?v=11.2.0"></script>
+<script src="j11.js?v=11.2.0"></script>
+<script src="shell.js?v=11.2.0"></script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>

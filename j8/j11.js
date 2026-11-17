@@ -79,7 +79,7 @@ function goalsShown(){var A=goalsAll(),P=gprefs(),L=P.watch&&P.watch.length?A.fi
 function gDue(g){if(g.over)return tt('overdue')+' · '+dayShort(new Date(g.day+'T12:00:00'));return g.day===ymd(new Date())?tt('today'):dayShort(new Date(g.day+'T12:00:00'));}
 function goalsCard(desk){var S=goalsShown(),L=S.L;
   return '<section class="card11 h11-goals"><h3>'+I('target')+'<span>'+esc(tt('goals'))+'</span><span class="n"><bdi>'+goalsAll().length+'</bdi></span></h3>'
-   +(L.length?'<ul class="gl11">'+L.map(function(g){var pin=S.pin===g.id;return '<li class="'+(pin?'pin':'')+'"><button class="g" data-a="'+(g.pid?'proj':'nav')+'" data-id="'+esc(g.pid||'money')+'"><span class="gr">'+ring(desk?44:40,5,g.pct,null,g.col)+'</span><span class="gt"><b dir="auto">'+esc(cut(g.t,60))+'</b><small><bdi dir="auto">'+esc(g.sub)+'</bdi> · <bdi class="'+(g.over?'od':'')+'">'+esc(gDue(g))+'</bdi>'+(g.pl?' · <bdi>'+esc(g.pl)+'</bdi>':'')+'</small></span></button>'
+   +(L.length?'<ul class="gl11">'+L.map(function(g){var pin=pinned13(S,g.id);return '<li class="'+(pin?'pin':'')+'"><button class="g" data-a="'+(g.pid?'proj':'nav')+'" data-id="'+esc(g.pid||'money')+'"><span class="gr">'+ring(desk?44:40,5,g.pct,null,g.col)+'</span><span class="gt"><b dir="auto">'+esc(cut(g.t,60))+'</b><small><bdi dir="auto">'+esc(g.sub)+'</bdi> · <bdi class="'+(g.over?'od':'')+'">'+esc(gDue(g))+'</bdi>'+(g.pl?' · <bdi>'+esc(g.pl)+'</bdi>':'')+'</small></span></button>'
      +'<button class="gpin" data-a="v11-pin" data-id="'+esc(g.id)+'" aria-pressed="'+pin+'" aria-label="'+esc(pin?tt('pinned'):tt('pin'))+'">'+I('pin')+'</button></li>';}).join('')+'</ul>':'<p class="sub11">'+esc(tt('noGoals'))+'</p>')+'</section>';}
 function movedN(){var now=Date.now(),pm=0,se=0;liveP().forEach(function(p){var t=pd(p.updated);if(!isNaN(t)&&now-t<864e5)pm++;});J8.approvals.list().forEach(function(a){var t=pd(a.sent_at);if(a.status==='sent'&&!isNaN(t)&&now-t<864e5)se++;});return {pm:pm,se:se,ru:runs24()};}
 function movedLines(){var now=Date.now();return J8.runs.list().filter(function(r){var t=pd(r.ended||r.started);return r.summary&&r.status!=='nothing'&&r.status!=='failed'&&!isNaN(t)&&now-t<864e5;}).slice(0,3);}
@@ -200,10 +200,10 @@ function myGoals(G){var o={},L=[];try{o=J8.prefs.get()||{};}catch(e){}var P=Arra
     L.push({id:'g-'+k,pid:p?p.id:null,t:g.t,sub:p?p.name:tt('yourGoal'),day:g.at,pct:p?stageOf(p)/6:0,pl:p&&stageOf(p)?tt('stage',{a:stageOf(p)}):'',col:'#9500FF'});});return L;}
 function goalsStrip(){var S=goalsShown(),L=S.L;
   if(!L.length)return '<button class="gs12 none" data-a="x12-ob" data-id="1">'+I('target')+'<span>'+esc(tt('setGoals'))+'</span>'+I('fwd','flip')+'</button>';
-  return '<section class="gs12" aria-label="'+esc(tt('goals'))+'"><ul>'+L.map(function(g){var pin=S.pin===g.id;
+  return '<section class="gs12" aria-label="'+esc(tt('goals'))+'"><ul>'+L.map(function(g){var pin=pinned13(S,g.id);
     return '<li class="'+(pin?'pin':'')+'"><button class="g" data-a="'+(g.pid?'proj':'nav')+'" data-id="'+esc(g.pid||(g.id==='money'?'money':'next'))+'"><span class="gr">'+ring(40,5,g.pct,null,g.col)+'</span><span class="gt"><b dir="auto">'+esc(cut(g.t,42))+'</b><small class="'+(g.over?'od':'')+'"><bdi>'+esc(gDue(g))+'</bdi></small></span></button>'
      +'<button class="gpin" data-a="v11-pin" data-id="'+esc(g.id)+'" aria-pressed="'+pin+'" aria-label="'+esc(pin?tt('pinned'):tt('pin'))+'">'+I('pin')+'</button></li>';}).join('')+'</ul></section>';}
-function planTag(i){return i&&i.task&&i.task.source==='j8nix-plan'?'<p class="plan12"><span class="chip12 new sm">'+I('check')+'<bdi>'+esc(tt('yourPlan'))+'</bdi></span><button type="button" class="lnk" data-a="x12-tedit" data-id="'+esc(i.task.id)+'">'+I('edit')+'<span>'+esc(tt('editIt'))+'</span></button></p>':'';}
+function planTag(i){return i&&i.task&&(i.task.source==='j8nix-plan'||i.task.source==='j8nix-app')?'<p class="plan12"><span class="chip12 new sm">'+I('check')+'<bdi>'+esc(tt('yourPlan'))+'</bdi></span><button type="button" class="lnk" data-a="x12-tedit" data-id="'+esc(i.task.id)+'">'+I('edit')+'<span>'+esc(tt('editIt'))+'</span></button></p>':'';}
 function px(o,k){return o?(o[k]!=null?o[k]:(o.extra||{})[k]):undefined;}
 function projPlanTag(p){return p&&px(p,'plan')?'<p class="plan12"><span class="chip12 new sm">'+I('check')+'<bdi>'+esc(tt('yourPlan'))+'</bdi></span>'+(J8.orgs.can('admin')?'<button type="button" class="lnk" data-a="x12-pedit" data-id="'+esc(p.id)+'">'+I('edit')+'<span>'+esc(tt('editIt'))+'</span></button>':'')+'</p>':'';}
 function heroCard(i,ix){var n=nextOf(i),k=esc(i.key),pid=rowPid(i),p=pobj(pid),ul=i.ul.length,unl=UI.unl&&(i.ids||[]).some(function(x){return UI.unl.indexOf(x)>-1;});
@@ -393,7 +393,7 @@ var PURP=['sales','launch','raise','mkt','team','personal','other'];
 var OB={on:false,i:0,form:false,seen:false,stage:'ask',A:null,made:null,typing:0};
 function obDone(){if(ls('j8-ob'))return true;try{return !!(J8.prefs.get()||{}).onboarded;}catch(e){return false;}}
 function obMaybe(){if(OB.on||OB.seen||!connected||obDone())return;OB.seen=true;obOpen(0);}
-function A0(){var o={};try{o=J8.prefs.get()||{};}catch(e){}var a=o.plan&&typeof o.plan==='object'?o.plan:{};
+function A0(){var o={};try{o=J8.prefs.get()||{};}catch(e){}var a=o.interview&&typeof o.interview==='object'?o.interview:o.plan&&typeof o.plan==='object'&&Array.isArray(o.plan.purposes)?o.plan:{}; /* 11.2: interview answers live in prefs.interview (prefs.plan is Plan my day) */
   return {purposes:Array.isArray(a.purposes)?a.purposes.slice():[],purposeOther:a.purposeOther||'',role:o.role||a.role||'',roleOther:a.roleOther||'',stage:a.stage||'',f:JSON.parse(JSON.stringify(a.f||{})),
     goals:[{t:'',n:'',at:'',p:''}],cap:capMin()||60,checkin:Object.assign({am:'08:30',pm:''},a.checkin||o.checkin||{}),rules:Object.assign({auto:['research','drafts','remind'],ask:['send','price','posts','spend']},a.rules||o.rules||{})};}
 function qs(){var A=OB.A,L=['purpose','who'];A.purposes.slice(0,3).forEach(function(p){L.push('f-'+p);});return L.concat(['goals','time','rules']);}
@@ -473,8 +473,9 @@ function planBuild(){var A=OB.A,adm=J8.orgs.can('admin'),st=Date.now().toString(
     var S=TPL[pu]||TPL.other;S.forEach(function(s,k){var key=pu+'-'+k;if(have[key]){prev=have[key];return;}var id='t-plan-'+pu+'-'+(k+1)+'-'+st;
       T.push({id:id,doc:{project_id:pid,title:s[LANG==='he'?1:0],action:'',why:tt('whyPlan',{n:k+1,m:S.length,g:goal?goalTxt(goal):pName(pu)}),minutes:s[2],owner:'dave',status:'open',source:'j8nix-plan',by:'J8NIX plan (yours)',blocked_by:prev?[prev]:[],extra:{plan:true,purpose:pu,tpl:key}}});prev=id;});});
   var G=A.goals.filter(function(g){return g.t&&/^\d{4}-\d\d-\d\d$/.test(g.at||'');}).map(function(g){var pu=g.p||A.purposes[0],p=liveP().filter(function(x){return px(x,'plan')&&px(x,'purpose')===pu;})[0],np=P.filter(function(x){return x.doc.extra.purpose===pu;})[0];return {t:goalTxt(g),at:g.at,pid:(p&&p.id)||(np&&np.id)||null};});
+  var oldG=myGoalList();G=G.concat(oldG.filter(function(o){return o&&o.t&&!G.some(function(g){return g.t===o.t;});})).slice(0,10); /* 11.2: re-plan keeps the goals you already have */
   var pf={role:A.role==='other'?(A.roleOther||'other'):A.role,goals:G,cap:+A.cap||60,checkin:A.checkin,rules:A.rules,planAt:new Date().toISOString(),onboarded:new Date().toISOString(),
-    plan:{purposes:A.purposes,purposeOther:A.purposeOther,role:A.role,roleOther:A.roleOther,stage:A.stage,f:A.f,checkin:A.checkin,rules:A.rules}};
+    interview:{purposes:A.purposes,purposeOther:A.purposeOther,role:A.role,roleOther:A.roleOther,stage:A.stage,f:A.f,checkin:A.checkin,rules:A.rules}};
   ls('j8-cap',pf.cap);ls('j8-goals',G);ls('j8-ob',1);
   var w=function(fn){return function(x){return fn(x).catch(function(e){fail++;throw e;});};};
   return Promise.resolve(J8.prefs.set(pf)).catch(function(){fail++;})
@@ -520,10 +521,10 @@ document.addEventListener('submit',function(e){var f=e.target;if(!f||f.id!=='ed1
 window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a=x12-tedit],[data-a=x12-pedit]');if(!el)return;e.preventDefault();e.stopPropagation();editSheet(el.dataset.a==='x12-tedit'?'t':'p',el.dataset.id);},true);
 
 window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a^="v11-"],[data-a^="x12-"]');if(!el)return;e.preventDefault();e.stopPropagation();var a=el.dataset.a,id=el.dataset.id||'',k=el.dataset.k;
-  if(a==='v11-pin'){var P=gprefs();gsave({goalPin:P.pin===id?null:id});if(OB.on)obRender();render();return;}
+  if(a==='v11-pin'){goalPinToggle(id);if(OB.on)obRender();render();return;}
   if(a==='v11-ob')obAct(id);else if(a==='v11-tour'){closeSheet();obOpen(0);}
   else if(a==='x12-ob'){closeSheet();obOpen(+id||0);}
-  else if(a==='x12-row'){UI.open['r12'+k]=!UI.open['r12'+k];render();var b=document.querySelector('[data-a=x12-row][data-k="'+(window.CSS&&CSS.escape?CSS.escape(k):k)+'"]');if(b)b.focus({preventScroll:true});}
+  else if(a==='x12-row'){openItem(k);} /* 11.2: a Next item opens right here (sheet), never in a filtered list */
   else if(a==='x12-lseg'){UI.lseg=id;UI.stack=[];navTo(id==='drafts'?'inbox':id==='tasks'?'ltasks':'projects');}
   else if(a==='x12-fseg'){UI.fseg=id;UI.stack=[];navTo(id==='time'?'calendar':id==='num'?'money':'flow');}
   else if(a==='x12-pmf'){UI.pmf=id;render();}},true);
@@ -554,7 +555,7 @@ function sideRender(){var g=$('sideG');if(!g)return;var jt=$('j8T');if(jt)jt.set
   var sc=$('sideC');if(sc){var mini=document.body.dataset.side==='mini';sc.setAttribute('aria-expanded',mini?'false':'true');sc.setAttribute('aria-label',tt(mini?'expand':'collapse'));}
   var kl=$('kbarL');if(kl)kl.textContent=tt('search');var jl=$('j8TL');if(jl)jl.textContent=tt('openJ8');
   if(!connected){g.innerHTML='';return;}var S=goalsShown(),L=S.L;
-  g.innerHTML='<p class="ph6">'+esc(tt('goals'))+'</p>'+(L.length?'<ul>'+L.map(function(x){var pin=S.pin===x.id;return '<li class="'+(pin?'pin':'')+'"><button class="sg" data-a="'+(x.pid?'proj':'nav')+'" data-id="'+esc(x.pid||(x.id==='money'?'money':'next'))+'" title="'+esc(x.t)+'"><span class="gr">'+ring(28,4,x.pct,null,x.col)+'</span><span class="lbl"><b dir="auto">'+esc(cut(x.t,36))+'</b><small class="'+(x.over?'od':'')+'"><bdi>'+esc(gDue(x))+'</bdi></small></span></button><button class="gpin" data-a="v11-pin" data-id="'+esc(x.id)+'" aria-pressed="'+pin+'" aria-label="'+esc(pin?tt('pinned'):tt('pin'))+'">'+I('pin')+'</button></li>';}).join('')+'</ul>'
+  g.innerHTML='<p class="ph6">'+esc(tt('goals'))+'</p>'+(L.length?'<ul>'+L.map(function(x){var pin=pinned13(S,x.id);return '<li class="'+(pin?'pin':'')+'"><button class="sg" data-a="'+(x.pid?'proj':'nav')+'" data-id="'+esc(x.pid||(x.id==='money'?'money':'next'))+'" title="'+esc(x.t)+'"><span class="gr">'+ring(28,4,x.pct,null,x.col)+'</span><span class="lbl"><b dir="auto">'+esc(cut(x.t,36))+'</b><small class="'+(x.over?'od':'')+'"><bdi>'+esc(gDue(x))+'</bdi></small></span></button><button class="gpin" data-a="v11-pin" data-id="'+esc(x.id)+'" aria-pressed="'+pin+'" aria-label="'+esc(pin?tt('pinned'):tt('pin'))+'">'+I('pin')+'</button></li>';}).join('')+'</ul>'
    :'<button class="sg" data-a="x12-ob" data-id="1">'+I('target')+'<span class="lbl">'+esc(tt('setGoals'))+'</span></button>');}
 var rn1=renderNav;renderNav=function(){rn1();sideRender();};
 
@@ -708,4 +709,354 @@ document.addEventListener('keydown',function(e){var x=e.target,typing=x&&(/^(INP
   if(key==='c'){var c=document.querySelector(v==='next'?'#hero12 .cb12 textarea':'#dp12 .cb12 textarea,#dp12 .pinc textarea');if(c){e.preventDefault();c.focus();}return;}});
 if(MQD&&MQD.addEventListener)MQD.addEventListener('change',function(){if(!D12())document.body.dataset.j8='closed';render();});
 
+
+/* =================== 11.2.0 (17 Nov 2026, Dave 14:11–14:15) ===================
+   1 Next items open right here (sheet on phone, focus pane on desktop); a "Do it" that would land on an empty list opens the item instead.
+     Root cause: Next counts project asks and held drafts whose link is the Drafts list (#approve), but those drafts are already approved,
+     and List → Drafts only shows pending ones, so the jump fell through to an empty list. List → Drafts now also shows "Approved · you post
+     these by hand", so the item is never hidden.
+   2 Line up next steps (J8, violet): re-ranks and pulls the next steps from your goals, your plan's step library, things you put off and
+     blocked items with what unlocks them. Real data only. Next is never empty while goals are open; "All done" only when nothing is left.
+   3 Colour roles on rows and chips. 4 Pin is a real toggle (goals, projects; sidebar ⋯ and drag to reorder; member prefs).
+   5 + New (goal, project, step, note, draft idea, plan with J8). 6 Honest Connections. 7 Gentle "Set up your goals with J8" card. */
+Object.assign(L11.en,{lineUp:'Line up next steps',lining:'J8 is lining up your next steps…',linedN:'{n} new steps lined up',lined1:'1 new step lined up',linedNone:'Nothing new to add. Your list already has every next step.',
+  fromGoals:'Added from your goals and plan',putOff:'You put these off',bringBack:'Bring back',blockedH:'Blocked, and what unlocks them',waitsOn:'Waits on: {x}',
+  allDone:'All done',allDoneP:'Every open step is finished.',nextGoalL:'Next goal: {g} · {d}',setGoal:'Set a goal',viewGoal:'Open the goal',
+  emptyNext:'No steps right now',emptyNextP:'You have {n} open goals. J8 can line up the next steps from them.',emptyNextP1:'You have 1 open goal. J8 can line up the next steps from it.',firstStep:'Decide the first step toward: {g}',
+  detail:'Details',handH:'Approved · you post these by hand',handP:'Already approved. Copy each one and post it yourself.',copy:'Copy text',copied:'Copied',openIn:'Open {x}',heldH:'Waiting on you',
+  unpin:'Unpin',moveUp:'Move up',moveDown:'Move down',moreA:'More',pinnedH:'Pinned',needsMost:'Needs you most',pinHint:'Pin a project from its page to keep it here.',pinnedT:'{x} pinned',unpinnedT:'{x} unpinned',pinProj:'Pin',unpinProj:'Pinned · tap to unpin',pinGoal:'Pin to top',unpinGoal:'Pinned · tap to unpin',
+  newB:'New',newH:'Create',nGoal:'Goal',nGoalP:'A target with a number and a deadline. J8 offers to plan it.',nProj:'Project',nProjP:'The thing that serves a goal, with milestones.',
+  nReqProj:'Request a project',nReqProjP:'Only an admin adds projects. This asks J8 to add it.',nStep:'Step',nStepP:'One to-do with an estimate. It can belong to a project and wait on another step.',
+  nNote:'Note to J8',nNoteP:'A request or instruction. The team acts on it.',nDraft:'Draft message',nDraftP:'An outreach idea. J8 writes it properly; you OK the final draft.',
+  nPlan:'Plan with J8',nPlanP:'J8 asks a few questions and adds what is missing to your plan.',
+  fGoalT:'Goal',fGoalPh:'e.g. 10 paying clients',fNum:'Number (optional)',fDue:'Deadline',fProj:'Project',fNone:'No project',fMins:'Minutes',fAfter:'Waits on (optional)',fNoBlock:'Nothing',
+  fName:'Name',fGoalL:'Goal it serves (optional)',fMs:'First milestone (optional)',fMsAt:'Milestone date',fText:'Your note',fTo:'To whom',fToPh:'e.g. Head of Product at Acme',fChan:'Channel',fIdea:'What should it say?',
+  fStepT:'Step',fStepPh:'e.g. Call the printer about the quote',create:'Create',chEmail:'Email',chLi:'LinkedIn',chOther:'Other',
+  madeGoal:'Goal saved',madeProj:'Project added',madeStep:'Step added to Next',madeNote:'Sent to J8 and the team',madeDraft:'Idea saved. J8 writes the draft.',madeReq:'Request sent to J8',view:'View',planIt:'Plan it with J8',another:'Create another',
+  ideasH:'Your draft ideas · J8 is writing these',ideaWait:'J8 writes the real draft from this. You OK that one.',del:'Delete',deleted:'Deleted',editGoals:'Edit goals',yourGoals:'Your goals',noMyGoals:'No goals of your own yet.',ideaNo:'J8 is still writing this idea. You approve the final draft.',
+  youAdded:'You added this',delStep:'Delete this step',remProj:'Remove this project',
+  obCard:'Set up your goals with J8 (3 min)',obCardP:'J8 asks a few questions and lines up your plan.',obStart:'Start',dismiss:'Dismiss',
+  emptyDraftsA:'New draft message',emptyProj:'No projects yet.',emptyProjA:'New project',needLineUp:'Line up next steps',
+  c_cal:'Synced daily by the J8 team (read-only)',c_calLast:'Last sync {t}',c_calNever:'Not synced yet',c_money:'Updated daily · as of {t}',c_moneyNone:'No money figures yet',
+  c_payWait:'Morning: waiting for you to sign in (1 min)',c_payDone:'Morning: you signed in {t}. Grow: not connected.',c_li:'You send by hand (LinkedIn bans automation). J8 prepares every note.',c_wa:'Not planned yet',calH:'Calendar · next 7 days',calNone:'Nothing on your calendar in the next 7 days.'});
+Object.assign(L11.he,{lineUp:'לסדר את הצעדים הבאים',lining:'J8 מסדר לך את הצעדים הבאים…',linedN:'נוספו {n} צעדים חדשים',lined1:'נוסף צעד חדש',linedNone:'אין מה להוסיף. כל הצעדים הבאים כבר ברשימה.',
+  fromGoals:'נוספו מהיעדים ומהתוכנית שלך',putOff:'דחית את אלה',bringBack:'להחזיר',blockedH:'חסומים, ומה ישחרר אותם',waitsOn:'מחכה ל: {x}',
+  allDone:'הכל בוצע',allDoneP:'כל הצעדים הפתוחים הסתיימו.',nextGoalL:'היעד הבא: {g} · {d}',setGoal:'להגדיר יעד',viewGoal:'לפתוח את היעד',
+  emptyNext:'אין צעדים כרגע',emptyNextP:'יש לך {n} יעדים פתוחים. J8 יכול לסדר מהם את הצעדים הבאים.',emptyNextP1:'יש לך יעד פתוח אחד. J8 יכול לסדר ממנו את הצעדים הבאים.',firstStep:'להחליט על הצעד הראשון לקראת: {g}',
+  detail:'פרטים',handH:'אושרו · מפרסמים ידנית',handP:'כבר אושרו. מעתיקים כל אחד ומפרסמים בעצמך.',copy:'להעתיק',copied:'הועתק',openIn:'לפתוח את {x}',heldH:'מחכים לך',
+  unpin:'לבטל הצמדה',moveUp:'למעלה',moveDown:'למטה',moreA:'עוד',pinnedH:'מוצמדים',needsMost:'הכי צריכים אותך',pinHint:'אפשר להצמיד פרויקט מהעמוד שלו.',pinnedT:'{x} הוצמד',unpinnedT:'ההצמדה של {x} בוטלה',pinProj:'להצמיד',unpinProj:'מוצמד · לחיצה מבטלת',pinGoal:'להצמיד למעלה',unpinGoal:'מוצמד · לחיצה מבטלת',
+  newB:'חדש',newH:'ליצור',nGoal:'יעד',nGoalP:'מטרה עם מספר ותאריך. J8 מציע לתכנן אותה.',nProj:'פרויקט',nProjP:'מה שמשרת יעד, עם אבני דרך.',
+  nReqProj:'לבקש פרויקט',nReqProjP:'רק מנהל מוסיף פרויקטים. זה מבקש מ־J8 להוסיף.',nStep:'צעד',nStepP:'משימה אחת עם הערכת זמן. אפשר לשייך לפרויקט ולצעד שהיא מחכה לו.',
+  nNote:'הודעה ל־J8',nNoteP:'בקשה או הנחיה. הצוות פועל לפיה.',nDraft:'טיוטת הודעה',nDraftP:'רעיון לפנייה. J8 כותב אותו כמו שצריך; את הטיוטה הסופית את/ה מאשר/ת.',
+  nPlan:'לתכנן עם J8',nPlanP:'J8 שואל כמה שאלות ומוסיף לתוכנית מה שחסר.',
+  fGoalT:'יעד',fGoalPh:'למשל 10 לקוחות משלמים',fNum:'מספר (לא חובה)',fDue:'תאריך יעד',fProj:'פרויקט',fNone:'בלי פרויקט',fMins:'דקות',fAfter:'מחכה ל (לא חובה)',fNoBlock:'כלום',
+  fName:'שם',fGoalL:'היעד שהוא משרת (לא חובה)',fMs:'אבן דרך ראשונה (לא חובה)',fMsAt:'תאריך אבן הדרך',fText:'ההודעה שלך',fTo:'למי',fToPh:'למשל מנהלת מוצר באקמה',fChan:'ערוץ',fIdea:'מה לכתוב?',
+  fStepT:'צעד',fStepPh:'למשל להתקשר לדפוס לגבי ההצעה',create:'ליצור',chEmail:'מייל',chLi:'לינקדאין',chOther:'אחר',
+  madeGoal:'היעד נשמר',madeProj:'הפרויקט נוסף',madeStep:'הצעד נוסף ל"הבא"',madeNote:'נשלח ל־J8 ולצוות',madeDraft:'הרעיון נשמר. J8 כותב את הטיוטה.',madeReq:'הבקשה נשלחה ל־J8',view:'לצפות',planIt:'לתכנן עם J8',another:'ליצור עוד',
+  ideasH:'רעיונות לטיוטות · J8 כותב אותם',ideaWait:'J8 כותב מזה טיוטה אמיתית. אותה את/ה מאשר/ת.',del:'למחוק',deleted:'נמחק',editGoals:'לערוך יעדים',yourGoals:'היעדים שלך',noMyGoals:'עוד אין לך יעדים משלך.',ideaNo:'J8 עדיין כותב את הרעיון הזה. מאשרים את הטיוטה הסופית.',
+  youAdded:'הוספת את זה',delStep:'למחוק את הצעד',remProj:'להסיר את הפרויקט',
+  obCard:'להגדיר יעדים עם J8 (3 דק׳)',obCardP:'J8 שואל כמה שאלות ומסדר לך תוכנית.',obStart:'להתחיל',dismiss:'לסגור',
+  emptyDraftsA:'טיוטת הודעה חדשה',emptyProj:'עוד אין פרויקטים.',emptyProjA:'פרויקט חדש',needLineUp:'לסדר את הצעדים הבאים',
+  c_cal:'מסונכרן כל יום על ידי צוות J8 (קריאה בלבד)',c_calLast:'סנכרון אחרון {t}',c_calNever:'עוד לא סונכרן',c_money:'מתעדכן כל יום · נכון ל־{t}',c_moneyNone:'עוד אין נתוני כסף',
+  c_payWait:'Morning: מחכה שתתחבר/י (דקה)',c_payDone:'Morning: התחברת {t}. Grow: לא מחובר.',c_li:'שולחים ידנית (לינקדאין אוסר אוטומציה). J8 מכין כל הודעה.',c_wa:'לא מתוכנן עדיין',calH:'יומן · 7 הימים הקרובים',calNone:'אין כלום ביומן ב־7 הימים הקרובים.'});
+var HE=function(){return LANG==='he';};
+function prefs0(){try{return J8.prefs.get()||{};}catch(e){return {};}}
+function prefSet(patch,lsk){if(lsk)Object.keys(lsk).forEach(function(k){ls(k,lsk[k]);});try{var o=J8.orgs.current();if(o)o.prefs=Object.assign({},o.prefs||{},patch);}catch(e){} /* optimistic: the screen shows the change at once */
+  try{if(J8.status().connected)return J8.prefs.set(patch).catch(function(){toast(t('localOnly'));});}catch(e){}toast(t('localOnly'));return Promise.resolve();}
+function myGoalList(){var o=prefs0();var G=Array.isArray(o.goals)?o.goals:(ls('j8-goals')||[]);return (G||[]).filter(function(g){return g&&g.t;}).slice();}
+function stamp(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
+function addDays(n){var d=new Date();d.setDate(d.getDate()+n);return ymd(d);}
+
+/* ---------- 4. pin: a real toggle, saved in member prefs (goalPins, pins) ---------- */
+function goalPins(){var o=prefs0(),a=Array.isArray(o.goalPins)?o.goalPins:ls('j8-goalpins');if(!Array.isArray(a)){var one=o.goalPin||ls('j8-goalpin');a=one?[one]:[];}return a.slice();}
+function projPins(){var o=prefs0(),a=Array.isArray(o.pins)?o.pins:ls('j8-pins');return (Array.isArray(a)?a:[]).filter(function(id){return !!pobj(id);});}
+function pinned13(S,id){return (S.pins||[]).indexOf(id)>-1;}
+function goalPinToggle(id){var a=goalPins(),i=a.indexOf(id);if(i>-1)a.splice(i,1);else a.unshift(id);prefSet({goalPins:a,goalPin:a[0]||null},{'j8-goalpins':a,'j8-goalpin':a[0]||null});var g=goalsAll().filter(function(x){return x.id===id;})[0];toast(tt(i>-1?'unpinnedT':'pinnedT',{x:cut(g?g.t:'',40)}));}
+function projPinSet(a,id,on){prefSet({pins:a},{'j8-pins':a});var p=pobj(id);if(p&&on!=null)toast(tt(on?'pinnedT':'unpinnedT',{x:cut(p.name,40)}));sideRender();render();}
+function projPinToggle(id){var a=projPins(),i=a.indexOf(id);if(i>-1)a.splice(i,1);else a.push(id);projPinSet(a,id,i<0);}
+goalsShown=function(){var A=goalsAll(),P=gprefs(),pins=goalPins(),L=P.watch&&P.watch.length?A.filter(function(g){return P.watch.indexOf(g.id)>-1||pins.indexOf(g.id)>-1;}):A;if(!L.length)L=A;
+  var pi=L.filter(function(g){return pins.indexOf(g.id)>-1;}).sort(function(a,b){return pins.indexOf(a.id)-pins.indexOf(b.id);}),rest=L.filter(function(g){return pins.indexOf(g.id)<0;});
+  return {L:pi.concat(rest).slice(0,3),pin:pins[0]||null,pins:pins};};
+function pinBar(p){if(!p)return '';var on=projPins().indexOf(p.id)>-1;return '<p class="pin13"><button type="button" class="chip12 pinb'+(on?' on':'')+'" data-a="x13-ppin" data-id="'+esc(p.id)+'" aria-pressed="'+on+'">'+I('pin')+'<bdi>'+esc(tt(on?'unpinProj':'pinProj'))+'</bdi></button></p>';}
+var ppt0=projPlanTag;projPlanTag=function(p){var h=ppt0(p);if(p&&!px(p,'plan')&&px(p,'app')&&J8.orgs.can('admin'))h='<p class="plan12"><span class="chip12 ai sm">'+I('check')+'<bdi>'+esc(tt('youAdded'))+'</bdi></span><button type="button" class="lnk" data-a="x12-pedit" data-id="'+esc(p.id)+'">'+I('edit')+'<span>'+esc(tt('editIt'))+'</span></button></p>';return pinBar(p)+h;};
+var pt0=planTag;planTag=function(i){var h=pt0(i);if(i&&i.task&&i.task.source==='j8nix-app')h=h.replace(esc(tt('yourPlan')),esc(tt('youAdded')));return h.replace('chip12 new sm','chip12 ai sm');};
+/* sidebar: Pinned (real pins, ⋯ menu, drag to reorder) or, with none, "Needs you most" */
+function pinsRender(){var el=$('pins');if(!el||!connected)return;var a=projPins(),mn=UI.pmenu;
+  if(a.length){el.innerHTML='<p class="ph6">'+esc(tt('pinnedH'))+'</p><ul class="pl13" aria-label="'+esc(tt('pinnedH'))+'">'+a.map(function(id,j){var p=pobj(id);return '<li draggable="true" data-pid="'+esc(id)+'" title="'+esc(tt('dragHint')||'')+'"><button data-a="proj" data-id="'+esc(id)+'"'+(UI.proj===id&&/^(proj|projects)$/.test(UI.v)?' aria-current="page"':'')+'>'+ptile(id,'sm')+'<span class="lbl" dir="auto">'+esc(p.name)+'</span></button><button class="pm13" data-a="x13-pmenu" data-id="'+esc(id)+'" aria-expanded="'+(mn===id)+'" aria-label="'+esc(tt('moreA')+': '+p.name)+'">'+I('dots')+'</button>'
+    +(mn===id?'<span class="pmm13" role="group" aria-label="'+esc(p.name)+'"><button data-a="x13-punpin" data-id="'+esc(id)+'">'+I('pin')+'<span>'+esc(tt('unpin'))+'</span></button>'+(j>0?'<button data-a="x13-pup" data-id="'+esc(id)+'">'+I('up')+'<span>'+esc(tt('moveUp'))+'</span></button>':'')+(j<a.length-1?'<button data-a="x13-pdown" data-id="'+esc(id)+'">'+I('down')+'<span>'+esc(tt('moveDown'))+'</span></button>':'')+'</span>':'')+'</li>';}).join('')+'</ul>';return;}
+  var P=liveP().filter(function(p){return p.status!=='parked'&&!isDoneP(p);}).sort(function(x,y){return projNeed(y.id).length-projNeed(x.id).length||stageOf(y)-stageOf(x);}).slice(0,5);
+  el.innerHTML=P.length?'<p class="ph6">'+esc(tt('needsMost'))+'</p>'+P.map(function(p){return '<button data-a="proj" data-id="'+esc(p.id)+'">'+ptile(p.id,'sm')+'<span class="lbl" dir="auto">'+esc(p.name)+'</span></button>';}).join('')+'<p class="phint13">'+esc(tt('pinHint'))+'</p>':'';}
+Object.assign(L11.en,{dragHint:'Drag to reorder',seePosts:'See the {n} posts to copy'});Object.assign(L11.he,{dragHint:'גוררים כדי לשנות סדר',seePosts:'לראות את {n} הפוסטים להעתקה'});
+var sr13=sideRender;sideRender=function(){sr13();pinsRender();var sg=$('sideG');if(sg&&connected&&!sg.querySelector('[data-a=x13-mem]'))sg.insertAdjacentHTML('beforeend','<button class="sg mem13" data-a="x13-mem"'+(UI.v==='mem'?' aria-current="page"':'')+'>'+I('bulb')+'<span class="lbl">'+esc(tt('memH'))+'</span></button>');var nb=$('newD');if(nb){var l=nb.querySelector('.lbl');if(l)l.textContent=tt('newB');}var nt=$('newB');if(nt)nt.setAttribute('aria-label',tt('newH'));};
+(function(){var drag=null;document.addEventListener('dragstart',function(e){var li=e.target.closest&&e.target.closest('#pins li[data-pid]');if(!li)return;drag=li.dataset.pid;try{e.dataTransfer.setData('text/plain',drag);e.dataTransfer.effectAllowed='move';}catch(x){}});
+  document.addEventListener('dragover',function(e){if(drag&&e.target.closest&&e.target.closest('#pins li[data-pid]'))e.preventDefault();});
+  document.addEventListener('drop',function(e){var li=e.target.closest&&e.target.closest('#pins li[data-pid]');if(!drag||!li)return;e.preventDefault();var a=projPins(),f=a.indexOf(drag),to=a.indexOf(li.dataset.pid);drag=null;if(f<0||to<0||f===to)return;a.splice(to,0,a.splice(f,1)[0]);projPinSet(a,null,null);});
+  document.addEventListener('dragend',function(){drag=null;});})();
+
+/* ---------- 3. colour: each row carries its project colour (--pc) ---------- */
+function withPc(h,pid){var st=pcStyle(pid);if(!st||h.indexOf('<li')!==0)return h;st=st.replace(/^;/,'');var e=h.indexOf('>'),tag=h.slice(0,e);tag=/ style="/.test(tag)?tag.replace(/ style="/,' style="'+st+';'):tag+' style="'+st+'"';return tag+h.slice(e);}
+var row13=row12;row12=function(i,num){return withPc(row13(i,num),rowPid(i));};
+var qrow13=qrow12;qrow12=function(i,num,cur){return withPc(qrow13(i,num,cur),rowPid(i));};
+var trow13=trow12;trow12=function(i,num,sel){return withPc(trow13(i,num,sel),rowPid(i));};
+var prow13=prow12;prow12=function(p,sel){return withPc(prow13(p,sel),p.id);};
+
+/* ---------- 1. a Next item opens right here ---------- */
+function handDrafts(pid){var lim=Date.now()-7*864e5;return J8.approvals.list().filter(function(a){if(a.status!=='approved'&&a.status!=='edited')return false;if(a.kind==='application'||a.kind==='template'||/^Waiting/i.test(String(a.result||'')))return false;
+  if(!/linkedin|by hand/i.test(String(a.channel||'')+' '+String(a.label||'')))return false;var d=pd(a.decided_at);if(isNaN(d)||d<lim)return false;return !pid||a.product===pid;}).sort(function(a,b){return String(b.decided_at).localeCompare(String(a.decided_at));});}
+function apLine(a,copy){var tx=String(J8.approvals.textOf(a)||''),id=esc(a.id);
+  return '<li class="hd13" style="'+pcStyle(a.product).replace(/^;/,'')+'"><div class="hh">'+I(dIcon(a))+'<b dir="auto">'+esc(apWho(a))+'</b><small dir="auto">'+esc(cut(String(a.channel||''),60))+'</small></div>'
+   +(copy?'<p class="tx" dir="auto">'+esc(cut(tx,360))+'</p><div class="ha"><button type="button" class="b12 sm" data-a="x13-copy" data-id="'+id+'">'+I('clip')+'<span>'+esc(tt('copy'))+'</span></button>'+(/linkedin/i.test(String(a.channel||''))?'<a class="b12 sm" href="https://www.linkedin.com/feed/" target="_blank" rel="noopener">'+I('ext')+'<span>'+esc(tt('openIn',{x:'LinkedIn'}))+'</span></a>':'')+'</div>':'')+'</li>';}
+function handHTML(L,head){if(!L.length)return '';return '<section class="hand13"><h4>'+I('send')+'<span>'+esc(head||tt('handH'))+'</span><span class="n12"><bdi>'+L.length+'</bdi></span></h4><p class="sub12">'+esc(tt('handP'))+'</p><ul>'+L.slice(0,12).map(function(a){return apLine(a,true);}).join('')+'</ul></section>';}
+function approveLike(g){return !!(g&&g.jump&&/^(approvals|approve|list-approve|inbox|list|drafts)$/.test(String(g.jump).replace(/^\//,'')));}
+function seeLabel(h,i){var g=doTarget(i);if(!(i.p&&approveLike(g)&&landsEmpty(i,g)))return h;var n=handDrafts(i.p.id).length;return n?h.replace('<span>'+esc(tt('doIt'))+'</span>','<span>'+esc(tt('seePosts',{n:n}))+'</span>'):h;}
+function itemExtra(i){var g=doTarget(i);if(i.held)return '<section class="hand13"><h4>'+I('lock')+'<span>'+esc(tt('heldH'))+'</span><span class="n12"><bdi>'+i.held.items.length+'</bdi></span></h4><ul>'+i.held.items.slice(0,12).map(function(a){return apLine(a,false);}).join('')+'</ul></section>';
+  if(i.p&&approveLike(g))return handHTML(handDrafts(i.p.id));return '';}
+/* would "Do it" land on a list that does not show this item? then it opens here instead */
+function landsEmpty(i,g){if(g.talk)return true;
+  if(g.draft){var b=g.draft;return !(b.indexOf('ap:')===0?isPend(b.slice(3)):apPending().some(function(a){return bkey(a)===b;}));}
+  if(!g.jump)return false;var tg=String(g.jump).replace(/^\//,'');
+  if(approveLike(g))return !(i.p?firstBatch(i.p.id):firstBatch());
+  if(tg.indexOf('ap-')===0)return !isPend(tg.slice(3));
+  if(tg.indexOf('list-b-')===0)return !apPending().some(function(a){return bkey(a)===tg.slice(7);});
+  return false;}
+function itemSheetHTML(i){return '<h2 id="gTitle" class="sr">'+esc(tt('detail'))+'</h2><div class="it13" data-k="'+esc(i.key)+'" style="'+pcStyle(rowPid(i)).replace(/^;/,'')+'">'+seeLabel(taskDetail(i).replace('id="dpH"','id="itH"'),i)+itemExtra(i)+'</div>';}
+function openItem(k){var i=rowByKey(k);if(!i){toast(tt('clear'));return;}
+  if(D12()){UI.focusK=k;if(UI.v!=='next'){UI.stack=[];nav0('next');}else render();var h=$('hero12');if(h)try{h.scrollIntoView({block:'nearest'});}catch(e){}var ht=$('heroT');if(ht){ht.tabIndex=-1;ht.focus({preventScroll:true});}return;}
+  UI.gsheet={k:'item13',key:k};gOpen(itemSheetHTML(lead1(i)),pcol(rowPid(i))?pcol(rowPid(i))[0]:'var(--royal)');lint($('gsheet'));}
+window.j8open=openItem;
+var hc13=heroCard;heroCard=function(i,ix){var h=seeLabel(hc13(i,ix),i),x=itemExtra(i);return x?h.replace(/<\/section>$/,x+'</section>'):h;};
+/* "Do it" whose list would hide the item: open it here (Dave 17 Nov 14:11) */
+window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('button[data-a=do]');if(!el||el.closest('#ob11'))return;var k=el.dataset.k,i=rowByKey(k);if(!i)return;var g=doTarget(i);if(!landsEmpty(i,g))return;
+  e.preventDefault();e.stopPropagation();var inS=el.closest('#gsheet'),inH=el.closest('#hero12');
+  if(inS||(inH&&D12())){var s=(inS||inH).querySelector('.hand13,.cb12 textarea');if(s){if(s.tagName==='TEXTAREA')s.focus();else{try{s.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(x){}var b=s.querySelector('button');if(b)b.focus({preventScroll:true});}}return;}
+  openItem(k);},true);
+/* actions inside the item sheet close it first (the row may leave the list) */
+window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('#gsheet .it13 [data-a=done]');if(!el)return;gClose();},true);
+document.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a=x13-copy]');if(!el)return;e.preventDefault();var a=AP[el.dataset.id];if(!a)return;var tx=J8.approvals.textOf(Object.assign({id:el.dataset.id},a));
+  var ok=function(){var s=el.querySelector('span');if(s)s.textContent=tt('copied');toast(tt('copied'));};try{navigator.clipboard.writeText(tx).then(ok,function(){fallbackCopy(tx);ok();});}catch(x){fallbackCopy(tx);ok();}},true);
+function fallbackCopy(tx){var ta=document.createElement('textarea');ta.value=tx;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();}
+
+/* ---------- 2. Line up next steps (J8) ---------- */
+function openGoals(){return goalsAll().filter(function(g){return !(isNum(g.pct)&&g.pct>=1);});}
+function lineUpPlan(){var T=rawTasks(),openT=T.filter(function(t){return !t.status||t.status==='open';}),st=stamp(),add=[],pf=prefs0(),iv=pf.interview||(pf.plan&&Array.isArray(pf.plan.purposes)?pf.plan:null),Q=myQueue();
+  ((iv&&iv.purposes)||[]).forEach(function(pu){var S=TPL[pu]||TPL.other,have={},busy=false,pid=null,last=null;
+    T.forEach(function(t){if(!(px(t,'plan')&&px(t,'purpose')===pu))return;var n=+String(px(t,'tpl')||'').split('-').pop();if(isNum(n))have[n]=t;pid=pid||t.project_id||null;if(!t.status||t.status==='open')busy=true;});
+    if(busy)return;for(var k=0;k<S.length;k++){if(have[k])last=have[k];else{add.push({id:'t-plan-'+pu+'-'+(k+1)+'-'+st,doc:{project_id:pid,title:S[k][HE()?1:0],why:tt('whyPlan',{n:k+1,m:S.length,g:tt('pn_'+pu)}),minutes:S[k][2],owner:'dave',status:'open',source:'j8nix-plan',by:'J8NIX · '+tt('lineUp'),blocked_by:[],extra:{plan:true,purpose:pu,tpl:pu+'-'+k,pulled:true}}});break;}}});
+  myGoalList().forEach(function(g,n){var pid=g.pid&&pobj(g.pid)?g.pid:null,has=Q.some(function(i){return pid?rowPid(i)===pid:(i.task&&px(i.task,'goal')===g.t);})||openT.some(function(t){return t.owner==='dave'&&(pid?t.project_id===pid:px(t,'goal')===g.t);})||add.some(function(a){return pid&&a.doc.project_id===pid;});
+    if(has)return;add.push({id:'t-goal-'+st+'-'+n,doc:{project_id:pid,title:tt('firstStep',{g:cut(g.t,90)}),why:g.t,minutes:10,owner:'dave',status:'open',source:'j8nix-plan',by:'J8NIX · '+tt('lineUp'),blocked_by:[],extra:{plan:true,goal:g.t,pulled:true}}});});
+  var back=Object.keys(LATER).map(function(k){return Object.assign({id:k},LATER[k]);}).filter(function(r){return (r.status==='later'||r.status==='not_needed')&&rowByKey(r.id)&&!Q.some(function(i){return i.key===r.id;});}).slice(0,5);
+  var blk=rows().filter(function(i){return i.st==='stuck'&&i.task;}).map(function(i){return lead1(i);}).sort(function(a,b){return b.ul.length-a.ul.length;}).slice(0,4);
+  return {add:add,back:back,blk:blk};}
+UI.lu=null;
+function lineUp(auto){if(UI.lu&&UI.lu.st==='run')return;UI.lu={st:'run',t0:Date.now(),auto:!!auto};render();
+  var minT=RM()?250:1300,P=lineUpPlan(),fail=0;
+  Promise.resolve(J8.status().connected?Promise.race([J8.reload(),new Promise(function(r){setTimeout(r,6000);})]).catch(function(){}):null).then(function(){P=lineUpPlan();
+    return seq(P.add,function(x){return J8.tasks.add(x.id,x.doc).catch(function(e){fail++;});});})
+  .then(function(){var w=Math.max(0,minT-(Date.now()-UI.lu.t0));setTimeout(function(){var made=P.add.filter(function(x){return !!J8.tasks.get(x.id);});UI.lu={st:'done',made:made.map(function(x){return x.doc.title;}),back:P.back,blk:P.blk,fail:fail,auto:!!auto};render();
+    if(made.length)toast(made.length===1?tt('lined1'):tt('linedN',{n:made.length}));},w);});}
+function luCard(){var L=UI.lu;if(!L)return '';
+  if(L.st==='run')return '<section class="lu13 run" role="status" aria-live="polite"><span class="orb" aria-hidden="true">'+g8i()+'<i></i><i></i><i></i></span><div><b>'+esc(tt('lining'))+'</b><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span></div></section>';
+  var h='<section class="lu13" role="status"><header><span class="orb sm" aria-hidden="true">'+g8i()+'</span><b>'+esc(L.made.length?(L.made.length===1?tt('lined1'):tt('linedN',{n:L.made.length})):tt('linedNone'))+'</b><button class="ib12" data-a="x13-luclose" aria-label="'+esc(t('close'))+'">'+I('x')+'</button></header>';
+  if(L.made.length)h+='<h4>'+esc(tt('fromGoals'))+'</h4><ul>'+L.made.map(function(x){return '<li>'+I('plus')+'<span dir="auto">'+esc(x)+'</span></li>';}).join('')+'</ul>';
+  if(L.back.length)h+='<h4>'+esc(tt('putOff'))+'</h4><ul>'+L.back.map(function(r){var i=rowByKey(r.id);return '<li>'+I('later')+'<span dir="auto">'+esc(cut(cap1(i?nextOf(i).what:r.title||''),80))+'</span><button class="b12 sm" data-a="later-now" data-k="'+esc(r.id)+'">'+esc(tt('bringBack'))+'</button></li>';}).join('')+'</ul>';
+  if(L.blk.length)h+='<h4>'+esc(tt('blockedH'))+'</h4><ul>'+L.blk.map(function(i){var b=openBlk(i.task.id).map(function(x){var o=J8.tasks.get(x)||AP[x]||PR[x];return o?(o.title||o.name||apWho(Object.assign({id:x},o))):x;});return '<li>'+I('lock')+'<span dir="auto">'+esc(cut(i.title,70))+'<small>'+esc(tt('waitsOn',{x:cut(b.join(', '),80)}))+(i.ul.length?' · '+esc(tt('unlocks',{n:i.ul.length})):'')+'</small></span></li>';}).join('')+'</ul>';
+  return h+'</section>';}
+function nextGoal(){var td=ymd(new Date());return openGoals().filter(function(g){return g.day>=td;})[0]||openGoals()[0]||null;}
+function emptyNext(){var G=openGoals(),L=UI.lu;
+  if(G.length&&!(L&&L.st==='done'&&!L.made.length&&!L.back.length))return '<section class="hero12 empty13"><div class="eb12"><span class="dtf ai">'+g8i()+'<span>'+esc(tt('emptyNext'))+'</span></span></div><p class="ht12">'+esc(G.length===1?tt('emptyNextP1'):tt('emptyNextP',{n:G.length}))+'</p><button class="b12 pri ai lu" data-a="x13-lineup">'+I('plan')+'<span>'+esc(tt('lineUp'))+'</span></button></section>';
+  var ng=nextGoal();return '<section class="hero12 alldone13"><span class="tr">'+I('trophy')+'</span><h3 class="ht12">'+esc(tt('allDone'))+'</h3><p class="sub12">'+esc(tt('allDoneP'))+'</p>'+(ng?'<p class="ng13">'+I('target')+'<bdi dir="auto">'+esc(tt('nextGoalL',{g:cut(ng.t,60),d:gDue(ng)}))+'</bdi></p><div class="bar12 two"><button class="b12 pri" data-a="'+(ng.pid?'proj':'x13-goals')+'" data-id="'+esc(ng.pid||'')+'">'+I('target')+'<span>'+esc(tt('viewGoal'))+'</span></button><button class="b12" data-a="x13-new" data-id="goal">'+I('plus')+'<span>'+esc(tt('setGoal'))+'</span></button></div>':'<div class="bar12 one"><button class="b12 pri" data-a="x13-new" data-id="goal">'+I('plus')+'<span>'+esc(tt('setGoal'))+'</span></button></div>')+'</section>';}
+function obCard(){var o=prefs0();if(!connected||OB.on||o.interview||(o.plan&&Array.isArray(o.plan.purposes))||o.planAt||o.obCardOff||ls('j8-obcardoff'))return '';
+  return '<section class="obc13"><span class="orb sm" aria-hidden="true">'+g8i()+'</span><div><b>'+esc(tt('obCard'))+'</b><small>'+esc(tt('obCardP'))+'</small></div><button class="b12 pri ai sm" data-a="x12-ob" data-id="0">'+esc(tt('obStart'))+'</button><button class="ib12" data-a="x13-obno" aria-label="'+esc(tt('dismiss'))+'">'+I('x')+'</button></section>';}
+var vNx13=vNext;vNext=function(){var h=vNx13();if(!connected)return h;var N=myQueue(),lu='<button class="lnk12 ai" data-a="x13-lineup">'+I('plan')+'<span>'+esc(tt('lineUp'))+'</span></button>';
+  h=h.indexOf('<div class="phx12">')>-1?h.replace('<div class="phx12">','<div class="phx12">'+lu):h.replace(/<\/header>/,'<div class="phx12">'+lu+'</div></header>');
+  h=h.replace(/<\/header>/,'</header>'+obCard()+luCard());
+  if(!N.length)h=h.replace(/<section class="hero12 clear">[\s\S]*?<\/section>/,emptyNext());
+  if(!N.length&&openGoals().length&&!UI.lu&&!UI.luAuto){UI.luAuto=1;setTimeout(function(){lineUp(true);},50);}
+  var c=calCard13();if(c){if(D12())h=h.replace('<div class="nfx12">','<div class="nfx12">'+c);else h=h.replace(/<\/div>$/,c+'</div>');}
+  return h;};
+/* Google Calendar (read-only) on Next and in Timeline */
+function calRows(){var td=ymd(new Date()),end=addDays(7);return J8.calendar?J8.calendar.list().filter(function(e){if(e.extra&&e.extra.marker||e.id==='_sync')return false;var d=dday(e.starts_at);return d>=td&&d<=end;}):[];}
+function calCard13(){var R=calRows();if(!J8.calendar||!J8.calendar.lastSync())return '';
+  return '<section class="card12 cal13"><h3>'+I('cal')+'<span>'+esc(tt('calH'))+'</span></h3>'+(R.length?'<ul>'+R.slice(0,6).map(function(e){var d=dday(e.starts_at);return '<li><time><bdi>'+esc(d===ymd(new Date())?(e.all_day?tt('today'):dtime(e.starts_at)):dayShort(new Date(d+'T12:00:00'))+(e.all_day?'':' '+dtime(e.starts_at)))+'</bdi></time><span dir="auto">'+esc(cut(e.title,60))+'</span></li>';}).join('')+'</ul>':'<p class="sub12">'+esc(tt('calNone'))+'</p>')
+   +'<p class="src13">'+esc(tt('c_cal'))+' · '+esc(tt('c_calLast',{t:tm1(J8.calendar.lastSync())}))+'</p></section>';}
+var ev13=events;events=function(){var E=ev13();if(FF.o==='team'||FF.o==='ext'||FF.b||FF.u!=='all')return E;calRows().forEach(function(e){E.push({day:dday(e.starts_at),time:e.all_day?'':dtime(e.starts_at),k:'cal',who:'me',title:e.title,sub:'Google Calendar',pid:null,id:'cal-'+e.id,jump:'calendar'});});return E;};
+
+/* ---------- 5. + New ---------- */
+function curProj(){return (UI.v==='proj'||UI.v==='projects')&&UI.proj&&pobj(UI.proj)?UI.proj:null;}
+function projOpts(sel){return '<option value="">'+esc(tt('fNone'))+'</option>'+liveP().filter(function(p){return !isDoneP(p);}).map(function(p){return '<option value="'+esc(p.id)+'"'+(p.id===sel?' selected':'')+'>'+esc(cut(p.name,50))+'</option>';}).join('');}
+function newSheet(){UI.gsheet={k:'new13'};var adm=J8.orgs.can('admin');
+  var O=[['goal','target','nGoal','nGoalP'],adm?['project','proj','nProj','nProjP']:['reqproj','proj','nReqProj','nReqProjP'],['step','steps','nStep','nStepP'],['note','chat','nNote','nNoteP'],['memnote','clip','nNoteM','nNoteMP'],['draft','mail','nDraft','nDraftP'],['plan','plan','nPlan','nPlanP']];
+  gOpen('<h2 id="gTitle">'+esc(tt('newH'))+'</h2><div class="nw13">'+O.map(function(o){return '<button class="nwo13 k-'+o[0]+'" data-a="x13-new" data-id="'+o[0]+'"><span class="well11 r">'+I(o[1])+'</span><span><b>'+esc(tt(o[2]))+'</b><small>'+esc(tt(o[3]))+'</small></span>'+I('fwd','flip chev')+'</button>';}).join('')+'</div>','var(--royal)');}
+function fl(id,lab,inner){return '<label class="fl12" for="'+id+'"><span>'+esc(lab)+'</span>'+inner+'</label>';}
+function inp(id,o){o=o||{};return '<input id="'+id+'" name="'+id+'"'+(o.type?' type="'+o.type+'"':'')+(o.req?' required':'')+(o.max?' maxlength="'+o.max+'"':'')+(o.min!=null?' min="'+o.min+'"':'')+' dir="'+(o.type==='date'||o.type==='number'?'ltr':'auto')+'" value="'+esc(o.v==null?'':o.v)+'"'+(o.ph?' placeholder="'+esc(o.ph)+'"':'')+'>';}
+function newForm(kind,ed){var cp=curProj(),h='',title={goal:'nGoal',project:'nProj',reqproj:'nReqProj',step:'nStep',note:'nNote',memnote:'nNoteM',draft:'nDraft'}[kind];ed=ed||{};
+  if(kind==='goal')h=fl('n13t',tt('fGoalT'),inp('n13t',{req:1,max:140,ph:tt('fGoalPh'),v:ed.t}))+fl('n13n',tt('fNum'),inp('n13n',{max:40,v:ed.n}))+fl('n13d',tt('fDue'),inp('n13d',{type:'date',req:1,v:ed.at||addDays(7)}))+fl('n13p',tt('fProj'),'<select id="n13p">'+projOpts(ed.pid!==undefined?ed.pid:cp)+'</select>');
+  else if(kind==='project'){var G=myGoalList();h=fl('n13t',tt('fName'),inp('n13t',{req:1,max:80}))+fl('n13g',tt('fGoalL'),'<select id="n13g"><option value="">'+esc(tt('fNone'))+'</option>'+G.map(function(g,j){return '<option value="'+j+'">'+esc(cut(g.t,60))+'</option>';}).join('')+'</select>')+fl('n13m',tt('fMs'),inp('n13m',{max:140}))+fl('n13d',tt('fMsAt'),inp('n13d',{type:'date',v:addDays(7)}));}
+  else if(kind==='reqproj')h=fl('n13t',tt('fName'),inp('n13t',{req:1,max:80}))+fl('n13x',tt('fText'),'<textarea id="n13x" rows="3" dir="auto"></textarea>');
+  else if(kind==='step'){var S=rawTasks().filter(function(x){return (!x.status||x.status==='open')&&x.owner==='dave';});h=fl('n13t',tt('fStepT'),inp('n13t',{req:1,max:140,ph:tt('fStepPh')}))+fl('n13m',tt('fMins'),inp('n13m',{type:'number',min:1,v:15}))+fl('n13d',tt('fDue'),inp('n13d',{type:'date',v:addDays(7)}))+fl('n13p',tt('fProj'),'<select id="n13p">'+projOpts(cp)+'</select>')
+    +fl('n13b',tt('fAfter'),'<select id="n13b"><option value="">'+esc(tt('fNoBlock'))+'</option>'+S.map(function(x){return '<option value="'+esc(x.id)+'">'+esc(cut(x.title,60))+'</option>';}).join('')+'</select>');}
+  else if(kind==='note')h=fl('n13x',tt('fText'),'<textarea id="n13x" rows="4" required dir="auto"></textarea>')+fl('n13p',tt('fProj'),'<select id="n13p">'+projOpts(cp)+'</select>');
+  else if(kind==='memnote')h=fl('n13x',tt('fText'),'<textarea id="n13x" rows="4" required dir="auto"></textarea>')+fl('n13k',tt('fKind'),'<select id="n13k"><option value="fact">'+esc(tt('kd_fact'))+'</option><option value="idea">'+esc(tt('kd_idea'))+'</option></select>')+fl('n13g',tt('fTags'),inp('n13g',{max:200}))+fl('n13p',tt('fProj'),'<select id="n13p">'+projOpts(cp)+'</select>');
+  else if(kind==='draft')h=fl('n13to',tt('fTo'),inp('n13to',{req:1,max:120,ph:tt('fToPh'),v:ed.to}))+fl('n13c',tt('fChan'),'<select id="n13c">'+[['email','chEmail'],['linkedin','chLi'],['other','chOther']].map(function(c){return '<option value="'+c[0]+'"'+(ed.ch===c[0]?' selected':'')+'>'+esc(tt(c[1]))+'</option>';}).join('')+'</select>')+fl('n13x',tt('fIdea'),'<textarea id="n13x" rows="4" required dir="auto">'+esc(ed.body||'')+'</textarea>')+fl('n13p',tt('fProj'),'<select id="n13p">'+projOpts(ed.pid!==undefined?ed.pid:cp)+'</select>');
+  UI.gsheet={k:'new13f'};gOpen('<h2 id="gTitle">'+esc(tt(title))+'</h2><form id="nf13" class="ed12" data-kind="'+kind+'"'+(ed.edit!=null?' data-edit="'+esc(ed.edit)+'"':'')+' novalidate>'+h+'<p class="err13" id="n13e" role="alert"></p><div class="obnav"><button type="button" class="btn11" data-a="x13-new" data-id="">'+esc(tt('back'))+'</button><button type="submit" class="btn11 pri grow">'+I('check')+'<span>'+esc(ed.edit!=null?tt('save'):tt('create'))+'</span></button></div></form>','var(--royal)');
+  var f=$('n13t')||$('n13to')||$('n13x');if(f)setTimeout(function(){f.focus();},60);}
+function v13(id){var e=$(id);return e?String(e.value||'').trim():'';}
+function made(kind,msg,view,extra){UI.gsheet={k:'made13'};toast(msg);render();
+  gOpen('<h2 id="gTitle">'+I('check')+'<span>'+esc(msg)+'</span></h2><div class="mk13">'+(view?'<button class="btn11 pri" data-a="x13-view" data-id="'+esc(view)+'">'+I('eye')+'<span>'+esc(tt('view'))+'</span></button>':'')+(extra||'')+'<button class="btn11" data-a="x13-new" data-id="">'+I('plus')+'<span>'+esc(tt('another'))+'</span></button></div>','var(--done)');}
+document.addEventListener('submit',function(e){var f=e.target;if(!f||f.id!=='nf13')return;e.preventDefault();var kind=f.dataset.kind,er=$('n13e'),st=stamp(),pid=v13('n13p')||null,go=f.querySelector('[type=submit]');
+  var bad=function(m){if(er)er.textContent=m;};var need=[].filter.call(f.querySelectorAll('[required]'),function(x){return !String(x.value||'').trim();});if(need.length){bad(HE()?'חסר שדה חובה.':'Fill in the required field.');need[0].focus();return;}
+  if((!J8.status().connected||navigator.onLine===false)&&kind!=='goal'){bad(t('notConn'));return;}if(go)go.disabled=true;
+  var fail=function(x){if(go)go.disabled=false;var m=(x&&(x.message||x.code))||'error';bad(navigator.onLine===false||/fetch|network/i.test(m)?t('notConn'):t('couldNot',{e:m}));};
+  if(kind==='goal'){var G=myGoalList(),g={t:v13('n13t')+(v13('n13n')?' · '+v13('n13n'):''),at:v13('n13d'),pid:pid,src:'app'};if(f.dataset.edit!=null){G[+f.dataset.edit]=g;}else G.push(g);G=G.slice(-10);
+    prefSet({goals:G},{'j8-goals':G}).then(function(){made('goal',tt('madeGoal'),'goals','<button class="btn11 ai" data-a="x12-ob" data-id="0">'+I('plan')+'<span>'+esc(tt('planIt'))+'</span></button>');});return;}
+  if(kind==='project'){var gi=v13('n13g'),G2=myGoalList(),gg=gi!==''?G2[+gi]:null,ms=v13('n13m')||(gg?gg.t:''),at=v13('n13d')||(gg?gg.at:''),id='p-app-'+st;
+    J8.projects.add(id,{name:v13('n13t'),stage:1,status:'active',order:70,now:'',milestone:ms||null,milestone_at:ms&&at?at:null,milestone_by:ms?'dave':null,milestone_src:ms?'J8NIX app · '+ymd(new Date()):null,extra:{app:true,goal:gg?gg.t:null}})
+     .then(function(){if(gg){gg.pid=id;G2[+gi]=gg;prefSet({goals:G2},{'j8-goals':G2});}made('project',tt('madeProj'),'p:'+id);},fail);return;}
+  if(kind==='reqproj'){J8.inbox.send('p-general',(HE()?'בקשה לפרויקט חדש: ':'Request a project: ')+v13('n13t')+(v13('n13x')?'. '+v13('n13x'):'')).then(function(){made('note',tt('madeReq'),'chat');},fail);return;}
+  if(kind==='step'){var id2='t-app-'+st,b=v13('n13b');J8.tasks.add(id2,{project_id:pid,title:v13('n13t'),minutes:Math.max(1,Math.min(600,+v13('n13m')||15)),due:v13('n13d')||null,owner:'dave',status:'open',source:'j8nix-app',by:'J8NIX app',blocked_by:b?[b]:[],extra:{app:true}})
+     .then(function(){made('step',tt('madeStep'),'tk-'+id2);},fail);return;}
+  if(kind==='note'){J8.inbox.send(pid||'p-general',v13('n13x')).then(function(){made('note',tt('madeNote'),'chat');},fail);return;}
+  if(kind==='memnote'){J8.memory.add({kind:v13('n13k')==='idea'?'idea':'fact',text:v13('n13x'),tags:tagsOf(v13('n13g')),project_id:pid,source_message_id:null}).then(function(){made('memnote',tt('madeMem'),'mem');},fail);return;}
+  if(kind==='draft'){var ch=v13('n13c'),old=f.dataset.edit,id3='ap-app-'+st;J8.approvals.addIdea(id3,{to:v13('n13to'),channel:ch==='linkedin'?'LinkedIn (you send by hand)':ch==='email'?'Email':'Other',body:v13('n13x'),product:pid||'p-general',label:'Idea from you',warn:'Your idea: J8 rewrites it before it can go out.'})
+     .then(function(){if(old&&isPend(old))J8.approvals.kill(old).catch(function(){});made('draft',tt('madeDraft'),'drafts');},fail);return;}},true);
+function goalsSheet(){UI.gsheet={k:'goals13'};var G=myGoalList();
+  gOpen('<h2 id="gTitle">'+esc(tt('yourGoals'))+'</h2>'+(G.length?'<ul class="gm13">'+G.map(function(g,j){var p=g.pid&&pobj(g.pid);return '<li><span dir="auto"><b>'+esc(g.t)+'</b><small><bdi>'+esc(g.at||'')+'</bdi>'+(p?' · '+esc(p.name):'')+'</small></span><button class="ib12" data-a="x13-gedit" data-id="'+j+'" aria-label="'+esc(tt('editIt')+': '+g.t)+'">'+I('edit')+'</button><button class="ib12 kill" data-a="x13-gdel" data-id="'+j+'" aria-label="'+esc(tt('del')+': '+g.t)+'">'+I('kill')+'</button></li>';}).join('')+'</ul>':'<p class="sub12">'+esc(tt('noMyGoals'))+'</p>')
+   +'<div class="obnav"><button class="btn11" data-a="gclose">'+esc(t('close'))+'</button><button class="btn11 pri grow" data-a="x13-new" data-id="goal">'+I('plus')+'<span>'+esc(tt('nGoal'))+'</span></button></div>','var(--ai)');}
+/* edit sheets: delete a step you added, remove a project you added */
+var es13=editSheet;editSheet=function(kind,id){es13(kind,id);var o=kind==='t'?J8.tasks.get(id):pobj(id),nav=document.querySelector('#ed12 .obnav');if(!o||!nav)return;
+  if(kind==='t'&&(o.source==='j8nix-app'||o.source==='j8nix-plan'))nav.insertAdjacentHTML('beforebegin','<button type="button" class="lnk del13" data-a="x13-tdel" data-id="'+esc(id)+'">'+I('kill')+'<span>'+esc(tt('delStep'))+'</span></button>');
+  if(kind==='p'&&px(o,'app')&&J8.orgs.can('admin'))nav.insertAdjacentHTML('beforebegin','<button type="button" class="lnk del13" data-a="x13-pdel" data-id="'+esc(id)+'">'+I('kill')+'<span>'+esc(tt('remProj'))+'</span></button>');};
+
+/* ---------- List: never a dead end ---------- */
+function ideasHTML(){var L=J8.approvals.ideas?J8.approvals.ideas():[];if(!L.length)return '';
+  return '<section class="hand13 idea13"><h4>'+I('mail')+'<span>'+esc(tt('ideasH'))+'</span><span class="n12"><bdi>'+L.length+'</bdi></span></h4><p class="sub12">'+esc(tt('ideaWait'))+'</p><ul>'+L.map(function(a){return '<li class="hd13"><div class="hh">'+I(dIcon(a))+'<b dir="auto">'+esc(apWho(a))+'</b><small dir="auto">'+esc(a.channel||'')+'</small></div><p class="tx" dir="auto">'+esc(cut(J8.approvals.textOf(a),240))+'</p><div class="ha"><button class="b12 sm" data-a="x13-iedit" data-id="'+esc(a.id)+'">'+I('edit')+'<span>'+esc(tt('editIt'))+'</span></button><button class="b12 sm kill" data-a="x13-idel" data-id="'+esc(a.id)+'">'+I('kill')+'<span>'+esc(tt('del'))+'</span></button></div></li>';}).join('')+'</ul></section>';}
+function newCTA(kind,lab){return '<button class="b12 pri sm cta13" data-a="x13-new" data-id="'+kind+'">'+I('plus')+'<span>'+esc(lab)+'</span></button>';}
+function listExtra(seg){if(!connected)return '';var adm=J8.orgs.can('admin');
+  if(seg==='drafts'){var none=!apPending().length;return '<div class="lx13">'+(none?'<section class="empty12 e13">'+I('done')+'<span>'+esc(tt('noDrafts'))+'</span>'+newCTA('draft',tt('emptyDraftsA'))+'</section>':'')+ideasHTML()+handHTML(handDrafts(null))+'</div>';}
+  if(seg==='proj'&&!liveP().filter(function(p){return !isDoneP(p);}).length)return '<div class="lx13"><section class="empty12 e13">'+I('proj')+'<span>'+esc(tt('emptyProj'))+'</span>'+newCTA(adm?'project':'reqproj',adm?tt('emptyProjA'):tt('nReqProj'))+'</section></div>';
+  if(seg==='tasks'&&!myQueue().length)return '<div class="lx13"><section class="empty12 e13">'+I('steps')+'<span>'+esc(tt('emptyNext'))+'</span><button class="b12 pri ai sm cta13" data-a="x13-lineup">'+I('plan')+'<span>'+esc(tt('lineUp'))+'</span></button>'+newCTA('step',tt('nStep'))+'</section></div>';
+  return '';}
+var lw13=listWrap;listWrap=function(seg,html){var h=lw13(seg,html);return h+listExtra(seg==='drafts'?'drafts':'proj');};
+var ld13=listD;listD=function(seg){var h=ld13(seg),x=listExtra(seg);if(!x)return h;var j=h.indexOf('</section><section class="dp12');if(j<0)return h+x; /* desktop: inside the list pane, under the list */
+  var i=h.lastIndexOf('<section class="ml12',j),body=h.slice(i,j);if(/<p class="empty12">/.test(body)&&/class="e13/.test(x))body=body.replace(/<p class="empty12">[\s\S]*?<\/p>/,'');return h.slice(0,i)+body+x+h.slice(j);};
+
+/* ---------- 6. Connections: every line honest and useful ---------- */
+var vMe13=vMe;vMe=function(){var h=vMe13();if(!connected)return h;var m=J8.money.summary(),ctl=J8.control.get()||{},st=J8.status(),ms=J8.tasks.get('t-morning-signin'),ls0=J8.calendar?J8.calendar.lastSync():null;
+  var row=function(name,txt,on,btn,cls){return '<li class="cr'+(cls?' '+cls:'')+'"><span class="cl">'+esc(name.charAt(0))+'</span><span class="rt"><b>'+esc(name)+'</b><span class="sub '+(on?'on':'')+'">'+(on?I('check'):'')+'<bdi dir="auto">'+esc(txt)+'</bdi></span></span>'+(btn||'')+'</li>';};
+  var pay=ms&&(!ms.status||ms.status==='open')?row(t('xCPay'),tt('c_payWait'),false,'<button class="btn" data-a="x13-view" data-id="tk-t-morning-signin">'+esc(tt('open2')||t('xOpen'))+'</button>','att'):row(t('xCPay'),ms&&ms.done_at?tt('c_payDone',{t:tm1(ms.done_at)}):(HE()?'Morning, Grow: לא מחוברים':'Morning, Grow: not connected'),!!(ms&&ms.done_at));
+  var L=row(t('xCData'),st.connected?t('xCOn')+' · '+asOfTxt():t('xCOff'),st.connected,st.connected?'':'<button class="btn" data-a="retry">'+t('tryAgain')+'</button>')
+   +row(t('xCMail'),ctl.email_from_ok?t('xCMailOn'):t('xCMailOff'),!!ctl.email_from_ok,'<button class="btn" data-cx="open">'+t('xManage')+'</button>')
+   +row(t('xCMoney'),m&&m.updated?tt('c_money',{t:tm1(m.updated)}):tt('c_moneyNone'),!!(m&&m.updated),m?'<button class="btn" data-a="nav" data-id="money">'+t('xOpen')+'</button>':'')
+   +row(t('xCCal'),tt('c_cal')+' · '+(ls0?tt('c_calLast',{t:tm1(ls0)}):tt('c_calNever')),!!ls0,'<button class="btn" data-a="nav" data-id="calendar">'+t('xOpen')+'</button>')
+   +pay+row(t('xCLi'),tt('c_li'),true,'')+row(t('xCWa'),tt('c_wa'),false,'');
+  h=h.replace(/<ul class="conns">[\s\S]*?<\/ul>/,'<ul class="conns">'+L+'</ul>');
+  return h.replace('<section class="mesec"><h3 class="h3">'+esc(t('xPrefs'))+'</h3>','<section class="mesec"><h3 class="h3">'+esc(tt('yourGoals'))+'</h3><button class="opt" data-a="x13-goals">'+I('target')+'<span>'+esc(tt('editGoals'))+'</span></button><button class="opt" data-a="x13-mem">'+I('bulb')+'<span>'+esc(tt('memH'))+'</span></button><button class="opt" data-a="x12-ob" data-id="0">'+I('plan')+'<span>'+esc(prefs0().interview||prefs0().planAt?tt('tour'):tt('obCard'))+'</span></button></section><section class="mesec"><h3 class="h3">'+esc(t('xPrefs'))+'</h3>');};
+Object.assign(L11.en,{open2:'Open'});Object.assign(L11.he,{open2:'לפתוח'});
+
+/* ---------- actions ---------- */
+window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a^="x13-"]');if(!el)return;e.preventDefault();e.stopPropagation();var a=el.dataset.a,id=el.dataset.id||'';
+  if(a==='x13-new'){if(!id){newSheet();return;}if(id==='plan'){gClose();obOpen(0);return;}newForm(id);return;}
+  if(a==='x13-lineup'){gClose();if(UI.v!=='next'&&UI.v!=='ltasks')nav0('next');lineUp(false);return;}
+  if(a==='x13-luclose'){UI.lu=null;render();return;}
+  if(a==='x13-obno'){prefSet({obCardOff:new Date().toISOString()},{'j8-obcardoff':1});render();return;}
+  if(a==='x13-goals'){goalsSheet();return;}
+  if(a==='x13-gedit'){var G=myGoalList(),g=G[+id];if(!g)return;var mm=String(g.t).split(' · ');newForm('goal',{edit:+id,t:mm[0],n:mm.slice(1).join(' · '),at:g.at,pid:g.pid||''});return;}
+  if(a==='x13-gdel'){var G2=myGoalList(),gone=G2.splice(+id,1)[0];prefSet({goals:G2},{'j8-goals':G2}).then(function(){goalsSheet();render();toast(tt('deleted'),function(){var G3=myGoalList();G3.splice(+id,0,gone);prefSet({goals:G3},{'j8-goals':G3}).then(function(){render();});});});return;}
+  if(a==='x13-tdel'){J8.tasks.drop(id).then(function(){gClose();toast(tt('deleted'),function(){J8.tasks.undo(id);});render();},function(x){toast(t('couldNot',{e:x&&x.code||'error'}));});return;}
+  if(a==='x13-pdel'){J8.projects.edit(id,{hidden:true}).then(function(){gClose();UI.proj=null;toast(tt('deleted'),function(){J8.projects.edit(id,{hidden:false});});nav0('projects');},function(x){toast(t('couldNot',{e:x&&x.code||'error'}));});return;}
+  if(a==='x13-iedit'){var ap=AP[id];if(!ap)return;newForm('draft',{edit:id,to:ap.to,ch:/linkedin/i.test(ap.channel||'')?'linkedin':/mail/i.test(ap.channel||'')?'email':'other',body:J8.approvals.textOf(ap),pid:ap.product==='p-general'?'':ap.product});return;}
+  if(a==='x13-idel'){J8.approvals.kill(id).then(function(){toast(tt('deleted'));render();},function(x){toast(t('couldNot',{e:x&&x.code||'error'}));});return;}
+  if(a==='x13-ppin'){projPinToggle(id);return;}
+  if(a==='x13-pmenu'){UI.pmenu=UI.pmenu===id?null:id;pinsRender();var b=document.querySelector('#pins [data-a=x13-punpin]');if(b)b.focus();return;}
+  if(a==='x13-punpin'){UI.pmenu=null;var A1=projPins();projPinSet(A1.filter(function(x){return x!==id;}),id,false);return;}
+  if(a==='x13-pup'||a==='x13-pdown'){var A2=projPins(),i=A2.indexOf(id),j=i+(a==='x13-pup'?-1:1);if(i<0||j<0||j>=A2.length)return;A2.splice(j,0,A2.splice(i,1)[0]);UI.pmenu=id;projPinSet(A2,null,null);return;}
+  if(a==='x13-view'){gClose();if(id==='goals'){if(D12())render();else nav0('next');goalsSheet();return;}if(id==='chat'){nav0('chat');return;}if(id==='mem'){UI.memSrc=null;UI.stack=[{v:UI.v}];UI.v='mem';render(true);return;}if(id==='drafts'){UI.lseg='drafts';UI.stack=[];navTo('list');return;}
+    if(id.indexOf('p:')===0){UI.stack=[];openProj(id.slice(2));return;}if(id.indexOf('tk-')===0){if(UI.v!=='next')nav0('next');setTimeout(function(){openItem(id);},30);return;}return;}},true);
+/* N = New (desktop keyboard, like the other single-key shortcuts) */
+document.addEventListener('keydown',function(e){var x=e.target;if(e.key!=='n'&&e.key!=='N')return;if(x&&(/^(INPUT|TEXTAREA|SELECT)$/.test(x.tagName)||x.isContentEditable)||e.metaKey||e.ctrlKey||e.altKey||OB.on||!$('gsheet').hidden||!$('sheet').hidden||$('app').hidden||!D12())return;e.preventDefault();newSheet();});
+/* ⌘K: New … items */
+var ai13=askItems;askItems=function(q){var R=ai13(q),Q=String(q||'').trim().toLowerCase(),nw=HE()?'חדש':'New';
+  [['goal','target','nGoal'],[J8.orgs.can('admin')?'project':'reqproj','proj',J8.orgs.can('admin')?'nProj':'nReqProj'],['step','steps','nStep'],['note','chat','nNote'],['draft','mail','nDraft'],['plan','plan','nPlan'],['lineup','plan','lineUp']].forEach(function(a){var l=a[0]==='lineup'||a[0]==='plan'||a[0]==='reqproj'?tt(a[2]):nw+' '+tt(a[2]).toLowerCase();if(HE()&&a[0]!=='lineup'&&a[0]!=='plan'&&a[0]!=='reqproj')l=tt(a[2])+' '+nw;if(!Q||l.toLowerCase().indexOf(Q)>-1)R.unshift({g:'acts',id:'act:new-'+a[0],ic:a[1],l:l});});return R.slice(0,16);};
+var ac13=askCmd;askCmd=function(id){var m=String(id).match(/^act:new-(\w+)$/);if(!m)return ac13(id);gClose();if(m[1]==='lineup'){if(UI.v!=='next')nav0('next');lineUp(false);}else if(m[1]==='plan')obOpen(0);else setTimeout(function(){newForm(m[1]);},20);};
+/* keep the item sheet true to the data; close it when its item has left */
+var r13=render;render=function(focus){r13(focus);var s=$('gsheet');if(UI.gsheet&&UI.gsheet.k==='item13'&&s&&!s.hidden&&!s.contains(document.activeElement&&document.activeElement.tagName==='TEXTAREA'?document.activeElement:null)){var i=rowByKey(UI.gsheet.key);if(!i)gClose();else{var y=s.scrollTop;s.innerHTML='<div class="grab" aria-hidden="true"></div>'+itemSheetHTML(lead1(i));s.scrollTop=y;lint(s);}}
+  pinsRender();var nb=$('newB');if(nb)nb.hidden=!connected;};
+
+/* ---------- 8. What J8 remembers (j8_memory) + a rules-based hint in the chat composer (not live AI) ---------- */
+Object.assign(L11.en,{memH:'What J8 remembers',memSub:'{n} items · from your messages and notes',memNone:'Nothing yet. When you tell J8 a decision, a fact about the business, a preference, a person or an idea, the team run saves it here, with keyword tags and a link to your message. You can also add a Note from + New.',
+  memQ:'Search memory',memArch:'Show archived',memArchd:'Archived',archive:'Archive',unarchive:'Restore',forget:'Forget',forgetQ:'Forget this for good?',forgetP:'J8 deletes it and will not use it again.',forgotT:'Forgotten',archT:'Archived',
+  fromMsg:'From your message · {t}',k_fact:'Facts',k_decision:'Decisions',k_preference:'Preferences',k_goal:'Goals',k_idea:'Ideas',k_person:'People',k_keyword:'Keywords',k_todo:'To-dos',
+  noted:'J8 noted: {x}',notedN:'J8 noted {n} things: {x}',nNoteM:'Note',nNoteMP:'Something J8 should remember: a fact or an idea.',fKind:'Kind',kd_fact:'Fact',kd_idea:'Idea',fTags:'Keywords (comma separated, optional)',madeMem:'Saved to what J8 remembers',
+  nNote:'Message to J8',hintTask:'Looks like a task · Create it?',hintGoal:'Goal? · Set it',hintIdea:'An idea · Save it',hintDec:'A decision · Save it',hintNote:'Save as a note',savedNote:'Saved as a note',hintWhy:'A quick guess from keywords, not AI',memNoMatch:'Nothing matches.'});
+Object.assign(L11.he,{memH:'מה J8 זוכר',memSub:'{n} פריטים · מההודעות וההערות שלך',memNone:'עוד אין כלום. כשמספרים ל־J8 החלטה, עובדה על העסק, העדפה, אדם או רעיון, ריצת הצוות שומרת את זה כאן, עם תגיות ומילות מפתח וקישור להודעה. אפשר גם להוסיף הערה מ־+ חדש.',
+  memQ:'חיפוש בזיכרון',memArch:'להציג ארכיון',memArchd:'בארכיון',archive:'לארכיון',unarchive:'לשחזר',forget:'לשכוח',forgetQ:'לשכוח את זה לגמרי?',forgetP:'J8 מוחק את זה ולא ישתמש בזה שוב.',forgotT:'נשכח',archT:'הועבר לארכיון',
+  fromMsg:'מההודעה שלך · {t}',k_fact:'עובדות',k_decision:'החלטות',k_preference:'העדפות',k_goal:'יעדים',k_idea:'רעיונות',k_person:'אנשים',k_keyword:'מילות מפתח',k_todo:'משימות',
+  noted:'J8 רשם: {x}',notedN:'J8 רשם {n} דברים: {x}',nNoteM:'הערה',nNoteMP:'משהו ש־J8 צריך לזכור: עובדה או רעיון.',fKind:'סוג',kd_fact:'עובדה',kd_idea:'רעיון',fTags:'מילות מפתח (מופרדות בפסיק, לא חובה)',madeMem:'נשמר במה ש־J8 זוכר',
+  nNote:'הודעה ל־J8',hintTask:'נראה כמו משימה · ליצור?',hintGoal:'יעד? · להגדיר',hintIdea:'רעיון · לשמור',hintDec:'החלטה · לשמור',hintNote:'לשמור כהערה',savedNote:'נשמר כהערה',hintWhy:'ניחוש מהיר לפי מילים, לא AI',memNoMatch:'אין התאמות.'});
+var MK=['decision','goal','fact','preference','idea','person','todo','keyword'];
+var TAGC=['sky','money','ai','done','royal','urgent'];
+function tagCls(s){var h=0;String(s).split('').forEach(function(c){h=(h*31+c.charCodeAt(0))>>>0;});return 'tg-'+TAGC[h%TAGC.length];}
+function memAll(){return J8.memory?J8.memory.list(true):[];}
+function memRow(m){var src=m.source_message_id?J8.inbox.list().filter(function(x){return x.id===m.source_message_id;})[0]:null,p=m.project_id&&pobj(m.project_id),id=esc(m.id);
+  return '<li class="mr13'+(m.archived?' arch':'')+'" data-mid="'+id+'" data-q="'+esc((m.text+' '+(m.tags||[]).join(' ')+' '+(p?p.name:'')).toLowerCase())+'"><p dir="auto">'+esc(m.text)+'</p>'
+   +((m.tags||[]).length||p?'<p class="tags13">'+(p?'<span class="chip12 sm pj" style="'+pcStyle(p.id).replace(/^;/,'')+'">'+pm(p.id)+'<bdi dir="auto">'+esc(cut(p.name,30))+'</bdi></span>':'')+(m.tags||[]).map(function(g){return '<span class="chip12 sm '+tagCls(g)+'"><bdi dir="auto">'+esc(g)+'</bdi></span>';}).join('')+'</p>':'')
+   +'<div class="ma13">'+(src?'<button class="lnk" data-a="x13-msrc" data-id="'+esc(src.id)+'">'+I('chat')+'<span>'+esc(tt('fromMsg',{t:tm1(src.at)}))+'</span></button>':'<span class="sub12">'+esc(tm1(m.updated_at||m.created_at))+'</span>')
+   +'<span class="sp"></span><button class="ib12" data-a="x13-medit" data-id="'+id+'" aria-label="'+esc(tt('editIt'))+'" title="'+esc(tt('editIt'))+'">'+I('edit')+'</button><button class="ib12" data-a="x13-march" data-id="'+id+'" aria-label="'+esc(m.archived?tt('unarchive'):tt('archive'))+'" title="'+esc(m.archived?tt('unarchive'):tt('archive'))+'">'+I(m.archived?'undo':'eyeoff')+'</button><button class="ib12 kill" data-a="x13-mforget" data-id="'+id+'" aria-label="'+esc(tt('forget'))+'" title="'+esc(tt('forget'))+'">'+I('kill')+'</button></div></li>';}
+function vMem(){var A=memAll(),show=A.filter(function(m){return UI.memArch||!m.archived;}),src=UI.memSrc;if(src)show=show.filter(function(m){return m.source_message_id===src;});
+  var h=ph(tt('memH'),esc(tt('memSub',{n:A.filter(function(m){return !m.archived;}).length})),'<div class="phx12"><button class="lnk12" data-a="x13-new" data-id="memnote">'+I('plus')+'<span>'+esc(tt('nNoteM'))+'</span></button></div>');
+  if(!connected)return h+skel(4);
+  h+='<div class="mq13"><label class="sr" for="memQ">'+esc(tt('memQ'))+'</label>'+I('search')+'<input id="memQ" type="search" dir="auto" placeholder="'+esc(tt('memQ'))+'" value="'+esc(UI.memQ||'')+'"><label class="ck13"><input type="checkbox" data-a13="march" '+(UI.memArch?'checked':'')+'><span>'+esc(tt('memArch'))+'</span></label></div>';
+  if(src)h+='<p class="sub12">'+I('chat')+' <button class="lnk" data-a="x13-memall">'+esc(t('xBack'))+'</button></p>';
+  if(!A.length)return h+'<section class="empty12 e13 mem0">'+g8i()+'<span>'+esc(tt('memNone'))+'</span>'+newCTA('memnote',tt('nNoteM'))+'</section>';
+  var by={};show.forEach(function(m){var k=MK.indexOf(m.kind)>-1?m.kind:'fact';(by[k]=by[k]||[]).push(m);});
+  h+='<div class="mem13">'+MK.filter(function(k){return by[k];}).map(function(k){return '<section class="mk13 k-'+k+'"><h3 class="sh12">'+esc(tt('k_'+k))+' <span class="n12"><bdi>'+by[k].length+'</bdi></span></h3><ul>'+by[k].map(memRow).join('')+'</ul></section>';}).join('')+'</div><p class="empty12 e13" id="memNo" hidden>'+esc(tt('memNoMatch'))+'</p>';
+  return h;}
+function memFilter(){var q=String(UI.memQ||'').trim().toLowerCase(),n=0;[].forEach.call(document.querySelectorAll('#main .mr13'),function(li){var on=!q||li.dataset.q.indexOf(q)>-1;li.hidden=!on;if(on)n++;});[].forEach.call(document.querySelectorAll('#main .mk13'),function(s){s.hidden=!s.querySelector('.mr13:not([hidden])');});var no=$('memNo');if(no)no.hidden=n>0||!document.querySelector('#main .mr13');}
+PLACE.mem='me';
+var vN13b=vNext;vNext=function(){return UI.v==='mem'?vMem():vN13b();};
+document.addEventListener('input',function(e){if(e.target&&e.target.id==='memQ'){UI.memQ=e.target.value;memFilter();}});
+document.addEventListener('change',function(e){var x=e.target;if(x&&x.dataset&&x.dataset.a13==='march'){UI.memArch=x.checked;render();}});
+function memSheet(m){UI.gsheet={k:'mem13'};gOpen('<h2 id="gTitle">'+esc(tt('editIt'))+'</h2><form id="mf13" class="ed12" data-id="'+esc(m.id)+'">'+fl('m13x',tt('fText'),'<textarea id="m13x" rows="4" required dir="auto">'+esc(m.text)+'</textarea>')
+  +fl('m13k',tt('fKind'),'<select id="m13k">'+MK.map(function(k){return '<option value="'+k+'"'+(m.kind===k?' selected':'')+'>'+esc(tt('k_'+k))+'</option>';}).join('')+'</select>')+fl('m13g',tt('fTags'),inp('m13g',{max:200,v:(m.tags||[]).join(', ')}))
+  +'<p class="err13" id="m13e" role="alert"></p><div class="obnav"><button type="button" class="btn11" data-a="gclose">'+esc(t('close'))+'</button><button type="submit" class="btn11 pri grow">'+I('check')+'<span>'+esc(tt('save'))+'</span></button></div></form>','var(--ai)');}
+function tagsOf(s){return String(s||'').split(/[,،]/).map(function(x){return x.trim().toLowerCase();}).filter(Boolean).slice(0,8);}
+document.addEventListener('submit',function(e){var f=e.target;if(!f||f.id!=='mf13')return;e.preventDefault();var id=f.dataset.id,tx=v13('m13x');if(!tx){$('m13e').textContent=HE()?'חסר טקסט.':'Write something first.';return;}
+  J8.memory.edit(id,{text:tx,kind:v13('m13k'),tags:tagsOf(v13('m13g'))}).then(function(){gClose();toast(tt('saved2'));render();},function(x){$('m13e').textContent=t('couldNot',{e:x&&(x.message||x.code)||'error'});});},true);
+/* the chat: "J8 noted: …" under a reply, and your keywords and project names highlighted */
+function kwTerms(){var T={};liveP().forEach(function(p){if(p.name&&p.name.length>2)T[p.name.toLowerCase()]=1;});memAll().forEach(function(m){if(!m.archived)(m.tags||[]).forEach(function(g){if(String(g).length>2)T[String(g).toLowerCase()]=1;});});return Object.keys(T).sort(function(a,b){return b.length-a.length;}).slice(0,80);}
+function hiTerms(html,T){if(!T.length)return html;var re=new RegExp('('+T.map(function(x){return esc(x).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|')+')','gi');return html.split(/(<[^>]+>)/).map(function(seg){return seg.charAt(0)==='<'?seg:seg.replace(re,'<mark class="kw13">$1</mark>');}).join('');}
+var cl13=chatLog;chatLog=function(){var h=cl13();if(!J8.memory)return h;var L=J8.inbox.list(40).slice().reverse(),parts=h.split('<div class="me12">'),T=kwTerms();if(parts.length-1!==L.length)return h;
+  return parts.map(function(c,k){if(!k)return c;var x=L[k-1];c=c.replace(/^(<div class="bub12 mine">(?:<p class="ab12">[\s\S]*?<\/p>)?<p dir="auto">)([\s\S]*?)(<\/p>)/,function(_,a,b,d){return a+hiTerms(b,T)+d;});
+    var M=J8.memory.forMessage(x.id);if(M.length){var line='<p class="noted13"><button class="lnk" data-a="x13-mnoted" data-id="'+esc(x.id)+'">'+g8i()+'<span dir="auto">'+esc(M.length===1?tt('noted',{x:cut(M[0].text,70)}):tt('notedN',{n:M.length,x:cut(M[0].text,50)}))+'</span></button></p>';
+      var j=c.search(/<p class="(day12|wait12)"|<div class="j812 typing12"/);c=j>-1?c.slice(0,j)+line+c.slice(j):c+line;}
+    return '<div class="me12">'+c;}).join('');};
+/* composer hint: one chip from simple rules (keywords, dates, numbers, verbs) */
+var RX={task:/\b(remind( me)?|need to|have to|must|todo|to-do|call|book|fix|follow up|send|email|schedule|don'?t forget)\b|להזכיר|תזכיר|צריך ל|חייב|לתקן|לשלוח|להתקשר|לקבוע|לא לשכוח/i,
+  goal:/\b(goal|target|aim|reach|hit)\b|\b\d+\s*(clients|customers|users|sales|deals|testers|k\b)|\$\s?\d|₪\s?\d|יעד|מטרה|להגיע ל/i,
+  idea:/\b(idea|what if|maybe we|could we|how about)\b|רעיון|מה אם|אולי כדאי/i,dec:/\b(decided|we will|i will go with|go with|final(ly)?|let'?s go with)\b|החלטתי|החלטנו|סגרנו|הולכים על/i,
+  date:/\b(today|tomorrow|monday|tuesday|wednesday|thursday|friday|sunday|next week|by \w+|\d{1,2}[\/.]\d{1,2})\b|היום|מחר|ביום|עד /i};
+function hintOf(s){s=String(s||'').trim();if(s.length<6)return null;if(RX.goal.test(s)&&(RX.date.test(s)||/\d/.test(s)))return 'goal';if(RX.task.test(s))return 'task';if(RX.dec.test(s))return 'dec';if(RX.idea.test(s))return 'idea';if(RX.goal.test(s))return 'goal';return s.length>=24?'note':null;}
+window.j8hint=hintOf;
+function hintChip(kind,saved){var L={task:['hintTask','steps','ai'],goal:['hintGoal','target','money'],idea:['hintIdea','bulb','sky'],dec:['hintDec','check','done'],note:['hintNote','clip','royal']}[kind];if(!L)return '';
+  return saved?'<span class="hint13 '+L[2]+'" role="status">'+I('check')+'<span>'+esc(tt('savedNote'))+'</span></span>':'<button type="button" class="hint13 '+L[2]+'" data-a="x13-hint" data-id="'+kind+'" title="'+esc(tt('hintWhy'))+'">'+I(L[1])+'<span>'+esc(tt(L[0]))+'</span><span class="sr"> · '+esc(tt('hintWhy'))+'</span></button>';}
+function hintPaint(box,kind,saved){var el=box&&box.querySelector('.hintw13');if(!box)return;if(!el){el=document.createElement('div');el.className='hintw13';el.setAttribute('aria-live','polite');box.appendChild(el);}el.innerHTML=kind?hintChip(kind,saved):'';}
+UI.hint=null;
+document.addEventListener('input',function(e){var x=e.target;if(!x||(x.id!=='chatIn'&&x.id!=='j8cIn'))return;var k=hintOf(x.value);UI.hint={text:x.value,kind:k,src:null,box:x.id};hintPaint(x.closest('form')&&x.closest('form').parentNode,k);});
+/* after a send, keep the hint for the message just sent (it links to it) */
+var send13=J8.inbox.send;J8.inbox.send=function(p,text,tk,ap){var r=send13.apply(J8.inbox,arguments);if(!tk&&!ap&&UI.hint&&UI.hint.text&&String(text).trim()===String(UI.hint.text).trim()){var H=UI.hint;r.then(function(id){H.src=id;H.after=1;UI.hint=H;setTimeout(function(){var f=$(H.box==='j8cIn'?'j8cForm':'chatF');hintPaint(f&&f.parentNode,H.kind);},120);});}return r;};
+var vc13=vChat;vChat=function(){var h=vc13();var H=UI.hint;if(H&&H.after&&H.kind&&H.box==='chatIn')h=h.replace(/(<form class="comp12" id="chatF"[\s\S]*?<\/form>)/,'$1<div class="hintw13" aria-live="polite">'+hintChip(H.kind,H.saved)+'</div>');return h;};
+function memNoteFromHint(kind){var H=UI.hint||{};var tx=String(H.text||'').trim();if(!tx)return;var mk=kind==='idea'?'idea':kind==='dec'?'decision':'fact';
+  J8.memory.add({kind:mk,text:tx,tags:[],source_message_id:H.src||null,project_id:null}).then(function(){H.saved=1;UI.hint=H;var f=$(H.box==='j8cIn'?'j8cForm':'chatF');hintPaint(f&&f.parentNode,kind,true);toast(tt('madeMem'));},function(x){toast(t('couldNot',{e:x&&(x.message||x.code)||'error'}));});}
+window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a^="x13-m"],[data-a=x13-hint]');if(!el)return;e.preventDefault();e.stopPropagation();var a=el.dataset.a,id=el.dataset.id||'';
+  if(a==='x13-hint'){var H=UI.hint||{},tx=String(H.text||'').trim();if(id==='task'){newForm('step');var i1=$('n13t');if(i1)i1.value=cut(tx,140);}else if(id==='goal'){newForm('goal',{t:cut(tx,140)});}else memNoteFromHint(id);return;}
+  if(a==='x13-medit'){var m=memAll().filter(function(x){return x.id===id;})[0];if(m)memSheet(m);return;}
+  if(a==='x13-march'){var m2=memAll().filter(function(x){return x.id===id;})[0];if(!m2)return;J8.memory.archive(id,!m2.archived).then(function(){toast(m2.archived?tt('saved2'):tt('archT'),m2.archived?null:function(){J8.memory.archive(id,false).then(function(){render();});});render();},function(x){toast(t('couldNot',{e:x&&x.code||'error'}));});return;}
+  if(a==='x13-mforget'){UI.gsheet={k:'forget13'};gOpen('<h2 id="gTitle">'+esc(tt('forgetQ'))+'</h2><p class="lead">'+esc(tt('forgetP'))+'</p><div class="obnav"><button class="btn11" data-a="gclose">'+esc(t('cancel'))+'</button><button class="btn11 pri grow kill" data-a="x13-mforgetok" data-id="'+esc(id)+'">'+I('kill')+'<span>'+esc(tt('forget'))+'</span></button></div>','var(--urgent)');return;}
+  if(a==='x13-mforgetok'){J8.memory.forget(id).then(function(){gClose();toast(tt('forgotT'));render();},function(x){toast(t('couldNot',{e:x&&(x.message||x.code)||'error'}));});return;}
+  if(a==='x13-msrc'){threadSheet({msg:id});return;}
+  if(a==='x13-mnoted'){UI.memSrc=id;UI.stack=[{v:UI.v}];UI.v='mem';render(true);return;}
+  if(a==='x13-mem'||a==='x13-memall'){UI.memSrc=null;if(a==='x13-mem'){UI.stack=[{v:UI.v==='mem'?'me':UI.v}];UI.v='mem';}render(true);return;}},true);
+
+/* 11.2: named hooks for the QA harness and the console (read-only helpers and the same actions a tap runs) */
+(function(){var F={openItem:function(){return openItem.apply(null,arguments);},goalsShown:function(){return goalsShown();},goalPins:goalPins,projPins:projPins,myGoalList:myGoalList,editSheet:function(k,i){return editSheet(k,i);},newForm:function(k,e){return newForm(k,e);},memFilter:memFilter,lineUp:lineUp,goalsAll:function(){return goalsAll();},newSheet:newSheet,goalsSheet:goalsSheet};Object.keys(F).forEach(function(n){window[n]=F[n];});})();
 })();

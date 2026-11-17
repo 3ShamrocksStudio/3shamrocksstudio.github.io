@@ -17,8 +17,8 @@ var J8 = (function () {
   'use strict';
   var SB_URL = 'https://otkvebgrdiayjnqrytrn.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90a3ZlYmdyZGlheWpucXJ5dHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExOTEzMzQsImV4cCI6MjEwNjc2NzMzNH0.-A1KuUXMBx9NMBwUnZx0cS4TwJkjDz86yok5BcEcKsE'; // public anon key; RLS guards every row
-  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout', 'tasks', 'later'];
-  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout', tasks: 'j8_tasks', later: 'j8_later' };
+  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout', 'tasks', 'later', 'calendar', 'memory'];
+  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout', tasks: 'j8_tasks', later: 'j8_later', calendar: 'j8_calendar', memory: 'j8_memory' };
   /* v6 speed: sent/killed drafts load without their bodies (the biggest part of the data); open drafts load in full */
   var OPEN_AP = 'status.is.null,status.in.(pending,approved,edited,queued),kind.eq.template'; /* templates load in full: Control shows their text */
   var LIGHT_AP = 'org_id,id,kind,label,to,channel,product,created,status,template_id,decided_at,decided_by,sent_at,result,rank,batch,batch_label,blocked_by,version,updated_at';
@@ -48,7 +48,7 @@ var J8 = (function () {
       rows = (q[0].data || []).concat(q[1].data || []);
     } else {
       var r = await sb.from(TABLE[c]).select(c === 'todo' ? TODO_COLS : '*').eq('org_id', state.org);
-      if (r.error) { if (c === 'tasks' || c === 'later') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks / later: a backend without the table still works */
+      if (r.error) { if (c === 'tasks' || c === 'later' || c === 'calendar' || c === 'memory') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks / later: a backend without the table still works */
       rows = r.data || [];
     }
     var o = {}, v = {};
@@ -175,6 +175,22 @@ var J8 = (function () {
     if (r.error) { data[c] = clone(data[c]); delete data[c][id]; emit(c); return rej('denied', { message: r.error.message }); }
     data[c] = clone(data[c]); data[c][id] = toDoc(r.data[0]); ver[c][id] = r.data[0].version; emit(c); cache(); return true;
   }
+  /* 11.2: j8_memory has no version column: plain update / delete, still optimistic with rollback */
+  async function updateNV(c, id, patch) {
+    var before = data[c][id]; if (!before) return rej('not_found');
+    data[c] = clone(data[c]); data[c][id] = Object.assign({}, before, patch); emit(c);
+    var r = await sb.from(TABLE[c]).update(patch).eq('org_id', state.org).eq('id', id).select('id');
+    if (r.error || !r.data || !r.data.length) { data[c] = clone(data[c]); data[c][id] = before; emit(c); return rej(r.error ? 'denied' : 'not_found', r.error ? { message: r.error.message } : {}); }
+    cache(); return true;
+  }
+  async function remove(c, id) {
+    var before = data[c][id]; if (!before) return rej('not_found');
+    data[c] = clone(data[c]); delete data[c][id]; emit(c);
+    var r = await sb.from(TABLE[c]).delete().eq('org_id', state.org).eq('id', id).select('id');
+    if (r.error || !r.data || !r.data.length) { data[c] = clone(data[c]); data[c][id] = before; emit(c); return rej(r.error ? 'denied' : 'not_found', r.error ? { message: r.error.message } : {}); }
+    cache(); return true;
+  }
+  function uuid() { try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) {} return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (ch) { var r = Math.random() * 16 | 0; return (ch === 'x' ? r : (r & 3 | 8)).toString(16); }); }
   function decide(patch) { return Object.assign({ decided_at: now(), decided_by: state.user && state.user.id }, patch); }
   function byRank(a, b) { return (typeof a.rank === 'number' ? a.rank : 999) - (typeof b.rank === 'number' ? b.rank : 999) || String(a.created || '').localeCompare(String(b.created || '')); }
   function num(x) { return x == null || x === '' ? null : Number(x); }
@@ -268,12 +284,15 @@ var J8 = (function () {
 
     approvals: {
       list: function () { return list('approvals').sort(byRank); },
-      pending: function () { return api.approvals.list().filter(function (a) { return !a.status || a.status === 'pending'; }); },
+      pending: function () { return api.approvals.list().filter(function (a) { return (!a.status || a.status === 'pending') && a.source !== 'j8nix-app'; }); },
+      /* 11.2: your draft ideas (source 'j8nix-app'): J8 writes the real draft from them; they are never approved as they are */
+      ideas: function () { return api.approvals.list().filter(function (a) { return (!a.status || a.status === 'pending') && a.source === 'j8nix-app'; }); },
+      addIdea: function (id, doc) { if (data.approvals[id]) return rej('exists'); return insert('approvals', id, Object.assign({ kind: 'outreach', status: 'pending', source: 'j8nix-app', created: now(), batch: 'app-ideas', batch_label: 'Your draft ideas' }, doc)); },
       decided: function () { return api.approvals.list().filter(function (a) { return a.status && a.status !== 'pending'; }); },
       templates: function () { return api.approvals.list().filter(function (a) { return a.kind === 'template'; }); },
       queued: function () { return api.approvals.list().filter(function (a) { return a.status === 'queued'; }); },
       textOf: function (a) { return a && a.edited_body != null && a.edited_body !== '' ? a.edited_body : (a && a.body) || ''; },
-      approve: function (id) { var a = data.approvals[id] || {}, ed = a.edited_body != null && a.edited_body !== ''; return update('approvals', id, decide({ status: ed ? 'edited' : 'approved' })); },
+      approve: function (id) { if ((data.approvals[id] || {}).source === 'j8nix-app') return rej('idea'); var a = data.approvals[id] || {}, ed = a.edited_body != null && a.edited_body !== ''; return update('approvals', id, decide({ status: ed ? 'edited' : 'approved' })); },
       edit: function (id, text) { var t = String(text || '').trim(); if (!t) return rej('empty'); return update('approvals', id, decide({ edited_body: t, status: 'edited' })); },
       kill: function (id) { return update('approvals', id, decide({ status: 'killed' })); },
       undo: function (id) { if ((data.approvals[id] || {}).status === 'sent') return rej('already_sent'); return update('approvals', id, { status: 'pending', decided_at: null, decided_by: null }); },
@@ -296,7 +315,7 @@ var J8 = (function () {
       },
       /* 11.1: the member's own plan from the J8 interview (admins only, RLS j8_projects_admin_ins/upd); never deletes */
       add: function (id, doc) { if (data.projects[id]) return rej('exists'); return insert('projects', id, Object.assign({ links: [], hidden: false, blocked_by: [], extra: {} }, doc)); },
-      edit: function (id, patch) { var p = {}; ['name', 'milestone', 'milestone_at', 'now'].forEach(function (k) { if (k in patch) p[k] = patch[k]; }); if (p.name != null && !String(p.name).trim()) return rej('empty'); return update('projects', id, p); }
+      edit: function (id, patch) { var p = {}; ['name', 'milestone', 'milestone_at', 'now', 'hidden'].forEach(function (k) { if (k in patch) p[k] = patch[k]; }); if (p.name != null && !String(p.name).trim()) return rej('empty'); return update('projects', id, p); }
     },
 
     tasks: {
@@ -310,11 +329,27 @@ var J8 = (function () {
       drop: function (id) { return update('tasks', id, { status: 'dropped' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); },
       /* 11.1: starter steps from the J8 interview (members, RLS j8_tasks_ins) and edits to them (title, minutes) */
       add: function (id, doc) { if (data.tasks[id]) return rej('exists'); return insert('tasks', id, Object.assign({ owner: 'dave', status: 'open', blocked_by: [] }, doc)); },
-      edit: function (id, patch) { var p = {}; ['title', 'action', 'minutes'].forEach(function (k) { if (k in patch) p[k] = patch[k]; }); if (p.title != null && !String(p.title).trim()) return rej('empty'); return update('tasks', id, p); }
+      edit: function (id, patch) { var p = {}; ['title', 'action', 'minutes', 'due', 'blocked_by', 'project_id'].forEach(function (k) { if (k in patch) p[k] = patch[k]; }); if (p.title != null && !String(p.title).trim()) return rej('empty'); return update('tasks', id, p); }
     },
 
     /* 7.1: Dave's Later (come_back_at), Not needed and Done on one Today item. id = the app's item key (tk-…, mv-…, b-…).
        One row per item; a new decision overwrites the old one (status 'open' = undone). Rows are never deleted. */
+    /* 11.2: Google Calendar, read-only: the J8 team's morning run writes the next 7 days into j8_calendar (ops/brain/J8NIX-DATA.md) */
+    calendar: {
+      list: function () { return list('calendar').sort(function (a, b) { return String(a.starts_at).localeCompare(String(b.starts_at)); }); },
+      lastSync: function () { var t = null; list('calendar').forEach(function (e) { if (e.synced_at && (!t || String(e.synced_at) > t)) t = String(e.synced_at); }); return t; }
+    },
+
+    /* 11.2: what J8 remembers (public.j8_memory, ops/brain/J8NIX-DATA.md "Memory and chat understanding"). Members add, edit, archive and forget. */
+    memory: {
+      list: function (all) { return list('memory').filter(function (m) { return all || !m.archived; }).sort(function (a, b) { return String(b.updated_at || b.created_at || '').localeCompare(String(a.updated_at || a.created_at || '')); }); },
+      forMessage: function (mid) { return list('memory').filter(function (m) { return m.source_message_id === mid && !m.archived; }); },
+      add: function (doc) { var t = String(doc && doc.text || '').trim(); if (!t) return rej('empty'); var id = uuid(); return insert('memory', id, Object.assign({ member: state.user ? state.user.id : null, tags: [], archived: false }, doc, { text: t.slice(0, 2000) })).then(function () { return id; }); },
+      edit: function (id, patch) { var p = {}; ['text', 'kind', 'tags', 'project_id'].forEach(function (k) { if (k in patch) p[k] = patch[k]; }); if (p.text != null && !String(p.text).trim()) return rej('empty'); p.updated_at = now(); return updateNV('memory', id, p); },
+      archive: function (id, on) { return updateNV('memory', id, { archived: on !== false, updated_at: now() }); },
+      forget: function (id) { return remove('memory', id); }
+    },
+
     later: {
       list: function () { return list('later'); },
       get: function (id) { return data.later[id] ? Object.assign({ id: id }, data.later[id]) : null; },
