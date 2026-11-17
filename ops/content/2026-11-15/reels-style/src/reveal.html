@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@500;700&family=Alef:wght@700&family=Heebo:wght@500;800&family=Dela+Gothic+One&family=Archivo:wght@600;800&family=Bangers&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@500;700&family=Alef:wght@700&family=Heebo:wght@500;800&family=Dela+Gothic+One&family=Archivo:wght@600;800&family=Bangers&family=Saira+Condensed:wght@300;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:1080px;height:1920px;overflow:hidden}
@@ -21,7 +21,7 @@ body[data-m="reveal"] .fr{display:none}
 @keyframes wm{to{clip-path:inset(0 0 0 0)}}
 #studio .line{top:1040px;height:6px;background:#3dcc6e;width:0;animation:ln .7s 1.6s cubic-bezier(.7,0,.2,1) both}
 @keyframes ln{to{width:520px}}
-#studio .tag{top:1090px;width:100%;text-align:center;color:#fff;font-size:44px;font-weight:800;letter-spacing:-1px;opacity:0;animation:up .8s 2.2s ease-out both}
+#studio .tag{top:1092px;width:100%;text-align:center;color:#fff;font:300 54px/1 'Saira Condensed';letter-spacing:9px;text-transform:uppercase;opacity:0;animation:up .8s 2.2s ease-out both}
 #studio .url{top:1200px;width:100%;text-align:center;color:#b07cff;font:700 40px Inter;opacity:0;animation:up .8s 2.6s ease-out both}
 @keyframes up{from{opacity:0;transform:translate(-50%,40px)}to{opacity:1;transform:translate(-50%,0)}}
 /* ---------- SHOMER (serious, cinematic, 5 s) ---------- */
@@ -36,9 +36,9 @@ body[data-m="reveal"] .fr{display:none}
 @keyframes gl{from{background-position:100% 0}to{background-position:-50% 0}}
 #shomer .ring{left:50%;top:780px;width:300px;height:300px;margin-left:-150px;border:3px solid #FC9918;border-radius:50%;opacity:0;animation:ring 2.4s 2.6s ease-out 2}
 @keyframes ring{0%{transform:scale(.8);opacity:.7}100%{transform:scale(3.6);opacity:0}}
-#shomer .wm{top:1390px;width:860px;opacity:0;letter-spacing:0;animation:wmi 1.4s 2.9s ease-out both}
+#shomer .wm{top:1410px;width:560px;opacity:0;letter-spacing:0;animation:wmi 1.4s 2.9s ease-out both}
 @keyframes wmi{0%{opacity:0;transform:translateX(-50%) scale(1.08);filter:blur(10px)}100%{opacity:1;transform:translateX(-50%) scale(1);filter:blur(0)}}
-#shomer .tag{top:1600px;width:100%;text-align:center;color:#FC9918;font:700 64px Alef;letter-spacing:6px;direction:rtl;opacity:0;animation:fi 1.2s 3.6s ease-in both}
+#shomer .tag{top:1575px;width:100%;text-align:center;color:#FC9918;font:700 46px Alef;letter-spacing:0;direction:rtl;opacity:0;animation:fi 1.2s 3.6s ease-in both}
 #shomer .lb{position:absolute;left:0;right:0;height:190px;background:#000;z-index:5}
 #shomer .lb.t{top:0}#shomer .lb.b{bottom:0}
 /* ---------- LICKPICK: 90s grunge rock'n'roll, 120 bpm (beat = .5 s) ---------- */
@@ -64,16 +64,16 @@ body[data-m="reveal"] .fr{display:none}
 .torn{position:absolute;left:-40px;right:-40px;top:560px;height:900px;background:#FFE600;clip-path:polygon(0 6%,4% 2%,9% 7%,15% 1%,22% 6%,28% 0,35% 5%,41% 1%,48% 7%,55% 2%,61% 6%,68% 0,74% 5%,81% 1%,87% 6%,93% 2%,100% 5%,100% 95%,95% 99%,89% 93%,82% 98%,76% 94%,70% 100%,63% 95%,57% 99%,50% 93%,44% 98%,37% 94%,31% 100%,24% 95%,18% 99%,11% 94%,5% 98%,0 94%)}
 #lickpick .end .torn{transform:rotate(-4deg);animation:tear .25s 2s cubic-bezier(.2,1.6,.4,1) both}
 @keyframes tear{from{transform:rotate(-4deg) scaleY(0)}to{transform:rotate(-4deg) scaleY(1)}}
-#lickpick .pick{top:640px;width:560px;animation:slam .3s 2s cubic-bezier(.3,1.7,.5,1) both,beat .5s 2.5s ease-out 3}
+#lickpick .pick{top:680px;width:440px;animation:slam .3s 2s cubic-bezier(.3,1.7,.5,1) both,beat .5s 2.5s ease-out 3}
 @keyframes slam{0%{transform:translateX(-50%) scale(3) rotate(30deg);opacity:0}100%{transform:translateX(-50%) scale(1) rotate(-8deg);opacity:1}}
 @keyframes beat{0%{transform:translateX(-50%) scale(1.12) rotate(-8deg)}100%{transform:translateX(-50%) scale(1) rotate(-8deg)}}
-#lickpick .lock{top:1500px;width:860px;animation:pop .25s 2.25s cubic-bezier(.3,1.7,.5,1) both}
+#lickpick .lock{top:1540px;width:660px;animation:pop .25s 2.25s cubic-bezier(.3,1.7,.5,1) both}
 @keyframes pop{0%{transform:translateX(-50%) scale(0)}100%{transform:translateX(-50%) scale(1)}}
 #lickpick .shake{position:absolute;inset:0;animation:sh .3s 2s linear both,sh .2s 2.5s linear both,sh .2s 3s linear both,sh .2s 3.5s linear both}
 @keyframes sh{0%,100%{transform:none}25%{transform:translate(-26px,16px) rotate(-1deg)}50%{transform:translate(22px,-18px) rotate(1deg)}75%{transform:translate(-12px,-8px)}}
-.stamp{position:absolute;font:400 96px Bangers;letter-spacing:4px;color:#FF2E88;border:10px solid #FF2E88;padding:4px 30px;border-radius:8px;opacity:0;mix-blend-mode:multiply}
-#lickpick .s1{top:300px;left:90px;transform:rotate(-14deg);animation:stp .15s 2.5s both}
-#lickpick .s2{top:1300px;right:70px;transform:rotate(10deg);color:#0B0912;border-color:#0B0912;animation:stp .15s 3s both}
+.stamp{position:absolute;font:400 76px Bangers;letter-spacing:4px;color:#FF2E88;border:8px solid #FF2E88;padding:2px 24px;border-radius:8px;opacity:0;mix-blend-mode:multiply}
+#lickpick .s1{top:330px;left:110px;transform:rotate(-14deg);animation:stp .15s 2.5s both}
+#lickpick .s2{top:1160px;right:150px;transform:rotate(6deg);color:#0B0912;border-color:#0B0912;animation:stp .15s 3s both}
 @keyframes stp{0%{opacity:0;scale:1.8}100%{opacity:.95;scale:1}}
 .spray{position:absolute;bottom:240px;left:0;width:100%;text-align:center;font:400 120px Bangers;color:#0B0912;letter-spacing:6px;opacity:0;transform:rotate(-3deg);filter:url(#rough)}
 #lickpick .spray{animation:fi2 .2s 3.5s both}
@@ -118,7 +118,7 @@ body[data-m="reveal"] .fr{display:none}
 <div class="s" id="shomer">
  <div class="rv"><div class="bg"></div><div class="beam"></div><div class="c ring"></div><div class="c ring" style="animation-delay:3.4s"></div>
   <img class="c badge" src="SHOMER_logo_big.png"><div class="glint"></div>
-  <img class="c wm" src="shomer-logo.png"><div class="c tag">שומר אחי אנוכי</div><div class="lb t"></div><div class="lb b"></div></div>
+  <img class="c wm" src="shomer-vec.svg"><div class="c tag">שומר אחי אנוכי</div><div class="lb t"></div><div class="lb b"></div></div>
  <div class="fr"><div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,#173063 0,#0C1B3A 45%,#02050c 85%)"></div>
   <div class="hd" style="color:#fff;font:700 70px/1.15 Alef;direction:rtl">לחיצה אחת.<br><span style="color:#FC9918">השומרים שבחרת יודעים מיד איפה.</span></div>
   <div class="phone"><img src="shomer-app-map.webp"></div>
