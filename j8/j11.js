@@ -1144,7 +1144,7 @@ function dayCounts13(){var you=tasksAll().filter(function(x){return x.owner==='d
 function youNext13(){var N=myQueue(),c=dayCounts13(),L=[],seen={};
   c.moves.forEach(function(m){if(!m||m.owner!=='dave'||!m.ref_id)return;var i=N.filter(function(x){return (x.ids||[]).indexOf(m.ref_id)>-1;})[0];if(i&&!seen[i.key]){seen[i.key]=1;L.push(i);}});
   N.forEach(function(i){if(!seen[i.key]&&L.length<3){seen[i.key]=1;L.push(i);}});return L.slice(0,3);}
-function todayPanel(){if(!connected)return '';var hr=new Date().getHours(),lab=hr<12?tt('tdToday'):hr<18?tt('tdRest'):tt('tdEve'),c=dayCounts13(),Y=youNext13(),T=runsToday13().slice(0,3),C=comingToday().slice(0,3),he=HE()?1:0;
+function todayPanel(){if(!connected)return '';var hr=ilNow13().h,lab=hr<12?tt('tdToday'):hr<18?tt('tdRest'):tt('tdEve'),c=dayCounts13(),Y=youNext13(),T=runsToday13().slice(0,3),C=comingToday().slice(0,3),he=HE()?1:0;
   var h='<section class="td13" id="today13" aria-labelledby="tdH"><header><div><h3 id="tdH" dir="auto"><bdi>'+esc(lab)+'</bdi> · <bdi>'+esc(dayStr(new Date()))+'</bdi></h3><p class="upd">'+esc(tt('tdUpd',{t:UI.syncedAt?hm2(UI.syncedAt):'—'}))+'</p>'+(hr>=18?'<p class="eve">'+esc(tt('tdEveP'))+'</p>':'')+'</div>'
    +'<button type="button" class="b12 sm" data-a="x14-refresh">'+I('refresh')+'<span>'+esc(tt('tdRefresh'))+'</span></button></header>';
   var pc=function(n){return c.total?Math.max(0,Math.min(100,100*n/c.total)):0;};

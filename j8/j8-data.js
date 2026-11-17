@@ -39,8 +39,10 @@ var J8 = (function () {
   function toDoc(row) { var d = {}; Object.keys(row).forEach(function (k) { if (DROP.indexOf(k) < 0 && k !== 'id' && k !== 'version') d[k] = row[k]; }); if (row.extra) Object.keys(row.extra).forEach(function (k) { if (!(k in d)) d[k] = row.extra[k]; }); return d; }
 
   /* ---------- load + realtime ---------- */
+  var missing = {}; /* 11.3.1: a table this backend lacks (e.g. j8_day before it is created) is retried at most every 30 min, not every poll */
   async function loadCol(c) {
     if (!state.org) return;
+    if (missing[c] && Date.now() - missing[c] < 18e5) return;
     var rows;
     if (c === 'approvals') {
       var q = await Promise.all([sb.from(TABLE[c]).select('*').eq('org_id', state.org).or(OPEN_AP), sb.from(TABLE[c]).select(LIGHT_AP).eq('org_id', state.org).in('status', ['sent', 'killed']).or('kind.is.null,kind.neq.template')]);
@@ -50,8 +52,8 @@ var J8 = (function () {
       var qq = sb.from(TABLE[c]).select(c === 'todo' ? TODO_COLS : '*').eq('org_id', state.org);
       if (c === 'day') qq = qq.gte('day', new Date(Date.now() - 2 * 864e5).toISOString().slice(0, 10)); /* 11.3: only the last days of the plan */
       var r = await qq;
-      if (r.error) { if (c === 'tasks' || c === 'later' || c === 'calendar' || c === 'memory' || c === 'day') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks / later: a backend without the table still works */
-      rows = r.data || [];
+      if (r.error) { if (c === 'day' || c === 'calendar' || c === 'memory') missing[c] = Date.now(); if (c === 'tasks' || c === 'later' || c === 'calendar' || c === 'memory' || c === 'day') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks / later: a backend without the table still works */
+      rows = r.data || []; delete missing[c];
     }
     var o = {}, v = {};
     rows.forEach(function (row) { var k = row.id || row.day; o[k] = toDoc(row); v[k] = row.version; }); /* j8_day is keyed by day */
