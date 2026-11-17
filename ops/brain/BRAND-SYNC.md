@@ -58,7 +58,7 @@ Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · �
 | Brand file | `assets/brand-v3/j8nix/BRAND.md`, `palette.json` | ✅ v5, 15 Nov |
 | OG image | `assets/og/og-j8nix.jpg` (midnight lockup, v5; used by no page yet) | ✅ v5, 15 Nov |
 | Timeline dashboard | https://3shamrocks.com/ops/ | 🔍 J8NIX naming/badge (uses ops tokens, not the J8NIX palette) |
-| Product badges + colours inside J8NIX (PCOL / PBADGE) | `j8/brand/j8nix.png` (white 8 on Royal, v5), `j8/app.js` PCOL `p-j8nix` `['#2A44C6','#2AB9FF']` | ✅ J8NIX v5, 15 Nov. ⚠️ others unchanged: `p-fairent` still `['#6550FF','#53D805']` (FaiRent v5 is Ledger Ink `#1A1633` + Highlighter `#FFE53D` + Red Pen `#FF4A2B`); `p-chore` `['#6A21C4','#F59E0B']` vs brand v4 `#5B23C8` / `#F5B92E`; no FaiRent badge |
+| Product badges + colours inside J8NIX (PCOL / PBADGE) | `j8/brand/j8nix.png` (white 8 on Royal, v5), `j8/app.js` PCOL `p-j8nix` `['#2A44C6','#2AB9FF']` | ✅ J8NIX v5, 15 Nov. ✅ 17 Nov (5a6c7c8, cache 11.1.2): `p-fairent` `['#1A1633','#FFE53D']` (FaiRent v5), `p-chore` `['#5B23C8','#F5B92E']` (Chore Royale v4). ⚠️ no FaiRent badge |
 
 ## 3 · SH✡MER (+ SH✡MER Nature)
 - **Owner seat:** CPO / CTO (SH✡MER pod); site and pages CDO · **Last synced:** 14 Nov 2026
@@ -134,7 +134,7 @@ Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · �
 | Playable demo (linked from the case page) | https://3shamrocks.com/lab/chore-wars/ (`lab/chore-wars/`; URL kept so links don't break) | ✅ 14 Nov: manifest name "Chore Royale", real PNG icons from `app-icon.png` (192/512/maskable/apple-touch), PNG page icon, in-app logos and share title from Chore Wars to Royale v4, `brand.html` redirects to the case page. ⚠️ old Chore Wars SVGs remain in `lab/chore-wars/brand/` (now unused) |
 | App (staging) | Mac `3S Projects/Chore-Wars/` (`data-brand="choreroyale"`) | — |
 | Logo proposals page | `work/chore-royale-logo-proposals.html` (internal) | — |
-| J8NIX badge / PCOL | `j8/brand/chore.png`; `p-chore` `['#6A21C4','#F59E0B']` | ⚠️ PCOL on the old v1.1 violet; use `#5B23C8` / `#F5B92E` in the next J8NIX release |
+| J8NIX badge / PCOL | `j8/brand/chore.png`; `p-chore` `['#5B23C8','#F5B92E']` | ✅ 17 Nov (5a6c7c8) |
 | Design-system file | `/mnt/user-data/outputs/ds/chore-royale.md` | ⚠️ update to brand v4 |
 
 ## 7 · FaiRent
@@ -152,7 +152,7 @@ Status marks: ✅ matches (checked, date) · ⚠️ mismatch (see the note) · �
 | Favicon + brand-tile icons on case page | `work/fairent.html` | ✅ 14 Nov: PNG (`favicon-32.png`, `favicon-180.png`, `app-icon.png`, `app-icon-dark.png`) instead of SVG |
 | OG image | `assets/og/og-fairent-v5.jpg` | ✅ |
 | App | separate `fairent` repo (`/fairent/`) | ⚠️ said הוגן in og:title and text on 3 Nov; not reachable from this repo. Check before FaiRent is shown again |
-| J8NIX PCOL | `p-fairent` `['#6550FF','#53D805']` | ⚠️ v4 colours; v5 = `#1A1633` / `#FFE53D` |
+| J8NIX PCOL | `p-fairent` `['#1A1633','#FFE53D']` | ✅ v5, 17 Nov (5a6c7c8) |
 | Design-system file | `/mnt/user-data/outputs/ds/fairent.md` | ⚠️ outdated, contains הוגן |
 | Social / reels | none. Never in reels or media accounts (Dave 14 Nov) | ✅ |
 
