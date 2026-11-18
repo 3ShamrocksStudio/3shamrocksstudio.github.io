@@ -20,6 +20,8 @@ var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
 var MQ=window.matchMedia?window.matchMedia('(max-width:999px)'):{matches:true};
 function $(id){return document.getElementById(id);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+/* 11.3.3 security: a link from data may only be http(s), mailto, tel or a relative path - never javascript:/data: */
+function hesc(u){var s=String(u==null?'':u).replace(/[\u0000-\u0020\u007f]/g,'');var m=/^([a-z][a-z0-9+.\-]*):/i.exec(s);if(m&&!/^(https?|mailto|tel)$/i.test(m[1]))return '#';return esc(u);}
 function ic(id,cls){return '<svg class="ico'+(cls?' '+cls:'')+'" aria-hidden="true"><use href="#i-'+id+'"/></svg>';}
 function isNum(x){return typeof x==='number'&&isFinite(x);}
 function usd(n){if(!isNum(n))return '—';if(Math.abs(n)>=1e6)return '$'+String(+(n/1e6).toFixed(2))+'M';if(Math.abs(n)>=1e4)return '$'+String(+(n/1e3).toFixed(1))+'k';return '$'+Math.round(n).toLocaleString('en-US');}
@@ -105,7 +107,7 @@ function moves(){return projList().map(function(p){return {p:p,y:youReal(p)};}).
 function headline(y){var m=String(y).match(/^(.*→[^:]*):\s*(.+)$/);if(!m)return y;var t=m[2];return t.charAt(0).toUpperCase()+t.slice(1);}
 function stageName(s){return isNum(s)&&s>=1&&s<=6?J8.projects.STAGES[s-1]:'';}
 function linkBtn(u,t,cls){if(!u)return '';if(u.charAt(0)==='#'){var j=u.slice(1);return '<button class="'+(cls||'go')+'" data-jump="'+esc(j)+'">'+esc(t||'Open')+'</button>';}
- return '<a class="'+(cls||'go')+'" href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(t||'Open')+(cls&&cls!=='go'?'':ic('link'))+'</a>';}
+ return '<a class="'+(cls||'go')+'" href="'+hesc(u)+'" target="_blank" rel="noopener">'+esc(t||'Open')+(cls&&cls!=='go'?'':ic('link'))+'</a>';}
 
 
 /* ===== derived data: one source for Chat, Next, List and Stats ===== */
@@ -377,7 +379,7 @@ function lastMove(p){var t=pd(p.updated);if(isNaN(t))t=-Infinity;J8.runs.list().
  J8.inbox.list().forEach(function(x){if(x.p===p.id){var e=pd(x.updated_at);if(e>t)t=e;}});return t;}
 function weekCounts(a,b){var runs=0,sent=0;J8.runs.list().forEach(function(r){var e=pd(r.ended);if(e>=a&&e<b&&r.status==='ok')runs++;});J8.approvals.list().forEach(function(x){var e=pd(x.sent_at);if(x.status==='sent'&&e>=a&&e<b)sent++;});return {runs:runs,sent:sent,dave:flowWin(a,b).n};}
 function noUrl(s){return String(s==null?'':s).replace(/\s*(?:[—–-]\s*)?(?:check:?\s*)?(?:https?:\/\/|www\.)\S*[^\s.,;:)]/gi,'').replace(/\s{2,}/g,' ').replace(/[\s:—–-]+$/,'').trim();}
-function linkTxt(s){var out='',i=0,re=/(?:https?:\/\/)\S+/gi,m;s=String(s==null?'':s);while((m=re.exec(s))){var u=m[0].replace(/[.,;:)]+$/,'');out+=esc(s.slice(i,m.index))+'<a href="'+esc(u)+'" target="_blank" rel="noopener">open link</a>';i=m.index+u.length;}return out+esc(s.slice(i));}
+function linkTxt(s){var out='',i=0,re=/(?:https?:\/\/)\S+/gi,m;s=String(s==null?'':s);while((m=re.exec(s))){var u=m[0].replace(/[.,;:)]+$/,'');out+=esc(s.slice(i,m.index))+'<a href="'+hesc(u)+'" target="_blank" rel="noopener">open link</a>';i=m.index+u.length;}return out+esc(s.slice(i));}
 function armKey(s){return String(s||'').toLowerCase().replace(/^3s\s+/,'').replace(/\s*\([^)]*\)\s*/g,' ').replace(/\s+/g,' ').trim();}
 function theme(){var t=ls('j8-theme');return t==='dark'||t==='auto'?t:'light';}
 function setTheme(t){ls('j8-theme',t);document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#060833':'#FFFFFF';renderTheme();if(typeof renderAll==='function')renderAll();}
@@ -725,7 +727,7 @@ function dwName(k){return k==='email_from_ok'?(LANG==='he'?'שליחת מייל'
 function abar(i){var k=esc(i.key),dw=dwOf(i.task);
  if(UI.doing[i.key])return '<div class="abar two" role="group" aria-label="'+esc(t('actions'))+'">'+(dw?'<p class="held">'+ic('lock')+'<span>'+th('afterSwitch',{s:dwName(dw)})+'</span></p>':'<button class="do" data-a="done" data-k="'+k+'">'+ic('check')+'<span>'+t('markDone')+'</span></button>')+'<button data-a="notyet" data-k="'+k+'">'+ic('back','flip')+'<span>'+t('notYet')+'</span></button></div>';
  var g=doTarget(i),lab=g.done?t('markDone'):t('do')+': '+esc(g.label),inner=ic(g.done?'check':g.icon,g.done?'':'flip')+'<span dir="auto">'+lab+'</span>';
- var prim=g.href?'<a class="do" href="'+esc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'">'+inner+'</a>':'<button class="do" data-a="'+(g.done?'done':'do')+'" data-k="'+k+'">'+inner+'</button>';
+ var prim=g.href?'<a class="do" href="'+hesc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'">'+inner+'</a>':'<button class="do" data-a="'+(g.done?'done':'do')+'" data-k="'+k+'">'+inner+'</button>';
  return '<div class="abar" role="group" aria-label="'+esc(t('actions'))+'">'+prim+'<button class="cm" data-a="comment" data-k="'+k+'">'+ic('comment')+'<span>'+t('comment')+'</span></button><button data-a="later" data-k="'+k+'">'+ic('later')+'<span>'+t('later')+'</span></button><button data-a="no" data-k="'+k+'">'+ic('no')+'<span>'+t('notNeeded')+'</span></button></div>';}
 function urgChip(i){if(i.wo&&i.wo.length)return chip('',"lock",t('wTask'));if(i.sev==='r')return chip('now','now',t('wNow'));if(i.sev==='o'||i.sev==null)return chip('you','today',t('wToday'));return chip('','cal',t('wWeek'));}
 function minsChip(i){return isNum(i.mins)?chip('plain','time',t(i.est?'minEst':'min',{n:i.mins})):'';}
@@ -814,7 +816,7 @@ function vProj(){var p=pobj(UI.proj);if(!p)return vStudio();var u=unitOf(p),s=st
  var D=tasksAll().filter(function(x){return x.project_id===p.id&&x.status==='done';}).sort(function(a,b){return String(b.done_at||'').localeCompare(String(a.done_at||''));});
  if(D.length)h+='<details class="grp done" data-k="pd-'+esc(p.id)+'"'+(UI.open['pd-'+p.id]?' open':'')+'><summary>'+ic('check')+'<span>'+t('doneHere2')+'</span><span class="n">'+D.length+'</span>'+ic('down','chev')+'</summary><div class="list">'+D.map(function(x){
   return '<div class="drow"><button class="dlink" data-a="thread-task" data-id="'+esc(x.id)+'"><b dir="auto" class="strike">'+esc(x.title)+'</b><span class="sub">'+t('doneW')+(x.done_at?', '+esc(fdate(x.done_at)):'')+(x.unlocked_on_done?'. '+(LANG==='he'?'שחרר ':'Freed ')+x.unlocked_on_done:'')+'</span></button>'+(x.owner==='dave'?'<button class="undo" data-a="untick" data-id="'+esc(x.id)+'">'+ic('undo')+'<span>'+t('undo')+'</span></button>':'')+'</div>';}).join('')+'</div></details>';
- var lk=(p.link?'<a class="btn go" href="'+esc(p.link)+'" target="_blank" rel="noopener">'+ic('link')+'<span dir="auto">'+esc(p.link_text||(LANG==='he'?'לפתוח את הפרויקט':'Open the project'))+'</span></a>':'');
+ var lk=(p.link?'<a class="btn go" href="'+hesc(p.link)+'" target="_blank" rel="noopener">'+ic('link')+'<span dir="auto">'+esc(p.link_text||(LANG==='he'?'לפתוח את הפרויקט':'Open the project'))+'</span></a>':'');
  if(lk)h+='<div class="links">'+lk+'</div>';
  var pm1=J8.inbox.forProject(p.id).filter(function(x){return !x.task_id&&!x.approval_id;})[0],last=pm1?lastTeamLine(pm1):null;
  h+='<h2 class="sec" id="pcH">'+th('commentOn',{x:p.name})+'</h2><p class="lead">'+th('commentLead',{t:deptName(u)})+'</p>'
@@ -839,7 +841,7 @@ function vDraft(){var L=UI.dids||[],cur=L.filter(isPend)[0],a=cur?Object.assign(
  h+='<dl class="dmeta"><div><dt>'+t('to')+'</dt><dd dir="auto">'+esc(a.to||'—')+'</dd></div>'+(a.channel?'<div><dt>'+t('channel')+'</dt><dd dir="auto">'+esc(a.channel)+'</dd></div>':'')+(p?'<div><dt>'+t('project')+'</dt><dd dir="auto">'+esc(p.name)+'</dd></div>':'')+'</dl>';
  if(a.warn)h+='<p class="note"><b>'+t('teamNote')+':</b> <span dir="auto">'+esc(a.warn)+'</span></p>';
  if(UI.editing)return h+'<form class="edit" data-f="edit"><label class="sr" for="ed-'+esc(a.id)+'">'+t('edit')+'</label><textarea id="ed-'+esc(a.id)+'" dir="auto">'+esc(txt)+'</textarea><div class="abar two"><button class="do" type="submit">'+ic('check')+'<span>'+t('save')+'</span></button><button type="button" data-a="edit-cancel">'+ic('back','flip')+'<span>'+t('cancel')+'</span></button></div></form>';
- h+='<article class="letter" dir="auto">'+(a.subject?'<h3>'+esc(a.subject)+'</h3>':'')+esc(txt)+'</article>'+(a.link?'<p class="mt"><a class="btn go" href="'+esc(a.link)+'" target="_blank" rel="noopener">'+ic('link')+'<span dir="auto">'+esc(a.link_text||t('openLink'))+'</span></a></p>':'');
+ h+='<article class="letter" dir="auto">'+(a.subject?'<h3>'+esc(a.subject)+'</h3>':'')+esc(txt)+'</article>'+(a.link?'<p class="mt"><a class="btn go" href="'+hesc(a.link)+'" target="_blank" rel="noopener">'+ic('link')+'<span dir="auto">'+esc(a.link_text||t('openLink'))+'</span></a></p>':'');
  var x=J8.inbox.forApproval(a.id)[0],lt=x?lastTeamLine(x):null;if(lt)h+='<button class="lastline" data-a="thread-ap" data-id="'+esc(a.id)+'">'+sevChip(lt.v)+'<span dir="auto">'+esc(lt.x)+'</span></button>';
  h+='<div class="sticky"><div class="abar" role="group" aria-label="'+esc(t('emailActions'))+'"><button class="do" data-a="dsend" data-id="'+esc(a.id)+'">'+ic('send','flip')+'<span>'+t('send')+'</span></button><button data-a="dedit">'+ic('edit')+'<span>'+t('edit')+'</span></button><button class="cm" data-a="thread-ap" data-id="'+esc(a.id)+'">'+ic('comment')+'<span>'+t('comment')+'</span></button><button class="kill" data-a="dkill" data-id="'+esc(a.id)+'">'+ic('kill')+'<span>'+t('kill')+'</span></button></div></div>';
  return h;}
@@ -923,7 +925,7 @@ function vTalk(){if(!connected)return brief({title:t('talk'),what:t('tWhat'),nee
  h+=brief({title:Q.length>1?th('tTitle',{n:Q.length}):Q.length?t('tTitle1'):t('tTitle0'),what:t('tWhat'),need:Q.length?t('tNeed',{n:k1(Q.length)}):t('tNeed0'),gain:t('tGain')});
  if(q){var x=q.c,u=firstUrl(x.reply),tm=pDept(x.p);
   h+='<section class="hero talkq" aria-labelledby="qH"><span class="ftag ppl">'+ic('team')+th('asks',{t:x.p==='p-general'?t('team'):tm})+'</span><h3 id="qH" dir="auto">'+esc(q.title)+'</h3><p class="sub" dir="auto">'+esc(pname(x.p))+(x.at?', '+esc(tm1(x.at)):'')+'</p>'
-   +(askLine(x)!==q.title?'<p dir="auto">'+esc(askLine(x).replace(/https?:\/\/\S+/g,'').trim())+'</p>':'')+(u?'<p class="mt"><a class="btn go" href="'+esc(u)+'" target="_blank" rel="noopener">'+ic('link')+'<span>'+t('openLink')+'</span></a></p>':'')
+   +(askLine(x)!==q.title?'<p dir="auto">'+esc(askLine(x).replace(/https?:\/\/\S+/g,'').trim())+'</p>':'')+(u?'<p class="mt"><a class="btn go" href="'+hesc(u)+'" target="_blank" rel="noopener">'+ic('link')+'<span>'+t('openLink')+'</span></a></p>':'')
    +'<form class="cbox ans-hero" data-ans="'+esc(x.p)+'" data-ask="'+esc(q.key)+'"><label class="sr" for="aq">'+t('answerPh')+'</label><textarea id="aq" rows="2" dir="auto" placeholder="'+esc(t('answerPh'))+'"></textarea><button class="btn act" type="submit">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form></section>';
   if(Q.length>1)h+='<h2 class="sec">'+t('moreQ')+' <span class="n">'+(Q.length-1)+'</span></h2><div class="list">'+Q.filter(function(i){return i!==q;}).map(function(i){return '<div class="row"><button class="rbtn" data-a="ask" data-k="'+esc(i.key)+'">'+tile(i.c.p)+'<span class="rt"><b dir="auto">'+esc(i.title)+'</b><span class="sub" dir="auto">'+esc(pname(i.c.p))+'</span></span>'+ic('fwd','chev flip')+'</button></div>';}).join('')+'</div>';}
  var A=J8.inbox.list().filter(function(x){return (x.task_id||x.approval_id||(x.p&&x.p!=='p-general'))&&lastTeamLine(x);}).slice(0,8);
@@ -1499,7 +1501,7 @@ function lint(root){if(!root)return;var tw=document.createTreeWalker(root,NodeFi
  L.forEach(function(n){var v=n.nodeValue,w=lintTxt(v);if(w!==v)n.nodeValue=w;});}
 /* ---------- Now ---------- */
 function qRow(i,ix){var n=nextOf(i),pid=rowPid(i),p=pobj(pid),o=UI.open[i.key],top=ix<3,g=doTarget(i),k=esc(i.key);
- var prim=g.href?'<a class="qdo" href="'+esc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'">'+t('do')+'</a>':'<button class="qdo" data-a="'+(g.done?'done':'do')+'" data-k="'+k+'">'+(g.done?t('markDone'):t('do'))+'</button>';
+ var prim=g.href?'<a class="qdo" href="'+hesc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'">'+t('do')+'</a>':'<button class="qdo" data-a="'+(g.done?'done':'do')+'" data-k="'+k+'">'+(g.done?t('markDone'):t('do'))+'</button>';
  if(UI.doing[i.key])prim='<button class="qdo" data-a="done" data-k="'+k+'">'+t('markDone')+'</button>';
  var fr=top&&i.ul.length?'<p class="frees" dir="auto">'+esc(t('xFrees',{x:freesTxt(i)}))+'</p>':'';
  return '<li class="qr'+(top?' t3':'')+(o?' open':'')+'" id="r-'+k+'"><div class="qm">'+(top?'<span class="ix"><bdi>'+(ix+1)+'</bdi></span>':'')+'<div class="qt"><b dir="auto">'+esc(cap1(n.what))+'</b>'+fr+'</div>'
@@ -1552,7 +1554,7 @@ function iDetail(o){if(!o)return '<p class="lead pick">'+esc(t('xPick'))+'</p>';
  var i=o.i;if(i.batch||i.ap){var bid=i.batch?i.batch.id:'ap:'+i.ap.id,ids=i.batch?i.batch.items.map(function(a){return a.id;}):[i.ap.id];
   if(UI.batch!==bid||!(UI.dids||[]).length){UI.batch=bid;UI.dids=ids;UI.editing=false;}UI.draftFrom='inbox';return draftCheck()+vDraft10().replace(/id="pageH"/g,'id="dH"');}
  if(i.c){var c=i.c,u=firstUrl(c.reply);return '<h3 class="h3" dir="auto">'+esc(i.title)+'</h3><p class="sub" dir="auto">'+esc(t('xTeamAsks',{t:pDept(c.p)}))+' · '+esc(pname(c.p))+(c.at?' · '+esc(tm1(c.at)):'')+'</p>'+(askLine(c)!==i.title?'<p dir="auto">'+esc(askLine(c).replace(/https?:\/\/\S+/g,'').trim())+'</p>':'')
-  +(u?'<p class="mt"><a class="btn go" href="'+esc(u)+'" target="_blank" rel="noopener">'+ic('link')+'<span>'+t('openLink')+'</span></a></p>':'')
+  +(u?'<p class="mt"><a class="btn go" href="'+hesc(u)+'" target="_blank" rel="noopener">'+ic('link')+'<span>'+t('openLink')+'</span></a></p>':'')
   +'<form class="cbox" data-ans="'+esc(c.p)+'" data-ask="'+esc(i.key)+'"><label class="sr" for="aq">'+t('answerPh')+'</label><textarea id="aq" rows="2" dir="auto" placeholder="'+esc(t('answerPh'))+'"></textarea><button class="btn pri" type="submit">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form>';}
  return '<h3 class="h3" dir="auto">'+esc(cap1(nextOf(i).what))+'</h3>'+itemBody(i);}
 function draftCheck(){var L=UI.dids||[],cur=L.filter(isPend)[0],a=cur?AP[cur]:null;if(!a)return '';var txt=J8.approvals.textOf(Object.assign({id:cur},a))||'',w=txt.trim()?txt.trim().split(/\s+/).length:0,dw=new Date().getDay(),q=dw===5||dw===6;
@@ -1614,7 +1616,7 @@ function vProj(){var p=pobj(UI.proj);if(!p){UI.v='projects';return vProjects();}
    return '<div class="drow"><button class="dlink" data-a="thread-task" data-id="'+esc(x.id)+'"><b dir="auto" class="strike">'+esc(x.title)+'</b><span class="sub">'+t('doneW')+(x.done_at?', '+esc(fdate(x.done_at)):'')+'</span></button>'+(x.owner==='dave'?'<button class="undo" data-a="untick" data-id="'+esc(x.id)+'">'+ic('undo')+'<span>'+t('undo')+'</span></button>':'')+'</div>';}).join('')+'</div></details>';
   var pm1=J8.inbox.forProject(p.id).filter(function(x){return !x.task_id&&!x.approval_id;})[0],last=pm1?lastTeamLine(pm1):null;if(!hold.length&&!D.length&&!last)h+='<p class="lead">'+esc(t('xNoAct'))+'</p>';
   if(last)h+='<button class="lastline" data-a="thread-proj" data-id="'+esc(p.id)+'">'+sevChip(last.v)+'<span dir="auto">'+esc(last.x)+'</span></button>';
-  if(p.link)h+='<div class="links"><a class="btn go" href="'+esc(p.link)+'" target="_blank" rel="noopener">'+ic('link')+'<span dir="auto">'+esc(p.link_text||(LANG==='he'?'לפתוח את הפרויקט':'Open the project'))+'</span></a></div>';
+  if(p.link)h+='<div class="links"><a class="btn go" href="'+hesc(p.link)+'" target="_blank" rel="noopener">'+ic('link')+'<span dir="auto">'+esc(p.link_text||(LANG==='he'?'לפתוח את הפרויקט':'Open the project'))+'</span></a></div>';
   h+='<div class="pinc"><form class="cbox" data-ans="'+esc(p.id)+'"><label class="sr" for="pc-'+esc(p.id)+'">'+t('yourComment')+'</label><textarea id="pc-'+esc(p.id)+'" rows="1" dir="auto" placeholder="'+esc(t('writeC'))+'"></textarea><button class="btn pri" type="submit">'+ic('send','flip')+'<span>'+t('send')+'</span></button></form></div>';}
  return h;}
 /* ---------- Calendar: a mini week, a "No date" bucket, a 14-day agenda ---------- */

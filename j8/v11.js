@@ -61,7 +61,7 @@ function ring(sz,sw,pct,pace,col){var r=(sz-sw)/2,C=2*Math.PI*r,c=sz/2,a=Math.ma
   return h+'</svg>';}
 function iconOf(i){var u=String((i.task&&(i.task.link||i.task.action))||'')+' '+String((i.p&&i.p.you)||'');if(i.batch||i.ap)return 'inbox';if(/linkedin/i.test(u))return 'linkedin';if(/instagram/i.test(u))return 'insta';if(/mail|gmail/i.test(u))return 'mail';return 'foot';}
 function doBtn(i,cls){var g=doTarget(i),k=esc(i.key),lab=tt('doIt');if(UI.doing[i.key]||g.done)return '<button class="btn11 pri '+(cls||'')+'" data-a="done" data-k="'+k+'">'+I('check')+'<span>'+esc(t('markDone'))+'</span></button>';
-  return g.href?'<a class="btn11 pri '+(cls||'')+'" href="'+esc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'"><span>'+lab+'</span>'+I('do','flip')+'</a>':'<button class="btn11 pri '+(cls||'')+'" data-a="do" data-k="'+k+'"><span>'+lab+'</span>'+I('do','flip')+'</button>';}
+  return g.href?'<a class="btn11 pri '+(cls||'')+'" href="'+hesc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'"><span>'+lab+'</span>'+I('do','flip')+'</a>':'<button class="btn11 pri '+(cls||'')+'" data-a="do" data-k="'+k+'"><span>'+lab+'</span>'+I('do','flip')+'</button>';}
 function minsChip(i){return isNum(i.mins)?'<span class="ch11">'+I('time')+'<bdi>'+esc(tt('min',{n:i.mins}))+'</bdi></span>':'';}
 function chanIcons(){var c={};apPending().forEach(function(a){var s=String(a.channel||'')+' '+String(a.kind||'');c[/linkedin/i.test(s)?'linkedin':/instagram|reel/i.test(s)?'insta':/mail/i.test(s)?'mail':'users']=1;});return Object.keys(c).slice(0,3);}
 function setsOf(){var by={};apPending().forEach(function(a){var s=String(a.channel||'')+' '+String(a.kind||''),k=a.kind==='template'?'shield':/instagram|reel/i.test(s)?'insta':a.kind==='post'||/linkedin/i.test(s)&&a.kind==='post'?'linkedin':'users';by[k]=(by[k]||0)+1;});return by;}
@@ -133,7 +133,7 @@ function vSteps(){var N=acts(),i=N[0],h='<header class="ph"><div><h2 id="pageH" 
    +'<div class="nrow"><span class="well11 r big royal">'+I(iconOf(i))+'</span><b class="ht" dir="auto">'+esc(cap1(n.what))+'</b></div>'
    +(how.length>1?'<ol class="how11">'+how.map(function(x,j){return '<li><b>'+(j+1)+'</b><span dir="auto">'+esc(x)+'</span></li>';}).join('')+'</ol>':how.length?'<p class="sub11" dir="auto">'+esc(how[0])+'</p>':'')
    +whyLine(i)
-   +'<div class="nacts">'+(g.href?'<a class="btn11 pri grow" href="'+esc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'">'+I('ext')+'<span>'+esc(tt('open'))+'</span></a>':doBtn(i,'grow'))
+   +'<div class="nacts">'+(g.href?'<a class="btn11 pri grow" href="'+hesc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'">'+I('ext')+'<span>'+esc(tt('open'))+'</span></a>':doBtn(i,'grow'))
    +'<button class="btn11 ghost" data-a="done" data-k="'+k+'">'+I('check','ok')+'<span>'+esc(tt('done'))+'</span></button><button class="btn11 icon" data-a="later" data-k="'+k+'" aria-label="'+esc(tt('later'))+'">'+I('later')+'</button></div></section>';
   var R=N.slice(1);
   if(R.length)h+='<div class="then11"><span>'+esc(tt('then'))+'</span><button class="lnk" data-a="x-plan">'+I('plan')+'<span>'+esc(tt('planDay'))+'</span></button><button class="lnk" data-a="nav" data-id="calendar">'+I('cal')+'<span>'+esc(tt('week'))+'</span></button></div>'+capQ(R,isDesk()?8:5,'stAll',1);

@@ -60,7 +60,7 @@ function ring(sz,sw,pct,pace,col){var r=(sz-sw)/2,C=2*Math.PI*r,c=sz/2,a=Math.ma
   return h+'</svg>';}
 function iconOf(i){var u=String((i.task&&(i.task.link||i.task.action))||'')+' '+String((i.p&&i.p.you)||'');if(i.batch||i.ap)return 'inbox';if(/linkedin/i.test(u))return 'linkedin';if(/instagram/i.test(u))return 'insta';if(/mail|gmail/i.test(u))return 'mail';return 'foot';}
 function doBtn(i,cls){var g=doTarget(i),k=esc(i.key),lab=tt('doIt');if(UI.doing[i.key]||g.done)return '<button class="btn11 pri '+(cls||'')+'" data-a="done" data-k="'+k+'">'+I('check')+'<span>'+esc(t('markDone'))+'</span></button>';
-  return g.href?'<a class="btn11 pri '+(cls||'')+'" href="'+esc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'"><span>'+lab+'</span>'+I('do','flip')+'</a>':'<button class="btn11 pri '+(cls||'')+'" data-a="do" data-k="'+k+'"><span>'+lab+'</span>'+I('do','flip')+'</button>';}
+  return g.href?'<a class="btn11 pri '+(cls||'')+'" href="'+hesc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'"><span>'+lab+'</span>'+I('do','flip')+'</a>':'<button class="btn11 pri '+(cls||'')+'" data-a="do" data-k="'+k+'"><span>'+lab+'</span>'+I('do','flip')+'</button>';}
 function minsChip(i){return isNum(i.mins)?'<span class="ch11">'+I('time')+'<bdi>'+esc(tt('min',{n:i.mins}))+'</bdi></span>':'';}
 function chanIcons(){var c={};apPending().forEach(function(a){var s=String(a.channel||'')+' '+String(a.kind||'');c[/linkedin/i.test(s)?'linkedin':/instagram|reel/i.test(s)?'insta':/mail/i.test(s)?'mail':'users']=1;});return Object.keys(c).slice(0,3);}
 function setsOf(){var by={};apPending().forEach(function(a){var s=String(a.channel||'')+' '+String(a.kind||''),k=a.kind==='template'?'shield':/instagram|reel/i.test(s)?'insta':a.kind==='post'||/linkedin/i.test(s)&&a.kind==='post'?'linkedin':'users';by[k]=(by[k]||0)+1;});return by;}
@@ -188,7 +188,7 @@ function cbox12(i){var pid=rowPid(i)||'p-general',tk=i.task?i.task.id:'',ap=i.ap
   return '<form class="cb12" data-ans="'+esc(pid)+'"'+(tk?' data-task="'+esc(tk)+'"':'')+(ap?' data-ap="'+esc(ap)+'"':'')+(i.c?' data-ask="'+esc(i.key)+'"':'')+'><label class="sr" for="'+id+'">'+esc(tt('cmtL'))+'</label><textarea id="'+id+'" rows="1" dir="'+TD()+'" placeholder="'+esc(tt('cmtP'))+'"></textarea><button type="submit" class="b12 icon" aria-label="'+esc(tt('send'))+'">'+I('send','flip')+'</button></form>';}
 function bar12(i){var g=doTarget(i),k=esc(i.key),dec=!!(i.batch||i.ap||i.held),lab=dec?tt('review'):tt('doIt'),doing=UI.doing[i.key]||g.done,prim;
   if(doing)prim='<button class="b12 pri" data-a="done" data-k="'+k+'">'+I('check')+'<span>'+esc(tt('done'))+'</span></button>';
-  else if(g.href)prim='<a class="b12 pri" href="'+esc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'"><span>'+esc(lab)+'</span>'+I('ext')+'</a>';
+  else if(g.href)prim='<a class="b12 pri" href="'+hesc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'"><span>'+esc(lab)+'</span>'+I('ext')+'</a>';
   else prim='<button class="b12 pri" data-a="do" data-k="'+k+'"><span>'+esc(lab)+'</span>'+I('do','flip')+'</button>';
   var dn=!doing&&(i.task||(i.p&&i.move))?'<button class="b12" data-a="done" data-k="'+k+'">'+I('check')+'<span>'+esc(tt('done'))+'</span></button>':'';
   return '<div class="bar12'+(dn?'':' three')+'" role="group" aria-label="'+esc(t('actions'))+'">'+prim+dn+'<button class="b12" data-a="later" data-k="'+k+'">'+I('later')+'<span>'+esc(tt('later'))+'</span></button><button class="b12" data-a="no" data-k="'+k+'">'+I('no')+'<span>'+esc(tt('nn'))+'</span></button></div>';}
@@ -1092,7 +1092,7 @@ function dom13(u){try{return new URL(u).hostname.replace(/^www\./,'');}catch(e){
 function lab13(i,g){var lt=String((i.task?i.task.link_text:i.p?i.p.you_link_text:'')||'').trim();if(lt)return lt;var d=g.href?dom13(g.href):'';return d?tt('openD',{d:d}):tt('open');}
 bar12=function(i){var g=doTarget(i),k=esc(i.key),dec=!!(i.batch||i.ap||i.held),doing=!!UI.doing[i.key],dn=!!(i.task||(i.p&&i.move)),prim='';
   if(dec)prim='<button class="b12 pri" data-a="do" data-k="'+k+'"><span>'+esc(tt('review'))+'</span>'+I('do','flip')+'</button>';
-  else if(g.href)prim='<a class="b12'+(doing?'':' pri')+'" href="'+esc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'"><span dir="auto">'+esc(lab13(i,g))+'</span>'+I('ext')+'</a>';
+  else if(g.href)prim='<a class="b12'+(doing?'':' pri')+'" href="'+hesc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'"><span dir="auto">'+esc(lab13(i,g))+'</span>'+I('ext')+'</a>';
   else if(g.jump)prim='<button class="b12'+(doing?'':' pri')+'" data-a="do" data-k="'+k+'"><span dir="auto">'+esc(lab13(i,g))+'</span>'+I('do','flip')+'</button>';
   var d=dn?'<button class="b12'+(doing||!prim?' pri':'')+'" data-a="done" data-k="'+k+'">'+I('check')+'<span>'+esc(tt('done'))+'</span></button>':'',n=(prim?1:0)+(d?1:0)+2;
   return '<div class="bar12'+(n===3?' three':n===2?' two':'')+'" role="group" aria-label="'+esc(t('actions'))+'">'+(doing?d+prim:prim+d)+'<button class="b12" data-a="later" data-k="'+k+'">'+I('later')+'<span>'+esc(tt('later'))+'</span></button><button class="b12" data-a="no" data-k="'+k+'">'+I('no')+'<span>'+esc(tt('nn'))+'</span></button></div>';};
