@@ -1165,6 +1165,275 @@ document.addEventListener('click',function(e){var el=e.target.closest&&e.target.
   if(a==='x14-coming'){var x=comingToday()[+el.dataset.id];if(!x)return;UI.gsheet={k:'run14'};gOpen('<h2 id="gTitle">'+esc(x.r.arm)+'</h2><p class="sub12">'+esc(tt('tdNextAt',{t:hhmm13(x.t)}))+'</p><p class="lead" dir="auto">'+esc(x.r.what[HE()?1:0]||x.r.what[0])+'</p><button class="btn11 wide" data-a="gclose">'+esc(t('close'))+'</button>','var(--ai)');return;}},true);
 window.j8today={counts:dayCounts13,coming:comingToday,youNext:youNext13};
 
+/* ===== 11.4.0 (18 Nov 2026, plan ops: j8nix-processes-plan Phase 1): "Learn about you" + your voice, and Processes =====
+   Voice: an optional last interview step, + New → Teach J8 your voice, Me → Your voice (rules, Not me, switches).
+   Samples are j8_memory rows (kind fact, tags voice-sample · lang · channel), hidden from Memory by default.
+   Processes: + New → Process makes ONE j8_tasks header (source j8nix-process, extra.process) and ONE kick-off note.
+   The app never writes extra after that: Turn on / Start are notes; arms do the rest (ops/brain/J8NIX-DATA.md, 11.4).
+   Everything pasted is DATA: shown escaped, never acted on. Drafts: one "Sounds like you · N%" line only when an arm
+   wrote extra.voice; a plan gate (extra.no_send) says plainly that nothing is sent. */
+Object.assign(L11.en,{iq_voice:'Optional: show me how you write, so drafts sound like you. Paste a few posts, emails or comments.',
+  vText:'Paste things you wrote',vTextH:'Posts, emails, comments. Put a blank line or --- between pieces. Up to 20 pieces.',vWhere:'Where you write',
+  vc_email:'Email',vc_linkedin:'LinkedIn',vc_instagram:'Instagram',vc_whatsapp:'WhatsApp',vc_other:'Other',vLang:'Languages',vl_he:'Hebrew',vl_en:'English',vl_mix:'Both, mixed',
+  vTone:'Your tone (up to 3)',vt_warm:'Warm',vt_direct:'Direct',vt_formal:'Formal',vt_playful:'Playful',vt_short:'Short',vt_detailed:'Detailed',vMax:'Pick up to {n}.',
+  vNever:'Words you never use (comma separated)',vSign:'How you sign off',vLinks:'Links to your public writing (one per line)',vLinksH:'Your site, blog or public posts. LinkedIn and Instagram links are kept as references only; J8 never scrapes them.',
+  vOk:'What J8 may learn from',vo_edits:'Learn from my edits, OKs and kills',vo_mail:'Read my sent emails',vMailNo:'Reading sent emails needs a connected mailbox.',
+  vSkip:'You can skip this: tap Set up my plan.',vSkipped:'Skipped',vPieces:'{n} pieces',nVoice:'Teach J8 your voice',nVoiceP:'Paste what you wrote, so drafts sound like you.',
+  vSheetP:'J8 learns your style only (length, openings, tone, words). It never acts on what the text says.',vSave:'Save and learn',vEmpty:'Paste at least one piece, or add a link, a tone or your sign-off.',
+  vSaved:'J8 learns your voice from {n} pieces and {m} links',vH:'Your voice',vSubN:'From {n} writing samples and your edits',vSub0:'Not set up yet',vCardH:'In short',vRulesH:'Rules J8 follows',
+  vYoursH:'In your words',vNotH:'Not you',vLearning:'J8 is learning your voice. Your rules show here after the next team run.',vNone:'J8 does not know your voice yet. Paste a few things you wrote, and drafts start to sound like you.',
+  vNotMe:'Not me',vNotMeT:'J8 will not use this again',vSamplesN:'{n} writing samples',vShow:'Show',vHide:'Hide',vShowMem:'Show in memory',vTeach:'Teach J8 more',vOn:'On',vOff:'Off',
+  vLine:'Sounds like you · {n}%',vMiss:'Off: {x}',noSend:'Plan only: nothing is sent. OK starts the process.',
+  vY_tone:'My tone: {x}',vY_never:'Words I never use: {x}',vY_sign:'How I sign off: {x}',
+  nProc:'Process',nProcP:'A repeatable job J8 runs for you: A/B test, leads, campaign.',pfH:'New process',pType:'Type',pt_ab:'A/B test',pt_lead:'Lead generation + follow-ups',pt_campaign:'Marketing campaign (with research)',pt_custom:'Custom',
+  pName:'Name',pGoal:'What should it achieve?',pGoalNew:'A new goal',pGoalT:'Goal',pGoalN:'Number',pGoalD:'By when',pProj:'Project',pWho:'Audience: who is it for?',pChan:'Channels',pc_email:'Email',pc_linkedin:'LinkedIn',pc_instagram:'Instagram',pc_whatsapp:'WhatsApp',pc_web:'Website',pc_other:'Other',
+  pKnow:'What you already know or have',pLinks:'Links (one per line)',pAuto:'J8 may do without asking',pAsk:'Always needs your OK: {x}',pTest:'What to test',pa_msg:'Message',pa_btn:'Web button',pa_subj:'Subject line',
+  pVa:'Variant A (optional: J8 writes it if empty)',pVb:'Variant B (optional)',pMeasure:'Main measure',pm_replies:'Replies',pm_accepts:'Accepts',pm_clicks:'Clicks',pBuyer:'Who is the ideal buyer?',pWeek:'How many a week',pFu:'Follow-ups',pDays:'Days between',
+  pOffer:'Offer',pFrom:'Start',pTo:'End',pBudget:'Budget',pBudgetX:'0. J8 never spends without your OK.',pCreate:'Start the process',pMade:'Process started. J8 does the research first.',pOpen:'Open it',pNeedGoal:'Write the goal and its date.',
+  procsH:'Processes',procsSub:'{n} processes',procsNone:'No processes yet. A process is a repeatable job J8 runs for you: an A/B test, lead generation with follow-ups, a campaign, or your own.',
+  ps_intake:'Intake',ps_research:'Research',ps_plan:'Plan',ps_approve:'Approve',ps_run:'Run',ps_results:'Results',
+  pn_intake:'J8 got it. Research starts in the next team run.',pn_research:'J8 is researching.',pn_plan:'J8 is writing the plan.',pn_approve:'The plan waits for your OK in Drafts.',pn_run:'Running.',pn_results:'Results are in.',pn_suggested:'Suggested by J8',
+  pSugH:'Suggested for you',pRunH:'Running',pDoneH:'Done',pStart:'Start',pNotNow:'Not now',pStarted:'Asked J8 to start it',pResearch:'Research',pSources:'Sources',pSteps:'Plan steps',pAutoH:'Automations',pTurnOn:'Turn on',
+  pAskedOn:'Asked J8 to turn it on. It changes only after the team checks it.',pa_on:'On',pa_ok:'Needs your OK',pa_connect:'Needs a connection',pResults:'Results',pGate:'Plan · OK to start',pWaitOk:'Waits for your OK',pOpenDrafts:'Open in Drafts',
+  pNoYet:'Nothing yet. J8 fills this in as the process runs.',pGateOk:'You said OK',pGateNo:'You killed this plan',pNew:'New process'});
+Object.assign(L11.he,{iq_voice:'לא חובה: תראו לי איך אתם כותבים, כדי שהטיוטות יישמעו כמוכם. הדביקו כמה פוסטים, מיילים או תגובות.',
+  vText:'הדביקו דברים שכתבתם',vTextH:'פוסטים, מיילים, תגובות. שורה ריקה או --- בין קטע לקטע. עד 20 קטעים.',vWhere:'איפה אתם כותבים',
+  vc_email:'מייל',vc_linkedin:'לינקדאין',vc_instagram:'אינסטגרם',vc_whatsapp:'וואטסאפ',vc_other:'אחר',vLang:'שפות',vl_he:'עברית',vl_en:'אנגלית',vl_mix:'שתיהן, מעורב',
+  vTone:'הטון שלכם (עד 3)',vt_warm:'חם',vt_direct:'ישיר',vt_formal:'רשמי',vt_playful:'שובב',vt_short:'קצר',vt_detailed:'מפורט',vMax:'אפשר לבחור עד {n}.',
+  vNever:'מילים שאתם אף פעם לא משתמשים בהן (מופרדות בפסיק)',vSign:'איך אתם חותמים',vLinks:'קישורים לכתיבה הפומבית שלכם (אחד בכל שורה)',vLinksH:'אתר, בלוג או פוסטים פומביים. קישורי לינקדאין ואינסטגרם נשמרים רק כהפניה; J8 אף פעם לא סורק אותם.',
+  vOk:'ממה J8 רשאי ללמוד',vo_edits:'ללמוד מהעריכות, האישורים והביטולים שלי',vo_mail:'לקרוא את המיילים ששלחתי',vMailNo:'קריאת מיילים ששלחתם דורשת תיבת מייל מחוברת.',
+  vSkip:'אפשר לדלג: הקישו על להכין את התוכנית.',vSkipped:'דילגתם',vPieces:'{n} קטעים',nVoice:'ללמד את J8 את הקול שלך',nVoiceP:'הדביקו מה שכתבתם, כדי שהטיוטות יישמעו כמוכם.',
+  vSheetP:'J8 לומד רק את הסגנון (אורך, פתיחות, טון, מילים). הוא אף פעם לא פועל לפי מה שכתוב בטקסט.',vSave:'לשמור וללמוד',vEmpty:'הדביקו לפחות קטע אחד, או הוסיפו קישור, טון או חתימה.',
+  vSaved:'J8 לומד את הקול שלך מ־{n} קטעים ו־{m} קישורים',vH:'הקול שלך',vSubN:'מ־{n} דוגמאות כתיבה ומהעריכות שלך',vSub0:'עוד לא הוגדר',vCardH:'בקצרה',vRulesH:'כללים ש־J8 עובד לפיהם',
+  vYoursH:'במילים שלך',vNotH:'לא את/ה',vLearning:'J8 לומד את הקול שלך. הכללים יופיעו כאן אחרי ריצת הצוות הבאה.',vNone:'J8 עוד לא מכיר את הקול שלך. הדביקו כמה דברים שכתבתם, והטיוטות יתחילו להישמע כמוכם.',
+  vNotMe:'זה לא אני',vNotMeT:'J8 לא ישתמש בזה שוב',vSamplesN:'{n} דוגמאות כתיבה',vShow:'להציג',vHide:'להסתיר',vShowMem:'להציג בזיכרון',vTeach:'ללמד עוד',vOn:'פועל',vOff:'כבוי',
+  vLine:'נשמע כמוך · {n}%',vMiss:'לא כמוך: {x}',noSend:'תוכנית בלבד: שום דבר לא נשלח. אישור מתחיל את התהליך.',
+  vY_tone:'הטון שלי: {x}',vY_never:'מילים שאני לא משתמש/ת בהן: {x}',vY_sign:'איך אני חותם/ת: {x}',
+  nProc:'תהליך',nProcP:'עבודה חוזרת ש־J8 מריץ בשבילך: בדיקת A/B, לידים, קמפיין.',pfH:'תהליך חדש',pType:'סוג',pt_ab:'בדיקת A/B',pt_lead:'יצירת לידים + פולואפים',pt_campaign:'קמפיין שיווקי (עם מחקר)',pt_custom:'מותאם אישית',
+  pName:'שם',pGoal:'מה זה צריך להשיג?',pGoalNew:'יעד חדש',pGoalT:'יעד',pGoalN:'מספר',pGoalD:'עד מתי',pProj:'פרויקט',pWho:'קהל: למי זה מיועד?',pChan:'ערוצים',pc_email:'מייל',pc_linkedin:'לינקדאין',pc_instagram:'אינסטגרם',pc_whatsapp:'וואטסאפ',pc_web:'אתר',pc_other:'אחר',
+  pKnow:'מה כבר ידוע או קיים',pLinks:'קישורים (אחד בכל שורה)',pAuto:'J8 רשאי בלי לשאול',pAsk:'תמיד צריך את האישור שלך: {x}',pTest:'מה בודקים',pa_msg:'הודעה',pa_btn:'כפתור באתר',pa_subj:'שורת נושא',
+  pVa:'גרסה A (לא חובה: J8 יכתוב אם ריק)',pVb:'גרסה B (לא חובה)',pMeasure:'מדד עיקרי',pm_replies:'תשובות',pm_accepts:'אישורי חיבור',pm_clicks:'הקלקות',pBuyer:'מי הקונה המתאים?',pWeek:'כמה בשבוע',pFu:'פולואפים',pDays:'ימים ביניהם',
+  pOffer:'ההצעה',pFrom:'התחלה',pTo:'סיום',pBudget:'תקציב',pBudgetX:'0. J8 אף פעם לא מוציא כסף בלי האישור שלך.',pCreate:'להתחיל את התהליך',pMade:'התהליך התחיל. J8 מתחיל במחקר.',pOpen:'לפתוח',pNeedGoal:'כתבו את היעד ואת התאריך.',
+  procsH:'תהליכים',procsSub:'{n} תהליכים',procsNone:'עוד אין תהליכים. תהליך הוא עבודה חוזרת ש־J8 מריץ בשבילך: בדיקת A/B, לידים עם פולואפים, קמפיין, או משהו משלך.',
+  ps_intake:'קליטה',ps_research:'מחקר',ps_plan:'תוכנית',ps_approve:'אישור',ps_run:'ריצה',ps_results:'תוצאות',
+  pn_intake:'J8 קיבל. המחקר מתחיל בריצת הצוות הבאה.',pn_research:'J8 חוקר.',pn_plan:'J8 כותב את התוכנית.',pn_approve:'התוכנית מחכה לאישור שלך בטיוטות.',pn_run:'רץ.',pn_results:'התוצאות הגיעו.',pn_suggested:'הצעה של J8',
+  pSugH:'הצעות בשבילך',pRunH:'רצים',pDoneH:'הסתיימו',pStart:'להתחיל',pNotNow:'לא עכשיו',pStarted:'ביקשתי מ־J8 להתחיל',pResearch:'מחקר',pSources:'מקורות',pSteps:'שלבי התוכנית',pAutoH:'אוטומציות',pTurnOn:'להפעיל',
+  pAskedOn:'ביקשתי מ־J8 להפעיל. זה משתנה רק אחרי שהצוות בודק.',pa_on:'פועל',pa_ok:'צריך את האישור שלך',pa_connect:'צריך חיבור',pResults:'תוצאות',pGate:'תוכנית · אישור להתחיל',pWaitOk:'מחכה לאישור שלך',pOpenDrafts:'לפתוח בטיוטות',
+  pNoYet:'עוד אין. J8 ימלא את זה תוך כדי.',pGateOk:'אישרת',pGateNo:'ביטלת את התוכנית',pNew:'תהליך חדש'});
+
+/* --- voice: shared pieces --- */
+var VCH15=['email','linkedin','instagram','whatsapp','other'],VLG15=['he','en','mix'],VTN15=['warm','direct','formal','playful','short','detailed'];
+function meId15(){try{return (J8.status().user||{}).id||null;}catch(e){return null;}}
+function hasTag15(m,g){return (m&&m.tags||[]).indexOf(g)>-1;}
+function isSample15(m){return hasTag15(m,'voice-sample');}
+function mailOk15(){try{return !!(J8.control.get()||{}).email_from_ok;}catch(e){return false;}}
+function myMem15(){var me=meId15();return J8.memory?J8.memory.list(true).filter(function(m){return me&&m.member===me;}):[];}
+function voiceRows15(){return myMem15().filter(function(m){return hasTag15(m,'voice');});}
+function mySamples15(){return myMem15().filter(function(m){return isSample15(m)&&!m.archived;});}
+function vDef15(){var pv=prefs0().voice||{};return {text:'',chans:Array.isArray(pv.chans)?pv.chans.filter(function(c){return VCH15.indexOf(c)>-1;}):[],lang:VLG15.indexOf(pv.lang)>-1?pv.lang:'',tone:[],never:'',sign:'',links:'',ok:['edits','mail'].filter(function(k){return k==='edits'?pv.edits!==false:!!pv.mail&&mailOk15();})};}
+/* paste → pieces: a blank line or a --- line separates them; max 20, each cut at 2000 characters */
+function pieces15(s){s=String(s||'').replace(/\r\n?/g,'\n').replace(/^[ \t]*-{3,}[ \t]*$/gm,'\n');return s.split(/\n[ \t]*\n+/).map(function(x){return x.trim();}).filter(Boolean).slice(0,20).map(function(x){return x.slice(0,2000);});}
+function lang15(s,dflt){var he=(String(s).match(/[֐-׿]/g)||[]).length,la=(String(s).match(/[A-Za-z]/g)||[]).length,n=he+la;if(!n)return dflt==='he'||dflt==='en'?dflt:'mix';var r=he/n;return r>0.85?'he':r<0.15?'en':'mix';}
+function links15(s){var o=[];String(s||'').split(/[\s,]+/).forEach(function(u){u=u.trim();if(/^https?:\/\/[^\s<>"'`]+$/i.test(u)&&u.length<=500&&o.indexOf(u)<0)o.push(u);});return o.slice(0,10);}
+function words15(s){return String(s||'').split(/[,،\n]/).map(function(x){return x.trim();}).filter(Boolean).slice(0,30).join(', ').slice(0,600);}
+function vEmpty15(V){return !pieces15(V.text).length&&!links15(V.links).length&&!(V.tone||[]).length&&!words15(V.never)&&!String(V.sign||'').trim();}
+function chips15(g,keys,pfx,cur,multi,o){o=o||{};return '<div class="chq12 vg15" role="group" data-g="'+g+'" data-multi="'+(multi?1:0)+'"'+(o.max?' data-max="'+o.max+'"':'')+(o.lab?' aria-label="'+esc(o.lab)+'"':'')+'>'+keys.map(function(k){var d=o.dis&&o.dis[k],on=(cur||[]).indexOf(k)>-1&&!d;
+  return '<button type="button" class="chp12" data-a="x15-vc" data-id="'+esc(k)+'" aria-pressed="'+on+'"'+(d?' disabled':'')+'><span>'+esc(tt(pfx+k))+'</span></button>';}).join('')+'</div>';}
+function readChips15(box){var o={};[].forEach.call(box.querySelectorAll('.vg15'),function(g){var on=[].filter.call(g.querySelectorAll('[aria-pressed=true]'),function(b){return !b.disabled;}).map(function(b){return b.dataset.id;});o[g.dataset.g]=g.dataset.multi==='1'?on:(on[0]||'');});return o;}
+function voiceFields15(V,mode){var p=mode==='ob'?'ob-v-':'vs-',mo=mailOk15();
+  return '<div class="vf15">'+fl(p+'x',tt('vText'),'<textarea id="'+p+'x" data-ob="voice.text" rows="6" dir="auto" maxlength="44000" aria-describedby="'+p+'xh">'+esc(V.text||'')+'</textarea>')+'<p class="hint15" id="'+p+'xh">'+esc(tt('vTextH'))+'</p>'
+   +'<p class="ql12">'+esc(tt('vWhere'))+'</p>'+chips15('chans',VCH15,'vc_',V.chans,1,{lab:tt('vWhere')})
+   +'<p class="ql12">'+esc(tt('vLang'))+'</p>'+chips15('lang',VLG15,'vl_',[V.lang],0,{lab:tt('vLang')})
+   +'<p class="ql12">'+esc(tt('vTone'))+'</p>'+chips15('tone',VTN15,'vt_',V.tone,1,{max:3,lab:tt('vTone')})
+   +fl(p+'n',tt('vNever'),'<input id="'+p+'n" data-ob="voice.never" dir="auto" maxlength="600" value="'+esc(V.never||'')+'">')
+   +fl(p+'s',tt('vSign'),'<input id="'+p+'s" data-ob="voice.sign" dir="auto" maxlength="140" value="'+esc(V.sign||'')+'">')
+   +fl(p+'l',tt('vLinks'),'<textarea id="'+p+'l" data-ob="voice.links" rows="2" dir="ltr" maxlength="5000" aria-describedby="'+p+'lh">'+esc(V.links||'')+'</textarea>')+'<p class="hint15" id="'+p+'lh">'+esc(tt('vLinksH'))+'</p>'
+   +'<p class="ql12">'+esc(tt('vOk'))+'</p>'+chips15('ok',['edits','mail'],'vo_',V.ok,1,{dis:{mail:!mo},lab:tt('vOk')})+(mo?'':'<p class="hint15">'+esc(tt('vMailNo'))+'</p>')
+   +'<p class="err12 vErr15" role="alert"></p></div>';}
+function readVoice15(box){var q=function(k){var e=box.querySelector('[data-ob="voice.'+k+'"]');return e?String(e.value||''):'';},c=readChips15(box);
+  return {text:q('text'),never:q('never'),sign:q('sign'),links:q('links'),chans:c.chans||[],lang:c.lang||'',tone:(c.tone||[]).slice(0,3),ok:c.ok||[]};}
+/* save: samples, links and your own words as j8_memory rows (member = you), the switches in prefs.voice, then ONE note to J8 */
+function voiceSave15(V){var me=meId15(),P=pieces15(V.text),L=links15(V.links),ch=(V.chans||[]).length===1?V.chans[0]:'any',fail=0,ns=0,nl=0,mine=myMem15();
+  var haveS={},haveL={};mine.forEach(function(m){if(isSample15(m))haveS[m.text]=1;if(hasTag15(m,'voice-source'))haveL[m.text]=1;});
+  var add=[];P.forEach(function(x){if(!haveS[x]){haveS[x]=1;add.push({k:'s',doc:{kind:'fact',text:x,tags:['voice-sample',lang15(x,V.lang),ch],project_id:null,source_message_id:null}});}});
+  L.forEach(function(u){if(!haveL[u])add.push({k:'l',doc:{kind:'fact',text:u,tags:['voice-source','link'],project_id:null,source_message_id:null}});});
+  var own=[],tn=(V.tone||[]).map(function(k){return tt('vt_'+k);}).join(', '),nv=words15(V.never),sg=String(V.sign||'').trim().slice(0,140);
+  if(tn)own.push(['tone',tt('vY_tone',{x:tn})]);if(nv)own.push(['vocabulary-avoid',tt('vY_never',{x:nv})]);if(sg)own.push(['sign-off',tt('vY_sign',{x:sg})]);
+  var w=function(fn){return function(x){return fn(x).catch(function(e){fail++;throw e;});};};
+  return seq(add,w(function(x){return J8.memory.add(x.doc).then(function(){if(x.k==='s')ns++;else nl++;});}))
+   .then(function(){return seq(own,w(function(o){var ex=mine.filter(function(m){return !m.archived&&hasTag15(m,'voice')&&hasTag15(m,'yours')&&hasTag15(m,o[0]);})[0];
+     return ex?J8.memory.edit(ex.id,{text:o[1]}):J8.memory.add({kind:'preference',text:o[1],tags:['voice','yours',o[0]],project_id:null,source_message_id:null});}));})
+   .then(function(){var pv=prefs0().voice||{},ok=V.ok||[];return prefSet({voice:{on:true,edits:ok.indexOf('edits')>-1,mail:ok.indexOf('mail')>-1&&mailOk15(),lang:V.lang||pv.lang||'',langs:V.lang==='mix'?['he','en']:V.lang?[V.lang]:(pv.langs||[]),chans:(V.chans||[]).length?V.chans.slice():(pv.chans||[]),at:new Date().toISOString(),n_samples:mySamples15().length}});})
+   .then(function(){if(!ns&&!nl&&!own.length)return;return J8.inbox.send('p-general','Learn my voice: '+ns+' samples, '+nl+' links.').catch(function(){fail++;});})
+   .then(function(){return {n:ns,m:nl,own:own.length,fail:fail,me:me};});}
+
+/* the interview: one optional last step (after the approval rules); skipping writes nothing */
+var A015=A0;A0=function(){var a=A015();a.voice=vDef15();return a;};
+var qs15=qs;qs=function(){return qs15().concat(['voice']);};
+var fd15=field;field=function(q){return q==='voice'?'<p class="sub11">'+esc(tt('vSkip'))+'</p>'+voiceFields15(OB.A.voice||vDef15(),'ob'):fd15(q);};
+var at15=ansText;ansText=function(q){if(q!=='voice')return at15(q);var V=OB.A.voice||{},n=pieces15(V.text).length;return vEmpty15(V)?tt('vSkipped'):[n?tt('vPieces',{n:n}):'',(V.tone||[]).map(function(k){return tt('vt_'+k);}).join(', ')].filter(Boolean).join(' · ')||tt('vSkipped');};
+var oc15=obCollect;obCollect=function(){oc15();var el=$('ob11'),b=el&&el.querySelector('.vf15');if(b&&OB.A){var c=readChips15(b);OB.A.voice=Object.assign(OB.A.voice||vDef15(),{chans:c.chans||[],lang:c.lang||'',tone:(c.tone||[]).slice(0,3),ok:c.ok||[]});}};
+var pb15=planBuild;planBuild=function(){var V=OB.A&&OB.A.voice;return pb15().then(function(m){if(!V||vEmpty15(V))return m;return voiceSave15(V).then(function(r){m.voice=r;m.fail+=r.fail;return m;},function(){m.fail++;return m;});});};
+
+/* + New → Teach J8 your voice (the same fields as the interview step) */
+function voiceSheet15(){UI.gsheet={k:'voice15'};gOpen('<h2 id="gTitle">'+esc(tt('nVoice'))+'</h2><p class="sub12">'+esc(tt('vSheetP'))+'</p><form id="vf15" class="ed12" novalidate>'+voiceFields15(vDef15(),'s')
+  +'<div class="obnav"><button type="button" class="btn11" data-a="gclose">'+esc(t('close'))+'</button><button type="submit" class="btn11 pri grow">'+I('check')+'<span>'+esc(tt('vSave'))+'</span></button></div></form>','var(--royal)');
+  var x=$('vs-x');if(x)setTimeout(function(){x.focus();},60);}
+document.addEventListener('submit',function(e){var f=e.target;if(!f||f.id!=='vf15')return;e.preventDefault();var V=readVoice15(f),er=f.querySelector('.vErr15'),go=f.querySelector('[type=submit]');
+  if(vEmpty15(V)){er.textContent=tt('vEmpty');var x=$('vs-x');if(x)x.focus();return;}
+  if(!J8.status().connected||navigator.onLine===false){er.textContent=t('notConn');return;}if(go)go.disabled=true;
+  voiceSave15(V).then(function(r){if(r.fail&&!r.n&&!r.m&&!r.own){if(go)go.disabled=false;er.textContent=t('couldNot',{e:'error'});return;}
+    made('voice',tt('vSaved',{n:r.n,m:r.m}),null,'<button class="btn11 pri" data-a="x15-voice">'+I('mic')+'<span>'+esc(tt('vH'))+'</span></button>');},function(x){if(go)go.disabled=false;er.textContent=t('couldNot',{e:x&&(x.message||x.code)||'error'});});},true);
+
+/* Memory hides writing samples by default: one line "N writing samples · Show" */
+var ma15=memAll;memAll=function(){var A=ma15();return UI.memSamples?A:A.filter(function(m){return !isSample15(m);});};
+var vm15=vMem;vMem=function(){var h=vm15();if(!connected)return h;var n=ma15().filter(function(m){return isSample15(m)&&!m.archived;}).length;if(!n)return h;
+  var line='<p class="vsm15">'+I('mic')+'<span>'+esc(tt('vSamplesN',{n:n}))+'</span><button class="lnk" data-a="x15-vsamp" aria-pressed="'+(UI.memSamples?'true':'false')+'">'+esc(UI.memSamples?tt('vHide'):tt('vShow'))+'</button></p>';
+  return h.replace('</header>','</header>'+line);};
+
+/* Me → Your voice */
+function vRule15(m,notme){var id=esc(m.id),sc=(m.tags||[]).filter(function(g){return ['voice','rule','learned','yours','card','not-me'].indexOf(g)<0;});
+  return '<li class="mr13 vr15" data-mid="'+id+'"><p dir="auto">'+esc(m.text)+'</p>'+(sc.length?'<p class="tags13">'+sc.map(function(g){return '<span class="chip12 sm '+tagCls(g)+'"><bdi dir="auto">'+esc(g)+'</bdi></span>';}).join('')+'</p>':'')
+   +'<div class="ma13"><span class="sub12">'+esc(tm1(m.updated_at||m.created_at))+'</span><span class="sp"></span>'+(notme?'':'<button class="b12 sm nm15" data-a="x15-notme" data-id="'+id+'">'+I('no')+'<span>'+esc(tt('vNotMe'))+'</span></button>')
+   +'<button class="ib12" data-a="x13-medit" data-id="'+id+'" aria-label="'+esc(tt('editIt'))+'" title="'+esc(tt('editIt'))+'">'+I('edit')+'</button><button class="ib12 kill" data-a="x13-mforget" data-id="'+id+'" aria-label="'+esc(tt('forget'))+'" title="'+esc(tt('forget'))+'">'+I('kill')+'</button></div></li>';}
+function vVoice15(){var R=voiceRows15().filter(function(m){return !m.archived;}),S=mySamples15(),card=R.filter(function(m){return hasTag15(m,'card');})[0],rules=R.filter(function(m){return hasTag15(m,'rule');}),
+  yours=R.filter(function(m){return hasTag15(m,'yours');}),nm=R.filter(function(m){return hasTag15(m,'not-me');}),pv=prefs0().voice||{},mo=mailOk15();
+  var h=ph(tt('vH'),esc(S.length?tt('vSubN',{n:S.length}):tt('vSub0')),'<div class="phx12"><button class="lnk12" data-a="x15-vteach">'+I('plus')+'<span>'+esc(tt('vTeach'))+'</span></button></div>');
+  if(!connected)return h+skel(3);
+  if(card)h+='<section class="card12 vcard15"><h3>'+g8i()+'<span>'+esc(tt('vCardH'))+'</span></h3>'+String(card.text).split(/\n+/).filter(Boolean).slice(0,5).map(function(l){return '<p dir="auto">'+esc(l)+'</p>';}).join('')+'</section>';
+  if(rules.length)h+='<section class="vs15"><h3 class="sh12">'+esc(tt('vRulesH'))+' <span class="n12"><bdi>'+rules.length+'</bdi></span></h3><ul class="vl15">'+rules.map(function(m){return vRule15(m);}).join('')+'</ul></section>';
+  else h+='<section class="empty12 e13 vemp15">'+g8i()+'<span>'+esc(S.length||yours.length||pv.on?tt('vLearning'):tt('vNone'))+'</span>'+(S.length||pv.on?'':'<button class="b12 pri sm cta13" data-a="x15-vteach">'+I('plus')+'<span>'+esc(tt('nVoice'))+'</span></button>')+'</section>';
+  if(yours.length)h+='<section class="vs15"><h3 class="sh12">'+esc(tt('vYoursH'))+'</h3><ul class="vl15">'+yours.map(function(m){return vRule15(m,true);}).join('')+'</ul></section>';
+  if(nm.length)h+='<section class="vs15"><h3 class="sh12">'+esc(tt('vNotH'))+'</h3><ul class="vl15">'+nm.map(function(m){return vRule15(m,true);}).join('')+'</ul></section>';
+  var sw=function(k,on,dis){return '<button class="sw15" data-a="x15-vsw" data-id="'+k+'" aria-pressed="'+(on&&!dis)+'"'+(dis?' disabled':'')+'><span>'+esc(tt('vo_'+k))+'</span><b>'+esc(on&&!dis?tt('vOn'):tt('vOff'))+'</b></button>';};
+  h+='<section class="vs15"><h3 class="sh12">'+esc(tt('vOk'))+'</h3><div class="sws15">'+sw('edits',pv.edits!==false)+sw('mail',!!pv.mail,!mo)+'</div>'+(mo?'':'<p class="hint15">'+esc(tt('vMailNo'))+'</p>')+'</section>';
+  if(S.length)h+='<p class="vsm15">'+I('mic')+'<span>'+esc(tt('vSamplesN',{n:S.length}))+'</span><button class="lnk" data-a="x15-vsmem">'+esc(tt('vShowMem'))+'</button></p>';
+  return h;}
+
+/* --- Processes --- */
+var PT15=['ab','lead','campaign','custom'],PST15=['intake','research','plan','approve','run','results'],POWN15={ab:'CMO',campaign:'CMO',lead:'CRO',custom:'COO'},PCH15=['email','linkedin','instagram','whatsapp','web','other'];
+function procOf15(t){var p=px(t,'process');return p&&typeof p==='object'&&!Array.isArray(p)?p:null;}
+function procs15(pid){return rawTasks().filter(function(t){return procOf15(t)&&!t.parent_id&&t.status!=='dropped'&&(!pid||t.project_id===pid);}).sort(function(a,b){return String(b.created_at||b.updated_at||'').localeCompare(String(a.created_at||a.updated_at||''));});}
+function pName15(t){var p=procOf15(t)||{};return String(t.title||'').replace(/^Process:\s*/,'')||String((p.intake||{}).name||'');}
+function pStage15(t){var p=procOf15(t)||{},s=String(p.stage||'intake'),i=PST15.indexOf(s)+1,sug=s==='suggested',fail=s==='failed'||!!p.failed,won=t.status==='done'||(s==='results'&&p.results&&/^(A|B|none)$/.test(String(p.results.verdict||'')));
+  return {s:sug?'suggested':i?s:'intake',i:sug?0:i||1,cls:sug?'sug':fail?'fail':won?'won':s==='approve'?'wait':'act',now:sug?String(p.why||'')||tt('pn_suggested'):typeof p.now==='string'&&p.now?p.now:tt('pn_'+(i?s:'intake')),type:PT15.indexOf(p.type)>-1?p.type:'custom'};}
+function pCard15(t){var S=pStage15(t),id=esc(t.id);
+  return '<li class="pc15 st-'+S.cls+'" data-pid="'+id+'"><button class="pcb15" data-a="x15-popen" data-id="'+id+'"><span class="rt12"><b dir="auto">'+esc(pName15(t))+'</b><small dir="auto">'+esc(tt('pt_'+S.type))+' · '+esc(S.now)+'</small></span><span class="ls">'+(S.i?segs6(S.i):'')+'<small>'+esc(S.i?tt('ps_'+S.s):tt('pn_suggested'))+'</small></span></button>'
+   +(S.cls==='sug'?'<div class="ps15"><button class="b12 sm pri" data-a="x15-pstart" data-id="'+id+'">'+I('play')+'<span>'+esc(tt('pStart'))+'</span></button><button class="b12 sm" data-a="x15-pnot" data-id="'+id+'">'+esc(tt('pNotNow'))+'</button></div>':'')+'</li>';}
+function vProcs15(){var P=procs15(),sug=P.filter(function(t){return pStage15(t).cls==='sug';}),dn=P.filter(function(t){return pStage15(t).cls==='won';}),run=P.filter(function(t){return sug.indexOf(t)<0&&dn.indexOf(t)<0;});
+  var h=ph(tt('procsH'),connected&&P.length?esc(tt('procsSub',{n:P.length-sug.length})):'','<div class="phx12"><button class="lnk12" data-a="x15-pnew">'+I('plus')+'<span>'+esc(tt('pNew'))+'</span></button></div>');
+  if(!connected)return h+skel(3);
+  if(!P.length)return h+'<section class="empty12 e13 pemp15">'+I('repeat')+'<span>'+esc(tt('procsNone'))+'</span><button class="b12 pri sm cta13" data-a="x15-pnew">'+I('plus')+'<span>'+esc(tt('pNew'))+'</span></button></section>';
+  var sec=function(k,L){return L.length?'<section class="vs15"><h3 class="sh12">'+esc(tt(k))+' <span class="n12"><bdi>'+L.length+'</bdi></span></h3><ul class="pl15">'+L.map(pCard15).join('')+'</ul></section>':'';};
+  return h+sec('pSugH',sug)+sec('pRunH',run)+sec('pDoneH',dn);}
+function procSheet15(id){var tk=J8.tasks.get(id);if(!tk){var r=(J8.raw('tasks')||{})[id];tk=r?Object.assign({id:id},r):null;}if(!tk||!procOf15(tk))return;var p=procOf15(tk),S=pStage15(tk),pr=p.research&&typeof p.research==='object'?p.research:null;
+  var kids=rawTasks().filter(function(x){return x.parent_id===id&&x.status!=='dropped';}),gate=J8.approvals.list().filter(function(a){return px(a,'process_id')===id&&px(a,'no_send');}),au=Array.isArray(p.auto)?p.auto:[],rs=p.results&&typeof p.results==='object'?p.results:null,any=0;
+  var h='<h2 id="gTitle" dir="auto">'+esc(pName15(tk))+'</h2><p class="sub12">'+esc(tt('pt_'+S.type))+(tk.project_id&&pobj(tk.project_id)?' · '+esc(pobj(tk.project_id).name):'')+'</p>'
+   +'<div class="pst15 st-'+S.cls+'">'+(S.i?segs6(S.i):'')+'<ol class="psl15">'+PST15.map(function(s,k){return '<li'+(k+1===S.i?' aria-current="step"':'')+'>'+esc(tt('ps_'+s))+'</li>';}).join('')+'</ol></div><p class="lead" dir="auto">'+esc(S.now)+'</p>';
+  if(pr&&(pr.summary||(pr.sources||[]).length)){any=1;h+='<section class="ps15b"><h3 class="sh12">'+esc(tt('pResearch'))+'</h3>'+(pr.summary?'<p dir="auto">'+esc(String(pr.summary).slice(0,1500))+'</p>':'')
+    +((pr.sources||[]).length?'<h4>'+esc(tt('pSources'))+'</h4><ul class="src15">'+pr.sources.slice(0,12).map(function(s){s=s||{};return '<li><a href="'+hesc(s.u||'')+'" target="_blank" rel="noopener noreferrer" dir="auto">'+esc(cut(s.t||s.u||'',90))+'</a></li>';}).join('')+'</ul>':'')+'</section>';}
+  if(gate.length){any=1;h+='<section class="ps15b"><h3 class="sh12">'+esc(tt('pGate'))+'</h3>'+gate.map(function(a){var pend=!a.status||a.status==='pending';return '<p class="gate15 '+(pend?'wait':'ok')+'"><span dir="auto">'+esc(pend?tt('pWaitOk'):a.status==='killed'?tt('pGateNo'):tt('pGateOk'))+'</span>'+(pend?'<button class="b12 sm" data-a="x15-pdrafts">'+I('inbox')+'<span>'+esc(tt('pOpenDrafts'))+'</span></button>':'')+'</p>';}).join('')+'<p class="hint15">'+esc(tt('noSend'))+'</p></section>';}
+  if(kids.length){any=1;h+='<section class="ps15b"><h3 class="sh12">'+esc(tt('pSteps'))+'</h3><ol class="stp15">'+kids.map(function(k){var d=k.status==='done';return '<li class="'+(d?'dn':'')+'"><span dir="auto">'+esc(k.title||'')+'</span><small>'+esc(k.owner==='dave'?(HE()?'את/ה':'You'):String(k.owner||''))+(d?' · '+esc(tt('done')):'')+'</small></li>';}).join('')+'</ol></section>';}
+  if(au.length){any=1;h+='<section class="ps15b"><h3 class="sh12">'+esc(tt('pAutoH'))+'</h3><ul class="au15">'+au.slice(0,10).map(function(x,k){x=x||{};var on=!!x.on,asked=UI.ton15&&UI.ton15[id+'|'+k];return '<li><span class="rt12"><b dir="auto">'+esc(x.what||'')+'</b>'+(x.why?'<small dir="auto">'+esc(x.why)+'</small>':'')+'</span>'
+     +(on?'<span class="chip12 sm on15">'+esc(tt('pa_on'))+'</span>':'<span class="chip12 sm">'+esc(x.needs==='connect'?tt('pa_connect'):tt('pa_ok'))+'</span><button class="b12 sm" data-a="x15-pon" data-id="'+esc(id)+'" data-k="'+k+'"'+(asked?' disabled':'')+'>'+esc(asked?tt('pStarted'):tt('pTurnOn'))+'</button>')+'</li>';}).join('')+'</ul></section>';}
+  if(rs&&(rs.line||rs.A||rs.B)){any=1;h+='<section class="ps15b"><h3 class="sh12">'+esc(tt('pResults'))+'</h3><p dir="auto">'+esc(rs.line||('A '+((rs.A||{}).k||0)+'/'+((rs.A||{}).n||0)+' · B '+((rs.B||{}).k||0)+'/'+((rs.B||{}).n||0)))+'</p></section>';}
+  if(!any&&S.cls!=='sug')h+='<p class="sub12">'+esc(tt('pNoYet'))+'</p>';
+  if(S.cls==='sug')h+='<div class="ps15"><button class="b12 pri" data-a="x15-pstart" data-id="'+esc(id)+'">'+I('play')+'<span>'+esc(tt('pStart'))+'</span></button><button class="b12" data-a="x15-pnot" data-id="'+esc(id)+'">'+esc(tt('pNotNow'))+'</button></div>';
+  h+=cbox12({key:'proc-'+id,task:{id:id,project_id:tk.project_id||null}})+'<button class="btn11 wide" data-a="gclose">'+esc(t('close'))+'</button>';
+  UI.gsheet={k:'proc15',id:id};gOpen(h,'var(--royal)');}
+/* + New → Process: one sheet; the type chips swap the extra fields and keep what you typed */
+function pfRead15(f){var g=function(i){var e=f.querySelector('#'+i);return e?String(e.value||'').trim():'';},c=readChips15(f);
+  return {type:(f.querySelector('[data-a=x15-ptype][aria-pressed=true]')||{dataset:{id:'ab'}}).dataset.id,name:g('p15n'),goal:g('p15g'),gt:g('p15gt'),gn:g('p15gn'),gd:g('p15gd'),pid:g('p15p'),who:g('p15w'),know:g('p15k'),links:g('p15l'),chans:c.chans||[],auto:c.auto||[],
+    test:c.test||'',va:g('p15va'),vb:g('p15vb'),measure:c.measure||'',buyer:g('p15b'),week:g('p15wk'),fu:c.fu||'',days:g('p15dy'),offer:g('p15o'),from:g('p15f'),to:g('p15t')};}
+function procForm15(K){K=K||{};var ty=PT15.indexOf(K.type)>-1?K.type:'ab',G=myGoalList(),R=(prefs0().interview||{}).rules||prefs0().rules||{},auto=K.auto||(Array.isArray(R.auto)?R.auto:['research','drafts','remind']),ask=Array.isArray(R.ask)?R.ask:['send','price','posts','spend'];
+  var ta=function(id,lab,v,rows,dir){return fl(id,lab,'<textarea id="'+id+'" rows="'+(rows||3)+'" dir="'+(dir||'auto')+'" maxlength="2000">'+esc(v||'')+'</textarea>');};
+  var h='<p class="ql12">'+esc(tt('pType'))+'</p><div class="chq12" role="group" aria-label="'+esc(tt('pType'))+'">'+PT15.map(function(k){return '<button type="button" class="chp12" data-a="x15-ptype" data-id="'+k+'" aria-pressed="'+(k===ty)+'"><span>'+esc(tt('pt_'+k))+'</span></button>';}).join('')+'</div>'
+   +fl('p15n',tt('pName'),inp('p15n',{req:1,max:80,v:K.name}))
+   +fl('p15g',tt('pGoal'),'<select id="p15g"><option value="">'+esc(tt('fNone'))+'</option>'+G.map(function(g,j){return '<option value="'+j+'"'+(String(K.goal)===String(j)?' selected':'')+'>'+esc(cut(g.t,60))+'</option>';}).join('')+'<option value="new"'+(K.goal==='new'?' selected':'')+'>'+esc(tt('pGoalNew'))+'</option></select>')
+   +'<div class="gnew15"'+(K.goal==='new'?'':' hidden')+'>'+fl('p15gt',tt('pGoalT'),inp('p15gt',{max:140,v:K.gt}))+fl('p15gn',tt('pGoalN'),inp('p15gn',{max:40,v:K.gn}))+fl('p15gd',tt('pGoalD'),inp('p15gd',{type:'date',v:K.gd||addDays(30)}))+'</div>'
+   +fl('p15p',tt('pProj'),'<select id="p15p">'+projOpts(K.pid!==undefined?K.pid:curProj())+'</select>')+fl('p15w',tt('pWho'),inp('p15w',{max:200,v:K.who}))
+   +'<p class="ql12">'+esc(tt('pChan'))+'</p>'+chips15('chans',PCH15,'pc_',K.chans,1,{lab:tt('pChan')});
+  if(ty==='ab')h+='<p class="ql12">'+esc(tt('pTest'))+'</p>'+chips15('test',['msg','btn','subj'],'pa_',[K.test||'msg'],0,{lab:tt('pTest')})+ta('p15va',tt('pVa'),K.va,2)+ta('p15vb',tt('pVb'),K.vb,2)+'<p class="ql12">'+esc(tt('pMeasure'))+'</p>'+chips15('measure',['replies','accepts','clicks'],'pm_',[K.measure||'replies'],0,{lab:tt('pMeasure')});
+  else if(ty==='lead')h+=fl('p15b',tt('pBuyer'),inp('p15b',{max:200,v:K.buyer}))+fl('p15wk',tt('pWeek'),inp('p15wk',{type:'number',min:1,v:K.week||20}))+'<p class="ql12">'+esc(tt('pFu'))+'</p>'+chips15('fu',['0','1','2'],'n15_',[K.fu||'1'],0,{lab:tt('pFu')})+fl('p15dy',tt('pDays'),inp('p15dy',{type:'number',min:1,v:K.days||3}));
+  else if(ty==='campaign')h+=fl('p15o',tt('pOffer'),inp('p15o',{max:200,v:K.offer}))+fl('p15f',tt('pFrom'),inp('p15f',{type:'date',v:K.from||addDays(1)}))+fl('p15t',tt('pTo'),inp('p15t',{type:'date',v:K.to||addDays(15)}))+'<p class="bud15"><b>'+esc(tt('pBudget'))+'</b> <span>'+esc(tt('pBudgetX'))+'</span></p>';
+  h+=ta('p15k',tt('pKnow'),K.know,3)+ta('p15l',tt('pLinks'),K.links,2,'ltr')
+   +'<p class="ql12">'+esc(tt('pAuto'))+'</p>'+chips15('auto',['research','drafts','remind','follow'],'a_',auto,1,{lab:tt('pAuto')})+'<p class="hint15">'+esc(tt('pAsk',{x:ask.map(function(x){return tt('k_'+x);}).join(', ')||tt('none')}))+'</p>';
+  UI.gsheet={k:'proc15f'};gOpen('<h2 id="gTitle">'+esc(tt('pfH'))+'</h2><form id="pf15" class="ed12" novalidate>'+h+'<p class="err13" id="p15e" role="alert"></p><div class="obnav"><button type="button" class="btn11" data-a="x13-new" data-id="">'+esc(tt('back'))+'</button><button type="submit" class="btn11 pri grow">'+I('check')+'<span>'+esc(tt('pCreate'))+'</span></button></div></form>','var(--royal)');}
+Object.assign(L11.en,{n15_0:'None',n15_1:'1',n15_2:'2'});Object.assign(L11.he,{n15_0:'בלי',n15_1:'1',n15_2:'2'});
+document.addEventListener('change',function(e){var x=e.target;if(x&&x.id==='p15g'){var b=document.querySelector('#pf15 .gnew15');if(b)b.hidden=x.value!=='new';}});
+document.addEventListener('submit',function(e){var f=e.target;if(!f||f.id!=='pf15')return;e.preventDefault();var K=pfRead15(f),er=$('p15e'),go=f.querySelector('[type=submit]'),bad=function(m,el){er.textContent=m;if(el)el.focus();};
+  if(!K.name)return bad(HE()?'חסר שם.':'Write a name.',$('p15n'));
+  if(K.goal==='new'&&(!K.gt||!/^\d{4}-\d\d-\d\d$/.test(K.gd)))return bad(tt('pNeedGoal'),$('p15gt'));
+  if(!J8.status().connected||navigator.onLine===false)return bad(t('notConn'));if(go)go.disabled=true;
+  var G=myGoalList(),goal=K.goal==='new'?{t:K.gt+(K.gn?' · '+K.gn:''),at:K.gd,pid:K.pid||null,src:'app'}:K.goal!==''&&G[+K.goal]?G[+K.goal]:null,st=stamp(),id='t-proc-'+K.type+'-'+st,pid=K.pid||null,me=meId15();
+  var L=links15(K.links),cl=function(n,lo,hi,d){n=parseInt(n,10);return isNaN(n)?d:Math.max(lo,Math.min(hi,n));};
+  var intake={name:K.name.slice(0,80),goal:goal?{t:goal.t,at:goal.at}:null,who:K.who.slice(0,200),chans:K.chans,know:K.know.slice(0,2000),links:L,auto:K.auto};
+  if(K.type==='ab')intake.ab={what:K.test||'msg',a:K.va.slice(0,2000),b:K.vb.slice(0,2000)};
+  if(K.type==='lead')intake.lead={buyer:K.buyer.slice(0,200),week:cl(K.week,1,500,20),fu:cl(K.fu,0,2,1),days:cl(K.days,1,30,3)};
+  if(K.type==='campaign')intake.campaign={offer:K.offer.slice(0,200),from:K.from||null,to:K.to||null,budget:0};
+  var measure=K.type==='ab'?(K.measure||'replies'):K.type==='lead'?'replies':K.type==='campaign'?'clicks':null;
+  var en=function(k){return L11.en[k]||k;},sum=['Type: '+en('pt_'+K.type),goal?'Goal: '+goal.t+(goal.at?' (by '+goal.at+')':''):'',intake.who?'Audience: '+intake.who:'',K.chans.length?'Channels: '+K.chans.map(function(c){return en('pc_'+c);}).join(', '):'',
+    intake.ab?'Test: '+en('pa_'+intake.ab.what)+' · measure: '+en('pm_'+measure):'',intake.lead?'Ideal buyer: '+(intake.lead.buyer||'(J8 proposes)')+' · '+intake.lead.week+' a week · '+intake.lead.fu+' follow-ups, '+intake.lead.days+' days apart':'',
+    intake.campaign?'Offer: '+(intake.campaign.offer||'(J8 proposes)')+' · '+(intake.campaign.from||'?')+' to '+(intake.campaign.to||'?')+' · budget 0 (never spends without OK)':'',intake.know?'Known: '+cut(intake.know,400):'',
+    'J8 may: '+(K.auto.map(function(a){return en('a_'+a);}).join(', ')||'nothing without asking'),'Nothing goes out without your OK.'].filter(Boolean).join('\n');
+  var doc={project_id:pid,title:'Process: '+intake.name,action:sum.slice(0,2000),owner:POWN15[K.type],status:'open',source:'j8nix-process',by:'J8NIX app',blocked_by:[],extra:{process:{type:K.type,v:1,stage:'intake',intake:intake,measure:measure,goal:goal?goal.t:null,created_by:me}}};
+  var fail=function(x){if(go)go.disabled=false;var m=(x&&(x.message||x.code))||'error';bad(navigator.onLine===false||/fetch|network/i.test(m)?t('notConn'):t('couldNot',{e:m}));};
+  var gp=K.goal==='new'?prefSet({goals:G.concat([goal]).slice(-10)},{'j8-goals':G.concat([goal]).slice(-10)}):Promise.resolve();
+  Promise.resolve(gp).then(function(){return J8.tasks.add(id,doc);}).then(function(){return J8.inbox.send(pid||'p-general','Start process: '+intake.name,id).catch(function(){});})
+   .then(function(){made('process',tt('pMade'),null,'<button class="btn11 pri" data-a="x15-popen" data-id="'+esc(id)+'">'+I('eye')+'<span>'+esc(tt('pOpen'))+'</span></button>');},fail);},true);
+
+/* entry points: + New, ⌘K, sidebar, Me, project page */
+var nf15=newForm;newForm=function(kind,ed){if(kind==='process')return procForm15(ed);if(kind==='voice')return voiceSheet15();return nf15(kind,ed);};
+var ns15=newSheet;newSheet=function(){ns15();var g=document.querySelector('#gsheet .nw13');if(g)g.insertAdjacentHTML('beforeend',[['process','repeat','nProc','nProcP'],['voice','mic','nVoice','nVoiceP']].map(function(o){return '<button class="nwo13 k-'+o[0]+'" data-a="x13-new" data-id="'+o[0]+'"><span class="well11 r">'+I(o[1])+'</span><span><b>'+esc(tt(o[2]))+'</b><small>'+esc(tt(o[3]))+'</small></span>'+I('fwd','flip chev')+'</button>';}).join(''));};
+var ai15=askItems;askItems=function(q){var R=ai15(q),Q=String(q||'').trim().toLowerCase();[['process','repeat',tt('pNew')],['voice','mic',tt('nVoice')]].forEach(function(a){if(!Q||a[2].toLowerCase().indexOf(Q)>-1)R.unshift({g:'acts',id:'act:new-'+a[0],ic:a[1],l:a[2]});});return R.slice(0,16);};
+var sr15=sideRender;sideRender=function(){sr15();var sg=$('sideG');if(!sg||!connected)return;var b=sg.querySelector('[data-a=x15-procs]');if(!b){var m=sg.querySelector('[data-a=x13-mem]'),hx='<button class="sg proc15" data-a="x15-procs">'+I('repeat')+'<span class="lbl">'+esc(tt('procsH'))+'</span></button>';if(m)m.insertAdjacentHTML('afterend',hx);else sg.insertAdjacentHTML('beforeend',hx);b=sg.querySelector('[data-a=x15-procs]');}
+  if(UI.v==='procs')b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');};
+var vMe15=vMe;vMe=function(){var h=vMe15();if(!connected)return h;var x='<button class="opt" data-a="x13-mem">';var add='<button class="opt" data-a="x15-voice">'+I('mic')+'<span>'+esc(tt('vH'))+'</span></button><button class="opt" data-a="x15-procs">'+I('repeat')+'<span>'+esc(tt('procsH'))+'</span></button>';
+  var j=h.indexOf(x);if(j<0)return h;var k=h.indexOf('</button>',j);return h.slice(0,k+9)+add+h.slice(k+9);};
+var ppt15=projPlanTag;projPlanTag=function(p){var h=ppt15(p);if(!p||!connected)return h;var L=procs15(p.id);if(!L.length)return h;
+  return h+'<section class="pp15"><h3 class="sh12">'+I('repeat')+'<span>'+esc(tt('procsH'))+'</span>'+' <span class="n12"><bdi>'+L.length+'</bdi></span><button class="lnk12" data-a="x15-pnew" data-id="'+esc(p.id)+'">'+I('plus')+'<span>'+esc(tt('pNew'))+'</span></button></h3><ul class="pl15">'+L.map(pCard15).join('')+'</ul></section>';};
+PLACE.procs='me';PLACE.voice='me';
+var vN15=vNext;vNext=function(){return UI.v==='procs'?vProcs15():UI.v==='voice'?vVoice15():vN15();};
+function goView15(v){gClose();UI.stack=[{v:UI.v===v?'me':UI.v}];UI.v=v;render(true);}
+
+/* drafts: "Sounds like you · N%" only when an arm scored it (extra.voice); a plan gate says nothing is sent */
+var dc15=draftCheck;draftCheck=function(){var h=dc15();if(!h)return h;var cur=(UI.dids||[]).filter(isPend)[0],a=cur?AP[cur]:null;if(!a)return h;var add='';
+  if(px(a,'no_send')){var ns='<li class="ns15">'+esc(tt('noSend'))+'</li>',h2=h.replace(/<li>[^<]*<\/li>(<li><bdi>)/,ns+'$1');if(h2!==h)h=h2;else add+=ns;}
+  var v=px(a,'voice');if(v&&typeof v==='object'&&isNum(v.score)){var n=Math.max(0,Math.min(100,Math.round(v.score))),c=n>=85?'g':n>=70?'o':'r',ms=Array.isArray(v.miss)?v.miss.filter(function(x){return typeof x==='string'&&x;}).slice(0,3):[];
+    add+='<li class="vl15x"><span class="vsc15 '+c+'"><bdi>'+esc(tt('vLine',{n:n}))+'</bdi></span>'+(ms.length?'<small dir="auto">'+esc(tt('vMiss',{x:ms.join(' · ')}))+'</small>':'')+'</li>';}
+  return add?h.replace(/<\/ul><\/aside>$/,add+'</ul></aside>'):h;};
+
+window.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a^="x15-"]');if(!el)return;e.preventDefault();e.stopPropagation();var a=el.dataset.a,id=el.dataset.id||'';
+  if(a==='x15-vc'){if(el.disabled)return;var g=el.closest('.vg15'),on=el.getAttribute('aria-pressed')==='true',mx=+(g.dataset.max||0),err=el.closest('form,.vf15,.obb');err=err&&err.querySelector('.vErr15,.err13,.err12');
+    if(g.dataset.multi!=='1'){[].forEach.call(g.querySelectorAll('[data-a=x15-vc]'),function(b){b.setAttribute('aria-pressed','false');});if(!on)el.setAttribute('aria-pressed','true');return;}
+    if(!on&&mx&&g.querySelectorAll('[aria-pressed=true]').length>=mx){if(err)err.textContent=tt('vMax',{n:mx});return;}if(err)err.textContent='';el.setAttribute('aria-pressed',on?'false':'true');return;}
+  if(a==='x15-ptype'){var f=$('pf15');if(!f)return;var K=pfRead15(f);K.type=id;procForm15(K);return;}
+  if(a==='x15-voice'){goView15('voice');return;}
+  if(a==='x15-procs'){goView15('procs');return;}
+  if(a==='x15-vteach'){voiceSheet15();return;}
+  if(a==='x15-vsamp'){UI.memSamples=!UI.memSamples;render();return;}
+  if(a==='x15-vsmem'){UI.memSamples=1;UI.memSrc=null;UI.stack=[{v:'voice'}];UI.v='mem';render(true);return;}
+  if(a==='x15-vsw'){if(el.disabled)return;var pv=Object.assign({},prefs0().voice||{});if(id==='edits')pv.edits=pv.edits===false;else if(id==='mail'){if(!mailOk15())return;pv.mail=!pv.mail;}else return;prefSet({voice:pv}).then(function(){render();});render();return;}
+  if(a==='x15-notme'){var m=myMem15().filter(function(x){return x.id===id;})[0];if(!m)return;el.disabled=true;
+    J8.memory.archive(id,true).then(function(){return J8.memory.add({kind:'preference',text:('Not my style: '+m.text).slice(0,2000),tags:['voice','not-me'],project_id:null,source_message_id:null});})
+     .then(function(){toast(tt('vNotMeT'));render();},function(x){el.disabled=false;toast(t('couldNot',{e:x&&(x.message||x.code)||'error'}));});return;}
+  if(a==='x15-pnew'){gClose();procForm15(id?{pid:id}:{});return;}
+  if(a==='x15-popen'){gClose();procSheet15(id);return;}
+  if(a==='x15-pdrafts'){gClose();UI.lseg='drafts';UI.stack=[];navTo('list');return;}
+  if(a==='x15-pstart'||a==='x15-pnot'||a==='x15-pon'){if(!J8.status().connected){toast(t('notConn'));return;}var tk=J8.tasks.get(id);if(!tk)return;var pid=tk.project_id||'p-general';el.disabled=true;
+    if(a==='x15-pnot'){J8.tasks.drop(id).then(function(){gClose();toast(tt('deleted'),function(){J8.tasks.undo(id);});render();},function(x){el.disabled=false;toast(t('couldNot',{e:x&&x.code||'error'}));});return;}
+    if(a==='x15-pstart'){J8.inbox.send(pid,'Start process: '+pName15(tk),id).then(function(){toast(tt('pStarted'));},function(x){el.disabled=false;toast(t('couldNot',{e:x&&x.code||'error'}));});return;}
+    var au=(procOf15(tk)||{}).auto||[],it=au[+el.dataset.k];if(!it){el.disabled=false;return;}
+    J8.inbox.send(pid,'Turn on: '+String(it.what||'').slice(0,200),id).then(function(){UI.ton15=UI.ton15||{};UI.ton15[id+'|'+el.dataset.k]=1;el.textContent=tt('pStarted');toast(tt('pAskedOn'));},function(x){el.disabled=false;toast(t('couldNot',{e:x&&x.code||'error'}));});return;}},true);
+/* plan gates (extra.no_send): the main button says "OK to start" (never Send) and the toast says nothing is sent */
+Object.assign(L11.en,{nsOk:'OK to start',nsOkT:'OK. J8 starts the process. Nothing is sent.'});Object.assign(L11.he,{nsOk:'אישור להתחיל',nsOkT:'אושר. J8 מתחיל את התהליך. שום דבר לא נשלח.'});
+var vd15=vDraft;vDraft=function(){var h=vd15(),cur=(UI.dids||[]).filter(isPend)[0],a=cur?AP[cur]:null;if(!a||!px(a,'no_send'))return h;
+  return h.replace(/(<button class="do" data-a="dsend"[^>]*>(?:<svg[\s\S]*?<\/svg>)?<span>)[^<]*(<\/span>)/,'$1'+esc(tt('nsOk'))+'$2');};
+var ddc15=draftDecide;draftDecide=function(id,how){UI.ns15t=how==='send'&&px(AP[id],'no_send')?Date.now():0;return ddc15.apply(this,arguments);};
+var dcd15=decide;decide=function(id,how){UI.ns15t=how==='send'&&px(AP[id],'no_send')?Date.now():0;return dcd15.apply(this,arguments);};
+
+window.j8v15={pieces:pieces15,lang:lang15,links:links15,voiceSave:voiceSave15,voiceSheet:voiceSheet15,procs:procs15,procForm:procForm15,openProc:procSheet15,stage:pStage15};
+
 /* 11.2: named hooks for the QA harness and the console (read-only helpers and the same actions a tap runs) */
 (function(){var F={openItem:function(){return openItem.apply(null,arguments);},goalsShown:function(){return goalsShown();},goalPins:goalPins,projPins:projPins,myGoalList:myGoalList,editSheet:function(k,i){return editSheet(k,i);},newForm:function(k,e){return newForm(k,e);},memFilter:memFilter,lineUp:lineUp,goalsAll:function(){return goalsAll();},newSheet:newSheet,goalsSheet:goalsSheet};Object.keys(F).forEach(function(n){window[n]=F[n];});})();
 })();
