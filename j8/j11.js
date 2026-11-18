@@ -1349,7 +1349,7 @@ function procForm15(K){K=K||{};var ty=PT15.indexOf(K.type)>-1?K.type:'ab',G=myGo
   var ta=function(id,lab,v,rows,dir){return fl(id,lab,'<textarea id="'+id+'" rows="'+(rows||3)+'" dir="'+(dir||'auto')+'" maxlength="2000">'+esc(v||'')+'</textarea>');};
   var h='<p class="ql12">'+esc(tt('pType'))+'</p><div class="chq12" role="group" aria-label="'+esc(tt('pType'))+'">'+PT15.map(function(k){return '<button type="button" class="chp12" data-a="x15-ptype" data-id="'+k+'" aria-pressed="'+(k===ty)+'"><span>'+esc(tt('pt_'+k))+'</span></button>';}).join('')+'</div>'
    +fl('p15n',tt('pName'),inp('p15n',{req:1,max:80,v:K.name}))
-   +fl('p15g',tt('pGoal'),'<select id="p15g"><option value="">'+esc(tt('fNone'))+'</option>'+G.map(function(g,j){return '<option value="'+j+'"'+(String(K.goal)===String(j)?' selected':'')+'>'+esc(cut(g.t,60))+'</option>';}).join('')+'<option value="new"'+(K.goal==='new'?' selected':'')+'>'+esc(tt('pGoalNew'))+'</option></select>')
+   +fl('p15g',tt('pGoal'),'<select id="p15g"><option value="">'+esc(tt('pGoalNone'))+'</option>'+G.map(function(g,j){return '<option value="'+j+'"'+(String(K.goal)===String(j)?' selected':'')+'>'+esc(cut(g.t,60))+'</option>';}).join('')+'<option value="new"'+(K.goal==='new'?' selected':'')+'>'+esc(tt('pGoalNew'))+'</option></select>')
    +'<div class="gnew15"'+(K.goal==='new'?'':' hidden')+'>'+fl('p15gt',tt('pGoalT'),inp('p15gt',{max:140,v:K.gt}))+fl('p15gn',tt('pGoalN'),inp('p15gn',{max:40,v:K.gn}))+fl('p15gd',tt('pGoalD'),inp('p15gd',{type:'date',v:K.gd||addDays(30)}))+'</div>'
    +fl('p15p',tt('pProj'),'<select id="p15p">'+projOpts(K.pid!==undefined?K.pid:curProj())+'</select>')+fl('p15w',tt('pWho'),inp('p15w',{max:200,v:K.who}))
    +'<p class="ql12">'+esc(tt('pChan'))+'</p>'+chips15('chans',PCH15,'pc_',K.chans,1,{lab:tt('pChan')});
@@ -1359,7 +1359,7 @@ function procForm15(K){K=K||{};var ty=PT15.indexOf(K.type)>-1?K.type:'ab',G=myGo
   h+=ta('p15k',tt('pKnow'),K.know,3)+ta('p15l',tt('pLinks'),K.links,2,'ltr')
    +'<p class="ql12">'+esc(tt('pAuto'))+'</p>'+chips15('auto',['research','drafts','remind','follow'],'a_',auto,1,{lab:tt('pAuto')})+'<p class="hint15">'+esc(tt('pAsk',{x:ask.map(function(x){return tt('k_'+x);}).join(', ')||tt('none')}))+'</p>';
   UI.gsheet={k:'proc15f'};gOpen('<h2 id="gTitle">'+esc(tt('pfH'))+'</h2><form id="pf15" class="ed12" novalidate>'+h+'<p class="err13" id="p15e" role="alert"></p><div class="obnav"><button type="button" class="btn11" data-a="x13-new" data-id="">'+esc(tt('back'))+'</button><button type="submit" class="btn11 pri grow">'+I('check')+'<span>'+esc(tt('pCreate'))+'</span></button></div></form>','var(--royal)');}
-Object.assign(L11.en,{n15_0:'None',n15_1:'1',n15_2:'2'});Object.assign(L11.he,{n15_0:'בלי',n15_1:'1',n15_2:'2'});
+Object.assign(L11.en,{n15_0:'None',n15_1:'1',n15_2:'2',pGoalNone:'No goal yet'});Object.assign(L11.he,{n15_0:'בלי',n15_1:'1',n15_2:'2',pGoalNone:'בלי יעד כרגע'});
 document.addEventListener('change',function(e){var x=e.target;if(x&&x.id==='p15g'){var b=document.querySelector('#pf15 .gnew15');if(b)b.hidden=x.value!=='new';}});
 document.addEventListener('submit',function(e){var f=e.target;if(!f||f.id!=='pf15')return;e.preventDefault();var K=pfRead15(f),er=$('p15e'),go=f.querySelector('[type=submit]'),bad=function(m,el){er.textContent=m;if(el)el.focus();};
   if(!K.name)return bad(HE()?'חסר שם.':'Write a name.',$('p15n'));

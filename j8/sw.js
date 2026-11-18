@@ -1,5 +1,5 @@
 /* J8NIX 11.4.0 service worker: offline shell + web push. Never caches API data. */
-var CACHE = 'j8nix-v11.4.0-1';
+var CACHE = 'j8nix-v11.4.0-2';
 var SHELL = ['./', 'index.html', 'app.css?v=11.4.0', 'v11.css?v=11.4.0', 'j11.css?v=11.4.0', 'app.js?v=11.4.0', 'j11.js?v=11.4.0', 'shell.js?v=11.4.0', 'j8-data.js?v=11.4.0', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/studio.png',
   'brand/j8nix-wordmark-2026-11-17.svg', 'brand/j8nix-mark-8-2026-11-17.svg', 'brand/j8nix-2026-11-17.png', 'icons/j8-icon-2026-11-17.svg', 'icons/j8-192-2026-11-17.png', 'icons/badge-96.png', 'icons/j8-touch-180-2026-11-17.png'];
