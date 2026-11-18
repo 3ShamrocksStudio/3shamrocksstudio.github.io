@@ -1,7 +1,7 @@
 {
   "asset": "assets/04-email-before.txt",
   "genome": "Plinkettle Health",
-  "score": 54,
+  "score": 40,
   "threshold": 85,
   "verdict": "SEND BACK",
   "checks": {
@@ -27,8 +27,8 @@
     },
     "claims": {
       "status": "fail",
-      "violations": 1,
-      "penalty": 16
+      "violations": 2,
+      "penalty": 30
     },
     "logo": {
       "status": "pass",
@@ -99,6 +99,13 @@
       "found": "halved",
       "reason": "Unsourced change claim claim 'halved': Families who use it see missed doses halved, and setup takes 3 minutes.",
       "fix": "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim."
+    },
+    {
+      "check": "claims",
+      "rule": "banned-claim",
+      "found": "cures",
+      "reason": "Not-approved claim 'cures' (ledger 'Not approved' list): Subject: Our app cures forgetfulness. Don't miss out!",
+      "fix": "Remove it. Only a negated disclaimer such as the ledger's C4 wording may use these words."
     }
   ]
 }
