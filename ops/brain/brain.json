@@ -1,7 +1,7 @@
 {
   "version": 3,
-  "updated": "2026-11-18T09:29+02:00",
-  "last_run": "2026-11-18T08:55+02:00",
+  "updated": "2026-11-18T16:25+02:00",
+  "last_run": "2026-11-18T16:25+02:00",
   "goal": {
     "target_usd": 1000000,
     "deadline": "2027-04-21",
@@ -3370,6 +3370,10 @@
     {
       "date": "2026-11-17",
       "text": "Dave on LickPick Keeper reels: scale-lesson reels with no challenge and no clear audience don't connect; lesson series paused. New v2 look approved ('Nice.')."
+    },
+    {
+      "at": "2026-11-18",
+      "text": "A held draft can carry the defect in edited_body while body differs: fix both, or an OK on the pending row sends the stale body."
     }
   ],
   "runs": [
@@ -5844,6 +5848,64 @@
       ],
       "verifier": "SQL re-read of each written row",
       "dave_input_since_last": "none"
+    },
+    {
+      "at": "2026-11-18T16:25+02:00",
+      "seat": "CEO-office",
+      "models": {
+        "opus": "orchestrator",
+        "sonnet": "worker + verifier"
+      },
+      "steps": [
+        {
+          "text": "One founder email (marketing batch): 'Congrats on the round!' removed from Dave's edited text (and the old company-explaining body replaced); back to pending for his OK",
+          "seat": "CRO",
+          "model": "opus",
+          "evidence": "J8NIX Approve (private row), lint 0 flags"
+        },
+        {
+          "text": "One queued job application: doubled punctuation fixed inside the template opening; stays queued for the next send window",
+          "seat": "CRO",
+          "model": "opus",
+          "evidence": "J8NIX Approve (private row), lint 0 flags"
+        },
+        {
+          "text": "One held job application: the company domain resolves again (DNS 18 Nov); result reset to waiting for the sender's page re-check",
+          "seat": "CRO",
+          "model": "opus",
+          "evidence": "DNS lookup 18 Nov"
+        },
+        {
+          "text": "Brand OS P3: offer page built from P1 §4 copy in the live studio look (EN/HE, noindex, CTA to /audit/); named '3S Brand OS' because 'Brandplumb' is not cleared; not linked from /audit/ until the name is cleared",
+          "seat": "CMO/CDO",
+          "model": "sonnet",
+          "evidence": "https://3shamrocks.com/brand-os/"
+        },
+        {
+          "text": "p-services 'you' line was stale (the 9 emails were already fixed and are approved); ask removed",
+          "seat": "COO",
+          "model": "opus",
+          "evidence": "j8_projects p-services"
+        }
+      ],
+      "loose_ends_closed": [],
+      "loose_ends_advanced": [],
+      "skipped": [
+        {
+          "what": "New founder notes",
+          "why": "no live replies; 10 approved emails go out in the 16:41 send window first"
+        },
+        {
+          "what": "Voice profile",
+          "why": "no 'Learn my voice' kickoff and no samples yet"
+        },
+        {
+          "what": "Linking /audit/ to the offer page",
+          "why": "product name not cleared (P1 §1); lawyer check first"
+        }
+      ],
+      "verifier": "independent sonnet verifier on live page + SQL re-read",
+      "dave_input_since_last": "none (0 new messages)"
     }
   ],
   "morning_note": {
