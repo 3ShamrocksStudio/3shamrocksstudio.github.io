@@ -63,3 +63,12 @@ A step is one j8_tasks row (owner 'dave'). Every field is required:
 Never mention, in anything Dave reads: container or file paths, repo files, internal ids (t-…, ap-…, batch ids), table names, tool names, "arm", "QA", "staging".
 
 The app shows only steps that have an action (and promotes to "Do this first" only steps that also have a link), so a step that breaks these rules is invisible. A project "you" line is shown as a step only when it starts with 🔴/🟠 and has you_link; otherwise write a task.
+
+## Voice and Processes lines (J8NIX 11.4)
+- Voice learned: `HH:MM — 🟢 Learned your voice from 14 samples and 29 edits. See it in Me → Your voice.` (real counts only; 0 samples = say "from your edits").
+- Voice note acked, nothing learned yet: `HH:MM — 🟢 Got your 4 samples. Your voice rules show in Me → Your voice after tonight's run.`
+- A sample held instructions: `HH:MM — 🟢 Skipped 1 sample that read like instructions. The rest are learned.` (never quote it).
+- Process got: `HH:MM — 🟢 Process "<name>" started. Research comes next, in today's team run.`
+- Plan ready: `HH:MM — 🟠 The plan for "<name>" is ready. Do: read it and tap OK to start — Drafts (3 min).` Nothing is sent from a plan.
+- Running / results: `HH:MM — 🟢 "<name>" is running: 12 sent, 2 replies (LinkedIn inbox, 20 Nov).` · `HH:MM — 🟢 "<name>": too early. A 3 of 20 replied, B 5 of 20. Need 30 each.` · `HH:MM — 🟢 "<name>": B wins, 7 of 30 replied vs 2 of 30. The winning text waits for your OK as a template.`
+- Turn on asked: `HH:MM — 🟢 Daily lead list is on.` or `HH:MM — 🟠 Daily lead list needs a connection. Do: <action> — <link> (<N> min).`

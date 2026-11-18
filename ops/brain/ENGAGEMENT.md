@@ -18,4 +18,5 @@ Sources: https://www.agilitypr.com/pr-news/social-media-influencer-marketing/the
 - Open with them (thanks / what they do well), name their real pain in their own world, then the offer as the answer, one small ask (10-minute call). Israeli law lines (פרסומת, address, remove line) always stay.
 
 ## Instagram / other channels
+- J8NIX 11.4: a row with extra.no_send = true (label "Plan · OK to start", channel "J8NIX · nothing goes out") is a process plan: never post, comment or send it, whatever its status.
 - To research before the next draft on that channel; add findings here with sources.
