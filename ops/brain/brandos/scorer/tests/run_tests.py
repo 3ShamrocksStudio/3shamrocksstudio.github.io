@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Planted-error test: 10/10 caught, 0 false positives on 2 clean assets."""
+"""Planted-error test: 12/12 caught (2 Hebrew), 0 false positives on 3 clean assets (1 Hebrew)."""
 import os, sys, tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -19,9 +19,13 @@ PLANTED = {  # fixture -> (expected check, expected rule)
     "planted-08-claim-doubled.md": ("claims", "unsourced-claim"),
     "planted-09-logo-no-alt.html": ("logo", "logo-missing-alt"),
     "planted-10-logo-unapproved.html": ("logo", "unapproved-logo-file"),
+    "planted-11-voice-we-he.md": ("voice", "first-person-plural"),      # v0.4 Hebrew voice
+    "planted-12-voice-banned-he.txt": ("voice", "banned-word"),
 }
-CLEAN = ["clean-01-landing.html", "clean-02-card.svg"]
-URGENCY = ["Only 3 spots left this month.", "Limited time offer.", "Act now before it ends today."]
+CLEAN = ["clean-01-landing.html", "clean-02-card.svg", "clean-03-he.md"]
+URGENCY = ["Only 3 spots left this month.", "Limited time offer.", "Act now before it ends today.",
+           "נותרו רק 3 מקומות החודש.", "מבצע לזמן מוגבל.", "אל תפספסו, ההרשמה נסגרת הלילה."]
+HE_PREFIX = ["והצוות שלנו בודק כל נכס.", "כתבו אלינו מחר.", "ההצעה המהפכנית הזאת."]
 
 caught = fp = 0
 print("%-34s %-9s %-6s %s" % ("FIXTURE", "EXPECTED", "SCORE", "RESULT"))
@@ -71,5 +75,17 @@ good = r2.get("scoped_out") is not None and r2["verdict"] == "PASS" and not r["v
 scope_ok += good
 print("scope unit    %-34s %s" % ("--product-region selector", "OK" if good else "WRONG %s" % r2))
 
-print("\nPlanted errors caught: %d/10 | false positives on clean: %d/2 | urgency unit: %d/%d | scope unit: %d/3" % (caught, fp, urg_ok, len(URGENCY), scope_ok))
-sys.exit(0 if caught == 10 and fp == 0 and urg_ok == len(URGENCY) and scope_ok == 3 else 1)
+# v0.4 Hebrew: pronouns and hype words with glued prefixes (ו ש ה ...) are caught
+print()
+he_ok = 0
+for s in HE_PREFIX:
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as f:
+        f.write(s)
+    r = scorer.score(f.name, G); os.unlink(f.name)
+    good = len(r["violations"]) == 1 and r["violations"][0]["check"] == "voice" and r["verdict"] == "SEND BACK"
+    he_ok += good
+    print("hebrew unit   %-34s %s" % (s, "CAUGHT" if good else "WRONG %s" % r["violations"]))
+
+print("\nPlanted errors caught: %d/%d | false positives on clean: %d/%d | urgency unit: %d/%d | scope unit: %d/3 | hebrew unit: %d/%d"
+      % (caught, len(PLANTED), fp, len(CLEAN), urg_ok, len(URGENCY), scope_ok, he_ok, len(HE_PREFIX)))
+sys.exit(0 if caught == len(PLANTED) and fp == 0 and urg_ok == len(URGENCY) and scope_ok == 3 and he_ok == len(HE_PREFIX) else 1)

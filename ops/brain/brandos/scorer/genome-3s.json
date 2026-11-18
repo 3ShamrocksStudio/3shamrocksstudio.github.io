@@ -40,7 +40,17 @@
     "pronoun_fix": "Rewrite in first person singular ('I').",
     "banned_words": ["revolutionary", "revolutionize", "game-changing", "game changer", "world-class", "best-in-class", "guaranteed", "cutting-edge", "unparalleled", "next-level"],
     "fake_urgency_patterns": ["only \\d+ (left|remaining|spots?|seats?|places?)", "limited[- ]time", "act now", "hurry", "last chance", "don'?t miss out", "ends (today|tonight|soon)", "while (supplies|stocks) last"],
-    "sources": ["ops/brain/BRAIN.md:83 (First person singular, never we)", "ops/brain/LEADGEN.md:38 (First person singular. No fake scarcity.)", "banned word list: CTO assignment brief for Brand OS scorer, 2026-11-14. NEEDS YOUR EYES: confirm list."]
+    "sources": ["ops/brain/BRAIN.md:83 (First person singular, never we)", "ops/brain/LEADGEN.md:38 (First person singular. No fake scarcity.)", "banned word list: CTO assignment brief for Brand OS scorer, 2026-11-14. NEEDS YOUR EYES: confirm list."],
+    "he": {
+      "note": "Hebrew voice (v0.4). Hebrew glues prefixes (ו ש ה כ ב ל מ) to words, so pronouns match as whole Hebrew words with up to 2 prefix letters; a longer word that only contains one (לנוח, אנונימי) is not matched.",
+      "prefixes": "ושהכבלמ",
+      "banned_pronouns": ["אנחנו", "אנו", "שלנו", "לנו", "אותנו", "איתנו", "אתנו", "עבורנו", "בשבילנו", "אלינו", "מאיתנו", "עלינו"],
+      "pronoun_reason": "Plural voice (Hebrew)",
+      "pronoun_fix": "Rewrite in first person singular ('אני', 'שלי', 'לי').",
+      "banned_words": ["מהפכני", "מהפכנית", "מהפכניים", "פורץ דרך", "פורצת דרך", "פורצי דרך", "משנה משחק", "משני משחק", "ברמה עולמית", "חסר תקדים", "חסרת תקדים", "הטוב ביותר בעולם", "מובטח", "מובטחת"],
+      "fake_urgency_patterns": ["(נותרו|נשארו)\\s+רק\\s+\\d+", "רק\\s+\\d+\\s+(מקומות|כרטיסים|יחידות)\\s+(נותרו|נשארו|אחרונים|אחרונות)", "לזמן מוגבל", "מבצע מוגבל", "מהרו", "הזדמנות אחרונה", "אל\\s+ת(פספס|פספסו|פספסי)\\b", "עד\\s+גמר\\s+המלאי", "(נגמר|נגמרת|מסתיים|מסתיימת|נסגר|נסגרת)\\s+(היום|הלילה|בקרוב)"],
+      "sources": ["ops/brain/BRAIN.md §-1.3 (First person singular, never we)", "ops/brain/ARMS-CONTRACT.md §3z.2 (lint catches 'we' voice EN/HE)", "Hebrew word and urgency lists: Brand OS night shift 18 Nov 2026, mirror of the English lists. NEEDS YOUR EYES: confirm list."]
+    }
   },
   "claims": {
     "rule": "Any number-with-percent, multiplier, #1 / TIME-style award, count of customers, or 'doubled/tripled/halved' claim must carry a source marker in the same block: a data-source attribute on the element or an ancestor, or a [source: ...] tag in the same paragraph.",

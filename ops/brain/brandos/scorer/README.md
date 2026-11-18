@@ -1,4 +1,4 @@
-# 3S Brand QA scorer v0.3
+# 3S Brand QA scorer v0.4
 
 Program #1 Brand OS, module 3 (Precision QA gate). Scores one asset (.html, .svg, .txt, .md) against a brand genome and returns a 0-100 Brand Consistency Score, pass/fail per check, and every violation with a reason and a fix hint. Python 3, stdlib only. Demonstrated on 3Shamrocks Studio's own brand.
 
@@ -37,10 +37,18 @@ A studio page shows products in their own brands (portfolio tiles, product scree
 - Homepage with `--product-region '#work' --product-region '#identity'`: 225 CSS rules, 104 inline styles, 92 SVG colour attributes, 52 images and 1 font link scoped out; what remains is studio chrome (shared phone frames, hero, buttons, client logos, stats) and is listed in `reports/home-scoped.json`. It still scores 0: those findings are real work for the studio site, not product noise.
 - Tests: `tests/run_tests.py` adds 3 scope units (tile scoped out with studio chrome still judged, an off-palette colour next to a tile still caught, `--product-region`).
 
+## Hebrew voice (v0.4, night 18 Nov)
+- Runs only when the genome has `voice.he` (the 3S genome does; the Plinkettle demo genome does not, so its results are unchanged) and only on blocks that contain Hebrew letters.
+- Plural voice: אנחנו, אנו, שלנו, לנו, אותנו, איתנו/אתנו, עבורנו, בשבילנו, אלינו, מאיתנו, עלינו, as whole Hebrew words with up to 2 glued prefix letters (ו ש ה כ ב ל מ), so "והצוות שלנו" and "כתבו אלינו" are caught, while longer words that only contain them ("לנוח", "אנונימיות") are not. Rule name and penalty are the same as English (`first-person-plural`).
+- Hype words (מהפכני/ת, פורץ/ת דרך, משנה משחק, ברמה עולמית, חסר/ת תקדים, מובטח/ת …) with one optional prefix ("המהפכנית"), and fake urgency (נותרו רק N, לזמן מוגבל, מהרו, הזדמנות אחרונה, אל תפספס/ו, עד גמר המלאי, נגמר/נסגר/מסתיים היום/הלילה/בקרוב).
+- Lists live in the genome (`voice.he`), NEEDS YOUR EYES like the English list.
+- Tests: 2 planted Hebrew fixtures (11, 12), 1 clean Hebrew fixture (with "לנוח", "אנונימיות", "שלך"), 3 Hebrew urgency units, 3 prefix units. Before/after on sprint, audit, home, raise-ready and all 10 demo reports: byte-identical. Only change on the pages checked: shomer-beta (a SH✡MER product page) gains 2 findings, "ספרו לנו" x2. That page speaks as the SH✡MER team, a product brand, so it is not a studio defect and the page was not changed.
+- Limits: verb forms in first person plural (בנינו, נבנה) are not checked (too many false hits: בנינו is also "our sons"); no niqqud handling beyond skipping the marks; gendered or slash forms (ספר/י) are fine and not checked.
+
 ## Limits (v0.2)
 - Static analysis of source only. No rendered pixels: colours set by a stylesheet in another file, JS, images, or `var()` chains are not resolved.
 - Contrast is checked only where text and background colours sit together in the same inline style or CSS rule. Inherited backgrounds are not known.
-- Voice and claim checks are English regex. Hebrew text is scanned for numbers and percentages only. Claims in sentences with no number are not found.
+- Claim checks are English regex; Hebrew text is scanned for numbers and percentages only (voice is Hebrew-aware since v0.4). Claims in sentences with no number are not found.
 - Claim sources must use the marker format. A plain "(Adobe, 2025)" in prose does not count, and payment terms such as "50% deposit" are flagged because the scorer cannot tell a term from a claim. Expect some noise on real pages.
 - Ledger check compares numbers only, not the rest of the wording, and does not check the claim is used in a fitting context. "Negated" means not/never/n't within 30 characters before the word. Banned-claim words are English and built into the scorer (not read from the ledger text); plain uses such as "prevent missed doses" are flagged too. Expect some noise.
 - Logo checks are by file name and alt text. Clear-space, size, and recolouring are not checked.

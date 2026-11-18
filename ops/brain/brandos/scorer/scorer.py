@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""3S Brand OS - Brand QA scorer v0.3 (static analysis, stdlib only).
+"""3S Brand OS - Brand QA scorer v0.4 (static analysis, stdlib only).
+v0.4: Hebrew voice (plural pronouns with glued prefixes, hype words, fake
+urgency) from genome voice.he; English results unchanged.
 
 Usage: python3 scorer.py ASSET [--genome genome-3s.json] [--out report.json]
        [--product-region SEL ...]
@@ -405,6 +407,33 @@ def run(path, genome, regions=(), scoped_out=None):
         for m in urg.finditer(text):
             add("voice", "fake-urgency", m.group(0), "Fake urgency '%s': %s" % (m.group(0), snippet(text, m)),
                 "Remove it; state the real deadline with its date or say nothing.")
+
+    # ---- voice, Hebrew (v0.4): only when the genome has voice.he and the block has Hebrew letters
+    he = v.get("he")
+    if he:
+        HL = "א-תװ-״"            # Hebrew letters (no niqqud)
+        HW = "[%s֑-ׇ]" % HL                # a letter or mark that continues a word
+        def he_words(words, pre=""):
+            if not words:
+                return never
+            alts = "|".join(re.escape(w).replace("\\ ", "\\s+") for w in sorted(words, key=len, reverse=True))
+            return re.compile("(?<!%s)%s(%s)(?!%s)" % (HW, pre, alts, HW))
+        hpron = he_words(he.get("banned_pronouns"), "[%s]{0,2}" % re.escape(he.get("prefixes", "")) if he.get("prefixes") else "")
+        hban = he_words(he.get("banned_words"), "[%s]?" % re.escape(he.get("prefixes", "")) if he.get("prefixes") else "")
+        hurg = re.compile("|".join(he["fake_urgency_patterns"])) if he.get("fake_urgency_patterns") else never
+        for bid, text, _ in blocks:
+            if not re.search("[%s]" % HL, text):
+                continue
+            for m in hpron.finditer(text):
+                add("voice", v.get("pronoun_rule", "first-person-plural"), m.group(0),
+                    "%s '%s': %s" % (he.get("pronoun_reason", "Plural voice (Hebrew)"), m.group(0), snippet(text, m)),
+                    he.get("pronoun_fix", "Rewrite in first person singular."))
+            for m in hban.finditer(text):
+                add("voice", "banned-word", m.group(0), "Banned hype word '%s': %s" % (m.group(0), snippet(text, m)),
+                    "Delete it and state the concrete fact instead.")
+            for m in hurg.finditer(text):
+                add("voice", "fake-urgency", m.group(0), "Fake urgency '%s': %s" % (m.group(0), snippet(text, m)),
+                    "Remove it; state the real deadline with its date or say nothing.")
 
     # ---- claims
     claim_res = [
