@@ -1,6 +1,9 @@
-/* J8NIX 11.4.0 service worker: offline shell + web push. Never caches API data. */
-var CACHE = 'j8nix-v11.4.0-2';
-var SHELL = ['./', 'index.html', 'app.css?v=11.4.0', 'v11.css?v=11.4.0', 'j11.css?v=11.4.0', 'app.js?v=11.4.0', 'j11.js?v=11.4.0', 'shell.js?v=11.4.0', 'j8-data.js?v=11.4.0', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
+/* J8NIX 11.5.0 service worker: offline shell + web push. Never caches API data.
+   11.5.0: phone alerts follow Dave's rules (alerts.js): titles only, at most 3 a day bundled into one notification,
+   quiet 22:00–08:00 and Shabbat, a seen alert never comes back. Revert: sw-11.4.0.js. */
+importScripts('alerts.js?v=11.5.0');
+var CACHE = 'j8nix-v11.5.0-1', ASTATE = 'j8alerts-v1';
+var SHELL = ['./', 'index.html', 'app.css?v=11.5.0', 'v11.css?v=11.5.0', 'j11.css?v=11.5.0', 'app.js?v=11.5.0', 'j11.js?v=11.5.0', 'shell.js?v=11.5.0', 'j8-data.js?v=11.5.0', 'alerts.js?v=11.5.0', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/studio.png',
   'brand/j8nix-wordmark-2026-11-17.svg', 'brand/j8nix-mark-8-2026-11-17.svg', 'brand/j8nix-2026-11-17.png', 'icons/j8-icon-2026-11-17.svg', 'icons/j8-192-2026-11-17.png', 'icons/badge-96.png', 'icons/j8-touch-180-2026-11-17.png'];
 
@@ -35,16 +38,30 @@ self.addEventListener('fetch', function (e) {
   }
 });
 
+function aGet() { return caches.open(ASTATE).then(function (c) { return c.match('/a').then(function (r) { return r ? r.json() : {}; }); }).catch(function () { return {}; }); }
+function aPut(st) { return caches.open(ASTATE).then(function (c) { return c.put('/a', new Response(JSON.stringify(st), { headers: { 'content-type': 'application/json' } })); }).catch(function () {}); }
 self.addEventListener('push', function (e) {
   var d = {};
-  try { d = e.data ? e.data.json() : {}; } catch (x) { d = { title: 'J8NIX', body: e.data ? e.data.text() : '' }; }
-  e.waitUntil(Promise.all([
-    self.registration.showNotification(d.title || 'J8NIX', {
-      body: d.body || '', icon: 'icons/icon-192.png', badge: 'icons/badge-96.png', tag: d.tag || 'j8', renotify: true,
-      data: { url: d.url || './' }
-    }),
-    self.clients.matchAll({ type: 'window' }).then(function (cs) { cs.forEach(function (c) { c.postMessage({ type: 'j8-refresh' }); }); })
-  ]));
+  try { d = e.data ? e.data.json() : {}; } catch (x) { d = { title: 'J8NIX' }; }
+  e.waitUntil(aGet().then(function (st) {
+    var r = self.J8A.decide(st, { key: d.tag || '', title: d.title || 'J8NIX' }, Date.now());
+    /* one J8NIX notification on the phone at a time (tag j8-alerts); outside the rules it updates silently; body is always empty */
+    return aPut(r.st).then(function () {
+      return Promise.all([
+        self.registration.showNotification(r.title, {
+          body: '', icon: 'icons/j8-192-2026-11-17.png', badge: 'icons/badge-96.png', tag: 'j8-alerts', renotify: !r.silent, silent: r.silent,
+          data: { url: d.url || './' }
+        }),
+        self.clients.matchAll({ type: 'window' }).then(function (cs) { cs.forEach(function (c) { c.postMessage({ type: 'j8-refresh' }); }); })
+      ]);
+    });
+  }));
+});
+self.addEventListener('message', function (e) {
+  if (!e.data || e.data.type !== 'j8-opened') return;
+  e.waitUntil(aGet().then(function (st) { return aPut(self.J8A.opened(st, Date.now())); }).then(function () {
+    return self.registration.getNotifications({ tag: 'j8-alerts' }).then(function (L) { L.forEach(function (n) { n.close(); }); });
+  }));
 });
 self.addEventListener('notificationclick', function (e) {
   e.notification.close();
