@@ -1570,7 +1570,7 @@ function teamNext16(){var L=schedList().map(function(s){return {s:s,t:nextRun(s)
 function sendRun16(){var L=teamNext16().filter(function(x){return /send/i.test(x.s.name||'');});return L[0]||null;}
 function teamStrip16(){var L=teamNext16(),x=L[0];return '<p class="strip16" data-s="team">'+stG('team')+'<span>'+(x?esc(tt('teamNext',{t:hm2(x.t),r:x.s.name||''})):esc(tt('teamNone')))+'</span></p>';}
 var vnx16=vNext;vNext=function(){if(UI.v==='needs16')return listWrap('tasks','<header class="ph"></header>'+vNeeds16());var h=vnx16();if(!connected||UI.v!=='next')return h;
-  h=h.replace(/(<\/header>)/,'$1'+alertBar16());
+  var ab=alertBar16(),tp=h.indexOf('<section class="td13"');if(ab){if(tp>-1){var te=h.indexOf('</section>',h.indexOf('<p class="rp13">',tp));h=te>-1?h.slice(0,te+10)+ab+h.slice(te+10):h.replace(/(<\/header>)/,'$1'+ab);}else h=h.replace(/(<\/header>)/,'$1'+ab);}
   if(!myQueue().length)h=h.replace(/(<section class="hero12 (?:clear|empty13|alldone13)[\s\S]*?<\/section>)/,'$1'+teamStrip16()+(/x13-lineup/.test(h)?'':'<p class="j8l16"><button class="lnk12 ai" data-a="x13-lineup">'+g8i()+'<span>'+esc(tt('lineUp2'))+'</span></button></p>'));
   return h;};
 
@@ -1591,7 +1591,7 @@ function vNeeds16(){if(!connected)return skel(4);var N=myQueue(),now=N.filter(no
     return '<li data-s="done"><div class="ny16">'+stG(o.status==='killed'?'kill':'done')+'<span class="tx"><b dir="auto">'+esc(cap1(ttl))+'</b>'+(p&&pid!=='p-general'?'<small dir="auto">'+ptile(pid,'sm')+esc(p.name)+'</small>':'')+'</span>'+(x.k==='t'?'<button type="button" class="lnk" data-a="x16-reopen" data-id="'+esc(o.id)+'">'+I('undo')+'<span>'+esc(tt('reopen'))+'</span></button>':'')+'</div></li>';}).join('')+'</ul>';
   return '<div class="ny16w">'+h+'</div>';}
 /* phone List: Projects · Tasks · Drafts, like desktop */
-listWrap=function(seg,html){UI.lseg=seg;var A=apPending().length,P=liveP().filter(function(p){return !isDoneP(p);}).length,N=connected?myQueue().length:0;
+var lw16=listWrap;listWrap=function(seg,html){if(D12())return lw16(seg,html);UI.lseg=seg;var A=apPending().length,P=liveP().filter(function(p){return !isDoneP(p);}).length,N=connected?myQueue().length:0;
   var h=ph(seg==='tasks'?tt('nyH'):tt('list'),esc(seg==='tasks'?tt('nyP'):tt('lsub',{p:P,d:A})))+'<nav class="seg12 three" aria-label="'+esc(tt('list'))+'">'
    +[['proj','proj',tt('projects'),P],['tasks','steps',tt('tasks'),N],['drafts','inbox',tt('drafts'),A]].map(function(x){return '<button data-a="x12-lseg" data-id="'+x[0]+'" aria-pressed="'+(x[0]===seg)+'">'+I(x[1])+'<span>'+esc(x[2])+'</span>'+(x[3]?'<span class="n12"><bdi>'+x[3]+'</bdi></span>':'')+'</button>';}).join('')+'</nav>';
   return h+'<div class="lb12">'+stripHead(html)+'</div>';};
@@ -1652,7 +1652,7 @@ var ir16=iRow;iRow=function(o){var h=ir16(o);var i=o&&o.i;if(!i||!i.batch||i.bat
 var vib16=vInbox;vInbox=function(){var h=vib16();if(!connected||apPending().length)return h;var x=teamNext16()[0];
   return x?h.replace(/(<section class="empty10"><p>)[^<]*(<\/p>)/,'$1'+esc(tt('noDraftsT',{r:x.s.name||'',t:hm2(x.t)}))+'$2'):h;};
 
-/* ---------- the calm done moment: glyph turns green, toast "Done: … Frees N." with Undo for 6 s; no confetti ---------- */
+/* ---------- the calm done moment: glyph turns green, toast "Done: … Frees N." with Undo; no confetti ---------- */
 function pop16(el){var g=el&&el.querySelector('.st12');if(!g)return;g.setAttribute('data-s','done');g.setAttribute('aria-label',tt('sDone'));g.innerHTML=I('check');if(!RM()){g.classList.remove('pop16');void g.offsetWidth;g.classList.add('pop16');}}
 var md16=markDone;markDone=function(k){var i=rowByKey(k);if(i){var n=0;if(i.task){var id=i.task.id;n=(graph().out[id]||[]).filter(function(d){return openBlk(d).filter(function(x){return x!==id;}).length===0;}).length;}UI.dm16={x:cut(cap1(nextOf(i).what),48),n:n,at:Date.now()};
   var esk=window.CSS&&CSS.escape?CSS.escape(k):k;[].forEach.call(document.querySelectorAll('#hero12[data-k="'+esk+'"],#r-'+esk+',[data-kn="'+esk+'"]'),pop16);}
@@ -1661,7 +1661,7 @@ window.addEventListener('click',function(e){var b=e.target.closest&&e.target.clo
 var to16=toast;toast=function(msg,undo){msg=String(msg==null?'':msg);var D=UI.dm16;
   if(D&&undo&&Date.now()-D.at<15000){msg=tt('doneT',{x:D.x})+(D.n?' '+tt('freesN',{n:D.n}):'');UI.dm16=null;}
   else if(UI.sa16&&Date.now()-UI.sa16.at<15000&&/^(Approved|אושר)/.test(msg)){msg=msg.replace(/^(Approved\.|אושר\.)[\s\S]*$/,'$1')+' '+tt('sendsAt',{t:UI.sa16.t});UI.sa16=null;}
-  to16(msg,undo);if(undo){clearTimeout(window.tt);window.tt=setTimeout(hideToast,6000);}};
+  to16(msg,undo);}; /* the 11.4 toast rule stays (gone in 2.5 s, Dave 18 Nov 12:58); Undo also lives on under Needs you → Done today → Reopen */
 celebrate=function(h,p){toast(String(h||'')+(p?'. '+p:''));};window.j8cel=celebrate;
 
 /* ---------- Me → Connections: connected = done check, off = waiting lock ---------- */
