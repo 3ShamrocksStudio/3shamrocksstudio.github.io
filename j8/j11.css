@@ -779,3 +779,165 @@ body[data-side=mini] .wmx13::before,body[data-side=mini] .wmx13::after{display:n
 #toast.toast.t15 #undo .ico{width:16px;height:16px}
 #toast.toast.t15 #undo:hover,#toast.toast.t15 #undo:focus-visible{background:#D8D8D8}
 @media (prefers-reduced-motion:reduce){#toast.toast.t15{transition:none;transform:none}}
+/* ===== 11.5.0 (18 Nov 2026, UX-SPEC 18 Nov): one colour = one meaning, always with an icon and a word =====
+   Red ◆! needs you now · Orange person needs you · Sky people team on it · Haze lock waiting · Green check done · Gold coin money (a tag)
+   · Violet 8 J8 · Royal = buttons and links only. fill = shapes · mid = lines and graphics (≥3:1) · ink = text (≥4.5:1 on white and tint) · -w = tint.
+   Rows are coloured by who must act (data-s), never by project. Revert: j11-11.4.0.css. */
+:root,:root[data-theme]{
+ --now:#DD0E3F;--now-mid:#DD0E3F;--now-ink:#B80A33;--now-w:#FDE8ED;--now-on:#FFFFFF;
+ --you:#FF9700;--you-mid:#C96E00;--you-ink:#9A5200;--you-w:#FFF1DC;--you-on:#060833;
+ --team:#2AB9FF;--team-mid:#0E8FD6;--team-ink:#005F92;--team-w:#E3F5FF;--team-on:#060833;
+ --wait:#838EB7;--wait-mid:#838EB7;--wait-ink:#4A5566;--wait-w:#EEF0F4;--wait-on:#060833;
+ --done:#32CC00;--done-mid:#2A9A00;--done-ink:#1E6B00;--done-w:#E4F8DA;--done-on:#060833;
+ --money:#FFC21A;--money-mid:#B07A00;--money-ink:#6B4E00;--money-w:#FFF6D6;--money-on:#060833;
+ --j8:#9500FF;--j8-mid:#9500FF;--j8-ink:#7A00D1;--j8-w:#F3E6FF;
+ --urgent:#DD0E3F;--urgent-ink:#B80A33;--urgent-w:#FDE8ED;--ai:#9500FF;--ai-ink:#7A00D1;--ai-w:#F3E6FF}
+/* old "orange = attention" uses move to Needs you; decorative tag colours become neutral */
+.dot12.o{background:var(--you)}.dot12.n{background:var(--wait-mid)}.dot12.r{background:var(--now);box-shadow:0 0 0 4px var(--now-w)}
+.grp12 .gw{background:var(--you-w);color:var(--you-ink)}.gi12 .rp{color:var(--you-ink)}.conns .cr.att .sub{color:var(--you-ink)}
+.bub12.lv-o{box-shadow:var(--sh1),inset 3px 0 0 var(--you-mid)}.bub12.lv-g{box-shadow:var(--sh1),inset 3px 0 0 var(--done-mid)}
+.fr12 .ico{color:var(--team-ink)}
+.chip12.you{background:var(--you-w);color:var(--you-ink)}.chip12.tm,.chip12.unl{background:var(--team-w);color:var(--team-ink)}.chip12.new{background:var(--done-w);color:var(--done-ink)}.chip12.out{background:var(--wait-w);color:var(--wait-ink)}
+.chip12[class*=" tg-"]{background:var(--well,#F2F5FC);color:var(--indigo)}
+.alldone13 .ng13,.nwo13.k-goal .well11,.mk13.k-goal .sh12{background:var(--royal-w2);color:var(--indigo);border-color:var(--royal)}
+.nwo13.k-step .well11{background:var(--you-w);color:var(--you-ink)}.mk13.k-todo .sh12{background:var(--you-w);color:var(--you-ink);border-color:var(--you-mid)}
+.hint13.money,.hint13.sky{background:var(--j8-w);color:var(--j8-ink)}
+.chip12.pinb.on{background:var(--royal-w2);color:var(--royal);box-shadow:inset 0 0 0 1.5px var(--royal)}.gpin[aria-pressed=true]{color:var(--royal)}.cal13 time{color:var(--indigo)}
+.sh12,.sh12:first-of-type{background:none;border:0;padding:0;color:var(--midnight)}
+/* sentence case: no shouting eyebrows */
+.dtf,.tl13 h4,.lu13 h4,.how13 h4,.ps15b h4,.gi12.g3 .gk,.rail .ph6,.sideg .ph6{text-transform:none!important;letter-spacing:0!important}
+.tl13 h4{font-size:.875rem;color:var(--indigo)}
+/* the state glyph: shape + icon carry the meaning, colour confirms it (each shape ≥3:1 against white) */
+.st12{width:26px;height:26px;border-radius:50%;display:inline-grid;place-items:center;flex:none;position:relative;background:#fff;color:var(--wait-ink);box-shadow:inset 0 0 0 2px var(--wait-mid)}
+.st12 .ico{width:15px;height:15px;stroke-width:2.4}
+.st12 .g8{width:8px;height:17px}
+.st12[data-s=now]{width:23px;height:23px;margin:1.5px;border-radius:6px;transform:rotate(45deg);background:var(--now);color:#fff;box-shadow:none}
+.st12[data-s=now] .ico{transform:rotate(-45deg);stroke-width:3}
+.st12[data-s=you]{background:var(--you);color:var(--you-on);box-shadow:inset 0 0 0 1.5px var(--you-mid)}
+.st12[data-s=team]{background:var(--team-w);color:var(--team-ink);box-shadow:inset 0 0 0 2.5px var(--team-mid)}
+.st12[data-s=team]::after{content:"";position:absolute;inset:0;border-radius:50%;border:2.5px solid transparent;border-top-color:var(--midnight)}
+.st12[data-s=wait]{background:#fff;color:var(--wait-ink);box-shadow:none;border:2px dashed var(--wait-ink)}
+.st12[data-s=done]{background:var(--done);color:var(--done-on);box-shadow:inset 0 0 0 1.5px var(--done-mid)}
+.st12[data-s=kill]{background:var(--wait-w);color:var(--wait-ink);box-shadow:inset 0 0 0 2px var(--wait-mid)}
+.st12[data-s=todo]{background:#fff;box-shadow:inset 0 0 0 2px var(--wait-mid)}
+.st12[data-s=j8]{background:var(--j8);color:#fff;box-shadow:none}
+.st12[data-s=money]{background:var(--money);color:var(--money-on);box-shadow:inset 0 0 0 1.5px var(--money-mid)}
+.st12.pop16{animation:pop16 .22s var(--spring)}
+@keyframes pop16{from{transform:scale(.55)}to{transform:none}}
+/* status chips: icon + word on the tint, text in the ink shade */
+.chip12.s16 .ico{width:14px;height:14px}.chip12.s16 .g8{width:7px;height:15px}
+.chip12.s16[data-s=now]{background:var(--now-w);color:var(--now-ink)}.chip12.s16[data-s=you]{background:var(--you-w);color:var(--you-ink)}
+.chip12.s16[data-s=team]{background:var(--team-w);color:var(--team-ink)}.chip12.s16[data-s=wait],.chip12.s16[data-s=kill]{background:var(--wait-w);color:var(--wait-ink)}
+.chip12.s16[data-s=done]{background:var(--done-w);color:var(--done-ink)}.chip12.s16[data-s=money]{background:var(--money-w);color:var(--money-ink)}
+.chip12.s16[data-s=j8]{background:var(--j8-w);color:var(--j8-ink)}
+.chip12.plain{background:#fff;color:var(--indigo);box-shadow:inset 0 0 0 1.5px var(--line-2,#E1E7F2)}
+/* rails show who must act */
+[data-s=now]{--pc:var(--now-mid)}[data-s=you]{--pc:var(--you-mid)}[data-s=team]{--pc:var(--team-mid)}[data-s=wait]{--pc:var(--wait-ink)}[data-s=done]{--pc:var(--done-mid)}
+.rt12 small::before{display:none}
+.rt12 small .tile,.ny16 small .tile,.hero12 .pj12 .tile{width:18px;height:18px;border-radius:5px;font-size:.5rem}.rt12 small .tile img,.ny16 small .tile img{width:14px;height:14px}
+.rh12 .st12,.qr12 .st12,.ll12 .st12{width:24px;height:24px}.rh12 .st12[data-s=now],.qr12 .st12[data-s=now],.ll12 .st12[data-s=now]{width:21px;height:21px}
+.gr12[data-s],.ln12[data-s]{border-inline-start-color:var(--pc)}
+.hd13{border-inline-start-color:var(--you-mid)}#gsheet .it13{border-top-color:var(--you-mid)}.chip12.pj{box-shadow:inset 0 0 0 1.5px var(--line-2,#E1E7F2)}
+/* the hero: spine and tint follow its state; one primary, the rest are quiet links */
+.hero12[data-s]::before{background:var(--pc)}
+.hero12[data-s=now]:not(.clear){background:linear-gradient(180deg,var(--now-w),#fff 46%);border-color:#F4B6C5}
+.hero12[data-s=you]:not(.clear){background:linear-gradient(180deg,var(--you-w),#fff 46%);border-color:#FFD49A}
+.hero12 .dtf{font:700 .875rem/1 var(--text);padding:4px 10px 4px 4px}
+.hero12[data-s=now] .dtf{background:var(--now-w);color:var(--now-ink)}.hero12[data-s=you] .dtf{background:var(--you-w);color:var(--you-ink)}
+.hero12 .dtf .st12{width:22px;height:22px}.hero12 .dtf .st12[data-s=now]{width:19px;height:19px}
+.hero12 .bar12 .b12:not(.pri){background:none;box-shadow:none;min-height:44px;padding:0 6px;color:var(--slate);font-weight:600}
+.hero12 .bar12 .b12:not(.pri):hover{color:var(--royal)}
+/* finish line: the signature element */
+.fl16{background:#fff;border-radius:18px;padding:14px 14px 12px;margin:0 0 14px;box-shadow:0 0 0 1px #E4E8F3}
+.fl16>header{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px}
+.fl16>header b{font:700 1rem/1.3 var(--display);color:var(--midnight)}
+.fl16>header>span{font:600 .875rem/1.3 var(--text);color:var(--slate);text-align:end}
+.td13 .fl16{box-shadow:none;padding:0;margin:14px 0 2px}
+.tr16{display:flex;align-items:center;gap:4px;min-height:28px}
+.tr16 .s{flex:1 1 0;min-width:5px;height:12px;border-radius:4px;background:#fff;box-shadow:inset 0 0 0 1.5px var(--wait-mid)}
+.tr16 .s[data-s=done]{background:var(--done-mid);box-shadow:none}
+.tr16 .s[data-s=now]{background:var(--now);box-shadow:none}
+.tr16 .s[data-s=you]{background:var(--you);box-shadow:inset 0 0 0 1.5px var(--you-mid)}
+.tr16 .s[data-s=team]{background:repeating-linear-gradient(135deg,var(--team) 0 6px,var(--team-mid) 6px 9px);box-shadow:none}
+.tr16 .s[data-s=wait]{background:repeating-linear-gradient(90deg,var(--wait-w) 0 5px,#fff 5px 8px);box-shadow:inset 0 0 0 1.5px var(--wait-ink)}
+.tr16 .s[data-s=kill]{background:repeating-linear-gradient(135deg,var(--wait-w) 0 4px,var(--wait-mid) 4px 5.5px);box-shadow:inset 0 0 0 1.5px var(--wait-mid)}
+.flag16{display:flex;align-items:center;flex:none;margin-inline-start:6px;font:700 .8125rem/1 var(--text);color:var(--midnight);white-space:nowrap}
+.flag16 i{display:block;width:3px;height:26px;background:var(--midnight);border-radius:2px;position:relative;margin-inline-end:16px}
+.flag16 i::after{content:"";position:absolute;inset-inline-start:3px;top:0;width:13px;height:10px;background:conic-gradient(var(--midnight) 0 25%,#fff 0 50%,var(--midnight) 0 75%,#fff 0);background-size:6.5px 5px;box-shadow:inset 0 0 0 1px var(--midnight)}
+.tr16.only{justify-content:flex-end;min-height:30px}
+.tr16.all .flag16 i{animation:flag16 .9s ease-out 1}
+@keyframes flag16{from{box-shadow:0 0 0 0 rgb(50 204 0 / .7)}to{box-shadow:0 0 0 12px rgb(50 204 0 / 0)}}
+.lg16{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+.td13 .prg13 .lg{margin-top:10px}
+/* stage path and milestone card (project) */
+.pjt16{display:flex;align-items:center;gap:14px;min-width:0}.pjt16 h2{overflow-wrap:anywhere}
+.stg16{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));list-style:none;margin:0 0 16px;padding:0}
+.stg16 li{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;font:600 .75rem/1.2 var(--text);color:var(--slate);text-align:center;min-width:0}
+.stg16 li::before{content:"";position:absolute;top:12px;inset-inline-start:-50%;inset-inline-end:50%;height:3px;background:#D8DEEA}
+.stg16 li:first-child::before{display:none}.stg16 li.dn::before,.stg16 li.cur::before{background:var(--done-mid)}
+.stg16 li .st12{position:relative;z-index:1}.stg16 li.cur{color:var(--midnight);font-weight:800}.stg16 li span{overflow-wrap:anywhere;max-width:100%}
+.ms16>header{align-items:center}.ms16 h3{margin:0 0 10px;font:800 1.25rem/1.25 var(--display);color:var(--midnight);overflow-wrap:anywhere}
+.ms16.none{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.ms16.none>span:not(.st12){flex:1 1 180px;min-width:0;color:var(--midnight);font:500 .9375rem/1.4 var(--text)}
+.ms16.none .b12{min-height:44px}
+.pj16 .cols3>section:nth-child(n+2){display:none}
+.stp16{margin:0 0 14px}.more16{margin:-6px 4px 0;color:var(--slate);font:500 .875rem/1.3 var(--text)}
+/* Needs you list: one panel, dividers, a glyph per row */
+.sh16{display:flex;align-items:center;gap:8px;margin:18px 2px 8px}
+.sh16 b{font:700 1rem/1.2 var(--display);color:var(--midnight)}.sh16>span:not(.st12){font:600 .875rem/1.2 var(--text);color:var(--slate)}
+.sh16 .st12{width:20px;height:20px}.sh16 .st12 .ico{width:12px;height:12px}.sh16 .st12[data-s=now]{width:17px;height:17px}
+.ny16l{list-style:none;margin:0 0 14px;padding:0;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 0 0 1px #E4E8F3}
+.ny16l li+li{border-top:1px solid #E1E7F2}
+.ny16{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:11px 14px;text-align:start;color:var(--navy);background:none;border:0;font:inherit}
+.ny16 .tx{flex:1;min-width:0}.ny16 .tx b{display:block;font:600 .9375rem/1.3 var(--text);color:var(--midnight);overflow-wrap:anywhere}
+.ny16 .tx small{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px;font:500 .8125rem/1.3 var(--text);color:var(--slate)}
+.ny16 .m{flex:none;font:600 .8125rem/1 var(--text);color:var(--slate)}.ny16 .chev{width:18px;height:18px;color:var(--wait-ink);flex:none}
+.ny16l.dn .tx b{color:var(--slate)}
+.ny16 .lnk{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 4px;color:var(--royal);font:600 .875rem/1 var(--text)}.ny16 .lnk .ico{width:16px;height:16px}
+.nyp16{margin:-4px 2px 12px}
+.strip16{display:flex;align-items:center;gap:10px;border-radius:18px;padding:12px 14px;margin:0 0 12px;font:500 .9375rem/1.4 var(--text);color:var(--midnight)}
+.strip16[data-s=team]{background:var(--team-w)}.strip16>span:not(.st12){flex:1;min-width:0}
+.j8l16{margin:0 0 14px}
+/* alerts: the "Needs you" bar */
+.al16{background:#fff;border-radius:18px;margin:0 0 14px;padding:10px 14px 8px;box-shadow:0 0 0 1px #E4E8F3;border-inline-start:6px solid var(--pc)}
+.al16>header{display:flex;align-items:center;gap:10px}
+.al16 h3{flex:1;margin:0;display:flex;align-items:center;gap:8px;font:700 1rem/1.3 var(--display);color:var(--midnight)}
+.al16 ul{list-style:none;margin:4px 0 0;padding:0}
+.al16 li button{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:4px 0;text-align:start;color:var(--midnight);font:500 .9375rem/1.35 var(--text);background:none;border:0}
+.al16 li button>span:not(.st12){flex:1;min-width:0;overflow-wrap:anywhere}.al16 li .st12{width:22px;height:22px}.al16 li .st12[data-s=now]{width:19px;height:19px}
+.al16 .chev{width:16px;height:16px;color:var(--wait-ink);flex:none}
+.al16 .lnk{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 4px;color:var(--royal);font:600 .875rem/1 var(--text)}.al16 .lnk .ico{width:16px;height:16px}
+.alx16{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0;color:var(--slate);font:500 .875rem/1.3 var(--text)}
+.alp16{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:8px;padding:10px 0 4px;border-top:1px solid #E1E7F2}.alp16 small{color:var(--slate);font:500 .8125rem/1.35 var(--text)}
+.alq16{margin:2px 0 4px;font:500 .8125rem/1.35 var(--text);color:var(--slate)}
+/* nav badges: red when something needs you now, orange for yours, sky for team replies */
+.rail [data-nav=next] .count,.rail [data-nav=list] .count{background:var(--you);color:var(--you-on)}
+.rail .count.now16{background:var(--now)!important;color:#fff!important}
+.rail [data-nav=chat] .count{background:var(--team-w);color:var(--team-ink);box-shadow:inset 0 0 0 1.5px var(--team-mid)}
+/* drafts: batch track, Approve = the one primary, Edit + Kill, Comment and Skip under More */
+.dr16{margin-top:12px}
+.abar.ab16{display:grid;grid-template-columns:1fr;gap:8px}
+.abar.ab16>.do.pri{background:var(--royal);color:#fff;border:0;clip-path:none;border-radius:14px;min-height:54px;box-shadow:0 10px 20px -12px rgb(42 68 198 / .8)}
+.abar.ab16 .ab2{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
+.abar.ab16 .ab2>button{flex-direction:row;gap:8px;min-height:48px;border-radius:14px;background:#fff;border:1.5px solid var(--rule);color:var(--midnight);box-shadow:none}
+.abar.ab16 .ab2>.kill{border-color:var(--now-mid);color:var(--now-ink)}
+.more16{position:relative}.more16>summary{list-style:none;display:grid;place-items:center;width:48px;height:48px;border-radius:14px;border:1.5px solid var(--rule);background:#fff;color:var(--midnight);cursor:pointer}
+.more16>summary::-webkit-details-marker{display:none}.more16>summary .ico{width:20px;height:20px}
+.more16 .mm16{position:absolute;bottom:56px;inset-inline-end:0;z-index:5;display:grid;gap:6px;min-width:180px;padding:8px;border-radius:14px;background:#fff;box-shadow:0 12px 30px -12px rgb(6 8 51 / .45),0 0 0 1px #E1E7F2}
+.more16 .mm16 button{flex-direction:row;justify-content:flex-start;gap:8px;min-height:44px;padding:0 12px;border-radius:10px;border:0;background:none;color:var(--midnight);box-shadow:none}
+.btr16{display:flex;align-items:center;gap:8px;margin-top:6px}.btr16 .tr16{flex:1;min-height:10px}.btr16 .tr16 .s{height:8px;min-width:3px}.btr16 .flag16{display:none}
+.btr16 small{flex:none;font:600 .75rem/1 var(--text);color:var(--slate)}
+/* Me → Connections */
+.conns .sub .st12{width:20px;height:20px;margin-inline-end:6px;vertical-align:middle}.conns .sub .st12 .ico{width:12px;height:12px}.conns .sub.off16{color:var(--wait-ink)}
+/* instant answers */
+.ia16 .bub12{box-shadow:var(--sh1),inset 3px 0 0 var(--j8)}
+.iah16{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 6px}.iah16 small{color:var(--slate);font:500 .75rem/1.3 var(--text)}
+.ia16 .ia1{font:600 .9375rem/1.45 var(--text);color:var(--midnight)}
+.ia16 ul{list-style:none;margin:8px 0 2px;padding:0;display:grid;gap:2px}
+.ia16 li button,.ia16 .li16{display:flex;align-items:center;gap:8px;width:100%;min-height:36px;text-align:start;background:none;border:0;color:var(--midnight);font:500 .875rem/1.35 var(--text)}
+.ia16 li .st12{width:20px;height:20px}.ia16 li .st12 .ico{width:12px;height:12px}.ia16 li .st12[data-s=now]{width:17px;height:17px}
+.ial16{display:flex;flex-wrap:wrap;gap:0 14px;margin:4px 0 0}.ial16 .lnk{display:inline-flex;align-items:center;gap:4px;min-height:44px;color:var(--royal);font:600 .875rem/1 var(--text)}.ial16 .lnk .ico{width:15px;height:15px}
+@media (prefers-reduced-motion:reduce){.st12.pop16,.tr16.all .flag16 i{animation:none!important}}
+.seg12.three{grid-template-columns:repeat(3,minmax(0,1fr));max-width:560px}
+@media (max-width:599px){.seg12.three button{gap:5px;padding:0 6px;font-size:.875rem}.seg12.three button .n12{min-width:20px;padding:0 5px}}
+.sg12 i.on::after{background:var(--done-mid)}.sg12 i.cur::after{background:var(--pc,var(--team-mid))}.sg12 i.pay::after{background:var(--done-mid)}
+.prg13 .k .st12{width:18px;height:18px}.prg13 .k .st12 .ico{width:11px;height:11px}

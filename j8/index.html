@@ -16,12 +16,13 @@
 <link rel="icon" type="image/svg+xml" href="icons/j8-icon-2026-11-17.svg">
 <link rel="apple-touch-icon" href="icons/j8-touch-180-2026-11-17.png">
 <link rel="preload" href="vendor/fonts/heebo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="app.css?v=11.4.0">
-<link rel="stylesheet" href="v11.css?v=11.4.0">
-<link rel="stylesheet" href="j11.css?v=11.4.0">
+<link rel="stylesheet" href="app.css?v=11.5.0">
+<link rel="stylesheet" href="v11.css?v=11.5.0">
+<link rel="stylesheet" href="j11.css?v=11.5.0">
 </head>
 <body>
-<!-- J8NIX PWA 11.4.0 (18 Nov 2026): "Learn about you" + your voice (interview step, Teach J8 your voice, Me → Your voice, Not me), Processes (+ New → Process, Processes view, project list), a "Sounds like you" line on scored drafts, plan gates say "OK to start" and never send, a compact one-line toast that never covers a button. Revert to 11.3.3: index-11.3.3.html + sw-11.3.3.js.
+<!-- J8NIX PWA 11.5.0 (18 Nov 2026): one colour = one meaning (icon + word on every status), finish lines from real fields, "Needs you" alerts (bar, badges; phone alerts: titles only, max 3 a day, quiet 22:00–08:00 and Shabbat), instant answers in Chat from the app's own data. Revert to 11.4.0: index-11.4.0.html + j11-11.4.0.js + j11-11.4.0.css + sw-11.4.0.js.
+     J8NIX PWA 11.4.0 (18 Nov 2026): "Learn about you" + your voice (interview step, Teach J8 your voice, Me → Your voice, Not me), Processes (+ New → Process, Processes view, project list), a "Sounds like you" line on scored drafts, plan gates say "OK to start" and never send, a compact one-line toast that never covers a button. Revert to 11.3.3: index-11.3.3.html + sw-11.3.3.js.
      J8NIX PWA 11.3.0 (17 Nov 2026): clear steps for you (full titles, How as numbered steps, a button named after where it goes; never a reply fragment or a vague project line), no pink, Dave's dark-on-white logo, light only when J8 works / boots / you finish. Revert to 11.2.0: index-11.2.0.html + sw-11.2.0.js.
      11.2.0 (17 Nov 2026): Next items open in place (never an empty list), Line up next steps, colour roles, real pin/unpin, + New, honest Connections, what J8 remembers. Revert to 11.1.2: index-11.1.2.html + sw-11.1.2.js.
      11.1.0 (16 Nov 2026): onboarding is a J8 interview (or a form) that sets up your plan: projects, starter steps, check-ins, approval rules; Me → Re-plan with J8. Revert to 11.0.1: index-11.0.1.html + sw-11.0.1.js.
@@ -34,6 +35,8 @@
      Older: 8.1.1 → index-8.1.0.html … index-6.1.2.html. Data: window.J8 (j8-data.js). -->
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
  <symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></symbol>
+ <symbol id="i-bang" viewBox="0 0 24 24"><path d="M12 6v8" /><path d="M12 18h.01" /></symbol>
+ <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 18V6" /></symbol>
  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></symbol>
  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5" /><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" /></symbol>
  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="12" r="1" /><circle cx="9" cy="5" r="1" /><circle cx="9" cy="19" r="1" /><circle cx="15" cy="12" r="1" /><circle cx="15" cy="5" r="1" /><circle cx="15" cy="19" r="1" /></symbol>
@@ -212,10 +215,11 @@
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="toastMsg"></span><button id="undo" hidden><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg><span id="undoL">Undo</span></button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=11.4.0"></script>
-<script src="app.js?v=11.4.0"></script>
-<script src="j11.js?v=11.4.0"></script>
-<script src="shell.js?v=11.4.0"></script>
+<script src="j8-data.js?v=11.5.0"></script>
+<script src="app.js?v=11.5.0"></script>
+<script src="alerts.js?v=11.5.0"></script>
+<script src="j11.js?v=11.5.0"></script>
+<script src="shell.js?v=11.5.0"></script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>
