@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Brand OS Command</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000000;--s1:#0d0a17;--s2:#151024;--ink:#f6f4ff;--vi:#8239ea;--vi2:#b07cff;--vi3:#d9c4ff;--teal:#2fb7c9;--green:#8be36a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Instrument Sans",system-ui,sans-serif}
+a{color:var(--vi3)}
+.top{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--s2)}
+.top img{height:24px;width:auto}
+.top h1{margin:0;font:700 18px/1 "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:.01em}
+.top .tag{margin-left:auto;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+main{max-width:1180px;margin:0 auto;padding:0 16px 48px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--s2)}
+.kpis div{padding:18px 16px 16px 0}
+.kpis b{display:block;font:700 clamp(30px,5vw,46px)/1 "Bricolage Grotesque",system-ui,sans-serif}
+.kpis span{font-size:13px;color:var(--vi3)}
+.kpis .up b{color:var(--green)}
+.lede{margin:18px 0 8px;max-width:760px;color:var(--ink)}
+table{width:100%;border-collapse:collapse;margin:14px 0 6px}
+caption{text-align:left;font:700 13px/1 "Instrument Sans",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--vi3);padding:0 0 10px}
+th,td{padding:10px 8px;border-bottom:1px solid var(--s2);text-align:left;vertical-align:middle}
+thead th{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--vi3)}
+tbody th{font-weight:600;white-space:nowrap}
+tbody th a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--vi)}
+tbody th small{margin-left:6px;color:var(--vi3);font-weight:400}
+td.s{width:22%}
+.bar{display:block;position:relative;height:24px;background:var(--s1)}
+.bar::before{content:"";position:absolute;inset:0 auto 0 0;width:var(--w)}
+.bar.ok::before{background:var(--green)}
+.bar.no::before{background:var(--vi)}
+.bar b{position:relative;display:block;padding:0 8px;font:700 14px/24px "Instrument Sans",system-ui,sans-serif;color:var(--ink)}
+.bar.ok b{color:var(--bg)}
+td.c{text-align:center;font-weight:700;width:7%}
+td.c.ok{color:var(--green)}
+td.c.no{background:var(--s2);color:var(--vi3)}
+.key{display:flex;flex-wrap:wrap;gap:18px;font-size:13px;color:var(--vi3);margin:8px 0 26px}
+.key i{display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-1px}
+.key .g{background:var(--green)} .key .v{background:var(--vi)}
+h2{font:700 clamp(22px,3vw,30px)/1.1 "Bricolage Grotesque",system-ui,sans-serif;margin:34px 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:0;border-top:1px solid var(--s2)}
+.asset{padding:16px 16px 18px 0;border-bottom:1px solid var(--s2)}
+.asset summary{cursor:pointer;list-style:none}
+.asset summary::-webkit-details-marker{display:none}
+.asset summary h3::after{content:" +";color:var(--vi2)}
+.asset[open] summary h3::after{content:" \2212"}
+.n{margin-left:10px;color:var(--vi3)}
+.asset summary h3{margin:0 0 4px;font:700 18px/1.2 "Bricolage Grotesque",system-ui,sans-serif}
+.asset summary p{margin:0 0 10px;font-size:13px}
+.v{font-weight:600}.v.no{color:var(--vi2)}.v.ok{color:var(--green)}
+.arrow{margin:0 8px;color:var(--vi3)}
+ol{margin:0;padding:0;list-style:none}
+li{display:grid;grid-template-columns:72px 1fr;gap:2px 10px;padding:7px 0;border-top:1px solid var(--s1);font-size:13.5px}
+li .k{grid-row:span 2;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);padding-top:2px}
+li .x{color:var(--vi3)}
+.how{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px;border-top:1px solid var(--s2)}
+.how div{padding:14px 16px 14px 0;font-size:14px}
+.how b{display:block;font:700 15px/1.2 "Bricolage Grotesque",system-ui,sans-serif;margin-bottom:4px;color:var(--vi3)}
+footer{margin-top:28px;font-size:12.5px;color:var(--vi3);max-width:760px}
+@media (max-width:760px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  thead th.c-h{display:none}
+  td.c{display:none}
+  td.s{width:34%}
+  .how{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr}
+  .top{flex-wrap:wrap}
+  .top .tag{margin-left:0;flex-basis:100%}
+  .key .m{display:none}
+}
+</style>
+</head>
+<body>
+<div class="top"><img src="../../assets/studio/3shamrocks.png" alt="3Shamrocks Studio"><h1>Brand OS &middot; Command</h1><span class="tag">Demo &middot; fictional brand</span></div>
+<main>
+<div class="kpis">
+<div><b>5</b><span>assets checked</span></div>
+<div><b>37</b><span>brand errors found before</span></div>
+<div><b>21</b><span>average score before</span></div>
+<div class="up"><b>100</b><span>average score after</span></div>
+</div>
+<p class="lede">Plinkettle Health is a made-up brand used to show the system working. Each asset is checked against its brand rulebook in six ways. An asset passes at 85 or more, so one error sends it back.</p>
+<table>
+<caption>Before &rarr; after, and what failed before</caption>
+<thead><tr><th>Asset</th><th>Before</th><th>After</th><th class="c-h">Colour</th><th class="c-h">Type</th><th class="c-h">Contrast</th><th class="c-h">Voice</th><th class="c-h">Claims</th><th class="c-h">Logo</th></tr></thead>
+<tbody><tr><th scope="row"><a href="#01-linkedin">LinkedIn post</a><small>.md</small></th><td class="s"><span class="bar no" style="--w:40%"><b>40</b></span></td><td class="s"><span class="bar ok" style="--w:100%"><b>100</b></span></td><td class="c ok" data-k="Colour">&#10003;</td><td class="c ok" data-k="Type">&#10003;</td><td class="c ok" data-k="Contrast">&#10003;</td><td class="c no" data-k="Voice">7</td><td class="c no" data-k="Claims">3</td><td class="c ok" data-k="Logo">&#10003;</td></tr><tr><th scope="row"><a href="#02-adcard">Ad card</a><small>.svg</small></th><td class="s"><span class="bar no" style="--w:20%"><b>20</b></span></td><td class="s"><span class="bar ok" style="--w:100%"><b>100</b></span></td><td class="c no" data-k="Colour">1</td><td class="c no" data-k="Type">1</td><td class="c ok" data-k="Contrast">&#10003;</td><td class="c no" data-k="Voice">2</td><td class="c no" data-k="Claims">1</td><td class="c ok" data-k="Logo">&#10003;</td></tr><tr><th scope="row"><a href="#03-hero">Landing hero</a><small>.html</small></th><td class="s"><span class="bar no" style="--w:4%"><b>4</b></span></td><td class="s"><span class="bar ok" style="--w:100%"><b>100</b></span></td><td class="c ok" data-k="Colour">&#10003;</td><td class="c no" data-k="Type">2</td><td class="c no" data-k="Contrast">1</td><td class="c no" data-k="Voice">1</td><td class="c no" data-k="Claims">1</td><td class="c no" data-k="Logo">1</td></tr><tr><th scope="row"><a href="#04-email">Email</a><small>.txt</small></th><td class="s"><span class="bar no" style="--w:40%"><b>40</b></span></td><td class="s"><span class="bar ok" style="--w:100%"><b>100</b></span></td><td class="c ok" data-k="Colour">&#10003;</td><td class="c ok" data-k="Type">&#10003;</td><td class="c ok" data-k="Contrast">&#10003;</td><td class="c no" data-k="Voice">8</td><td class="c no" data-k="Claims">2</td><td class="c ok" data-k="Logo">&#10003;</td></tr><tr><th scope="row"><a href="#05-deck">Deck page</a><small>.html</small></th><td class="s"><span class="bar no" style="--w:2%"><b>2</b></span></td><td class="s"><span class="bar ok" style="--w:100%"><b>100</b></span></td><td class="c no" data-k="Colour">1</td><td class="c no" data-k="Type">1</td><td class="c no" data-k="Contrast">1</td><td class="c ok" data-k="Voice">&#10003;</td><td class="c no" data-k="Claims">2</td><td class="c no" data-k="Logo">1</td></tr></tbody>
+</table>
+<div class="key"><span><i class="g"></i>on brand</span><span><i class="v"></i>sent back</span><span class="m">number in a check = errors found before the fix</span></div>
+<h2>Every finding, with its fix</h2><p class="lede">Tap an asset to see what was wrong and how it was fixed.</p>
+<div class="grid"><details class="asset" id="01-linkedin"><summary><h3>LinkedIn post</h3><p><span class="v no">Before 40 &middot; send back</span><span class="arrow" aria-hidden="true">&rarr;</span><span class="v ok">After 100 &middot; pass</span><span class="n">10 fixes</span></p></summary><ol><li><span class="k">Voice</span><span class="f">Company &#x27;we&#x27; voice &#x27;We&#x27;: We&#x27;re thrilled to announce our revolutiona</span><span class="x">Rewrite with Plinkettle as the subject, or speak to the reader as &#x27;you&#x27;.</span></li><li><span class="k">Voice</span><span class="f">Company &#x27;we&#x27; voice &#x27;our&#x27;: We&#x27;re thrilled to announce our revolutionary hydration app for older a</span><span class="x">Rewrite with Plinkettle as the subject, or speak to the reader as &#x27;you&#x27;.</span></li><li><span class="k">Voice</span><span class="f">Banned hype word &#x27;revolutionary&#x27;: We&#x27;re thrilled to announce our revolutionary hydration app for older adults!</span><span class="x">Delete it and state the concrete fact instead.</span></li><li><span class="k">Voice</span><span class="f">Company &#x27;we&#x27; voice &#x27;our&#x27;: proven to keep seniors hydrated. 82% of our pilot users stuck with it, and 10,000+</span><span class="x">Rewrite with Plinkettle as the subject, or speak to the reader as &#x27;you&#x27;.</span></li><li><span class="k">Voice</span><span class="f">Banned hype word &#x27;clinically proven&#x27;: Plinkettle is clinically proven to keep seniors hydrated. 82% of our pi</span><span class="x">Delete it and state the concrete fact instead.</span></li><li><span class="k">Voice</span><span class="f">Fake urgency &#x27;Hurry&#x27;: Hurry, limited time early access for families</span><span class="x">Remove it; state the real deadline with its date or say nothing.</span></li><li><span class="k">Voice</span><span class="f">Fake urgency &#x27;limited time&#x27;: Hurry, limited time early access for families. Link in comm</span><span class="x">Remove it; state the real deadline with its date or say nothing.</span></li><li><span class="k">Claims</span><span class="f">Unsourced percentage claim &#x27;82%&#x27;: ically proven to keep seniors hydrated. 82% of our pilot users stuck with it, and 1</span><span class="x">Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim.</span></li><li><span class="k">Claims</span><span class="f">Unsourced count claim &#x27;10,000+ users&#x27;: % of our pilot users stuck with it, and 10,000+ users are already waiting.</span><span class="x">Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim.</span></li><li><span class="k">Claims</span><span class="f">Not-approved claim &#x27;clinically proven&#x27; (ledger &#x27;Not approved&#x27; list): Plinkettle is clinically proven to keep seniors hydrated. 82% of our pi</span><span class="x">Remove it. Only a negated disclaimer such as the ledger&#x27;s C4 wording may use these words.</span></li></ol></details><details class="asset" id="02-adcard"><summary><h3>Ad card</h3><p><span class="v no">Before 20 &middot; send back</span><span class="arrow" aria-hidden="true">&rarr;</span><span class="v ok">After 100 &middot; pass</span><span class="n">5 fixes</span></p></summary><ol><li><span class="k">Colour</span><span class="f">#ff7a00 is dE2000 21.8 from the nearest palette colour (coral #c4492f); limit is 6.0.</span><span class="x">Replace with #c4492f (coral) or another palette token.</span></li><li><span class="k">Type</span><span class="f">Font &#x27;Montserrat&#x27; is not in the brand font set.</span><span class="x">Use one of: Fraunces, Atkinson Hyperlegible.</span></li><li><span class="k">Voice</span><span class="f">Company &#x27;we&#x27; voice &#x27;Our&#x27;: Our app is the miracle your parents need.</span><span class="x">Rewrite with Plinkettle as the subject, or speak to the reader as &#x27;you&#x27;.</span></li><li><span class="k">Voice</span><span class="f">Banned hype word &#x27;miracle&#x27;: Our app is the miracle your parents need.</span><span class="x">Delete it and state the concrete fact instead.</span></li><li><span class="k">Claims</span><span class="f">Unsourced multiplier claim &#x27;2x&#x27;: 2x more often.</span><span class="x">Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim.</span></li></ol></details><details class="asset" id="03-hero"><summary><h3>Landing hero</h3><p><span class="v no">Before 4 &middot; send back</span><span class="arrow" aria-hidden="true">&rarr;</span><span class="v ok">After 100 &middot; pass</span><span class="n">6 fixes</span></p></summary><ol><li><span class="k">Type</span><span class="f">Font &#x27;Poppins&#x27; is loaded but is not in the brand font set.</span><span class="x">Use one of: Fraunces, Atkinson Hyperlegible.</span></li><li><span class="k">Type</span><span class="f">Font &#x27;Poppins&#x27; is not in the brand font set.</span><span class="x">Use one of: Fraunces, Atkinson Hyperlegible.</span></li><li><span class="k">Contrast</span><span class="f">Contrast 1.58:1 in .kicker is below the 4.5:1 minimum.</span><span class="x">Use ink #1d2b3a on cream/white/mint, or white on teal #0f6e61. Sun #f2c14e is never a text colour on light surfaces.</span></li><li><span class="k">Voice</span><span class="f">Company &#x27;we&#x27; voice &#x27;We&#x27;: We make sure your mum never forgets her ta</span><span class="x">Rewrite with Plinkettle as the subject, or speak to the reader as &#x27;you&#x27;.</span></li><li><span class="k">Claims</span><span class="f">Unsourced count claim &#x27;10,000+ users&#x27;: Trusted by 10,000+ users across the country.</span><span class="x">Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim.</span></li><li><span class="k">Logo</span><span class="f">Logo image &#x27;brand/plinkettle-logo.svg&#x27; has no alt text.</span><span class="x">Add alt=&quot;Plinkettle Health&quot;.</span></li></ol></details><details class="asset" id="04-email"><summary><h3>Email</h3><p><span class="v no">Before 40 &middot; send back</span><span class="arrow" aria-hidden="true">&rarr;</span><span class="v ok">After 100 &middot; pass</span><span class="n">10 fixes</span></p></summary><ol><li><span class="k">Voice</span><span class="f">Company &#x27;we&#x27; voice &#x27;Our&#x27;: Subject: Our app cures forgetfulness. Don&#x27;t miss out</span><span class="x">Rewrite with Plinkettle as the subject, or speak to the reader as &#x27;you&#x27;.</span></li><li><span class="k">Voice</span><span class="f">Banned hype word &#x27;cures&#x27;: Subject: Our app cures forgetfulness. Don&#x27;t miss out!</span><span class="x">Delete it and state the concrete fact instead.</span></li><li><span class="k">Voice</span><span class="f">Fake urgency &#x27;Don&#x27;t miss out&#x27;: Subject: Our app cures forgetfulness. Don&#x27;t miss out!</span><span class="x">Remove it; state the real deadline with its date or say nothing.</span></li><li><span class="k">Voice</span><span class="f">Company &#x27;we&#x27; voice &#x27;We&#x27;: We built Plinkettle because our own grandp</span><span class="x">Rewrite with Plinkettle as the subject, or speak to the reader as &#x27;you&#x27;.</span></li><li><span class="k">Voice</span><span class="f">Company &#x27;we&#x27; voice &#x27;our&#x27;: We built Plinkettle because our own grandparents kept missing their pil</span><span class="x">Rewrite with Plinkettle as the subject, or speak to the reader as &#x27;you&#x27;.</span></li><li><span class="k">Voice</span><span class="f">Banned hype word &#x27;game-changing&#x27;: nts kept missing their pills. It is the game-changing app families have been waiting for.</span><span class="x">Delete it and state the concrete fact instead.</span></li><li><span class="k">Voice</span><span class="f">Fake urgency &#x27;Only 50 spots&#x27;: Only 50 spots left in the pilot, so act now.</span><span class="x">Remove it; state the real deadline with its date or say nothing.</span></li><li><span class="k">Voice</span><span class="f">Fake urgency &#x27;act now&#x27;: Only 50 spots left in the pilot, so act now.</span><span class="x">Remove it; state the real deadline with its date or say nothing.</span></li><li><span class="k">Claims</span><span class="f">Unsourced change claim claim &#x27;halved&#x27;: Families who use it see missed doses halved, and setup takes 3 minutes.</span><span class="x">Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim.</span></li><li><span class="k">Claims</span><span class="f">Not-approved claim &#x27;cures&#x27; (ledger &#x27;Not approved&#x27; list): Subject: Our app cures forgetfulness. Don&#x27;t miss out!</span><span class="x">Remove it. Only a negated disclaimer such as the ledger&#x27;s C4 wording may use these words.</span></li></ol></details><details class="asset" id="05-deck"><summary><h3>Deck page</h3><p><span class="v no">Before 2 &middot; send back</span><span class="arrow" aria-hidden="true">&rarr;</span><span class="v ok">After 100 &middot; pass</span><span class="n">6 fixes</span></p></summary><ol><li><span class="k">Colour</span><span class="f">#3b82f6 is dE2000 22.2 from the nearest palette colour (ink-2 #4a5a6a); limit is 6.0.</span><span class="x">Replace with #4a5a6a (ink-2) or another palette token.</span></li><li><span class="k">Type</span><span class="f">Font &#x27;Inter&#x27; is not in the brand font set.</span><span class="x">Use one of: Fraunces, Atkinson Hyperlegible.</span></li><li><span class="k">Contrast</span><span class="f">Contrast 1.16:1 in .stat is below the 4.5:1 minimum.</span><span class="x">Use ink #1d2b3a on cream/white/mint, or white on teal #0f6e61. Sun #f2c14e is never a text colour on light surfaces.</span></li><li><span class="k">Claims</span><span class="f">Unsourced percentage claim &#x27;300%&#x27;: reminder app for seniors. Retention up 300%.</span><span class="x">Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim.</span></li><li><span class="k">Claims</span><span class="f">Unsourced ranking claim &#x27;#1&#x27;: #1 reminder app for seniors. Retention up</span><span class="x">Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim.</span></li><li><span class="k">Logo</span><span class="f">Logo file &#x27;img/logo-final-v3.png&#x27; is not an approved logo.</span><span class="x">Use brand/plinkettle-logo.svg or brand/plinkettle-logo-mono.svg.</span></li></ol></details></div>
+<h2>How it works</h2>
+<div class="how">
+<div><b>1 &middot; Rulebook</b>Colours, type, contrast, voice, approved claims and logo files, each with its source.</div>
+<div><b>2 &middot; Check</b>Every asset is read against the rulebook before anyone sees it.</div>
+<div><b>3 &middot; Fix or pass</b>Each error comes back with the rule it broke and the fix. Nothing ships until it passes.</div>
+</div>
+<footer>Built 18 Nov 2026 from the live checker, not typed by hand. Plinkettle Health, its colours, claims and sources are fictional, not a real company. Internal preview, not linked from the site.</footer>
+</main>
+<script>
+function openHash(){var d=location.hash&&document.getElementById(location.hash.slice(1));if(d&&d.tagName==="DETAILS"){d.open=true;}}
+addEventListener("hashchange",openHash);openHash();
+</script>
+</body>
+</html>
