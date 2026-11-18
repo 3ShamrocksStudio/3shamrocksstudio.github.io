@@ -2,7 +2,7 @@
    11.5.0: phone alerts follow Dave's rules (alerts.js): titles only, at most 3 a day bundled into one notification,
    quiet 22:00–08:00 and Shabbat, a seen alert never comes back. Revert: sw-11.4.0.js. */
 importScripts('alerts.js?v=11.5.0');
-var CACHE = 'j8nix-v11.5.0-1', ASTATE = 'j8alerts-v1';
+var CACHE = 'j8nix-v11.5.0-2', ASTATE = 'j8alerts-v1';
 var SHELL = ['./', 'index.html', 'app.css?v=11.5.0', 'v11.css?v=11.5.0', 'j11.css?v=11.5.0', 'app.js?v=11.5.0', 'j11.js?v=11.5.0', 'shell.js?v=11.5.0', 'j8-data.js?v=11.5.0', 'alerts.js?v=11.5.0', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/studio.png',
   'brand/j8nix-wordmark-2026-11-17.svg', 'brand/j8nix-mark-8-2026-11-17.svg', 'brand/j8nix-2026-11-17.png', 'icons/j8-icon-2026-11-17.svg', 'icons/j8-192-2026-11-17.png', 'icons/badge-96.png', 'icons/j8-touch-180-2026-11-17.png'];
