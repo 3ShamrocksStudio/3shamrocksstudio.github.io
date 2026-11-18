@@ -1591,10 +1591,11 @@ function vNeeds16(){if(!connected)return skel(4);var N=myQueue(),now=N.filter(no
     return '<li data-s="done"><div class="ny16">'+stG(o.status==='killed'?'kill':'done')+'<span class="tx"><b dir="auto">'+esc(cap1(ttl))+'</b>'+(p&&pid!=='p-general'?'<small dir="auto">'+ptile(pid,'sm')+esc(p.name)+'</small>':'')+'</span>'+(x.k==='t'?'<button type="button" class="lnk" data-a="x16-reopen" data-id="'+esc(o.id)+'">'+I('undo')+'<span>'+esc(tt('reopen'))+'</span></button>':'')+'</div></li>';}).join('')+'</ul>';
   return '<div class="ny16w">'+h+'</div>';}
 /* phone List: Projects · Tasks · Drafts, like desktop */
-var lw16=listWrap;listWrap=function(seg,html){if(D12())return lw16(seg,html);UI.lseg=seg;var A=apPending().length,P=liveP().filter(function(p){return !isDoneP(p);}).length,N=connected?myQueue().length:0;
-  var h=ph(seg==='tasks'?tt('nyH'):tt('list'),esc(seg==='tasks'?tt('nyP'):tt('lsub',{p:P,d:A})))+'<nav class="seg12 three" aria-label="'+esc(tt('list'))+'">'
-   +[['proj','proj',tt('projects'),P],['tasks','steps',tt('tasks'),N],['drafts','inbox',tt('drafts'),A]].map(function(x){return '<button data-a="x12-lseg" data-id="'+x[0]+'" aria-pressed="'+(x[0]===seg)+'">'+I(x[1])+'<span>'+esc(x[2])+'</span>'+(x[3]?'<span class="n12"><bdi>'+x[3]+'</bdi></span>':'')+'</button>';}).join('')+'</nav>';
-  return h+'<div class="lb12">'+stripHead(html)+'</div>';};
+function seg3_16(seg){var A=apPending().length,P=liveP().filter(function(p){return !isDoneP(p);}).length,N=connected?myQueue().length:0;
+  return '<nav class="seg12 three" aria-label="'+esc(tt('list'))+'">'+[['proj','proj',tt('projects'),P],['tasks','steps',tt('tasks'),N],['drafts','inbox',tt('drafts'),A]].map(function(x){return '<button data-a="x12-lseg" data-id="'+x[0]+'" aria-pressed="'+(x[0]===seg)+'">'+I(x[1])+'<span>'+esc(x[2])+'</span>'+(x[3]?'<span class="n12"><bdi>'+x[3]+'</bdi></span>':'')+'</button>';}).join('')+'</nav>';}
+var lw16=listWrap;listWrap=function(seg,html){if(D12())return lw16(seg,html);
+  if(seg!=='tasks')return lw16(seg,html).replace(/<nav class="seg12 two"[\s\S]*?<\/nav>/,seg3_16(seg));
+  UI.lseg='tasks';return ph(tt('nyH'),esc(tt('nyP')))+seg3_16('tasks')+'<div class="lb12">'+stripHead(html)+'</div>';};
 PLACE.needs16='list';TOPV.needs16=1;if(PLACES.indexOf('needs16')<0)PLACES.push('needs16');
 var nv16=navTo;navTo=function(v){if(v==='list'&&!D12()&&UI.lseg==='tasks')v='needs16';if((v==='ltasks'||v==='needs16')&&!D12()){nav0('needs16');return;}if(v==='needs16')v='ltasks';nv16(v);};
 var tmd16=tasksMD;tasksMD=function(){var h=tmd16();if(!connected)return h;var S=clearSt16(),dn=S.filter(function(s){return s==='done';}).length;return h.replace(/(<section class="ml12 pane12"[^>]*>)/,'$1'+fl16(tt('clearH'),tt('clearOf',{a:dn,b:S.length}),S,'','','clear16'));};
