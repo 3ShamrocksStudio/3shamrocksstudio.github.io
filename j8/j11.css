@@ -766,3 +766,16 @@ body[data-side=mini] .wmx13::before,body[data-side=mini] .wmx13::after{display:n
 .pp15{margin:0 0 14px}.pp15 h3{display:flex;align-items:center;gap:8px}.pp15 h3 .lnk12{margin-inline-start:auto}
 .pemp15,.vemp15{flex-wrap:wrap}.pemp15>span,.vemp15>span{flex:1 1 0;min-width:0}
 @media (max-width:599px){.pemp15 .cta13,.vemp15 .cta13{flex-basis:100%;margin-inline-start:0}.pcb15{flex-wrap:wrap}.pcb15 .ls{align-items:flex-start}}
+/* ===== 11.4.0 toast (Dave, 18 Nov 12:58): one compact line, white, palette accent, never over a button (placed by j11.js), gone in 2.5 s ===== */
+#toast.toast.t15{left:16px;top:auto;bottom:auto;right:auto;transform:translateY(6px);width:max-content;max-width:min(calc(100vw - 32px),440px);min-height:0;max-height:44px;gap:8px;padding:0 4px 0 12px;
+  border-radius:12px;background:#FFFFFF;color:#060833;border:1px solid #D8D8D8;border-inline-start:4px solid #32CC00;box-shadow:0 6px 18px -8px rgba(6,8,51,.35);
+  font:600 .875rem/1.25 var(--text);pointer-events:none;opacity:0;transition:opacity .16s,transform .16s cubic-bezier(.2,0,0,1)}
+#toast.toast.t15.on{opacity:1;transform:none;pointer-events:auto;cursor:pointer}
+#toast.toast.t15>.ico{width:18px;height:18px;flex:none;color:#32CC00}
+#toast.toast.t15>span{flex:1 1 auto;min-width:0;padding:12px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#toast.toast.t15.s{border-inline-start-color:#586475}#toast.toast.t15.s>.ico{color:#586475}
+#toast.toast.t15.r{border-inline-start-color:#DD0E3F}#toast.toast.t15.r>.ico{color:#DD0E3F}
+#toast.toast.t15 #undo{flex:none;min-height:36px;margin:0;padding:0 10px;border-radius:8px;background:transparent;color:#2A44C6;font:700 .875rem/1 var(--text);gap:4px}
+#toast.toast.t15 #undo .ico{width:16px;height:16px}
+#toast.toast.t15 #undo:hover,#toast.toast.t15 #undo:focus-visible{background:#D8D8D8}
+@media (prefers-reduced-motion:reduce){#toast.toast.t15{transition:none;transform:none}}

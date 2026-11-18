@@ -1432,6 +1432,29 @@ var vd15=vDraft;vDraft=function(){var h=vd15(),cur=(UI.dids||[]).filter(isPend)[
 var ddc15=draftDecide;draftDecide=function(id,how){UI.ns15t=how==='send'&&px(AP[id],'no_send')?Date.now():0;return ddc15.apply(this,arguments);};
 var dcd15=decide;decide=function(id,how){UI.ns15t=how==='send'&&px(AP[id],'no_send')?Date.now():0;return dcd15.apply(this,arguments);};
 
+/* the toast (Dave, 18 Nov 12:58): one compact line, white with a palette accent (Green done · Slate cancelled · Red error), gone after 2.5 s,
+   tap to dismiss, Undo kept. Phone: just above the bottom nav; desktop: top-right. It moves until it covers no visible button. */
+function tTone15(m){var e=t('couldNot',{e:''}).split('(')[0].trim();
+  if((e&&m.indexOf(e)===0)||m===t('notConn')||/^(It changed meanwhile|משהו השתנה)/.test(m))return 'r';
+  return /^(Killed|Deleted|Forgot|Back to waiting|Not my|Cancel|Archived|לא יישלח|נמחק|נשכח|חזר להמתנה|בוטל|הועבר לארכיון)/i.test(m)?'s':'g';}
+/* the visible buttons once per toast: rect + whether it sits in a fixed/sticky bar, a sheet or the nav (never covered) or in content that scrolls */
+function tEls15(T){var vw=innerWidth,vh=innerHeight,o=[];[].forEach.call(document.querySelectorAll('button,a[href],input,textarea,select,[role=button],[data-a]'),function(el){if(T.contains(el))return;
+  var q=el.getBoundingClientRect();if(!q.width||!q.height||q.right<=0||q.bottom<=0||q.left>=vw||q.top>=vh)return;
+  var x=(Math.max(q.left,0)+Math.min(q.right,vw))/2,y=(Math.max(q.top,0)+Math.min(q.bottom,vh))/2,hit=document.elementFromPoint(x,y);if(!hit||!(el===hit||el.contains(hit)||hit.contains(el)))return;
+  var fx=0;for(var n=el;n&&n!==document.body;n=n.parentElement){var ps=getComputedStyle(n).position;if(ps==='fixed'||ps==='sticky'||n.id==='gsheet'||/\b(nav|top|abar|sheet|obnav)\b/.test(n.className&&n.className.baseVal==null?n.className:'')){fx=1;break;}}
+  o.push({l:q.left,r:q.right,t:q.top,b:q.bottom,fx:fx});});return o;}
+function tFree15(E,r,fixedOnly){return !E.some(function(q){return (!fixedOnly||q.fx)&&q.r>r.left&&q.l<r.right&&q.b>r.top&&q.t<r.bottom;});}
+function tPlace15(){var T=$('toast');if(!T)return;var vw=innerWidth,vh=innerHeight,w=T.offsetWidth,h=T.offsetHeight,nav=$('nav'),nr=nav&&nav.offsetParent?nav.getBoundingClientRect():null,ph=!!(nr&&nr.height&&nr.top<vh&&nr.top>vh/2&&nr.width>vw*.8),
+    x=ph?Math.round((vw-w)/2):Math.max(16,vw-w-24),y0=ph?Math.round(nr.top-h-8):24,step=ph?-4:4,E=tEls15(T),best=null;
+  [false,true].some(function(fo){for(var y=y0;ph?y>=8:y<=vh-h-8;y+=step)if(tFree15(E,{left:x,right:x+w,top:y,bottom:y+h},fo)){best=y;return true;}return false;});
+  T.style.left=x+'px';T.style.top=(best==null?y0:best)+'px';}
+var to15=toast;toast=function(msg,undo){var T=$('toast');msg=String(msg==null?'':msg);
+  if(UI.ns15t&&Date.now()-UI.ns15t<15000&&tTone15(msg)==='g'&&!/^(Back to waiting|חזר להמתנה)/.test(msg)){msg=tt('nsOkT');UI.ns15t=0;}
+  if(T){T.classList.add('t15');T.classList.remove('on','g','s','r');var k=tTone15(msg);T.classList.add(k);var u=T.querySelector(':scope>svg use');if(u)u.setAttribute('href',k==='g'?'#i-check':k==='s'?'#i-x':'#i-stuck');$('toastMsg').setAttribute('title',msg);}
+  to15(msg,undo);if(!T)return;T.classList.remove('on');tPlace15();T.classList.add('on');clearTimeout(window.tt);window.tt=setTimeout(hideToast,2500);};
+document.addEventListener('click',function(e){var T=$('toast');if(!T||!T.classList.contains('on')||!T.contains(e.target)||e.target.closest('#undo'))return;hideToast();});
+window.addEventListener('resize',function(){var T=$('toast');if(T&&T.classList.contains('on'))tPlace15();});
+
 window.j8v15={pieces:pieces15,lang:lang15,links:links15,voiceSave:voiceSave15,voiceSheet:voiceSheet15,procs:procs15,procForm:procForm15,openProc:procSheet15,stage:pStage15};
 
 /* 11.2: named hooks for the QA harness and the console (read-only helpers and the same actions a tap runs) */
