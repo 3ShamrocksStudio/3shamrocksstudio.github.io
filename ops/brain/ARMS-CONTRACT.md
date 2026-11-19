@@ -147,6 +147,15 @@ Inside the task it never types a password or code, never pays, never creates an 
 - Done: status 'done', the result in the run summary, and one 🟢 reply line (a j8_messages row on the task, no author).
 - Hits a wall: one 🟠 line saying why, then in the same update: `extra = (extra - 'mac_chrome') || '{"mode":"you","why_you":"Only you: <reason>"}'`.
 
+## 3f. Approved posts go out by themselves (Dave, 19 Nov 2026: "J8NIX is supposed to automate actions on its own")
+An approved social post is never left for Dave to post by hand. The Mac sender arm schedules it in the platform's own scheduler, in Dave's signed-in Chrome.
+- Which rows: kind 'post', status 'approved' or 'edited', decided_at set, extra.no_send not true, no open note from Dave, lint clean (§3z), target is LinkedIn: Dave's personal profile or one of his company pages (3Shamrocks Studio, SHOMER.app (SH✡MER), Trashure-Hunters). Never the Winplant page. Text = edited_body when edited, word for word.
+- When: the row's due_at if it is still ahead; otherwise the next good slot from ops/brain/POSTING-TIMES.md (Israel audience: Sun–Thu 12:30, never Fri/Sat). Max 1 post per account per day.
+- How: LinkedIn's own composer, posting as the right account, clock icon → date and time → Schedule. Attach the row's image from its files folder when the upload works; if it doesn't, post text only and say so in result.
+- After: status 'sent', sent_at, result "Scheduled on LinkedIn for <date time> (<account>)". On any wall: result "Waiting: <reason>" and leave status.
+- Never on LinkedIn: messages, connection requests, comments, likes or reposts. Those stay by hand.
+- Facebook/WhatsApp groups and Instagram are not covered by this rule yet.
+
 ## 4. `projects`
 
 Doc id = project id (same ids the inbox `p` field uses). Shape:
