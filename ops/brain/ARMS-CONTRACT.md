@@ -21,6 +21,10 @@ J8NIX is the one point every scheduled task ("arm") reads and writes.
 | `runs` | nothing | one new doc per run | rewrite old runs |
 | `money` | nothing | `summary` fields | write a number that isn't real; write a guess |
 
+## 0. Try it first (J8NIX 11.6, Dave 19 Nov 2026: "J8NIX keeps sending me back … to do things it can 100% do itself")
+Before any arm writes a task for Dave, it tries to do the work itself. A Dave task is allowed only for: a password / sign-in / 2-step code · a payment or card · ID or a signature · a message from his own phone, WhatsApp or LinkedIn · a decision only he can make · information only he has.
+Every Dave task carries `extra.mode`: `'tap'` (the team can do it in his signed-in Chrome: never a link that sends him to do it; §3e) · `'answer'` (information only he has: `extra.ask` = [{q, suggest?}]) · `'you'` (only he can: `extra.why_you` = "Only you: <reason>"). Shapes: J8NIX-DATA.md "Do it for me".
+
 ## 1. `todo` (unchanged from v2)
 
 Doc id = to-do item id from `var T` in the page. Shape: `{done: bool, back?: bool, note?: string, at: ISO}`.
@@ -136,8 +140,12 @@ Every sending arm reads it right before each send. Arms never flip `paused` or `
 
 Doc id = the lower-case email address. Shape: `{ email, at: ISO, source: "reply 'remove' in thread …" | "Dave", by }`. Written by the inbox watcher the same day a removal request arrives (or by Dave). Arms never delete these docs. Any email to an address in `optout` is never drafted or sent; existing pending/queued docs to it → `killed` with result "Opted out (§30A)".
 
-## 3e. Team Chrome jobs on Dave's Mac (Dave, 16 Nov 2026: "do it", "you do it")
-Steps that need Dave's signed-in Chrome but are NOT messages are team work, never Dave's: they are `j8_tasks` rows with `owner` = the team code and `extra.mac_chrome = true`. The Mac sender run, after its sends (same run, same caps on time), takes the open ones in rank order: select id, title, action, link from public.j8_tasks where org_id = :org and status = 'open' and owner <> 'dave' and (extra->>'mac_chrome')::boolean is true; does exactly the `action`, never types a password, never pays, stops at any sign-in or captcha (then one 🟠 task for Dave with the 1-step sign-in), and marks the task done with evidence in the run summary. Nothing in this section sends a message to anyone.
+## 3e. Chrome tasks on Dave's Mac (J8NIX 11.6, 19 Nov 2026; replaces the 16 Nov rule)
+The sender arm runs a Chrome task ONLY when `extra.mac_chrome = true` AND `extra.tapped_by` is one of Dave's two uids (`6ae8052a-8af5-4f9c-a890-2c938fc6fec9`, `0b78aafb-e730-44a7-8471-1f6f047abbba`). Only the app can set them: Dave taps "Do it for me" (`public.j8_task_tap`); the database guard refuses any automated session. Arms never set `mac_chrome`.
+Read: select id, title, action, link, extra from public.j8_tasks where org_id = :org and status = 'open' and owner = 'dave' and extra->>'mode' = 'tap' and (extra->>'mac_chrome')::boolean is true and extra->>'tapped_by' in ('6ae8052a-8af5-4f9c-a890-2c938fc6fec9','0b78aafb-e730-44a7-8471-1f6f047abbba');
+Inside the task it never types a password or code, never pays, never creates an account, never accepts terms, never sends a message that has no approved draft, never handles secret keys, and never visits a site the task's own `link` doesn't name.
+- Done: status 'done', the result in the run summary, and one 🟢 reply line (a j8_messages row on the task, no author).
+- Hits a wall: one 🟠 line saying why, then in the same update: `extra = (extra - 'mac_chrome') || '{"mode":"you","why_you":"Only you: <reason>"}'`.
 
 ## 4. `projects`
 

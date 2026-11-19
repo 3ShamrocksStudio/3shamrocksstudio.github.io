@@ -49,6 +49,8 @@ Binding for every arm, from 17 Nov 2026 (Dave: "users must have clear instructio
 
 **Create a Dave step ONLY when J8NIX cannot do it itself:** an account, a password or a sign-in, a payment, a signature, something on his own phone or Mac, approving content in his name, or connecting a service. Everything else the team does, then reports with a 🟢 line.
 
+**11.6 (19 Nov):** try it first, and set extra.mode on every Dave step ('tap' | 'answer' | 'you'): ARMS-CONTRACT.md §0.
+
 A step is one j8_tasks row (owner 'dave'). Every field is required:
 
 | Field | Rule | Good | Bad |
