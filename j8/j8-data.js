@@ -334,7 +334,17 @@ var J8 = (function () {
       drop: function (id) { return update('tasks', id, { status: 'dropped' }).then(function (ok) { loadCol('tasks').catch(function () {}); return ok; }); },
       /* 11.1: starter steps from the J8 interview (members, RLS j8_tasks_ins) and edits to them (title, minutes) */
       add: function (id, doc) { if (data.tasks[id]) return rej('exists'); return insert('tasks', id, Object.assign({ owner: 'dave', status: 'open', blocked_by: [] }, doc)); },
-      edit: function (id, patch) { var p = {}; ['title', 'action', 'minutes', 'due', 'blocked_by', 'project_id'].forEach(function (k) { if (k in patch) p[k] = patch[k]; }); if (p.title != null && !String(p.title).trim()) return rej('empty'); return update('tasks', id, p); }
+      edit: function (id, patch) { var p = {}; ['title', 'action', 'minutes', 'due', 'blocked_by', 'project_id'].forEach(function (k) { if (k in patch) p[k] = patch[k]; }); if (p.title != null && !String(p.title).trim()) return rej('empty'); return update('tasks', id, p); },
+      /* 11.6 "Do it for me": hands Dave's 'tap' step to the Mac sender arm. public.j8_task_tap sets extra.mac_chrome,
+         tapped_at and tapped_by for the signed-in owner only, with a version check (the database guard refuses any automated session) */
+      tap: async function (id) {
+        var before = data.tasks[id]; if (!before) return rej('not_found'); if (!state.org || !state.user) return rej('offline');
+        var r = await sb.rpc('j8_task_tap', { p_org: state.org, p_id: id, p_version: ver.tasks[id] });
+        if (r.error) { loadCol('tasks').catch(function () {}); return rej(r.error.code === '40001' ? 'conflict' : 'denied', { message: r.error.message }); }
+        var uid = state.user && state.user.id || state.user;
+        data.tasks = clone(data.tasks); data.tasks[id] = Object.assign({}, before, { mac_chrome: true, tapped_at: now(), tapped_by: uid });
+        if (typeof r.data === 'number') ver.tasks[id] = r.data; emit('tasks'); cache(); loadCol('tasks').catch(function () {}); return true;
+      }
     },
 
     /* 7.1: Dave's Later (come_back_at), Not needed and Done on one Today item. id = the app's item key (tk-…, mv-…, b-…).

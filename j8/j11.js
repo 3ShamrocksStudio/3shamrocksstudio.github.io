@@ -1,4 +1,4 @@
-/* J8NIX 11.5.0 (18 Nov 2026): see the 11.5.0 block near the end. Revert: j11-11.4.0.js.
+/* J8NIX 11.6.0 (19 Nov 2026): see the 11.6.0 block at the end (Do it for me). Revert: j11-11.5.0.js. 11.5.0: see the 11.5.0 block near the end.
    J8NIX 11.0.0 · j11 layer (16 Nov 2026). The 6.1 layout Dave chose (Chat · Next · List · Flow, "Do this first" with what it
    unlocks, a comment box on every task and draft) on the 10.1 engine (app.js: data, unlock ranking, approvals, Plan my day,
    calendar, runs, control, prefs). Loaded after app.js instead of v11.js; re-uses v11's helpers (goals, rings, cards).
@@ -1770,4 +1770,66 @@ window.j8v16={pushCheck:pushCheck16,alertBar:alertBar16,alerts:alerts16,answer:i
 
 /* 11.2: named hooks for the QA harness and the console (read-only helpers and the same actions a tap runs) */
 (function(){var F={openItem:function(){return openItem.apply(null,arguments);},goalsShown:function(){return goalsShown();},goalPins:goalPins,projPins:projPins,myGoalList:myGoalList,editSheet:function(k,i){return editSheet(k,i);},newForm:function(k,e){return newForm(k,e);},memFilter:memFilter,lineUp:lineUp,goalsAll:function(){return goalsAll();},newSheet:newSheet,goalsSheet:goalsSheet};Object.keys(F).forEach(function(n){window[n]=F[n];});})();
+
+/* ===== 11.6.0 (19 Nov 2026) "Do it for me" (Dave 19 Nov 08:59: J8NIX must do what it can itself, not send him away).
+   A step for Dave carries extra.mode (ops/brain/J8NIX-DATA.md):
+   'tap'    the team can do it on his Mac in Chrome: one "Do it for me" (public.j8_task_tap sets extra.mac_chrome / tapped_at /
+            tapped_by, signed-in owner only, version-checked); the old link stays as a quiet "Do it myself".
+   'answer' only Dave has the information: extra.ask [{q, suggest?}] answered here, ONE j8_messages row on the task; no leaving the app.
+   'you'    only Dave can (passwords, sign-in, 2-step codes, paying, signing, his own phone/WhatsApp/LinkedIn, a pure decision):
+            the card as before plus one plain line from extra.why_you.
+   No mode: exactly as before. A tapped (or answered) step leaves "Needs you" and shows under "Team on it". ===== */
+Object.assign(L11.en,{doForMe:'Do it for me',doMyself:'Do it myself',onIt17:'On it · the team does it on your Mac',sent17:'Sent · the team takes it from here',
+  sendAns:'Send answers',ansNone:'Write at least one answer first.',tapConflict:'This step just changed. Look again, then tap.',teamOnH:'Team on it'});
+Object.assign(L11.he,{doForMe:'שהצוות יעשה את זה',doMyself:'אעשה את זה בעצמי',onIt17:'על זה · הצוות עושה את זה במק שלך',sent17:'נשלח · הצוות ממשיך מכאן',
+  sendAns:'לשלוח תשובות',ansNone:'צריך לכתוב לפחות תשובה אחת.',tapConflict:'הצעד הזה השתנה עכשיו. כדאי להסתכל שוב ואז ללחוץ.',teamOnH:'הצוות על זה'});
+UI.sent17=UI.sent17||{};UI.ans17=UI.ans17||{};
+function mode17(tk){var m=String(tk&&px(tk,'mode')||'');return tk&&tk.owner==='dave'&&/^(tap|answer|you)$/.test(m)?m:'';}
+function ask17(tk){var A=tk?px(tk,'ask'):null;return Array.isArray(A)?A.filter(function(a){return a&&typeof a==='object'&&String(a.q==null?'':a.q).trim();}).slice(0,30):[];}
+function tapped17(tk){var v=tk?px(tk,'mac_chrome'):null;return mode17(tk)==='tap'&&(v===true||v==='true');}
+function ansLine17(a,k,v){return (k+1)+'. '+String(a.q).trim().replace(/\s+/g,' ')+': '+v;}
+function answered17(tk){if(mode17(tk)!=='answer')return false;if(UI.sent17[tk.id])return true;var A=ask17(tk);if(!A.length)return false;var p=ansLine17(A[0],0,'');
+  return J8.inbox.forTask(tk.id).some(function(m){return String(m.text||'').indexOf(p)===0;});}
+function teamHas17(tk){return !!tk&&(!tk.status||tk.status==='open')&&(tapped17(tk)||answered17(tk));}
+var needs17=needs;needs=function(){return needs17().filter(function(i){return !(i.task&&teamHas17(i.task));});};
+var pr17=promo13;promo13=function(i){var m=i&&i.task?mode17(i.task):'';if(m==='tap')return okTask13(i.task);if(m==='answer')return okTask13(i.task)&&ask17(i.task).length>0;return pr17(i);};
+var ts17=taskSt16;taskSt16=function(tk){return tk&&teamHas17(tk)?'team':ts17(tk);};
+function ansForm17(i){var tk=i.task,A=ask17(tk),S=UI.ans17[tk.id]||{};if(!A.length)return '';
+  return '<form class="ask17" data-task="'+esc(tk.id)+'" novalidate><ol>'+A.map(function(a,k){var v=S[k]!=null?S[k]:String(a.suggest==null?'':a.suggest);
+    return '<li><label><span class="q17" dir="auto">'+esc(String(a.q))+'</span><textarea rows="'+Math.max(1,Math.min(4,Math.ceil(String(v).length/30)))+'" dir="auto" data-n="'+k+'" maxlength="600">'+esc(v)+'</textarea></label></li>';}).join('')
+   +'</ol><button type="submit" class="b12 pri">'+I('send','flip')+'<span>'+esc(tt('sendAns'))+'</span></button></form>';}
+var bar17=bar12;bar12=function(i){var tk=i&&i.task,m=tk?mode17(tk):'';if(!m||m==='you'||(m==='tap'&&UI.doing[i.key]&&!tapped17(tk)))return bar17(i);var k=esc(i.key);
+  if(teamHas17(tk))return '<p class="on17" data-s="team" role="status">'+stG('team')+'<span>'+esc(tt(m==='tap'?'onIt17':'sent17'))+'</span></p>';
+  var tail='<button class="b12" data-a="later" data-k="'+k+'">'+I('later')+'<span>'+esc(tt('later'))+'</span></button><button class="b12" data-a="no" data-k="'+k+'">'+I('no')+'<span>'+esc(tt('nn'))+'</span></button>';
+  if(m==='answer')return '<div class="bar12 two" role="group" aria-label="'+esc(t('actions'))+'">'+tail+'</div>';
+  var g=doTarget(i),my=g.href?'<p class="my17"><a class="lnk" href="'+hesc(g.href)+'" target="_blank" rel="noopener" data-a="do" data-k="'+k+'">'+esc(tt('doMyself'))+'</a></p>':'';
+  return '<div class="bar12 three" role="group" aria-label="'+esc(t('actions'))+'"><button class="b12 pri" data-a="x17-tap" data-id="'+esc(tk.id)+'" data-k="'+k+'">'+I('do','flip')+'<span>'+esc(tt('doForMe'))+'</span></button>'+tail+'</div>'+my;};
+/* the Where / After facts belong to doing it yourself: hidden on a tap card (until "Do it myself") and on an answer card */
+var f17=facts;facts=function(i){var m=i&&i.task?mode17(i.task):'';if(m==='answer'||(m==='tap'&&!(UI.doing[i.key]&&!tapped17(i.task))))return '';return f17(i);};
+var b17=body13;body13=function(i){var tk=i&&i.task,m=tk?mode17(tk):'';if(!m)return b17(i);
+  if(m==='you'){var w=String(px(tk,'why_you')||'').trim();return (w?'<p class="yu17" dir="auto">'+esc(w)+'</p>':'')+b17(i);}
+  if(m==='tap'){if(UI.doing[i.key]&&!tapped17(tk))return b17(i);var w2=String(px(tk,'why_tap')||'').trim();return (w2?'<p class="yu17" dir="auto">'+esc(w2)+'</p>':'')+why13(i);}
+  return (teamHas17(tk)?'':ansForm17(i))+why13(i);};
+function teamOn17(){if(!connected)return [];return tasksAll().filter(function(x){return x.owner==='dave'&&teamHas17(x);})
+  .sort(function(a,b){return String(px(b,'tapped_at')||b.updated_at||'').localeCompare(String(px(a,'tapped_at')||a.updated_at||''));});}
+function teamOnHTML17(){var L=teamOn17();if(!L.length)return '';
+  return '<h3 class="sh16 tm17">'+stG('team')+'<b>'+esc(tt('teamOnH'))+'</b><span><bdi>'+L.length+'</bdi></span></h3><ul class="ny16l tm17">'+L.map(function(x){var pid=x.project_id,p=pobj(pid);
+    return '<li data-s="team"><button type="button" class="ny16" data-a="x14-open" data-k="tk-'+esc(x.id)+'">'+stG('team')+'<span class="tx"><b dir="auto">'+esc(cap1(String(x.title||'')))+'</b><small dir="auto">'
+     +(p&&pid!=='p-general'?ptile(pid,'sm')+esc(p.name)+'</small><small dir="auto">':'')+esc(tt(tapped17(x)?'onIt17':'sent17'))+'</small></span>'+I('fwd','flip chev')+'</button></li>';}).join('')+'</ul>';}
+var vn17=vNeeds16;vNeeds16=function(){var h=vn17(),x=teamOnHTML17();if(!x||!connected)return h;var j=h.lastIndexOf('<h3 class="sh16">'+stG('done'));if(j<0)j=h.lastIndexOf('</div>');return j<0?h+x:h.slice(0,j)+x+h.slice(j);};
+var tmd17=tasksMD;tasksMD=function(){var h=tmd17(),x=teamOnHTML17();if(!x||!connected)return h;var j=h.indexOf('</section><section class="dp12');return j<0?h:h.slice(0,j)+'<div class="tm17w">'+x+'</div>'+h.slice(j);};
+var vnx17=vNext;vNext=function(){var h=vnx17();if(!connected||UI.v!=='next')return h;var x=teamOnHTML17();if(!x)return h;x='<section class="tm17s">'+x+'</section>';
+  var j=h.indexOf('</div><aside class="c2"');if(j<0)j=h.lastIndexOf('</div>');return j<0?h+x:h.slice(0,j)+x+h.slice(j);};
+document.addEventListener('input',function(e){var x=e.target;if(!x||x.tagName!=='TEXTAREA'||!x.closest)return;var f=x.closest('form.ask17');if(!f)return;var id=f.dataset.task;(UI.ans17[id]=UI.ans17[id]||{})[x.dataset.n]=x.value;},true);
+window.addEventListener('submit',function(e){var f=e.target;if(!f||!f.classList||!f.classList.contains('ask17'))return;e.preventDefault();e.stopImmediatePropagation();
+  var id=f.dataset.task,tk=J8.tasks.get(id);if(!tk)return;var A=ask17(tk),V=A.map(function(a,k){var x=f.querySelector('textarea[data-n="'+k+'"]');return String(x&&x.value||'').trim();});
+  if(!V.some(Boolean)){toast(tt('ansNone'));var x0=f.querySelector('textarea');if(x0)x0.focus();return;}
+  if(!J8.status().connected){toast(t('notConn'));return;}
+  var txt=A.map(function(a,k){return ansLine17(a,k,V[k]?V[k].replace(/\s*\n\s*/g,' '):'—');}).join('\n'),go=f.querySelector('[type=submit]');if(go)go.disabled=true;
+  J8.inbox.send(tk.project_id||'p-general',txt,id).then(function(){UI.sent17[id]=1;delete UI.ans17[id];var a=document.activeElement;if(a&&a.blur)a.blur();toast(tt('sent17'));render();},
+    function(x){if(go)go.disabled=false;toast(t('couldNot',{e:x&&x.code||'error'}));});},true);
+document.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a="x17-tap"]');if(!el)return;e.preventDefault();e.stopPropagation();
+  if(!J8.status().connected||!J8.tasks.tap){toast(t('notConn'));return;}var id=el.dataset.id;el.disabled=true;
+  J8.tasks.tap(id).then(function(){toast(tt('onIt17'));render();},function(x){el.disabled=false;toast(x&&x.code==='conflict'?tt('tapConflict'):t('couldNot',{e:x&&x.code||'error'}));});},true);
+window.j8v17={mode:mode17,ask:ask17,tapped:tapped17,answered:answered17,teamHas:teamHas17,teamOn:teamOn17};
 })();
