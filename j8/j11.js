@@ -1,4 +1,4 @@
-/* J8NIX 11.6.0 (19 Nov 2026): see the 11.6.0 block at the end (Do it for me). Revert: j11-11.5.0.js. 11.5.0: see the 11.5.0 block near the end.
+/* J8NIX 11.7.0 (19 Nov 2026): see the 11.7.0 block at the end (Money home, reply loop, focus). Revert: git revert. 11.6.0: Do it for me (revert: j11-11.5.0.js). 11.5.0: see the 11.5.0 block near the end.
    J8NIX 11.0.0 · j11 layer (16 Nov 2026). The 6.1 layout Dave chose (Chat · Next · List · Flow, "Do this first" with what it
    unlocks, a comment box on every task and draft) on the 10.1 engine (app.js: data, unlock ranking, approvals, Plan my day,
    calendar, runs, control, prefs). Loaded after app.js instead of v11.js; re-uses v11's helpers (goals, rings, cards).
@@ -1832,4 +1832,92 @@ document.addEventListener('click',function(e){var el=e.target.closest&&e.target.
   if(!J8.status().connected||!J8.tasks.tap){toast(t('notConn'));return;}var id=el.dataset.id;el.disabled=true;
   J8.tasks.tap(id).then(function(){toast(tt('onIt17'));render();},function(x){el.disabled=false;toast(x&&x.code==='conflict'?tt('tapConflict'):t('couldNot',{e:x&&x.code||'error'}));});},true);
 window.j8v17={mode:mode17,ask:ask17,tapped:tapped17,answered:answered17,teamHas:teamHas17,teamOn:teamOn17};
+/* ===== 11.7.0 (19 Nov 2026) Money home · reply loop · focus (Dave 19 Nov: "change, remove, adjust, simplify: do it now";
+   FOCUS MODE; ops/brain/J8NIX-AUDIT-1119.md changes 1, 3, 4). The first screen (Next, now called Home) opens with 4 blocks:
+   (a) cash this month (j8_money summary extra.payments, ILS, this calendar month) vs the ₪100,000 focus target, plus booked_ils;
+   (b) "Send these now": approved/edited (or queued past hold_until) by-hand items (channel LinkedIn… or label 'Send by hand',
+       never templates or app ideas), oldest first: Copy text · Open (https link only) · Sent ✓ (two taps) → public.j8_hand_sent;
+   (c) "Replies waiting": sent + extra.replied_at, no extra.outcome: Won / Lost → public.j8_reply_mark;
+       "Sent · did they reply?": sent in the last 30 days, no reply yet: Replied;
+   (d) Dave's top 3 steps from public.j8_rank (owner 'dave').
+   Focus: a team schedule not updated for 3 days (j8_schedule) and an empty calendar are hidden, not deleted.
+   Revert: git revert of the 11.7.0 commit. ===== */
+var FOCUS18=100000;
+Object.assign(L11.en,{next:'Home',mhCash:'Cash this month',mhOf:'of ₪{t} focus target',mhTotal:'Booked so far: ₪{n}',mhAsOf:'as of {d}',mhNone:'No money figures yet.',
+  mhSendH:'Send these now',mhSendP:'Approved. Copy, open, send it yourself, then tap Sent.',mhOpen:'Open',mhSent:'Sent ✓',mhArm:'Tap again: sent',mhSentT:'Marked sent',
+  mhAll:'Show all {n}',mhLess:'Show fewer',mhRepH:'Replies waiting',mhRepP:'They replied. Did it turn into work?',mhWon:'Won',mhLost:'Lost',mhRepl:'Replied',
+  mhAskH:'Sent · did they reply?',mhRepT:'Reply noted',mhWonT:'Marked won',mhLostT:'Marked lost',mhTopH:'Your top 3 steps',mhTopNone:'Nothing ranked for you right now.',
+  mhSentOn:'Sent {d}',mhRepOn:'Replied {d}',mhFail:'Could not save: {e}',mhOff:'Not connected. Try again in a moment.',mhMore:'more',iaRun0:'No up-to-date team schedule right now.'});
+Object.assign(L11.he,{next:'בית',mhCash:'כסף שנכנס החודש',mhOf:'מתוך יעד הפוקוס ₪{t}',mhTotal:'נרשם עד עכשיו: ₪{n}',mhAsOf:'נכון ל־{d}',mhNone:'עוד אין נתוני כסף.',
+  mhSendH:'לשלוח עכשיו',mhSendP:'כבר אושרו. מעתיקים, פותחים, שולחים בעצמך, ואז לוחצים "נשלח".',mhOpen:'לפתוח',mhSent:'נשלח ✓',mhArm:'עוד לחיצה: נשלח',mhSentT:'סומן שנשלח',
+  mhAll:'להציג את כל {n}',mhLess:'להציג פחות',mhRepH:'תשובות שמחכות',mhRepP:'ענו לך. זה הפך לעבודה?',mhWon:'נסגר',mhLost:'לא נסגר',mhRepl:'ענו',
+  mhAskH:'נשלח · ענו?',mhRepT:'התשובה נרשמה',mhWonT:'סומן שנסגר',mhLostT:'סומן שלא נסגר',mhTopH:'3 הצעדים הכי חשובים שלך',mhTopNone:'אין כרגע צעדים מדורגים בשבילך.',
+  mhSentOn:'נשלח {d}',mhRepOn:'ענו {d}',mhFail:'לא נשמר: {e}',mhOff:'אין חיבור. כדאי לנסות שוב עוד רגע.',mhMore:'עוד',iaRun0:'אין כרגע לוח ריצות מעודכן של הצוות.'});
+UI.mh18=UI.mh18||{};
+function fmt18(n){n=Number(n)||0;try{return n.toLocaleString('en-US',{maximumFractionDigits:0});}catch(e){return String(Math.round(n));}}
+function dstr18(s){var t=pd(s);if(isNaN(t))return '';var d=new Date(t);return dayShort(d)+(ymd(d)===ymd(new Date())?' '+hm2(t):'');}
+function cash18(){var m=J8.money.summary();if(!m)return null;var mo=ymd(new Date()).slice(0,7),P=Array.isArray(m.payments)?m.payments:[],c=0;
+  P.forEach(function(p){if(!p||typeof p!=='object')return;var n=Number(p.ils);if(String(p.date||'').slice(0,7)===mo&&isFinite(n))c+=n;});
+  return {month:c,total:isFinite(m.booked_ils)&&m.booked_ils!=null?Number(m.booked_ils):null,at:m.updated||m.updated_at||''};}
+function isHand18(a){if(!a||a.kind==='template'||a.label==='Template'||a.source==='j8nix-app')return false;return /^linkedin/i.test(String(a.channel||'').trim())||a.label==='Send by hand';}
+function due18(a){if(a.status==='approved'||a.status==='edited')return true;if(a.status==='queued'){var h=pd(a.hold_until);return !isNaN(h)&&h<Date.now();}return false;}
+function at18(a,k){var t=pd(a[k]);if(isNaN(t))t=pd(a.created);return isNaN(t)?9e15:t;}
+function sendNow18(){return J8.approvals.list().filter(function(a){return isHand18(a)&&due18(a);}).sort(function(a,b){return at18(a,'decided_at')-at18(b,'decided_at');});}
+function sentAll18(){return J8.approvals.list().filter(function(a){return a.status==='sent'&&a.kind!=='template';});}
+function repWait18(){return sentAll18().filter(function(a){return a.replied_at&&!a.outcome;}).sort(function(a,b){return at18(a,'replied_at')-at18(b,'replied_at');});}
+function askRep18(){var lim=Date.now()-30*864e5;return sentAll18().filter(function(a){var t=pd(a.sent_at);return !a.replied_at&&!a.outcome&&!isNaN(t)&&t>=lim;}).sort(function(a,b){return at18(b,'sent_at')-at18(a,'sent_at');});}
+function okLink18(u){u=String(u||'').trim();return /^https:\/\/[^\s"'<>]+$/i.test(u)?u:'';}
+function more18(k,n,lim){if(n<=lim)return '';var on=!!UI.mh18[k];return '<p class="mo18"><button type="button" class="lnk12" data-a="x18-more" data-id="'+esc(k)+'" aria-expanded="'+on+'">'+esc(on?tt('mhLess'):tt('mhAll',{n:n}))+'</button></p>';}
+function cap18(k,L,lim){return UI.mh18[k]?L:L.slice(0,lim);}
+function sendRow18(a){var id=esc(a.id),tx=String(J8.approvals.textOf(a)||''),lk=okLink18(a.link),arm=UI.mh18['arm:'+a.id];
+  return '<li class="r18" style="'+esc(pcStyle(a.product).replace(/^;/,''))+'"><div class="hh">'+I(dIcon(a))+'<b dir="auto">'+esc(apWho(a))+'</b>'+(a.channel?'<small dir="auto">'+esc(cut(String(a.channel),56))+'</small>':'')+'</div>'
+   +(tx&&cut(tx,120)===tx.replace(/\s+/g,' ').trim()&&!/\n/.test(tx)?'<p class="tx18 one" dir="auto">'+esc(tx)+'</p>':'')+(tx&&!(cut(tx,120)===tx.replace(/\s+/g,' ').trim()&&!/\n/.test(tx))?'<details class="tx18"><summary dir="auto"><span class="c">'+esc(cut(tx,120))+'</span><span class="m">'+esc(tt('mhMore'))+'</span></summary><p dir="auto">'+esc(tx)+'</p></details>':'')
+   +'<div class="ha">'+(tx?'<button type="button" class="b12 sm" data-a="x18-copy" data-id="'+id+'">'+I('clip')+'<span>'+esc(tt('copy'))+'</span></button>':'')
+   +(lk?'<a class="b12 sm" href="'+hesc(lk)+'" target="_blank" rel="noopener noreferrer">'+I('ext')+'<span>'+esc(tt('mhOpen'))+'</span></a>':'')
+   +'<button type="button" class="b12 sm ok18'+(arm?' arm':'')+'" data-a="x18-sent" data-id="'+id+'"><span>'+esc(arm?tt('mhArm'):tt('mhSent'))+'</span></button></div></li>';}
+function repRow18(a,mode){var id=esc(a.id);
+  return '<li class="r18 sm18" style="'+esc(pcStyle(a.product).replace(/^;/,''))+'"><div class="hh">'+I(dIcon(a))+'<b dir="auto">'+esc(apWho(a))+'</b><small dir="auto">'+esc(mode==='wait'?tt('mhRepOn',{d:dstr18(a.replied_at)}):tt('mhSentOn',{d:dstr18(a.sent_at)}))+'</small></div>'
+   +'<div class="ha">'+(mode==='wait'?'<button type="button" class="b12 sm ok18" data-a="x18-rep" data-w="won" data-id="'+id+'">'+I('trophy')+'<span>'+esc(tt('mhWon'))+'</span></button><button type="button" class="b12 sm" data-a="x18-rep" data-w="lost" data-id="'+id+'">'+I('no')+'<span>'+esc(tt('mhLost'))+'</span></button>'
+     :'<button type="button" class="b12 sm" data-a="x18-rep" data-w="replied" data-id="'+id+'">'+I('chat')+'<span>'+esc(tt('mhRepl'))+'</span></button>')+'</div></li>';}
+var rankAt18=0;
+function rankPull18(){if(!connected||!J8.rank||Date.now()-rankAt18<55e3)return;rankAt18=Date.now();
+  J8.rank().then(function(R){if(!Array.isArray(R))return;var top=R.filter(function(r){return r&&r.owner==='dave';}).sort(function(a,b){return (a.pos||0)-(b.pos||0);}).slice(0,3);
+    var k=JSON.stringify(top.map(function(r){return [r.kind,r.id,r.title];}));if(k!==UI.rank18k||UI.rank18===false){UI.rank18=top;UI.rank18k=k;if(UI.v==='next'&&!inputBusy())render();}},function(){if(UI.rank18==null){UI.rank18=false;if(UI.v==='next'&&!inputBusy())render();}});}
+function topRow18(r){var tl='<span class="tx" dir="auto">'+esc(cap1(String(r.title||r.id||'')))+'</span>',n='<span class="n18"><bdi>'+esc(String(r.pos||''))+'</bdi></span>';
+  if(r.kind==='project'&&pobj(r.id))return '<li><button type="button" data-a="proj" data-id="'+esc(r.id)+'">'+n+tl+I('fwd','flip chev')+'</button></li>';
+  var key=r.kind==='task'?'tk-'+r.id:r.kind==='approval'?'ap-'+r.id:'';
+  return key?'<li><button type="button" data-a="x14-open" data-k="'+esc(key)+'">'+n+tl+I('fwd','flip chev')+'</button></li>':'<li><span class="st18">'+n+tl+'</span></li>';}
+function home18(){if(!connected)return '';rankPull18();var h='<div class="mh18">',c=cash18();
+  if(c){var pc=Math.max(0,Math.min(100,c.month/FOCUS18*100));
+    h+='<section class="card12 cash18"><p class="k">'+I('coin')+'<span>'+esc(tt('mhCash'))+'</span></p><p class="v"><b><bdi>₪'+esc(fmt18(c.month))+'</bdi></b> <span>'+esc(tt('mhOf',{t:fmt18(FOCUS18)}))+'</span></p>'
+     +'<span class="bar18" role="img" aria-label="'+esc(pc.toFixed(1))+'%"><i style="width:'+pc.toFixed(2)+'%"></i></span>'
+     +'<p class="s">'+(c.total!=null?esc(tt('mhTotal',{n:fmt18(c.total)})):'')+(c.at&&dstr18(c.at)?' · '+esc(tt('mhAsOf',{d:dstr18(c.at)})):'')+'</p></section>';}
+  else h+='<section class="card12 cash18"><p class="k">'+I('coin')+'<span>'+esc(tt('mhCash'))+'</span></p><p class="s">'+esc(tt('mhNone'))+'</p></section>';
+  var S=sendNow18();if(S.length)h+='<section class="card12 hand18"><h3>'+I('send')+'<span>'+esc(tt('mhSendH'))+'</span><span class="n12"><bdi>'+S.length+'</bdi></span></h3><p class="sub12">'+esc(tt('mhSendP'))+'</p><ul>'+cap18('send',S,10).map(sendRow18).join('')+'</ul>'+more18('send',S.length,10)+'</section>';
+  var W=repWait18();if(W.length)h+='<section class="card12 hand18"><h3>'+I('chat')+'<span>'+esc(tt('mhRepH'))+'</span><span class="n12"><bdi>'+W.length+'</bdi></span></h3><p class="sub12">'+esc(tt('mhRepP'))+'</p><ul>'+cap18('wait',W,10).map(function(a){return repRow18(a,'wait');}).join('')+'</ul>'+more18('wait',W.length,10)+'</section>';
+  var T=UI.rank18;if(T!==false)h+='<section class="card12 top18"><h3>'+I('target')+'<span>'+esc(tt('mhTopH'))+'</span></h3>'+(T&&T.length?'<ol>'+T.map(topRow18).join('')+'</ol>':T?'<p class="sub12">'+esc(tt('mhTopNone'))+'</p>':skel(1))+'</section>';
+  var Q=askRep18();if(Q.length)h+='<details class="card12 ask18"'+(UI.mh18.askOpen?' open':'')+'><summary><h3>'+I('mail')+'<span>'+esc(tt('mhAskH'))+'</span><span class="n12"><bdi>'+Q.length+'</bdi></span></h3></summary><ul>'+cap18('ask',Q,8).map(function(a){return repRow18(a,'ask');}).join('')+'</ul>'+more18('ask',Q.length,8)+'</details>';
+  return h+'</div>';}
+var vnx18=vNext;vNext=function(){var h=vnx18();if(!connected||UI.v!=='next')return h;var x=home18(),j=h.indexOf('</header>');return j<0?x+h:h.slice(0,j+9)+x+h.slice(j+9);};
+function apGet18(id){var a=J8.raw('approvals')[id];return a?Object.assign({id:id},a):null;}
+function err18(x){toast(tt('mhFail',{e:x&&(x.message||x.code)||'error'}));}
+document.addEventListener('toggle',function(e){var d=e.target;if(d&&d.classList&&d.classList.contains('ask18'))UI.mh18.askOpen=d.open;},true);
+document.addEventListener('click',function(e){var el=e.target.closest&&e.target.closest('[data-a^="x18-"]');if(!el)return;var a0=el.dataset.a,id=el.dataset.id;e.preventDefault();e.stopPropagation();
+  if(a0==='x18-more'){UI.mh18[id]=!UI.mh18[id];render();return;}
+  if(a0==='x18-copy'){var a=apGet18(id);if(!a)return;var tx=String(J8.approvals.textOf(a)||'');var ok=function(){var s=el.querySelector('span');if(s)s.textContent=tt('copied');toast(tt('copied'));};
+    try{navigator.clipboard.writeText(tx).then(ok,function(){fallbackCopy(tx);ok();});}catch(x){fallbackCopy(tx);ok();}return;}
+  if(!J8.status().connected){toast(tt('mhOff'));return;}
+  if(a0==='x18-sent'){var k='arm:'+id;if(!UI.mh18[k]){UI.mh18[k]=1;render();setTimeout(function(){if(UI.mh18[k]){delete UI.mh18[k];render();}},5000);return;}
+    delete UI.mh18[k];el.disabled=true;J8.approvals.handSent(id).then(function(){toast(tt('mhSentT'));render();},function(x){el.disabled=false;err18(x);render();});return;}
+  if(a0==='x18-rep'){var w=el.dataset.w;if(!/^(replied|won|lost)$/.test(w))return;el.disabled=true;
+    J8.approvals.reply(id,w).then(function(){toast(tt(w==='won'?'mhWonT':w==='lost'?'mhLostT':'mhRepT'),function(){(w==='replied'?J8.approvals.reply(id,'clear'):J8.approvals.reply(id,'clear').then(function(){return J8.approvals.reply(id,'replied');})).then(function(){render();},err18);});render();},function(x){el.disabled=false;err18(x);});}},true);
+/* ---------- focus: hide what is stale or empty (not deleted) ---------- */
+function schedFresh18(){var L=J8.schedule&&J8.schedule.list?J8.schedule.list():[];return L.some(function(s){var u=pd(s.updated_at||s.updated);return !isNaN(u)&&Date.now()-u<3*864e5;});}
+function calEmpty18(){try{return !J8.calendar||!J8.calendar.list().length;}catch(e){return true;}}
+var sl18=schedList;schedList=function(){return schedFresh18()?sl18():[];};
+var ts18=teamStrip16;teamStrip16=function(){return teamNext16().length?ts18():'';};
+var tm18=teams;teams=function(){var h=tm18();return schedFresh18()?h:h.replace(/<section class="card12 tm12l">[\s\S]*<\/section>$/,'');};
+var fw18=flowWrap;flowWrap=function(seg){if(seg==='time'&&calEmpty18())seg='map';return fw18(seg);};
+var r18=render;render=function(){var b=document.body;if(b){b.dataset.sched18=schedFresh18()?'ok':'stale';b.dataset.nocal18=calEmpty18()?'1':'0';}if(UI.v==='calendar'&&calEmpty18())UI.v='flow';return r18.apply(this,arguments);};
+window.j8v18={cash:cash18,sendNow:sendNow18,repliesWaiting:repWait18,askReply:askRep18,isHand:isHand18};
 })();

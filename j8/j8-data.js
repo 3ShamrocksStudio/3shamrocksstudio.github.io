@@ -21,7 +21,7 @@ var J8 = (function () {
   var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout', tasks: 'j8_tasks', later: 'j8_later', calendar: 'j8_calendar', day: 'j8_day', memory: 'j8_memory' };
   /* v6 speed: sent/killed drafts load without their bodies (the biggest part of the data); open drafts load in full */
   var OPEN_AP = 'status.is.null,status.in.(pending,approved,edited,queued),kind.eq.template'; /* templates load in full: Control shows their text */
-  var LIGHT_AP = 'org_id,id,kind,label,to,channel,product,created,status,template_id,decided_at,decided_by,sent_at,result,rank,batch,batch_label,blocked_by,version,updated_at';
+  var LIGHT_AP = 'org_id,id,kind,label,to,channel,product,created,status,template_id,decided_at,decided_by,sent_at,result,rank,batch,batch_label,blocked_by,version,updated_at,link,extra'; /* 11.7: link + extra (replied_at, outcome) for the reply loop */
   var TODO_COLS = 'org_id,id,done,back,at,version,updated_at';
   var DROP = ['org_id', 'extra']; // updated_at stays on docs: the app's "since you last looked" line reads it
   var sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'j8nix-v4-auth' } });
@@ -302,7 +302,22 @@ var J8 = (function () {
       kill: function (id) { return update('approvals', id, decide({ status: 'killed' })); },
       undo: function (id) { if ((data.approvals[id] || {}).status === 'sent') return rej('already_sent'); return update('approvals', id, { status: 'pending', decided_at: null, decided_by: null }); },
       /* only for label 'Send by hand' items (LinkedIn): Dave sent it himself */
-      markSent: function (id) { return update('approvals', id, decide({ status: 'sent', sent_at: now(), result: 'Sent by hand (J8NIX)' })); }
+      markSent: function (id) { return update('approvals', id, decide({ status: 'sent', sent_at: now(), result: 'Sent by hand (J8NIX)' })); },
+      /* 11.7: Money home. Sent ✓ on a by-hand item (public.j8_hand_sent: status 'sent', sent_at, result only) and the reply loop
+         (public.j8_reply_mark: extra.replied_at / extra.outcome on a sent item only). Both check membership server-side. */
+      handSent: async function (id) {
+        if (!state.org) return rej('offline');
+        var r = await sb.rpc('j8_hand_sent', { p_org: state.org, p_id: String(id) });
+        if (r.error) return rej('denied', { message: r.error.message });
+        await loadCol('approvals').catch(function () {}); return true;
+      },
+      reply: async function (id, what) {
+        if (['replied', 'won', 'lost', 'clear'].indexOf(what) < 0) return rej('bad_value');
+        if (!state.org) return rej('offline');
+        var r = await sb.rpc('j8_reply_mark', { p_org: state.org, p_id: String(id), p_what: what });
+        if (r.error) return rej('denied', { message: r.error.message });
+        await loadCol('approvals').catch(function () {}); return true;
+      }
     },
 
     projects: {
