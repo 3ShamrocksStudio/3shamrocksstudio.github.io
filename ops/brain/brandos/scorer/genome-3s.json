@@ -55,6 +55,140 @@
   "claims": {
     "rule": "Any number-with-percent, multiplier, #1 / TIME-style award, count of customers, or 'doubled/tripled/halved' claim must carry a source marker in the same block: a data-source attribute on the element or an ancestor, or a [source: ...] tag in the same paragraph.",
     "source_markers": ["data-source attribute", "[source: ...] tag"],
+    "he": {
+      "note": "Hebrew claims (v0.5), mirror of the English claim checks: a hit with no data-source attribute and no [source: ...] tag in the same block is an unsourced-claim. Percentages (100%) are already caught by the shared number rule; 'מובטח' stays a voice hype word. One optional glued prefix (ו ש ה כ ב ל מ) is allowed before each phrase.",
+      "prefixes": "ושהכבלמ",
+      "fix": "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim.",
+      "phrases": [
+        {
+          "kind": "superlative",
+          "words": [
+            "הכי טוב",
+            "הכי טובה",
+            "הכי טובים",
+            "הכי טובות",
+            "הכי מהיר",
+            "הכי מהירה",
+            "הכי זול",
+            "הכי זולה",
+            "הכי אמין",
+            "הכי אמינה",
+            "הכי מדויק",
+            "הכי מדויקת",
+            "הכי גדול",
+            "הכי גדולה",
+            "הטוב ביותר",
+            "הטובה ביותר",
+            "הטובים ביותר",
+            "הזול ביותר",
+            "המהיר ביותר",
+            "היחיד מסוגו",
+            "היחידה מסוגה"
+          ]
+        },
+        {
+          "kind": "ranking",
+          "words": [
+            "מספר אחת",
+            "מקום ראשון",
+            "מס' 1"
+          ]
+        },
+        {
+          "kind": "market-leadership",
+          "words": [
+            "מוביל בשוק",
+            "מובילה בשוק",
+            "מובילים בשוק",
+            "מוביל בתחום",
+            "מובילה בתחום",
+            "מובילים בתחום",
+            "מוביל בענף",
+            "מובילה בענף",
+            "מובילים בענף",
+            "מוביל בישראל",
+            "מובילה בישראל",
+            "מובילים בישראל"
+          ]
+        },
+        {
+          "kind": "risk-free",
+          "words": [
+            "ללא סיכון",
+            "בלי סיכון",
+            "אפס סיכון",
+            "ללא כל סיכון",
+            "ללא סיכונים"
+          ]
+        },
+        {
+          "kind": "guarantee",
+          "words": [
+            "תוצאות מובטחות",
+            "הצלחה מובטחת",
+            "ערבות להצלחה",
+            "מבטיח הצלחה",
+            "מבטיחה הצלחה",
+            "מבטיחים הצלחה"
+          ]
+        },
+        {
+          "kind": "award",
+          "words": [
+            "זוכה פרסים",
+            "זוכה פרס",
+            "זוכת פרסים",
+            "זוכת פרס"
+          ]
+        },
+        {
+          "kind": "change claim",
+          "words": [
+            "הכפיל",
+            "הכפילה",
+            "הכפילו",
+            "הוכפל",
+            "הוכפלה",
+            "שילש",
+            "שילשה",
+            "שילשו"
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "kind": "ranking",
+          "regex": "(?<![א-ת\\d])מספר\\s*1(?!\\d)"
+        },
+        {
+          "kind": "multiplier",
+          "regex": "(?<![א-ת])פי\\s*\\d+(?:\\.\\d+)?(?![\\d%])"
+        },
+        {
+          "kind": "count",
+          "regex": "\\d[\\d,]*\\+?\\s+(?:לקוחות|משתמשים|חברות|מותגים|הורדות|עסקים|סטארטאפים)(?![א-ת])"
+        }
+      ],
+      "banned_claims": [
+        "מרפא",
+        "מטפל במחלות",
+        "מונע מחלות",
+        "מאבחן",
+        "מאושר על ידי רופאים",
+        "אושר על ידי ה-FDA",
+        "הוכח קלינית"
+      ],
+      "negation": [
+        "לא",
+        "אין",
+        "אינו",
+        "אינה",
+        "לעולם"
+      ],
+      "sources": [
+        "ops/brain/brandos/scorer/README.md rubric (English claim list); Hebrew list: Brand OS night shift 19 Nov 2026, mirror of English. NEEDS YOUR EYES: confirm list."
+      ]
+    },
     "sources": ["ops/brain/PROGRAM-BRAND-OS.md section 3 (approved claims with sources) and section 8 (every claim sourced)"]
   },
   "logo": {

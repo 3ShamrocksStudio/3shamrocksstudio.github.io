@@ -1,4 +1,4 @@
-# 3S Brand QA scorer v0.4
+# 3S Brand QA scorer v0.5
 
 Program #1 Brand OS, module 3 (Precision QA gate). Scores one asset (.html, .svg, .txt, .md) against a brand genome and returns a 0-100 Brand Consistency Score, pass/fail per check, and every violation with a reason and a fix hint. Python 3, stdlib only. Demonstrated on 3Shamrocks Studio's own brand.
 
@@ -12,7 +12,7 @@ Exit code 0 = at or above threshold (goes on to Dave's taste gate), 1 = goes bac
 ## Files
 - `genome-3s.json`: palette, fonts, contrast, voice, claims, logo rules and scoring. Every token has a `sources` field pointing at the repo file it came from.
 - Brand-specific hint text and logo detection also live in the genome (`contrast.fix_hint`, `voice.pronoun_rule/pronoun_reason/pronoun_fix`, `logo.alt_text/detect_src/detect_alt`), so `--genome` works for any brand. Missing fields fall back to neutral defaults. Demo on a fictional brand: `../demo/`.
-- `scorer.py`: the scorer. `tests/fixtures/`: 10 planted-error assets and 2 clean ones. `reports/`: JSON reports on the live sprint and audit pages.
+- `scorer.py`: the scorer. `tests/fixtures/`: 14 planted-error assets and 5 clean ones. `reports/`: JSON reports on the live sprint and audit pages.
 
 ## Rubric
 Score = 100 minus penalties. Each violation costs a fixed amount, capped per check. Threshold is 85, so a single violation of any kind sends the asset back. That is deliberate for a precision gate.
@@ -45,10 +45,19 @@ A studio page shows products in their own brands (portfolio tiles, product scree
 - Tests: 2 planted Hebrew fixtures (11, 12), 1 clean Hebrew fixture (with "לנוח", "אנונימיות", "שלך"), 3 Hebrew urgency units, 3 prefix units. Before/after on sprint, audit, home, raise-ready and all 10 demo reports: byte-identical. Only change on the pages checked: shomer-beta (a SH✡MER product page) gains 2 findings, "ספרו לנו" x2. That page speaks as the SH✡MER team, a product brand, so it is not a studio defect and the page was not changed.
 - Limits: verb forms in first person plural (בנינו, נבנה) are not checked (too many false hits: בנינו is also "our sons"); no niqqud handling beyond skipping the marks; gendered or slash forms (ספר/י) are fine and not checked.
 
+## Hebrew claims (v0.5, night 19 Nov)
+- Mirrors the English claim check. Runs only when the genome has `claims.he` (the 3S genome does; the Plinkettle demo genome does not, so its results are unchanged) and only on blocks that contain Hebrew letters. A hit with no `data-source` on the element or an ancestor and no `[source: ...]` tag in the same block is `unsourced-claim`, same rule, penalty and cap as English.
+- Lists live in the genome (`claims.he`), not in the scorer: `phrases` (superlatives such as הכי טוב / הטוב ביותר, ranking such as מספר אחת / מקום ראשון, market leadership such as מוביל בשוק, risk-free such as ללא סיכון, guarantees, awards, doubled/tripled), `patterns` (regex: מספר 1, פי N multipliers, N לקוחות/משתמשים counts). Phrases take one optional glued prefix (ו ש ה כ ב ל מ) and must be whole Hebrew words. Percentages such as 100% are already caught by the shared number rule, and מובטח stays a voice hype word (v0.4), so neither is counted twice.
+- Ledger genomes: `claims.he.banned_claims` (מרפא, מאבחן, הוכח קלינית ...) give `banned-claim` unless negated (`claims.he.negation`: לא, אין ... within 30 characters before). Not active for the 3S genome (no ledger).
+- Lists are NEEDS YOUR EYES like the English ones.
+- Tests: 4 planted Hebrew claim fixtures (13-16), 2 clean Hebrew claim fixtures (04, 05: near-misses such as "מוביל סדנה", "הכי קרוב", "מספר 10", plus a sourced claim), 5 caught-phrase units, 5 near-miss units, 2 ledger units.
+- Before/after on every html page in the repo and all demo and test assets: English pages and all demo reports byte-identical. Four bilingual pages gain Hebrew findings (see the night log): a11y/free-accessibility-check.html (+2 "הטוב ביותר"), a11y/index.html (+1 "פי 1.5"), links/index.html (+1 "הכי טוב"), sprint/index.html (+1 "פי 5"). Pages were not changed. shomer-beta gains nothing.
+- Noise: like English "50% deposit", a number-weight such as "פי 1.5" or a described test result ("הכלי הטוב ביותר מצא ...") is flagged because the scorer cannot tell a claim from a description.
+
 ## Limits (v0.2)
 - Static analysis of source only. No rendered pixels: colours set by a stylesheet in another file, JS, images, or `var()` chains are not resolved.
 - Contrast is checked only where text and background colours sit together in the same inline style or CSS rule. Inherited backgrounds are not known.
-- Claim checks are English regex; Hebrew text is scanned for numbers and percentages only (voice is Hebrew-aware since v0.4). Claims in sentences with no number are not found.
+- Claim checks are phrase and regex lists; Hebrew claims are covered by the genome `claims.he` list since v0.5 (voice since v0.4), so a Hebrew claim phrase not on the list is not found. Claims in sentences with no number are not found.
 - Claim sources must use the marker format. A plain "(Adobe, 2025)" in prose does not count, and payment terms such as "50% deposit" are flagged because the scorer cannot tell a term from a claim. Expect some noise on real pages.
 - Ledger check compares numbers only, not the rest of the wording, and does not check the claim is used in a fitting context. "Negated" means not/never/n't within 30 characters before the word. Banned-claim words are English and built into the scorer (not read from the ledger text); plain uses such as "prevent missed doses" are flagged too. Expect some noise.
 - Logo checks are by file name and alt text. Clear-space, size, and recolouring are not checked.

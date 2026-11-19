@@ -454,6 +454,26 @@ def run(path, genome, regions=(), scoped_out=None):
                 add("claims", "unsourced-claim", m.group(0).strip(), "Unsourced %s claim '%s': %s" % (kind, m.group(0).strip(), snippet(text, m)),
                     "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim.")
 
+    # ---- claims, Hebrew (v0.5): only when the genome has claims.he; same rule as English (unsourced-claim)
+    che = genome.get("claims", {}).get("he")
+    if che:
+        HLc = "א-תװ-״"
+        HWc = "[%s֑-ׇ]" % HLc
+        pre = "[%s]?" % re.escape(che["prefixes"]) if che.get("prefixes") else ""
+        he_claim_res = []
+        for grp in che.get("phrases", []):
+            alts = "|".join(re.escape(w).replace("\\ ", "\\s+") for w in sorted(grp["words"], key=len, reverse=True))
+            he_claim_res.append((re.compile("(?<!%s)%s(%s)(?!%s)" % (HWc, pre, alts, HWc)), grp["kind"]))
+        for grp in che.get("patterns", []):
+            he_claim_res.append((re.compile(grp["regex"]), grp["kind"]))
+        for bid, text, sourced in blocks:
+            if sourced or not re.search("[%s]" % HLc, text) or marker.search(blocktext.get(bid, text)):
+                continue
+            for rx, kind in he_claim_res:
+                for m in rx.finditer(text):
+                    add("claims", "unsourced-claim", m.group(0).strip(), "Unsourced %s claim '%s': %s" % (kind, m.group(0).strip(), snippet(text, m)),
+                        che.get("fix", "Add a data-source attribute or a [source: ...] tag in the same block, or remove the claim."))
+
     # ---- claims ledger (v0.2): only when the genome points at a ledger
     ledger = genome.get("_ledger")
     if ledger is not None:
@@ -490,6 +510,18 @@ def run(path, genome, regions=(), scoped_out=None):
                     continue
                 add("claims", "banned-claim", m.group(0), "Not-approved claim '%s' (ledger 'Not approved' list): %s" % (m.group(0), snippet(body, m)),
                     "Remove it. Only a negated disclaimer such as the ledger's C4 wording may use these words.")
+
+        # Hebrew banned claims (v0.5): only with a ledger and claims.he.banned_claims
+        if che and che.get("banned_claims"):
+            hb = re.compile("(?<!%s)%s(%s)(?!%s)" % (HWc, pre, "|".join(re.escape(w).replace("\\ ", "\\s+") for w in sorted(che["banned_claims"], key=len, reverse=True)), HWc))
+            hneg = re.compile("(?<!%s)(%s)(?!%s)" % (HWc, "|".join(re.escape(w) for w in che.get("negation", ["לא", "אין"])), HWc))
+            for bid in sorted({b for b, _, _ in blocks}, key=str):
+                body = tag_rx.sub(" ", blocktext.get(bid, ""))
+                for m in hb.finditer(body):
+                    if hneg.search(body[max(0, m.start() - 30):m.start()]):
+                        continue
+                    add("claims", "banned-claim", m.group(0), "Not-approved claim '%s' (ledger 'Not approved' list): %s" % (m.group(0), snippet(body, m)),
+                        "Remove it. Only a negated disclaimer may use these words.")
 
     # ---- logo
     lg = genome["logo"]
