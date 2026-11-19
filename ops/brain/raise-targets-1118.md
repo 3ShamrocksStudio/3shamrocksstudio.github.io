@@ -39,3 +39,8 @@ Companies founded "this year" with an investor day behind them are the closest f
 
 ## Next step (team, CRO)
 For the 7 founded "this year" first: find the founder on the company's own site (role + date checked), check Gmail/sent log for past contact, then draft T7 per person as pending in J8NIX (Send by hand on LinkedIn, or §30A email). Weekdays only, never Fri–Sat.
+
+## Founder lookup · night shift 19 Nov 03:38
+- 5 web searches + 3 page reads for the 7 "this year" companies. Founders named on a public page for 1 of 7 (Neodawn, on a startup aggregator last updated 24 Aug 2026: too old for the 7-day role check; the same page lists completed seed rounds, so not a clear pre-raise fit). 0 of the other 6 named anywhere read tonight.
+- The CTech source page could not be re-read from the cloud tonight (fetch permission not granted); a second report (runtimewire.com, 10 Nov 2026) is paywalled after the lede and lists no names.
+- 0 drafts (no founder with a role checked within 7 days). Next try: each company's own site / LinkedIn company page from the Mac run (read only), then T7 per person.
