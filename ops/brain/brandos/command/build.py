@@ -44,6 +44,26 @@ for slug, label, kind in ASSETS:
     assert not a["violations"], (slug, a["violations"])  # the demo promise: every after asset is clean
 n = len(rows)
 genome = json.load(open(GENOME))
+
+# 3S own brand: the live scorer, genome-3s.json, real studio pages in this repo. No "after" versions exist, so current score only.
+G3S = os.path.join(BOS, "scorer", "genome-3s.json")
+PAGES = [  # (id, label, repo path, product-region selectors, note)
+    ("s-home", "Studio home", "index.html", ["#work", "#identity"], "Product tiles (#work, #identity) are scoped out as products in their own brands."),
+    ("s-sprint", "Sprint", "sprint/index.html", [], ""),
+    ("s-audit", "Audit", "audit/index.html", [], ""),
+    ("s-raise", "Raise-ready", "raise-ready/index.html", [], ""),
+    ("s-brandos", "Brand OS", "brand-os/index.html", [], ""),
+]
+srows = []
+for pid, label, rel, regions, note in PAGES:
+    path = os.path.join(SITE, rel)
+    assert os.path.exists(path), path
+    srows.append((pid, label, rel, note, scorer.score(path, G3S, regions)))
+g3s = json.load(open(G3S, encoding="utf-8"))
+s_n = len(srows)
+s_found = sum(len(r["violations"]) for *_, r in srows)
+s_pass = sum(1 for *_, r in srows if r["verdict"] == "PASS")
+s_avg = round(sum(r["score"] for *_, r in srows) / s_n)
 threshold = rows[0][3]["threshold"]
 built = datetime.datetime.now(datetime.timezone.utc).strftime("%d %b %Y")
 
@@ -74,6 +94,22 @@ for slug, label, kind, b, a in rows:
         '<span class="arrow" aria-hidden="true">&rarr;</span><span class="v ok">After %d &middot; pass</span>'
         '<span class="n">%d fixes</span></p></summary>'
         '<ol>%s</ol></details>' % (slug, e(label), b["score"], a["score"], len(b["violations"]), items))
+
+s_body, s_details = [], []
+for pid, label, rel, note, r in srows:
+    s_body.append(
+        '<tr><th scope="row"><a href="#%s">%s</a><small>%s</small></th>'
+        '<td class="s">%s</td><td class="s"><span class="v %s">%s</span></td>%s</tr>'
+        % (pid, e(label), e(rel), bar(r["score"], r["verdict"] == "PASS"), "ok" if r["verdict"] == "PASS" else "no",
+           "Pass" if r["verdict"] == "PASS" else "Send back", cells(r)))
+    items = "".join(
+        '<li><span class="k">%s</span><span class="f" dir="auto">%s</span><span class="x" dir="auto">%s</span></li>'
+        % (NAMES[v["check"]], e(v["reason"]), e(v["fix"])) for v in r["violations"])
+    s_details.append(
+        '<details class="asset" id="%s"><summary><h3>%s</h3><p><span class="v %s">Now %d &middot; %s</span>'
+        '<span class="n">%d %s</span></p></summary>%s<ol>%s</ol></details>'
+        % (pid, e(label), "ok" if r["verdict"] == "PASS" else "no", r["score"], "pass" if r["verdict"] == "PASS" else "send back",
+           len(r["violations"]), "finding" if len(r["violations"]) == 1 else "findings", ('<p class="note">%s</p>' % e(note)) if note else "", items or '<li><span class="k">Clean</span><span class="f">No findings.</span></li>'))
 
 page = """<!doctype html>
 <html lang="en">
@@ -139,6 +175,12 @@ li .x{color:var(--vi3)}
 .how{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px;border-top:1px solid var(--s2)}
 .how div{padding:14px 16px 14px 0;font-size:14px}
 .how b{display:block;font:700 15px/1.2 "Bricolage Grotesque",system-ui,sans-serif;margin-bottom:4px;color:var(--vi3)}
+.tabs{display:flex;gap:0;margin:18px 0 0;border-bottom:1px solid var(--s2)}
+.tabs button{appearance:none;background:none;border:0;border-bottom:3px solid transparent;color:var(--vi3);font:600 14px/1 "Instrument Sans",system-ui,sans-serif;letter-spacing:.04em;padding:12px 16px 11px;margin-bottom:-1px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--vi)}
+.tabs button:focus-visible{outline:2px solid var(--vi2);outline-offset:-2px}
+.note{margin:0 0 8px;font-size:13px;color:var(--vi3)}
+[hidden]{display:none!important}
 footer{margin-top:28px;font-size:12.5px;color:var(--vi3);max-width:760px}
 @media (max-width:760px){
   .kpis{grid-template-columns:repeat(2,1fr)}
@@ -154,8 +196,13 @@ footer{margin-top:28px;font-size:12.5px;color:var(--vi3);max-width:760px}
 </style>
 </head>
 <body>
-<div class="top"><img src="../../assets/studio/3shamrocks.png" alt="3Shamrocks Studio"><h1>Brand OS &middot; Command</h1><span class="tag">Demo &middot; fictional brand</span></div>
+<div class="top"><img src="../../assets/studio/3shamrocks.png" alt="3Shamrocks Studio"><h1>Brand OS &middot; Command</h1><span class="tag">Internal preview &middot; staged</span></div>
 <main>
+<div class="tabs" role="tablist" aria-label="Brand">
+<button type="button" role="tab" id="tab-demo" aria-selected="true" aria-controls="panel-demo">Demo &middot; Plinkettle (fictional)</button>
+<button type="button" role="tab" id="tab-3s" aria-selected="false" aria-controls="panel-3s" tabindex="-1">3Shamrocks Studio (real pages)</button>
+</div>
+<section id="panel-demo" role="tabpanel" aria-labelledby="tab-demo">
 <div class="kpis">
 <div><b>%(n)d</b><span>assets checked</span></div>
 <div><b>%(errors)d</b><span>brand errors found before</span></div>
@@ -171,15 +218,45 @@ footer{margin-top:28px;font-size:12.5px;color:var(--vi3);max-width:760px}
 <div class="key"><span><i class="g"></i>on brand</span><span><i class="v"></i>sent back</span><span class="m">number in a check = errors found before the fix</span></div>
 <h2>Every finding, with its fix</h2><p class="lede">Tap an asset to see what was wrong and how it was fixed.</p>
 <div class="grid">%(details)s</div>
+</section>
+<section id="panel-3s" role="tabpanel" aria-labelledby="tab-3s">
+<div class="kpis">
+<div><b>%(s_n)d</b><span>real studio pages checked</span></div>
+<div><b>%(s_found)d</b><span>findings, each with a fix</span></div>
+<div><b>%(s_avg)d</b><span>average score now</span></div>
+<div class="up"><b>%(s_pass)d</b><span>pages passing</span></div>
+</div>
+<p class="lede">These are the live pages of %(s_brand)s, checked against the studio's own rulebook (genome-3s.json) by the same checker, in the same six ways. There are no fixed versions yet, so this shows today's score and findings only, not a before and after. A page passes at %(th)d or more.</p>
+<table>
+<caption>Score now, and what failed</caption>
+<thead><tr><th>Page</th><th>Score now</th><th>Verdict</th>%(heads)s</tr></thead>
+<tbody>%(s_rows)s</tbody>
+</table>
+<div class="key"><span><i class="g"></i>on brand</span><span><i class="v"></i>sent back</span><span class="m">number in a check = findings</span></div>
+<h2>Every finding, with its fix</h2><p class="lede">Tap a page to see what the checker found and the fix it suggests. Some findings are noise the checker cannot tell from a real error (for example a payment term that looks like a claim).</p>
+<div class="grid">%(s_details)s</div>
+</section>
+<section id="how">
 <h2>How it works</h2>
 <div class="how">
 <div><b>1 &middot; Rulebook</b>Colours, type, contrast, voice, approved claims and logo files, each with its source.</div>
 <div><b>2 &middot; Check</b>Every asset is read against the rulebook before anyone sees it.</div>
 <div><b>3 &middot; Fix or pass</b>Each error comes back with the rule it broke and the fix. Nothing ships until it passes.</div>
 </div>
-<footer>Built %(built)s from the live checker, not typed by hand. %(brand)s, its colours, claims and sources are fictional, not a real company. Internal preview, not linked from the site.</footer>
+</section>
+<footer>Built %(built)s from the live checker (scorer v0.5), not typed by hand. In the demo, %(brand)s, its colours, claims and sources are fictional, not a real company. The studio view scores real pages as they stand; nothing was changed to improve a score. Internal preview, not linked from the site.</footer>
 </main>
 <script>
+(function(){
+var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+function show(t,focus){tabs.forEach(function(b){var on=b===t;b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!on;});if(focus)t.focus();}
+tabs.forEach(function(b,i){
+b.addEventListener('click',function(){show(b);});
+b.addEventListener('keydown',function(ev){var k=ev.key,j=-1;if(k==='ArrowRight')j=(i+1)%%tabs.length;else if(k==='ArrowLeft')j=(i+tabs.length-1)%%tabs.length;else if(k==='Home')j=0;else if(k==='End')j=tabs.length-1;if(j>=0){ev.preventDefault();show(tabs[j],true);}});
+});
+window.lpShowFor=function(){var d=location.hash&&document.getElementById(location.hash.slice(1));var p=d&&d.closest('[role=tabpanel]');if(p){var t=document.getElementById(p.getAttribute('aria-labelledby'));if(t)show(t);}};
+show(tabs[0]);lpShowFor();addEventListener("hashchange",lpShowFor);
+})();
 function openHash(){var d=location.hash&&document.getElementById(location.hash.slice(1));if(d&&d.tagName==="DETAILS"){d.open=true;}}
 addEventListener("hashchange",openHash);openHash();
 </script>
@@ -190,7 +267,10 @@ addEventListener("hashchange",openHash);openHash();
     "brand": e(genome["brand"]), "th": threshold, "built": built,
     "heads": "".join('<th class="c-h">%s</th>' % NAMES[c] for c in CHECKS),
     "rows": "".join(body_rows), "details": "".join(details),
+    "s_n": s_n, "s_found": s_found, "s_avg": s_avg, "s_pass": s_pass, "s_brand": e(g3s["brand"]),
+    "s_rows": "".join(s_body), "s_details": "".join(s_details),
 }
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 open(OUT, "w", encoding="utf-8").write(page)
+print("studio pages", s_n, "| findings", s_found, "| avg", s_avg, "| pass", s_pass)
 print("wrote", OUT, "| assets", n, "| errors", errors, "| avg", round(total_before / n), "->", round(total_after / n))
