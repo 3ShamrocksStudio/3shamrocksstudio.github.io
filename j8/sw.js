@@ -1,9 +1,10 @@
-/* J8NIX 11.8.0 service worker: offline shell + web push. Never caches API data. 11.8.0: new app files only (clear Home). 11.7.0: new app files only (Money home). 11.6.0: Do it for me. Revert: sw-11.5.0.js.
+/* J8NIX 12.0.0 service worker: offline shell + web push. 12.0.0: Pit Wall files (j12.js, j12.css). Revert: sw-11.8.1.js.
+   J8NIX 11.8.0 service worker: offline shell + web push. Never caches API data. 11.8.0: new app files only (clear Home). 11.7.0: new app files only (Money home). 11.6.0: Do it for me. Revert: sw-11.5.0.js.
    11.5.0: phone alerts follow Dave's rules (alerts.js): titles only, at most 3 a day bundled into one notification,
    quiet 22:00–08:00 and Shabbat, a seen alert never comes back. Revert: sw-11.4.0.js. */
-importScripts('alerts.js?v=11.8.1');
-var CACHE = 'j8nix-v11.8.1-1', ASTATE = 'j8alerts-v1';
-var SHELL = ['./', 'index.html', 'app.css?v=11.8.1', 'v11.css?v=11.8.1', 'j11.css?v=11.8.1', 'app.js?v=11.8.1', 'j11.js?v=11.8.1', 'shell.js?v=11.8.1', 'j8-data.js?v=11.8.1', 'alerts.js?v=11.8.1', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
+importScripts('alerts.js?v=12.0.0');
+var CACHE = 'j8nix-v12.0.0-1', ASTATE = 'j8alerts-v1';
+var SHELL = ['./', 'index.html', 'app.css?v=12.0.0', 'v11.css?v=12.0.0', 'j11.css?v=12.0.0', 'app.js?v=12.0.0', 'j11.js?v=12.0.0', 'shell.js?v=12.0.0', 'j8-data.js?v=12.0.0', 'j12.js?v=12.0.0', 'j12.css?v=12.0.0', 'j12w.css?v=12.0.0', 'alerts.js?v=12.0.0', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/studio.png',
   'brand/j8nix-wordmark-2026-11-17.svg', 'brand/j8nix-mark-8-2026-11-17.svg', 'brand/j8nix-2026-11-17.png', 'icons/j8-icon-2026-11-17.svg', 'icons/j8-192-2026-11-17.png', 'icons/badge-96.png', 'icons/j8-touch-180-2026-11-17.png'];
 

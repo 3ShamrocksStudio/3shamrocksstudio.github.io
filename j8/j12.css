@@ -1,0 +1,28 @@
+/* J8NIX 12.0.0 (22 Nov 2026) · Pit Wall, document-level rules only: which app is in front, the splash and the "Pit Wall" button
+   shown over the classic app. Everything inside Pit Wall lives in its own shadow root with j12w.css, so the classic styles
+   (app.css, v11.css, j11.css) never touch it and its styles never touch the classic app. Revert: index-11.8.1.html + sw-11.8.1.js. */
+#pwsplash{--w:#FFFFFF;--ink:#111111;--mut:#5F636A;--red:#E10600;--chq:repeating-conic-gradient(#111 0 25%,#fff 0 50%) 0 0/8px 8px;--m:"Red Hat Mono","Heebo",ui-monospace,Menlo,monospace}
+html.pw,body.pw{height:auto!important;min-height:100%;overflow-y:auto!important;overflow-x:hidden!important;background:#FFFFFF!important}
+body.pw>*:not(#pw):not(#pwsplash):not(script):not(svg):not(style):not(link){display:none!important}
+body:not(.pw)>#pw{display:none!important}
+body.pw>#pw{display:block}
+#pwclassic{position:fixed;z-index:9000;inset-inline-end:12px;top:calc(8px + env(safe-area-inset-top));min-height:44px;padding:0 14px;border:2px solid #111;background:#FFD400;color:#111;font:800 16px/1 "Big Shoulders Display","Heebo",sans-serif;text-transform:uppercase;letter-spacing:.04em;border-radius:3px;cursor:pointer}
+body.pw #pwclassic,body:not(.pw-classic) #pwclassic{display:none}
+/* ---------- splash: five lights on, lights out, J8NIX ---------- */
+#pwsplash{position:fixed;inset:0;z-index:10000;background:var(--w);display:grid;place-items:center;overflow:hidden;transition:opacity .16s linear}
+#pwsplash.out{opacity:0;pointer-events:none}
+#pwsplash *{box-sizing:border-box}
+#pwsplash .pws-in{display:grid;justify-items:center;gap:16px;width:100%}
+#pwsplash .pws-lights{display:flex;gap:10px;padding:10px 14px;background:var(--ink);border-radius:4px}
+#pwsplash .pws-lights i{width:22px;height:22px;border-radius:50%;background:#2b2b2b}
+#pwsplash.play .pws-lights i{animation:pwOn .01s linear forwards,pwOff .01s linear 1.1s forwards}
+#pwsplash.play .pws-lights i:nth-child(1){animation-delay:.08s,1.1s}#pwsplash.play .pws-lights i:nth-child(2){animation-delay:.26s,1.1s}#pwsplash.play .pws-lights i:nth-child(3){animation-delay:.44s,1.1s}#pwsplash.play .pws-lights i:nth-child(4){animation-delay:.62s,1.1s}#pwsplash.play .pws-lights i:nth-child(5){animation-delay:.8s,1.1s}
+@keyframes pwOn{to{background:var(--red)}}@keyframes pwOff{to{background:#2b2b2b}}
+#pwsplash .pws-mk{height:70px;opacity:0;transform:translateX(60px)}#pwsplash .pws-wm{height:28px;opacity:0;transform:translateX(60px)}
+#pwsplash p{margin:0;font:600 12px var(--m);color:var(--mut);opacity:0;letter-spacing:.04em}
+#pwsplash.play .pws-mk{animation:pwIn .16s ease-out 1.14s forwards}#pwsplash.play .pws-wm{animation:pwIn .16s ease-out 1.2s forwards}#pwsplash.play p{animation:pwIn .16s ease-out 1.26s forwards}
+#pwsplash .pws-chq{position:absolute;left:0;right:0;bottom:12%;height:16px;background:var(--chq);transform:translateX(100%)}
+#pwsplash.play .pws-chq{animation:pwSweep .42s ease-in 1.16s forwards}
+@keyframes pwIn{to{opacity:1;transform:none}}@keyframes pwSweep{to{transform:translateX(-100%)}}
+
+@media (prefers-reduced-motion:reduce){#pwsplash *{animation-duration:.01ms!important;transition:none!important}}
