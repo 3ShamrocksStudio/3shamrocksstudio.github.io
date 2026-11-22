@@ -1928,12 +1928,12 @@ window.j8v18={cash:cash18,sendNow:sendNow18,repliesWaiting:repWait18,askReply:as
    "Mark sent" = two taps → public.j8_hand_sent) · "Replies" (Won / Lost) with "Sent · did they reply?" folded under one line ·
    everything Home showed before, folded under "More". Empty cards are hidden. Revert: git revert of the 11.8.0 commit. ===== */
 Object.assign(L11.en,{h19Of:'of ₪{t} this month',h19None:'No money figures yet.',h19TodayH:'Your 10 minutes today',h19TodayP:'Do these in order. Tap the button, then Done.',
-  h19Calm:'Nothing needs you right now.',h19Done:'Done',h19DoneT:'Done. Nice.',h19How:'See how',h19PeopleH:'People to message',h19PeopleP:'One tap copies the message and opens the chat. Paste and send.',
+  h19Calm:'Nothing needs you right now.',h19Done:'Done',h19Note:'Note',h19NoteT:'Sent to the team',h19DoneT:'Done. Nice.',h19How:'See how',h19PeopleH:'People to message',h19PeopleP:'One tap copies the message and opens the chat. Paste and send.',
   h19Go:'Copy & open',h19Copy:'Copy',h19Copied:'Copied — paste and send',h19Mark:'Mark sent',h19Arm:'Tap again to confirm',h19All:'Show all ({n})',h19Less:'Show fewer',
   h19RepH:'Replies',h19RepP:'They wrote back. Did it turn into work?',h19AskL:'Sent in the last 30 days · did they reply? ({n})',h19Replied:'They replied',
   h19MoreL:'More',h19MoreP:'Plans, alerts, team and everything else',h19PostsH:'Posts to put up yourself',h19PostsP:'Approved. Copy & open, paste, post.'});
 Object.assign(L11.he,{h19Of:'מתוך ₪{t} החודש',h19None:'עוד אין נתוני כסף.',h19TodayH:'10 הדקות שלך היום',h19TodayP:'לפי הסדר. לוחצים על הכפתור, ואז "בוצע".',
-  h19Calm:'שום דבר לא מחכה לך עכשיו.',h19Done:'בוצע',h19DoneT:'בוצע. כל הכבוד.',h19How:'איך עושים',h19PeopleH:'למי לשלוח הודעה',h19PeopleP:'לחיצה אחת מעתיקה את ההודעה ופותחת את השיחה. מדביקים ושולחים.',
+  h19Calm:'שום דבר לא מחכה לך עכשיו.',h19Done:'בוצע',h19Note:'הערה',h19NoteT:'נשלח לצוות',h19DoneT:'בוצע. כל הכבוד.',h19How:'איך עושים',h19PeopleH:'למי לשלוח הודעה',h19PeopleP:'לחיצה אחת מעתיקה את ההודעה ופותחת את השיחה. מדביקים ושולחים.',
   h19Go:'להעתיק ולפתוח',h19Copy:'להעתיק',h19Copied:'הועתק — מדביקים ושולחים',h19Mark:'סמן שנשלח',h19Arm:'עוד לחיצה לאישור',h19All:'להציג הכל ({n})',h19Less:'להציג פחות',
   h19RepH:'תשובות',h19RepP:'ענו לך. זה הפך לעבודה?',h19AskL:'נשלח ב־30 הימים האחרונים · ענו? ({n})',h19Replied:'ענו',
   h19MoreL:'עוד',h19MoreP:'תוכניות, התראות, צוות וכל השאר',h19PostsH:'פוסטים לפרסם בעצמך',h19PostsP:'כבר אושרו. מעתיקים ופותחים, מדביקים, מפרסמים.'});
@@ -1951,7 +1951,14 @@ function stepRow19(x,k){var id=esc(x.id),lk=okLink18(x.link),lt=String(x.link_te
   else if(lk)pri='<a class="b12 pri p19" href="'+hesc(lk)+'" target="_blank" rel="noopener noreferrer">'+esc(cut(lt||tt('mhOpen'),34))+I('ext')+'</a>';
   else pri='<button type="button" class="b12 pri p19" data-a="x14-open" data-k="tk-'+id+'">'+esc(tt('h19How'))+'</button>';
   return '<li class="s19"><span class="k19" aria-hidden="true"><bdi>'+(k+1)+'</bdi></span><div class="b19"><button type="button" class="tl19" data-a="x14-open" data-k="tk-'+id+'"><b dir="auto">'+esc(plain19(x.title))+'</b>'+(m?'<small><bdi>'+esc(m)+'</bdi></small>':'')+'</button>'
-   +'<div class="a19">'+pri+'<button type="button" class="t19" data-a="x19-done" data-id="'+id+'">'+I('check')+'<span>'+esc(tt('h19Done'))+'</span></button></div></div></li>';}
+   +'<div class="a19">'+pri+'<button type="button" class="t19" data-a="x19-done" data-id="'+id+'">'+I('check')+'<span>'+esc(tt('h19Done'))+'</span></button>'
+   +'<button type="button" class="t19" data-a="thread-task" data-id="'+id+'">'+I('chat')+'<span>'+esc(tt('h19Note'))+'</span></button></div>'+note19(x.id)+'</div></li>';}
+/* 11.8.1: a note on a step uses the task thread (threadSheet → J8.inbox.send with task_id); under the row: the latest team reply, or "Sent to the team" while it waits */
+function note19(tid){var M=J8.inbox.forTask?J8.inbox.forTask(tid):[];if(!M.length)return '';var h='',R=null;
+  for(var i=0;i<M.length;i++){var l=lastTeamLine(M[i]);if(l){R=l;break;}}
+  if(!lastTeamLine(M[0]))h+='<p class="n19">'+I('send','flip')+'<span>'+esc(tt('h19NoteT'))+'</span></p>';
+  if(R)h+='<button type="button" class="lastline" data-a="thread-task" data-id="'+esc(tid)+'">'+sevChip(R.v)+'<span dir="auto">'+esc(R.x)+'</span></button>';
+  return h;}
 function people19(){return sendNow18().filter(function(a){return a.kind!=='post';});}
 function posts19(){return sendNow18().filter(function(a){return a.kind==='post';});}
 function msgRow19(a){var id=esc(a.id),tx=String(J8.approvals.textOf(a)||''),lk=okLink18(a.link),arm=UI.mh18['arm:'+a.id],f=tx.split(/\n/).map(function(l){return l.trim();}).filter(Boolean),first=f[0]||'',rest=f.length>1||first.length>90,op=!!UI.h19['x:'+a.id];
