@@ -13,10 +13,13 @@
    J8.inbox.send (note), J8.control.setPaused. Edit opens the classic draft editor. The classic app stays in the page
    (#app), reachable from Settings → Classic. All dynamic text is escaped; links are https only.
    Revert: index-11.8.1.html + sw-11.8.1.js (this file and j12.css are then unused).
+   12.0.1: "Ready for you to send" in Gates and each Mission: approved/edited by-hand drafts not yet sent (the 11.8 Home
+   "People to message" list, window.j8v19.people). One "Copy & open" (copy edited_body else body, open the https link in the
+   same tap) and a quiet two-tap "Mark sent" (J8.approvals.handSent → public.j8_hand_sent). Hidden when empty.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '12.0.0';
+  var VER = '12.0.1';
   var GOAL = 100000, LINE_FROM = '2026-11-19', LINE_TO = '2026-12-31', COUNT_FROM = '2026-11-01';
   var TZ = 'Asia/Jerusalem';
   var J = function () { return window.J8 || null; };
@@ -188,6 +191,31 @@
     return '<article class="row dec ' + (how === 'nogo' ? 'nogo' : '') + '"><p class="yt">' + (how === 'go' ? 'Go' : how === 'done' ? 'Done' : 'No-go') + '</p><p class="yp">Saved. <button type="button" class="ql" data-x="undo">Undo</button></p></article>';
   }
 
+  /* 12.0.1: by-hand drafts Dave approved (Go) and still has to send himself: same list as the 11.8 Home "People to message" */
+  function readyList(pid) {
+    var L = safe(function () { return window.j8v19.people(); }, []);
+    if (!Array.isArray(L)) return [];
+    return pid ? L.filter(function (a) { return pidOf(a.product) === pid; }) : L;
+  }
+  function copyText(tx) {
+    var ok = false;
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(tx).catch(function () { copyOld(tx); }); ok = true; } } catch (e) {}
+    if (!ok) copyOld(tx);
+  }
+  function copyOld(tx) {
+    try { var t = document.createElement('textarea'); t.value = tx; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); } catch (e) {}
+  }
+  function readyRow(a) {
+    var j = J(), tx = String(safe(function () { return j.approvals.textOf(a); }, '') || ''), lk = link(a.link), k = 'hs-' + a.id;
+    var head = a.to || a.label || a.subject || 'Message', f = tx.split(/\n/).map(function (l) { return l.trim(); }).filter(Boolean), first = f[0] || '';
+    var h = '<article class="row poll" data-ready="' + esc(a.id) + '"><div class="yh"><p class="yt" dir="auto">' + esc(cut(head, 90)) + '</p></div>';
+    if (a.channel) h += '<p class="yp" dir="auto">' + esc(cut(a.channel, 60)) + '</p>';
+    if (tx) h += f.length > 1 || first.length > 140 ? '<details><summary dir="auto">' + esc(cut(first, 140)) + '<b>Read all</b></summary><p class="full" dir="auto">' + esc(tx) + '</p></details>' : '<p class="why" dir="auto">' + esc(first) + '</p>';
+    h += '<div class="bts">' + (tx || lk ? '<button type="button" class="bt main" data-x="copyopen" data-id="' + esc(a.id) + '">' + (lk ? 'Copy &amp; open' : 'Copy') + '</button>' : '')
+      + '<button type="button" class="ql' + (armed(k) ? ' arm' : '') + '" data-x="handsent" data-id="' + esc(a.id) + '">' + (armed(k) ? 'Tap again: sent' : 'Mark sent') + '</button></div>';
+    return h + '</article>';
+  }
+
   function stopBox() {
     var p = paused(), c = ctl(), k = p ? 'resume' : 'stop', ar = armed(k);
     var by = c && c.updated ? when(c.updated) : '';
@@ -279,6 +307,8 @@
       + '<li><span>UPD</span><p class="mono sm">' + esc(when(p.updated || p.updated_at) || 'unknown') + (p.by ? ' · ' + esc(cut(p.by, 60)) : '') + '</p></li></ul>';
     h += '<div class="cols"><section><h2 class="cap">Your steps · ' + mine.length + '</h2>' + (mine.length ? '<div class="rows">' + mine.map(function (t) { return S.dec && S.dec.id === t.id ? decidedRow(t.id, 'done') : taskRow(t, false); }).join('') + '</div>' : '<p class="empty">No open steps for you here.</p>');
     if (team.length) h += '<h2 class="cap">Team steps · ' + team.length + '</h2><ul class="team">' + team.map(function (t) { return '<li><span>' + esc(t.owner || 'team') + '</span><b dir="auto">' + esc(t.title || t.id) + '</b></li>'; }).join('') + '</ul>';
+    var RD = readyList(p.id);
+    if (RD.length) h += '<h2 class="cap">Ready for you to send · ' + RD.length + '</h2><div class="rows">' + RD.map(readyRow).join('') + '</div>';
     h += '<h2 class="cap">Gates · Go / No-go · ' + D.length + '</h2>' + (D.length ? '<div class="rows">' + D.map(function (a) { return draftRow(a, false); }).join('') + '</div>' : '<p class="empty">No drafts wait for you here.</p>') + '</section>';
     h += '<section><h2 class="cap">Proof</h2>' + proofList(proofItems(p.id), 20) + '</section></div>';
     return h;
@@ -296,6 +326,8 @@
     rankPull();
     var G = gateGroups(), n = gateCount();
     var h = '<h1 class="ttl">Gates</h1><p class="sub">' + (n ? n + ' waiting for you · highest money first · grouped by mission.' : on() ? 'Nothing waits for you. Clear track.' : 'Connecting…') + '</p>';
+    var RD = readyList(null);
+    if (RD.length) h += '<section class="grp ready"><h2>' + fl('need') + '<span>Ready for you to send</span><span class="n">' + RD.length + '</span></h2><div class="rows two">' + RD.map(readyRow).join('') + '</div></section>';
     G.forEach(function (g) {
       var p = proj(g.p), f = p ? flag(p) : 'quiet';
       h += '<section class="grp"><h2>' + fl(f) + '<span dir="auto">' + esc(pname(g.p)) + '</span><span class="n">' + g.L.length + '</span></h2><div class="rows two">'
@@ -401,7 +433,19 @@
     if (x === 'pitwall') { classic(false); return; }
     if (x === 'refresh') { if (j && j.reload) j.reload().then(function () { say('Up to date.'); }, function () { say('Offline. Showing the saved copy.'); }); S.rankAt = 0; rankPull(); return; }
     if (x === 'signout') { sheet(false); if (j) j.auth.signOut().catch(function () {}); return; }
+    if (x === 'copyopen') {
+      var ra = safe(function () { return readyList(null).filter(function (q) { return String(q.id) === id; })[0]; }, null); if (!ra) return;
+      var rt = String(safe(function () { return j.approvals.textOf(ra); }, '') || ''), rl = link(ra.link);
+      if (rt) copyText(rt);
+      if (rl) { try { window.open(rl, '_blank', 'noopener,noreferrer'); } catch (e) {} }
+      buzz(); say(rt ? 'Copied — paste and send' : 'Opened'); return;
+    }
     if (!j || !on()) { say('Not connected. Try again in a moment.'); return; }
+    if (x === 'handsent') {
+      var hk = 'hs-' + id; if (!armed(hk)) { arm(hk); return; } delete S.arm[hk]; buzz(); el.disabled = true;
+      j.approvals.handSent(id).then(function () { say('Marked sent.'); render(true); }, function (e) { el.disabled = false; fail(e); });
+      return;
+    }
     if (x === 'note-send') {
       var key = el.getAttribute('data-k'), t = String(S.note[key] || '').trim(); if (!t) { say('Write the note first.'); return; }
       el.disabled = true;
