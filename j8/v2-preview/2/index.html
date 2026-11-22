@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#141517">
+<meta name="description" content="J8NIX v2 direction preview (staged, not linked from the app).">
+<title>J8NIX v2 · 2 Lit keys</title>
+<link rel="icon" href="../../icons/j8-icon-2026-11-17.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Martian+Mono:wght@400;600&family=Rubik:wght@400;500;700&family=Heebo:wght@400;600;700&display=swap">
+<style>
+:root{--body:#141517;--key:#1E2023;--key2:#25282C;--line:#2C2F33;--ink:#F2F2EF;--dim:#A4A7AB;--mut:#8A8E93;--white:#FFFFFF;--amb:#FFB020;--red:#FF3B30;--cash:#8BE36A;
+--f:"Archivo","Rubik","Heebo",system-ui,sans-serif;--m:"Martian Mono","Rubik",ui-monospace,monospace;color-scheme:dark}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--body);color:var(--ink);font:15px/1.45 var(--f);font-variation-settings:"wdth" 100;overflow-x:hidden}
+.mono{font-family:var(--m);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+a{color:inherit}button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--amb);outline-offset:2px}
+.sm{font-size:11.5px}.dim{color:var(--dim)}
+/* splash: a key fades in, light pours up behind the untouched mark */
+#splash{position:fixed;inset:0;z-index:99;background:var(--body);display:grid;place-items:center;transition:opacity .4s ease}
+#splash.out{opacity:0;pointer-events:none}
+.sp{display:grid;justify-items:center;gap:18px}
+.sp .key{width:132px;height:132px;border-radius:6px;background:var(--key);box-shadow:inset 0 1px 0 #ffffff14,inset 0 -3px 0 #00000059;position:relative;overflow:hidden;display:grid;place-items:center;opacity:0}
+.sp .pour{position:absolute;inset:auto 0 0;height:0;background:linear-gradient(to top,#ffb02055,#ffffff10)}
+.sp .mk{height:86px;position:relative;opacity:.25}
+.sp .wm{height:24px;opacity:0}.sp p{margin:0;font:11px var(--m);color:var(--mut);opacity:0}
+#splash.play .key{animation:fade .2s ease forwards}
+#splash.play .pour{animation:pour .9s cubic-bezier(.4,0,.2,1) .25s forwards}
+#splash.play .mk{animation:light .5s ease .55s forwards}
+#splash.play .wm,#splash.play p{animation:fade .3s ease 1.05s forwards}
+@keyframes fade{to{opacity:1}}@keyframes pour{to{height:100%}}@keyframes light{to{opacity:1}}
+/* shell */
+.app{max-width:1180px;margin:0 auto;padding:0 16px calc(92px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 12px}
+.top img{height:22px;display:block}
+.top .snap{margin:0;font:10.5px/1.4 var(--m);color:var(--dim);text-align:end}.top .snap b{display:block;color:var(--white);font-weight:600}
+#view.enter{animation:fade .2s ease both;opacity:0}
+.lab{font:600 12px/1.2 var(--f);font-variation-settings:"wdth" 75;color:var(--mut);margin:22px 0 10px;letter-spacing:.02em}
+.ttl{font:700 28px/1.1 var(--f);font-variation-settings:"wdth" 80;margin:6px 0 4px}
+.sub{color:var(--dim);margin:0 0 12px}
+/* hero: the hourglass key */
+.hero{display:flex;gap:16px;align-items:center;background:var(--key);border-radius:6px;padding:14px;box-shadow:inset 0 1px 0 #ffffff10,inset 0 -3px 0 #0000004d}
+.hk{flex:none;width:104px;height:132px;border-radius:6px;background:#17181a;position:relative;overflow:hidden;display:grid;place-items:center;box-shadow:inset 0 2px 6px #0000008c}
+.hk .pour{position:absolute;inset:auto 0 0;background:var(--white);opacity:.9;animation:breathe 4s ease-in-out infinite}
+.hk .pn{position:absolute;inset-inline:0;height:2px;background:var(--amb)}
+.hk img{height:92px;position:relative}
+.hr{min-width:0}.hr .lab{margin:0 0 4px}
+.num{font-size:30px;font-weight:600;margin:0;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.num span:last-child{font-size:13px;color:var(--mut)}
+.cash{width:9px;height:9px;border-radius:50%;background:var(--cash);align-self:center}
+.behind{margin:6px 0 2px;font-size:14px}.behind b{color:var(--amb)}
+/* keys */
+.kb{display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 16px;border:0;border-radius:6px;background:var(--key2);color:var(--ink);font-weight:600;font-variation-settings:"wdth" 85;cursor:pointer;text-decoration:none;
+box-shadow:inset 0 1px 0 #ffffff17,inset 0 -3px 0 #00000066,0 1px 0 #000;transition:background .2s ease,box-shadow .2s ease,transform .06s ease,color .2s ease}
+.kb.is-press{transform:translateY(2px);box-shadow:inset 0 1px 0 #ffffff10,inset 0 -1px 0 #00000066}
+.kb.lit{background:var(--amb);color:#1a1200;box-shadow:inset 0 1px 0 #ffffff80,inset 0 -3px 0 #a0640099,0 0 18px #ffb02033}
+.kb.lit-w{background:var(--white);color:#111}
+.kb:disabled{opacity:.4;cursor:default}
+.kb.big{width:100%;min-height:72px;justify-content:space-between;font-size:18px;padding:0 18px;text-align:start}
+.kb.big.pressed{background:var(--key2);color:var(--amb);box-shadow:inset 0 0 0 1.5px var(--amb)}
+.move .why{margin:10px 2px 0;color:var(--dim);font-size:14px}
+.minikeys{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.kb.mini{min-height:64px;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;font-size:14px;line-height:1.2;text-align:start}
+/* mixer */
+.mixer{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:#101113;border-radius:6px;padding:12px 8px;box-shadow:inset 0 2px 8px #00000080}
+.ch2{display:grid;justify-items:center;gap:8px;text-decoration:none;padding:6px 2px;border-radius:6px;transition:background .2s ease,transform .06s ease;text-align:center;min-width:0}
+.ch2:hover{background:#ffffff08}.ch2.is-press{transform:translateY(1px)}
+.ch2 b{font-size:12px;line-height:1.15;font-variation-settings:"wdth" 70;overflow-wrap:anywhere}.ch2 small{font-size:11px;color:var(--mut);line-height:1.2}
+.fader{width:10px;height:110px;background:#08090a;border-radius:5px;position:relative;box-shadow:inset 0 1px 2px #000}
+.fader .fill{position:absolute;inset:auto 0 0;border-radius:5px;background:#3a3d42}
+.fader .cap{position:absolute;inset-inline-start:-9px;width:28px;height:12px;margin-bottom:-6px;border-radius:3px;background:linear-gradient(#55595f,#2d3034);box-shadow:0 2px 3px #000}
+.s-run .fill{background:var(--white);animation:breathe 4s ease-in-out infinite}
+.s-need .fill{background:var(--amb)}.s-block .fill{background:var(--red)}.s-done .fill{background:#2a2c2f}
+.mixer.big .fader{height:170px}
+@keyframes breathe{0%,100%{opacity:.92}50%{opacity:.62}}
+.led{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;font:700 12px var(--m);flex:none;background:#2a2c30;color:#55595e;box-shadow:inset 0 1px 2px #000}
+.led-run{background:var(--white);box-shadow:0 0 10px #ffffff55;animation:breathe 4s ease-in-out infinite}
+.led-need{background:var(--amb);box-shadow:0 0 10px #ffb02066}
+.led-block{background:var(--red);color:#fff;box-shadow:0 0 8px #ff3b3055}
+.led-done{background:#1b1c1e;color:#6b6f74}.led-paused{background:#2a2c30;border:2px solid var(--amb)}
+.w{font:600 11px var(--m);white-space:nowrap}.w-run{color:var(--white)}.w-need,.w-paused{color:var(--amb)}.w-block{color:var(--red)}.w-done,.w-wait{color:var(--mut)}
+/* lcd counters */
+.lcd{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}
+.lcd div{background:#0d0e0f;border-radius:4px;padding:8px;display:grid;box-shadow:inset 0 1px 3px #000}
+.lcd span{font-size:20px;color:var(--ink)}.lcd small{font-size:10.5px;color:var(--mut)}
+/* stop */
+.stopk{margin-top:18px;border-top:1px solid var(--line);padding-top:12px}
+.stopk p{margin:0 0 8px;color:var(--dim)}
+.kb.long{width:100%;min-height:54px}
+.stopb{background:transparent;box-shadow:inset 0 0 0 2px var(--red),inset 0 -3px 0 #00000066;color:var(--red)}
+.stopb.on{background:var(--red);color:#fff}
+/* lists */
+.chlist,.steps,.tape,.thread{list-style:none;margin:0;padding:0}
+.chlist{margin-top:12px}
+.chlist a{display:flex;align-items:center;gap:12px;min-height:64px;padding:8px 4px;border-bottom:1px solid var(--line);text-decoration:none}
+.chlist span:not(.led):not(.w){flex:1;min-width:0;display:grid}.chlist small,.steps small{color:var(--mut);font-size:12.5px}
+.back{display:inline-block;min-height:44px;line-height:44px;text-decoration:none;color:var(--amb);font-weight:600}
+.pads{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.pad{aspect-ratio:1;border-radius:6px;background:var(--key);display:grid;place-items:center;box-shadow:inset 0 1px 0 #ffffff12,inset 0 -3px 0 #00000066;transition:background .2s}
+.pad i{font:600 12px var(--m);font-style:normal;color:var(--mut)}
+.p-done{background:#18191b}.p-done i{color:#55595e}
+.p-run{background:var(--white);animation:breathe 4s ease-in-out infinite}.p-run i{color:#111}
+.p-need{background:var(--amb)}.p-need i{color:#1a1200}
+.p-block{background:var(--red)}.p-block i{color:#fff}
+.steps li{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}.steps span:not(.led){display:grid}
+.tape li{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+.tape time{color:var(--amb);font-size:11px}.tape.pr time{color:var(--white)}
+.tape.big li{grid-template-columns:100px 1fr}.tape.big b{display:block;font-weight:500}.tape.big small{color:var(--mut);font-size:12px}
+.tape .t-miss b{color:var(--red)}.tape .t-miss b::before{content:"! "}
+.tape .t-cash b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--cash);margin-inline-end:6px}
+/* gate keys */
+.gks{display:grid;gap:12px}
+.gk{background:var(--key);border-radius:6px;padding:14px;box-shadow:inset 0 0 0 1.5px var(--amb),0 0 24px #ffb02014;transition:box-shadow .2s ease,opacity .2s ease}
+.gk.off{box-shadow:inset 0 0 0 1px var(--line);opacity:.75}
+.gh{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.gt{margin:0;font-weight:700;font-size:16px;font-variation-settings:"wdth" 85}
+.ch{color:var(--amb);margin:4px 0 0}.why{margin:8px 0;color:var(--dim)}
+.ev{margin:0 0 8px;padding:0;list-style:none;font:11.5px var(--m);color:var(--mut)}.ev li::before{content:"· "}
+.rec{margin:0 0 10px;font-size:13px;color:var(--dim)}.rec b{color:var(--ink)}
+.kbs{display:flex;gap:8px;flex-wrap:wrap}.kbs .kb{flex:1 1 80px}
+.filt{margin-bottom:12px}.filt .kb{flex:0 1 auto;min-height:42px;font-size:13px}
+.ul{background:none;border:0;color:var(--amb);text-decoration:underline;font:600 11px var(--m);cursor:pointer;min-height:32px}
+.thread{display:grid;gap:10px;margin-bottom:14px}
+.thread li{background:var(--key);border-radius:6px;padding:10px 12px;box-shadow:inset 3px 0 0 var(--white)}
+.thread time{font-size:11px;color:var(--mut)}.thread p{margin:4px 0 0}
+.say{display:grid;grid-template-columns:1fr auto;gap:8px}.say .lab{grid-column:1/-1;margin:0}
+.say input{min-height:48px;border:0;border-radius:6px;background:#0d0e0f;color:var(--ink);padding:0 12px;font:inherit;min-width:0}
+/* nav = a row of hardware keys */
+#nav{position:fixed;inset:auto 0 0;z-index:20;display:flex;gap:6px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:#0f1012;border-top:1px solid var(--line)}
+#nav a{flex:1;position:relative;display:grid;justify-items:center;gap:5px;padding:8px 0;min-height:56px;border-radius:6px;background:var(--key);text-decoration:none;font-size:12px;font-weight:600;font-variation-settings:"wdth" 80;color:var(--mut);box-shadow:inset 0 1px 0 #ffffff12,inset 0 -3px 0 #00000066;transition:color .2s,transform .06s}
+#nav a.is-press{transform:translateY(2px)}
+#nav .nl{width:18px;height:4px;border-radius:2px;background:#33363a;transition:background .2s,box-shadow .2s}
+#nav a[aria-current]{color:var(--white)}#nav a[aria-current] .nl{background:var(--white);box-shadow:0 0 8px #ffffff88}
+.badge{position:absolute;top:4px;inset-inline-end:8px;font:600 10px/16px var(--m);min-width:18px;padding:0 4px;border-radius:8px;background:var(--amb);color:#1a1200;font-style:normal;text-align:center}
+#hud{position:fixed;z-index:60;inset-inline:16px;bottom:calc(84px + env(safe-area-inset-bottom));max-width:520px;margin:0 auto;background:var(--ink);color:#111;border-radius:6px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;font:12px var(--m);opacity:0;transform:translateY(6px);pointer-events:none;transition:opacity .2s,transform .2s}
+#hud.on{opacity:1;transform:none;pointer-events:auto}
+#hud button{background:#111;color:var(--ink);border:0;border-radius:6px;min-height:36px;padding:0 10px;font:600 11px var(--m);cursor:pointer}
+@media (min-width:960px){
+  .app{padding:0 32px 40px 124px}
+  #nav{inset:0 auto 0 0;width:100px;flex-direction:column;padding:84px 10px 10px;border-top:0;border-inline-end:1px solid var(--line)}
+  #nav a{flex:none;min-height:68px}
+  #view:has(.colL){display:grid;grid-template-columns:1fr 1fr;column-gap:24px;align-items:start}
+  .colR>section:first-child .lab{margin-top:0}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .gks{grid-template-columns:1fr 1fr}
+  #hud{bottom:24px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+
+</style>
+</head>
+<body class="d2">
+<div id="splash" aria-hidden="true"><div class="sp"><div class="key"><span class="pour"></span><img class="mk" src="../../brand/j8nix-mark-8-2026-11-17.svg" alt=""></div><img class="wm" src="../../icons/wm-sky.svg" alt="J8NIX"><p>Lit keys</p></div></div>
+<div class="app">
+<header class="top"><img src="../../icons/wm-sky.svg" alt="J8NIX" width="62" height="22"><p class="snap"><b>Snapshot 22 Nov, real data</b>Preview · Direction 2 · <a href="../">all 3</a></p></header>
+<main id="view" tabindex="-1"></main>
+</div>
+<nav id="nav" aria-label="Main"></nav>
+<div id="hud" role="status" aria-live="polite"></div>
+<script>
+/* J8NIX v2 preview core: real snapshot data (Supabase, 22 Nov 2026) + router + interactions.
+   Every number below was read once from the live J8NIX tables. Times are Israel time.
+   Anything the buttons do here is PREVIEW ONLY: nothing is sent, nothing is written. */
+'use strict';
+var DATA = {
+  snap: 'Snapshot 22 Nov, real data',
+  booked: 826,            // j8_money.summary.booked_ils (one payment, 17 Nov)
+  goal: 100000,           // FOCUS MODE target
+  start: '19 Nov', end: '31 Dec',
+  daysLeft: 39,           // from the 13:35 Focus run line "₪826/₪100,000 · 39 days"
+  spanDays: 42,           // 19 Nov to 31 Dec
+  elapsed: 3,             // 19 Nov to 22 Nov
+  sent7: 47,              // j8_approvals status sent, last 7 days
+  replies7: 2,            // tester-swap replies logged 20 and 22 Nov
+  daveOpen: 16,           // j8_tasks owner dave, status open
+  gatesWaiting: 43,       // j8_approvals status pending
+  paused: true, pausedAt: '10:21', // j8_control.paused (set 22 Nov 08:21 UTC)
+  nextRun: '22:37', nextSender: '16:41', lastRun: '15:27',
+  move: {
+    title: 'Sign studio email in on the Mac',
+    mins: 2, mission: 'svc',
+    why: '13 approved Brand Sprint emails are stuck only on this sign-in. It is the fastest path to cash this week.',
+    cta: 'Start · 2 min'
+  },
+  missions: [
+    { id: 'svc', name: 'Brand Sprint: first paying client', project: '3S design services', state: 'need',
+      line: '13 approved emails wait on studio Gmail sign-in', short: 'Sign-in on Mac',
+      lap: 'sent 0 today · 4 new ready', progress: 0.4, gate: 'g1',
+      steps: [
+        { s: 'done', t: 'Find teams funded this month', p: '4 new targets found 22 Nov' },
+        { s: 'done', t: 'Write the Brand Sprint emails', p: '4 drafted · 4 stale holds cleared' },
+        { s: 'block', t: 'Send the 13 approved emails', p: 'Studio Gmail is signed out on the Mac' },
+        { s: 'need', t: 'Dave OKs the 4 new emails', p: '4 min' },
+        { s: 'wait', t: 'Follow up and book calls', p: 'Next run' }
+      ],
+      ran: [
+        { t: '13:35', x: 'Focus run: sent 0 outreach (studio Gmail signed out). 4 new emails ready. 4 stale holds cleared.' },
+        { t: '13:35', x: 'Ranked the queue: 11 Brand Sprint items wait for a decision.' }
+      ],
+      proof: [
+        { k: 'Log', x: 'Focus run 22 Nov 13:35 (j8_runs)' },
+        { k: 'Count', x: '11 items pending for this mission (j8_approvals)' }
+      ] },
+    { id: 'jobs', name: 'Director role: applications out', project: 'Director roles', state: 'run',
+      line: 'Queued application goes out 15:41 after the 6-hour hold', short: 'Sending 15:41',
+      lap: 'sent 2 today', progress: 0.6, gate: 'g3',
+      steps: [
+        { s: 'done', t: 'Search new roles', p: 'Morning search done · few new roles this week' },
+        { s: 'done', t: 'Apply on company career pages', p: '2 applications sent today (09:49, 12:05)' },
+        { s: 'run', t: 'Send the queued freelance application', p: 'After the hold window · 15:41' },
+        { s: 'need', t: 'OK or Kill 2 new applications', p: '10 min' },
+        { s: 'wait', t: 'Next search', p: 'Tonight 21:53' }
+      ],
+      ran: [
+        { t: '12:05', x: 'Application sent on a company careers page (verified live). Never LinkedIn Apply.' },
+        { t: '09:49', x: 'Application sent on a company careers form (verified live 20 Nov).' }
+      ],
+      proof: [
+        { k: 'Sent', x: '2 applications, 22 Nov (j8_approvals)' },
+        { k: 'Count', x: '19 job items pending a decision' }
+      ] },
+    { id: 'cmd', name: 'First paid council pilot', project: 'SH✡MER Command', state: 'block',
+      line: 'Council letters held until SOS alerts are proven', short: 'Alerts unproven',
+      lap: 'letters held · 10 ready', progress: 0.2, gate: 'g4',
+      steps: [
+        { s: 'done', t: 'Write the council emails', p: '10 ready' },
+        { s: 'block', t: 'Fix the SOS alert chain', p: 'Build 120 waits for Play upload · alert key not in GitHub' },
+        { s: 'wait', t: 'Check alerts on a real phone', p: 'After the two fixes' },
+        { s: 'wait', t: 'Council emails up for Dave\'s OK', p: 'From dave@3shamrocks.com' },
+        { s: 'wait', t: 'Book the first pilot call', p: '' }
+      ],
+      ran: [
+        { t: '13:30', x: 'Build 120 (button + shake SOS) built and ready for upload.' },
+        { t: '10:38', x: 'Council letters kept on hold: alert chain not confirmed.' }
+      ],
+      proof: [
+        { k: 'Build', x: 'Build 120 ready, 22 Nov 13:30' },
+        { k: 'Hold', x: '10 council emails pending (j8_approvals)' }
+      ] },
+    { id: 'app', name: 'SH✡MER testers on build 120', project: 'SH✡MER app', state: 'need',
+      line: 'Build 120 is ready; it needs your Play Console upload', short: 'Upload build 120',
+      lap: '2 posts today · 2 replies', progress: 0.5, gate: 'g2',
+      steps: [
+        { s: 'done', t: 'Build 120 (button + shake SOS)', p: 'Ready 13:30' },
+        { s: 'need', t: 'Upload to the Play closed track', p: '4 min · your Play Console' },
+        { s: 'done', t: 'Tester-swap replies in', p: '2 replies (20 and 22 Nov)' },
+        { s: 'need', t: 'Tester message to 3 groups', p: 'By hand · 11 min' },
+        { s: 'wait', t: 'Testers running build 120', p: '' }
+      ],
+      ran: [
+        { t: '11:50', x: 'SH✡MER post on your LinkedIn profile (sent).' },
+        { t: '11:25', x: 'SH✡MER post in a community group (sent by hand).' }
+      ],
+      proof: [
+        { k: 'Sent', x: '2 SH✡MER posts, 22 Nov' },
+        { k: 'Build', x: 'Build 120 ready for Play' }
+      ] }
+  ],
+  gates: [
+    { id: 'g1', m: 'svc', type: 'poll', title: 'Send 4 new Brand Sprint emails', mins: 4,
+      why: 'Teams funded this month. 2 by email from dave@3shamrocks.com, 2 by contact form.',
+      rec: 'Go', ev: ['Drafted and checked 22 Nov 13:51', 'First contact, no prices'] },
+    { id: 'g2', m: 'app', type: 'you', title: 'Upload build 120 to Play', mins: 4,
+      why: 'Needs your Play Console sign-in. Testers get the shake SOS after this.',
+      rec: 'Do it now', ev: ['Build 120 ready 13:30', 'Closed track → new release → upload'] },
+    { id: 'g3', m: 'jobs', type: 'poll', title: 'OK or Kill 2 new applications', mins: 10,
+      why: 'Both are on company career pages. 17 older ones also wait.',
+      rec: 'Go', ev: ['Roles found 22 Nov morning', '19 job items pending in total'] },
+    { id: 'g4', m: 'cmd', type: 'hold', title: '10 council emails', mins: 12,
+      why: 'Ready to go from dave@3shamrocks.com, but the SOS alert chain is not proven yet.',
+      rec: 'Hold', ev: ['Build 120 not uploaded', 'Alert key not in GitHub'] },
+    { id: 'g5', m: 'svc', type: 'hand', title: 'LinkedIn message, by hand', mins: 2,
+      why: 'LinkedIn is never automated. Copy, open, send it yourself, then mark Sent.',
+      rec: 'Copy · Open · Sent', ev: ['Queued 19 Nov'] }
+  ],
+  proof: [
+    { d: '22 Nov', t: '15:27', m: null, k: 'run', x: 'Inbox watcher: no new messages', undo: null },
+    { d: '22 Nov', t: '13:35', m: 'svc', k: 'miss', x: 'Focus run sent 0 outreach: studio Gmail signed out', undo: null },
+    { d: '22 Nov', t: '13:30', m: 'cmd', k: 'build', x: 'SH✡MER build 120 ready (button + shake SOS)', undo: true },
+    { d: '22 Nov', t: '12:05', m: 'jobs', k: 'sent', x: 'Application sent on a company careers page', undo: false },
+    { d: '22 Nov', t: '12:02', m: null, k: 'build', x: 'J8NIX build: Home shortened, one button per step', undo: true },
+    { d: '22 Nov', t: '11:50', m: 'app', k: 'sent', x: 'SH✡MER post on your LinkedIn profile', undo: false },
+    { d: '22 Nov', t: '11:25', m: 'app', k: 'sent', x: 'SH✡MER post in a community group', undo: false },
+    { d: '22 Nov', t: '09:59', m: null, k: 'sent', x: 'Studio LinkedIn post', undo: false },
+    { d: '22 Nov', t: '09:49', m: 'jobs', k: 'sent', x: 'Application sent on a company careers form', undo: false },
+    { d: '17 Nov', t: '', m: 'svc', k: 'cash', x: '₪826 received (logged by Dave)', undo: null }
+  ],
+  talk: [
+    { t: '15:27', x: 'No new messages.' },
+    { t: '13:35', x: '₪826 of ₪100,000 · 39 days. Sent 0 outreach (studio Gmail signed out). 4 new emails ready, 4 stale holds cleared.' },
+    { t: '13:26', x: 'SH✡MER build 120 upload needs your Play Console: Closed testing → new release → upload → rollout.' }
+  ]
+};
+DATA.pace = Math.round(DATA.goal * DATA.elapsed / DATA.spanDays); // straight-line target for today
+DATA.delta = DATA.booked - DATA.pace;
+DATA.perDay = Math.round((DATA.goal - DATA.booked) / DATA.daysLeft);
+
+var STATE_WORD = { run: 'Running', need: 'Needs you', block: 'Blocked', done: 'Done', wait: 'Waiting', paused: 'Paused' };
+var S = { decide: {}, stopped: false, moveStarted: false, prevMission: {} };
+
+function esc(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function ils(n) { var s = Math.abs(Math.round(n)).toLocaleString('en-US'); return (n < 0 ? '−' : '') + '₪' + s; }
+function mission(id) { for (var i = 0; i < DATA.missions.length; i++) if (DATA.missions[i].id === id) return DATA.missions[i]; return null; }
+function gate(id) { for (var i = 0; i < DATA.gates.length; i++) if (DATA.gates[i].id === id) return DATA.gates[i]; return null; }
+/* Preview state: a "Go" on a mission's gate moves it to running, a No-go keeps it waiting. Labelled preview everywhere. */
+function mstate(m) {
+  if (S.stopped) return 'paused';
+  var d = m.gate && S.decide[m.gate];
+  if (d === 'go' || d === 'done') return 'run';
+  if (d === 'nogo') return 'wait';
+  return m.state;
+}
+function isPreviewState(m) { return S.stopped || !!(m.gate && S.decide[m.gate]); }
+function openGates() { return DATA.gates.filter(function (g) { return !S.decide[g.id]; }); }
+
+var VIEW = null; // set by each direction
+var view, hudEl, hudTimer, lastUndo;
+
+function hud(msg, undoFn) {
+  if (!hudEl) return;
+  lastUndo = undoFn || null;
+  hudEl.innerHTML = '<span>' + esc(msg) + '</span>' + (undoFn ? '<button type="button" data-act="undo">Undo</button>' : '');
+  hudEl.classList.remove('on'); void hudEl.offsetWidth; hudEl.classList.add('on');
+  clearTimeout(hudTimer);
+  hudTimer = setTimeout(function () { hudEl.classList.remove('on'); lastUndo = null; }, 5000);
+}
+function buzz() { try { if (navigator.vibrate) navigator.vibrate(8); } catch (e) { /* no haptics */ } }
+
+function parseHash() {
+  var h = (location.hash || '').replace(/^#/, '');
+  var parts = h.split('/');
+  var scr = parts[0] || 'now';
+  if (scr === 'm' && mission(parts[1])) return { scr: 'mission', id: parts[1] };
+  if (['now', 'missions', 'gates', 'proof', 'talk'].indexOf(scr) < 0) scr = 'now';
+  return { scr: scr };
+}
+var current = null;
+function render(keepScroll) {
+  var r = parseHash();
+  var html = r.scr === 'mission' ? VIEW.mission(mission(r.id)) : VIEW[r.scr]();
+  var changed = !current || current.scr !== r.scr || current.id !== r.id;
+  view.innerHTML = html;
+  document.getElementById('nav').innerHTML = VIEW.nav(r.scr === 'mission' ? 'missions' : r.scr);
+  if (changed) {
+    view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter');
+    if (!keepScroll) window.scrollTo(0, 0);
+    var h = view.querySelector('h1,h2');
+    if (h && current) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  }
+  current = r;
+  if (VIEW.after) VIEW.after(r);
+}
+
+function act(a, id, el) {
+  buzz();
+  if (a === 'undo') { if (lastUndo) { var f = lastUndo; lastUndo = null; f(); hudEl.classList.remove('on'); } return; }
+  if (a === 'stop') {
+    S.stopped = !S.stopped;
+    render(true);
+    hud(S.stopped ? 'Stop all · preview only, nothing was changed' : 'Resumed · preview only', function () { S.stopped = !S.stopped; render(true); });
+    return;
+  }
+  if (a === 'move') {
+    S.moveStarted = !S.moveStarted;
+    render(true);
+    if (S.moveStarted) hud('Started · preview only, the real steps open in the app', function () { S.moveStarted = false; render(true); });
+    return;
+  }
+  if (['go', 'nogo', 'done', 'later', 'hold', 'sent'].indexOf(a) >= 0 && gate(id)) {
+    var g = gate(id); var v = a === 'hold' || a === 'later' ? 'nogo' : a === 'sent' ? 'done' : a;
+    S.decide[id] = v;
+    render(true);
+    var word = { go: 'Go', nogo: a === 'hold' ? 'Held' : a === 'later' ? 'Not now' : 'No-go', done: a === 'sent' ? 'Marked sent' : 'Done' }[v];
+    hud(word + ': ' + g.title + ' · preview, nothing sent', function () { delete S.decide[id]; render(true); });
+    return;
+  }
+  if (a === 'copy') { hud('Copy · preview only, nothing copied'); return; }
+}
+
+function boot(direction) {
+  VIEW = direction;
+  view = document.getElementById('view');
+  hudEl = document.getElementById('hud');
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]');
+    if (b) { e.preventDefault(); act(b.getAttribute('data-act'), b.getAttribute('data-id'), b); }
+  });
+  document.addEventListener('pointerdown', function (e) {
+    var b = e.target.closest('button, a, [data-press]');
+    if (!b) return;
+    b.classList.add('is-press');
+    var off = function () { b.classList.remove('is-press'); window.removeEventListener('pointerup', off); window.removeEventListener('pointercancel', off); };
+    window.addEventListener('pointerup', off); window.addEventListener('pointercancel', off);
+  });
+  window.addEventListener('hashchange', function () { render(false); });
+  render(false);
+  var sp = document.getElementById('splash');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var skip = /[?&]nosplash/.test(location.search);
+  if (skip) { sp.remove(); document.body.classList.add('ready'); return; }
+  sp.classList.add('play');
+  setTimeout(function () {
+    sp.classList.add('out'); document.body.classList.add('ready');
+    setTimeout(function () { sp.remove(); }, 420);
+  }, reduce ? 700 : (direction.splashMs || 1700));
+}
+
+/* Direction 2 · Lit Keys (instrument console) */
+var F2 = { filter: 'all' };
+function led2(s) {
+  return '<span class="led led-' + s + '" aria-hidden="true">' + (s === 'block' ? '!' : s === 'done' ? '✓' : '') + '</span>';
+}
+function word2(s, preview) { return '<span class="w w-' + s + '">' + esc(STATE_WORD[s]) + (preview ? ' · preview' : '') + '</span>'; }
+function keyBtns2(g) {
+  var k = function (a, t, lit) { return '<button type="button" class="kb' + (lit ? ' lit' : '') + '" data-act="' + a + '" data-id="' + g.id + '">' + t + '</button>'; };
+  if (g.type === 'poll') return k('go', 'Go', 1) + k('nogo', 'No-go');
+  if (g.type === 'hold') return k('hold', 'Hold', 1) + k('go', 'Go anyway');
+  if (g.type === 'hand') return k('copy', 'Copy') + k('copy', 'Open') + k('sent', 'Sent', 1);
+  return k('done', 'Done it', 1) + k('later', 'Not now');
+}
+function gateKey2(g, full) {
+  var d = S.decide[g.id], m = mission(g.m);
+  if (d) return '<article class="gk off"><p class="gt">' + esc(g.title) + '</p><p class="mono sm">' + (d === 'nogo' ? 'No-go' : d === 'done' ? 'Done' : 'Go') + ' · preview, nothing sent <button type="button" class="ul" data-act="undo">Undo</button></p></article>';
+  return '<article class="gk"><div class="gh"><p class="gt">' + esc(g.title) + '</p><span class="mono sm">' + g.mins + ' min</span></div>' +
+    (full ? '<p class="mono sm ch">' + esc(m ? m.project : '') + '</p>' : '') +
+    '<p class="why">' + esc(g.why) + '</p><ul class="ev">' + g.ev.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul>' +
+    '<p class="rec">J8 recommends <b>' + esc(g.rec) + '</b></p><div class="kbs">' + keyBtns2(g) + '</div></article>';
+}
+function strip2(m) {
+  var s = mstate(m);
+  return '<a class="ch2 s-' + s + '" href="#m/' + m.id + '" aria-label="' + esc(m.name + ': ' + STATE_WORD[s]) + '">' + led2(s) +
+    '<span class="fader" aria-hidden="true"><span class="fill" style="height:' + Math.round(m.progress * 100) + '%"></span><span class="cap" style="bottom:' + Math.round(m.progress * 100) + '%"></span></span>' +
+    '<b>' + esc(m.project) + '</b><small>' + esc(m.short) + '</small></a>';
+}
+function stop2() {
+  return '<section class="stopk" aria-label="Stop"><p class="mono sm">Last run ' + DATA.lastRun + ' · next ' + DATA.nextRun + ' · sender ' + DATA.nextSender + '</p>' +
+    '<p class="sm real">' + word2('paused') + ' Live app: sending already paused since ' + DATA.pausedAt + ' (real).</p>' +
+    '<button type="button" class="kb long stopb' + (S.stopped ? ' on' : '') + '" data-act="stop">' + (S.stopped ? 'Resume all · preview' : 'Stop') + '</button></section>';
+}
+var D2 = {
+  splashMs: 1800,
+  nav: function (a) {
+    var g = openGates().length;
+    return [['now', 'Now'], ['missions', 'Mixer'], ['gates', 'Keys'], ['proof', 'Proof'], ['talk', 'Talk']].map(function (i) {
+      return '<a href="#' + i[0] + '"' + (a === i[0] ? ' aria-current="page"' : '') + '><span class="nl" aria-hidden="true"></span>' + i[1] +
+        (i[0] === 'gates' && g ? '<em class="badge">' + g + '</em>' : '') + '</a>';
+    }).join('');
+  },
+  now: function () {
+    var f = DATA.booked / DATA.goal, mv = DATA.move, gs = openGates().slice(0, 2);
+    return '<div class="colL"><section class="hero" aria-labelledby="h-h"><div class="hk" aria-hidden="true"><span class="pour" style="height:' + Math.max(f * 100, 1.2).toFixed(2) + '%"></span><span class="pn" style="bottom:' + (DATA.pace / DATA.goal * 100).toFixed(2) + '%"></span><img src="../../brand/j8nix-mark-8-2026-11-17.svg" alt=""></div>' +
+      '<div class="hr"><h1 id="h-h" class="lab">Poured this month</h1><p class="num mono"><span class="cash" aria-hidden="true"></span>' + ils(DATA.booked) + '<span> / ' + ils(DATA.goal) + '</span></p>' +
+      '<p class="behind">Behind pace by <b class="mono">' + ils(-DATA.delta) + '</b></p><p class="sm mono dim">' + ils(DATA.perDay) + ' a day · ' + DATA.daysLeft + ' days to 31 Dec</p></div></section>' +
+      '<section aria-labelledby="h-lit"><h2 id="h-lit" class="lab">Lit for you · ' + (1 + gs.length) + '</h2>' +
+      '<div class="move"><button type="button" class="kb big lit' + (S.moveStarted ? ' pressed' : '') + '" data-act="move"><span>' + esc(mv.title) + '</span><span class="mono sm">' + (S.moveStarted ? 'Started · preview' : mv.mins + ' min · start') + '</span></button>' +
+      '<p class="why">' + esc(mv.why) + '</p></div>' +
+      '<div class="minikeys">' + gs.map(function (g) { return '<a class="kb lit mini" href="#gates"><span>' + esc(g.title) + '</span><span class="mono sm">' + g.mins + ' min</span></a>'; }).join('') + '</div></section>' +
+      '</div><div class="colR"><section aria-labelledby="h-mix"><h2 id="h-mix" class="lab">Mixer · ' + DATA.missions.length + ' missions</h2><div class="mixer">' + DATA.missions.map(strip2).join('') + '</div></section>' +
+      '<section class="lcd" aria-label="Counters"><div><span class="mono">' + DATA.sent7 + '</span><small>Sent · 7d</small></div><div><span class="mono">' + DATA.replies7 + '</span><small>Replies · 7d</small></div><div><span class="mono">' + DATA.daveOpen + '</span><small>Your tasks</small></div><div><span class="mono">' + DATA.gatesWaiting + '</span><small>Gates</small></div></section>' +
+      stop2() + '</div>';
+  },
+  missions: function () {
+    return '<h1 class="ttl">Mixer</h1><p class="sub">One channel per mission. White breathes while J8 plays it, amber is yours, dark is done.</p><div class="mixer big">' +
+      DATA.missions.map(strip2).join('') + '</div><ul class="chlist">' + DATA.missions.map(function (m) {
+        var s = mstate(m); return '<li><a href="#m/' + m.id + '">' + led2(s) + '<span><b>' + esc(m.name) + '</b><small>' + esc(m.line) + '</small></span>' + word2(s, isPreviewState(m)) + '</a></li>';
+      }).join('') + '</ul>' + stop2();
+  },
+  mission: function (m) {
+    var s = mstate(m), g = gate(m.gate);
+    return '<a class="back" href="#missions">‹ Mixer</a><h1 class="ttl">' + esc(m.name) + '</h1><p class="sub">' + esc(m.project) + ' · ' + word2(s, isPreviewState(m)) + '</p>' +
+      '<section aria-labelledby="h-seq"><h2 id="h-seq" class="lab">Plan · step pads</h2><div class="pads">' + m.steps.map(function (st, i) { return '<span class="pad p-' + st.s + '" aria-hidden="true"><i>' + (i + 1) + '</i></span>'; }).join('') + '</div>' +
+      '<ol class="steps">' + m.steps.map(function (st, i) { return '<li>' + led2(st.s) + '<span><b>' + (i + 1) + ' · ' + esc(st.t) + '</b><small>' + esc(st.p) + ' · ' + esc(STATE_WORD[st.s]) + '</small></span></li>'; }).join('') + '</ol></section>' +
+      '<div class="cols">' + (g ? '<section aria-labelledby="h-g2"><h2 id="h-g2" class="lab">Your key</h2>' + gateKey2(g, false) + '</section>' : '') +
+      '<section aria-labelledby="h-r2"><h2 id="h-r2" class="lab">Recorded</h2><ul class="tape">' + m.ran.map(function (r) { return '<li><time class="mono">' + r.t + '</time>' + esc(r.x) + '</li>'; }).join('') + '</ul>' +
+      '<h2 class="lab">Proof</h2><ul class="tape pr">' + m.proof.map(function (p) { return '<li><time class="mono">' + esc(p.k) + '</time>' + esc(p.x) + '</li>'; }).join('') + '</ul></section></div>' + stop2();
+  },
+  gates: function () {
+    return '<h1 class="ttl">Keys</h1><p class="sub">Lit keys are yours to press. ' + DATA.gatesWaiting + ' wait in the live app; the top ' + DATA.gates.length + ' are here.</p><div class="gks">' +
+      DATA.gates.map(function (g) { return gateKey2(g, true); }).join('') + '</div>';
+  },
+  proof: function () {
+    var f = F2.filter, chips = [['all', 'All']].concat(DATA.missions.map(function (m) { return [m.id, m.project]; }));
+    return '<h1 class="ttl">Proof</h1><p class="sub">What actually happened. Failures stay on the tape.</p><div class="kbs filt" role="group" aria-label="Filter by mission">' +
+      chips.map(function (c) { return '<button type="button" class="kb sm2' + (f === c[0] ? ' lit-w' : '') + '" data-f="' + c[0] + '" aria-pressed="' + (f === c[0]) + '">' + esc(c[1]) + '</button>'; }).join('') + '</div>' +
+      '<ol class="tape big">' + DATA.proof.filter(function (p) { return f === 'all' || p.m === f; }).map(function (p) {
+        var m = p.m ? mission(p.m) : null;
+        return '<li class="t-' + p.k + '"><time class="mono">' + esc(p.d) + ' ' + (p.t || '') + '</time><span><b>' + esc(p.x) + '</b><small>' + esc(m ? m.project : 'Studio ops') + (p.undo === false ? ' · can\'t undo' : p.undo ? ' · undo possible' : '') + '</small></span></li>';
+      }).join('') + '</ol>';
+  },
+  talk: function () {
+    return '<h1 class="ttl">Talk</h1><p class="sub">One thread with J8. These are its real last run lines.</p><ol class="thread">' +
+      DATA.talk.map(function (t) { return '<li><time class="mono">' + t.t + '</time><p>' + esc(t.x) + '</p></li>'; }).join('') +
+      '</ol><div class="say"><label class="lab" for="say2">Steer J8</label><input id="say2" disabled placeholder="Opens in the build · preview"><button type="button" class="kb" disabled>Send</button></div>';
+  },
+  after: function () {
+    var c = document.querySelectorAll('[data-f]');
+    for (var i = 0; i < c.length; i++) c[i].addEventListener('click', function () { F2.filter = this.getAttribute('data-f'); buzz(); render(true); });
+  }
+};
+boot(D2);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="description" content="J8NIX v2 direction preview (staged, not linked from the app).">
+<title>J8NIX v2 · 3 Pit wall</title>
+<link rel="icon" href="../../icons/j8-icon-2026-11-17.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Red+Hat+Mono:wght@400;600;700&family=Secular+One&family=Heebo:wght@400;500;700&display=swap">
+<style>
+:root{--w:#FFFFFF;--trk:#EEEFF1;--ink:#111111;--ink2:#3A3A3A;--mut:#666A70;--line:#DADCE0;--grn:#00A651;--yel:#FFD400;--red:#E10600;--blu:#0067C6;--lime:#C6F000;--org:#FF6A00;
+--d:"Big Shoulders Display","Secular One","Heebo",Impact,sans-serif;--f:"Heebo",system-ui,sans-serif;--m:"Red Hat Mono","Heebo",ui-monospace,monospace;
+--chq:repeating-conic-gradient(#111 0 25%,#fff 0 50%) 0 0/8px 8px;color-scheme:light}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--w);color:var(--ink);font:15px/1.45 var(--f);overflow-x:hidden}
+.mono{font-family:var(--m);font-variant-numeric:tabular-nums}
+a{color:inherit}button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blu);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sm{font-size:12px}.xs{font-size:11px;color:var(--mut);margin:2px 0 0}
+/* splash: five lights on, lights out, go */
+#splash{position:fixed;inset:0;z-index:99;background:var(--w);display:grid;place-items:center;overflow:hidden;transition:opacity .16s linear}
+#splash.out{opacity:0;pointer-events:none}
+.sp{display:grid;justify-items:center;gap:16px;width:100%}
+.lights{display:flex;gap:10px;padding:10px 14px;background:var(--ink);border-radius:4px}
+.lights i{width:22px;height:22px;border-radius:50%;background:#2b2b2b}
+#splash.play .lights i{animation:on .01s linear forwards,off .01s linear 1.15s forwards}
+#splash.play .lights i:nth-child(1){animation-delay:.1s,1.15s}#splash.play .lights i:nth-child(2){animation-delay:.28s,1.15s}#splash.play .lights i:nth-child(3){animation-delay:.46s,1.15s}#splash.play .lights i:nth-child(4){animation-delay:.64s,1.15s}#splash.play .lights i:nth-child(5){animation-delay:.82s,1.15s}
+@keyframes on{to{background:var(--red)}}@keyframes off{to{background:#2b2b2b}}
+.sp .mk{height:70px;opacity:0;transform:translateX(60px)}.sp .wm{height:28px;opacity:0;transform:translateX(60px)}
+.sp p{margin:0;font:600 12px var(--m);color:var(--mut);opacity:0}
+#splash.play .mk{animation:slin .16s ease-out 1.18s forwards}#splash.play .wm{animation:slin .16s ease-out 1.26s forwards}#splash.play p{animation:slin .16s ease-out 1.32s forwards}
+.chq{position:absolute;left:0;right:0;bottom:12%;height:16px;background:var(--chq);transform:translateX(100%)}
+#splash.play .chq{animation:sweep .45s ease-in 1.2s forwards}
+@keyframes slin{to{opacity:1;transform:none}}@keyframes sweep{to{transform:translateX(-100%)}}
+/* shell */
+.app{max-width:1180px;margin:0 auto;padding:0 16px calc(80px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 10px;border-bottom:3px solid var(--ink);margin-bottom:12px}
+.top img{height:22px;display:block}
+.top .snap{margin:0;font:11px/1.35 var(--m);color:var(--ink2);text-align:end}.top .snap b{display:block;font-weight:700;color:var(--ink)}
+#view.enter{animation:slin .16s ease-out both;opacity:0;transform:translateX(24px)}
+[dir="rtl"] #view.enter{transform:translateX(-24px)}
+.cap{font:800 15px/1.1 var(--d);letter-spacing:.02em;margin:18px 0 8px;color:var(--ink)}
+.ttl{font:900 40px/0.95 var(--d);margin:6px 0 6px;letter-spacing:.005em}
+.sub{color:var(--ink2);margin:0 0 12px}
+/* delta + radio */
+.delta{padding:4px 0 10px}
+.dl{margin:0;line-height:.9}
+.dneg{display:inline-block;font:900 clamp(68px,22vw,128px)/0.9 var(--d);background:var(--org);color:var(--ink);padding:6px 10px 2px;letter-spacing:-.01em}
+.delta .sm{margin:10px 0 0;color:var(--ink2)}
+.radio{background:var(--ink);color:var(--w);padding:14px 16px 16px;margin:8px 0 6px;position:relative}
+.radio::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:var(--yel)}
+.radio .cap{color:var(--yel);margin:0 0 8px}
+.call{font:800 26px/1.08 var(--d);margin:0 0 14px;min-height:3.2em}
+.call.typing::after{content:"▌";color:var(--yel)}
+/* buttons */
+.bt{min-height:46px;padding:0 16px;border:2px solid var(--ink);background:var(--w);color:var(--ink);font:800 18px/1 var(--d);letter-spacing:.02em;cursor:pointer;border-radius:3px;transition:transform .08s,background .16s,color .16s}
+.bt.is-press,.tr.is-press,a.is-press{transform:translateX(3px)}
+.bt.main{background:var(--ink);color:var(--w)}
+.radio .bt.main{background:var(--yel);color:var(--ink);border-color:var(--yel)}
+.bt.big{width:100%;min-height:56px;font-size:24px}
+.bt.started{background:transparent!important;color:var(--yel)!important;border-style:dashed}
+.bt:disabled{opacity:.4;cursor:default}
+.bt.sm2{min-height:40px;font-size:15px;padding:0 12px}.bt.sm2[aria-pressed="true"]{background:var(--ink);color:var(--w)}
+.ul{background:none;border:0;text-decoration:underline;font:700 11px var(--m);cursor:pointer;min-height:32px;color:var(--blu)}
+/* flags */
+.fl{flex:none;width:8px;align-self:stretch;min-height:44px;background:var(--line);position:relative;overflow:hidden}
+.fl-run{background:var(--grn)}
+.fl-run::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent,#ffffff8c,transparent);height:40%;animation:scan 1.6s linear infinite}
+@keyframes scan{from{transform:translateY(-100%)}to{transform:translateY(260%)}}
+.fl-need{background:var(--yel)}.fl-block{background:var(--red)}.fl-done{background:var(--chq)}.fl-paused{background:var(--red);opacity:.5}
+.fw{font:700 11px var(--m);white-space:nowrap;padding:3px 6px;border-radius:2px}
+.fw-run{background:var(--grn);color:#fff}.fw-need{background:var(--yel);color:var(--ink)}.fw-block{background:var(--red);color:#fff}.fw-done{background:var(--ink);color:#fff}.fw-wait{background:var(--trk);color:var(--ink2)}.fw-paused{background:var(--ink);color:var(--yel)}
+/* tower */
+.tower{border-top:3px solid var(--ink)}
+.tr{display:flex;align-items:center;gap:10px;min-height:62px;padding:0 6px 0 0;border-bottom:1px solid var(--line);text-decoration:none;background:var(--w);transition:transform .08s,background .16s;animation:slin .16s ease-out both}
+.tr:nth-child(odd){background:#fafafa}
+.tr:hover{background:var(--trk)}
+.tr.yrow{background:#FFF8CC}
+.pos{width:28px;text-align:center;font-weight:700;font-size:13px}
+.tn{flex:1;min-width:0;display:grid;padding:8px 0}.tn b{font-weight:700;font-size:15px;line-height:1.2}.tn small{color:var(--mut);font-size:12px}
+.lapbar{display:block;height:4px;background:var(--trk);margin-top:6px}.lapbar i{display:block;height:100%;background:var(--ink)}
+.sect{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:3px solid var(--ink)}
+.sect div{padding:10px 6px;display:grid;border-inline-end:1px solid var(--line)}.sect div:last-child{border:0}
+.sect span{font:700 22px var(--m)}.sect small{font-size:11px;color:var(--mut)}
+/* red flag */
+.rf{margin:16px 0 8px}.rf p{margin:0 0 8px;color:var(--ink2)}
+.redf{width:100%;min-height:54px;border-color:var(--red);color:var(--red);font-size:22px}
+.redf.on{background:var(--red);color:#fff}
+/* mission */
+.back{display:inline-block;min-height:44px;line-height:44px;text-decoration:none;font:800 18px var(--d)}
+.mhd{display:flex;gap:12px;align-items:stretch}.mhd .fl{width:12px}.mhd p{margin:0}.mhd .fw{display:inline-block;margin-top:2px}
+.laps{list-style:none;margin:0;padding:0;border-top:3px solid var(--ink)}
+.laps li{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.rlog{list-style:none;margin:0 0 8px;padding:0}
+.rlog li{display:grid;grid-template-columns:60px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.rlog time{font-weight:700;font-size:12px}
+/* yellow flag cards */
+.ycs{display:grid;gap:12px}
+.yc{border:2px solid var(--ink);border-inline-start:10px solid var(--yel);padding:12px 14px;border-radius:3px;animation:slin .16s ease-out both;background:var(--w)}
+.yc.dec{border-inline-start-color:var(--grn);background:var(--trk)}.yc.dec-nogo{border-inline-start-color:var(--blu)}
+.yh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.yt{margin:0;font:800 22px/1.05 var(--d)}
+.yp{color:var(--mut);margin:4px 0 0}.why{margin:8px 0}
+.ev{margin:0 0 8px;padding:0;list-style:none;font:12px var(--m);color:var(--ink2)}.ev li::before{content:"— "}
+.rec{margin:0 0 10px;font-size:13px}
+.bts{display:flex;gap:8px;flex-wrap:wrap}.bts .bt{flex:1 1 84px}
+.filt{margin-bottom:12px}.filt .bt{flex:0 1 auto}
+/* lap chart */
+.lapc{list-style:none;margin:0;padding:0;border-top:3px solid var(--ink)}
+.lapc li{display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding-inline-start:10px;position:relative}
+.lapc li::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--line)}
+.lapc .k-sent::before{background:var(--grn)}.lapc .k-miss::before{background:var(--red)}.lapc .k-build::before{background:var(--ink)}.lapc .k-cash::before{background:var(--lime)}
+.lapc time{font-size:11.5px;text-align:end;color:var(--ink2);flex:none;width:58px}
+.lapc .k-miss b{color:var(--red)}
+.thread{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:8px}
+.thread li{background:var(--ink);color:var(--w);padding:10px 12px;border-inline-start:6px solid var(--yel)}
+.thread time{font-size:11px;color:var(--yel)}.thread p{margin:4px 0 0;font:700 19px/1.15 var(--d)}
+.say{display:grid;grid-template-columns:1fr auto;gap:8px}.say .cap{grid-column:1/-1;margin:0}
+.say input{min-height:46px;border:2px solid var(--ink);border-radius:3px;padding:0 12px;font:inherit;min-width:0;background:var(--w)}
+/* nav */
+#nav{position:fixed;inset:auto 0 0;z-index:20;display:flex;background:var(--ink);padding-bottom:env(safe-area-inset-bottom)}
+#nav a{flex:1;position:relative;display:grid;place-items:center;min-height:58px;text-decoration:none;color:#BDBDBD;font:800 18px var(--d);letter-spacing:.03em;transition:color .16s}
+#nav a[aria-current]{color:var(--w)}
+#nav a[aria-current]::after{content:"";position:absolute;inset:auto 18% 8px;height:4px;background:var(--lime)}
+.badge{position:absolute;top:6px;inset-inline-end:10%;font-size:10px;font-weight:700;line-height:16px;min-width:18px;padding:0 4px;background:var(--yel);color:var(--ink);font-style:normal;text-align:center}
+#hud{position:fixed;z-index:60;inset-inline:16px;bottom:calc(70px + env(safe-area-inset-bottom));max-width:520px;margin:0 auto;background:var(--yel);color:var(--ink);border:2px solid var(--ink);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;font:600 12.5px var(--m);opacity:0;transform:translateX(30px);pointer-events:none;transition:opacity .16s,transform .16s}
+#hud.on{opacity:1;transform:none;pointer-events:auto}
+#hud button{background:var(--ink);color:var(--w);border:0;min-height:36px;padding:0 12px;font:800 15px var(--d);cursor:pointer}
+@media (min-width:960px){
+  .app{padding:0 32px 40px 132px}
+  #nav{inset:0 auto 0 0;width:104px;flex-direction:column;padding-top:84px}
+  #nav a{flex:none;min-height:66px}
+  #nav a[aria-current]::after{inset:14px auto 14px 0;width:5px;height:auto}
+  .nowgrid{display:grid;grid-template-columns:1fr 1.1fr;column-gap:28px;align-items:start}
+  .nowgrid .tower{grid-column:2;grid-row:1 / span 2;margin-top:4px}
+  .nowgrid .tower .cap{margin-top:0}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  .ycs{grid-template-columns:1fr 1fr}
+  #hud{bottom:24px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+
+</style>
+</head>
+<body class="d3">
+<div id="splash" aria-hidden="true"><div class="sp"><div class="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><img class="mk" src="../../brand/j8nix-mark-8-2026-11-17.svg" alt=""><img class="wm" src="../../brand/j8nix-wordmark-2026-11-17.svg" alt="J8NIX"><p>Pit wall · lights out</p><div class="chq" aria-hidden="true"></div></div></div>
+<div class="app">
+<header class="top"><img src="../../brand/j8nix-wordmark-2026-11-17.svg" alt="J8NIX" width="63" height="22"><p class="snap"><b>Snapshot 22 Nov, real data</b>Preview · Direction 3 · <a href="../">all 3</a></p></header>
+<main id="view" tabindex="-1"></main>
+</div>
+<nav id="nav" aria-label="Main"></nav>
+<div id="hud" role="status" aria-live="polite"></div>
+<script>
+/* J8NIX v2 preview core: real snapshot data (Supabase, 22 Nov 2026) + router + interactions.
+   Every number below was read once from the live J8NIX tables. Times are Israel time.
+   Anything the buttons do here is PREVIEW ONLY: nothing is sent, nothing is written. */
+'use strict';
+var DATA = {
+  snap: 'Snapshot 22 Nov, real data',
+  booked: 826,            // j8_money.summary.booked_ils (one payment, 17 Nov)
+  goal: 100000,           // FOCUS MODE target
+  start: '19 Nov', end: '31 Dec',
+  daysLeft: 39,           // from the 13:35 Focus run line "₪826/₪100,000 · 39 days"
+  spanDays: 42,           // 19 Nov to 31 Dec
+  elapsed: 3,             // 19 Nov to 22 Nov
+  sent7: 47,              // j8_approvals status sent, last 7 days
+  replies7: 2,            // tester-swap replies logged 20 and 22 Nov
+  daveOpen: 16,           // j8_tasks owner dave, status open
+  gatesWaiting: 43,       // j8_approvals status pending
+  paused: true, pausedAt: '10:21', // j8_control.paused (set 22 Nov 08:21 UTC)
+  nextRun: '22:37', nextSender: '16:41', lastRun: '15:27',
+  move: {
+    title: 'Sign studio email in on the Mac',
+    mins: 2, mission: 'svc',
+    why: '13 approved Brand Sprint emails are stuck only on this sign-in. It is the fastest path to cash this week.',
+    cta: 'Start · 2 min'
+  },
+  missions: [
+    { id: 'svc', name: 'Brand Sprint: first paying client', project: '3S design services', state: 'need',
+      line: '13 approved emails wait on studio Gmail sign-in', short: 'Sign-in on Mac',
+      lap: 'sent 0 today · 4 new ready', progress: 0.4, gate: 'g1',
+      steps: [
+        { s: 'done', t: 'Find teams funded this month', p: '4 new targets found 22 Nov' },
+        { s: 'done', t: 'Write the Brand Sprint emails', p: '4 drafted · 4 stale holds cleared' },
+        { s: 'block', t: 'Send the 13 approved emails', p: 'Studio Gmail is signed out on the Mac' },
+        { s: 'need', t: 'Dave OKs the 4 new emails', p: '4 min' },
+        { s: 'wait', t: 'Follow up and book calls', p: 'Next run' }
+      ],
+      ran: [
+        { t: '13:35', x: 'Focus run: sent 0 outreach (studio Gmail signed out). 4 new emails ready. 4 stale holds cleared.' },
+        { t: '13:35', x: 'Ranked the queue: 11 Brand Sprint items wait for a decision.' }
+      ],
+      proof: [
+        { k: 'Log', x: 'Focus run 22 Nov 13:35 (j8_runs)' },
+        { k: 'Count', x: '11 items pending for this mission (j8_approvals)' }
+      ] },
+    { id: 'jobs', name: 'Director role: applications out', project: 'Director roles', state: 'run',
+      line: 'Queued application goes out 15:41 after the 6-hour hold', short: 'Sending 15:41',
+      lap: 'sent 2 today', progress: 0.6, gate: 'g3',
+      steps: [
+        { s: 'done', t: 'Search new roles', p: 'Morning search done · few new roles this week' },
+        { s: 'done', t: 'Apply on company career pages', p: '2 applications sent today (09:49, 12:05)' },
+        { s: 'run', t: 'Send the queued freelance application', p: 'After the hold window · 15:41' },
+        { s: 'need', t: 'OK or Kill 2 new applications', p: '10 min' },
+        { s: 'wait', t: 'Next search', p: 'Tonight 21:53' }
+      ],
+      ran: [
+        { t: '12:05', x: 'Application sent on a company careers page (verified live). Never LinkedIn Apply.' },
+        { t: '09:49', x: 'Application sent on a company careers form (verified live 20 Nov).' }
+      ],
+      proof: [
+        { k: 'Sent', x: '2 applications, 22 Nov (j8_approvals)' },
+        { k: 'Count', x: '19 job items pending a decision' }
+      ] },
+    { id: 'cmd', name: 'First paid council pilot', project: 'SH✡MER Command', state: 'block',
+      line: 'Council letters held until SOS alerts are proven', short: 'Alerts unproven',
+      lap: 'letters held · 10 ready', progress: 0.2, gate: 'g4',
+      steps: [
+        { s: 'done', t: 'Write the council emails', p: '10 ready' },
+        { s: 'block', t: 'Fix the SOS alert chain', p: 'Build 120 waits for Play upload · alert key not in GitHub' },
+        { s: 'wait', t: 'Check alerts on a real phone', p: 'After the two fixes' },
+        { s: 'wait', t: 'Council emails up for Dave\'s OK', p: 'From dave@3shamrocks.com' },
+        { s: 'wait', t: 'Book the first pilot call', p: '' }
+      ],
+      ran: [
+        { t: '13:30', x: 'Build 120 (button + shake SOS) built and ready for upload.' },
+        { t: '10:38', x: 'Council letters kept on hold: alert chain not confirmed.' }
+      ],
+      proof: [
+        { k: 'Build', x: 'Build 120 ready, 22 Nov 13:30' },
+        { k: 'Hold', x: '10 council emails pending (j8_approvals)' }
+      ] },
+    { id: 'app', name: 'SH✡MER testers on build 120', project: 'SH✡MER app', state: 'need',
+      line: 'Build 120 is ready; it needs your Play Console upload', short: 'Upload build 120',
+      lap: '2 posts today · 2 replies', progress: 0.5, gate: 'g2',
+      steps: [
+        { s: 'done', t: 'Build 120 (button + shake SOS)', p: 'Ready 13:30' },
+        { s: 'need', t: 'Upload to the Play closed track', p: '4 min · your Play Console' },
+        { s: 'done', t: 'Tester-swap replies in', p: '2 replies (20 and 22 Nov)' },
+        { s: 'need', t: 'Tester message to 3 groups', p: 'By hand · 11 min' },
+        { s: 'wait', t: 'Testers running build 120', p: '' }
+      ],
+      ran: [
+        { t: '11:50', x: 'SH✡MER post on your LinkedIn profile (sent).' },
+        { t: '11:25', x: 'SH✡MER post in a community group (sent by hand).' }
+      ],
+      proof: [
+        { k: 'Sent', x: '2 SH✡MER posts, 22 Nov' },
+        { k: 'Build', x: 'Build 120 ready for Play' }
+      ] }
+  ],
+  gates: [
+    { id: 'g1', m: 'svc', type: 'poll', title: 'Send 4 new Brand Sprint emails', mins: 4,
+      why: 'Teams funded this month. 2 by email from dave@3shamrocks.com, 2 by contact form.',
+      rec: 'Go', ev: ['Drafted and checked 22 Nov 13:51', 'First contact, no prices'] },
+    { id: 'g2', m: 'app', type: 'you', title: 'Upload build 120 to Play', mins: 4,
+      why: 'Needs your Play Console sign-in. Testers get the shake SOS after this.',
+      rec: 'Do it now', ev: ['Build 120 ready 13:30', 'Closed track → new release → upload'] },
+    { id: 'g3', m: 'jobs', type: 'poll', title: 'OK or Kill 2 new applications', mins: 10,
+      why: 'Both are on company career pages. 17 older ones also wait.',
+      rec: 'Go', ev: ['Roles found 22 Nov morning', '19 job items pending in total'] },
+    { id: 'g4', m: 'cmd', type: 'hold', title: '10 council emails', mins: 12,
+      why: 'Ready to go from dave@3shamrocks.com, but the SOS alert chain is not proven yet.',
+      rec: 'Hold', ev: ['Build 120 not uploaded', 'Alert key not in GitHub'] },
+    { id: 'g5', m: 'svc', type: 'hand', title: 'LinkedIn message, by hand', mins: 2,
+      why: 'LinkedIn is never automated. Copy, open, send it yourself, then mark Sent.',
+      rec: 'Copy · Open · Sent', ev: ['Queued 19 Nov'] }
+  ],
+  proof: [
+    { d: '22 Nov', t: '15:27', m: null, k: 'run', x: 'Inbox watcher: no new messages', undo: null },
+    { d: '22 Nov', t: '13:35', m: 'svc', k: 'miss', x: 'Focus run sent 0 outreach: studio Gmail signed out', undo: null },
+    { d: '22 Nov', t: '13:30', m: 'cmd', k: 'build', x: 'SH✡MER build 120 ready (button + shake SOS)', undo: true },
+    { d: '22 Nov', t: '12:05', m: 'jobs', k: 'sent', x: 'Application sent on a company careers page', undo: false },
+    { d: '22 Nov', t: '12:02', m: null, k: 'build', x: 'J8NIX build: Home shortened, one button per step', undo: true },
+    { d: '22 Nov', t: '11:50', m: 'app', k: 'sent', x: 'SH✡MER post on your LinkedIn profile', undo: false },
+    { d: '22 Nov', t: '11:25', m: 'app', k: 'sent', x: 'SH✡MER post in a community group', undo: false },
+    { d: '22 Nov', t: '09:59', m: null, k: 'sent', x: 'Studio LinkedIn post', undo: false },
+    { d: '22 Nov', t: '09:49', m: 'jobs', k: 'sent', x: 'Application sent on a company careers form', undo: false },
+    { d: '17 Nov', t: '', m: 'svc', k: 'cash', x: '₪826 received (logged by Dave)', undo: null }
+  ],
+  talk: [
+    { t: '15:27', x: 'No new messages.' },
+    { t: '13:35', x: '₪826 of ₪100,000 · 39 days. Sent 0 outreach (studio Gmail signed out). 4 new emails ready, 4 stale holds cleared.' },
+    { t: '13:26', x: 'SH✡MER build 120 upload needs your Play Console: Closed testing → new release → upload → rollout.' }
+  ]
+};
+DATA.pace = Math.round(DATA.goal * DATA.elapsed / DATA.spanDays); // straight-line target for today
+DATA.delta = DATA.booked - DATA.pace;
+DATA.perDay = Math.round((DATA.goal - DATA.booked) / DATA.daysLeft);
+
+var STATE_WORD = { run: 'Running', need: 'Needs you', block: 'Blocked', done: 'Done', wait: 'Waiting', paused: 'Paused' };
+var S = { decide: {}, stopped: false, moveStarted: false, prevMission: {} };
+
+function esc(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function ils(n) { var s = Math.abs(Math.round(n)).toLocaleString('en-US'); return (n < 0 ? '−' : '') + '₪' + s; }
+function mission(id) { for (var i = 0; i < DATA.missions.length; i++) if (DATA.missions[i].id === id) return DATA.missions[i]; return null; }
+function gate(id) { for (var i = 0; i < DATA.gates.length; i++) if (DATA.gates[i].id === id) return DATA.gates[i]; return null; }
+/* Preview state: a "Go" on a mission's gate moves it to running, a No-go keeps it waiting. Labelled preview everywhere. */
+function mstate(m) {
+  if (S.stopped) return 'paused';
+  var d = m.gate && S.decide[m.gate];
+  if (d === 'go' || d === 'done') return 'run';
+  if (d === 'nogo') return 'wait';
+  return m.state;
+}
+function isPreviewState(m) { return S.stopped || !!(m.gate && S.decide[m.gate]); }
+function openGates() { return DATA.gates.filter(function (g) { return !S.decide[g.id]; }); }
+
+var VIEW = null; // set by each direction
+var view, hudEl, hudTimer, lastUndo;
+
+function hud(msg, undoFn) {
+  if (!hudEl) return;
+  lastUndo = undoFn || null;
+  hudEl.innerHTML = '<span>' + esc(msg) + '</span>' + (undoFn ? '<button type="button" data-act="undo">Undo</button>' : '');
+  hudEl.classList.remove('on'); void hudEl.offsetWidth; hudEl.classList.add('on');
+  clearTimeout(hudTimer);
+  hudTimer = setTimeout(function () { hudEl.classList.remove('on'); lastUndo = null; }, 5000);
+}
+function buzz() { try { if (navigator.vibrate) navigator.vibrate(8); } catch (e) { /* no haptics */ } }
+
+function parseHash() {
+  var h = (location.hash || '').replace(/^#/, '');
+  var parts = h.split('/');
+  var scr = parts[0] || 'now';
+  if (scr === 'm' && mission(parts[1])) return { scr: 'mission', id: parts[1] };
+  if (['now', 'missions', 'gates', 'proof', 'talk'].indexOf(scr) < 0) scr = 'now';
+  return { scr: scr };
+}
+var current = null;
+function render(keepScroll) {
+  var r = parseHash();
+  var html = r.scr === 'mission' ? VIEW.mission(mission(r.id)) : VIEW[r.scr]();
+  var changed = !current || current.scr !== r.scr || current.id !== r.id;
+  view.innerHTML = html;
+  document.getElementById('nav').innerHTML = VIEW.nav(r.scr === 'mission' ? 'missions' : r.scr);
+  if (changed) {
+    view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter');
+    if (!keepScroll) window.scrollTo(0, 0);
+    var h = view.querySelector('h1,h2');
+    if (h && current) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  }
+  current = r;
+  if (VIEW.after) VIEW.after(r);
+}
+
+function act(a, id, el) {
+  buzz();
+  if (a === 'undo') { if (lastUndo) { var f = lastUndo; lastUndo = null; f(); hudEl.classList.remove('on'); } return; }
+  if (a === 'stop') {
+    S.stopped = !S.stopped;
+    render(true);
+    hud(S.stopped ? 'Stop all · preview only, nothing was changed' : 'Resumed · preview only', function () { S.stopped = !S.stopped; render(true); });
+    return;
+  }
+  if (a === 'move') {
+    S.moveStarted = !S.moveStarted;
+    render(true);
+    if (S.moveStarted) hud('Started · preview only, the real steps open in the app', function () { S.moveStarted = false; render(true); });
+    return;
+  }
+  if (['go', 'nogo', 'done', 'later', 'hold', 'sent'].indexOf(a) >= 0 && gate(id)) {
+    var g = gate(id); var v = a === 'hold' || a === 'later' ? 'nogo' : a === 'sent' ? 'done' : a;
+    S.decide[id] = v;
+    render(true);
+    var word = { go: 'Go', nogo: a === 'hold' ? 'Held' : a === 'later' ? 'Not now' : 'No-go', done: a === 'sent' ? 'Marked sent' : 'Done' }[v];
+    hud(word + ': ' + g.title + ' · preview, nothing sent', function () { delete S.decide[id]; render(true); });
+    return;
+  }
+  if (a === 'copy') { hud('Copy · preview only, nothing copied'); return; }
+}
+
+function boot(direction) {
+  VIEW = direction;
+  view = document.getElementById('view');
+  hudEl = document.getElementById('hud');
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]');
+    if (b) { e.preventDefault(); act(b.getAttribute('data-act'), b.getAttribute('data-id'), b); }
+  });
+  document.addEventListener('pointerdown', function (e) {
+    var b = e.target.closest('button, a, [data-press]');
+    if (!b) return;
+    b.classList.add('is-press');
+    var off = function () { b.classList.remove('is-press'); window.removeEventListener('pointerup', off); window.removeEventListener('pointercancel', off); };
+    window.addEventListener('pointerup', off); window.addEventListener('pointercancel', off);
+  });
+  window.addEventListener('hashchange', function () { render(false); });
+  render(false);
+  var sp = document.getElementById('splash');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var skip = /[?&]nosplash/.test(location.search);
+  if (skip) { sp.remove(); document.body.classList.add('ready'); return; }
+  sp.classList.add('play');
+  setTimeout(function () {
+    sp.classList.add('out'); document.body.classList.add('ready');
+    setTimeout(function () { sp.remove(); }, 420);
+  }, reduce ? 700 : (direction.splashMs || 1700));
+}
+
+/* Direction 3 · Pit Wall (race engineer) */
+var F3 = { filter: 'all', typed: false };
+var FLAG = { run: 'Green flag', need: 'Yellow flag', block: 'Red flag', done: 'Chequered', wait: 'Waiting', paused: 'Red flag · preview' };
+function flag3(s) { return '<span class="fl fl-' + s + '" aria-hidden="true"></span>'; }
+function word3(s, p) { return '<span class="fw fw-' + s + '">' + esc(STATE_WORD[s]) + (p ? ' · preview' : '') + '</span>'; }
+function gBtns3(g) {
+  var b = function (a, t, main) { return '<button type="button" class="bt' + (main ? ' main' : '') + '" data-act="' + a + '" data-id="' + g.id + '">' + t + '</button>'; };
+  if (g.type === 'poll') return b('go', 'Go', 1) + b('nogo', 'No-go');
+  if (g.type === 'hold') return b('hold', 'Hold', 1) + b('go', 'Go anyway');
+  if (g.type === 'hand') return b('copy', 'Copy') + b('copy', 'Open') + b('sent', 'Sent', 1);
+  return b('done', 'Done it', 1) + b('later', 'Not now');
+}
+function ycard3(g, full) {
+  var d = S.decide[g.id], m = mission(g.m);
+  if (d) return '<article class="yc dec dec-' + d + '"><p class="yt">' + esc(g.title) + '</p><p class="mono sm">' + (d === 'nogo' ? 'No-go' : d === 'done' ? 'Done' : 'Go') + ' · preview, nothing sent <button type="button" class="ul" data-act="undo">Undo</button></p></article>';
+  return '<article class="yc"><div class="yh"><p class="yt">' + esc(g.title) + '</p><span class="mono sm">' + g.mins + ' min</span></div>' +
+    (full ? '<p class="mono sm yp">' + esc(m ? m.project : '') + '</p>' : '') + '<p class="why">' + esc(g.why) + '</p>' +
+    '<ul class="ev">' + g.ev.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul><p class="rec">Engineer says: <b>' + esc(g.rec) + '</b></p><div class="bts">' + gBtns3(g) + '</div></article>';
+}
+function row3(m, i) {
+  var s = mstate(m);
+  return '<a class="tr s-' + s + '" href="#m/' + m.id + '"><span class="pos mono">P' + (i + 1) + '</span>' + flag3(s) +
+    '<span class="tn"><b>' + esc(m.name) + '</b><small class="mono">' + esc(m.lap) + '</small></span>' + word3(s, isPreviewState(m)) + '</a>';
+}
+function foot3() {
+  return '<section class="rf" aria-label="Stop"><p class="mono sm">Last run ' + DATA.lastRun + ' · next ' + DATA.nextRun + ' · sender ' + DATA.nextSender + '</p>' +
+    '<p class="sm">' + word3('paused') + ' Live app: sending already paused since ' + DATA.pausedAt + ' (real).</p>' +
+    '<button type="button" class="bt redf' + (S.stopped ? ' on' : '') + '" data-act="stop">' + (S.stopped ? 'Resume · preview' : 'Red flag · stop all') + '</button></section>';
+}
+var D3 = {
+  splashMs: 1750,
+  nav: function (a) {
+    var g = openGates().length;
+    return [['now', 'Now'], ['missions', 'Tower'], ['gates', 'Flags'], ['proof', 'Proof'], ['talk', 'Radio']].map(function (i) {
+      return '<a href="#' + i[0] + '"' + (a === i[0] ? ' aria-current="page"' : '') + '>' + i[1] + (i[0] === 'gates' && g ? '<em class="badge mono">' + g + '</em>' : '') + '</a>';
+    }).join('');
+  },
+  now: function () {
+    var mv = DATA.move, gs = openGates().slice(0, 2);
+    var call = 'Box now: ' + mv.title.charAt(0).toLowerCase() + mv.title.slice(1) + '. ' + mv.why.split('. ')[0] + '. ' + mv.mins + ' min.';
+    return '<div class="nowgrid"><section class="delta" aria-labelledby="h-d"><h1 id="h-d" class="sr">Pace delta</h1>' +
+      '<p class="dl"><span class="dneg">' + ils(DATA.delta) + '</span></p>' +
+      '<p class="mono sm">' + ils(DATA.booked) + ' of ' + ils(DATA.goal) + ' · day ' + (DATA.elapsed + 1) + ' of ' + DATA.spanDays + ' · ' + ils(DATA.perDay) + '/day to finish 31 Dec</p>' +
+      '<p class="mono xs">Delta = booked vs a straight line from 19 Nov to 31 Dec.</p></section>' +
+      '<section class="radio" aria-labelledby="h-r"><h2 id="h-r" class="cap">J8 · radio</h2><p class="call" data-call="' + esc(call) + '">“' + esc(call) + '”</p>' +
+      '<button type="button" class="bt main big' + (S.moveStarted ? ' started' : '') + '" data-act="move">' + (S.moveStarted ? 'Started · preview' : 'Do it') + '</button></section>' +
+      '<section class="tower" aria-labelledby="h-t"><h2 id="h-t" class="cap">Timing tower · ranked by ₪ × chance ÷ days</h2>' +
+      gs.map(function (g) { return '<a class="tr yrow" href="#gates"><span class="pos mono">!</span>' + flag3('need') + '<span class="tn"><b>' + esc(g.title) + '</b><small class="mono">your decision · ' + g.mins + ' min</small></span><span class="fw fw-need">Yellow</span></a>'; }).join('') +
+      DATA.missions.map(row3).join('') +
+      '<div class="sect"><div><span class="mono">' + DATA.sent7 + '</span><small>Sent 7d</small></div><div><span class="mono">' + DATA.replies7 + '</span><small>Replies 7d</small></div><div><span class="mono">' + DATA.daveOpen + '</span><small>Your tasks</small></div><div><span class="mono">' + DATA.gatesWaiting + '</span><small>Gates</small></div></div></section></div>' + foot3();
+  },
+  missions: function () {
+    return '<h1 class="ttl">Tower</h1><p class="sub">Missions ranked by ₪ × chance ÷ days. Flags say who has the car.</p><div class="tower">' +
+      DATA.missions.map(function (m, i) {
+        return row3(m, i).replace('</small></span>', '</small><span class="lapbar" aria-hidden="true"><i style="width:' + Math.round(m.progress * 100) + '%"></i></span></span>');
+      }).join('') + '</div>' + foot3();
+  },
+  mission: function (m) {
+    var s = mstate(m), g = gate(m.gate);
+    return '<a class="back" href="#missions">‹ Tower</a><header class="mhd s-' + s + '">' + flag3(s) + '<div><p class="mono sm">' + esc(m.project) + ' · ' + esc(FLAG[s] || '') + '</p><h1 class="ttl">' + esc(m.name) + '</h1>' + word3(s, isPreviewState(m)) + '</div></header>' +
+      '<p class="sub">' + esc(m.line) + '</p><div class="cols"><section aria-labelledby="h-l"><h2 id="h-l" class="cap">Race plan · laps</h2><ol class="laps">' +
+      m.steps.map(function (st, i) { return '<li class="s-' + st.s + '">' + flag3(st.s) + '<span class="pos mono">L' + (i + 1) + '</span><span class="tn"><b>' + esc(st.t) + '</b><small class="mono">' + esc(st.p) + (st.p ? ' · ' : '') + esc(STATE_WORD[st.s]) + '</small></span></li>'; }).join('') +
+      '</ol></section><section>' + (g ? '<h2 class="cap">Yellow flag · your call</h2>' + ycard3(g, false) : '') +
+      '<h2 class="cap">Radio log</h2><ul class="rlog">' + m.ran.map(function (r) { return '<li><time class="mono">' + r.t + '</time>' + esc(r.x) + '</li>'; }).join('') + '</ul>' +
+      '<h2 class="cap">Telemetry · proof</h2><ul class="rlog">' + m.proof.map(function (p) { return '<li><time class="mono">' + esc(p.k) + '</time>' + esc(p.x) + '</li>'; }).join('') + '</ul></section></div>' + foot3();
+  },
+  gates: function () {
+    return '<h1 class="ttl">Yellow flags</h1><p class="sub">Your decisions. ' + DATA.gatesWaiting + ' wait in the live app; the top ' + DATA.gates.length + ' are here.</p><div class="ycs">' +
+      DATA.gates.map(function (g) { return ycard3(g, true); }).join('') + '</div>';
+  },
+  proof: function () {
+    var f = F3.filter, chips = [['all', 'All']].concat(DATA.missions.map(function (m) { return [m.id, m.project]; }));
+    return '<h1 class="ttl">Proof</h1><p class="sub">Lap chart: what shipped, went out, came back or failed.</p><div class="bts filt" role="group" aria-label="Filter by mission">' +
+      chips.map(function (c) { return '<button type="button" class="bt sm2" data-f="' + c[0] + '" aria-pressed="' + (f === c[0]) + '">' + esc(c[1]) + '</button>'; }).join('') + '</div>' +
+      '<ol class="lapc">' + DATA.proof.filter(function (p) { return f === 'all' || p.m === f; }).map(function (p) {
+        var m = p.m ? mission(p.m) : null;
+        return '<li class="k-' + p.k + '"><span class="tn"><b>' + esc(p.x) + '</b><small>' + esc(m ? m.project : 'Studio ops') + (p.undo === false ? ' · can\'t undo' : p.undo ? ' · undo possible' : '') + '</small></span><time class="mono">' + esc(p.d) + '<br>' + (p.t || '—') + '</time></li>';
+      }).join('') + '</ol>';
+  },
+  talk: function () {
+    return '<h1 class="ttl">Radio</h1><p class="sub">One channel with J8. These are its real last run lines.</p><ol class="thread">' +
+      DATA.talk.map(function (t) { return '<li><time class="mono">' + t.t + '</time><p>“' + esc(t.x) + '”</p></li>'; }).join('') +
+      '</ol><div class="say"><label class="cap" for="say3">Talk to the engineer</label><input id="say3" disabled placeholder="Opens in the build · preview"><button type="button" class="bt" disabled>Send</button></div>';
+  },
+  after: function (r) {
+    var c = document.querySelectorAll('[data-f]');
+    for (var i = 0; i < c.length; i++) c[i].addEventListener('click', function () { F3.filter = this.getAttribute('data-f'); buzz(); render(true); });
+    var call = document.querySelector('.call[data-call]');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (call && !F3.typed && !reduce) {
+      F3.typed = true;
+      var full = call.textContent, n = 0;
+      call.textContent = '';
+      call.classList.add('typing');
+      var startAt = document.getElementById('splash') ? 1800 : 150;
+      setTimeout(function step() {
+        n += 2; call.textContent = full.slice(0, n);
+        if (n < full.length) setTimeout(step, 14); else call.classList.remove('typing');
+      }, startAt);
+    }
+  }
+};
+boot(D3);
+
+</script>
+</body>
+</html>
