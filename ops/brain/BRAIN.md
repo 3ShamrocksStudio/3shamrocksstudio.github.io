@@ -1,3 +1,5 @@
+> READ ops/brain/CORE.md FIRST (one page). This file is reference.
+
 # 3S SUPER-BRAIN — operating system v3 (8 Nov 2026)
 > v3 (8 Nov, Ultra plan): one brain running many models, agents and teams. New: model routing (§9), pods (§10), loose-ends register (§11), catch-up rule (§12), throughput target (§13), visible control room (§14), standing rules of 8 Nov (§15), new cadence (§5). Everything from v2 still holds.
 
@@ -68,6 +70,7 @@ Dave: "better, stronger, smarter, more effective and productive, more powerful, 
 - 15 Nov 08:35 (Dave): a11y tool felt off-brand for a brand and product design studio. → A side tool stays inside 3S only when it is framed as part of the studio's design craft (a free design tool that leads to studio work); "reviewing / rating" products that read as a separate business need their own brand, and that needs Dave's OK and money, so it is not done in cash mode.
 - 21 Nov 08:50 (Dave, message p-general-1795243805499): "Job applications can be sent during weekends. Personal messages and emails never on weekends." → Pending Claude review of the policy files (BRAIN §2.11, ARMS-CONTRACT §3b): until that review lands, senders keep the current Fri–Sat no-send rule for everything. After review: job applications (job-board/ATS submissions) may go out Fri–Sat; personal messages and emails (outreach, follow-ups, DMs, intros) stay off weekends as before.
 
+- 22 Nov: a [Test swap] post invited testers worldwide while SH✡MER is only open in Israel and the US; strangers abroad replied → outreach only to audiences who can actually use the product, never open-world tester swaps.
 ## −5. NIGHT OF 12→13 NOV: CEO STANDING APPROVAL (Dave, 20:34)
 "Entering night shift I want ALL THINGS APPROVED for your workflows, so nothing gets stuck waiting for me while I'm sleeping. Expect real results and progress on all things as priorities command."
 - Every INTERNAL step is approved tonight: design picks, builds, staging deploys, fixes, research, drafting, data updates, J8NIX publishes. Do not stop to ask; decide, verify independently, ship to staging, log in J8NIX runs and brain.json.
