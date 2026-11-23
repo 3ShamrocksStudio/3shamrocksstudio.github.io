@@ -1,0 +1,32 @@
+/* J8NIX 13.0.0 (23 Nov 2026) · "Through-line", document-level rules only: which app is in front, the splash, the "Back to J8NIX"
+   button over the classic screens. Everything inside lives in a shadow root with j13w.css. Spec: ops/brain/J8NIX-POSITIONING-DESIGN.md §4. */
+#jxsplash{--bg:#F4F6FB;--ink:#060833;--ink3:#687090}
+@media (prefers-color-scheme:dark){#jxsplash{--bg:#05071C;--ink:#EEF1FA;--ink3:#7D83A6}}
+html.jx,body.jx{height:auto!important;min-height:100%;overflow-y:auto!important;overflow-x:hidden!important;background:#F4F6FB!important}
+@media (prefers-color-scheme:dark){html.jx,body.jx{background:#05071C!important}}
+body.jx>*:not(#jx):not(#jxsplash):not(script):not(svg):not(style):not(link){display:none!important}
+body:not(.jx)>#jx{display:none!important}
+body.jx>#jx{display:block}
+#jxback{position:fixed;z-index:9000;inset-inline-end:12px;top:calc(8px + env(safe-area-inset-top));min-height:44px;padding:0 18px;border:0;border-radius:999px;background:#3043BF;color:#fff;font:600 15px/1 -apple-system,BlinkMacSystemFont,"Inter","Heebo",system-ui,sans-serif;box-shadow:0 1px 2px rgba(6,8,51,.05),0 8px 24px rgba(6,8,51,.12);cursor:pointer}
+body.jx #jxback,body:not(.jx-classic) #jxback{display:none}
+
+/* ---------- splash ---------- */
+#jxsplash{position:fixed;inset:0;z-index:10000;background:var(--bg);display:grid;place-items:center;transition:opacity .32s cubic-bezier(.32,.72,0,1)}
+#jxsplash.out{opacity:0;pointer-events:none}
+#jxsplash .jxs-in{display:grid;justify-items:center;gap:18px}
+#jxsplash .jxs-mk{width:36px;height:78px;position:relative}
+#jxsplash .jxs-mk svg,#jxsplash .jxs-mk img{width:100%;height:100%;display:block;overflow:visible}
+#jxsplash .jxs-mk path.draw{fill-opacity:0;stroke:var(--ink);stroke-width:.45;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:var(--len);stroke-dashoffset:var(--len)}
+#jxsplash.play .jxs-mk path.draw{animation:jxDraw .6s cubic-bezier(.32,.72,0,1) forwards,jxFill .3s ease-out .6s forwards}
+#jxsplash .jxs-mk::after{content:"";position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:radial-gradient(circle,rgba(91,182,249,.75),rgba(91,182,249,0) 65%);opacity:0;transform:scale(.4)}
+#jxsplash.play .jxs-mk::after{animation:jxGlint .45s ease-out .6s forwards}
+#jxsplash .jxs-wm{height:26px;width:auto;opacity:0}
+#jxsplash p{margin:0;font:500 13px/18px -apple-system,BlinkMacSystemFont,"Inter",system-ui,sans-serif;color:var(--ink3);opacity:0}
+#jxsplash.play .jxs-wm{animation:jxIn .2s ease-out .9s forwards}
+#jxsplash.play p{animation:jxIn .2s ease-out 1s forwards}
+@keyframes jxDraw{to{stroke-dashoffset:0}}
+@keyframes jxFill{to{fill-opacity:1;stroke-opacity:0}}
+@keyframes jxGlint{50%{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(1.2)}}
+@keyframes jxIn{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){#jxsplash *,#jxsplash *::after{animation:none!important}#jxsplash .jxs-mk path.draw{fill-opacity:1;stroke-opacity:0}#jxsplash .jxs-wm,#jxsplash p{opacity:1}}
+@media (prefers-color-scheme:dark){#jxsplash .jxs-wm{filter:invert(1) hue-rotate(180deg) brightness(1.15)}}
