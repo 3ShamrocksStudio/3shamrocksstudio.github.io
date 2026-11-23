@@ -36,6 +36,7 @@ Dave: "better, stronger, smarter, more effective and productive, more powerful, 
 - **Talk to Dave the J8NIX way (14 Nov, binds every run).** Every reply line, run summary, project "you" line and alert follows `ops/brain/J8NIX-COMMS.md`: one plain outcome sentence first; a severity tag at the start (🔴 needs you now · 🟠 needs you today · 🟢 FYI done); for 🔴/🟠 exactly what to do, one direct link and how many minutes; no jargon or internal names, no repeats; every number real with its source. The app pins what needs him by this tag and alerts carry it (23:00–07:00 only a 🔴 reply line or a security/outage failure pushes), so a wrong or missing tag means Dave misses it or gets woken for nothing.
 
 ### −6.L Lessons (append-only)
+- 23 Nov 13:20 · Dave: "why does J8NIX keep telling me what to do instead of doing it!" (SH✡MER upload task was stale: v144 already in review) → CORE.md §1A: check live, do it yourself via Mac Chrome / gh / Supabase; Dave tasks only for password, money, his own phone/LinkedIn, legal/identity or taste, each with a one-line reason.
 - Inbox answered 2 h late (12 Nov) → read the J8NIX comments/inbox FIRST every run and act on them before anything else.
 - False claims reached drafts and CVs (VIBRANT, 12 Nov) → every public or outreach claim traces to a source file. No source, no claim.
 - Prices and a personal email landed in the public repo → grep for ₪/$/@gmail before every push.

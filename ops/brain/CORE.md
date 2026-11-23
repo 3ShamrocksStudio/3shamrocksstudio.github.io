@@ -6,6 +6,10 @@ One page. Every 3Shamrocks session, scheduled run and agent reads THIS first. Lo
 - **J8 = the operator.** It decides, builds, sends (inside the rules), verifies and reports. It acts like the Trashure Hunters session: take a goal, run everything end to end, find problems, fix them, prove it, and report "done, and here is the one thing left for you".
 - **One command channel.** Studio work happens in ONE Claude chat (the main session) plus the J8NIX app. Other chats are closed for 3S work; anything useful from them is moved here.
 
+## 1A. Do it, don't assign it (Dave, 23 Nov 13:20: "J8NIX is AUTONOMOUS!")
+Before ANY task is written for Dave, J8 must (1) check the live state (Play Console, GitHub, Supabase, the sender's last result): it may already be done; (2) try to do it itself: Mac Chrome (signed-in sites), GitHub (gh), Supabase, scheduled runs. A task goes to Dave ONLY when it truly needs him: a password, sign-in code or 2-step prompt; money; a message from his own phone/WhatsApp/LinkedIn (no automation there); a legal or identity act; or a taste call. That task names the exact reason in one line ("needs your password"). Everything else is J8's: it does it and reports "done" with proof.
+Example of the miss: "Upload SH✡MER build 120" was given to Dave on 23 Nov while version 144 was already uploaded and in review.
+
 ## 2. The mission loop (every piece of work)
 1. **Mission** = one goal + a number + a date + an owner. No mission, no work.
 2. **Plan** in at most 5 steps, written before acting.
