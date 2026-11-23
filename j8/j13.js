@@ -12,7 +12,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '13.1.0';
+  var VER = '13.2.0';
   var GOAL = 100000, LINE_FROM = '2026-11-19', LINE_TO = '2026-12-31', COUNT_FROM = '2026-11-01';
   var TZ = 'Asia/Jerusalem';
   var J = function () { return window.J8 || null; };
@@ -477,6 +477,20 @@
     });
     return out + '</ol>';
   }
+  function routinesBox() {
+    var jj = J(), L = safe(function () { return jj.routines.list(); }, []); if (!L || !L.length) return '';
+    var R = runs(), last = {};
+    R.forEach(function (r) { var a = String(r.arm || '').toLowerCase(); if (!last[a]) last[a] = r; });
+    return '<section class="grp rtn" aria-labelledby="jx-rt"><div class="gh"><h2 class="hd" id="jx-rt">Routines · ' + L.filter(function (r) { return r.enabled; }).length + ' on</h2></div><p class="fn tight">What J8 does for you every day, by itself. The pause button at the top stops all of them.</p><div class="list">'
+      + L.map(function (r) {
+        var lr = last[String(r.arm || '').toLowerCase()], k = 'rt-' + r.id, ar = armed(k);
+        var st = lr ? when(lr.ended || lr.started) + ' · ' + cut(String(lr.summary || lr.status || '').replace(/^[🔴🟠🟢]\s*/u, ''), 90) : 'No run yet';
+        return '<div class="li rt"><span class="lt"><b dir="auto">' + esc(r.name) + '</b><small dir="auto">' + esc(r.schedule) + '</small>'
+          + '<details class="more-info"><summary>What it does · last run</summary><p dir="auto">' + esc(r.what) + '</p><p dir="auto">Last: ' + esc(st) + '</p></details></span>'
+          + (r.switchable ? '<button type="button" class="sw' + (r.enabled ? ' on' : '') + (ar ? ' arm' : '') + '" role="switch" aria-checked="' + (!!r.enabled) + '" data-x="rtn" data-id="' + esc(r.id) + '" aria-label="' + esc(r.name) + '">' + (ar ? (r.enabled ? 'Tap: off' : 'Tap: on') : '<i></i>') + '</button>' : '<span class="st">' + (paused() ? 'paused' : 'always on') + '</span>')
+          + '</div>';
+      }).join('') + '</div></section>';
+  }
   function vProof() {
     var all = proofItems(null), seen = {}, wk = Date.now() - 7 * 864e5;
     var W = all.filter(function (e) { return e.t >= wk; }), wf = W.filter(function (e) { return e.k === 'miss'; }).length, ws = W.filter(function (e) { return e.k === 'sent'; }).length, wl = W.filter(function (e) { return e.lk; }).length;
@@ -485,7 +499,7 @@
     if (S.filter !== 'all' && !seen[S.filter]) S.filter = 'all';
     var L = S.filter === 'all' ? all : all.filter(function (e) { return (e.p || []).indexOf(S.filter) > -1; });
     return '<h1 class="lt1">What happened</h1><p class="sub">Everything J8 did, sent and got, with evidence. Last 7 days: ' + W.length + ' steps · ' + ws + ' sent · ' + wl + ' with a link · ' + wf + ' failed, shown.</p>'
-      + '<div class="chips" role="group" aria-label="Filter by mission">' + chips.map(function (c) { return '<button type="button" class="chipb" data-x="filter" data-id="' + esc(c[0]) + '" aria-pressed="' + (S.filter === c[0]) + '">' + esc(cut(c[1], 28)) + '</button>'; }).join('') + '</div>'
+      + routinesBox() + '<h2 class="hd tl-h">Everything, newest first</h2>' + '<div class="chips" role="group" aria-label="Filter by mission">' + chips.map(function (c) { return '<button type="button" class="chipb" data-x="filter" data-id="' + esc(c[0]) + '" aria-pressed="' + (S.filter === c[0]) + '">' + esc(cut(c[1], 28)) + '</button>'; }).join('') + '</div>'
       + proofList(L, S.proofN) + (L.length > S.proofN ? '<div class="more"><button type="button" class="cap-b" data-x="more">Show more (' + (L.length - S.proofN) + ')</button></div>' : '');
   }
 
@@ -598,6 +612,13 @@
     var id = el.getAttribute('data-id') || '', j = J();
     if (x === 'nav') { go(id === 'mission' || id === 'missions' ? 'plan' : id || 'now'); return; }
     if (x === 'mission') { if (id && proj(id)) go('mission', id); else go('decisions'); return; }
+    if (x === 'rtn') {
+      var rk = 'rt-' + id; if (!armed(rk)) { arm(rk); return; } delete S.arm[rk];
+      if (!j || !on() || !j.routines) { say('Not connected. Try again in a moment.'); return; }
+      var cur = safe(function () { return j.routines.list().filter(function (r) { return r.id === id; })[0]; }, null); if (!cur) return;
+      buzz(); j.routines.set(id, !cur.enabled).then(function () { say(cur.name + (cur.enabled ? ' is off. It stops at its next run.' : ' is on.')); render(true); }, fail);
+      return;
+    }
     if (x === 'peek') { S.peek = S.peek === id ? null : id; render(true); return; }
     if (x === 'pick') {
       var pk = 'pick-' + el.getAttribute('data-k'); if (!armed(pk)) { arm(pk); return; } delete S.arm[pk];
@@ -710,7 +731,7 @@
     }, true);
     window.addEventListener('scroll', function () { root.classList.toggle('scrolled', window.scrollY > 8); sr.querySelector('.top').classList.toggle('scrolled', window.scrollY > 8); }, { passive: true });
     var j = J();
-    if (j && j.on) ['projects', 'tasks', 'approvals', 'runs', 'money', 'control', 'comments', 'plans'].forEach(function (c) { try { j.on(c, soon); } catch (e) {} });
+    if (j && j.on) ['projects', 'tasks', 'approvals', 'runs', 'money', 'control', 'comments', 'plans', 'routines'].forEach(function (c) { try { j.on(c, soon); } catch (e) {} });
     if (j && j.on) try { j.on('status', function () { S.rankAt = 0; soon(); }); } catch (e) {}
     var a = document.getElementById('app');
     if (a && window.MutationObserver) new MutationObserver(sync).observe(a, { attributes: true, attributeFilter: ['hidden'] });
