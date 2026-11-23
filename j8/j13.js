@@ -12,7 +12,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '13.0.0';
+  var VER = '13.1.0';
   var GOAL = 100000, LINE_FROM = '2026-11-19', LINE_TO = '2026-12-31', COUNT_FROM = '2026-11-01';
   var TZ = 'Asia/Jerusalem';
   var J = function () { return window.J8 || null; };
@@ -168,14 +168,14 @@
     var j = J(), tx = String(safe(function () { return j.approvals.textOf(a); }, '') || ''), plan = !!(a.no_send || (a.extra && a.extra.no_send)), tpl = a.kind === 'template';
     var who = a.label && a.label !== 'Template' ? a.label : '', head = a.to || a.subject || who || a.kind || 'Draft';
     var w = waitsOn(a);
-    var h = '<article class="row poll" data-ap="' + esc(a.id) + '"><div class="yh"><p class="yt" dir="auto">' + (tpl ? '<span class="tag">Template</span>' : plan ? '<span class="tag">Plan</span>' : '') + esc(cut(head, 90)) + '</p></div>';
+    var h = '<article class="row poll" data-ap="' + esc(a.id) + '"><div class="yh"><p class="yt" dir="auto">' + (tpl ? '<span class="tag">Saved message</span>' : plan ? '<span class="tag">Plan only</span>' : '') + esc(cut(head, 90)) + '</p></div>';
     var meta = [showProj ? pname(pidOf(a.product)) : '', a.channel, a.subject && a.subject !== head ? a.subject : '', who && who !== head ? who : ''].filter(Boolean).map(function (x) { return cut(x, 60); }).join(' · ');
     if (meta) h += '<p class="yp" dir="auto">' + esc(meta) + '</p>';
     if (tx) h += '<details><summary dir="auto">' + esc(cut(tx, 140)) + (tx.replace(/\s+/g, ' ').trim().length > 140 || /\n/.test(tx) ? '<b>Read all</b>' : '') + '</summary><p class="full" dir="auto">' + esc(tx) + '</p></details>';
     if (a.warn) h += '<p class="warn" dir="auto">' + esc(cut(a.warn, 200)) + '</p>';
     if (plan) h += '<p class="yp">Plan only: nothing is sent.</p>';
     if (w.length) h += '<p class="warn" dir="auto">Waits on: ' + esc(cut(w.join(' · '), 160)) + '</p>';
-    h += '<div class="bts"><button type="button" class="cap-b main" data-x="go" data-id="' + esc(a.id) + '">' + (plan ? 'Approve · OK to start' : 'Approve') + '</button>'
+    h += '<div class="bts"><button type="button" class="cap-b main" data-x="go" data-id="' + esc(a.id) + '">' + (plan ? 'Yes, start' : tpl ? 'Yes, use this message' : 'Yes, send it') + '</button>'
       + '<button type="button" class="cap-b" data-x="nogo" data-id="' + esc(a.id) + '">Not now</button>'
       + (plan ? '' : '<button type="button" class="ql" data-x="edit" data-id="' + esc(a.id) + '">Change</button>') + '</div>';
     return h + '</article>';
@@ -210,12 +210,13 @@
   }
 
   /* ---------- 13.0 "Through-line" pieces ---------- */
-  var DOT = { run: 'running', need: 'needs you', block: 'blocked', done: 'done', quiet: 'quiet' };
+  var DOT = { run: 'J8 working', need: 'needs you', block: 'waiting', done: 'done', quiet: 'no news 24h' };
   function dot(f) { return '<i class="dot d-' + esc(f) + '" aria-hidden="true"></i>'; }
   function ico(n) {
     var P = {
       now: '<circle cx="12" cy="12" r="8.5" stroke-dasharray="49 4.4" transform="rotate(-80 12 12)"/><circle cx="12" cy="12" r="2"/>',
       missions: '<path d="M5 6.5h9M5 12h14M5 17.5h7"/>',
+      plan: '<path d="M12 3.5v4M12 16.5v4"/><circle cx="12" cy="12" r="3.2"/><path d="M6 6.5h0M18 17.5h0"/><path d="M5 4.5h4M15 19.5h4"/>',
       decisions: '<path d="M7 12.5l3 3 7-7"/><path d="M20 12a8 8 0 1 1-3.2-6.4"/>',
       proof: '<path d="M7 4v16"/><circle cx="7" cy="7" r="1.6"/><circle cx="7" cy="17" r="1.6"/><path d="M11 7h7M11 17h5"/>',
       talk: '<path d="M5 17.5V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H9l-4 3.5z"/>',
@@ -237,7 +238,7 @@
   function pausedNote() {
     if (!paused()) return '';
     var c = ctl(), by = c && c.updated ? when(c.updated) : '', ar = armed('resume');
-    return '<section class="card soft paused" aria-labelledby="jx-pz"><p class="lbl" id="jx-pz">' + dot('quiet') + 'Sending is paused' + (by ? ' · since ' + esc(by) : '') + '</p>'
+    return '<section class="act paused" aria-labelledby="jx-pz"><p class="lbl" id="jx-pz">' + dot('quiet') + 'Sending is paused' + (by ? ' · since ' + esc(by) : '') + '</p>'
       + '<p class="callout">Nothing goes out until you resume. Approved items wait safely.</p>'
       + '<div class="bts"><button type="button" class="cap-b main' + (ar ? ' arm' : '') + '" data-x="resume">' + (ar ? 'Tap again to resume' : 'Resume sending') + '</button></div></section>';
   }
@@ -264,49 +265,144 @@
   }
 
   /* ---------- screens ---------- */
-  function vNow() {
-    rankPull();
-    var pc = pace(), p = il(Date.now()), DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    var dow = DAYS[new Date(Date.UTC(p.y, p.m - 1, p.d)).getUTCDay()];
-    var h = '<h1 class="sr">Now</h1><p class="date">' + esc(dow + ', ' + p.d + ' ' + MON[p.m - 1]) + '</p>';
-    h += '<section class="goal" aria-labelledby="jx-g"><h2 class="sr" id="jx-g">Goal</h2><div class="ringwrap">' + ring(pc)
-      + '<div class="rc">' + (pc ? '<p class="t1 num">' + esc(ils(pc.got)) + '</p><p class="fn">of ' + esc(ils(GOAL)) + ' · by 31 Dec</p>' + paceChip(pc)
-        : '<p class="fn">' + (on() ? 'No money figures yet' : 'Connecting…') + '</p>') + '</div></div>'
-      + (pc ? '<p class="fn ctr">Today\'s pace ' + esc(ils(pc.line)) + ' · ' + esc(ils(pc.perDay)) + ' a day from here</p>' : '') + '</section>';
-    h += pausedNote();
-    var r = radio();
-    h += '<section class="card move" aria-labelledby="jx-m"><p class="lbl" id="jx-m">Your one move</p>';
-    if (r) {
-      var t = r.t, lk = r.kind === 'task' ? link(t.link) : r.kind === 'project' ? link(r.p.you_link) : '';
-      var pid = r.kind === 'task' ? t.project_id : r.kind === 'project' ? r.id : pidOf(r.a.product);
-      h += '<p class="t2" dir="auto">' + esc(cut(r.title, 140)) + '</p>';
-      var why = r.kind === 'task' && t.why ? cut(t.why, 180) : r.kind === 'approval' ? 'A message waits for your OK.' : '';
-      if (why) h += '<p class="callout" dir="auto">' + esc(why) + '</p>';
-      var meta = [pid ? pname(pid) : '', r.kind === 'task' && t.minutes ? t.minutes + ' min' : ''].filter(Boolean).join(' · ');
-      if (meta) h += '<p class="fn" dir="auto">' + esc(meta) + '</p>';
-      h += '<div class="bts">';
-      if (r.kind === 'approval') h += '<button type="button" class="cap-b main" data-x="nav" data-id="decisions">Do it</button>';
-      else if (lk) h += doBtn(lk, 'cap-b main', 'Do it');
-      else h += '<button type="button" class="cap-b main" data-x="mission" data-id="' + esc(pid || '') + '">Do it</button>';
-      var key = r.kind === 'task' ? 'tk-' + r.id : r.kind === 'approval' ? 'ap-' + r.id : 'pj-' + r.id;
-      if (r.kind === 'task') h += '<button type="button" class="cap-b' + (armed('tk-' + r.id) ? ' arm' : '') + '" data-x="done" data-id="' + esc(r.id) + '">' + (armed('tk-' + r.id) ? 'Tap again: done' : 'Done') + '</button>';
-      h += '<button type="button" class="ql" data-x="note" data-k="' + esc(key) + '">Note</button></div>'
-        + noteBox(key, pid, r.kind === 'task' ? r.id : null, r.kind === 'approval' ? r.id : null);
-    } else h += '<p class="t2">' + (on() ? 'Nothing needs you right now.' : 'Connecting…') + '</p>';
-    h += '</section>';
-    var F = flatDecisions(), topId = r ? r.id : null;
-    F = F.filter(function (x) { return x.id !== topId; });
-    if (F.length) {
-      h += '<section class="grp" aria-labelledby="jx-n"><div class="gh"><h2 class="hd" id="jx-n">Needs you</h2><button type="button" class="ql" data-x="nav" data-id="decisions">See all ' + F.length + '</button></div><div class="list">';
-      h += F.slice(0, 3).map(function (x) {
-        return '<button type="button" class="li" data-x="nav" data-id="decisions">' + dot('need') + '<span class="lt"><b dir="auto">' + esc(cut(x.title, 90)) + '</b><small dir="auto">' + esc(cut(x.sub, 70)) + '</small></span>' + ico('go') + '</button>';
-      }).join('') + '</div></section>';
-    }
-    var T = tower().filter(function (x) { return x.f !== 'done'; });
-    h += '<section class="grp" aria-labelledby="jx-r"><div class="gh"><h2 class="hd" id="jx-r">Missions</h2>' + (T.length > 5 ? '<button type="button" class="ql" data-x="nav" data-id="missions">See all ' + T.length + '</button>' : '') + '</div>';
-    h += T.length ? '<div class="list">' + T.slice(0, 5).map(missionRow).join('') + '</div>' : '<p class="empty">' + (on() ? 'No active missions.' : 'Connecting…') + '</p>';
+  /* ---------- 13.1: backward plan (j8_plans) ---------- */
+  function plan() {
+    var j = J(), L = safe(function () { return j.plans.list(); }, []);
+    L = (L || []).filter(function (p) { return p && !/^(done|dropped)$/.test(p.status || ''); });
+    return L[0] || null;
+  }
+  function optsOf(pl) { return pl && Array.isArray(pl.options) ? pl.options : []; }
+  function activeOpt(pl) {
+    var O = optsOf(pl), k = pl && pl.chosen;
+    return O.filter(function (o) { return o && o.key === k; })[0] || O.filter(function (o) { return o && o.recommended; })[0] || null;
+  }
+  function dDay(s) { var t = pd(s); if (isNaN(t)) return ''; var x = new Date(t); return x.getUTCDate() + ' ' + MON[x.getUTCMonth()] + (x.getUTCFullYear() !== 2026 ? ' ' + x.getUTCFullYear() : ''); }
+  function dLeft(s) { var n = daysTo(s); return n == null ? '' : n === 0 ? 'today' : n === 1 ? 'tomorrow' : n < 0 ? (-n) + ' days ago' : n + ' days'; }
+  function daysTo(s) { var t = pd(s); if (isNaN(t)) return null; return Math.round((dayNo(String(s).slice(0, 10)) - dayNo(ymdIL(Date.now())))); }
+  function eyebrow(t) { return '<p class="eyebrow"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>' + esc(t) + '</p>'; }
+  var HONEST = 'J8NIX can\'t promise results. It gives you the plan with the best odds we know, shows the math, and tells you early when it\'s off track.';
+  var STATUS = { draft: 'Draft', go: 'On plan', off_track: 'Off track', replanned: 'New plan', done: 'Done' };
+
+  function goalBar(pl, pc) {
+    var got = pc ? pc.got : pl ? Number(pl.baseline) || 0 : 0, tgt = pl ? Number(pl.target) || GOAL : GOAL, dl = pl ? pl.deadline : LINE_TO;
+    var pct = Math.max(0, Math.min(100, got / tgt * 100)), st = pl ? pl.status : '', dt = daysTo(dl);
+    return '<section class="gbar" aria-labelledby="jx-gl">' + eyebrow('Your goal') + '<h2 class="sr" id="jx-gl">Your goal</h2>'
+      + '<p class="gnum"><span class="t1 num">' + esc(ils(got)) + '</span><span class="gof">of ' + esc(ils(tgt)) + ' · by ' + esc(dDay(dl)) + '</span></p>'
+      + '<span class="gb" aria-hidden="true"><i style="width:' + Math.max(pct, got > 0 ? 1.2 : 0).toFixed(1) + '%"></i></span>'
+      + '<p class="gmeta">' + (st ? '<span class="chip ' + (st === 'off_track' ? 'need' : st === 'go' ? 'ok' : '') + '">' + esc(STATUS[st] || st) + '</span>' : '')
+      + (dt != null ? '<span>' + esc(dt) + ' days left</span>' : '') + '<span>' + esc(pl ? pl.goal || 'Money collected' : 'Money collected') + '</span></p></section>';
+  }
+
+  /* the user's one action, as a numbered "Follow these steps" list; details fold away */
+  function stepsOf(text) {
+    var s = String(text || '').trim(); if (!s) return [];
+    var parts = s.split(/\n+|(?:^|\s)(?=\d+[.)]\s)|\s*(?:→|->)\s*/).map(function (x) { return x.replace(/^\s*\d+[.)]\s*/, '').trim(); }).filter(function (x) { return x.length > 1; });
+    return parts.length > 1 ? parts.slice(0, 8) : [];
+  }
+  function doNow() {
+    var r = radio(), h = '<section class="card move" aria-labelledby="jx-m">' + '<p class="lbl" id="jx-m">Do this now</p>';
+    if (!r) return h + '<p class="t2">' + (on() ? 'Nothing needs you right now. J8 is working.' : 'Connecting…') + '</p></section>';
+    var t = r.t, lk = r.kind === 'task' ? link(t.link) : r.kind === 'project' ? link(r.p.you_link) : '';
+    var pid = r.kind === 'task' ? t.project_id : r.kind === 'project' ? r.id : pidOf(r.a.product);
+    h += '<p class="t2" dir="auto">' + esc(cut(String(r.title || '').replace(/^\s*(TODAY\s*\d*\s*·\s*)/i, ''), 140)) + '</p>';
+    var meta = [r.kind === 'task' && t.minutes ? t.minutes + ' min' : '', pid ? pname(pid) : ''].filter(Boolean).join(' · ');
+    if (meta) h += '<p class="fn" dir="auto">' + esc(meta) + '</p>';
+    var S2 = r.kind === 'task' ? stepsOf(t.action) : [];
+    if (S2.length) h += '<p class="lbl sm">Follow these steps</p><ol class="follow">' + S2.map(function (x) { return '<li dir="auto">' + esc(cut(x, 200)) + '</li>'; }).join('') + '</ol>';
+    else if (r.kind === 'task' && t.action) h += '<p class="callout" dir="auto">' + esc(cut(t.action, 260)) + '</p>';
+    else if (r.kind === 'approval') h += '<p class="callout">A message waits for your OK.</p>';
+    h += '<div class="bts">';
+    if (r.kind === 'approval') h += '<button type="button" class="cap-b main" data-x="nav" data-id="decisions">Open it</button>';
+    else if (lk) h += doBtn(lk, 'cap-b main', t && t.link_text && t.link_text.length < 24 && !/approve|gate|mission|run\b/i.test(t.link_text) ? t.link_text : 'Start');
+    else h += '<button type="button" class="cap-b main" data-x="mission" data-id="' + esc(pid || '') + '">Start</button>';
+    if (r.kind === 'task') h += '<button type="button" class="cap-b' + (armed('tk-' + r.id) ? ' arm' : '') + '" data-x="done" data-id="' + esc(r.id) + '">' + (armed('tk-' + r.id) ? 'Tap again: done' : 'I did it') + '</button>';
+    var key = r.kind === 'task' ? 'tk-' + r.id : r.kind === 'approval' ? 'ap-' + r.id : 'pj-' + r.id;
+    h += '</div>';
+    if (r.kind === 'task' && t.why) h += '<details class="more-info"><summary>Why this matters</summary><p class="callout" dir="auto">' + esc(t.why) + '</p></details>';
+    h += '<div class="bts quiet"><button type="button" class="ql" data-x="note" data-k="' + esc(key) + '">Ask J8 about this</button></div>'
+      + noteBox(key, pid, r.kind === 'task' ? r.id : null, r.kind === 'approval' ? r.id : null);
     return h + '</section>';
   }
+
+  function choosePanel(pl) {
+    if (!pl || pl.chosen) return '';
+    var rec = activeOpt(pl); if (!rec) return '';
+    var k = 'pick-' + rec.key, ar = armed(k);
+    return '<section class="act" aria-labelledby="jx-ch"><p class="lbl" id="jx-ch">Needs your choice</p>'
+      + '<p class="t2" dir="auto">' + esc(pl.verdict || 'Choose the plan to follow.') + '</p>'
+      + '<p class="callout">J8 recommends: <b dir="auto">' + esc(rec.label) + '</b>. ' + esc(rec.math || '') + '</p>'
+      + '<div class="bts"><button type="button" class="cap-b main' + (ar ? ' arm' : '') + '" data-x="pick" data-id="' + esc(pl.id) + '" data-k="' + esc(rec.key) + '">' + (ar ? 'Tap again to confirm' : 'Go with this plan') + '</button>'
+      + '<button type="button" class="cap-b" data-x="nav" data-id="plan">See all options</button></div></section>';
+  }
+
+  function nextMilestone(pl) {
+    var o = activeOpt(pl); if (!o || !Array.isArray(o.chain) || !o.chain.length) return '';
+    var C = o.chain.slice().sort(function (a, b) { return a.n - b.n; }), today = ymdIL(Date.now());
+    var nx = C.filter(function (m) { return String(m.date) >= today; })[0] || C[0], fin = C[C.length - 1];
+    return '<section class="grp" aria-labelledby="jx-nm"><div class="gh"><h2 class="hd" id="jx-nm">Next stop on your plan</h2><button type="button" class="ql" data-x="nav" data-id="plan">Whole plan</button></div>'
+      + '<button type="button" class="stopc" data-x="nav" data-id="plan"><span class="sd"><b>' + esc(dDay(nx.date)) + '</b><small>' + esc(daysTo(nx.date)) + ' days</small></span>'
+      + '<span class="lt"><b dir="auto">' + esc(nx.number) + '</b><small dir="auto">' + esc(cut(nx.done, 110)) + '</small></span>' + ico('go') + '</button>'
+      + (fin && fin !== nx ? '<p class="fn tight">Leads to: ' + esc(fin.number) + ' by ' + esc(dDay(fin.date)) + (pl.chosen ? '' : ' (proposed)') + '</p>' : '') + '</section>';
+  }
+
+  function vNow() {
+    rankPull();
+    var pl = plan(), pc = pace(), p = il(Date.now()), DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var dow = DAYS[new Date(Date.UTC(p.y, p.m - 1, p.d)).getUTCDay()];
+    var h = '<h1 class="sr">Today</h1><p class="date">' + esc(dow + ' · ' + p.d + ' ' + MON[p.m - 1]) + '</p>';
+    h += goalBar(pl, pc) + choosePanel(pl) + pausedNote() + doNow() + nextMilestone(pl);
+    var F = flatDecisions(), r = radio(), topId = r ? r.id : null;
+    F = F.filter(function (x) { return x.id !== topId; });
+    if (F.length) h += '<section class="grp" aria-labelledby="jx-n"><div class="gh"><h2 class="hd" id="jx-n">Waiting for your OK · ' + F.length + '</h2><button type="button" class="ql" data-x="nav" data-id="decisions">See all</button></div><div class="list">'
+      + F.slice(0, 3).map(function (x) { return '<button type="button" class="li" data-x="nav" data-id="decisions">' + dot('need') + '<span class="lt"><b dir="auto">' + esc(cut(x.title, 90)) + '</b><small dir="auto">' + esc(cut(x.sub, 70)) + '</small></span>' + ico('go') + '</button>'; }).join('') + '</div></section>';
+    return h;
+  }
+
+  function vPlan() {
+    var pl = plan(), h = eyebrow('Plan from the finish to today');
+    if (!pl) return h + '<h1 class="lt1">Plan</h1><p class="sub">' + (on() ? 'No plan yet. Tell J8 your goal in Talk ("₪X by date") and it builds one from the finish back to today.' : 'Connecting…') + '</p>' + goalsList();
+    var o = activeOpt(pl), O = optsOf(pl);
+    h += '<h1 class="lt1" dir="auto">' + esc(ils(pl.target)) + ' by ' + esc(dDay(pl.deadline)) + '</h1><p class="sub" dir="auto">' + esc(pl.goal || '') + ' · now ' + esc(ils((pace() || {}).got != null ? pace().got : pl.baseline)) + '</p>';
+    h += '<section class="card check"><p class="lbl ' + (pl.status === 'off_track' ? 'need' : '') + '">Reality check</p><p class="body" dir="auto">' + esc(pl.verdict || '') + '</p>'
+      + (pl.bottleneck ? '<p class="lbl">What\'s holding us back</p><p class="body" dir="auto">' + esc(pl.bottleneck) + '</p>' : '') + '<p class="fn honest">' + esc(HONEST) + '</p></section>';
+    if (!pl.chosen && O.length) {
+      h += '<section class="grp"><h2 class="hd">Choose your plan</h2><p class="fn tight">Each option is worked out from the finish back to today.</p><div class="rows">';
+      h += O.map(function (x) {
+        var k = 'pick-' + x.key, ar = armed(k);
+        return '<article class="act opt' + (x.recommended ? ' rec' : '') + '"><p class="lbl">' + (x.recommended ? 'J8 recommends' : x.fits === false ? 'Doesn\'t fit the date' : x.fits ? 'Fits' : 'Needs more info') + '</p>'
+          + '<p class="yt" dir="auto">' + esc(x.label) + '</p><p class="why" dir="auto">' + esc(x.math || '') + '</p>'
+          + '<div class="bts"><button type="button" class="cap-b' + (x.recommended ? ' main' : '') + (ar ? ' arm' : '') + '" data-x="pick" data-id="' + esc(pl.id) + '" data-k="' + esc(x.key) + '">' + (ar ? 'Tap again to confirm' : 'Choose ' + esc(x.key)) + '</button>'
+          + (x.chain && x.chain.length ? '<button type="button" class="ql" data-x="peek" data-id="' + esc(x.key) + '">' + (S.peek === x.key ? 'Hide steps' : 'See its steps') + '</button>' : '') + '</div>'
+          + (S.peek === x.key ? chainHtml(x, true) : '') + '</article>';
+      }).join('') + '</div></section>';
+    }
+    if (o && o.chain && o.chain.length) h += '<section class="grp"><h2 class="hd">' + (pl.chosen ? 'Your plan: ' + esc(o.label) : 'Plan ' + esc(o.key) + ' (proposed)') + '</h2><p class="fn tight">Read from the top: the finish. Each stop needs the one under it first. Today is at the bottom.</p>' + chainHtml(o, false) + '</section>';
+    var A = Array.isArray(pl.assumptions) ? pl.assumptions : [];
+    if (A.length) h += '<details class="grp asm"><summary class="hd">Numbers this plan uses (' + A.length + ')</summary><ul>' + A.map(function (a) {
+      var u = link(a.source); return '<li><b dir="auto">' + esc(a.name) + '</b><span dir="auto">' + esc(a.value) + '</span><small>' + esc(a.kind === 'ours' ? 'our data' : a.kind === 'benchmark' ? 'public benchmark' : 'J8 guess, replaced by real results') + (u ? ' · <a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">source</a>' : a.source ? ' · ' + esc(a.source) : '') + '</small></li>';
+    }).join('') + '</ul></details>';
+    return h + goalsList();
+  }
+  function chainHtml(o, mini) {
+    var C = o.chain.slice().sort(function (a, b) { return b.n - a.n; }), today = ymdIL(Date.now());
+    return '<ol class="chain' + (mini ? ' mini' : '') + '">' + C.map(function (m, i) {
+      var past = String(m.date) < today, isToday = m.n === 0, u = link(m.src);
+      return '<li class="stop' + (isToday ? ' today' : '') + (past ? ' past' : '') + '">' + (i ? '<p class="need-first">to get the stop above, first:</p>' : '')
+        + '<div class="stopc"><span class="sd"><b>' + esc(dDay(m.date)) + '</b><small>' + (isToday ? 'start' : esc(dLeft(m.date))) + '</small></span>'
+        + '<span class="lt"><b dir="auto">' + esc(m.number) + '</b><small dir="auto">' + esc(m.done) + '</small></span></div>'
+        + (mini ? '' : '<details class="more-info"><summary>How</summary>'
+          + (m.why ? '<p class="mi-l">Why it\'s needed</p><p dir="auto">' + esc(m.why) + '</p>' : '')
+          + (m.method ? '<p class="mi-l">Proven method</p><p dir="auto">' + esc(m.method) + (u ? ' · <a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">source</a>' : '') + '</p>' : '')
+          + (m.risk ? '<p class="mi-l">Main risk</p><p dir="auto">' + esc(m.risk) + (m.if_then ? ' ' + esc(m.if_then) : '') + '</p>' : '') + '</details>')
+        + '</li>';
+    }).join('') + '</ol>';
+  }
+  function goalsList() {
+    var T = tower().filter(function (x) { return x.f !== 'done'; });
+    return '<section class="grp" aria-labelledby="jx-gs"><h2 class="hd" id="jx-gs">All projects · ' + T.length + '</h2>'
+      + (T.length ? '<div class="list">' + T.map(missionRow).join('') + '</div>' : '<p class="empty">' + (on() ? 'No active projects.' : 'Connecting…') + '</p>') + '</section>';
+  }
+
   function missionRow(x) {
     var p = x.p, st = Number(p.stage) || 0, pct = st ? Math.min(100, Math.round(st / 6 * 100)) : 0;
     return '<button type="button" class="li mi s-' + esc(x.f) + '" data-x="mission" data-id="' + esc(p.id) + '">' + dot(x.f)
@@ -337,12 +433,12 @@
   }
   function vMission() {
     var p = proj(S.mid);
-    if (!p) return '<button type="button" class="back" data-x="nav" data-id="missions">' + ico('back') + 'Missions</button><p class="empty">This mission is not in the data any more.</p>';
+    if (!p) return '<button type="button" class="back" data-x="nav" data-id="plan">' + ico('back') + 'Plan</button><p class="empty">This mission is not in the data any more.</p>';
     var f = flag(p), mine = daveTasks().filter(function (t) { return t.project_id === p.id; }), team = tasksOpen().filter(function (t) { return t.project_id === p.id && t.owner !== 'dave'; });
     var D = drafts().filter(function (a) { return pidOf(a.product) === p.id; }), R = rankPos();
     var byR = function (a, b) { return (R[a.id] != null ? R[a.id] : 1e6 + (Number(a.rank) || 999)) - (R[b.id] != null ? R[b.id] : 1e6 + (Number(b.rank) || 999)); };
     mine.sort(byR); D.sort(byR);
-    var h = '<button type="button" class="back" data-x="nav" data-id="missions">' + ico('back') + 'Missions</button>'
+    var h = '<button type="button" class="back" data-x="nav" data-id="plan">' + ico('back') + 'Plan</button>'
       + '<header class="mhd"><h1 class="t3" dir="auto">' + esc(p.name || p.id) + '</h1><p class="sub">' + dot(f) + esc(DOT[f]) + ' · updated ' + esc(when(p.updated || p.updated_at) || 'unknown') + '</p>' + (p.stage ? stepLine(p) : '') + '</header>';
     var you = String(p.you || '').replace(/^\s*(🔴|🟠|🟢|⚪)\s*/, ''), yl = link(p.you_link);
     h += '<section class="card"><p class="lbl">Now</p><p class="body" dir="auto">' + esc(p.now || 'Not written yet.') + '</p>'
@@ -361,7 +457,7 @@
   function vDecisions() {
     rankPull();
     var G = gateGroups(), n = gateCount(), RD = readyList(null);
-    var h = '<h1 class="lt1">Decisions</h1><p class="sub">' + (n + RD.length ? (n + RD.length) + ' waiting for you. Highest value first.' : on() ? 'Nothing waits for you.' : 'Connecting…') + '</p>';
+    var h = '<h1 class="lt1">Needs you</h1><p class="sub">' + (n + RD.length ? (n + RD.length) + ' things wait for your OK. Most valuable first. Tap "Read all" to see the full text.' : on() ? 'Nothing waits for you.' : 'Connecting…') + '</p>';
     if (RD.length) h += '<section class="grp"><h2 class="hd">Ready for you to send · ' + RD.length + '</h2><div class="rows">' + RD.map(readyRow).join('') + '</div></section>';
     G.forEach(function (g) {
       h += '<section class="grp"><h2 class="hd" dir="auto">' + esc(pname(g.p)) + ' · ' + g.L.length + '</h2><div class="rows">'
@@ -388,14 +484,14 @@
     var chips = [['all', 'All']].concat(Object.keys(seen).sort(function (a, b) { return seen[b] - seen[a]; }).map(function (p) { return [p, pname(p)]; }));
     if (S.filter !== 'all' && !seen[S.filter]) S.filter = 'all';
     var L = S.filter === 'all' ? all : all.filter(function (e) { return (e.p || []).indexOf(S.filter) > -1; });
-    return '<h1 class="lt1">Proof</h1><p class="sub">Last 7 days: ' + W.length + ' steps · ' + ws + ' sent · ' + wl + ' with a link · ' + wf + ' failed, shown.</p>'
+    return '<h1 class="lt1">What happened</h1><p class="sub">Everything J8 did, sent and got, with evidence. Last 7 days: ' + W.length + ' steps · ' + ws + ' sent · ' + wl + ' with a link · ' + wf + ' failed, shown.</p>'
       + '<div class="chips" role="group" aria-label="Filter by mission">' + chips.map(function (c) { return '<button type="button" class="chipb" data-x="filter" data-id="' + esc(c[0]) + '" aria-pressed="' + (S.filter === c[0]) + '">' + esc(cut(c[1], 28)) + '</button>'; }).join('') + '</div>'
       + proofList(L, S.proofN) + (L.length > S.proofN ? '<div class="more"><button type="button" class="cap-b" data-x="more">Show more (' + (L.length - S.proofN) + ')</button></div>' : '');
   }
 
   function vTalk() {
     var L = msgs(40).slice(0, 30).reverse();
-    var h = '<h1 class="lt1">Talk</h1><p class="sub">Tell J8 anything: a goal, a change, a question. It answers here.</p><ol class="thread">';
+    var h = '<h1 class="lt1">Talk</h1><p class="sub">Tell J8 a goal ("₪X by date"), a change or a question. It answers here and updates your plan.</p><ol class="thread">';
     h += L.length ? L.map(function (m) {
       var lines = String(m.reply || '').split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
       return '<li><div class="me"><p dir="auto">' + esc(cut(m.text, 400)) + '</p><small>' + esc(when(m.at)) + '</small></div>'
@@ -437,9 +533,9 @@
   function gateCount() { return drafts().length + daveTasks().length; }
 
   /* ---------- shell ---------- */
-  var NAV = [['now', 'Now'], ['missions', 'Missions'], ['decisions', 'Decisions'], ['proof', 'Proof'], ['talk', 'Talk']];
+  var NAV = [['now', 'Today'], ['plan', 'Plan'], ['decisions', 'Needs you'], ['proof', 'What happened'], ['talk', 'Talk']];
   function renderNav() {
-    var n = gateCount() + readyList(null).length, cur = S.v === 'mission' ? 'missions' : S.v;
+    var n = gateCount() + readyList(null).length, cur = S.v === 'mission' || S.v === 'missions' ? 'plan' : S.v;
     nav.innerHTML = '<div class="tabs">' + NAV.map(function (x) {
       return '<button type="button" data-x="nav" data-id="' + x[0] + '"' + (cur === x[0] ? ' aria-current="page"' : '') + '>' + ico(x[0]) + '<span>' + x[1] + '</span>'
         + (x[0] === 'decisions' && n ? '<em class="badge">' + n + '</em><span class="sr"> (' + n + ' waiting)</span>' : '') + '</button>';
@@ -458,7 +554,7 @@
     if (!force && busy()) { pending = true; return; }
     pending = false;
     var y = window.scrollY, changed = S.prevV !== S.v + '|' + S.mid;
-    view.innerHTML = S.v === 'mission' ? vMission() : S.v === 'missions' ? vMissions() : S.v === 'decisions' ? vDecisions() : S.v === 'proof' ? vProof() : S.v === 'talk' ? vTalk() : vNow();
+    view.innerHTML = S.v === 'mission' ? vMission() : S.v === 'missions' || S.v === 'plan' ? vPlan() : S.v === 'decisions' ? vDecisions() : S.v === 'proof' ? vProof() : S.v === 'talk' ? vTalk() : vNow();
     renderNav(); renderTop();
     if (changed) { view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); window.scrollTo(0, 0); S.prevV = S.v + '|' + S.mid; }
     else window.scrollTo(0, y);
@@ -500,8 +596,16 @@
   /* ---------- actions ---------- */
   function act(x, el) {
     var id = el.getAttribute('data-id') || '', j = J();
-    if (x === 'nav') { go(id === 'mission' ? 'missions' : id || 'now'); return; }
+    if (x === 'nav') { go(id === 'mission' || id === 'missions' ? 'plan' : id || 'now'); return; }
     if (x === 'mission') { if (id && proj(id)) go('mission', id); else go('decisions'); return; }
+    if (x === 'peek') { S.peek = S.peek === id ? null : id; render(true); return; }
+    if (x === 'pick') {
+      var pk = 'pick-' + el.getAttribute('data-k'); if (!armed(pk)) { arm(pk); return; } delete S.arm[pk];
+      if (!j || !on() || !j.plans) { say('Not connected. Try again in a moment.'); return; }
+      buzz(); el.disabled = true;
+      j.plans.choose(id, el.getAttribute('data-k')).then(function () { say('Plan ' + el.getAttribute('data-k') + ' chosen. J8 now works to it and updates the steps.'); render(true); }, function (e) { el.disabled = false; fail(e); });
+      return;
+    }
     if (x === 'filter') { S.filter = id; S.proofN = 60; render(true); return; }
     if (x === 'more') { S.proofN += 60; render(true); return; }
     if (x === 'note') { var k = el.getAttribute('data-k'); S.noteOpen[k] = !S.noteOpen[k]; render(true); if (S.noteOpen[k]) { var ta = sr.getElementById('jxn-' + k); if (ta) ta.focus(); } return; }
@@ -537,7 +641,7 @@
       buzz(); el.disabled = true;
       (x === 'go' ? j.approvals.approve(id) : j.approvals.kill(id)).then(function () {
         S.dec = { id: id, how: x }; render(true);
-        say(x === 'go' ? 'Approved. It goes out on the next send.' : 'Not now. It will not be sent.', function () { j.approvals.undo(id).then(function () { S.dec = null; say('Back to waiting.'); render(true); }, fail); });
+        say(x === 'go' ? 'OK. It goes out in the next send round.' : 'Not now. It will not be sent.', function () { j.approvals.undo(id).then(function () { S.dec = null; say('Back to waiting.'); render(true); }, fail); });
       }, function (e) { el.disabled = false; fail(e); });
       return;
     }
@@ -606,7 +710,7 @@
     }, true);
     window.addEventListener('scroll', function () { root.classList.toggle('scrolled', window.scrollY > 8); sr.querySelector('.top').classList.toggle('scrolled', window.scrollY > 8); }, { passive: true });
     var j = J();
-    if (j && j.on) ['projects', 'tasks', 'approvals', 'runs', 'money', 'control', 'comments'].forEach(function (c) { try { j.on(c, soon); } catch (e) {} });
+    if (j && j.on) ['projects', 'tasks', 'approvals', 'runs', 'money', 'control', 'comments', 'plans'].forEach(function (c) { try { j.on(c, soon); } catch (e) {} });
     if (j && j.on) try { j.on('status', function () { S.rankAt = 0; soon(); }); } catch (e) {}
     var a = document.getElementById('app');
     if (a && window.MutationObserver) new MutationObserver(sync).observe(a, { attributes: true, attributeFilter: ['hidden'] });
