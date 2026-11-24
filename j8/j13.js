@@ -207,7 +207,8 @@
       plan ? '<p dir="auto">Plan only: nothing is sent.</p>' : '',
       tx ? '<p class="mi-l">Text</p><p class="full" dir="auto">' + esc(tx) + '</p>' : ''].join('');
     if (more) h += '<details class="more-info"><summary>Read it</summary>' + more + '</details>';
-    h += '<div class="bts"><button type="button" class="cap-b main" data-x="go" data-id="' + esc(a.id) + '">' + (plan ? 'Yes, start' : tpl ? 'Yes, use this message' : 'Yes, send it') + '</button>'
+    var hb = li.hard && armed('hb-' + a.id);
+    h += '<div class="bts"><button type="button" class="cap-b main' + (hb ? ' arm' : '') + '" data-x="go" data-id="' + esc(a.id) + '">' + (hb ? 'Tap again: send anyway' : plan ? 'Yes, start' : tpl ? 'Yes, use this message' : 'Yes, send it') + '</button>'
       + '<button type="button" class="cap-b" data-x="nogo" data-id="' + esc(a.id) + '">Not now</button>'
       + (plan ? '' : '<button type="button" class="ql" data-x="edit" data-id="' + esc(a.id) + '">Change</button>') + '</div>';
     return h + '</article>';
@@ -638,7 +639,7 @@
     var o = score(), none = failed() && !allAps().length, c = function (n, l) { return '<li><b class="num">' + esc(none ? '—' : n) + '</b><small>' + esc(l) + '</small></li>'; };
     return '<section class="score" aria-labelledby="jx-sc"><p class="lbl" id="jx-sc">Last 7 days</p><ol class="sc">'
       + c(o.sent, 'Sent') + c(o.rep, 'Replies') + c(o.call, 'Calls') + c(o.prop, 'Proposals')
-      + '<li class="cash"><b class="num">' + esc(none ? '—' : ils(o.ils)) + '</b><small>of ' + esc(ils(GOAL)) + '</small></li></ol>' + senderLine() + '</section>';
+      + '<li class="cash"><b class="num">' + esc(none ? '—' : ils(o.ils)) + '</b><small>to date · of ' + esc(ils(GOAL)) + '</small></li></ol>' + senderLine() + '</section>';
   }
   /* batch approve: drafts that share a batch value (not templates, not plan-only, hard-blocked ones left out) */
   function batches() {
@@ -680,7 +681,7 @@
     var L = goingOut(); if (!L.length) return '';
     var show = S.goAll ? L : L.slice(0, 3);
     return '<section class="grp" aria-labelledby="jx-go"><div class="gh"><h2 class="hd" id="jx-go">Going out · ' + L.length + '</h2>' + (L.length > 3 ? '<button type="button" class="ql" data-x="go-all">' + (S.goAll ? 'Show less' : 'Show all ' + L.length) + '</button>' : '') + '</div>'
-      + senderLine() + '<div class="list">' + show.map(function (a) {
+      + '<div class="list">' + show.map(function (a) {
         var k = 'kl-' + a.id, ar = armed(k);
         return '<div class="li oc"><span class="lt"><b dir="auto">' + esc(whoOf(a)) + '</b><small dir="auto">' + esc(holdText(a)) + '</small></span>'
           + '<button type="button" class="ob kill' + (ar ? ' arm' : '') + '" data-x="kill" data-id="' + esc(a.id) + '">' + (ar ? 'Tap again: kill' : 'Kill') + '</button></div>';
@@ -834,8 +835,10 @@
     if (x === 'oc') {
       var ow = el.getAttribute('data-w'), oa = safe(function () { return allAps().filter(function (q) { return String(q.id) === id; })[0]; }, null); if (!oa || !OUTW[ow]) return;
       var oc = outcomeOf(oa); buzz(); el.disabled = true;
-      var op = oc === ow ? j.approvals.reply(id, 'clear') : ow === 'replied' && oa.outcome ? j.approvals.reply(id, 'clear').then(function () { return j.approvals.reply(id, 'replied'); }) : j.approvals.reply(id, ow);
-      op.then(function () { say(oc === ow ? 'Cleared.' : 'Saved: ' + OUTW[ow] + '. It counts on the scoreboard.'); render(true); }, function (e) { el.disabled = false; fail(e); });
+      var half = false;
+      var op = oc === ow ? j.approvals.reply(id, 'clear') : ow === 'replied' && oa.outcome ? j.approvals.reply(id, 'clear').then(function () { half = true; return j.approvals.reply(id, 'replied'); }) : j.approvals.reply(id, ow);
+      op.then(function () { say(oc === ow ? 'Cleared.' : 'Saved: ' + OUTW[ow] + '. It counts on the scoreboard.'); render(true); }, function (e) {
+        el.disabled = false; if (half) { say('Old answer cleared, but Replied did not save. Tap Replied again.'); render(true); } else fail(e); });
       return;
     }
     if (x === 'handsent') {
@@ -852,6 +855,7 @@
       return;
     }
     if (x === 'go' || x === 'nogo') {
+      if (x === 'go' && lintOf({ id: id }).hard) { var hk2 = 'hb-' + id; if (!armed(hk2)) { arm(hk2); return; } delete S.arm[hk2]; } /* hard-blocked: a second tap confirms */
       buzz(); el.disabled = true;
       (x === 'go' ? j.approvals.approve(id) : j.approvals.kill(id)).then(function () {
         S.dec = { id: id, how: x }; render(true);
