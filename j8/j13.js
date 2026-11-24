@@ -1,4 +1,9 @@
 /* =====================================================================
+   J8NIX 14.1.0 (24 Nov 2026) · "Autopilot". Today opens with a 3-line daily brief (went out in 24 h · came back · the one
+   thing for Dave); Settings → Templates sets each template's autopilot (Ask me each time / Auto after 6 h hold / Off,
+   extra.autopilot via J8.approvals.setAutopilot) with its sent and reply counts; Needs you shows at most 3 items (replies,
+   then approvals with a batch as one row, then urgent steps), the rest under "Later (N)"; Plan shows the Focus projects
+   (p-services, p-jobs, p-command) on top and folds the others under "Frozen (N)". Revert: git revert of the 14.1 commit.
    J8NIX 14.0.0 (24 Nov 2026) · "Results". Today opens with a 7-day scoreboard (Sent · Replies · Calls · Proposals · ₪) and a
    true sender line from j8_runs; drafts are one line (who · why now) with the text on tap; hard lint blocks only; batch
    "Approve all N" with 3 previews; "Going out" (hold countdown + Kill); outcome buttons on sent items (j8_reply_mark);
@@ -17,11 +22,11 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '14.0.0';
+  var VER = '14.1.0';
   var GOAL = 100000, LINE_FROM = '2026-11-19', LINE_TO = '2026-12-31', COUNT_FROM = '2026-11-01';
   var TZ = 'Asia/Jerusalem';
   var J = function () { return window.J8 || null; };
-  var S = { v: 'now', mid: null, filter: 'all', proofN: 60, note: {}, noteOpen: {}, sent: {}, arm: {}, talk: '', rank: null, rankAt: 0, done: {}, prevV: null, lint: null, lintAt: 0, bprev: null, goAll: false, ocAll: false, busyB: false };
+  var S = { v: 'now', mid: null, filter: 'all', proofN: 60, note: {}, noteOpen: {}, sent: {}, arm: {}, talk: '', rank: null, rankAt: 0, done: {}, prevV: null, lint: null, lintAt: 0, bprev: null, goAll: false, ocAll: false, busyB: false, later: false, frozen: false };
   var root, sr, view, nav, hud, hudT, hudUndo = null, raf = 0, pending = false, BOOT = Date.now();
 
   /* ---------- helpers ---------- */
@@ -392,7 +397,7 @@
     rankPull(); lintPull();
     var pl = plan(), pc = pace(), p = il(Date.now()), DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     var dow = DAYS[new Date(Date.UTC(p.y, p.m - 1, p.d)).getUTCDay()];
-    var h = '<h1 class="sr">Today</h1><p class="date">' + esc(dow + ' · ' + p.d + ' ' + MON[p.m - 1]) + '</p>';
+    var h = '<h1 class="sr">Today</h1>' + brief() + '<p class="date">' + esc(dow + ' · ' + p.d + ' ' + MON[p.m - 1]) + '</p>';
     h += scoreboard() + (failed() && !money() ? '' : goalBar(pl, pc)) + choosePanel(pl) + pausedNote() + doNow() + nextMilestone(pl);
     var F = flatDecisions(), r = radio(), topId = r ? r.id : null;
     F = F.filter(function (x) { return x.id !== topId; });
@@ -403,9 +408,9 @@
 
   function vPlan() {
     var pl = plan(), h = eyebrow('Plan from the finish to today');
-    if (!pl) return h + '<h1 class="lt1">Plan</h1><p class="sub">' + (on() ? 'No plan yet. Tell J8 your goal in Talk ("₪X by date") and it builds one from the finish back to today.' : 'Connecting…') + '</p>' + goalsList();
+    if (!pl) return h + '<h1 class="lt1">Plan</h1><p class="sub">' + (on() ? 'No plan yet. Tell J8 your goal in Talk ("₪X by date") and it builds one from the finish back to today.' : 'Connecting…') + '</p>' + focusList() + goalsList();
     var o = activeOpt(pl), O = optsOf(pl);
-    h += '<h1 class="lt1" dir="auto">' + esc(ils(pl.target)) + ' by ' + esc(dDay(pl.deadline)) + '</h1><p class="sub" dir="auto">' + esc(pl.goal || '') + ' · now ' + esc(ils((pace() || {}).got != null ? pace().got : pl.baseline)) + '</p>';
+    h += '<h1 class="lt1" dir="auto">' + esc(ils(pl.target)) + ' by ' + esc(dDay(pl.deadline)) + '</h1><p class="sub" dir="auto">' + esc(pl.goal || '') + ' · now ' + esc(ils((pace() || {}).got != null ? pace().got : pl.baseline)) + '</p>' + focusList();
     h += '<section class="card check"><p class="lbl ' + (pl.status === 'off_track' ? 'need' : '') + '">Reality check</p><p class="body" dir="auto">' + esc(pl.verdict || '') + '</p>'
       + (pl.bottleneck ? '<p class="lbl">What\'s holding us back</p><p class="body" dir="auto">' + esc(pl.bottleneck) + '</p>' : '') + '<p class="fn honest">' + esc(HONEST) + '</p></section>';
     if (!pl.chosen && O.length) {
@@ -440,10 +445,20 @@
         + '</li>';
     }).join('') + '</ol>';
   }
-  function goalsList() {
+  /* 14.1: Focus Mode projects on top of Plan; every other active project folds under "Frozen (N)" */
+  var FOCUS = ['p-services', 'p-jobs', 'p-command'];
+  function focusSplit() {
     var T = tower().filter(function (x) { return x.f !== 'done'; });
-    return '<section class="grp" aria-labelledby="jx-gs"><h2 class="hd" id="jx-gs">All projects · ' + T.length + '</h2>'
-      + (T.length ? '<div class="list">' + T.map(missionRow).join('') + '</div>' : '<p class="empty">' + (on() ? 'No active projects.' : 'Connecting…') + '</p>') + '</section>';
+    return { F: FOCUS.map(function (id) { return T.filter(function (x) { return x.p.id === id; })[0]; }).filter(Boolean), Z: T.filter(function (x) { return FOCUS.indexOf(x.p.id) < 0; }) };
+  }
+  function focusList() {
+    var F = focusSplit().F;
+    return '<section class="grp" aria-labelledby="jx-fc"><h2 class="hd" id="jx-fc">Focus · ' + F.length + '</h2>'
+      + (F.length ? '<div class="list">' + F.map(missionRow).join('') + '</div>' : '<p class="empty">' + (on() ? 'No focus projects found.' : 'Connecting…') + '</p>') + '</section>';
+  }
+  function goalsList() {
+    var Z = focusSplit().Z; if (!Z.length) return '';
+    return '<details class="grp asm fold"' + (S.frozen ? ' open' : '') + '><summary class="hd" data-x="frozen">Frozen (' + Z.length + ')</summary><div class="list">' + Z.map(missionRow).join('') + '</div></details>';
   }
 
   function missionRow(x) {
@@ -499,15 +514,43 @@
 
   function vDecisions() {
     rankPull(); lintPull();
-    var G = gateGroups(), n = gateCount(), RD = readyList(null);
-    var h = '<h1 class="lt1">Needs you</h1><p class="sub">' + (n + RD.length ? (n + RD.length) + ' things wait for your OK. Most valuable first. Tap "Read it" for the full text.' : failed() ? 'Couldn\'t load — tap Retry above.' : on() ? 'Nothing waits for you.' : 'Connecting…') + '</p>';
-    h += batchBox();
-    if (RD.length) h += '<section class="grp"><h2 class="hd">Ready for you to send · ' + RD.length + '</h2><div class="rows">' + RD.map(readyRow).join('') + '</div></section>';
-    G.forEach(function (g) {
-      h += '<section class="grp"><h2 class="hd" dir="auto">' + esc(pname(g.p)) + ' · ' + g.L.length + '</h2><div class="rows">'
-        + g.L.map(function (x) { var id = x.k === 'ap' ? x.a.id : x.t.id; if (S.dec && S.dec.id === id) return decidedRow(id, S.dec.how); return x.k === 'ap' ? draftRow(x.a, false) : taskRow(x.t, false); }).join('') + '</div></section>';
-    });
+    var D = desk(), n = D.top.length + D.later;
+    var h = '<h1 class="lt1">Needs you</h1><p class="sub">' + (n ? (D.top.length ? 'Your top ' + D.top.length + ', most money first.' : '') + (D.later ? ' The rest waits under Later.' : '') : failed() ? 'Couldn\'t load — tap Retry above.' : on() ? 'Nothing waits for you.' : 'Connecting…') + '</p>';
+    if (D.top.length) h += '<div class="rows">' + D.top.map(deskRow).join('') + '</div>';
+    if (D.later) {
+      h += '<details class="grp asm fold"' + (S.later ? ' open' : '') + '><summary class="hd" data-x="later">Later (' + D.later + ')</summary>';
+      if (S.later) {
+        if (D.rest.length) h += '<div class="rows">' + D.rest.map(deskRow).join('') + '</div>';
+        if (D.ready.length) h += '<h3 class="hd sm">Ready for you to send · ' + D.ready.length + '</h3><div class="rows">' + D.ready.map(readyRow).join('') + '</div>';
+        if (D.steps.length) h += '<h3 class="hd sm">Your other steps · ' + D.steps.length + '</h3><div class="rows">' + D.steps.map(function (t) { return S.dec && S.dec.id === t.id ? decidedRow(t.id, S.dec.how) : taskRow(t, true); }).join('') + '</div>';
+      }
+      h += '</details>';
+    }
     return h;
+  }
+  /* 14.1 desk cap: one money-first list (1 replies / interviews waiting on Dave, 2 approvals with a batch as one item,
+     3 urgent (sev 'r') steps); the top 3 show, everything else (+ ready-to-send by hand, other steps) folds under Later */
+  var WAITS_O = { replied: 1, interview: 1, question: 1, call: 1 };
+  function desk() {
+    var R = rankPos(), sc = function (id, f) { return R[id] != null ? R[id] : 1e6 + (Number(f) || 999); }, by = function (a, b) { return a.s - b.s; };
+    var L = sent30().filter(function (a) { return WAITS_O[outcomeOf(a)]; }).map(function (a) { return { k: 'rep', id: a.id, a: a }; });
+    var B = batches(), inB = {}; B.forEach(function (b) { b.L.forEach(function (a) { inB[a.id] = 1; }); });
+    var AP = B.map(function (b) { return { k: 'batch', id: 'b:' + b.k, b: b, s: Math.min.apply(null, b.L.map(function (a) { return sc(a.id, a.rank); })) }; })
+      .concat(drafts().filter(function (a) { return !inB[a.id]; }).map(function (a) { return { k: 'ap', id: a.id, a: a, s: sc(a.id, a.rank) }; })).sort(by);
+    var DT = daveTasks().filter(function (t) { return !S.done[t.id] || (S.dec && S.dec.id === t.id); });
+    var TR = DT.filter(function (t) { return t.sev === 'r'; }).map(function (t) { return { k: 'tk', id: t.id, t: t, s: sc(t.id, 1) }; }).sort(by);
+    var all = L.concat(AP, TR), ready = readyList(null), steps = DT.filter(function (t) { return t.sev !== 'r'; }).sort(function (a, b) { return sc(a.id, a.sev === 'o' ? 2 : 3) - sc(b.id, b.sev === 'o' ? 2 : 3); });
+    var rest = all.slice(3);
+    return { top: all.slice(0, 3), rest: rest, ready: ready, steps: steps, later: rest.length + ready.length + steps.length };
+  }
+  function deskRow(x) {
+    if (S.dec && S.dec.id === x.id) return decidedRow(x.id, S.dec.how);
+    if (x.k === 'rep') { var a = x.a, cur = outcomeOf(a);
+      return '<article class="row one"><p class="yt" dir="auto">' + esc(whoOf(a)) + '<span class="wn"> · ' + esc(OUTW[cur] || 'Replied') + '</span></p><p class="yp">Sent ' + esc(whenDay(a.sent_at)) + ' · answer them, then tap what happened</p>'
+        + '<div class="obs">' + ['call', 'proposal', 'won', 'lost'].map(function (w) { return '<button type="button" class="ob" data-x="oc" data-w="' + w + '" data-id="' + esc(a.id) + '" aria-pressed="' + (cur === w) + '">' + OUTW[w] + '</button>'; }).join('') + '</div></article>'; }
+    if (x.k === 'batch') return batchRow(x.b);
+    if (x.k === 'ap') return draftRow(x.a, true);
+    return taskRow(x.t, true);
   }
 
   function proofList(L, n) {
@@ -655,17 +698,15 @@
     });
     return Object.keys(B).map(function (k) { return B[k]; }).filter(function (b) { return b.L.length >= 2; }).sort(function (a, b) { return b.L.length - a.L.length; });
   }
-  function batchBox() {
-    var B = batches(); if (!B.length) return '';
-    return '<section class="grp" aria-labelledby="jx-bt"><h2 class="hd" id="jx-bt">Approve in one go · ' + B.length + '</h2><p class="fn tight">Same batch, same kind of message. You see 3 first.</p><div class="rows">' + B.map(function (b) {
+  /* 14.1: a batch is one row on the Needs you desk: "Approve <batch label> (N)"; you see 3 before you approve all */
+  function batchRow(b) {
       var n = b.L.length, open = S.bprev === b.k, j = J();
-      var h = '<article class="row one"><p class="yt" dir="auto">' + esc(cut(b.label, 70)) + ' · ' + n + '</p><p class="yp">' + n + ' drafts' + (b.hard ? ' · ' + b.hard + ' blocked, left out' : '') + '</p>';
+      var h = '<article class="row one"><p class="yt" dir="auto">Approve ' + esc(cut(b.label, 70)) + ' (' + n + ')</p><p class="yp">' + n + ' drafts, same kind of message' + (b.hard ? ' · ' + b.hard + ' blocked, left out' : '') + '</p>';
       if (open) h += b.L.slice(0, 3).map(function (a) { var tx = String(safe(function () { return j.approvals.textOf(a); }, '') || ''); return '<div class="smp"><b dir="auto">' + esc(whoOf(a)) + ' · ' + esc(whyNow(a)) + '</b>' + (tx ? '<p dir="auto">' + esc(cut(tx, 160)) + '</p>' : '') + '</div>'; }).join('')
         + (n > 3 ? '<p class="yp">+ ' + (n - 3) + ' more like these</p>' : '')
         + '<div class="bts"><button type="button" class="cap-b main" data-x="batch-go" data-id="' + esc(b.k) + '"' + (S.busyB ? ' disabled' : '') + '>Yes, approve all ' + n + '</button><button type="button" class="ql" data-x="batch-x">Cancel</button></div>';
-      else h += '<div class="bts"><button type="button" class="cap-b main" data-x="batch" data-id="' + esc(b.k) + '">Approve all ' + n + '</button></div>';
+      else h += '<div class="bts"><button type="button" class="cap-b main" data-x="batch" data-id="' + esc(b.k) + '">See 3, then approve</button></div>';
       return h + '</article>';
-    }).join('') + '</div></section>';
   }
   /* going out: approved / edited / queued, not sent yet (by-hand items already due are in "Ready for you to send") */
   function goingOut() {
@@ -708,10 +749,71 @@
       }).join('') + '</div></section>';
   }
 
+  /* ---------- 14.1 "Autopilot": daily brief, template autopilot levels ---------- */
+  function isTpl(a) { return a && (a.kind === 'template' || a.label === 'Template'); }
+  function backAt(a) { var r = pd(a.replied_at), o = pd(a.outcome_at); return !isNaN(r) ? r : o; }
+  function isBack(a) { return !!(a.replied_at || REPLY_O[a.outcome] || a.outcome === 'interview'); }
+  function nameOf(a) { return cut(String(a.to || a.label || a.subject || 'message').split(' · ')[0], 30); }
+  function oneThing() { /* the highest-priority open Dave task: j8_rank first, then sev r > o > g, then newest */
+    var R = rankPos(), SEV = { r: 0, o: 1, g: 2 };
+    return daveTasks().filter(function (t) { return !S.done[t.id]; }).sort(function (a, b) {
+      var x = R[a.id] != null ? R[a.id] : 1e6, y = R[b.id] != null ? R[b.id] : 1e6;
+      return x - y || (SEV[a.sev] != null ? SEV[a.sev] : 3) - (SEV[b.sev] != null ? SEV[b.sev] : 3) || String(b.created_at || b.created || '').localeCompare(String(a.created_at || a.created || ''));
+    })[0] || null;
+  }
+  function brief() {
+    var from = Date.now() - 864e5, A = allAps(), wait = !A.length && !on();
+    var out = A.filter(function (a) { return a.status === 'sent' && !isTpl(a) && inWin(pd(a.sent_at), from); }).sort(function (a, b) { return pd(b.sent_at) - pd(a.sent_at); });
+    var back = A.filter(function (a) { return a.status === 'sent' && !isTpl(a) && isBack(a) && inWin(backAt(a), from); }).sort(function (a, b) { return backAt(b) - backAt(a); });
+    var iv = back.filter(function (a) { return a.outcome === 'interview' || a.outcome === 'call'; }).length, rp = back.length - iv;
+    var names = function (L) { return L.slice(0, 2).map(nameOf).join(', ') + (L.length > 2 ? ' +' + (L.length - 2) : ''); };
+    var l1 = wait ? (failed() ? 'Couldn\'t load' : 'Loading…') : out.length ? out.length + ' sent · ' + names(out) : 'Nothing sent';
+    var l2 = wait ? '—' : back.length ? [rp ? rp + (rp > 1 ? ' replies' : ' reply') : '', iv ? iv + (iv > 1 ? ' interviews' : ' interview') : ''].filter(Boolean).join(' · ') + ' · ' + names(back) : 'No replies yet';
+    var t = oneThing(), l3 = wait ? '—' : t ? cut(String(t.title || t.id).replace(/^\s*(TODAY\s*\d*\s*·\s*)/i, ''), 90) : 'Nothing for you';
+    return '<section class="brief" aria-labelledby="jx-br"><p class="lbl" id="jx-br">Since yesterday</p><ol>'
+      + '<li><small>Went out</small><b dir="auto">' + esc(l1) + '</b></li>'
+      + '<li class="' + (back.length ? 'ok' : '') + '"><small>Came back</small><b dir="auto">' + esc(l2) + '</b></li>'
+      + '<li class="' + (t ? 'you' : '') + '"><small>For you</small><b dir="auto">' + esc(l3) + '</b></li></ol></section>';
+  }
+
+  var APW = { ask: 'Ask me each time', hold: 'Auto after 6 h hold', off: 'Off' };
+  function tplName(a) {
+    if (a.label && a.label !== 'Template') return a.label;
+    var m = /^tpl-t\d+-(.+)$/i.exec(String(a.id || '')), s = m ? m[1].replace(/-/g, ' ') : (a.subject || a.id || 'Template');
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+  function tplCode(a) { var m = /^tpl-(t\d+)/i.exec(String(a.id || '')); return a.template_id || (m ? m[1].toUpperCase() : ''); }
+  function tplStats(a) { /* drafts made from it name it by template_id (e.g. 'T8') or by the template row id */
+    var K = {}; if (a.template_id) K[a.template_id] = 1; K[a.id] = 1;
+    var L = allAps().filter(function (x) { return !isTpl(x) && x.status === 'sent' && K[x.template_id]; });
+    return { sent: L.length, rep: L.filter(isBack).length };
+  }
+  function tplMode(a) { return APW[a.autopilot] ? a.autopilot : 'ask'; }
+  function templates() {
+    var O = { approved: 0, edited: 0, pending: 1, killed: 2 }, n = function (a) { var m = /(\d+)/.exec(tplCode(a)); return m ? +m[1] : 999; };
+    return allAps().filter(function (a) { return a.kind === 'template'; }).sort(function (a, b) {
+      return (O[a.status || 'pending'] != null ? O[a.status || 'pending'] : 1) - (O[b.status || 'pending'] != null ? O[b.status || 'pending'] : 1) || n(a) - n(b); });
+  }
+  function vTpl() {
+    var T = templates();
+    var h = '<button type="button" class="back" data-x="nav" data-id="now">' + ico('back') + 'Today</button><h1 class="lt1">Templates</h1>'
+      + '<p class="sub">How much J8 may do with each saved message. Trust grows: start with "Ask me", move to "Auto" when it works.</p>';
+    if (!T.length) return h + '<p class="empty">' + (on() ? 'No templates yet.' : failed() ? 'Couldn\'t load — tap Retry above.' : 'Connecting…') + '</p>';
+    return h + '<div class="list">' + T.map(function (a) {
+      var st = a.status || 'pending', ok = st === 'approved' || st === 'edited', m = tplMode(a), s = tplStats(a), k = 'apl-' + a.id, ar = armed(k), cd = tplCode(a);
+      var chip = ok ? '<span class="chip ok">Approved</span>' : st === 'killed' ? '<span class="chip">Not used</span>' : '<span class="chip need">Waits for your OK</span>';
+      return '<div class="li oc tpl"><span class="lt"><b dir="auto">' + esc((cd ? cd + ' · ' : '') + cut(tplName(a), 60)) + '</b>'
+        + '<small>' + s.sent + ' sent · ' + s.rep + (s.rep === 1 ? ' reply' : ' replies') + '</small>' + chip + '</span>'
+        + '<span class="obs" role="group" aria-label="Autopilot for ' + esc(tplName(a)) + '">' + ['ask', 'hold', 'off'].map(function (w) {
+          return '<button type="button" class="ob' + (w === 'hold' && ar ? ' arm' : '') + '" data-x="apl" data-w="' + w + '" data-id="' + esc(a.id) + '" aria-pressed="' + (m === w) + '">' + (w === 'hold' && ar ? 'Tap again: auto' : APW[w]) + '</button>'; }).join('') + '</span>'
+        + (m === 'hold' && !ok ? '<p class="fn tight">Auto starts once you approve this template.</p>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+
   /* ---------- shell ---------- */
   var NAV = [['now', 'Today'], ['plan', 'Plan'], ['decisions', 'Needs you'], ['proof', 'What happened'], ['talk', 'Talk']];
   function renderNav() {
-    var n = gateCount() + readyList(null).length, cur = S.v === 'mission' || S.v === 'missions' ? 'plan' : S.v;
+    var n = desk().top.length, cur = S.v === 'mission' || S.v === 'missions' ? 'plan' : S.v;
     nav.innerHTML = '<div class="tabs">' + NAV.map(function (x) {
       return '<button type="button" data-x="nav" data-id="' + x[0] + '"' + (cur === x[0] ? ' aria-current="page"' : '') + '>' + ico(x[0]) + '<span>' + x[1] + '</span>'
         + (x[0] === 'decisions' && n ? '<em class="badge">' + n + '</em><span class="sr"> (' + n + ' waiting)</span>' : '') + '</button>';
@@ -730,7 +832,7 @@
     if (!force && busy()) { pending = true; return; }
     pending = false;
     var y = window.scrollY, changed = S.prevV !== S.v + '|' + S.mid;
-    view.innerHTML = (failed() ? failBtn() : '') + (S.v === 'mission' ? vMission() : S.v === 'missions' || S.v === 'plan' ? vPlan() : S.v === 'decisions' ? vDecisions() : S.v === 'proof' ? vProof() : S.v === 'talk' ? vTalk() : vNow());
+    view.innerHTML = (failed() ? failBtn() : '') + (S.v === 'mission' ? vMission() : S.v === 'missions' || S.v === 'plan' ? vPlan() : S.v === 'decisions' ? vDecisions() : S.v === 'tpl' ? vTpl() : S.v === 'proof' ? vProof() : S.v === 'talk' ? vTalk() : vNow());
     renderNav(); renderTop();
     if (changed) { view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); window.scrollTo(0, 0); S.prevV = S.v + '|' + S.mid; }
     else window.scrollTo(0, y);
@@ -753,10 +855,11 @@
     if (!open) { sc.hidden = true; sh.hidden = true; var g = sr.querySelector('.gear'); if (g) g.focus(); return; }
     var u = safe(function () { return J().auth.user(); }, null), o = safe(function () { return J().orgs.current(); }, null);
     sh.innerHTML = '<div class="grab" aria-hidden="true"></div><h2 id="jxsh" class="t3">Settings</h2><button type="button" class="glyph x" data-x="sheet-x" aria-label="Close settings">✕</button><div class="list">'
+      + '<div class="li"><span class="lt"><b>Templates</b><small>Autopilot per saved message: ask, auto, off.</small></span><button type="button" class="cap-b" data-x="tpls">Open</button></div>'
       + '<div class="li"><span class="lt"><b>Classic screens</b><small>Lists, flow, control, voice, processes.</small></span><button type="button" class="cap-b" data-x="classic">Open</button></div>'
       + '<div class="li"><span class="lt"><b>Refresh</b><small>Load the latest data now.</small></span><button type="button" class="cap-b" data-x="refresh">Refresh</button></div>'
       + '<div class="li"><span class="lt"><b>Signed in</b><small>' + esc(u ? u.email : 'Not signed in') + (o && o.name ? ' · ' + esc(o.name) : '') + '</small></span><button type="button" class="cap-b" data-x="signout">Sign out</button></div>'
-      + '<div class="li"><span class="lt"><b>Version</b><small>J8NIX ' + VER + ' · Results</small></span></div></div>';
+      + '<div class="li"><span class="lt"><b>Version</b><small>J8NIX ' + VER + ' · Autopilot</small></span></div></div>';
     sc.hidden = false; sh.hidden = false; var b = sh.querySelector('[data-x="classic"]'); if (b) b.focus();
   }
   function classic(onC) {
@@ -794,6 +897,9 @@
     if (x === 'oc-all') { S.ocAll = !S.ocAll; render(true); return; }
     if (x === 'batch') { S.bprev = id; render(true); return; }
     if (x === 'batch-x') { S.bprev = null; render(true); return; }
+    if (x === 'later') { S.later = !S.later; render(true); return; }
+    if (x === 'frozen') { S.frozen = !S.frozen; render(true); return; }
+    if (x === 'tpls') { sheet(false); go('tpl'); return; }
     if (x === 'retry') {
       if (!j) { location.reload(); return; }
       el.disabled = true; var st0 = safe(function () { return j.status(); }, {}) || {};
@@ -827,6 +933,15 @@
           okIds.reduce(function (p, aid) { return p.then(function () { return j.approvals.undo(aid).catch(function () {}); }); }, Promise.resolve()).then(function () { say('Back to waiting.'); render(true); });
         } : null);
       });
+      return;
+    }
+    if (x === 'apl') { /* template autopilot; moving to Auto takes a second tap */
+      var aw = el.getAttribute('data-w'), at = allAps().filter(function (q) { return String(q.id) === id; })[0]; if (!at || !APW[aw]) return;
+      if (tplMode(at) === aw) return;
+      if (aw === 'hold') { var ak = 'apl-' + id; if (!armed(ak)) { arm(ak); return; } delete S.arm[ak]; }
+      if (!j.approvals.setAutopilot) { say('Reload the app to use this.'); return; }
+      buzz(); el.disabled = true;
+      j.approvals.setAutopilot(id, aw).then(function () { say(tplName(at) + ': ' + APW[aw] + '.'); render(true); }, function (e) { el.disabled = false; fail(e); });
       return;
     }
     if (x === 'kill') {
@@ -939,6 +1054,6 @@
     sync(); render(true); splash();
     setInterval(function () { if (!document.hidden && document.body.classList.contains('jx')) { renderTop(); rankPull(); if (S.v === 'now' && view && !view.querySelector('details[open]') && goingOut().some(function (a) { return pd(a.hold_until) > Date.now(); })) soon(); } }, 30000);
   }
-  window.j8x = { version: VER, render: function () { render(true); }, go: go, state: S, pace: pace, flag: flag, radio: radio, tower: tower, gates: gateGroups, proof: proofItems, decisions: flatDecisions, score: score, sender: senderInfo, senderText: senderText, whyNow: whyNow, batches: batches, goingOut: goingOut, sent30: sent30, people: people, failed: failed, classic: classic, esc: esc, link: link, pd: pd };
+  window.j8x = { version: VER, render: function () { render(true); }, go: go, state: S, desk: desk, oneThing: oneThing, templates: templates, tplStats: tplStats, pace: pace, flag: flag, radio: radio, tower: tower, gates: gateGroups, proof: proofItems, decisions: flatDecisions, score: score, sender: senderInfo, senderText: senderText, whyNow: whyNow, batches: batches, goingOut: goingOut, sent30: sent30, people: people, failed: failed, classic: classic, esc: esc, link: link, pd: pd };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

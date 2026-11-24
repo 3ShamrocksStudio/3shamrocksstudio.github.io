@@ -10,6 +10,7 @@
    v6 adds:        tasks (j8_tasks: Dave's and the team's steps, blocked_by) · warm() (paint from the phone's copy at once)
    7.1 adds:       later (j8_later: Dave's Later with a come-back time, Not needed and Done on a Today item)
    8.0 adds:       prefs (j8_members.prefs via j8_prefs_set: the member's Home layout)
+   14.1 adds:      approvals.setAutopilot(id, 'ask'|'hold'|'off') (j8_template_autopilot: templates only, extra.autopilot only)
    Writes are optimistic and return Promises; on failure they reject with {code}.
    Needs vendor/supabase.js loaded first. Shapes: ops/brain/ARMS-CONTRACT.md.
    ===================================================================== */
@@ -333,6 +334,16 @@ var J8 = (function () {
         if (['replied', 'call', 'proposal', 'won', 'lost', 'clear'].indexOf(what) < 0) return rej('bad_value'); /* 14.0: call + proposal (j8_reply_mark also stamps outcome_at) */
         if (!state.org) return rej('offline');
         var r = await sb.rpc('j8_reply_mark', { p_org: state.org, p_id: String(id), p_what: what });
+        if (r.error) return rej('denied', { message: r.error.message });
+        await loadCol('approvals').catch(function () {}); return true;
+      },
+      /* 14.1 Autopilot: a template's trust level, extra.autopilot 'ask' | 'hold' | 'off' (public.j8_template_autopilot:
+         signed-in member only, kind 'template' only, touches nothing but extra.autopilot; never the approval status) */
+      setAutopilot: async function (id, mode) {
+        if (['ask', 'hold', 'off'].indexOf(mode) < 0) return rej('bad_value');
+        if ((data.approvals[id] || {}).kind !== 'template') return rej('not_template');
+        if (!state.org) return rej('offline');
+        var r = await sb.rpc('j8_template_autopilot', { p_org: state.org, p_id: String(id), p_mode: mode });
         if (r.error) return rej('denied', { message: r.error.message });
         await loadCol('approvals').catch(function () {}); return true;
       }
