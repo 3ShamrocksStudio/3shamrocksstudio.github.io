@@ -340,7 +340,11 @@
   }
   function doNow() {
     var r = radio(), h = '<section class="card move" aria-labelledby="jx-m">' + '<p class="lbl" id="jx-m">Do this now</p>';
-    if (!r) return h + (failed() ? '<p class="t2">Couldn\'t load. Tap retry at the top.</p>' : '<p class="t2">' + (on() ? 'Nothing needs you right now. J8 is working.' : 'Connecting…') + '</p>') + '</section>';
+    if (!r) {
+      var sx = on() && !failed() && !paused() ? senderInfo() : null;
+      if (sx && !sx.ok) return h + '<p class="t1">Sending stopped: ' + esc(sx.reason) + '</p><p class="t2">Do: ' + esc(sx.fix) + '</p></section>';
+      return h + (failed() ? '<p class="t2">Couldn\'t load. Tap retry at the top.</p>' : '<p class="t2">' + (on() ? 'Nothing needs you right now. J8 is working.' : 'Connecting…') + '</p>') + '</section>';
+    }
     var t = r.t, lk = r.kind === 'task' ? link(t.link) : r.kind === 'project' ? link(r.p.you_link) : '';
     var pid = r.kind === 'task' ? t.project_id : r.kind === 'project' ? r.id : pidOf(r.a.product);
     h += '<p class="t2" dir="auto">' + esc(cut(String(r.title || '').replace(/^\s*(TODAY\s*\d*\s*·\s*)/i, ''), 140)) + '</p>';
