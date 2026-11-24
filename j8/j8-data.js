@@ -26,7 +26,7 @@ var J8 = (function () {
   var DROP = ['org_id', 'extra']; // updated_at stays on docs: the app's "since you last looked" line reads it
   var sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'j8nix-v4-auth' } });
   var data = {}, ver = {}, subs = { status: [], orgs: [], auth: [] }, state = { connected: false, error: null, org: null, role: null, user: null };
-  var orgs = [], channel = null, poll = null, rankC = null;
+  var orgs = [], channel = null, poll = null, rankC = null, lintC = null;
   COLS.forEach(function (c) { data[c] = {}; ver[c] = {}; subs[c] = []; });
 
   function now() { return new Date().toISOString(); }
@@ -213,7 +213,15 @@ var J8 = (function () {
     },
     status: function () { return clone(state); },
     raw: function (c) { return data[c]; },
-    reload: function () { return loadAll(); },
+    reload: function () { return loadAll().then(function () { if (!channel && state.org) listen(); }); }, /* 14.0: a retry after a failed first load also starts realtime + the poll */
+    /* 14.0: hard / soft draft checks (public.j8_draft_lint, security_invoker, read-only here), cached for a minute; {} when none */
+    lint: async function () {
+      if (!state.org) return null;
+      if (lintC && lintC.org === state.org && Date.now() - lintC.t < 6e4) return lintC.v;
+      var r = await sb.from('j8_draft_lint').select('id,flags,hard').eq('org_id', state.org); if (r.error) return null;
+      var o = {}; (r.data || []).forEach(function (x) { o[x.id] = { flags: Array.isArray(x.flags) ? x.flags : [], hard: !!x.hard }; });
+      lintC = { org: state.org, t: Date.now(), v: o }; return o;
+    },
     /* 6.1: the database's ranked list (public.j8_rank), cached for a minute; null when offline */
     rank: async function () {
       if (!state.org) return null;
@@ -322,7 +330,7 @@ var J8 = (function () {
         await loadCol('approvals').catch(function () {}); return true;
       },
       reply: async function (id, what) {
-        if (['replied', 'won', 'lost', 'clear'].indexOf(what) < 0) return rej('bad_value');
+        if (['replied', 'call', 'proposal', 'won', 'lost', 'clear'].indexOf(what) < 0) return rej('bad_value'); /* 14.0: call + proposal (j8_reply_mark also stamps outcome_at) */
         if (!state.org) return rej('offline');
         var r = await sb.rpc('j8_reply_mark', { p_org: state.org, p_id: String(id), p_what: what });
         if (r.error) return rej('denied', { message: r.error.message });

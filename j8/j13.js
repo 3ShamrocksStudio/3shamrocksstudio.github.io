@@ -1,4 +1,9 @@
 /* =====================================================================
+   J8NIX 14.0.0 (24 Nov 2026) · "Results". Today opens with a 7-day scoreboard (Sent · Replies · Calls · Proposals · ₪) and a
+   true sender line from j8_runs; drafts are one line (who · why now) with the text on tap; hard lint blocks only; batch
+   "Approve all N" with 3 previews; "Going out" (hold countdown + Kill); outcome buttons on sent items (j8_reply_mark);
+   a load failure shows "Couldn't load — tap to retry". people() moved here from j11.js (window.j8v19 is no longer needed).
+   Revert: git revert of the 14.0 commit.
    J8NIX 13.0.0 (23 Nov 2026) · "Through-line". Apple-grade, logo-derived design (spec: ops/brain/J8NIX-POSITIONING-DESIGN.md §4).
    Replaces 12.0 Pit Wall (retired by Dave 23 Nov). Same real data and the same write functions as 12.0, new screens:
      Now        goal ring (₪ collected since 1 Nov vs ₪100,000 by 31 Dec, pace tick + pace chip), Your one move (top j8_rank
@@ -12,12 +17,12 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '13.2.0';
+  var VER = '14.0.0';
   var GOAL = 100000, LINE_FROM = '2026-11-19', LINE_TO = '2026-12-31', COUNT_FROM = '2026-11-01';
   var TZ = 'Asia/Jerusalem';
   var J = function () { return window.J8 || null; };
-  var S = { v: 'now', mid: null, filter: 'all', proofN: 60, note: {}, noteOpen: {}, sent: {}, arm: {}, talk: '', rank: null, rankAt: 0, done: {}, prevV: null };
-  var root, sr, view, nav, hud, hudT, hudUndo = null, raf = 0, pending = false;
+  var S = { v: 'now', mid: null, filter: 'all', proofN: 60, note: {}, noteOpen: {}, sent: {}, arm: {}, talk: '', rank: null, rankAt: 0, done: {}, prevV: null, lint: null, lintAt: 0, bprev: null, goAll: false, ocAll: false, busyB: false };
+  var root, sr, view, nav, hud, hudT, hudUndo = null, raf = 0, pending = false, BOOT = Date.now();
 
   /* ---------- helpers ---------- */
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"'`]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[c]; }); }
@@ -81,6 +86,11 @@
     var j = J(); if (!on() || !j.rank || Date.now() - S.rankAt < 6e4) return; S.rankAt = Date.now();
     j.rank().then(function (R) { if (Array.isArray(R)) { S.rank = R; soon(); } }, function () {});
   }
+  function lintPull() {
+    var j = J(); if (!on() || !j.lint || Date.now() - S.lintAt < 6e4) return; S.lintAt = Date.now();
+    j.lint().then(function (L) { if (L && typeof L === 'object') { S.lint = L; soon(); } }, function () {});
+  }
+  function lintOf(a) { return (S.lint && a && S.lint[a.id]) || { flags: [], hard: false }; }
   function rankPos() { var o = {}; (S.rank || []).forEach(function (r) { if (r && r.id != null && o[r.id] == null) o[r.id] = Number(r.pos) || 0; }); return o; }
 
   /* the money line: payments dated from 1 Nov 2026 (in November = "this month") vs a straight line from 19 Nov (₪0) to 31 Dec (₪100,000) */
@@ -164,17 +174,39 @@
       + '<button type="button" class="ql" data-x="note" data-k="' + esc(k) + '">Note</button></div>';
     return h + noteBox(k, t.project_id, t.id, null) + '</article>';
   }
+  /* 14.0: one line per draft: "<who> · <why now in ≤8 words>" + subject; text, channel, soft warnings behind the tap */
+  function words(x, n) { var w = String(x || '').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean); return w.length > n ? w.slice(0, n).join(' ').replace(/[,;:·.\-–(]+$/, '') + '…' : w.join(' '); }
+  function whoOf(a) { return cut(a.to || a.label || a.subject || a.kind || 'Draft', 56); }
+  function whyNow(a) {
+    var g = a.gist || a.why_now; if (g) return words(g, 8);
+    var c = String(a.context || '').replace(/\s+/g, ' ').trim();
+    if (a.kind === 'application') {
+      var f = /\bFit (\d+)\s*\/\s*100/i.exec(c), po = /\bposted ([^·]+?)\s*(?:·|$)/i.exec(c);
+      var L = [f ? 'Fit ' + f[1] + '/100' : '', po ? 'posted ' + words(po[1], 4) : ''].filter(Boolean).join(' · ');
+      if (L) return L;
+    }
+    if (a.kind === 'template') return 'Saved message: approve once, used many times';
+    var src = /\bSource:\s*([^:·]+?)(?::\s*https?:|\s·\s|$)/i.exec(c); /* e.g. "Source: Seed $33M, out of stealth 10 Nov 2026: https://…" */
+    if (src && !/^https?/i.test(src[1].trim())) return words(src[1], 8);
+    var first = c.split(/\s·\s|\.\s/)[0];
+    return first ? words(first, 8) : words(a.batch_label || a.channel || '', 8);
+  }
   function draftRow(a, showProj) {
     var j = J(), tx = String(safe(function () { return j.approvals.textOf(a); }, '') || ''), plan = !!(a.no_send || (a.extra && a.extra.no_send)), tpl = a.kind === 'template';
-    var who = a.label && a.label !== 'Template' ? a.label : '', head = a.to || a.subject || who || a.kind || 'Draft';
-    var w = waitsOn(a);
-    var h = '<article class="row poll" data-ap="' + esc(a.id) + '"><div class="yh"><p class="yt" dir="auto">' + (tpl ? '<span class="tag">Saved message</span>' : plan ? '<span class="tag">Plan only</span>' : '') + esc(cut(head, 90)) + '</p></div>';
-    var meta = [showProj ? pname(pidOf(a.product)) : '', a.channel, a.subject && a.subject !== head ? a.subject : '', who && who !== head ? who : ''].filter(Boolean).map(function (x) { return cut(x, 60); }).join(' · ');
-    if (meta) h += '<p class="yp" dir="auto">' + esc(meta) + '</p>';
-    if (tx) h += '<details><summary dir="auto">' + esc(cut(tx, 140)) + (tx.replace(/\s+/g, ' ').trim().length > 140 || /\n/.test(tx) ? '<b>Read all</b>' : '') + '</summary><p class="full" dir="auto">' + esc(tx) + '</p></details>';
-    if (a.warn) h += '<p class="warn" dir="auto">' + esc(cut(a.warn, 200)) + '</p>';
-    if (plan) h += '<p class="yp">Plan only: nothing is sent.</p>';
-    if (w.length) h += '<p class="warn" dir="auto">Waits on: ' + esc(cut(w.join(' · '), 160)) + '</p>';
+    var who = whoOf(a), why = whyNow(a), w = waitsOn(a), li = lintOf(a);
+    var hard = li.flags.filter(function (f) { return /^HARD:/.test(f); }).map(function (f) { return f.replace(/^HARD:\s*/, ''); });
+    var soft = li.flags.filter(function (f) { return !/^HARD:/.test(f); }).map(function (f) { return f.replace(/^CHECK:\s*/, ''); });
+    var h = '<article class="row poll one" data-ap="' + esc(a.id) + '"><p class="yt" dir="auto">' + (tpl ? '<span class="tag">Saved message</span>' : plan ? '<span class="tag">Plan only</span>' : '') + esc(who) + (why ? '<span class="wn"> · ' + esc(why) + '</span>' : '') + '</p>';
+    var sub = a.subject && a.subject !== a.to ? cut(a.subject, 80) : '';
+    if (sub || showProj) h += '<p class="yp" dir="auto">' + esc([showProj ? pname(pidOf(a.product)) : '', sub].filter(Boolean).join(' · ')) + '</p>';
+    if (li.hard && hard.length) h += '<p class="warn" dir="auto">Blocked: ' + esc(cut(hard.join(' · '), 160)) + '</p>';
+    var more = [a.channel ? '<p class="mi-l">Where</p><p dir="auto">' + esc(a.channel) + '</p>' : '',
+      a.warn ? '<p class="mi-l">Note</p><p dir="auto">' + esc(a.warn) + '</p>' : '',
+      soft.length ? '<p class="mi-l">Check</p><p dir="auto">' + esc(soft.join(' · ')) + '</p>' : '',
+      w.length ? '<p class="mi-l">Waits on</p><p dir="auto">' + esc(w.join(' · ')) + '</p>' : '',
+      plan ? '<p dir="auto">Plan only: nothing is sent.</p>' : '',
+      tx ? '<p class="mi-l">Text</p><p class="full" dir="auto">' + esc(tx) + '</p>' : ''].join('');
+    if (more) h += '<details class="more-info"><summary>Read it</summary>' + more + '</details>';
     h += '<div class="bts"><button type="button" class="cap-b main" data-x="go" data-id="' + esc(a.id) + '">' + (plan ? 'Yes, start' : tpl ? 'Yes, use this message' : 'Yes, send it') + '</button>'
       + '<button type="button" class="cap-b" data-x="nogo" data-id="' + esc(a.id) + '">Not now</button>'
       + (plan ? '' : '<button type="button" class="ql" data-x="edit" data-id="' + esc(a.id) + '">Change</button>') + '</div>';
@@ -184,9 +216,15 @@
     return '<article class="row dec ' + (how === 'nogo' ? 'nogo' : '') + '"><p class="yt">' + (how === 'go' ? 'Approved' : how === 'done' ? 'Done' : 'Not now') + '</p><p class="yp">Saved. <button type="button" class="ql" data-x="undo">Undo</button></p></article>';
   }
 
-  /* 12.0.1: by-hand drafts Dave approved (Go) and still has to send himself: same list as the 11.8 Home "People to message" */
+  /* 12.0.1: by-hand drafts Dave approved (Go) and still has to send himself: same list as the 11.8 Home "People to message".
+     14.0: people() lives here now (was window.j8v19.people in j11.js: isHand18 + due18, posts left out, oldest OK first). */
+  function allAps() { var j = J(); return safe(function () { return j.approvals.list(); }, []); }
+  function isHand(a) { if (!a || a.kind === 'template' || a.label === 'Template' || a.source === 'j8nix-app') return false; return /^linkedin/i.test(String(a.channel || '').trim()) || a.label === 'Send by hand'; }
+  function handDue(a) { if (a.status === 'approved' || a.status === 'edited') return true; if (a.status === 'queued') { var h = pd(a.hold_until); return !isNaN(h) && h < Date.now(); } return false; }
+  function atOr(a, k) { var t = pd(a[k]); if (isNaN(t)) t = pd(a.created); return isNaN(t) ? 9e15 : t; }
+  function people() { return allAps().filter(function (a) { return isHand(a) && handDue(a) && a.kind !== 'post'; }).sort(function (a, b) { return atOr(a, 'decided_at') - atOr(b, 'decided_at'); }); }
   function readyList(pid) {
-    var L = safe(function () { return window.j8v19.people(); }, []);
+    var L = safe(people, []);
     if (!Array.isArray(L)) return [];
     return pid ? L.filter(function (a) { return pidOf(a.product) === pid; }) : L;
   }
@@ -301,7 +339,7 @@
   }
   function doNow() {
     var r = radio(), h = '<section class="card move" aria-labelledby="jx-m">' + '<p class="lbl" id="jx-m">Do this now</p>';
-    if (!r) return h + '<p class="t2">' + (on() ? 'Nothing needs you right now. J8 is working.' : 'Connecting…') + '</p></section>';
+    if (!r) return h + (failed() ? '<p class="t2">Couldn\'t load. Tap retry at the top.</p>' : '<p class="t2">' + (on() ? 'Nothing needs you right now. J8 is working.' : 'Connecting…') + '</p>') + '</section>';
     var t = r.t, lk = r.kind === 'task' ? link(t.link) : r.kind === 'project' ? link(r.p.you_link) : '';
     var pid = r.kind === 'task' ? t.project_id : r.kind === 'project' ? r.id : pidOf(r.a.product);
     h += '<p class="t2" dir="auto">' + esc(cut(String(r.title || '').replace(/^\s*(TODAY\s*\d*\s*·\s*)/i, ''), 140)) + '</p>';
@@ -346,16 +384,16 @@
   }
 
   function vNow() {
-    rankPull();
+    rankPull(); lintPull();
     var pl = plan(), pc = pace(), p = il(Date.now()), DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     var dow = DAYS[new Date(Date.UTC(p.y, p.m - 1, p.d)).getUTCDay()];
     var h = '<h1 class="sr">Today</h1><p class="date">' + esc(dow + ' · ' + p.d + ' ' + MON[p.m - 1]) + '</p>';
-    h += goalBar(pl, pc) + choosePanel(pl) + pausedNote() + doNow() + nextMilestone(pl);
+    h += scoreboard() + (failed() && !money() ? '' : goalBar(pl, pc)) + choosePanel(pl) + pausedNote() + doNow() + nextMilestone(pl);
     var F = flatDecisions(), r = radio(), topId = r ? r.id : null;
     F = F.filter(function (x) { return x.id !== topId; });
     if (F.length) h += '<section class="grp" aria-labelledby="jx-n"><div class="gh"><h2 class="hd" id="jx-n">Waiting for your OK · ' + F.length + '</h2><button type="button" class="ql" data-x="nav" data-id="decisions">See all</button></div><div class="list">'
       + F.slice(0, 3).map(function (x) { return '<button type="button" class="li" data-x="nav" data-id="decisions">' + dot('need') + '<span class="lt"><b dir="auto">' + esc(cut(x.title, 90)) + '</b><small dir="auto">' + esc(cut(x.sub, 70)) + '</small></span>' + ico('go') + '</button>'; }).join('') + '</div></section>';
-    return h;
+    return h + goingOutBox() + outcomesBox();
   }
 
   function vPlan() {
@@ -420,7 +458,7 @@
     var L = [];
     readyList(null).forEach(function (a) { L.push({ id: a.id, title: 'Send: ' + (a.to || a.label || 'message'), sub: (a.channel || '') + ' · approved, ready for you to send' }); });
     gateGroups().forEach(function (g) { g.L.forEach(function (x) {
-      if (x.k === 'ap') L.push({ id: x.a.id, title: x.a.to || x.a.subject || x.a.label || 'Draft', sub: pname(g.p) + ' · ' + (x.a.kind === 'template' ? 'template to approve' : 'draft to approve') });
+      if (x.k === 'ap') L.push({ id: x.a.id, title: whoOf(x.a), sub: pname(g.p) + ' · ' + (whyNow(x.a) || (x.a.kind === 'template' ? 'template to approve' : 'draft to approve')) });
       else L.push({ id: x.t.id, title: x.t.title || x.t.id, sub: pname(g.p) + ' · your step' + (x.t.minutes ? ' · ' + x.t.minutes + ' min' : '') });
     }); });
     return L;
@@ -435,7 +473,7 @@
     var p = proj(S.mid);
     if (!p) return '<button type="button" class="back" data-x="nav" data-id="plan">' + ico('back') + 'Plan</button><p class="empty">This mission is not in the data any more.</p>';
     var f = flag(p), mine = daveTasks().filter(function (t) { return t.project_id === p.id; }), team = tasksOpen().filter(function (t) { return t.project_id === p.id && t.owner !== 'dave'; });
-    var D = drafts().filter(function (a) { return pidOf(a.product) === p.id; }), R = rankPos();
+    lintPull(); var D = drafts().filter(function (a) { return pidOf(a.product) === p.id; }), R = rankPos();
     var byR = function (a, b) { return (R[a.id] != null ? R[a.id] : 1e6 + (Number(a.rank) || 999)) - (R[b.id] != null ? R[b.id] : 1e6 + (Number(b.rank) || 999)); };
     mine.sort(byR); D.sort(byR);
     var h = '<button type="button" class="back" data-x="nav" data-id="plan">' + ico('back') + 'Plan</button>'
@@ -455,9 +493,10 @@
   }
 
   function vDecisions() {
-    rankPull();
+    rankPull(); lintPull();
     var G = gateGroups(), n = gateCount(), RD = readyList(null);
-    var h = '<h1 class="lt1">Needs you</h1><p class="sub">' + (n + RD.length ? (n + RD.length) + ' things wait for your OK. Most valuable first. Tap "Read all" to see the full text.' : on() ? 'Nothing waits for you.' : 'Connecting…') + '</p>';
+    var h = '<h1 class="lt1">Needs you</h1><p class="sub">' + (n + RD.length ? (n + RD.length) + ' things wait for your OK. Most valuable first. Tap "Read it" for the full text.' : failed() ? 'Couldn\'t load — tap Retry above.' : on() ? 'Nothing waits for you.' : 'Connecting…') + '</p>';
+    h += batchBox();
     if (RD.length) h += '<section class="grp"><h2 class="hd">Ready for you to send · ' + RD.length + '</h2><div class="rows">' + RD.map(readyRow).join('') + '</div></section>';
     G.forEach(function (g) {
       h += '<section class="grp"><h2 class="hd" dir="auto">' + esc(pname(g.p)) + ' · ' + g.L.length + '</h2><div class="rows">'
@@ -546,6 +585,124 @@
   }
   function gateCount() { return drafts().length + daveTasks().length; }
 
+  /* ---------- 14.0 "Results": scoreboard, sender line, batches, going out, outcomes, load failure ---------- */
+  var SENDER_ARMS = ['mac sender', 'main chat send', 'sender (mac)']; /* 'Sender (Mac)' is the same arm under its older name */
+  var REPLY_O = { replied: 1, interview: 1, question: 1, call: 1, won: 1 };
+  var OUTW = { replied: 'Replied', call: 'Call', proposal: 'Proposal', won: 'Won', lost: 'Lost' };
+  function failed() {
+    var j = J(); if (!j) return Date.now() - BOOT > 8000;
+    var st = safe(function () { return j.status(); }, {}) || {};
+    return !st.connected && st.error === 'offline';
+  }
+  function failBtn() { return '<button type="button" class="fail" data-x="retry">Couldn\'t load — tap to retry</button>'; }
+  function tOf(r) { var a = pd(r.ended), b = pd(r.started); return isNaN(a) ? b : isNaN(b) ? a : Math.max(a, b); }
+  function stopWhy(sm) {
+    var x = String(sm || '').replace(/^[\s\u{1F534}\u{1F7E0}\u{1F7E2}⚪]+/u, '').trim();
+    if (/two chrome|none is (chosen|picked)|pick (this|the) mac'?s chrome/i.test(x)) return { reason: 'Chrome is not picked for Claude', fix: 'pick this Mac\'s Chrome in the Claude extension (1 min)' };
+    if (/without (your|the) mac|in the cloud/i.test(x)) return { reason: 'the run started without your Mac', fix: 'keep the Mac on and awake at send time' };
+    var m = /\bDo:\s*(.+)$/i.exec(x), fix = m ? m[1] : '';
+    var rs = (m ? x.slice(0, m.index) : x).split(/\s·\s/).filter(function (seg) { return !/^(sendable|sent|posts|chrome tasks|failed)\b/i.test(seg.trim()); }).join(' · ');
+    rs = rs.split(/\.\s/)[0];
+    return { reason: cut(rs || 'the last run failed', 70), fix: cut(fix || 'J8 retries at the next run', 70) };
+  }
+  function senderInfo() {
+    var R = runs().filter(function (r) { return SENDER_ARMS.indexOf(String(r.arm || '').trim().toLowerCase()) > -1; }).map(function (r) { return { r: r, t: tOf(r) }; })
+      .filter(function (x) { return !isNaN(x.t); }).sort(function (a, b) { return b.t - a.t; });
+    if (!R.length) return null;
+    if (R[0].r.status === 'failed') { var w = stopWhy(R[0].r.summary); return { ok: false, t: R[0].t, reason: w.reason, fix: w.fix }; }
+    var ok = R.filter(function (x) { return x.r.status === 'ok'; })[0];
+    return { ok: true, t: (ok || R[0]).t, sent: !!ok };
+  }
+  function senderText() {
+    if (paused()) return 'Sending is paused';
+    var s = senderInfo(); if (!s) return failed() ? 'Sending: not loaded' : 'Sending: no sender run recorded yet';
+    return s.ok ? 'Sending works · last ' + (s.sent ? 'send ' : 'check ') + when(s.t) : 'Sending stopped: ' + s.reason + ' · ' + s.fix;
+  }
+  function senderLine() { var s = senderInfo(), bad = paused() || (s && !s.ok); return '<p class="sline' + (bad ? ' bad' : s ? ' ok' : '') + '" dir="auto">' + dot(bad ? 'block' : s ? 'done' : 'quiet') + '<span>' + esc(senderText()) + '</span></p>'; }
+  function outcomeOf(a) { return a.outcome || (a.replied_at ? 'replied' : ''); }
+  function inWin(t, from) { return !isNaN(t) && t >= from && t <= Date.now() + 6e4; }
+  function score() {
+    var from = Date.now() - 7 * 864e5, o = { sent: 0, rep: 0, call: 0, prop: 0 };
+    allAps().forEach(function (a) {
+      if (a.status !== 'sent' || a.kind === 'template' || a.label === 'Template') return;
+      var ts = pd(a.sent_at), tr = pd(a.replied_at), to = pd(a.outcome_at), te = !isNaN(to) ? to : !isNaN(tr) ? tr : ts;
+      if (inWin(ts, from)) o.sent++;
+      if ((a.replied_at || REPLY_O[a.outcome]) && inWin(!isNaN(tr) ? tr : te, from)) o.rep++;
+      if ((a.outcome === 'call' || a.outcome === 'interview') && inWin(te, from)) o.call++;
+      if ((a.outcome === 'proposal' && inWin(te, from)) || (a.outcome !== 'proposal' && a.kind === 'proposal' && inWin(ts, from))) o.prop++;
+    });
+    var m = money(); o.ils = m && isFinite(Number(m.booked_ils)) ? Number(m.booked_ils) : 0;
+    return o;
+  }
+  function scoreboard() {
+    var o = score(), none = failed() && !allAps().length, c = function (n, l) { return '<li><b class="num">' + esc(none ? '—' : n) + '</b><small>' + esc(l) + '</small></li>'; };
+    return '<section class="score" aria-labelledby="jx-sc"><p class="lbl" id="jx-sc">Last 7 days</p><ol class="sc">'
+      + c(o.sent, 'Sent') + c(o.rep, 'Replies') + c(o.call, 'Calls') + c(o.prop, 'Proposals')
+      + '<li class="cash"><b class="num">' + esc(none ? '—' : ils(o.ils)) + '</b><small>of ' + esc(ils(GOAL)) + '</small></li></ol>' + senderLine() + '</section>';
+  }
+  /* batch approve: drafts that share a batch value (not templates, not plan-only, hard-blocked ones left out) */
+  function batches() {
+    var B = {};
+    drafts().forEach(function (a) {
+      if (!a.batch || a.kind === 'template' || a.label === 'Template' || a.no_send || (a.extra && a.extra.no_send)) return;
+      var b = B[a.batch] = B[a.batch] || { k: a.batch, label: a.batch_label || a.batch, L: [], hard: 0 };
+      if (lintOf(a).hard) b.hard++; else b.L.push(a);
+    });
+    return Object.keys(B).map(function (k) { return B[k]; }).filter(function (b) { return b.L.length >= 2; }).sort(function (a, b) { return b.L.length - a.L.length; });
+  }
+  function batchBox() {
+    var B = batches(); if (!B.length) return '';
+    return '<section class="grp" aria-labelledby="jx-bt"><h2 class="hd" id="jx-bt">Approve in one go · ' + B.length + '</h2><p class="fn tight">Same batch, same kind of message. You see 3 first.</p><div class="rows">' + B.map(function (b) {
+      var n = b.L.length, open = S.bprev === b.k, j = J();
+      var h = '<article class="row one"><p class="yt" dir="auto">' + esc(cut(b.label, 70)) + ' · ' + n + '</p><p class="yp">' + n + ' drafts' + (b.hard ? ' · ' + b.hard + ' blocked, left out' : '') + '</p>';
+      if (open) h += b.L.slice(0, 3).map(function (a) { var tx = String(safe(function () { return j.approvals.textOf(a); }, '') || ''); return '<div class="smp"><b dir="auto">' + esc(whoOf(a)) + ' · ' + esc(whyNow(a)) + '</b>' + (tx ? '<p dir="auto">' + esc(cut(tx, 160)) + '</p>' : '') + '</div>'; }).join('')
+        + (n > 3 ? '<p class="yp">+ ' + (n - 3) + ' more like these</p>' : '')
+        + '<div class="bts"><button type="button" class="cap-b main" data-x="batch-go" data-id="' + esc(b.k) + '"' + (S.busyB ? ' disabled' : '') + '>Yes, approve all ' + n + '</button><button type="button" class="ql" data-x="batch-x">Cancel</button></div>';
+      else h += '<div class="bts"><button type="button" class="cap-b main" data-x="batch" data-id="' + esc(b.k) + '">Approve all ' + n + '</button></div>';
+      return h + '</article>';
+    }).join('') + '</div></section>';
+  }
+  /* going out: approved / edited / queued, not sent yet (by-hand items already due are in "Ready for you to send") */
+  function goingOut() {
+    var R = {}; readyList(null).forEach(function (a) { R[a.id] = 1; });
+    return allAps().filter(function (a) { return /^(approved|edited|queued)$/.test(a.status || '') && a.kind !== 'template' && a.label !== 'Template' && a.source !== 'j8nix-app' && !R[a.id]; })
+      .sort(function (a, b) { /* still in the hold (the undo window) first, soonest end first; then the ones waiting for the sender */
+        var n = Date.now(), x = pd(a.hold_until), y = pd(b.hold_until), hx = !isNaN(x) && x > n, hy = !isNaN(y) && y > n;
+        return (hy - hx) || (hx && hy ? x - y : 0) || atOr(a, 'decided_at') - atOr(b, 'decided_at'); });
+  }
+  function left(ms) { var m = Math.max(1, Math.round(ms / 6e4)), h = Math.floor(m / 60); return h ? h + 'h ' + pad(m % 60) + 'm' : m + 'm'; }
+  function holdText(a) {
+    var h = pd(a.hold_until), now = Date.now();
+    if (!isNaN(h) && h > now) return 'Hold: ' + left(h - now) + ' left · then ' + (isHand(a) ? 'you send it' : 'it can go') + ' (' + when(h) + ')';
+    return isHand(a) ? 'You send it by hand' : 'Hold over · waits for the sender';
+  }
+  function goingOutBox() {
+    var L = goingOut(); if (!L.length) return '';
+    var show = S.goAll ? L : L.slice(0, 3);
+    return '<section class="grp" aria-labelledby="jx-go"><div class="gh"><h2 class="hd" id="jx-go">Going out · ' + L.length + '</h2>' + (L.length > 3 ? '<button type="button" class="ql" data-x="go-all">' + (S.goAll ? 'Show less' : 'Show all ' + L.length) + '</button>' : '') + '</div>'
+      + senderLine() + '<div class="list">' + show.map(function (a) {
+        var k = 'kl-' + a.id, ar = armed(k);
+        return '<div class="li oc"><span class="lt"><b dir="auto">' + esc(whoOf(a)) + '</b><small dir="auto">' + esc(holdText(a)) + '</small></span>'
+          + '<button type="button" class="ob kill' + (ar ? ' arm' : '') + '" data-x="kill" data-id="' + esc(a.id) + '">' + (ar ? 'Tap again: kill' : 'Kill') + '</button></div>';
+      }).join('') + '</div></section>';
+  }
+  /* outcomes on sent items of the last 30 days (not posts, not templates) */
+  function sent30() {
+    var from = Date.now() - 30 * 864e5;
+    return allAps().filter(function (a) { var t = pd(a.sent_at); return a.status === 'sent' && a.kind !== 'template' && a.kind !== 'post' && a.label !== 'Template' && !isNaN(t) && t >= from; })
+      .sort(function (a, b) { return pd(b.sent_at) - pd(a.sent_at); });
+  }
+  function outcomesBox() {
+    var L = sent30(); if (!L.length) return '';
+    var show = S.ocAll ? L : L.slice(0, 3);
+    return '<section class="grp" aria-labelledby="jx-oc"><div class="gh"><h2 class="hd" id="jx-oc">Did they answer? · ' + L.length + '</h2>' + (L.length > 3 ? '<button type="button" class="ql" data-x="oc-all">' + (S.ocAll ? 'Show less' : 'Show all ' + L.length) + '</button>' : '') + '</div>'
+      + '<p class="fn tight">Sent in the last 30 days. Tap what happened: it counts on the scoreboard.</p><div class="list">' + show.map(function (a) {
+        var cur = outcomeOf(a);
+        return '<div class="li oc"><span class="lt"><b dir="auto">' + esc(whoOf(a)) + '</b><small>Sent ' + esc(whenDay(a.sent_at)) + (cur ? ' · ' + esc(OUTW[cur] || cur) : '') + '</small></span>'
+          + '<span class="obs">' + ['replied', 'call', 'proposal', 'won', 'lost'].map(function (w) { return '<button type="button" class="ob" data-x="oc" data-w="' + w + '" data-id="' + esc(a.id) + '" aria-pressed="' + (cur === w) + '">' + OUTW[w] + '</button>'; }).join('') + '</span></div>';
+      }).join('') + '</div></section>';
+  }
+
   /* ---------- shell ---------- */
   var NAV = [['now', 'Today'], ['plan', 'Plan'], ['decisions', 'Needs you'], ['proof', 'What happened'], ['talk', 'Talk']];
   function renderNav() {
@@ -568,7 +725,7 @@
     if (!force && busy()) { pending = true; return; }
     pending = false;
     var y = window.scrollY, changed = S.prevV !== S.v + '|' + S.mid;
-    view.innerHTML = S.v === 'mission' ? vMission() : S.v === 'missions' || S.v === 'plan' ? vPlan() : S.v === 'decisions' ? vDecisions() : S.v === 'proof' ? vProof() : S.v === 'talk' ? vTalk() : vNow();
+    view.innerHTML = (failed() ? failBtn() : '') + (S.v === 'mission' ? vMission() : S.v === 'missions' || S.v === 'plan' ? vPlan() : S.v === 'decisions' ? vDecisions() : S.v === 'proof' ? vProof() : S.v === 'talk' ? vTalk() : vNow());
     renderNav(); renderTop();
     if (changed) { view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); window.scrollTo(0, 0); S.prevV = S.v + '|' + S.mid; }
     else window.scrollTo(0, y);
@@ -594,7 +751,7 @@
       + '<div class="li"><span class="lt"><b>Classic screens</b><small>Lists, flow, control, voice, processes.</small></span><button type="button" class="cap-b" data-x="classic">Open</button></div>'
       + '<div class="li"><span class="lt"><b>Refresh</b><small>Load the latest data now.</small></span><button type="button" class="cap-b" data-x="refresh">Refresh</button></div>'
       + '<div class="li"><span class="lt"><b>Signed in</b><small>' + esc(u ? u.email : 'Not signed in') + (o && o.name ? ' · ' + esc(o.name) : '') + '</small></span><button type="button" class="cap-b" data-x="signout">Sign out</button></div>'
-      + '<div class="li"><span class="lt"><b>Version</b><small>J8NIX ' + VER + ' · Through-line</small></span></div></div>';
+      + '<div class="li"><span class="lt"><b>Version</b><small>J8NIX ' + VER + ' · Results</small></span></div></div>';
     sc.hidden = false; sh.hidden = false; var b = sh.querySelector('[data-x="classic"]'); if (b) b.focus();
   }
   function classic(onC) {
@@ -628,6 +785,16 @@
       return;
     }
     if (x === 'filter') { S.filter = id; S.proofN = 60; render(true); return; }
+    if (x === 'go-all') { S.goAll = !S.goAll; render(true); return; }
+    if (x === 'oc-all') { S.ocAll = !S.ocAll; render(true); return; }
+    if (x === 'batch') { S.bprev = id; render(true); return; }
+    if (x === 'batch-x') { S.bprev = null; render(true); return; }
+    if (x === 'retry') {
+      if (!j) { location.reload(); return; }
+      el.disabled = true; var st0 = safe(function () { return j.status(); }, {}) || {};
+      (st0.org ? j.reload() : j.connect()).then(function () { S.rankAt = 0; S.lintAt = 0; say(failed() ? 'Still couldn\'t load. Tap to retry.' : 'Up to date.'); render(true); }, function () { say('Still couldn\'t load. Tap to retry.'); render(true); });
+      return;
+    }
     if (x === 'more') { S.proofN += 60; render(true); return; }
     if (x === 'note') { var k = el.getAttribute('data-k'); S.noteOpen[k] = !S.noteOpen[k]; render(true); if (S.noteOpen[k]) { var ta = sr.getElementById('jxn-' + k); if (ta) ta.focus(); } return; }
     if (x === 'undo') { if (hudUndo) { var f = hudUndo; hudUndo = null; hud.classList.remove('on'); f(); } return; }
@@ -645,6 +812,32 @@
       buzz(); say(rt ? 'Copied — paste and send' : 'Opened'); return;
     }
     if (!j || !on()) { say('Not connected. Try again in a moment.'); return; }
+    if (x === 'batch-go') {
+      if (S.busyB) return;
+      var bb = batches().filter(function (b) { return b.k === id; })[0]; if (!bb) { S.bprev = null; render(true); return; }
+      var ids = bb.L.map(function (a) { return a.id; }), okIds = [], bad = 0; S.busyB = true; buzz(); el.disabled = true; say('Approving ' + ids.length + '…');
+      ids.reduce(function (p, aid) { return p.then(function () { return j.approvals.approve(aid).then(function () { okIds.push(aid); }, function () { bad++; }); }); }, Promise.resolve()).then(function () {
+        S.busyB = false; S.bprev = null; render(true);
+        say('Approved ' + okIds.length + (bad ? ' · ' + bad + ' failed' : '') + '. ' + senderText() + '.', okIds.length ? function () {
+          okIds.reduce(function (p, aid) { return p.then(function () { return j.approvals.undo(aid).catch(function () {}); }); }, Promise.resolve()).then(function () { say('Back to waiting.'); render(true); });
+        } : null);
+      });
+      return;
+    }
+    if (x === 'kill') {
+      var kk = 'kl-' + id; if (!armed(kk)) { arm(kk); return; } delete S.arm[kk]; buzz(); el.disabled = true;
+      j.approvals.kill(id).then(function () {
+        render(true); say('Killed. It will not be sent.', function () { j.approvals.undo(id).then(function () { say('Back to waiting for your OK.'); render(true); }, fail); });
+      }, function (e) { el.disabled = false; fail(e); });
+      return;
+    }
+    if (x === 'oc') {
+      var ow = el.getAttribute('data-w'), oa = safe(function () { return allAps().filter(function (q) { return String(q.id) === id; })[0]; }, null); if (!oa || !OUTW[ow]) return;
+      var oc = outcomeOf(oa); buzz(); el.disabled = true;
+      var op = oc === ow ? j.approvals.reply(id, 'clear') : ow === 'replied' && oa.outcome ? j.approvals.reply(id, 'clear').then(function () { return j.approvals.reply(id, 'replied'); }) : j.approvals.reply(id, ow);
+      op.then(function () { say(oc === ow ? 'Cleared.' : 'Saved: ' + OUTW[ow] + '. It counts on the scoreboard.'); render(true); }, function (e) { el.disabled = false; fail(e); });
+      return;
+    }
     if (x === 'handsent') {
       var hk = 'hs-' + id; if (!armed(hk)) { arm(hk); return; } delete S.arm[hk]; buzz(); el.disabled = true;
       j.approvals.handSent(id).then(function () { say('Marked sent.'); render(true); }, function (e) { el.disabled = false; fail(e); });
@@ -662,7 +855,7 @@
       buzz(); el.disabled = true;
       (x === 'go' ? j.approvals.approve(id) : j.approvals.kill(id)).then(function () {
         S.dec = { id: id, how: x }; render(true);
-        say(x === 'go' ? 'OK. It goes out in the next send round.' : 'Not now. It will not be sent.', function () { j.approvals.undo(id).then(function () { S.dec = null; say('Back to waiting.'); render(true); }, fail); });
+        say(x === 'go' ? 'Approved. ' + senderText() + '.' : 'Not now. It will not be sent.', function () { j.approvals.undo(id).then(function () { S.dec = null; say('Back to waiting.'); render(true); }, fail); });
       }, function (e) { el.disabled = false; fail(e); });
       return;
     }
@@ -677,7 +870,7 @@
     }
     if (x === 'stop' || x === 'resume') {
       if (!armed(x)) { arm(x); return; } delete S.arm[x]; buzz(); el.disabled = true;
-      j.control.setPaused(x === 'stop').then(function () { say(x === 'stop' ? 'Sending paused. Nothing goes out.' : 'Sending resumed. Approved items go out on schedule.'); render(true); }, function (e) { el.disabled = false; fail(e); });
+      j.control.setPaused(x === 'stop').then(function () { say(x === 'stop' ? 'Sending paused. Nothing goes out.' : 'Sending resumed. ' + senderText() + '.'); render(true); }, function (e) { el.disabled = false; fail(e); });
       return;
     }
     if (x === 'say') {
@@ -736,8 +929,8 @@
     var a = document.getElementById('app');
     if (a && window.MutationObserver) new MutationObserver(sync).observe(a, { attributes: true, attributeFilter: ['hidden'] });
     sync(); render(true); splash();
-    setInterval(function () { if (!document.hidden && document.body.classList.contains('jx')) { renderTop(); rankPull(); } }, 30000);
+    setInterval(function () { if (!document.hidden && document.body.classList.contains('jx')) { renderTop(); rankPull(); if (S.v === 'now' && view && !view.querySelector('details[open]') && goingOut().some(function (a) { return pd(a.hold_until) > Date.now(); })) soon(); } }, 30000);
   }
-  window.j8x = { version: VER, render: function () { render(true); }, go: go, state: S, pace: pace, flag: flag, radio: radio, tower: tower, gates: gateGroups, proof: proofItems, decisions: flatDecisions, classic: classic, esc: esc, link: link, pd: pd };
+  window.j8x = { version: VER, render: function () { render(true); }, go: go, state: S, pace: pace, flag: flag, radio: radio, tower: tower, gates: gateGroups, proof: proofItems, decisions: flatDecisions, score: score, sender: senderInfo, senderText: senderText, whyNow: whyNow, batches: batches, goingOut: goingOut, sent30: sent30, people: people, failed: failed, classic: classic, esc: esc, link: link, pd: pd };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
