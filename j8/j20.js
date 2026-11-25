@@ -27,11 +27,11 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.6.0';
+  var VER = '15.7.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
-  var S = { sp: 'today', pick: {}, held: {}, gone: {}, arm: {}, open: {}, edit: null, editTx: '', talk: '', full: {}, bprev: null, busy: false, rankAt: 0, lintAt: 0, win: (function () { try { return localStorage.getItem('j8:win') === '7d' ? '7d' : '30d'; } catch (e) { return '30d'; } })(), fun: null, funAt: 0, funBusy: false, funErr: false };
+  var S = { sp: 'today', pick: {}, held: {}, gone: {}, arm: {}, open: {}, edit: null, editTx: '', talk: '', full: {}, bprev: null, busy: false, rankAt: 0, lintAt: 0, win: (function () { try { return localStorage.getItem('j8:win') === '7d' ? '7d' : '30d'; } catch (e) { return '30d'; } })(), fun: null, funAt: 0, funBusy: false, funErr: false, gates: null, gateAt: 0, gateBusy: false, gateErr: false };
   var host, sr, W, C, undoFn = null, toastT = 0, raf = 0, pend = false;
 
   /* ---------- words (EN / HE) ---------- */
@@ -94,6 +94,37 @@
   Object.assign(T.he, { spaces: 'מרחבים', aTab: 'כניסה', aOf: 'מתוך 2', aWhy: 'נשלח אליך במייל קישור כניסה וקוד בן 6 ספרות. בלי סיסמה.', aSent: 'נשלח אל', aSpam: 'זה יכול לקחת דקה. כדאי לבדוק גם בספאם.',
     aTag: 'מערכת התפעול החכמה, רק חכמה יותר', aLang: 'English', aFail: 'לא נשלח. כדאי לנסות שוב.', aRate: 'יותר מדי ניסיונות. כדאי לחכות דקה ולנסות שוב.',
     sPaused: 'השליחה מושהית', sNone: 'שליחה: עדיין אין ריצת שליחה', sNot: 'שליחה: לא נטען', sOk: 'השליחה עובדת · שליחה אחרונה', sOkC: 'השליחה עובדת · בדיקה אחרונה', sBad: 'השליחה נעצרה', tplWhy: 'הודעה שמורה: מאשרים פעם אחת, נשלחת הרבה פעמים', fit: 'התאמה', posted: 'פורסם' });
+  /* 15.7: the MVP bar (backlog m-1125-00): 10 live gates from public.j8_mvp_gates. Bars and sources: design/MVP-BAR.md */
+  Object.assign(T.en, { mvp: 'Ready for testing', mvpSub: 'Ten bars J8NIX must clear before others test it. Counted live from your data.', mvpAll: 'All 10 bars are cleared.',
+    mvpNot1: '1 bar not cleared yet', mvpNotN: '{n} bars not cleared yet', mvpNd: '{n} without enough data', passW: 'Cleared', failW: 'Not yet', ndW: 'Not enough data',
+    barW: 'Bar', whyW: 'Why', nowW2: 'Now', ndP: 'Needs {m} to judge, has {d}', mvpFail: 'Couldn\'t load the bars. Tap to retry', mvpLoading: 'Counting the bars…',
+    atMost: 'at most', atLeast: 'at least', barS: 'bar', u_no_stuck: 'waiting', u_no_dupes: 'repeats', u_optout: 'sends', u_daily_use: 'days', none0: 'none', zeroW: '0',
+    g_runs_ok: 'Agent runs work', g_no_stuck: 'Nothing approved waits over a day', g_go_no_edit: 'Drafts good enough to send as is', g_stop_rate: 'Few drafts stopped',
+    g_reply_rate: 'People answer', g_tracked: 'Every send is tracked', g_no_dupes: 'No one gets the same pitch twice', g_optout: 'Opt-outs respected', g_rls: 'Each business sees only its own data', g_daily_use: 'You use it most days',
+    p_runs_ok: '{n} of {d} runs did not fail · 28\u00a0days', p_no_stuck: '{n} approved, not sent, over 24 h', p_go_no_edit: '{n} of {d} of your decisions were Go with no edit · 30\u00a0days', p_stop_rate: '{n} of {d} of your decisions were Stop · 30\u00a0days',
+    p_reply_rate: '{n} of {d} reach-outs got a reply · 30\u00a0days', p_tracked: '{n} of {d} reach-outs have an outcome record · 30\u00a0days', p_no_dupes: '{n} people were pitched twice · {d} people reached · 30\u00a0days', p_optout: '{n} sends to opted-out contacts · {d} on the list',
+    p_rls: '{n} of {d} J8NIX tables are locked to their own business', p_daily_use: 'You decided on {n} of the last {d} days',
+    w_runs_ok: 'A tester must be able to trust the agents. Google\u00a0SRE: set a reliability target over a 4-week window (their worked example is 97%).',
+    w_no_stuck: 'An approved item that never goes out breaks trust faster than a bad draft.', w_go_no_edit: 'How often a suggestion is used as is is the best single signal of AI help (GitHub Copilot study; ZoomInfo saw 33%).',
+    w_stop_rate: 'Most stops mean the agents draft the wrong things. Each stop costs your time.', w_reply_rate: 'Cold email averages about 5% replies (Instantly) and under 1% in large studies (Belkins). 2% is the floor.',
+    w_tracked: 'Without an outcome on every send, Score and the money numbers cannot be trusted.', w_no_dupes: 'Pitching the same person twice looks like spam and burns the lead.',
+    w_optout: 'The law: opt-outs must be honoured (CAN-SPAM, GDPR, Israeli Communications Law Amendment 40).', w_rls: 'Without this lock, one business could see another\'s data (Supabase guidance).',
+    w_daily_use: 'If you do not use it most days, testers will not either. Dogfood first.' });
+  Object.assign(T.he, { mvp: 'מוכן לבדיקה', mvpSub: 'עשרה רפים ש-J8NIX צריך לעבור לפני שאחרים בודקים אותו. נספר בזמן אמת מהנתונים שלך.', mvpAll: 'כל 10 הרפים עברו.',
+    mvpNot1: 'רף אחד עוד לא עבר', mvpNotN: '{n} רפים עוד לא עברו', mvpNd: 'ל-{n} עוד אין מספיק נתונים', passW: 'עבר', failW: 'עוד לא', ndW: 'אין מספיק נתונים',
+    barW: 'הרף', whyW: 'למה', nowW2: 'עכשיו', ndP: 'צריך {m} כדי לשפוט, יש {d}', mvpFail: 'טעינת הרפים נכשלה. הקש לנסות שוב', mvpLoading: 'סופר את הרפים…',
+    atMost: 'לכל היותר', atLeast: 'לפחות', barS: 'רף', u_no_stuck: 'מחכים', u_no_dupes: 'כפולים', u_optout: 'שליחות', u_daily_use: 'ימים', none0: 'אף אחד', zeroW: '0',
+    g_runs_ok: 'ריצות הסוכנים עובדות', g_no_stuck: 'שום דבר מאושר לא מחכה יותר מיום', g_go_no_edit: 'טיוטות טובות מספיק לשליחה כמו שהן', g_stop_rate: 'מעט טיוטות נעצרות',
+    g_reply_rate: 'אנשים עונים', g_tracked: 'כל שליחה במעקב', g_no_dupes: 'אף אחד לא מקבל את אותה פנייה פעמיים', g_optout: 'בקשות הסרה נשמרות', g_rls: 'כל עסק רואה רק את הנתונים שלו', g_daily_use: 'אתה משתמש בו ברוב הימים',
+    p_runs_ok: '{n} מתוך {d} ריצות לא נכשלו · 28\u00a0ימים', p_no_stuck: '{n} מאושרים שלא נשלחו, יותר מ-24 שעות', p_go_no_edit: '{n} מתוך {d} מההחלטות שלך היו שליחה בלי עריכה · 30\u00a0ימים', p_stop_rate: '{n} מתוך {d} מההחלטות שלך היו עצירה · 30\u00a0ימים',
+    p_reply_rate: '{n} מתוך {d} פניות קיבלו תשובה · 30\u00a0ימים', p_tracked: 'ל-{n} מתוך {d} פניות יש רישום תוצאה · 30\u00a0ימים', p_no_dupes: '{n} אנשים קיבלו את אותה פנייה פעמיים · {d} אנשים · 30\u00a0ימים', p_optout: '{n} שליחות לאנשים שביקשו הסרה · {d} ברשימה',
+    p_rls: '{n} מתוך {d} טבלאות J8NIX נעולות לעסק שלהן', p_daily_use: 'החלטת ב-{n} מתוך {d} הימים האחרונים',
+    w_runs_ok: 'בודק צריך לסמוך על הסוכנים. Google\u00a0SRE: יעד אמינות על חלון של 4 שבועות (בדוגמה שלהם 97%).',
+    w_no_stuck: 'פריט מאושר שלא יוצא פוגע באמון מהר יותר מטיוטה גרועה.', w_go_no_edit: 'כמה פעמים הצעה נשלחת כמו שהיא הוא הסימן הטוב ביותר לעזרה של בינה מלאכותית (מחקר GitHub Copilot; ב-ZoomInfo ‏33%).',
+    w_stop_rate: 'הרבה עצירות אומרות שהסוכנים כותבים את הדברים הלא נכונים. כל עצירה עולה לך זמן.', w_reply_rate: 'במייל קר הממוצע הוא כ-5% תשובות (Instantly) ופחות מ-1% במחקרים גדולים (Belkins). ‏2% הוא הרצפה.',
+    w_tracked: 'בלי תוצאה לכל שליחה, אי אפשר לסמוך על התוצאות ועל הכסף.', w_no_dupes: 'פנייה כפולה לאותו אדם נראית כמו ספאם ושורפת את הקשר.',
+    w_optout: 'החוק: חובה לכבד בקשות הסרה (CAN-SPAM, ‏GDPR, תיקון 40 לחוק התקשורת).', w_rls: 'בלי הנעילה הזאת, עסק אחד יכול לראות נתונים של עסק אחר (הנחיית Supabase).',
+    w_daily_use: 'אם אתה לא משתמש בו ברוב הימים, גם הבודקים לא ישתמשו. קודם להשתמש בעצמך.' });
   var SFIX = { 'the last run failed': 'הריצה האחרונה נכשלה', 'J8 retries at the next run': 'J8 ינסה שוב בריצה הבאה', 'the run started without your Mac': 'הריצה התחילה בלי המק שלך', 'keep the Mac on and awake at send time': 'להשאיר את המק דלוק וער בזמן השליחה' };
   var CHAN = { he: { email: 'מייל', mail: 'מייל', message: 'הודעה', outreach: 'פנייה', phone: 'טלפון', call: 'שיחה', application: 'בקשה', design: 'עיצוב', post: 'פוסט', linkedin: 'LinkedIn', whatsapp: 'WhatsApp', sms: 'SMS' } };
   function chan(c) { var m = CHAN[lang()], k = String(c || '').trim().toLowerCase(); return (m && m[k]) || String(c || ''); }
@@ -344,6 +375,38 @@
   }
   function funState() { if (S.fun) return ''; if (!on() && !aps().length) return failed() ? '<button type="button" class="fail" data-x="retry">' + esc(t('fail')) + '</button>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>';
     return S.funErr ? '<button type="button" class="fail" data-x="funretry">' + esc(t('fail')) + '</button>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>'; }
+  /* ---------- 15.7 MVP bar (backlog m-1125-00). Rows come only from public.j8_mvp_gates (J8.gates): ok true / false, or null when
+     there is not enough data to judge (counts as not cleared). Glyph + word + colour, never colour alone; what is not cleared comes first. ---------- */
+  function pullGates() {
+    var j = J(); if (!j || !j.gates || !on() || S.gateBusy || Date.now() - S.gateAt < 6e4) return;
+    S.gateBusy = true;
+    var fr = S.gateFresh; S.gateFresh = false; j.gates(fr).then(function (R) { S.gateBusy = false; S.gateAt = Date.now(); if (Array.isArray(R) && R.length) { S.gates = R; S.gateErr = false; } else S.gateErr = !S.gates; soon(); },
+      function () { S.gateBusy = false; S.gateAt = Date.now(); S.gateErr = !S.gates; soon(); });
+  }
+  function gPct(g) { var n = Number(g.n) || 0, d = Number(g.d) || 0; if (!d) return ''; var v = n / d * 100, r = Math.round(v);
+    var tg = Number(g.target), flip = g.op === 'ge_pct' ? (r >= tg) !== (v >= tg) : g.op === 'le_pct' ? (r <= tg) !== (v <= tg) : false;
+    return (flip ? (Math.floor(v * 10) / 10).toFixed(1) : String(r)) + '%'; }
+  function gBar(g) { var tg = Number(g.target); return g.op === 'eq0' ? '0' + (T.en['u_' + g.id] ? '\u00a0' + t('u_' + g.id) : '') : g.op === 'ge' ? t('atLeast') + ' ' + tg + '\u00a0' + t('of') + '\u00a0' + g.d + (T.en['u_' + g.id] ? '\u00a0' + t('u_' + g.id) : '') : g.op === 'le_pct' ? t('atMost') + ' ' + tg + '%' : tg === 100 ? '100%' : t('atLeast') + ' ' + tg + '%'; }
+  function vGates() {
+    pullGates();
+    var h = '<section class="grp mvp" aria-labelledby="mvph"><h2 id="mvph">' + esc(t('mvp'));
+    if (!S.gates) return h + '</h2>' + (S.gateErr ? '<button type="button" class="fail" data-x="gateretry">' + esc(t('mvpFail')) + '</button>' : '<div class="skel" aria-label="' + esc(t('mvpLoading')) + '"></div>') + '</section>';
+    var G = S.gates.slice().sort(function (a, b) { return Number(a.sort) - Number(b.sort); }), pass = G.filter(function (g) { return g.ok === true; }), nd = G.filter(function (g) { return g.ok == null; }), bad = G.filter(function (g) { return g.ok === false; });
+    var notN = G.length - pass.length;
+    h += ' · ' + pass.length + '\u00a0' + esc(t('of')) + '\u00a0' + G.length + '</h2><p class="meta top0">' + esc(t('mvpSub')) + '</p>';
+    h += '<p class="sig' + (bad.length ? ' bad' : '') + '">' + glyph(bad.length ? 'failed' : nd.length ? 'none' : 'ok') + '<span>' + esc(!notN ? t('mvpAll') : t(notN === 1 ? 'mvpNot1' : 'mvpNotN').replace('{n}', notN) + (nd.length ? ' (' + t('mvpNd').replace('{n}', nd.length) + ')' : '') + '.') + '</span></p>';
+    h += '<div class="rows">' + bad.concat(nd, pass).map(function (g) {
+      var k = String(g.id || ''), st = g.ok === true ? 'ok' : g.ok === false ? 'failed' : 'none', op = S.open['g:' + k], nid = 'gn-' + k.replace(/[^a-z0-9_-]/gi, '');
+      var nm = T.en['g_' + k] ? t('g_' + k) : k, pc = g.op === 'ge_pct' || g.op === 'le_pct' ? gPct(g) : '';
+      var u = T.en['u_' + k] ? '\u00a0' + t('u_' + k) : '', sh = pc ? g.n + '\u00a0' + t('of') + '\u00a0' + g.d + ' · ' + pc : g.op === 'ge' ? g.n + '\u00a0' + t('of') + '\u00a0' + g.d + u : g.n + u;
+      var ph = g.ok == null ? t('ndP').replace('{m}', g.min_d).replace('{d}', g.d) : sh + ' · ' + t('barS') + ' ' + (g.op === 'eq0' ? '0' : gBar(g));
+      var bd = op ? '<div class="bd ag" id="gb-' + nid + '"><p><b>' + esc(t('nowW2')) + ':</b> <span dir="auto">' + esc((T.en['p_' + k] ? t('p_' + k) : '{n} / {d}').replace('{n}', g.n).replace('{d}', g.d) + (pc ? ' · ' + pc : '')) + '</span></p><p><b>' + esc(t('barW')) + ':</b> <bdi>' + esc(gBar(g)) + '</bdi></p>' + (g.ok == null ? '<p class="meta">' + esc(t('ndP').replace('{m}', g.min_d).replace('{d}', g.d)) + '</p>' : '')
+        + (T.en['w_' + k] ? '<p><b>' + esc(t('whyW')) + ':</b> <span dir="auto">' + esc(t('w_' + k)) + '</span></p>' : '') + '</div>' : '';
+      return '<div class="row rt gt"><div class="rh"><button type="button" class="rx" data-x="gexp" data-id="' + esc(k) + '" aria-expanded="' + !!op + '"' + (op ? ' aria-controls="gb-' + nid + '"' : '') + '>' + glyph(st)
+        + '<span class="ph"><b id="' + nid + '">' + esc(nm) + '</b><small><span class="gw g-' + st + '">' + esc(t(st === 'ok' ? 'passW' : st === 'failed' ? 'failW' : 'ndW')) + '</span> · <span dir="auto">' + esc(ph) + '</span></small></span>' + chev() + '</button></div>' + bd + '</div>';
+    }).join('') + '</div></section>';
+    return h;
+  }
   function cohortLine() { return t(win() === '7d' ? 'cohort7' : 'cohort30'); }
   function vEng() {
     pullFun();
@@ -374,11 +437,12 @@
   function vScore() {
     pullFun();
     var h = '<h1 class="sr">' + esc(t('score')) + '</h1><div class="hd"><p class="lead">' + esc(cohortLine()) + '</p>' + winSeg() + '</div>', st = funState();
-    if (st) return h + st;
+    if (st) return h + st + (on() ? vGates() : '');
     var f = fsum(), j = J(), m = safe(function () { return j.money.summary(); }, null), P = safe(function () { return j.raw('projects'); }, {}) || {};
     var lead = f.paid ? f.paid + ' ' + t('paidW') + ' · ' + ils(f.value) : f.proposals ? f.proposals + '\u00a0' + t(f.proposals === 1 ? 'prop1' : 'propN') : f.calls ? f.calls + '\u00a0' + t(f.calls === 1 ? 'call1' : 'callN') : t('noPaidYet');
     h += '<div class="tick sc"><b>' + f.replied + '</b><span><em>' + esc(t(f.replied === 1 ? 'repW1' : 'repW')) + ' ' + esc(t('fromSent').replace('{n}', f.sent)) + '</em><small>' + esc(lead) + (win() === '7d' ? ' · ' + esc(t('early')) : '') + '</small></span></div>';
     h += '<section class="grp"><h2>' + esc(t('ladder')) + '</h2><div class="panel">' + ladder(f) + '<p class="meta">' + esc(t('rateNote')) + '</p></div></section>';
+    h += vGates();
     var E = {}; (S.fun || []).forEach(function (r) { if (r.window === win()) E[r.engine] = 1; });
     var EL = Object.keys(E).map(function (e) { return { e: e, f: fsum(e) }; }).filter(function (x) { return x.f.drafted > 0; }).sort(function (a, b) { return b.f.sent - a.f.sent || b.f.drafted - a.f.drafted; });
     var erow = function (x) {
@@ -547,6 +611,8 @@
     if (x === 'hold') { leave(id, 'hold', function () { S.held[id] = 1; render(true); say(t('heldT2'), function () { delete S.held[id]; render(true); }); }); return; }
     if (x === 'unhold') { S.held = {}; render(true); return; }
     if (x === 'win') { S.win = id === '7d' ? '7d' : '30d'; try { localStorage.setItem('j8:win', S.win); } catch (e) {} render(true); return; }
+    if (x === 'gateretry') { S.gateAt = 0; S.gateFresh = true; S.gateErr = false; render(true); return; }
+    if (x === 'gexp') { S.open['g:' + id] = !S.open['g:' + id]; render(true); var gx = sr.querySelector('[data-x="gexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (gx) gx.focus(); return; }
     if (x === 'funretry') { S.funAt = 0; S.funErr = false; render(true); return; }
     if (x === 'full') { S.full[id] = 1; render(true); return; }
     if (x === 'aexp') { S.open['a:' + id] = !S.open['a:' + id]; render(true); var bx = sr.querySelector('[data-x="aexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (bx) bx.focus(); return; }
@@ -559,7 +625,7 @@
     if (x === 'lang') { try { localStorage.setItem('j8-lang', JSON.stringify(id === 'he' ? 'he' : 'en')); } catch (e) {} document.documentElement.lang = id === 'he' ? 'he' : 'en'; document.documentElement.dir = id === 'he' ? 'rtl' : 'ltr'; var tl = sr.getElementById('j2t'); if (tl) tl.classList.remove('on'); undoFn = null; render(true); return; }
     if (x === 'snd') { try { localStorage.setItem('j8:sound', id === 'off' ? 'off' : 'on'); } catch (e) {} render(true); if (id === 'on') tone('go'); return; }
     if (x === 'retry') { if (!j) { location.reload(); return; } var st0 = safe(function () { return j.status(); }, {}) || {}; (st0.org ? j.reload() : j.connect()).then(function () { render(true); }, function () { render(true); }); return; }
-    if (x === 'refresh') { if (j && j.reload) j.reload().then(function () { say(t('fresh')); render(true); }, function () { say(t('offline')); }); S.rankAt = 0; S.lintAt = 0; return; }
+    if (x === 'refresh') { if (j && j.reload) j.reload().then(function () { say(t('fresh')); render(true); }, function () { say(t('offline')); }); S.rankAt = 0; S.lintAt = 0; S.gateAt = 0; S.gateFresh = true; return; }
     if (x === 'signout') { if (j) j.auth.signOut().catch(function () {}); return; }
     if (x === 'copyopen') {
       var ra = apById(id); if (!ra) return; var rt = textOf(ra), rl = link(ra.link);

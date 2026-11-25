@@ -25,9 +25,10 @@
 <link rel="stylesheet" href="j13.css?v=14.0.0">
 <link rel="preload" href="j13w.css?v=14.1.0" as="style">
 <link rel="stylesheet" href="j20.css?v=15.5.0">
-<link rel="preload" href="j20w.css?v=15.6.0" as="style">
+<link rel="preload" href="j20w.css?v=15.7.0" as="style">
 </head>
 <body>
+<!-- J8NIX 2.0 · 15.7.0 (25 Nov 2026): MVP bar (m-1125-00): Score shows "Ready for testing", 10 live PASS/FAIL bars from rpc j8_mvp_gates (J8.gates). Bars + sources: design/MVP-BAR.md. Revert: git revert; drop function public.j8_mvp_gates(uuid). -->
 <!-- J8NIX 2.0 · 15.6.0 (25 Nov 2026): usability pass (d-1125-06): one word per action (Kill is now Stop; Hebrew Stop no longer reads like Undo; Talk tab no longer shares a word with Call; Hold is אחר כך), honest toasts, one colour meaning map (amber = waits for you, blue = moving, red = stop/risk, navy = your decision). List: design/USABILITY-1125.md. Revert: git revert. -->
 <!-- J8NIX 2.0 · 15.5.0 (25 Nov 2026): sign-in in the card-file look (one "Sign in" index card, step 1 of 2 / 2 of 2, tear line above the one dark button, EN/עברית switch, says where the code went, focus moves with the step; same forms and ids, so the auth flow is unchanged) + full Hebrew pass (sender line, channel names, tabs label). Revert: git revert. -->
 <!-- J8NIX 2.0 · 15.4.0 (25 Nov 2026): Guide. First open = 3-step guided start (who you are, your goal, your channels; each skippable), then a 4-stop tour you launch; a help line on every space (What / How / When) that folds once used and returns with a tip where you struggled. Progress: j8_members.prefs.guide; skips + struggles: j8_memory (fact, onboarding). Settings → Guide replays it. Revert: git revert. -->
@@ -249,13 +250,13 @@
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="toastMsg"></span><button id="undo" hidden><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg><span id="undoL">Undo</span></button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=15.3.0"></script>
+<script src="j8-data.js?v=15.7.0"></script>
 <script src="app.js?v=12.0.1"></script>
 <script src="alerts.js?v=12.0.1"></script>
 <script src="j11.js?v=12.0.1"></script>
 <script src="shell.js?v=12.0.1"></script>
 <script src="j13.js?v=14.1.0"></script>
-<script src="j20.js?v=15.6.0"></script>
+<script src="j20.js?v=15.7.0"></script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>

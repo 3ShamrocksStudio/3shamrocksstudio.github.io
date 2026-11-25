@@ -11,6 +11,7 @@
    7.1 adds:       later (j8_later: Dave's Later with a come-back time, Not needed and Done on a Today item)
    8.0 adds:       prefs (j8_members.prefs via j8_prefs_set: the member's Home layout)
    15.1 adds:      funnel() (read-only view j8_funnel: drafted → paid per engine + template, 7d / 30d; RLS via security_invoker)
+   15.7 adds:      gates() (rpc j8_mvp_gates: the MVP bar, 10 live PASS/FAIL gates; read-only)
    14.1 adds:      approvals.setAutopilot(id, 'ask'|'hold'|'off') (j8_template_autopilot: templates only, extra.autopilot only)
    Writes are optimistic and return Promises; on failure they reject with {code}.
    Needs vendor/supabase.js loaded first. Shapes: ops/brain/ARMS-CONTRACT.md.
@@ -28,7 +29,7 @@ var J8 = (function () {
   var DROP = ['org_id', 'extra']; // updated_at stays on docs: the app's "since you last looked" line reads it
   var sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'j8nix-v4-auth' } });
   var data = {}, ver = {}, subs = { status: [], orgs: [], auth: [] }, state = { connected: false, error: null, org: null, role: null, user: null };
-  var orgs = [], channel = null, poll = null, rankC = null, lintC = null, funC = null;
+  var orgs = [], channel = null, poll = null, rankC = null, lintC = null, funC = null, gateC = null;
   COLS.forEach(function (c) { data[c] = {}; ver[c] = {}; subs[c] = []; });
 
   function now() { return new Date().toISOString(); }
@@ -237,6 +238,14 @@ var J8 = (function () {
       if (funC && funC.org === state.org && Date.now() - funC.t < 6e4) return funC.v;
       var r = await sb.from('j8_funnel').select('engine,template_id,window,drafted,approved,sent,replied,calls,proposals,paid,value_ils').eq('org_id', state.org); if (r.error) return null;
       funC = { org: state.org, t: Date.now(), v: r.data || [] }; return funC.v;
+    },
+    /* 15.7: the MVP bar (public.j8_mvp_gates, security invoker, viewer+, read-only): 10 live ready-for-testing gates,
+       ok null = not enough data yet. Cached for a minute; null when offline or refused. */
+    gates: async function (fresh) {
+      if (!state.org) return null;
+      if (!fresh && gateC && gateC.org === state.org && Date.now() - gateC.t < 6e4) return gateC.v;
+      var r = await sb.rpc('j8_mvp_gates', { p_org: state.org }); if (r.error) return null;
+      gateC = { org: state.org, t: Date.now(), v: r.data || [] }; return gateC.v;
     },
     auth: auth,
     /* 13.1: backward plans (public.j8_plans). choose() records the user's pick of a plan option (human tap only). */
