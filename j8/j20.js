@@ -7,16 +7,20 @@
    sign out). Decisions: Go (approve) · Hold (later this session) · Stop (not now = kill) · Change (edit, then it goes) ·
    Go all (batch, 3 previews first) · outcomes (Replied / Call / Proposal / Won / Lost) · Done (your step) · Copy & open /
    Mark sent (by hand). Every Go / Stop / Done shows Undo for 6 s. Keys: G = Go · H = Hold · X = Stop · E = Change ·
-   1–4 = spaces. Sound: short soft tones on decisions only (Settings → Sound). Hebrew: Settings → עברית (RTL).
+   1–6 = spaces (15.1). Sound: short soft tones on decisions only (Settings → Sound). Hebrew: Settings → עברית (RTL).
    Old app: /j8/classic/ (14.1 as it was). Research + sources: j8/design/V20-NOTES.md. Revert: git revert of the 15.0 commit.
+   15.1.0 (25 Nov 2026) · slice 2 (backlog d-1125-02b): two new spaces, Engines (butter) and Score (sky-cyan). Engines = one row per
+   active engine: one number (replies), a status word (N wait for you / Moving / Quiet), tap for now, next and its funnel; parked or
+   hidden engines fold under Resting. Score = drafts made in the window and where they are now (j8_funnel via J8.funnel), "X of N"
+   until a step has 20, by engine, money booked. Keys 1–6. Revert: git revert of the 15.1 commit.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.0.0';
+  var VER = '15.1.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
-  var S = { sp: 'today', held: {}, gone: {}, arm: {}, open: {}, edit: null, editTx: '', talk: '', full: {}, bprev: null, busy: false, rankAt: 0, lintAt: 0 };
+  var S = { sp: 'today', held: {}, gone: {}, arm: {}, open: {}, edit: null, editTx: '', talk: '', full: {}, bprev: null, busy: false, rankAt: 0, lintAt: 0, win: (function () { try { return localStorage.getItem('j8:win') === '7d' ? '7d' : '30d'; } catch (e) { return '30d'; } })(), fun: null, funAt: 0, funBusy: false, funErr: false };
   var host, sr, W, C, undoFn = null, toastT = 0, raf = 0, pend = false;
 
   /* ---------- words (EN / HE) ---------- */
@@ -33,7 +37,13 @@
       upNext: 'Up next', approved: 'Approved.', stopped: 'Stopped. It will not be sent.', undo: 'Undo', back: 'Back to waiting.',
       saved: 'Saved', doneT: 'Done. Nice.', notConn: 'Not connected. Try again in a moment.', couldnt: 'Could not save. Nothing changed.', copied: 'Copied. Paste and send.',
       sentBy: 'Marked sent.', approvedN: 'Approved', blocked: 'Blocked by the checker:', hardAgain: 'Tap again: send anyway', why: 'Why now', where: 'Where', sentOn: 'Sent',
-      soonGo: 'Hold', tplOk: 'Approved', tplWait: 'Waits for your OK', moreN: 'more like these', live: 'Live', offline: 'Offline', saved2: 'Saved copy', newV: 'New: J8NIX 2.0' },
+      soonGo: 'Hold', tplOk: 'Approved', tplWait: 'Waits for your OK', moreN: 'more like these', live: 'Live', offline: 'Offline', saved2: 'Saved copy', newV: 'New: J8NIX 2.0',
+      eng: 'Engines', score: 'Score', window: 'Time window', w7d: '7 days', w30d: '30 days', engSub: 'Each engine, one number: replies.', waitFor: 'wait for you', moving: 'Moving', quiet: 'Quiet',
+      fromSent: 'from {n} sent', noneSent: '{n} drafted, none sent yet', moreEng: 'more with nothing sent yet', call1: 'call', callN: 'calls', prop1: 'proposal', propN: 'proposals', paidW: 'paid', notCounted: 'Not counted yet', notYet: 'not yet', nowW: 'Now:', nextW: 'Next:', ncWhy: 'Counting starts when J8 drafts a message for this engine.',
+      seeWait: 'See what waits', resting: 'Resting', restSub: 'Parked or hidden. Their numbers still count.', cohort30: 'Drafts made in the last 30 days, and where they are now.', cohort7: 'Drafts made in the last 7 days, and where they are now.',
+      noPaidYet: 'No calls or money yet', early: 'still early', ladder: 'From draft to paid', rateNote: 'Each step shows how many of the step before. Small numbers stay as "X of N"; a percent shows only when the step before has 20 or more and this step has 5 or more.',
+      byEng: 'By engine', general: 'General', money: 'Money', booked: 'Booked so far', goal: 'Goal', updated: 'Counted at',
+      s_drafted: 'Drafted', s_approved: 'Approved', s_sent: 'Sent', s_replied: 'Replied', s_calls: 'Call', s_proposals: 'Proposal', s_paid: 'Paid' },
     he: { today: 'היום', queue: 'בתור', talk: 'שיחה', set: 'הגדרות', waiting: 'מחכים לך', sent7: 'נשלחו · 7 ימים', rep7: 'תשובות · 7 ימים',
       pulse: 'ריצות סוכנים · 24 שעות', now: 'עכשיו', h24: 'לפני 24 שעות', deck: 'אחד בכל פעם', of: 'מתוך', go: 'שלח', hold: 'דחה', sentW: 'נשלחו', repW: 'תשובות', repW1: 'תשובה', d7: '7 ימים אחרונים', leftOut: 'נחסמו ולא נכללו', resumed: 'השליחה פועלת.', heldT2: 'נדחה לאחר כך.', tplLine: 'נשלחו', tplRep: 'תשובות', sending: 'שליחה', okW: 'תקינות', failedW: 'נכשלו', stop: 'עצור', tapStop: 'הקש שוב', change: 'שנה',
       save: 'שמור ושלח', cancel: 'ביטול', readAll: 'קרא הכול', goAll: 'שלח הכול', seeAll: 'הצג 3 קודם', done: 'בוצע', copyOpen: 'העתק ופתח', copy: 'העתק', markSent: 'סמן כנשלח',
@@ -46,7 +56,13 @@
       upNext: 'הבא בתור', approved: 'אושר.', stopped: 'נעצר. זה לא יישלח.', undo: 'בטל', back: 'חזר להמתנה.',
       saved: 'נשמר', doneT: 'בוצע. יפה.', notConn: 'אין חיבור. נסה שוב עוד רגע.', couldnt: 'לא נשמר. שום דבר לא השתנה.', copied: 'הועתק. הדבק ושלח.',
       sentBy: 'סומן כנשלח.', approvedN: 'אושרו', blocked: 'נחסם בבדיקה:', hardAgain: 'הקש שוב: שלח בכל זאת', why: 'למה עכשיו', where: 'איפה', sentOn: 'נשלח',
-      soonGo: 'המתנה', tplOk: 'מאושרת', tplWait: 'מחכה לאישור שלך', moreN: 'עוד כאלה', live: 'מחובר', offline: 'לא מחובר', saved2: 'עותק שמור', newV: 'חדש: J8NIX 2.0' }
+      soonGo: 'המתנה', tplOk: 'מאושרת', tplWait: 'מחכה לאישור שלך', moreN: 'עוד כאלה', live: 'מחובר', offline: 'לא מחובר', saved2: 'עותק שמור', newV: 'חדש: J8NIX 2.0',
+      eng: 'מנועים', score: 'תוצאות', window: 'טווח זמן', w7d: '7 ימים', w30d: '30 ימים', engSub: 'לכל מנוע מספר אחד: תשובות.', waitFor: 'מחכים לך', moving: 'בתנועה', quiet: 'שקט',
+      fromSent: 'מתוך {n} שנשלחו', noneSent: 'טיוטות: {n}, עוד לא נשלח', moreEng: 'עוד מנועים שעוד לא שלחו', call1: 'שיחה', callN: 'שיחות', prop1: 'הצעה', propN: 'הצעות', paidW: 'שולמו', notCounted: 'עוד לא נספר', notYet: 'עוד לא', nowW: 'עכשיו:', nextW: 'הבא:', ncWhy: 'הספירה מתחילה כש-J8 מנסח הודעה למנוע הזה.',
+      seeWait: 'מה מחכה', resting: 'במנוחה', restSub: 'מוקפאים או מוסתרים. המספרים שלהם עדיין נספרים.', cohort30: 'טיוטות מ-30 הימים האחרונים, ואיפה הן עכשיו.', cohort7: 'טיוטות מ-7 הימים האחרונים, ואיפה הן עכשיו.',
+      noPaidYet: 'עוד אין שיחות או כסף', early: 'עוד מוקדם', ladder: 'מטיוטה לתשלום', rateNote: 'כל שלב מראה כמה מתוך השלב הקודם. מספרים קטנים נשארים כמו שהם (למשל 2 מתוך 23); אחוז מופיע רק כשבשלב הקודם יש 20 ומעלה ובשלב הזה 5 ומעלה.',
+      byEng: 'לפי מנוע', general: 'כללי', money: 'כסף', booked: 'נסגר עד עכשיו', goal: 'יעד', updated: 'נספר בשעה',
+      s_drafted: 'טיוטות', s_approved: 'אושרו', s_sent: 'נשלחו', s_replied: 'ענו', s_calls: 'שיחה', s_proposals: 'הצעה', s_paid: 'שולם' }
   };
   function lang() { try { return JSON.parse(localStorage.getItem('j8-lang')) === 'he' ? 'he' : 'en'; } catch (e) { return 'en'; } }
   function t(k) { var L = T[lang()]; return L[k] != null ? L[k] : T.en[k] != null ? T.en[k] : k; }
@@ -222,6 +238,86 @@
       : '<p class="empty">' + esc(on() ? t('noMsg') : t('loading')) + '</p>';
     return h + '</div><div class="comp"><label class="sr" for="j2say">' + esc(t('talkPh')) + '</label><textarea id="j2say" data-say="1" dir="auto" rows="1" placeholder="' + esc(t('talkPh')) + '">' + esc(S.talk) + '</textarea><button type="button" class="b go" data-x="say">' + esc(t('send')) + '</button></div>';
   }
+  /* ---------- 15.1 Engines + Score (backlog d-1125-02b). Numbers come only from public.j8_funnel (J8.funnel), j8_projects,
+     j8_approvals and j8_money. Funnel = drafts made in the window and where they are now (a cohort). Small counts read as
+     "X of N"; a percent shows only when N ≥ 20 (research: small samples look more certain than they are). ---------- */
+  var STG = ['drafted', 'approved', 'sent', 'replied', 'calls', 'proposals', 'paid'];
+  function win() { return S.win === '7d' ? '7d' : '30d'; }
+  function pullFun() {
+    var j = J(); if (!j || !j.funnel || !on() || S.funBusy || Date.now() - S.funAt < 6e4) return;
+    S.funBusy = true;
+    j.funnel().then(function (R) { S.funBusy = false; S.funAt = Date.now(); if (Array.isArray(R)) { S.fun = R; S.funErr = false; } else S.funErr = !S.fun; soon(); },
+      function () { S.funBusy = false; S.funAt = Date.now(); S.funErr = !S.fun; soon(); });
+  }
+  function fsum(eng, w) {
+    var o = { n: 0, value: 0 }; STG.forEach(function (k) { o[k] = 0; });
+    (S.fun || []).forEach(function (r) { if (r.window !== (w || win()) || (eng && r.engine !== eng)) return; o.n++; STG.forEach(function (k) { o[k] += Number(r[k]) || 0; }); o.value += Number(r.value_ils) || 0; });
+    return o;
+  }
+  function pidOf(product) { var P = safe(function () { return J().raw('projects'); }, {}) || {}, s = String(product || '').trim(); if (!s) return ''; if (P[s]) return s;
+    return Object.keys(P).filter(function (id) { return String(P[id].name || '').trim().toLowerCase() === s.toLowerCase(); })[0] || s; }
+  function engOf(c) { var a = c.a || (c.b && c.b.L && c.b.L[0]); return a ? pidOf(a.product) : c.t ? String(c.t.project_id || '') : ''; }
+  function waitBy() { var o = {}; deck(true).forEach(function (c) { var e = engOf(c); if (e) o[e] = (o[e] || 0) + 1; }); return o; }
+  function sent7By() { var o = {}, from = Date.now() - 7 * 864e5; aps().forEach(function (a) { var ts = pd(a.sent_at); if (a.status === 'sent' && !isTpl(a) && !isNaN(ts) && ts >= from) { var e = pidOf(a.product); o[e] = (o[e] || 0) + 1; } }); return o; }
+  function ils(n) { return '₪' + Math.round(Number(n) || 0).toLocaleString('en-US'); }
+  function usd(n) { n = Number(n) || 0; return '$' + (n >= 1e6 && n % 1e6 === 0 ? n / 1e6 + 'M' : Math.round(n).toLocaleString('en-US')); }
+  function nOf(n, N) { return N >= 20 && n >= 5 ? Math.round(n / N * 100) + '%' : n + '\u00a0' + t('of') + '\u00a0' + N; }
+  function winSeg() { return '<span class="seg win" role="group" aria-label="' + esc(t('window')) + '">' + ['7d', '30d'].map(function (w) { return '<button type="button" class="b sm" data-x="win" data-id="' + w + '" aria-pressed="' + (win() === w) + '">' + esc(t('w' + w)) + '</button>'; }).join('') + '</span>'; }
+  function ladder(f, compact) {
+    var top = Math.max(1, f.drafted);
+    return '<ol class="lad' + (compact ? ' sm' : '') + '">' + STG.map(function (k, i) {
+      var v = f[k], prev = i ? f[STG[i - 1]] : 0, w = i && v > 0 ? Math.max(1.5, v / top * 100) : 0; /* no bar on Drafted: it is always full */
+      var rate = i && prev > 0 ? nOf(v, prev) : '';
+      return '<li><span class="st">' + esc(t('s_' + k)) + '</span><b>' + v + '</b><span class="rt">' + esc(rate) + (k === 'paid' && f.value > 0 ? ' · ' + esc(ils(f.value)) : '') + '</span><i style="width:' + w.toFixed(2) + '%"></i></li>'; }).join('') + '</ol>';
+  }
+  function funState() { if (S.fun) return ''; if (!on() && !aps().length) return failed() ? '<button type="button" class="fail" data-x="retry">' + esc(t('fail')) + '</button>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>';
+    return S.funErr ? '<button type="button" class="fail" data-x="funretry">' + esc(t('fail')) + '</button>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>'; }
+  function cohortLine() { return t(win() === '7d' ? 'cohort7' : 'cohort30'); }
+  function vEng() {
+    pullFun();
+    var h = '<h1 class="sr">' + esc(t('eng')) + '</h1><div class="hd"><p class="lead">' + esc(t('engSub')) + '</p>' + winSeg() + '</div>', st = funState();
+    if (st) return h + st;
+    var j = J(), all = safe(function () { return Object.keys(j.raw('projects')).map(function (id) { return Object.assign({ id: id }, j.raw('projects')[id]); }); }, []);
+    var ord = function (a, b) { var x = Number(a.order), y = Number(b.order); return (isNaN(x) || a.order == null ? 99 : x) - (isNaN(y) || b.order == null ? 99 : y) || String(a.name).localeCompare(String(b.name)); };
+    all = all.filter(function (p) { return p.status !== 'killed' && p.status !== 'done'; }).sort(ord);
+    var act = all.filter(function (p) { return !p.hidden && p.status !== 'parked'; }), rest = all.filter(function (p) { return p.hidden || p.status === 'parked'; });
+    var WB = waitBy(), S7 = sent7By();
+    var row = function (p) {
+      var f = fsum(p.id), any = fsum(p.id, '30d').drafted + fsum(p.id, '7d').drafted > 0, wt = WB[p.id] || 0, mv = S7[p.id] || 0, op = S.open['e:' + p.id];
+      var stw = wt ? '<span class="stw sw-w">' + wt + ' ' + esc(t('waitFor')) + '</span>' : mv ? '<span class="stw sw-m">' + esc(t('moving')) + '</span>' : '<span class="stw sw-q">' + esc(t('quiet')) + '</span>';
+      var ph = any && !f.sent ? t('noneSent').replace('{n}', f.drafted) : any ? t('fromSent').replace('{n}', f.sent) + (f.calls ? ' · ' + f.calls + '\u00a0' + t(f.calls === 1 ? 'call1' : 'callN') : '') + (f.paid ? ' · ' + f.paid + '\u00a0' + t('paidW') : '') : t('notCounted');
+      var kpi = any ? '<span class="kpi"><b>' + f.replied + '</b><small>' + esc(t(f.replied === 1 ? 'repW1' : 'repW')) + '</small></span>' : '<span class="kpi nc"><b aria-hidden="true">–</b></span>';
+      var bd = '';
+      if (op) {
+        bd = '<div class="bd eng">' + (p.now ? '<p><b>' + esc(t('nowW')) + '</b> <span dir="auto">' + esc(cut(p.now, 240)) + '</span></p>' : '') + (p.next ? '<p><b>' + esc(t('nextW')) + '</b> <span dir="auto">' + esc(cut(p.next, 240)) + '</span></p>' : '')
+          + (any ? '<p class="meta">' + esc(cohortLine()) + '</p>' + ladder(f, true) : '<p class="meta">' + esc(t('ncWhy')) + '</p>')
+          + (wt ? '<div class="sub"><button type="button" class="lnk" data-x="sp" data-id="queue">' + esc(t('seeWait')) + ' (' + wt + ')</button></div>' : '') + '</div>';
+      }
+      return '<details class="row er"' + (op ? ' open' : '') + ' data-k="e:' + esc(p.id) + '"><summary><span class="nt" style="--nc:' + esc(/^#[0-9a-f]{3,8}$/i.test(p.color || '') ? p.color : '#7E86A6') + '" aria-hidden="true"></span><span class="ph"><b dir="auto">' + esc(cut(p.name || p.id, 48)) + '</b><small>' + stw + ' · <span dir="auto">' + esc(ph) + '</span></small></span>' + kpi + chev() + '</summary>' + bd + '</details>';
+    };
+    h += '<section class="grp"><div class="rows">' + (act.length ? act.map(row).join('') : '<p class="empty">' + esc(t('none')) + '</p>') + '</div></section>';
+    if (rest.length) h += '<details class="grp fold"' + (S.open.rest ? ' open' : '') + ' data-k="rest"><summary><h2>' + esc(t('resting')) + ' · ' + rest.length + '</h2>' + chev() + '</summary>' + (S.open.rest ? '<p class="meta">' + esc(t('restSub')) + '</p><div class="rows">' + rest.map(row).join('') + '</div>' : '') + '</details>';
+    return h;
+  }
+  function vScore() {
+    pullFun();
+    var h = '<h1 class="sr">' + esc(t('score')) + '</h1><div class="hd"><p class="lead">' + esc(cohortLine()) + '</p>' + winSeg() + '</div>', st = funState();
+    if (st) return h + st;
+    var f = fsum(), j = J(), m = safe(function () { return j.money.summary(); }, null), P = safe(function () { return j.raw('projects'); }, {}) || {};
+    var lead = f.paid ? f.paid + ' ' + t('paidW') + ' · ' + ils(f.value) : f.proposals ? f.proposals + '\u00a0' + t(f.proposals === 1 ? 'prop1' : 'propN') : f.calls ? f.calls + '\u00a0' + t(f.calls === 1 ? 'call1' : 'callN') : t('noPaidYet');
+    h += '<div class="tick sc"><b>' + f.replied + '</b><span><em>' + esc(t(f.replied === 1 ? 'repW1' : 'repW')) + ' ' + esc(t('fromSent').replace('{n}', f.sent)) + '</em><small>' + esc(lead) + (win() === '7d' ? ' · ' + esc(t('early')) : '') + '</small></span></div>';
+    h += '<section class="grp"><h2>' + esc(t('ladder')) + '</h2><div class="panel">' + ladder(f) + '<p class="meta">' + esc(t('rateNote')) + '</p></div></section>';
+    var E = {}; (S.fun || []).forEach(function (r) { if (r.window === win()) E[r.engine] = 1; });
+    var EL = Object.keys(E).map(function (e) { return { e: e, f: fsum(e) }; }).filter(function (x) { return x.f.drafted > 0; }).sort(function (a, b) { return b.f.sent - a.f.sent || b.f.drafted - a.f.drafted; });
+    var erow = function (x) {
+      var nm = P[x.e] ? P[x.e].name : x.e === 'p-general' ? t('general') : x.e;
+      return '<div class="row"><div class="rh"><span class="ph"><b dir="auto">' + esc(cut(nm, 48)) + '</b><small>' + esc(t('s_drafted')) + ' ' + x.f.drafted + ' · ' + esc(t('s_sent')) + ' ' + x.f.sent + '</small></span><span class="kpi"><b>' + x.f.replied + '</b><small>' + esc(t(x.f.replied === 1 ? 'repW1' : 'repW')) + '</small></span></div></div>'; };
+    var ES = EL.filter(function (x) { return x.f.sent > 0; }), EN = EL.filter(function (x) { return !x.f.sent; });
+    if (EL.length) h += '<section class="grp"><h2>' + esc(t('byEng')) + '</h2><div class="rows">' + ES.map(erow).join('') + '</div>'
+      + (EN.length ? '<details class="fold in2"' + (S.open.ens ? ' open' : '') + ' data-k="ens"><summary><h2>+ ' + EN.length + ' ' + esc(t('moreEng')) + '</h2>' + chev() + '</summary>' + (S.open.ens ? '<div class="rows">' + EN.map(erow).join('') + '</div>' : '') + '</details>' : '') + '</section>';
+    if (m) h += '<section class="grp"><h2>' + esc(t('money')) + '</h2><div class="rows"><div class="row"><div class="rh"><span class="ph"><b>' + esc(t('booked')) + '</b><small>' + esc(m.goal_usd ? t('goal') + ' ' + usd(m.goal_usd) + (m.goal_date ? ' · ' + day(String(m.goal_date).slice(0, 10) + 'T12:00:00Z') + ' ' + String(m.goal_date).slice(0, 4) : '') : '') + '</small></span><span class="kpi"><b>' + esc(ils(m.booked_ils) + (m.booked_usd ? ' + ' + usd(m.booked_usd) : '')) + '</b></span></div></div></div></section>';
+    return h + '<p class="meta foot">' + esc(t('updated')) + ' ' + esc(hm(S.funAt)) + '</p>';
+  }
   var APW = { ask: 'ask', hold: 'auto', off: 'off' };
   function tplName(a) { if (a.label && a.label !== 'Template') return a.label; var m = /^tpl-t\d+-(.+)$/i.exec(String(a.id || '')), s = m ? m[1].replace(/-/g, ' ') : (a.subject || a.id || 'Template'); return s.charAt(0).toUpperCase() + s.slice(1); }
   function vSet() {
@@ -244,7 +340,7 @@
   }
 
   /* ---------- shell ---------- */
-  var SP = [['today', 't-today'], ['queue', 't-queue'], ['talk', 't-talk'], ['set', 't-set']];
+  var SP = [['today', 't-today'], ['queue', 't-queue'], ['eng', 't-eng'], ['score', 't-score'], ['talk', 't-talk'], ['set', 't-set']];
   function topBar() {
     var j = J(), x = X(), st = safe(function () { return j.status(); }, {}), p = safe(function () { return j.control.paused(); }, false);
     var s = x ? safe(function () { return x.sender ? x.sender() : null; }, null) : null, bad = p || (s && s.ok === false);
@@ -265,7 +361,7 @@
     pend = false;
     var y = window.scrollY;
     W.setAttribute('data-sp', S.sp); W.setAttribute('dir', lang() === 'he' ? 'rtl' : 'ltr'); W.setAttribute('lang', lang());
-    var body = S.sp === 'queue' ? vQueue() : S.sp === 'talk' ? vTalk() : S.sp === 'set' ? vSet() : vToday();
+    var body = S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'set' ? vSet() : vToday();
     C.innerHTML = topBar() + tabs() + '<main class="folder" id="j2main" tabindex="-1"><div class="in">' + body + '</div></main>'; /* the toast sits outside C, so a data refresh never wipes an Undo */
     window.scrollTo(0, y);
     if (S.edit) { var ta = sr.getElementById('j2ed'); if (ta && force === 'edit') { ta.focus(); } }
@@ -293,6 +389,8 @@
     if (x === 'undo') { if (undoFn) { var f = undoFn; undoFn = null; var te = sr.getElementById('j2t'); if (te) te.classList.remove('on'); f(); } return; }
     if (x === 'hold') { leave(id, 'hold', function () { S.held[id] = 1; render(true); say(t('heldT2'), function () { delete S.held[id]; render(true); }); }); return; }
     if (x === 'unhold') { S.held = {}; render(true); return; }
+    if (x === 'win') { S.win = id === '7d' ? '7d' : '30d'; try { localStorage.setItem('j8:win', S.win); } catch (e) {} render(true); return; }
+    if (x === 'funretry') { S.funAt = 0; S.funErr = false; render(true); return; }
     if (x === 'full') { S.full[id] = 1; render(true); return; }
     if (x === 'bprev') { S.bprev = id; render(true); return; }
     if (x === 'ed') { var ea = apById(id); S.edit = id; S.editTx = ea ? textOf(ea) : ''; render('edit'); return; }
@@ -375,7 +473,7 @@
     var tgt = e.composedPath ? e.composedPath()[0] : e.target, typing = tgt && /^(TEXTAREA|INPUT|SELECT)$/.test(tgt.tagName);
     if (typing) { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { var b = sr.querySelector(tgt.dataset.say ? '[data-x="say"]' : '[data-x="ed-save"]'); if (b) b.click(); } if (e.key === 'Escape' && S.edit) { S.edit = null; render(true); } return; }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (/^[1-4]$/.test(e.key)) { go(SP[+e.key - 1][0]); e.preventDefault(); return; }
+    if (/^[1-6]$/.test(e.key)) { go(SP[+e.key - 1][0]); e.preventDefault(); return; }
     if (S.sp !== 'today') return;
     var c = sr.querySelector('.deck .card'); if (!c) return;
     var sel = { g: '[data-x="go"],[data-x="batch-go"],[data-x="done"],[data-x="copyopen"]', h: '[data-x="hold"]', x: '[data-x="stop"]', e: '[data-x="ed"]' }[e.key.toLowerCase()];

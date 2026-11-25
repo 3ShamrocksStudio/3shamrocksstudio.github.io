@@ -12,9 +12,24 @@
 - **Hebrew:** Settings → עברית turns the whole app right-to-left with Hebrew labels.
 - **Desktop:** the same folder, with "Up next" beside the deck. Keys: G = Go · H = Hold · X = Stop · E = Change. Enter only ever presses the focused button.
 
+## 15.1.0: Engines and Score (slice 2, backlog d-1125-02b)
+
+- **Engines** (butter card, key 3): one row per active engine. Each row has its name and one short phrase on the left, and on the right one number: replies. The status word comes first in the phrase: **N wait for you** (amber), **Moving** (sent something in the last 7 days, blue) or **Quiet** (grey). The word is always written out, never shown by colour alone. Tap a row to see Now, Next and that engine's own draft-to-paid steps, plus "See what waits". If J8 has never drafted for an engine, it shows "Not counted yet" instead of a 0. Parked or hidden engines fold under **Resting**.
+- **Score** (sky card, key 4): one line on top, e.g. "9 replies from 83 sent · 1 call". It counts **drafts made in the last 30 (or 7) days, and where they are now**. The step list runs Drafted → Approved → Sent → Replied → Call → Proposal → Paid. Each step shows "X of N" of the step before; a percent shows only when the step before has 20 or more and the step itself has 5 or more. Below that come the engines that sent something (the others are folded) and money booked against the goal. The 7 d / 30 d choice is shared by both spaces and remembered on this device.
+- Data: `public.j8_funnel` (built in b-1125-01, security_invoker, viewer read), read through the new read-only `J8.funnel()` in j8-data.js; j8_projects, j8_approvals, j8_money. No new tables.
+- Six tabs on a phone: the six share the row evenly (57 px each at 375 px), with nothing hidden and no scrolling strip.
+
+Research for 15.1 (opened 25 Nov 2026):
+- Small counts: "X of N" beats a percent; with a small base the percent looks more certain than it is: https://stephanieevergreen.com/visualizing-small-datasets · https://hsph.harvard.edu/research/health-communication/resources/tips-for-using-numbers · https://evanmiller.org/how-not-to-sort-by-average-rating.html
+- A list of numbers instead of a tapered funnel, with a one-line takeaway on top: https://developer.apple.com/design/human-interface-guidelines/charting-data.md
+- Name the window and what it counts (cohort vs activity): https://linear.app/docs/insights.md · https://support.pipedrive.com/en/article/insights-reports-deal-conversion · https://amplitude.com/docs/analytics/charts/funnel-analysis/funnel-analysis-interpret
+- Status words with colour, never colour alone: https://www.w3.org/WAI/WCAG21/Understanding/Use-of-Color.html · https://www.nngroup.com/articles/dashboards-preattentive/
+- "Not measured yet" is its own state, not a 0: https://linear.app/docs/initiative-and-project-updates · https://nngroup.com/articles/empty-state-interface-design
+- Rows collapsed by default, inactive items folded away: https://www.nngroup.com/articles/mobile-accordions/ · https://culturedcode.com/things/support/articles/4001304/
+- Tabs: no more than about 5–6, never hidden, never two rows, targets ≥ 44 px: https://developer.apple.com/design/human-interface-guidelines/segmented-controls.md · https://www.nngroup.com/articles/tabs-used-right/ · https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
+
 ## Not in 2.0 yet (next slices, already in the backlog)
 
-- Engines + Scorecard (per engine, one number + its funnel).
 - Agents / Receipts (every run, routine on/off).
 - A new sign-in screen and a full Hebrew pass.
 

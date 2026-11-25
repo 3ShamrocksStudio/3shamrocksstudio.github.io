@@ -1,4 +1,4 @@
-/* J8NIX 2.0 (15.0.0, 25 Nov 2026) · "Card file". Lives inside the #j2 shadow root (j20.js). Document rules: j20.css.
+/* J8NIX 2.0 (15.1.0, 25 Nov 2026: + Engines butter #FFEDC2 and Score #D3EEF8 spaces, six tabs fit at 320 px) — first shipped 15.0.0 · "Card file". Lives inside the #j2 shadow root (j20.js). Document rules: j20.css.
    Idea: J8NIX is a card file on your desk. Each space is a coloured index card with a tab on top (Today, Queue, Talk,
    Settings); the open card is the folder you work in. Decisions are tickets: a big ticket number says how many wait,
    each ticket has a stub number and a tear line, and the decision sits below the tear. Fonts and radius from 3SDS (Bricolage Grotesque + Instrument Sans, 3/6 px).
@@ -8,12 +8,12 @@
 *{box-sizing:border-box}
 .w{--ink:#0C1030;--ink-2:#384064;--ink-3:#565E80;--card:#fff;--line:rgba(12,16,48,.14);--edge:#7E86A6;
   --stop:#A3162A;--stop-bg:#FDE4E8;--wait:#8A5300;--wait-bg:#FFF0D2;--ok:#1D4ED8;--ok-bg:#E3EBFF;
-  --t-today:#D6E6FF;--t-queue:#FFDCD5;--t-talk:#E3DDFF;--t-set:#E4E8EF;
+  --t-today:#D6E6FF;--t-queue:#FFDCD5;--t-eng:#FFEDC2;--t-score:#D3EEF8;--t-talk:#E3DDFF;--t-set:#E4E8EF;
   --tint:var(--t-today);--fd:"Bricolage Grotesque","Heebo",system-ui,sans-serif;--fb:"Instrument Sans","Heebo",system-ui,sans-serif;
   --in:cubic-bezier(0,0,.2,1);--out:cubic-bezier(.4,0,1,1);--std:cubic-bezier(.4,0,.2,1);
   --desk:#EEF0F5;min-height:100vh;background:var(--desk);color:var(--ink);font:400 16px/1.5 var(--fb);font-variant-numeric:tabular-nums;
   -webkit-font-smoothing:antialiased;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
-.w[data-sp="queue"]{--tint:var(--t-queue)}.w[data-sp="talk"]{--tint:var(--t-talk)}.w[data-sp="set"]{--tint:var(--t-set)}
+.w[data-sp="queue"]{--tint:var(--t-queue)}.w[data-sp="eng"]{--tint:var(--t-eng)}.w[data-sp="score"]{--tint:var(--t-score)}.w[data-sp="talk"]{--tint:var(--t-talk)}.w[data-sp="set"]{--tint:var(--t-set)}
 .w[dir="rtl"]{--fd:"Heebo","Bricolage Grotesque",system-ui,sans-serif;--fb:"Heebo","Instrument Sans",system-ui,sans-serif}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -176,3 +176,52 @@ details[open]>summary .chev{transform:rotate(90deg)}
   @keyframes fadeOnly{to{opacity:0}}@keyframes fadeIn{from{opacity:0}}
   .skel{animation:none}.w,.toast,.b,.chev{transition:none}
 }
+
+/* 15.1: six tabs. Under 560 px the tabs share the row evenly (no scrolling strip, nothing hidden); labels shrink, never wrap */
+@media (max-width:559px){
+  .tabs{gap:3px;padding:6px 8px 0}
+  .tab{flex:1 1 0;justify-content:center;padding:0 2px;font-size:12.5px;gap:4px;letter-spacing:-.01em}
+  .tab[aria-current="page"]{font-size:13.5px;letter-spacing:-.02em}
+  .tab em{min-width:18px;height:18px;padding:0 4px;font-size:11px;line-height:18px}
+  .folder{margin:0 8px}
+}
+@media (max-width:359px){.tab{font-size:11.5px}.tab[aria-current="page"]{font-size:12.5px}}
+
+/* 15.1 Engines + Score */
+.hd{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px}
+.hd .lead{margin:0;flex:1 1 220px}
+.seg.win .b.sm{min-width:76px}
+.er>summary{gap:10px;padding-inline-start:0;overflow:hidden;border-radius:6px}
+.nt{align-self:stretch;width:5px;flex:none;background:var(--nc);border-start-start-radius:6px;border-end-start-radius:6px;margin-block:-8px}
+.kpi{flex:none;text-align:end;min-width:52px}
+.kpi b{display:block;font:800 28px/1 var(--fd);letter-spacing:-.03em}
+.kpi small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
+.kpi.nc b{color:var(--ink-3)}
+.w[dir="rtl"] .kpi b{letter-spacing:0}
+.stw{font-weight:700}
+.stw.sw-w{color:var(--wait)}.stw.sw-m{color:var(--ok)}.stw.sw-q{color:var(--ink-3)}
+.fold.in2{margin-top:8px}
+.bd.eng{padding:2px 14px 14px 19px;border-top:1px solid var(--line)}
+.bd.eng>p{margin:10px 0 0;font-size:15px;color:var(--ink-2);overflow-wrap:anywhere}
+.bd.eng>p b{color:var(--ink)}
+.fold{margin-top:22px}
+.fold>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:44px;cursor:pointer}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary h2{font:700 15px/1.2 var(--fb);color:var(--ink-2);margin:0}
+.fold>.meta{margin:0 0 8px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:6px 16px 14px}
+.lad{list-style:none;margin:0;padding:0}
+.lad li{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(64px,auto);align-items:baseline;gap:12px;padding:10px 0 12px;border-bottom:1px solid var(--line)}
+.lad li:last-child{border-bottom:0}
+.lad .st{font-weight:600}
+.lad b{font:800 22px/1 var(--fd);letter-spacing:-.02em;text-align:end}
+.lad .rt{font-size:13px;color:var(--ink-3);text-align:end;white-space:nowrap}
+.lad i{position:absolute;inset-inline-start:0;bottom:4px;height:4px;border-radius:2px;background:var(--ink)}
+.lad.sm{margin-top:6px}.lad.sm li{padding:7px 0 9px}.lad.sm b{font-size:17px}.lad.sm .st{font-size:14px}
+.w[dir="rtl"] .lad b{letter-spacing:0}
+.tick.sc b{font-size:clamp(72px,20vw,112px)}
+.tick.sc em{font-size:20px}
+.foot{margin-top:18px}
+.w[dir="rtl"] .row .ph b{text-align:right} /* an English name inside a Hebrew row sits at the row's start */
+.tick.sc{margin-bottom:20px}
+.panel,.bd.eng .lad{max-width:640px}
