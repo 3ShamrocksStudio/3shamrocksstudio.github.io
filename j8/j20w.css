@@ -263,3 +263,24 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .rc time{flex:none;font-size:13px;font-weight:600;color:var(--ink-2)}
 .rc.is-bad{border-color:var(--stop)}
 .in>.grp.agl{margin-top:26px}
+
+/* 15.3 design choice: picture per option, pick one (aria-pressed), then Go. One column at every width so a specimen stays readable; Go gets its own row. */
+.acts.dz{grid-template-columns:1fr 1fr}.acts.dz .go{grid-column:1/-1}.acts.dz.one{grid-template-columns:1fr}
+.kind.k-des{background:var(--ok-bg);color:var(--ok)}
+.opts{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+.opt{display:flex;flex-direction:column;min-width:0}
+.opt .ob2{flex:1 0 auto}
+.ob2{display:flex;flex-direction:column;width:100%;padding:0;border:2px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);text-align:start;cursor:pointer;overflow:hidden;font:inherit;transition:border-color .12s var(--std),transform .12s var(--std)}
+.ob2:active{transform:scale(.985)}
+.ob2:focus-visible{outline:3px solid var(--ok);outline-offset:2px}
+.ob2[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+.pic{display:block;overflow:hidden;background:#0B0B0F;border-bottom:1px solid var(--line)}
+.pic img{display:block;width:100%;height:auto;aspect-ratio:1200/520;object-fit:contain}
+.on-l{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center;padding:10px 12px;min-height:44px}
+.on-l b{font:800 17px/1.2 var(--fd);letter-spacing:-.01em;overflow-wrap:anywhere}
+.w[dir="rtl"] .on-l b{letter-spacing:0}
+.on-l small{grid-column:2;font-size:14px;line-height:1.35;color:var(--ink-2)}
+.on-l .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--ink-3);box-sizing:border-box;background:#fff}
+.ob2[aria-pressed="true"] .dot{border:6px solid var(--ink)}
+.lnk.sm{font-size:14px;align-self:flex-start;padding:0 2px}
+@media (prefers-reduced-motion:reduce){.ob2{transition:none}.ob2:active{transform:none}}

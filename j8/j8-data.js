@@ -328,6 +328,26 @@ var J8 = (function () {
       edit: function (id, text) { var t = String(text || '').trim(); if (!t) return rej('empty'); return update('approvals', id, decide({ edited_body: t, status: 'edited' })); },
       kill: function (id) { return update('approvals', id, decide({ status: 'killed' })); },
       undo: function (id) { if ((data.approvals[id] || {}).status === 'sent') return rej('already_sent'); return update('approvals', id, { status: 'pending', decided_at: null, decided_by: null }); },
+      /* 15.3: design choice (kind 'design', extra.options [{key,name,image,link}]): Dave picks one option, stored in extra.chosen, and approves.
+         extra is not kept on the client, so the row is read fresh and written back with the version check (no lost update); key null = undo. */
+      choose: async function (id, key) {
+        if (!state.org) return rej('offline');
+        var r = await sb.from('j8_approvals').select('kind,status,extra,version').eq('org_id', state.org).eq('id', String(id)).maybeSingle();
+        if (r.error) return rej('denied', { message: r.error.message });
+        var row = r.data; if (!row || row.kind !== 'design') return rej('not_design');
+        var st = row.status || 'pending'; if (st !== 'pending' && st !== 'approved') return rej('closed');
+        var ex = Object.assign({}, row.extra && typeof row.extra === 'object' ? row.extra : {}), patch;
+        if (key == null) { ['chosen', 'chosen_name', 'chosen_at', 'chosen_by'].forEach(function (k) { delete ex[k]; }); patch = { status: 'pending', decided_at: null, decided_by: null, extra: ex }; }
+        else {
+          var opt = (Array.isArray(ex.options) ? ex.options : []).filter(function (o) { return o && String(o.key) === String(key); })[0]; if (!opt) return rej('bad_option');
+          Object.assign(ex, { chosen: String(opt.key), chosen_name: String(opt.name || ''), chosen_at: now(), chosen_by: byLine(), no_send: true });
+          patch = decide({ status: 'approved', extra: ex });
+        }
+        var u = await sb.from('j8_approvals').update(patch).eq('org_id', state.org).eq('id', String(id)).eq('version', row.version).select('id,version');
+        if (u.error) return rej('denied', { message: u.error.message });
+        if (!u.data || !u.data.length) { loadCol('approvals').catch(function () {}); return rej('conflict'); }
+        await loadCol('approvals').catch(function () {}); return true;
+      },
       /* only for label 'Send by hand' items (LinkedIn): Dave sent it himself */
       markSent: function (id) { return update('approvals', id, decide({ status: 'sent', sent_at: now(), result: 'Sent by hand (J8NIX)' })); },
       /* 11.7: Money home. Sent ✓ on a by-hand item (public.j8_hand_sent: status 'sent', sent_at, result only) and the reply loop

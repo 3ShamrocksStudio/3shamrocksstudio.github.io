@@ -19,11 +19,11 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.2.0';
+  var VER = '15.3.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
-  var S = { sp: 'today', held: {}, gone: {}, arm: {}, open: {}, edit: null, editTx: '', talk: '', full: {}, bprev: null, busy: false, rankAt: 0, lintAt: 0, win: (function () { try { return localStorage.getItem('j8:win') === '7d' ? '7d' : '30d'; } catch (e) { return '30d'; } })(), fun: null, funAt: 0, funBusy: false, funErr: false };
+  var S = { sp: 'today', pick: {}, held: {}, gone: {}, arm: {}, open: {}, edit: null, editTx: '', talk: '', full: {}, bprev: null, busy: false, rankAt: 0, lintAt: 0, win: (function () { try { return localStorage.getItem('j8:win') === '7d' ? '7d' : '30d'; } catch (e) { return '30d'; } })(), fun: null, funAt: 0, funBusy: false, funErr: false };
   var host, sr, W, C, undoFn = null, toastT = 0, raf = 0, pend = false;
 
   /* ---------- words (EN / HE) ---------- */
@@ -51,7 +51,8 @@
       rtns: 'Your agents', rtnSub: 'Each one runs by itself on its schedule. Switch one off and it skips its next runs.', ranW: 'Ran', failedAt: 'Failed', offW: 'Off', noRun: 'No run yet', noRun7: 'No run in 7 days', runningW: 'Running…', nothingW: 'nothing to do',
       always: 'Always on', alwaysWhy: 'This one cannot be switched off here. Pause sending in Settings stops everything.', whatW: 'What it does', whenW: 'When', lastW: 'Last run', isOn: '{n} is on.', isOff: '{n} is off.',
       rcpts: 'What ran', rcptSub: 'Every run in the last 7 days, newest first.', probOnly: 'Problems only', allRuns: 'All', noRcpt: 'No runs in the last 7 days.', noProb: 'No problems in the last 7 days.', todayW: 'Today', yestW: 'Yesterday',
-      startedW: 'Started', tookW: 'took', minW: 'min', proof: 'Open proof', showMore: 'Show more', st_ok: 'OK', st_failed: 'Failed', st_nothing: 'Nothing to do', st_run: 'Running', st_off: 'Off', st_none: 'No run', st_late: 'Quiet' },
+      startedW: 'Started', tookW: 'took', minW: 'min', proof: 'Open proof', showMore: 'Show more', st_ok: 'OK', st_failed: 'Failed', st_nothing: 'Nothing to do', st_run: 'Running', st_off: 'Off', st_none: 'No run', st_late: 'Quiet',
+      kDesign: 'Pick a design', pickOne: 'Pick one', seeFull: 'See it full size', goPick: 'Go with {n}', pickFirst: 'Pick one first', noneOf: 'None of these', chose: 'Chosen: {n}.' },
     he: { today: 'היום', queue: 'בתור', talk: 'שיחה', set: 'הגדרות', waiting: 'מחכים לך', sent7: 'נשלחו · 7 ימים', rep7: 'תשובות · 7 ימים',
       pulse: 'ריצות סוכנים · 24 שעות', now: 'עכשיו', h24: 'לפני 24 שעות', deck: 'אחד בכל פעם', of: 'מתוך', go: 'שלח', hold: 'דחה', sentW: 'נשלחו', repW: 'תשובות', repW1: 'תשובה', d7: '7 ימים אחרונים', leftOut: 'נחסמו ולא נכללו', resumed: 'השליחה פועלת.', heldT2: 'נדחה לאחר כך.', tplLine: 'נשלחו', tplRep: 'תשובות', sending: 'שליחה', okW: 'תקינות', failedW: 'נכשלו', stop: 'עצור', tapStop: 'הקש שוב', change: 'שנה',
       save: 'שמור ושלח', cancel: 'ביטול', readAll: 'קרא הכול', goAll: 'שלח הכול', seeAll: 'הצג 3 קודם', done: 'בוצע', copyOpen: 'העתק ופתח', copy: 'העתק', markSent: 'סמן כנשלח',
@@ -75,7 +76,8 @@
       rtns: 'הסוכנים שלך', rtnSub: 'כל אחד רץ לבד לפי הלוח שלו. כיבוי סוכן מדלג על הריצות הבאות שלו.', ranW: 'רץ', failedAt: 'נכשל', offW: 'כבוי', noRun: 'עוד לא רץ', noRun7: 'לא רץ 7 ימים', runningW: 'רץ עכשיו…', nothingW: 'לא היה מה לעשות',
       always: 'תמיד פועל', alwaysWhy: 'את הסוכן הזה אי אפשר לכבות כאן. השהיית שליחה בהגדרות עוצרת הכול.', whatW: 'מה הוא עושה', whenW: 'מתי', lastW: 'ריצה אחרונה', isOn: '{n} פועל.', isOff: '{n} כבוי.',
       rcpts: 'מה רץ', rcptSub: 'כל ריצה ב-7 הימים האחרונים, החדשה למעלה.', probOnly: 'רק בעיות', allRuns: 'הכול', noRcpt: 'אין ריצות ב-7 הימים האחרונים.', noProb: 'אין בעיות ב-7 הימים האחרונים.', todayW: 'היום', yestW: 'אתמול',
-      startedW: 'התחיל', tookW: 'נמשך', minW: 'דק׳', proof: 'פתח הוכחה', showMore: 'הצג עוד', st_ok: 'תקין', st_failed: 'נכשל', st_nothing: 'לא היה מה לעשות', st_run: 'רץ', st_off: 'כבוי', st_none: 'לא רץ', st_late: 'שקט' }
+      startedW: 'התחיל', tookW: 'נמשך', minW: 'דק׳', proof: 'פתח הוכחה', showMore: 'הצג עוד', st_ok: 'תקין', st_failed: 'נכשל', st_nothing: 'לא היה מה לעשות', st_run: 'רץ', st_off: 'כבוי', st_none: 'לא רץ', st_late: 'שקט',
+      kDesign: 'בחירת עיצוב', pickOne: 'בחר אחד', seeFull: 'לראות בגודל מלא', goPick: 'בחר ב־{n}', pickFirst: 'קודם בוחרים אחד', noneOf: 'אף אחד מאלה', chose: 'נבחר: {n}.' }
   };
   function lang() { try { return JSON.parse(localStorage.getItem('j8-lang')) === 'he' ? 'he' : 'en'; } catch (e) { return 'en'; } }
   function t(k) { var L = T[lang()]; return L[k] != null ? L[k] : T.en[k] != null ? T.en[k] : k; }
@@ -130,6 +132,8 @@
     var D = safe(function () { return x.desk(); }, null); if (!D) return [];
     var L = D.top.concat(D.rest).concat((D.ready || []).map(function (a) { return { k: 'hand', id: 'h:' + a.id, a: a }; })).concat((D.steps || []).map(function (tk) { return { k: 'tk', id: tk.id, t: tk }; }));
     L = L.filter(function (c) { return !S.gone[c.id]; });
+    var isD = function (c) { return c.k === 'ap' && c.a && c.a.kind === 'design'; }, pn = function (a) { var v = Number(a.pin != null ? a.pin : a.priority); return isNaN(v) ? 99 : v; };
+    L = L.filter(isD).map(function (c) { return { k: 'design', id: c.id, a: c.a }; }).sort(function (a, b) { return pn(a.a) - pn(b.a) || String(a.a.created || '').localeCompare(String(b.a.created || '')); }).concat(L.filter(function (c) { return !isD(c); })); /* 15.3: design choices first */
     var A = L.filter(function (c) { return !S.held[c.id]; });
     return all ? A.concat(L.filter(function (c) { return S.held[c.id]; }).map(function (c) { c.wasHeld = 1; return c; })) : A;
   }
@@ -139,9 +143,20 @@
     return whoOf(c.a);
   }
   function kindChip(c) {
-    var m = { rep: ['k-rep', t('kReply')], batch: ['', t('kBatch')], ap: ['', isTpl(c.a) ? t('kTpl') : t('kDraft')], tk: ['k-tk', t('kStep')], hand: ['k-tk', t('kHand')] }[c.k] || ['', ''];
+    var m = { rep: ['k-rep', t('kReply')], batch: ['', t('kBatch')], ap: ['', isTpl(c.a) ? t('kTpl') : t('kDraft')], tk: ['k-tk', t('kStep')], hand: ['k-tk', t('kHand')], design: ['k-des', t('kDesign')] }[c.k] || ['', ''];
     return '<span class="kind ' + m[0] + '">' + esc(m[1]) + (c.wasHeld ? ' · ' + esc(t('held')) : '') + '</span>';
   }
+  /* 15.3: design choice options: [{key,name,image,link}] from extra.options; one short phrase per option from the body line "<key> · <name> - <phrase>" or "<name> - <phrase>" */
+  function fill(s, n) { return String(s).split('{n}').join(n); }
+  function dOpts(a) {
+    var lines = String(a.body || '').split('\n');
+    return (Array.isArray(a.options) ? a.options : []).filter(function (o) { return o && o.key != null && o.name; }).slice(0, 6).map(function (o) {
+      var k = String(o.key), nm = String(o.name), ln = lines.filter(function (l) { var x = l.trim(); return (x.indexOf(k) === 0 && /^\s*[\u00b7.)\-:]/.test(x.slice(k.length))) || (x.indexOf(nm) === 0 && /^\s*[\u00b7\-\u2013\u2014:(]/.test(x.slice(nm.length))); })[0] || '';
+      var m = /\s[-\u2013\u2014:]\s+(.+)$/.exec(ln);
+      return { key: k, name: String(o.name), image: link(o.image), link: link(o.link), say: m ? cut(m[1], 60) : '' };
+    });
+  }
+  function dPick(a) { var k = S.pick[a.id] != null ? S.pick[a.id] : a.chosen != null ? String(a.chosen) : ''; return dOpts(a).some(function (o) { return o.key === k; }) ? k : ''; }
   function key(k) { return '<kbd aria-hidden="true">' + k + '</kbd>'; }
   function cardHtml(c, inList, total) {
     var h = cardBody(c, inList, total);
@@ -181,6 +196,17 @@
           + (hold || '') + '<button type="button" class="b stop' + (sk ? ' arm' : '') + '" data-x="stop" data-id="' + esc(ap.id) + '">' + esc(sk ? t('tapStop') : t('stop')) + (inList ? '' : key('X')) + '</button></div>';
         if (!plan && !isTpl(ap)) h += '<div class="sub"><button type="button" class="lnk" data-x="ed" data-id="' + esc(ap.id) + '">' + esc(t('change')) + '</button></div>';
       }
+    } else if (c.k === 'design') {
+      var da = c.a, O = dOpts(da), pk = dPick(da), po = O.filter(function (o) { return o.key === pk; })[0], dk = armed('st-' + da.id);
+      if (da.subject && da.subject !== whoOf(da)) h += '<p class="why" dir="auto">' + esc(cut(da.subject, 120)) + '</p>';
+      h += '<div class="opts" role="group" aria-label="' + esc(t('pickOne')) + '">' + O.map(function (o, i) {
+        var on2 = o.key === pk;
+        return '<div class="opt' + (on2 ? ' on' : '') + '"><button type="button" class="ob2" data-x="pick" data-id="' + esc(da.id) + '" data-w="' + esc(o.key) + '" aria-pressed="' + on2 + '">'
+          + (o.image ? '<span class="pic"><img src="' + esc(o.image) + '" alt="" loading="' + (i ? 'lazy' : 'eager') + '" decoding="async"></span>' : '')
+          + '<span class="on-l"><i class="dot" aria-hidden="true"></i><b dir="auto">' + esc(o.name) + '</b>' + (o.say ? '<small dir="auto">' + esc(o.say) + '</small>' : '') + '</span></button>'
+          + (o.link ? '<a class="lnk sm" href="' + esc(o.link) + '" target="_blank" rel="noopener noreferrer">' + esc(t('seeFull')) + '<span class="sr"> · ' + esc(o.name) + '</span></a>' : '') + '</div>'; }).join('') + '</div>';
+      h += '<div class="acts dz' + (inList ? ' one' : '') + '"><button type="button" class="b go" data-x="dgo" data-id="' + esc(da.id) + '"' + (po ? '' : ' disabled') + '>' + esc(po ? fill(t('goPick'), po.name) : t('pickFirst')) + (inList || !po ? '' : key('G')) + '</button>' + (hold || '')
+        + '<button type="button" class="b stop' + (dk ? ' arm' : '') + '" data-x="stop" data-id="' + esc(da.id) + '">' + esc(dk ? t('tapStop') : t('noneOf')) + (inList ? '' : key('X')) + '</button></div>';
     } else if (c.k === 'hand') {
       var ha = c.a, htx = textOf(ha), hl = link(ha.link), hk = armed('hs-' + ha.id);
       if (ha.channel) h += '<p class="why" dir="auto">' + esc(cut(ha.channel, 60)) + '</p>';
@@ -228,7 +254,7 @@
   function chev() { return '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>'; }
   function vQueue() {
     pull();
-    var x = X(), L = deck(true), G = x ? safe(function () { return x.goingOut(); }, []) : [], O = x ? safe(function () { return x.sent30(); }, []) : [];
+    var x = X(), L = deck(true), G = x ? safe(function () { return x.goingOut(); }, []).filter(function (a) { return a.kind !== 'design'; }) : [], O = x ? safe(function () { return x.sent30(); }, []) : [];
     var h = '<h1 class="sr">' + esc(t('queue')) + '</h1>';
     if (failed()) h += '<button type="button" class="fail" data-x="retry">' + esc(t('fail')) + '</button>';
     h += '<section class="grp"><h2>' + esc(t('waitingQ')) + ' · ' + L.length + '</h2>' + (L.length ? '<div class="rows">' + L.map(function (c) {
@@ -487,6 +513,7 @@
     if (x === 'aexp') { S.open['a:' + id] = !S.open['a:' + id]; render(true); var bx = sr.querySelector('[data-x="aexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (bx) bx.focus(); return; }
     if (x === 'prob') { S.prob = id === 'bad'; S.rcN = 30; render(true); return; }
     if (x === 'rmore') { S.rcN = (S.rcN || 30) + 30; render(true); return; }
+    if (x === 'pick') { S.pick[id] = el.getAttribute('data-w') || ''; tone('hold'); render(true); var pb = sr.querySelector('[data-x="pick"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"][aria-pressed="true"]'); if (pb) pb.focus(); return; }
     if (x === 'bprev') { S.bprev = id; render(true); return; }
     if (x === 'ed') { var ea = apById(id); S.edit = id; S.editTx = ea ? textOf(ea) : ''; render('edit'); return; }
     if (x === 'ed-x') { S.edit = null; render(true); return; }
@@ -512,6 +539,13 @@
       el.disabled = true;
       leave(id, 'go', function () {
         j.approvals.approve(id).then(function () { S.gone[id] = 1; render(true); say(t('approved') + ' ' + safe(function () { return X8.senderText(); }, ''), function () { j.approvals.undo(id).then(function () { delete S.gone[id]; render(true); say(t('back')); }, fail); }); }, fail);
+      }); return;
+    }
+    if (x === 'dgo') {
+      var d1 = apById(id); if (!d1 || !j.approvals.choose) return; var dk2 = dPick(d1), dn = (dOpts(d1).filter(function (o) { return o.key === dk2; })[0] || {}).name; if (!dk2) return;
+      el.disabled = true;
+      leave(id, 'go', function () {
+        j.approvals.choose(id, dk2).then(function () { S.gone[id] = 1; delete S.pick[id]; render(true); say(fill(t('chose'), dn), function () { j.approvals.choose(id, null).then(function () { delete S.gone[id]; S.pick[id] = dk2; render(true); say(t('back')); }, fail); }); }, fail);
       }); return;
     }
     if (x === 'stop' || x === 'kill') {
@@ -577,7 +611,7 @@
     if (/^[1-7]$/.test(e.key)) { go(SP[+e.key - 1][0]); e.preventDefault(); return; }
     if (S.sp !== 'today') return;
     var c = sr.querySelector('.deck .card'); if (!c) return;
-    var sel = { g: '[data-x="go"],[data-x="batch-go"],[data-x="done"],[data-x="copyopen"]', h: '[data-x="hold"]', x: '[data-x="stop"]', e: '[data-x="ed"]' }[e.key.toLowerCase()];
+    var sel = { g: '[data-x="go"],[data-x="dgo"]:not([disabled]),[data-x="batch-go"],[data-x="done"],[data-x="copyopen"]', h: '[data-x="hold"]', x: '[data-x="stop"]', e: '[data-x="ed"]' }[e.key.toLowerCase()];
     if (!sel) return; var btn = c.querySelector(sel); if (btn) { e.preventDefault(); btn.click(); }
   }, true);
 
