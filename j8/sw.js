@@ -1,4 +1,5 @@
-/* J8NIX 14.1.0 service worker: new j13.js / j13w.css / j8-data.js (Autopilot). Revert: git revert.
+/* J8NIX 15.0.0 service worker: J8NIX 2.0 shell (index.html, j20.js, j20.css); classic 14.1 files still cached for /j8/classic/. Revert: git revert.
+   J8NIX 14.1.0 service worker: new j13.js / j13w.css / j8-data.js (Autopilot). Revert: git revert.
    J8NIX 14.0.0 service worker: new j13.js / j13w.css / j8-data.js (Results). Revert: git revert.
    J8NIX 12.0.1 service worker: new j12.js only (Copy & open in Pit Wall).
    J8NIX 12.0.0 service worker: offline shell + web push. 12.0.0: Pit Wall files (j12.js, j12.css). Revert: sw-11.8.1.js.
@@ -6,8 +7,8 @@
    11.5.0: phone alerts follow Dave's rules (alerts.js): titles only, at most 3 a day bundled into one notification,
    quiet 22:00–08:00 and Shabbat, a seen alert never comes back. Revert: sw-11.4.0.js. */
 importScripts('alerts.js?v=12.0.1');
-var CACHE = 'j8nix-v14.1.0-1', ASTATE = 'j8alerts-v1';
-var SHELL = ['./', 'index.html', 'app.css?v=12.0.1', 'v11.css?v=12.0.1', 'j11.css?v=12.0.1', 'app.js?v=12.0.1', 'j11.js?v=12.0.1', 'shell.js?v=12.0.1', 'j8-data.js?v=14.1.0', 'j13.js?v=14.1.0', 'j13.css?v=14.0.0', 'j13w.css?v=14.1.0', 'alerts.js?v=12.0.1', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
+var CACHE = 'j8nix-v15.0.0-1', ASTATE = 'j8alerts-v1';
+var SHELL = ['./', 'index.html', 'j20.js?v=15.0.0', 'j20.css?v=15.0.0', 'index-14.1.0.html', 'classic/index.html', 'app.css?v=12.0.1', 'v11.css?v=12.0.1', 'j11.css?v=12.0.1', 'app.js?v=12.0.1', 'j11.js?v=12.0.1', 'shell.js?v=12.0.1', 'j8-data.js?v=14.1.0', 'j13.js?v=14.1.0', 'j13.css?v=14.0.0', 'j13w.css?v=14.1.0', 'alerts.js?v=12.0.1', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/studio.png',
   'brand/j8nix-wordmark-2026-11-17.svg', 'brand/j8nix-mark-8-2026-11-17.svg', 'brand/j8nix-2026-11-17.png', 'icons/j8-icon-2026-11-17.svg', 'icons/j8-192-2026-11-17.png', 'icons/badge-96.png', 'icons/j8-touch-180-2026-11-17.png'];
 
@@ -27,7 +28,7 @@ self.addEventListener('fetch', function (e) {
     if (e.request.mode === 'navigate') {
       var home = u.pathname === '/j8/' || u.pathname === '/j8/index.html';
       e.respondWith(fetch(home ? new Request(e.request.url, { cache: 'no-cache', credentials: 'same-origin' }) : e.request).then(function (r) { if (home && r.ok) { var c = r.clone(); caches.open(CACHE).then(function (ca) { ca.put('index.html', c); }); } return r; })
-        .catch(function () { return caches.match('index.html'); }));
+        .catch(function () { return caches.match(e.request, { ignoreSearch: true }).then(function (h) { return h || caches.match(u.pathname.indexOf('/j8/classic') === 0 ? 'classic/index.html' : 'index.html'); }); }));
       return;
     }
     e.respondWith(caches.match(e.request).then(function (hit) {
