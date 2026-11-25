@@ -6,6 +6,10 @@
    white on ink 18.54:1; stop #A3162A 7.76:1 on white; links #1D4ED8 ≥ 5.30:1; control edge #7E86A6 3.59:1 on white. */
 :host{all:initial;display:block}
 *{box-sizing:border-box}
+/* 15.4 colour meaning map (one colour, one meaning, everywhere):
+   navy fill on a button = your decision (Go, selected); ink on text, bars and ticks = plain data · amber = waits for you · blue = moving / good news / links / focus
+   red = stop, risk, failed, blocked · grey = quiet, off, no data · tab tints only name the space, they carry no meaning
+   money stays ink: the number speaks, no colour. */
 .w{--ink:#0C1030;--ink-2:#384064;--ink-3:#565E80;--card:#fff;--line:rgba(12,16,48,.14);--edge:#7E86A6;
   --stop:#A3162A;--stop-bg:#FDE4E8;--wait:#8A5300;--wait-bg:#FFF0D2;--ok:#1D4ED8;--ok-bg:#E3EBFF;
   --t-today:#D6E6FF;--t-queue:#FFDCD5;--t-eng:#FFEDC2;--t-score:#D3EEF8;--t-talk:#E3DDFF;--t-agents:#F8DCEB;--t-set:#E4E8EF;
@@ -89,8 +93,6 @@ button{cursor:pointer}
 @keyframes holdOutR{to{transform:translateX(60%) rotate(3deg);opacity:0}}
 .kind{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;border-radius:3px;padding:3px 8px;background:var(--wait-bg);color:var(--wait)}
 .kind.k-rep{background:var(--ok-bg);color:var(--ok)}
-.kind.k-tk{background:#ECEEF4;color:var(--ink-2)}
-.kind.k-stop{background:var(--stop-bg);color:var(--stop)}
 .card h3{font:800 24px/1.15 var(--fd);letter-spacing:-.025em;margin:10px 0 4px;overflow-wrap:anywhere}
 .w[dir="rtl"] .card h3{letter-spacing:0}
 .card .why{margin:0;color:var(--ink-2);font-size:15px}
@@ -112,6 +114,7 @@ textarea.ed{width:100%;min-height:150px;margin-top:14px;padding:12px;border:1px 
 .b.go{background:var(--ink);color:#fff}
 .b.stop{border-color:var(--stop);color:var(--stop)}
 .b.arm{background:var(--stop);border-color:var(--stop);color:#fff}
+.b.arm.cf{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 0 0 3px var(--ok-bg)} /* 15.4: second tap on a safe action (Done, Mark sent, Resume) stays navy; red is only for stop and risk */
 .b.sm{min-height:44px;font-size:14px}
 .b[aria-pressed="true"]{background:var(--ink);color:#fff}
 .b:disabled{opacity:.5;cursor:default}
@@ -237,7 +240,7 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .gl svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .gl.g-run svg{fill:currentColor;stroke:none}
 .gl.g-ok{color:var(--ok)}.gl.g-failed{color:#fff;background:var(--stop);border-color:var(--stop)}.gl.g-nothing{color:var(--ink-3)}
-.gl.g-off{color:var(--ink-3);border-style:dashed}.gl.g-none,.gl.g-late{color:var(--ink-3)}.gl.g-run{color:var(--wait)}
+.gl.g-off{color:var(--ink-3);border-style:dashed}.gl.g-none,.gl.g-late{color:var(--ink-3)}.gl.g-run{color:var(--ok)}
 .sig .gl{width:22px;height:22px;margin-top:-1px}.sig .gl svg{width:13px;height:13px}
 .top0{margin:-2px 0 10px}
 .rt>.rh{padding:6px 10px 6px 6px;gap:8px;cursor:default}
@@ -266,7 +269,6 @@ details[open]>summary .chev{transform:rotate(90deg)}
 
 /* 15.3 design choice: picture per option, pick one (aria-pressed), then Go. One column at every width so a specimen stays readable; Go gets its own row. */
 .acts.dz{grid-template-columns:1fr 1fr}.acts.dz .go{grid-column:1/-1}.acts.dz.one{grid-template-columns:1fr}
-.kind.k-des{background:var(--ok-bg);color:var(--ok)}
 .opts{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
 .opt{display:flex;flex-direction:column;min-width:0}
 .opt .ob2{flex:1 0 auto}
@@ -352,7 +354,7 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .hslip dd{margin:0;font-size:15px}
 .hslip ol{margin:0;padding-inline-start:18px}
 .hslip li{margin:0 0 2px}
-.htip{margin:10px 0 0;padding:8px 12px;background:var(--wait-bg);border-radius:3px;font-size:14px;color:var(--ink)}
-.htip b{color:var(--wait)}
+.htip{margin:10px 0 0;padding:8px 12px;background:#F3F5FA;border-inline-start:3px solid var(--edge);border-radius:3px;font-size:14px;color:var(--ink)} /* 15.5: a tip waits for nothing, so it is neutral, not amber */
+.htip b{color:var(--ink-2)}
 .goal{margin:0 0 14px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:6px;font-size:15px}
 @media (prefers-reduced-motion:reduce){.slip{animation:none}.tab.lift{transform:none}}

@@ -1,4 +1,4 @@
-/* J8NIX 15.5.0 service worker: sign-in in the 2.0 look + full Hebrew pass (j20.js, j20.css, index.html). Revert: git revert.
+/* J8NIX 15.6.0 service worker: usability pass, one word per action, one colour per meaning (on top of 15.5.0 sign-in + Hebrew; j20.js, j20w.css). Revert: git revert.
    J8NIX 15.4.0 service worker: J8NIX 2.0 Guide (guided start, tour, help on every space; j20.js, j20w.css). Revert: git revert.
    J8NIX 15.3.0 service worker: design choices with pictures, pinned first (j20.js, j20w.css, j8-data.js). Revert: git revert.
    J8NIX 15.1.0 service worker: J8NIX 2.0 Engines + Score (j20.js, j20w.css, j8-data.js). Revert: git revert.
@@ -11,8 +11,8 @@
    11.5.0: phone alerts follow Dave's rules (alerts.js): titles only, at most 3 a day bundled into one notification,
    quiet 22:00–08:00 and Shabbat, a seen alert never comes back. Revert: sw-11.4.0.js. */
 importScripts('alerts.js?v=12.0.1');
-var CACHE = 'j8nix-v15.5.0-1', ASTATE = 'j8alerts-v1';
-var SHELL = ['./', 'index.html', 'app.css?v=12.0.1', 'v11.css?v=12.0.1', 'j11.css?v=12.0.1', 'app.js?v=12.0.1', 'j11.js?v=12.0.1', 'shell.js?v=12.0.1', 'j8-data.js?v=15.3.0', 'j13.js?v=14.1.0', 'j13.css?v=14.0.0', 'j13w.css?v=14.1.0', 'j20.js?v=15.5.0', 'j20.css?v=15.5.0', 'j20w.css?v=15.5.0', 'alerts.js?v=12.0.1', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
+var CACHE = 'j8nix-v15.6.0-1', ASTATE = 'j8alerts-v1';
+var SHELL = ['./', 'index.html', 'app.css?v=12.0.1', 'v11.css?v=12.0.1', 'j11.css?v=12.0.1', 'app.js?v=12.0.1', 'j11.js?v=12.0.1', 'shell.js?v=12.0.1', 'j8-data.js?v=15.3.0', 'j13.js?v=14.1.0', 'j13.css?v=14.0.0', 'j13w.css?v=14.1.0', 'j20.js?v=15.6.0', 'j20.css?v=15.5.0', 'j20w.css?v=15.6.0', 'alerts.js?v=12.0.1', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/studio.png',
   'brand/j8nix-wordmark-2026-11-17.svg', 'brand/j8nix-mark-8-2026-11-17.svg', 'brand/j8nix-2026-11-17.png', 'icons/j8-icon-2026-11-17.svg', 'icons/j8-192-2026-11-17.png', 'icons/badge-96.png', 'icons/j8-touch-180-2026-11-17.png'];
 
