@@ -84,3 +84,26 @@ Research: 3 parallel agents. What we took:
 - Status never by colour alone: a different glyph shape per status + a word (WCAG 1.4.1, 1.4.11). Targets ≥44 px (Apple HIG).
 - Relative times; Hebrew written by hand because ICU prints "שעתיים (2)" (MDN Intl.RelativeTimeFormat).
 - Run history by day, Problems only filter (Sentry daily rollup; Make "hide runs with no data").
+
+## 15.4 · Guide (backlog d-1125-05, 25 Nov 2026)
+What you see:
+- **First open: a guided start.** It asks 3 short questions on one ticket each: Who you are (name + what you do), Your goal (one tap, plus your own words if you want), Your channels (pick any). Each step shows "Step N of 3" with its name, and has Back and **Skip this**. **Skip setup** skips the rest.
+- **Channels are honest.** Email shows its real sender state (Connected · sending works / sending stopped / no send yet). Every other channel says "Picked · not set up yet". One link writes the ask to the team in Talk, and you press Send yourself.
+- **"You are set."** shows your answers, then **Show me around · 4 stops** or **Start working**. The tour never starts by itself.
+- **The tour has 4 stops:** Today · Queue · Engines and Score · Talk, Agents and Settings. It runs on the real screen, the space's tab lifts with an ink bar, and a slip says one line. You get Next, Back and End tour, plus Escape. "Stop N of 4" is read aloud through a polite live region.
+- **Every space has a help line.** It is one phrase with a "?" tile and **How it works**, which opens What / How (≤3 steps) / When. **Hide** removes it for good. Once you have used a space, the line folds to a small "?".
+- **The guide learns from what you do.** These signals count: opening the same help twice, Undo right after a decision, Back in the tour, 3 fast taps on one button, and over 20 s idle on a setup step. Each one is written once to j8_memory (kind fact, tags onboarding), and that space's help line comes back with a **Tip**. The tip opens by itself at most once a session and 3 times per space, and never after Hide.
+- **Score shows your goal** against its real count, e.g. "Your goal: Book calls · Call: 2 in 30 days".
+- **Settings → Guide:** Set up again (your answers stay), Show me around, Help lines on screens on/off, Show hints again.
+- Data: progress is saved in `j8_members.prefs.guide` through `j8_prefs_set` (own row only), with a local copy. Answers, skips and struggles go to `j8_memory`. There is no schema change.
+
+Research (3 parallel agents, 25 Nov):
+- Tours: 3–4 steps complete at 72–74%, while 7+ steps complete at 16%. Tours the user launches complete at 67%, against 31% for timed ones. Progress indicators add 12%: https://www.chameleon.io/blog/mastering-product-tours · https://www.chameleon.io/blog/product-tour-benchmarks-highlights
+- Prefer pull help over push help. Skippable, findable again, one concept per card: https://www.nngroup.com/articles/onboarding-tutorials/ · https://www.nngroup.com/articles/mobile-tutorials/ · https://www.nngroup.com/articles/help-and-documentation/
+- Onboarding should be fast, fun and optional. If it was skipped, don't re-show it, and keep it in Settings. Tips are 1–2 sentences, and none for a feature already used: https://developer.apple.com/design/human-interface-guidelines/onboarding · https://developer.apple.com/design/human-interface-guidelines/offering-help
+- Ask few questions, one tap each, and say why you ask: https://userpilot.com/blog/welcome-survey/ · https://goodux.appcues.com/blog/duolingo-user-onboarding
+- Status must be real. Steps outside the app are named, not faked: https://www.nngroup.com/articles/smart-device-onboarding/ · https://shopify.dev/docs/api/app-home/latest/patterns/compositions/setup-guide.md
+- Wizards: say how many steps there are, name each one, and give an explicit Back: https://www.nngroup.com/articles/wizards/
+- The tour step is a non-modal dialog, not a tooltip. Escape works and focus is moved: https://www.w3.org/WAI/ARIA/apg/patterns/dialogmodal/ · https://www.w3.org/WAI/ARIA/apg/patterns/tooltip
+- Struggle signals: Undo/erase reveals over 80% of severe problems (https://research.google/pubs/undo-and-erase-events-as-indicators-of-usability-problems/). Rage taps are 3 within 1–2 s (https://docs.sentry.io/platforms/javascript/session-replay/issue-types).
+- Caps: 1 tip a session, a tip stops once the feature is used, dismiss = never again (https://chromium.googlesource.com/chromium/src/+/798e59c5275d4131797e8ea2e96e6c6000256b58/components/feature_engagement/README.md). Remember and adapt cautiously (https://www.microsoft.com/en-us/research/blog/guidelines-for-human-ai-interaction-design).

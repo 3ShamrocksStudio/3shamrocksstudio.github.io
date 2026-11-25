@@ -284,3 +284,75 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .ob2[aria-pressed="true"] .dot{border:6px solid var(--ink)}
 .lnk.sm{font-size:14px;align-self:flex-start;padding:0 2px}
 @media (prefers-reduced-motion:reduce){.ob2{transition:none}.ob2:active{transform:none}}
+/* 15.3 Guide (backlog d-1125-05). Guided start = one ticket per step under a named 3-step strip; tour = a slip pinned to the top of the
+   real space while its tab lifts; help = one line with a "?" tile (the lockup's square), opening to What / How / When.
+   Contrast: ink on white 18.54:1; ink-2 on #fff 10.2:1; step numbers white on ink 18.54:1; chips use the .b rules (2 px ink edge). */
+.w[data-sp="start"]{--tint:#DCE4F7}
+.gs{max-width:620px;margin:0 auto}
+.gsh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:4px 0 14px}
+.gsh h1{font:800 clamp(30px,8vw,44px)/1.02 var(--fd);letter-spacing:-.04em;margin:0 0 8px;outline:none}
+.w[dir="rtl"] .gsh h1{letter-spacing:0}
+.gsh .lead{margin:0}
+.gsh .lnk{flex:none;font-size:14px}
+.gsteps{list-style:none;display:flex;gap:6px;margin:0 0 14px;padding:0;counter-reset:none}
+.gsteps li{flex:1;display:flex;align-items:center;gap:8px;min-width:0;padding:8px 10px;border-radius:3px;background:rgba(255,255,255,.55);font-size:13px;font-weight:600;color:var(--ink-2)}
+.gsteps li i{flex:none;width:22px;height:22px;border-radius:3px;display:grid;place-items:center;font:800 12px/1 var(--fd);font-style:normal;border:2px solid var(--ink-3);color:var(--ink-2)}
+.gsteps li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gsteps li.cur{background:#fff;color:var(--ink);box-shadow:inset 0 -3px 0 var(--ink)}
+.gsteps li.cur i,.gsteps li.pst i{background:var(--ink);border-color:var(--ink);color:#fff}
+@media (max-width:420px){.gsteps li:not(.cur) span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.gsteps li:not(.cur){flex:0 0 auto}}
+.gcard h2{font:800 24px/1.15 var(--fd);letter-spacing:-.025em;margin:0}
+.w[dir="rtl"] .gcard h2{letter-spacing:0}
+.gl2{display:block;margin:16px 0 6px;font-size:14px;font-weight:700;color:var(--ink-2)}
+.gin{width:100%;min-height:52px;border:1px solid var(--edge);border-radius:3px;padding:0 12px;font-size:16px;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.gl2+.chips{margin-top:0}
+.chip{min-width:96px}
+.chip svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chs{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.chs li{display:flex;justify-content:space-between;gap:12px;padding:8px 12px;background:#F3F5FA;border-radius:3px;font-size:14px}
+.chs li span{color:var(--ink-2);text-align:end}
+.gact{grid-template-columns:auto 1fr auto;align-items:center}
+.gact .lnk{justify-self:center}
+.gact .b{min-width:112px;padding:0 18px}
+.gsum{margin:4px 0 0;display:flex;flex-direction:column;gap:12px}
+.gsum div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px}
+.gsum dt{font-size:13px;font-weight:700;color:var(--ink-3)}
+.gsum dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.chl{display:block}.chl b{font-weight:700}.chl small{font-weight:500;color:var(--ink-2);font-size:14px}
+@media (max-width:420px){.gsum div{grid-template-columns:1fr;gap:2px}}
+
+/* tour: the slip sits on the real space; its tab(s) lift with an ink edge */
+.tab.lift{transform:translateY(-4px);z-index:2;box-shadow:0 0 0 2px var(--ink)}
+.tab.lift::before{content:"";position:absolute;inset-inline:8px;top:-8px;height:4px;border-radius:2px;background:var(--ink)}
+.gcard{animation:none}
+.slip{position:relative;background:#fff;border:2px solid var(--ink);border-radius:6px;padding:16px 16px 12px;margin:0 0 18px;box-shadow:0 18px 40px -22px rgba(12,16,48,.5);animation:rise .225s var(--in)}
+.slip h2{font:800 22px/1.15 var(--fd);letter-spacing:-.02em;margin:0;outline:none}
+.w[dir="rtl"] .slip h2{letter-spacing:0}
+.slip p{margin:8px 0 0;font-size:16px;color:var(--ink)}
+.dots{display:flex;gap:4px;margin:12px 0 0}
+.dots i{flex:1;height:4px;border-radius:2px;background:#D5D9E6}
+.dots i.on{background:var(--ink)}
+.slip .acts{margin-top:10px}
+
+/* help line + slip */
+.hint{margin:0 0 14px}
+.hrow{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 4px 0 0;border-bottom:1px dashed rgba(12,16,48,.28)}
+.w[dir="rtl"] .hrow{padding:0 0 0 4px}
+.hrow p{flex:1;min-width:0;margin:0;font-size:15px;font-weight:600;color:var(--ink)}
+.qm,.qb span[aria-hidden]{flex:none;width:24px;height:24px;border-radius:3px;background:var(--ink);color:#fff;display:grid;place-items:center;font:800 14px/1 var(--fd)}
+.hrow .lnk{font-size:14px;flex:none}
+.hrow .hx{color:var(--ink-2);min-width:44px;justify-content:center}
+.hint.fold1{display:flex;justify-content:flex-end;margin:-6px 0 4px}
+.qb{min-width:44px;min-height:44px;border:0;background:none;padding:0;display:grid;place-items:center}
+.hslip{margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.hslip dl{margin:0;display:flex;flex-direction:column;gap:8px}
+.hslip dl div{display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px}
+.hslip dt{font-size:13px;font-weight:700;color:var(--ink-3);padding-top:2px}
+.hslip dd{margin:0;font-size:15px}
+.hslip ol{margin:0;padding-inline-start:18px}
+.hslip li{margin:0 0 2px}
+.htip{margin:10px 0 0;padding:8px 12px;background:var(--wait-bg);border-radius:3px;font-size:14px;color:var(--ink)}
+.htip b{color:var(--wait)}
+.goal{margin:0 0 14px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:6px;font-size:15px}
+@media (prefers-reduced-motion:reduce){.slip{animation:none}.tab.lift{transform:none}}

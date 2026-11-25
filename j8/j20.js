@@ -16,10 +16,14 @@
    15.2.0 (25 Nov 2026) · slice 3 (backlog d-1125-02c): Agents space (rose tab, key 6; Settings is key 7 and a cog under 420 px). One line says
    all fine or who needs a look; one row per routine (j8_routines) with a glyph + word status and a switch where the routine reads it
    (J8.routines.set, at once, Undo); Receipts = real j8_runs of the last 7 days by day, Problems only filter. Revert: git revert of the 15.2 commit.
+   15.4.0 (25 Nov 2026) · backlog d-1125-05 "Guide": first open = 3-step guided start (who you are, your goal, your channels; each
+   step skippable), then a 4-stop tour you launch yourself; every space has a help line (What / How / When) that folds to "?" once
+   used and comes back with a tip where you struggled. Progress in j8_members.prefs.guide; skips + struggles in j8_memory (fact,
+   onboarding). Settings → Guide replays it. Revert: git revert of the 15.4 commit.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.3.0';
+  var VER = '15.4.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -370,7 +374,7 @@
       + row(esc(t('classic')), esc(t('classicP')), '<a class="b sm" href="classic/">' + esc(t('open')) + '</a>')
       + row(esc(t('refresh')), '', '<button type="button" class="b sm" data-x="refresh">' + esc(t('refresh')) + '</button>')
       + row(esc(t('signout')), esc((u ? u.email : '') + (o && o.name ? ' · ' + o.name : '')), '<button type="button" class="b sm" data-x="signout">' + esc(t('signout')) + '</button>')
-      + row(esc(t('version')), 'J8NIX ' + VER, '') + '</div></section>';
+      + row(esc(t('version')), 'J8NIX ' + VER, '') + '</div></section>' + guideSet();
     if (TP.length) h += '<section class="grp"><h2>' + esc(t('autopilot')) + '</h2><div class="rows">' + TP.map(function (a) {
       var m = a.autopilot && APW[a.autopilot] ? a.autopilot : 'ask', st = a.status || 'pending', ok = st === 'approved' || st === 'edited', s = safe(function () { return x.tplStats(a); }, { sent: 0, rep: 0 }), ak = armed('apl-' + a.id);
       return '<div class="row"><div class="rh" style="flex-wrap:wrap"><span class="ph" style="min-width:55%"><b dir="auto">' + esc(cut(tplName(a), 60)) + '</b><small>' + s.sent + ' ' + esc(t('tplLine')) + ' · ' + s.rep + ' ' + esc(t('tplRep')) + ' · ' + esc(ok ? t('tplOk') : t('tplWait')) + '</small></span><span class="seg">'
@@ -469,7 +473,7 @@
   function tabs() { /* index-card tabs: each space is a coloured card in a file; the open one joins the folder below */
     var n = deck().length;
     return '<nav class="tabs" aria-label="Spaces">' + SP.map(function (s, i) {
-      return '<button type="button" class="tab" data-x="sp" data-id="' + s[0] + '" style="--tc:var(--' + s[1] + ')"' + (S.sp === s[0] ? ' aria-current="page"' : '') + ' aria-keyshortcuts="' + (i + 1) + '">' + (s[0] === 'set' ? '<span class="tl">' + esc(t(s[0])) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>' : esc(t(s[0])))
+      return '<button type="button" class="tab' + (GS.tour > -1 && TOUR[GS.tour] && TOUR[GS.tour].lift.indexOf(s[0]) > -1 ? ' lift' : '') + '" data-x="sp" data-id="' + s[0] + '" style="--tc:var(--' + s[1] + ')"' + (S.sp === s[0] ? ' aria-current="page"' : '') + ' aria-keyshortcuts="' + (i + 1) + '">' + (s[0] === 'set' ? '<span class="tl">' + esc(t(s[0])) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>' : esc(t(s[0])))
         + (s[0] === 'today' && n ? '<em>' + n + '</em><span class="sr"> (' + n + ' ' + esc(t('waiting')) + ')</span>' : '') + '</button>'; }).join('') + '</nav>';
   }
   function busyTyping() { var a = sr && sr.activeElement; return !!(a && /^(TEXTAREA|INPUT)$/.test(a.tagName)); }
@@ -479,8 +483,12 @@
     pend = false;
     var y = window.scrollY;
     W.setAttribute('data-sp', S.sp); W.setAttribute('dir', lang() === 'he' ? 'rtl' : 'ltr'); W.setAttribute('lang', lang());
+    if (gReady() && (needStart() || GS.fin)) { /* the guided start replaces the card file until it is finished or skipped */
+      W.setAttribute('data-sp', 'start'); if (!GS.start) { GS.start = true; GS.step = 0; idleArm(); }
+      C.innerHTML = topBar() + '<main class="folder gsf" id="j2main" tabindex="-1"><div class="in">' + vStart() + '</div></main>'; window.scrollTo(0, y); return;
+    }
     var body = S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'agents' ? vAgents() : S.sp === 'set' ? vSet() : vToday();
-    C.innerHTML = topBar() + tabs() + '<main class="folder" id="j2main" tabindex="-1"><div class="in">' + body + '</div></main>'; /* the toast sits outside C, so a data refresh never wipes an Undo */
+    C.innerHTML = topBar() + tabs() + '<main class="folder" id="j2main" tabindex="-1"><div class="in">' + (GS.tour > -1 ? tourSlip() : hintBar(S.sp)) + (S.sp === 'score' ? goalLine() : '') + body + '</div></main>'; /* the toast sits outside C, so a data refresh never wipes an Undo */
     window.scrollTo(0, y);
     if (S.edit) { var ta = sr.getElementById('j2ed'); if (ta && force === 'edit') { ta.focus(); } }
   }
@@ -503,8 +511,10 @@
   /* ---------- actions ---------- */
   function act(x, el) {
     var id = el.getAttribute('data-id') || '', j = J(), X8 = X();
-    if (x === 'sp') { go(id); return; }
-    if (x === 'undo') { if (undoFn) { var f = undoFn; undoFn = null; var te = sr.getElementById('j2t'); if (te) te.classList.remove('on'); f(); } return; }
+    if (x !== 'sp' && x !== 'rmore' && x !== 'full') rage(el);
+    if (gAct(x, el)) return;
+    if (x === 'sp') { if (GS.tour > -1) { GS.tour = -1; var gg = gLoad(); if (gg) { gg.tour = 'ended'; gSave(); } } go(id); return; }
+    if (x === 'undo') { if (undoFn) { struggle(S.sp, 'undo'); var f = undoFn; undoFn = null; var te = sr.getElementById('j2t'); if (te) te.classList.remove('on'); f(); } return; }
     if (x === 'hold') { leave(id, 'hold', function () { S.held[id] = 1; render(true); say(t('heldT2'), function () { delete S.held[id]; render(true); }); }); return; }
     if (x === 'unhold') { S.held = {}; render(true); return; }
     if (x === 'win') { S.win = id === '7d' ? '7d' : '30d'; try { localStorage.setItem('j8:win', S.win); } catch (e) {} render(true); return; }
@@ -601,6 +611,237 @@
     }
   }
 
+  /* ---------- 15.4 Guide (backlog d-1125-05): a 3-step guided start, a 4-stop tour you launch yourself, a help slip on every space.
+     Research + sources: j8/design/V20-NOTES.md (15.4). Progress per user: j8_members.prefs.guide through J8.prefs.set (own row only) with a
+     local copy; skips and struggles go to j8_memory (kind fact, tags onboarding) once each, and the next hints adapt to them.
+     Caps: at most one hint opens by itself per session, at most 3 times per space, never again after "Hide"; a hint folds to "?" once
+     you have used that space. Settings → Guide replays any of it. ---------- */
+  var GT = {
+    en: { welcome: 'Welcome to J8NIX', wsub: '3 quick questions so J8 works your way. About a minute.', stepOf: 'Step {n} of 3', skipAll: 'Skip setup', skipStep: 'Skip this', next: 'Next', back: 'Back', finish: 'Finish',
+      s1: 'Who you are', s2: 'Your goal', s3: 'Your channels', name: 'Your name', role: 'What you do', why1: 'So J8 writes like you and puts your work first.',
+      r_founder: 'Founder', r_sales: 'Sales', r_ops: 'Operations', r_mkt: 'Marketing', r_other: 'Other',
+      g_replies: 'More replies', g_calls: 'Book calls', g_paid: 'Get paid', g_time: 'Save my time', own: 'In your words (optional)', why2: 'J8 puts what moves this goal first, and Score tracks it.',
+      c_email: 'Email', c_li: 'LinkedIn', c_wa: 'WhatsApp', c_ig: 'Instagram', c_phone: 'Phone', why3: 'Pick the ones you use. J8 only says connected when it really is.', setupNeeded: 'Picked · not set up yet', emailOk: 'Connected · sending works', emailBad: 'Connected · sending stopped, see Agents', emailNone: 'No send recorded yet',
+      setT: 'You are set.', setP: 'J8 has your answers. Want a quick look around?', tourGo: 'Show me around · 4 stops', startW: 'Start working', askTeam: 'Ask the team to set up {c}',
+      askMsg: 'Please set up {c} for J8NIX sending.', yourGoal: 'Your goal', yourCh: 'Channels', skipped: 'Skipped',
+      stop: 'Stop {n} of 4', endTour: 'End tour', tourDone: 'Tour done. Tap ? on any space for help.',
+      t1h: 'Today', t1: 'The next thing that needs you, one card at a time. Go sends it, Hold moves it back, Stop drops it.',
+      t2h: 'Queue', t2: 'Everything waiting, what is going out now, and who answered.',
+      t3h: 'Engines and Score', t3: 'Engines: one number per line of work. Score: from draft to paid, with real counts only.',
+      t4h: 'Talk, Agents and Settings', t4: 'Talk to J8 and the team, see every agent run, pause anything. This guide lives in Settings.',
+      how: 'How it works', hide: 'Hide', help: 'Help', hWhat: 'What', hHow: 'How', hWhen: 'When', tip: 'Tip',
+      guide: 'Guide', redo: 'Set up again', redoP: 'Who you are, your goal, your channels.', tourOnly: 'Show me around', tourP: '4 stops, about a minute.', hintsAgain: 'Show hints again', hintsP: 'Brings back every help line you hid.',
+      tipsOn: 'Help lines on screens', resetT: 'Hints are back.', notSet: 'Not set yet', goalLine: 'Your goal: {g}', inW: 'in {w}' },
+    he: { welcome: 'ברוך הבא ל-\u2060J8NIX', wsub: '3 שאלות קצרות כדי ש-J8 יעבוד בדרך שלך. בערך דקה.', stepOf: 'שלב {n} מתוך 3', skipAll: 'דלג על ההגדרה', skipStep: 'דלג על זה', next: 'הבא', back: 'חזרה', finish: 'סיום',
+      s1: 'מי אתה', s2: 'המטרה שלך', s3: 'הערוצים שלך', name: 'השם שלך', role: 'מה אתה עושה', why1: 'כדי ש-J8 יכתוב כמוך וישים את העבודה שלך קודם.',
+      r_founder: 'מייסד', r_sales: 'מכירות', r_ops: 'תפעול', r_mkt: 'שיווק', r_other: 'אחר',
+      g_replies: 'יותר תשובות', g_calls: 'לקבוע שיחות', g_paid: 'לקבל תשלום', g_time: 'לחסוך לי זמן', own: 'במילים שלך (לא חובה)', why2: 'J8 ישים קודם את מה שמקדם את המטרה, והתוצאות יעקבו אחריה.',
+      c_email: 'אימייל', c_li: 'לינקדאין', c_wa: 'וואטסאפ', c_ig: 'אינסטגרם', c_phone: 'טלפון', why3: 'בחר את מה שאתה משתמש בו. J8 יגיד "מחובר" רק כשזה באמת מחובר.', setupNeeded: 'נבחר · עוד לא הוגדר', emailOk: 'מחובר · השליחה עובדת', emailBad: 'מחובר · השליחה נעצרה, ראה סוכנים', emailNone: 'עוד לא נרשמה שליחה',
+      setT: 'הכול מוכן.', setP: 'J8 קיבל את התשובות שלך. רוצה סיור קצר?', tourGo: 'תראה לי · 4 עצירות', startW: 'להתחיל לעבוד', askTeam: 'לבקש מהצוות להגדיר: {c}',
+      askMsg: 'בבקשה להגדיר את {c} לשליחה מ-J8NIX.', yourGoal: 'המטרה שלך', yourCh: 'ערוצים', skipped: 'דילגת',
+      stop: 'עצירה {n} מתוך 4', endTour: 'סיום הסיור', tourDone: 'הסיור הסתיים. הקש ? בכל מסך לעזרה.',
+      t1h: 'היום', t1: 'הדבר הבא שמחכה לך, כרטיס אחד בכל פעם. "שלח" שולח, "דחה" מעביר לסוף, "עצור" מוריד.',
+      t2h: 'בתור', t2: 'כל מה שמחכה, מה יוצא עכשיו ומי ענה.',
+      t3h: 'מנועים ותוצאות', t3: 'מנועים: מספר אחד לכל תחום עבודה. תוצאות: מטיוטה ועד תשלום, רק מספרים אמיתיים.',
+      t4h: 'שיחה, סוכנים והגדרות', t4: 'לדבר עם J8 והצוות, לראות כל ריצה של סוכן, להשהות כל דבר. המדריך הזה נמצא בהגדרות.',
+      how: 'איך זה עובד', hide: 'הסתר', help: 'עזרה', hWhat: 'מה', hHow: 'איך', hWhen: 'מתי', tip: 'טיפ',
+      guide: 'מדריך', redo: 'להגדיר מחדש', redoP: 'מי אתה, המטרה, הערוצים.', tourOnly: 'תראה לי', tourP: '4 עצירות, בערך דקה.', hintsAgain: 'להחזיר את שורות העזרה', hintsP: 'מחזיר כל שורת עזרה שהסתרת.',
+      tipsOn: 'שורות עזרה במסכים', resetT: 'שורות העזרה חזרו.', notSet: 'עוד לא הוגדר', goalLine: 'המטרה שלך: {g}', inW: 'ב-{w}' }
+  };
+  function gt(k) { var L = GT[lang()]; return L[k] != null ? L[k] : GT.en[k] != null ? GT.en[k] : k; }
+  /* help slip per space: one phrase, then What / How (≤3 steps) / When, and a tip shown only where you struggled */
+  var HELP = {
+    en: {
+      today: { one: 'The next decision, one card at a time.', what: 'Everything that needs you, money first.', how: ['Read the card.', 'Go sends it, Hold puts it at the back, Stop drops it.', 'Undo shows for 6 seconds at the top.'], when: 'Each morning, and when the Today tab shows a number.', tip: 'Not sure? Tap Hold. Nothing is sent and the card waits in Queue.' },
+      queue: { one: 'Everything waiting, going out and answered.', what: 'The full list behind Today.', how: ['Tap a row to open it.', 'Going out: Kill stops a send in time.', 'Did they answer? Mark Replied, Call, Won or Lost.'], when: 'When you want the whole picture or to log a reply.', tip: 'Mark answers here: it teaches J8 what works.' },
+      eng: { one: 'One number per engine: replies.', what: 'Each line of work and how it moves.', how: ['The word says the state: waits for you, Moving or Quiet.', 'Tap a row for now, next and its steps.', 'Resting engines are folded at the bottom.'], when: 'Weekly, to see which engine to push.', tip: 'Quiet just means nothing went out in 7 days, not that it broke.' },
+      score: { one: 'From draft to paid, real counts only.', what: 'Drafts made in the window and where they are now.', how: ['Pick 7 or 30 days.', 'Each step shows how many of the step before.', 'Money booked is at the bottom.'], when: 'Weekly, to check the goal.', tip: 'Small numbers show as "X of N" on purpose: a percent would look surer than it is.' },
+      talk: { one: 'Message J8 and the team.', what: 'One thread with J8 and the team.', how: ['Write what you need in plain words.', 'Send.', 'The answer lands here at the next inbox run.'], when: 'Any time you want something done.', tip: 'One ask per message gets the fastest answer.' },
+      agents: { one: 'Every agent, its last run, a switch.', what: 'The agents that work for you and what they did.', how: ['The top line says if anything failed.', 'The switch turns an agent off, with Undo.', 'What ran lists every run of the last 7 days.'], when: 'When something looks stuck.', tip: 'Problems only shows just the failed runs.' },
+      set: { one: 'Pause, language, sound, this guide.', what: 'How J8NIX works for you.', how: ['Pause sending stops everything going out.', 'Autopilot decides per saved message.', 'Guide replays the setup, the tour and hints.'], when: 'When you need to stop sending or change a setting.', tip: 'Pause sending is the one big brake. It is always safe.' }
+    },
+    he: {
+      today: { one: 'ההחלטה הבאה, כרטיס אחד בכל פעם.', what: 'כל מה שמחכה לך, כסף קודם.', how: ['קרא את הכרטיס.', '"שלח" שולח, "דחה" מעביר לסוף, "עצור" מוריד.', '"בטל" מופיע למעלה ל-6 שניות.'], when: 'כל בוקר, וכשעל לשונית "היום" יש מספר.', tip: 'לא בטוח? הקש "דחה". שום דבר לא נשלח והכרטיס מחכה בתור.' },
+      queue: { one: 'כל מה שמחכה, יוצא וענה.', what: 'הרשימה המלאה שמאחורי "היום".', how: ['הקש על שורה כדי לפתוח.', 'יוצא עכשיו: "בטל" עוצר שליחה בזמן.', 'הם ענו? סמן ענו, שיחה, נסגר או לא רלוונטי.'], when: 'כשרוצים את התמונה המלאה או לרשום תשובה.', tip: 'סמן כאן תשובות: זה מלמד את J8 מה עובד.' },
+      eng: { one: 'מספר אחד לכל מנוע: תשובות.', what: 'כל תחום עבודה ואיך הוא מתקדם.', how: ['המילה אומרת את המצב: מחכה לך, בתנועה או שקט.', 'הקש על שורה לראות עכשיו, הבא והשלבים.', 'מנועים במנוחה מקופלים למטה.'], when: 'פעם בשבוע, לבחור איזה מנוע לדחוף.', tip: '"שקט" רק אומר ששום דבר לא יצא 7 ימים, לא שמשהו נשבר.' },
+      score: { one: 'מטיוטה ועד תשלום, רק מספרים אמיתיים.', what: 'טיוטות מהטווח ואיפה הן עכשיו.', how: ['בחר 7 או 30 ימים.', 'כל שלב מראה כמה מתוך השלב הקודם.', 'הכסף שנסגר מופיע למטה.'], when: 'פעם בשבוע, לבדוק את המטרה.', tip: 'מספרים קטנים מוצגים "X מתוך N" בכוונה: אחוז היה נראה בטוח יותר ממה שהוא.' },
+      talk: { one: 'הודעה ל-J8 ולצוות.', what: 'שרשור אחד עם J8 והצוות.', how: ['כתוב מה צריך במילים פשוטות.', 'שלח.', 'התשובה מגיעה לכאן בריצת התיבה הבאה.'], when: 'בכל פעם שרוצים שמשהו ייעשה.', tip: 'בקשה אחת בכל הודעה מקבלת תשובה הכי מהר.' },
+      agents: { one: 'כל סוכן, הריצה האחרונה, מתג.', what: 'הסוכנים שעובדים בשבילך ומה הם עשו.', how: ['השורה העליונה אומרת אם משהו נכשל.', 'המתג מכבה סוכן, עם ביטול.', '"מה רץ" מציג כל ריצה ב-7 הימים האחרונים.'], when: 'כשמשהו נראה תקוע.', tip: '"רק בעיות" מציג רק ריצות שנכשלו.' },
+      set: { one: 'השהיה, שפה, צליל, המדריך הזה.', what: 'איך J8NIX עובד בשבילך.', how: ['"השהה שליחה" עוצר כל מה שיוצא.', 'טייס אוטומטי לכל הודעה שמורה.', '"מדריך" מריץ שוב הגדרה, סיור ועזרה.'], when: 'כשצריך לעצור שליחה או לשנות הגדרה.', tip: '"השהה שליחה" הוא הבלם הגדול. זה תמיד בטוח.' }
+    }
+  };
+  function help(sp) { return (HELP[lang()] || HELP.en)[sp] || HELP.en[sp] || HELP.en.today; }
+  var ROLES = ['founder', 'sales', 'ops', 'mkt', 'other'], GOALS = ['replies', 'calls', 'paid', 'time'], CHS = ['email', 'li', 'wa', 'ig', 'phone'];
+  var TOUR = [{ sp: 'today', lift: ['today'], h: 't1h', p: 't1' }, { sp: 'queue', lift: ['queue'], h: 't2h', p: 't2' }, { sp: 'eng', lift: ['eng', 'score'], h: 't3h', p: 't3' }, { sp: 'agents', lift: ['talk', 'agents', 'set'], h: 't4h', p: 't4' }];
+  var SPN = { today: 'today', queue: 'queue', eng: 'eng', score: 'score', talk: 'talk', agents: 'agents', set: 'set' };
+  var GS = { g: null, uid: '', saveT: 0, autoShown: false, hintN: {}, step: 0, idleT: 0, idleK: '', tour: -1, start: false, fin: false, taps: [] };
+  function uidOf() { var u = safe(function () { return J().auth.user(); }, null); return u && u.id ? String(u.id) : ''; }
+  function gKey() { return 'j8:guide:' + GS.uid; }
+  function gReady() { return on() && !!safe(function () { return J().orgs.current(); }, null) && !!uidOf(); }
+  function gLoad() { /* the server copy wins; the local copy covers offline and a refused save */
+    var uid = uidOf(); if (!uid) return null;
+    if (GS.g && GS.uid === uid) return GS.g;
+    GS.uid = uid; GS.start = false; GS.fin = false; GS.step = 0; GS.tour = -1; var srv = safe(function () { return J().prefs.get().guide; }, null), loc = null;
+    try { loc = JSON.parse(localStorage.getItem(gKey()) || 'null'); } catch (e) {}
+    var a = srv && typeof srv === 'object' ? srv : null, b = loc && typeof loc === 'object' ? loc : null;
+    GS.g = Object.assign({ v: 1, seen: {}, used: {}, off: {}, auto: {}, str: {}, strAt: {}, logged: {}, tips: true }, (a && b ? (String(a.at || '') >= String(b.at || '') ? a : b) : a || b) || {});
+    ['seen', 'used', 'off', 'auto', 'str', 'strAt', 'logged'].forEach(function (k) { if (!GS.g[k] || typeof GS.g[k] !== 'object') GS.g[k] = {}; });
+    return GS.g;
+  }
+  function gSave(now) {
+    var g = GS.g; if (!g) return; g.at = new Date().toISOString();
+    try { localStorage.setItem(gKey(), JSON.stringify(g)); } catch (e) {}
+    clearTimeout(GS.saveT);
+    var push = function () { var j = J(); if (j && j.prefs && on()) j.prefs.set({ guide: g }).catch(function () {}); };
+    if (now) push(); else GS.saveT = setTimeout(push, 1500);
+  }
+  /* j8_memory, kind fact, tag onboarding: one row per thing learned (logged keys stop repeats) */
+  function gLearn(key, text, kind, tags) {
+    var g = GS.g, j = J(); if (!g || g.logged[key] || !j || !j.memory || !on()) return;
+    g.logged[key] = new Date().toISOString(); gSave();
+    j.memory.add({ kind: kind || 'fact', text: 'Onboarding: ' + text, tags: ['onboarding'].concat(tags || []) }).catch(function () { delete g.logged[key]; });
+  }
+  var SPEN = { today: 'Today', queue: 'Queue', eng: 'Engines', score: 'Score', talk: 'Talk', agents: 'Agents', set: 'Settings' };
+  function struggle(sp, why) {
+    var g = gLoad(); if (!g || !SPN[sp]) return;
+    g.str[sp] = (g.str[sp] || 0) + 1; g.strAt = g.strAt || {}; g.strAt[sp] = Date.now(); delete g.used[sp]; gSave(); /* the help line comes back for this space, with its tip */
+    gLearn('str:' + sp + ':' + why, 'needed help on ' + SPEN[sp] + ' (' + ({ hint: 'opened its help twice', undo: 'pressed Undo right after a decision', back: 'went back in the tour', rage: 'tapped the same button 3 times fast', idle: 'paused over 20 s on a setup step' }[why] || why) + ')', 'fact', [sp]);
+  }
+  function needStart() { var g = gReady() ? gLoad() : null; return !!(g && !g.start); }
+  function nameOf() { var g = GS.g, o = safe(function () { return J().orgs.current(); }, null); return (g && g.who && g.who.name) || (o && o.me) || ''; }
+  function chipRow(list, pre, cur, multi, x) {
+    return '<div class="chips" role="group">' + list.map(function (k) { var p = multi ? (cur || []).indexOf(k) > -1 : cur === k;
+      return '<button type="button" class="b sm chip" data-x="' + x + '" data-id="' + k + '" aria-pressed="' + p + '">' + (p ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>' : '') + esc(gt(pre + k)) + '</button>'; }).join('') + '</div>';
+  }
+  function chState(c) { /* honest states only: email reads the real sender runs; the rest are picked, not connected */
+    if (c !== 'email') return gt('setupNeeded');
+    var x = X(), sd = x ? safe(function () { return x.sender ? x.sender() : null; }, null) : null;
+    return !sd ? gt('emailNone') : sd.ok ? gt('emailOk') : gt('emailBad');
+  }
+  function vStart() {
+    var g = gLoad() || {}, n = GS.step, names = ['s1', 's2', 's3'];
+    var h = '<div class="gs"><div class="gsh"><div><h1 id="gsT" tabindex="-1">' + esc(GS.fin ? gt('setT') : gt('welcome')) + '</h1><p class="lead">' + esc(GS.fin ? gt('setP') : gt('wsub')) + '</p></div>'
+      + (GS.fin ? '' : '<button type="button" class="lnk" data-x="g-skipall">' + esc(gt('skipAll')) + '</button>') + '</div>';
+    if (!GS.fin) h += '<ol class="gsteps" aria-label="' + esc(gt('stepOf').replace('{n}', n + 1)) + '">' + names.map(function (k, i) {
+      return '<li' + (i === n ? ' aria-current="step"' : '') + ' class="' + (i < n ? 'pst' : i === n ? 'cur' : '') + '"><i>' + (i + 1) + '</i><span>' + esc(gt(k)) + '</span></li>'; }).join('') + '</ol>';
+    h += '<section class="card gcard" aria-labelledby="gsH">';
+    if (GS.fin) {
+      var who = g.who || {}, goal = g.goal || {}, ch = g.ch || [], need = ch.filter(function (c) { return c !== 'email'; });
+      h += '<h2 class="sr" id="gsH">' + esc(gt('setT')) + '</h2><dl class="gsum">'
+        + '<div><dt>' + esc(gt('s1')) + '</dt><dd dir="auto">' + esc(who.role ? [nameOf(), gt('r_' + who.role)].filter(Boolean).join(' · ') : (g.skip && g.skip.s1 ? gt('skipped') : nameOf() || gt('notSet'))) + '</dd></div>'
+        + '<div><dt>' + esc(gt('yourGoal')) + '</dt><dd dir="auto">' + esc(goal.pick ? gt('g_' + goal.pick) + (goal.own ? ' · ' + goal.own : '') : goal.own || (g.skip && g.skip.s2 ? gt('skipped') : gt('notSet'))) + '</dd></div>'
+        + '<div><dt>' + esc(gt('yourCh')) + '</dt><dd>' + (ch.length ? ch.map(function (c) { return '<span class="chl"><b>' + esc(gt('c_' + c)) + '</b> <small>· ' + esc(chState(c)) + '</small></span>'; }).join('') : esc(g.skip && g.skip.s3 ? gt('skipped') : gt('notSet'))) + '</dd></div></dl>'
+        + '<div class="tear"></div><div class="acts two"><button type="button" class="b go" data-x="g-tour">' + esc(gt('tourGo')) + '</button><button type="button" class="b" data-x="g-done">' + esc(gt('startW')) + '</button></div>'
+        + (need.length ? '<div class="sub"><button type="button" class="lnk" data-x="g-ask">' + esc(gt('askTeam').replace('{c}', need.map(function (c) { return gt('c_' + c); }).join(', '))) + '</button></div>' : '');
+    } else {
+      h += '<div class="ch"><span class="no">' + esc(gt('stepOf').replace('{n}', n + 1)) + '</span><h2 id="gsH">' + esc(gt(names[n])) + '</h2></div>';
+      if (n === 0) h += '<label class="gl2" for="gName">' + esc(gt('name')) + '</label><input id="gName" class="gin" data-g="name" dir="auto" autocomplete="name" maxlength="60" value="' + esc(nameOf()) + '">'
+        + '<p class="gl2" id="gRole">' + esc(gt('role')) + '</p>' + chipRow(ROLES, 'r_', (g.who || {}).role, false, 'g-role').replace('role="group"', 'role="group" aria-labelledby="gRole"') + '<p class="meta">' + esc(gt('why1')) + '</p>';
+      if (n === 1) h += chipRow(GOALS, 'g_', (g.goal || {}).pick, false, 'g-goal').replace('role="group"', 'role="group" aria-labelledby="gsH"') + '<label class="gl2" for="gOwn">' + esc(gt('own')) + '</label><input id="gOwn" class="gin" data-g="own" dir="auto" maxlength="140" value="' + esc((g.goal || {}).own || '') + '"><p class="meta">' + esc(gt('why2')) + '</p>';
+      if (n === 2) { var cs = g.ch || []; h += chipRow(CHS, 'c_', cs, true, 'g-ch').replace('role="group"', 'role="group" aria-labelledby="gsH"') + (cs.length ? '<ul class="chs">' + cs.map(function (c) { return '<li><b>' + esc(gt('c_' + c)) + '</b><span>' + esc(chState(c)) + '</span></li>'; }).join('') + '</ul>' : '') + '<p class="meta">' + esc(gt('why3')) + '</p>'; }
+      h += '<div class="tear"></div><div class="acts gact">' + (n ? '<button type="button" class="b" data-x="g-back">' + esc(gt('back')) + '</button>' : '<span></span>')
+        + '<button type="button" class="lnk" data-x="g-skip">' + esc(gt('skipStep')) + '</button><button type="button" class="b go" data-x="g-next">' + esc(gt(n === 2 ? 'finish' : 'next')) + '</button></div>';
+    }
+    return h + '</section></div>';
+  }
+  function idleArm() { /* a long pause on a setup step is a quiet "not sure" signal: recorded once per step */
+    clearTimeout(GS.idleT); var k = 's' + (GS.step + 1);
+    if (!GS.start || GS.fin) return;
+    GS.idleT = setTimeout(function () { if (GS.start && !GS.fin && !document.hidden && 's' + (GS.step + 1) === k) gLearn('idle:' + k, 'paused over 20 s on the setup step "' + GT.en[k] + '"', 'fact', ['idle']); }, 20000);
+  }
+  function gField(name, v) { var g = gLoad(); if (!g) return; if (name === 'name') { g.who = g.who || {}; g.who.name = String(v || '').slice(0, 60); } if (name === 'own') { g.goal = g.goal || {}; g.goal.own = String(v || '').slice(0, 140); } idleArm(); }
+  function gFinish() {
+    var g = gLoad(); if (!g) return; g.start = 'done'; g.startAt = new Date().toISOString(); GS.fin = true; gSave(true);
+    var who = g.who || {}, goal = g.goal || {}, ch = g.ch || [];
+    if (who.role) gLearn('who:' + who.role + ':' + (who.name || ''), (who.name ? who.name + ' is ' : 'role: ') + SPENR(who.role), 'fact', ['who']);
+    if (goal.pick || goal.own) gLearn('goal:' + (goal.pick || '') + ':' + (goal.own || ''), 'goal is ' + [goal.pick ? GT.en['g_' + goal.pick] : '', goal.own || ''].filter(Boolean).join(' — '), 'goal', ['goal']);
+    if (ch.length) gLearn('ch:' + ch.join(','), 'uses ' + ch.map(function (c) { return GT.en['c_' + c]; }).join(', ') + (ch.filter(function (c) { return c !== 'email'; }).length ? ' (set up needed: ' + ch.filter(function (c) { return c !== 'email'; }).map(function (c) { return GT.en['c_' + c]; }).join(', ') + ')' : ''), 'fact', ['channels']);
+    Object.keys(g.skip || {}).forEach(function (k) { if (g.skip[k]) gLearn('skip:' + k, 'skipped the step "' + GT.en[k] + '"', 'fact', ['skip']); });
+  }
+  function SPENR(r) { return (GT.en['r_' + r] || r).toLowerCase(); }
+  function gStartOver() { var g = gLoad(); if (!g) return; delete g.start; g.skip = {}; GS.step = 0; GS.fin = false; GS.start = true; gSave(); render(true); focusG(); idleArm(); }
+  function focusG() { setTimeout(function () { var e = sr.getElementById('gsT') || sr.getElementById('gtH'); if (e) try { e.focus({ preventScroll: true }); } catch (x) {} }, 30); }
+  function tourAt(i) {
+    GS.tour = i; GS.start = false; GS.fin = false;
+    if (i < 0 || i >= TOUR.length) { GS.tour = -1; var g = gLoad(); if (g) { g.tour = i >= TOUR.length ? 'done' : 'ended'; gSave(); } go('today'); say(gt('tourDone')); return; }
+    S.sp = TOUR[i].sp; S.edit = null; render(true); window.scrollTo(0, 0); focusG();
+    var lv = sr.getElementById('j2live'); if (lv) lv.textContent = gt('stop').replace('{n}', i + 1) + ': ' + gt(TOUR[i].h);
+  }
+  function tourSlip() {
+    var s = TOUR[GS.tour]; if (!s) return '';
+    return '<section class="slip" role="dialog" aria-modal="false" aria-labelledby="gtH" aria-describedby="gtP"><div class="ch"><span class="no">' + esc(gt('stop').replace('{n}', GS.tour + 1)) + '</span><h2 id="gtH" tabindex="-1">' + esc(gt(s.h)) + '</h2></div>'
+      + '<p id="gtP">' + esc(gt(s.p)) + '</p><div class="dots" aria-hidden="true">' + TOUR.map(function (x, i) { return '<i class="' + (i <= GS.tour ? 'on' : '') + '"></i>'; }).join('') + '</div>'
+      + '<div class="acts gact">' + (GS.tour ? '<button type="button" class="b sm" data-x="t-back">' + esc(gt('back')) + '</button>' : '<span></span>') + '<button type="button" class="lnk" data-x="t-end">' + esc(gt('endTour')) + '</button>'
+      + '<button type="button" class="b sm go" data-x="t-next">' + esc(gt(GS.tour === TOUR.length - 1 ? 'finish' : 'next')) + '</button></div></section>';
+  }
+  /* the help line at the top of every space: one phrase + "How it works"; folds to a small "?" once you have used the space */
+  function hintBar(sp) {
+    var g = gReady() ? gLoad() : null; if (!g || GS.tour > -1) return '';
+    var H = help(sp), open = !!S.open['hint:' + sp], tipsOn = g.tips !== false, folded = !tipsOn || g.off[sp] || (g.used[sp] && !g.str[sp]);
+    if (!g.seen[sp]) { g.seen[sp] = new Date().toISOString(); gSave(); }
+    /* adaptive: where you struggled, the slip opens by itself once a session (max 1 a session, max 3 times a space, never after Hide) */
+    if (!open && tipsOn && g.str[sp] && !g.off[sp] && !GS.autoShown && (g.auto[sp] || 0) < 3) { GS.autoShown = true; g.auto[sp] = (g.auto[sp] || 0) + 1; gSave(); open = S.open['hint:' + sp] = true; }
+    var tip = g.str[sp] && H.tip ? '<p class="htip"><b>' + esc(gt('tip')) + '</b> ' + esc(H.tip) + '</p>' : '';
+    var body = open ? '<div class="hslip" id="hs-' + sp + '"><dl><div><dt>' + esc(gt('hWhat')) + '</dt><dd>' + esc(H.what) + '</dd></div><div><dt>' + esc(gt('hHow')) + '</dt><dd><ol>' + H.how.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol></dd></div><div><dt>' + esc(gt('hWhen')) + '</dt><dd>' + esc(H.when) + '</dd></div></dl>' + tip + '</div>' : '';
+    if (folded && !open) return '<div class="hint fold1"><button type="button" class="qb" data-x="h-tog" data-id="' + sp + '" aria-expanded="false" aria-controls="hs-' + sp + '"><span aria-hidden="true">?</span><span class="sr">' + esc(gt('help')) + ': ' + esc(H.one) + '</span></button></div>';
+    return '<div class="hint' + (open ? ' open' : '') + '"><div class="hrow"><span class="qm" aria-hidden="true">?</span><p>' + esc(H.one) + '</p><button type="button" class="lnk" data-x="h-tog" data-id="' + sp + '" aria-expanded="' + open + '" aria-controls="hs-' + sp + '">' + esc(gt('how')) + '</button>'
+      + (folded ? '' : '<button type="button" class="lnk hx" data-x="h-off" data-id="' + sp + '">' + esc(gt('hide')) + '</button>') + '</div>' + body + '</div>';
+  }
+  function goalLine() { /* Score shows the goal you picked, against the real count for it */
+    var g = gReady() ? gLoad() : null; if (!g || !g.goal || !g.goal.pick || g.goal.pick === 'time' || !S.fun) return '';
+    var f = fsum(), k = { replies: 'replied', calls: 'calls', paid: 'paid' }[g.goal.pick], n = f[k] || 0;
+    return '<p class="goal"><b>' + esc(gt('goalLine').replace('{g}', gt('g_' + g.goal.pick))) + '</b> · ' + esc(t('s_' + k)) + ': ' + n + ' ' + esc(gt('inW').replace('{w}', t(win() === '7d' ? 'w7d' : 'w30d'))) + '</p>';
+  }
+  function guideSet() { /* Settings → Guide */
+    var g = gReady() ? gLoad() : null; if (!g) return '';
+    var who = g.who || {}, goal = g.goal || {}, sum = [who.role ? gt('r_' + who.role) : '', goal.pick ? gt('g_' + goal.pick) : goal.own || '', (g.ch || []).map(function (c) { return gt('c_' + c); }).join(', ')].filter(Boolean).join(' · ');
+    var row = function (b, s, r) { return '<div class="row"><div class="rh"><span class="ph"><b>' + esc(b) + '</b>' + (s ? '<small dir="auto">' + esc(s) + '</small>' : '') + '</span>' + r + '</div></div>'; };
+    return '<section class="grp"><h2>' + esc(gt('guide')) + '</h2><div class="rows">'
+      + row(gt('redo'), sum || gt('redoP'), '<button type="button" class="b sm" data-x="g-again">' + esc(gt('redo')) + '</button>')
+      + row(gt('tourOnly'), gt('tourP'), '<button type="button" class="b sm" data-x="g-tour">' + esc(gt('tourOnly')) + '</button>')
+      + row(gt('tipsOn'), '', '<span class="seg"><button type="button" class="b sm" data-x="g-tips" data-id="on" aria-pressed="' + (g.tips !== false) + '">' + esc(t('on')) + '</button><button type="button" class="b sm" data-x="g-tips" data-id="off" aria-pressed="' + (g.tips === false) + '">' + esc(t('off')) + '</button></span>')
+      + row(gt('hintsAgain'), gt('hintsP'), '<button type="button" class="b sm" data-x="g-hints">' + esc(gt('hintsAgain')) + '</button>') + '</div></section>';
+  }
+  /* guide actions; returns true when it handled x */
+  function gAct(x, el) {
+    var id = el.getAttribute('data-id') || '', g = gLoad();
+    if (!/^(g-|t-|h-)/.test(x)) { if (g && SPN[S.sp] && x !== 'sp' && x !== 'undo' && x !== 'ed-x') { var ch0 = false; if (!g.used[S.sp]) { g.used[S.sp] = new Date().toISOString(); ch0 = true; } if (g.str[S.sp] && !(g.strAt && Date.now() - (g.strAt[S.sp] || 0) < 864e5)) { g.str[S.sp] = 0; ch0 = true; } if (ch0) gSave(); } return false; }
+    if (!g) return true;
+    idleArm();
+    if (x === 'g-role') { g.who = g.who || {}; g.who.role = g.who.role === id ? '' : id; gSave(); render(true); return true; }
+    if (x === 'g-goal') { g.goal = g.goal || {}; g.goal.pick = g.goal.pick === id ? '' : id; gSave(); render(true); return true; }
+    if (x === 'g-ch') { var c = (g.ch || []).slice(), i = c.indexOf(id); if (i > -1) c.splice(i, 1); else c.push(id); g.ch = CHS.filter(function (k) { return c.indexOf(k) > -1; }); gSave(); render(true); return true; }
+    if (x === 'g-next' || x === 'g-skip') {
+      var k = 's' + (GS.step + 1); g.skip = g.skip || {};
+      var empty = k === 's1' ? !(g.who && g.who.role) : k === 's2' ? !(g.goal && (g.goal.pick || g.goal.own)) : !(g.ch && g.ch.length);
+      g.skip[k] = x === 'g-skip' || empty; if (x === 'g-skip') { if (k === 's1') g.who = { name: (g.who || {}).name }; if (k === 's2') g.goal = {}; if (k === 's3') g.ch = []; }
+      if (GS.step < 2) { GS.step++; gSave(); render(true); focusG(); } else { gFinish(); render(true); focusG(); }
+      return true;
+    }
+    if (x === 'g-back') { if (GS.step) GS.step--; render(true); focusG(); return true; }
+    if (x === 'g-skipall') { g.skip = { s1: !(g.who && g.who.role), s2: !(g.goal && (g.goal.pick || g.goal.own)), s3: !(g.ch && g.ch.length) }; if (!g.skip.s1 && !g.skip.s2 && !g.skip.s3) g.skip = { s1: true, s2: true, s3: true }; g.skipAll = true; gFinish(); gLearn('skipall', 'skipped the guided start', 'fact', ['skip']); GS.fin = false; GS.start = false; render(true); return true; }
+    if (x === 'g-done') { GS.fin = false; GS.start = false; clearTimeout(GS.idleT); go('today'); return true; }
+    if (x === 'g-tour') { clearTimeout(GS.idleT); if (!g.start) { g.start = 'skipped'; gSave(); } tourAt(0); return true; }
+    if (x === 'g-ask') { var need = (g.ch || []).filter(function (c) { return c !== 'email'; }); GS.fin = false; GS.start = false; S.talk = gt('askMsg').replace('{c}', need.map(function (c) { return gt('c_' + c); }).join(', ')); go('talk'); setTimeout(function () { var ta = sr.querySelector('textarea[data-say]'); if (ta) { ta.value = S.talk; ta.focus(); } }, 40); return true; }
+    if (x === 'g-again') { gStartOver(); return true; }
+    if (x === 'g-tips') { g.tips = id !== 'off'; gSave(); render(true); return true; }
+    if (x === 'g-hints') { g.off = {}; g.used = {}; g.auto = {}; g.tips = true; gSave(); render(true); say(gt('resetT')); return true; }
+    if (x === 't-next') { tourAt(GS.tour + 1); return true; }
+    if (x === 't-back') { if (GS.tour > 0) { struggle(TOUR[GS.tour - 1].sp, 'back'); tourAt(GS.tour - 1); } return true; }
+    if (x === 't-end') { tourAt(-1); return true; }
+    if (x === 'h-tog') {
+      var k2 = 'hint:' + id, was = !!S.open[k2]; S.open[k2] = !was;
+      if (!was) { GS.hintN[id] = (GS.hintN[id] || 0) + 1; if (GS.hintN[id] === 2) struggle(id, 'hint'); }
+      render(true); var b = sr.querySelector('[data-x="h-tog"][data-id="' + id + '"]'); if (b) b.focus(); return true;
+    }
+    if (x === 'h-off') { g.off[id] = new Date().toISOString(); S.open['hint:' + id] = false; gSave(); render(true); var q = sr.querySelector('[data-x="h-tog"][data-id="' + id + '"]'); if (q) q.focus(); return true; }
+    return true;
+  }
+  function rage(el) { /* 3 taps on the same button within 1.5 s */
+    var now = Date.now(); GS.taps = GS.taps.filter(function (x) { return now - x.t < 1500; }); GS.taps.push({ t: now, el: el });
+    if (GS.taps.filter(function (x) { return x.el === el; }).length >= 3) { GS.taps = []; struggle(S.sp, 'rage'); }
+  }
+
   /* ---------- keyboard (registered before j13's handler so 2.0 owns the keys while it is in front) ---------- */
   window.addEventListener('keydown', function (e) {
     if (!document.body.classList.contains('j2')) return;
@@ -608,7 +849,9 @@
     var tgt = e.composedPath ? e.composedPath()[0] : e.target, typing = tgt && /^(TEXTAREA|INPUT|SELECT)$/.test(tgt.tagName);
     if (typing) { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { var b = sr.querySelector(tgt.dataset.say ? '[data-x="say"]' : '[data-x="ed-save"]'); if (b) b.click(); } if (e.key === 'Escape' && S.edit) { S.edit = null; render(true); } return; }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (/^[1-7]$/.test(e.key)) { go(SP[+e.key - 1][0]); e.preventDefault(); return; }
+    if (GS.tour > -1 && e.key === 'Escape') { e.preventDefault(); tourAt(-1); return; }
+    if (GS.start || GS.fin) return; /* the guided start owns the screen: no space keys */
+    if (/^[1-7]$/.test(e.key)) { if (GS.tour > -1) { GS.tour = -1; var gk = gLoad(); if (gk) { gk.tour = 'ended'; gSave(); } } go(SP[+e.key - 1][0]); e.preventDefault(); return; }
     if (S.sp !== 'today') return;
     var c = sr.querySelector('.deck .card'); if (!c) return;
     var sel = { g: '[data-x="go"],[data-x="dgo"]:not([disabled]),[data-x="batch-go"],[data-x="done"],[data-x="copyopen"]', h: '[data-x="hold"]', x: '[data-x="stop"]', e: '[data-x="ed"]' }[e.key.toLowerCase()];
@@ -637,11 +880,11 @@
   function boot() {
     host = document.createElement('div'); host.id = 'j2';
     sr = host.attachShadow ? host.attachShadow({ mode: 'open' }) : host;
-    sr.innerHTML = '<link rel="stylesheet" href="j20w.css?v=' + VER + '"><div class="w" id="j2w"><div id="j2c"></div><div class="toast" id="j2t" role="status" aria-live="polite"></div></div>';
+    sr.innerHTML = '<link rel="stylesheet" href="j20w.css?v=' + VER + '"><div class="w" id="j2w"><div id="j2c"></div><div class="toast" id="j2t" role="status" aria-live="polite"></div><div class="sr" id="j2live" aria-live="polite"></div></div>';
     W = sr.getElementById('j2w'); C = sr.getElementById('j2c');
     document.body.appendChild(host);
     sr.addEventListener('click', function (e) { var el = e.target.closest && e.target.closest('[data-x]'); if (!el) { var sm = e.target.closest && e.target.closest('summary'); if (sm) { var d = sm.parentNode, k = d.getAttribute('data-k'); if (k) { e.preventDefault(); S.open[k] = !S.open[k]; render(true); } } return; } e.preventDefault(); act(el.getAttribute('data-x'), el); });
-    sr.addEventListener('input', function (e) { var tg = e.target; if (tg.dataset.say) { S.talk = tg.value; tg.style.height = 'auto'; tg.style.height = Math.min(160, tg.scrollHeight) + 'px'; } else if (tg.dataset.ed) S.editTx = tg.value; });
+    sr.addEventListener('input', function (e) { var tg = e.target; if (tg.dataset.say) { S.talk = tg.value; tg.style.height = 'auto'; tg.style.height = Math.min(160, tg.scrollHeight) + 'px'; } else if (tg.dataset.ed) S.editTx = tg.value; else if (tg.dataset.g) gField(tg.dataset.g, tg.value); });
     sr.addEventListener('focusout', function () { setTimeout(function () { if (pend && !busyTyping()) render(false); }, 0); });
     swipe();
     var j = J();
@@ -654,6 +897,6 @@
     sync(); render(true);
     setInterval(function () { if (!document.hidden && document.body.classList.contains('j2') && !busyTyping() && !sr.querySelector('.toast.on')) render(false); }, 60000);
   }
-  window.j2 = { version: VER, state: S, deck: deck, go: go, render: function () { render(true); } };
+  window.j2 = { version: VER, state: S, guide: GS, deck: deck, go: go, render: function () { render(true); } };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
