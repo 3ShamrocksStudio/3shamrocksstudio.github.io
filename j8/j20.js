@@ -13,10 +13,13 @@
    active engine: one number (replies), a status word (N wait for you / Moving / Quiet), tap for now, next and its funnel; parked or
    hidden engines fold under Resting. Score = drafts made in the window and where they are now (j8_funnel via J8.funnel), "X of N"
    until a step has 20, by engine, money booked. Keys 1–6. Revert: git revert of the 15.1 commit.
+   15.2.0 (25 Nov 2026) · slice 3 (backlog d-1125-02c): Agents space (rose tab, key 6; Settings is key 7 and a cog under 420 px). One line says
+   all fine or who needs a look; one row per routine (j8_routines) with a glyph + word status and a switch where the routine reads it
+   (J8.routines.set, at once, Undo); Receipts = real j8_runs of the last 7 days by day, Problems only filter. Revert: git revert of the 15.2 commit.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.1.0';
+  var VER = '15.2.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -43,7 +46,12 @@
       seeWait: 'See what waits', resting: 'Resting', restSub: 'Parked or hidden. Their numbers still count.', cohort30: 'Drafts made in the last 30 days, and where they are now.', cohort7: 'Drafts made in the last 7 days, and where they are now.',
       noPaidYet: 'No calls or money yet', early: 'still early', ladder: 'From draft to paid', rateNote: 'Each step shows how many of the step before. Small numbers stay as "X of N"; a percent shows only when the step before has 20 or more and this step has 5 or more.',
       byEng: 'By engine', general: 'General', money: 'Money', booked: 'Booked so far', goal: 'Goal', updated: 'Counted at',
-      s_drafted: 'Drafted', s_approved: 'Approved', s_sent: 'Sent', s_replied: 'Replied', s_calls: 'Call', s_proposals: 'Proposal', s_paid: 'Paid' },
+      s_drafted: 'Drafted', s_approved: 'Approved', s_sent: 'Sent', s_replied: 'Replied', s_calls: 'Call', s_proposals: 'Proposal', s_paid: 'Paid',
+      agents: 'Agents', agOn: 'agents on', allFine: 'Nothing failed on its last run.', quietN: '{n} quiet for over a day', quiet1: '1 quiet for over a day', never1: '1 never ran', neverN: '{n} never ran', noRunsYet: 'No active agent has run yet.', allOff: 'All agents are off.', run1: 'run in 24 h', quietW: 'Quiet', lastRan: 'Last ran', offFail: 'last run failed', needLook: 'need a look', needLook1: 'needs a look', runs24: 'runs in 24 h', failed24: 'failed',
+      rtns: 'Your agents', rtnSub: 'Each one runs by itself on its schedule. Switch one off and it skips its next runs.', ranW: 'Ran', failedAt: 'Failed', offW: 'Off', noRun: 'No run yet', noRun7: 'No run in 7 days', runningW: 'Running…', nothingW: 'nothing to do',
+      always: 'Always on', alwaysWhy: 'This one cannot be switched off here. Pause sending in Settings stops everything.', whatW: 'What it does', whenW: 'When', lastW: 'Last run', isOn: '{n} is on.', isOff: '{n} is off.',
+      rcpts: 'What ran', rcptSub: 'Every run in the last 7 days, newest first.', probOnly: 'Problems only', allRuns: 'All', noRcpt: 'No runs in the last 7 days.', noProb: 'No problems in the last 7 days.', todayW: 'Today', yestW: 'Yesterday',
+      startedW: 'Started', tookW: 'took', minW: 'min', proof: 'Open proof', showMore: 'Show more', st_ok: 'OK', st_failed: 'Failed', st_nothing: 'Nothing to do', st_run: 'Running', st_off: 'Off', st_none: 'No run', st_late: 'Quiet' },
     he: { today: 'היום', queue: 'בתור', talk: 'שיחה', set: 'הגדרות', waiting: 'מחכים לך', sent7: 'נשלחו · 7 ימים', rep7: 'תשובות · 7 ימים',
       pulse: 'ריצות סוכנים · 24 שעות', now: 'עכשיו', h24: 'לפני 24 שעות', deck: 'אחד בכל פעם', of: 'מתוך', go: 'שלח', hold: 'דחה', sentW: 'נשלחו', repW: 'תשובות', repW1: 'תשובה', d7: '7 ימים אחרונים', leftOut: 'נחסמו ולא נכללו', resumed: 'השליחה פועלת.', heldT2: 'נדחה לאחר כך.', tplLine: 'נשלחו', tplRep: 'תשובות', sending: 'שליחה', okW: 'תקינות', failedW: 'נכשלו', stop: 'עצור', tapStop: 'הקש שוב', change: 'שנה',
       save: 'שמור ושלח', cancel: 'ביטול', readAll: 'קרא הכול', goAll: 'שלח הכול', seeAll: 'הצג 3 קודם', done: 'בוצע', copyOpen: 'העתק ופתח', copy: 'העתק', markSent: 'סמן כנשלח',
@@ -62,7 +70,12 @@
       seeWait: 'מה מחכה', resting: 'במנוחה', restSub: 'מוקפאים או מוסתרים. המספרים שלהם עדיין נספרים.', cohort30: 'טיוטות מ-30 הימים האחרונים, ואיפה הן עכשיו.', cohort7: 'טיוטות מ-7 הימים האחרונים, ואיפה הן עכשיו.',
       noPaidYet: 'עוד אין שיחות או כסף', early: 'עוד מוקדם', ladder: 'מטיוטה לתשלום', rateNote: 'כל שלב מראה כמה מתוך השלב הקודם. מספרים קטנים נשארים כמו שהם (למשל 2 מתוך 23); אחוז מופיע רק כשבשלב הקודם יש 20 ומעלה ובשלב הזה 5 ומעלה.',
       byEng: 'לפי מנוע', general: 'כללי', money: 'כסף', booked: 'נסגר עד עכשיו', goal: 'יעד', updated: 'נספר בשעה',
-      s_drafted: 'טיוטות', s_approved: 'אושרו', s_sent: 'נשלחו', s_replied: 'ענו', s_calls: 'שיחה', s_proposals: 'הצעה', s_paid: 'שולם' }
+      s_drafted: 'טיוטות', s_approved: 'אושרו', s_sent: 'נשלחו', s_replied: 'ענו', s_calls: 'שיחה', s_proposals: 'הצעה', s_paid: 'שולם',
+      agents: 'סוכנים', agOn: 'סוכנים פועלים', allFine: 'אף סוכן לא נכשל בריצה האחרונה שלו.', quietN: '{n} לא רצו כבר יותר מיממה', quiet1: 'אחד לא רץ כבר יותר מיממה', neverN: '{n} עוד לא רצו', never1: 'אחד עוד לא רץ', noRunsYet: 'אף סוכן פעיל עוד לא רץ.', allOff: 'כל הסוכנים כבויים.', run1: 'ריצה ב-24 שעות', quietW: 'שקט', lastRan: 'רץ לאחרונה', offFail: 'הריצה האחרונה נכשלה', needLook: 'צריכים בדיקה', needLook1: 'צריך בדיקה', runs24: 'ריצות ב-24 שעות', failed24: 'נכשלו',
+      rtns: 'הסוכנים שלך', rtnSub: 'כל אחד רץ לבד לפי הלוח שלו. כיבוי סוכן מדלג על הריצות הבאות שלו.', ranW: 'רץ', failedAt: 'נכשל', offW: 'כבוי', noRun: 'עוד לא רץ', noRun7: 'לא רץ 7 ימים', runningW: 'רץ עכשיו…', nothingW: 'לא היה מה לעשות',
+      always: 'תמיד פועל', alwaysWhy: 'את הסוכן הזה אי אפשר לכבות כאן. השהיית שליחה בהגדרות עוצרת הכול.', whatW: 'מה הוא עושה', whenW: 'מתי', lastW: 'ריצה אחרונה', isOn: '{n} פועל.', isOff: '{n} כבוי.',
+      rcpts: 'מה רץ', rcptSub: 'כל ריצה ב-7 הימים האחרונים, החדשה למעלה.', probOnly: 'רק בעיות', allRuns: 'הכול', noRcpt: 'אין ריצות ב-7 הימים האחרונים.', noProb: 'אין בעיות ב-7 הימים האחרונים.', todayW: 'היום', yestW: 'אתמול',
+      startedW: 'התחיל', tookW: 'נמשך', minW: 'דק׳', proof: 'פתח הוכחה', showMore: 'הצג עוד', st_ok: 'תקין', st_failed: 'נכשל', st_nothing: 'לא היה מה לעשות', st_run: 'רץ', st_off: 'כבוי', st_none: 'לא רץ', st_late: 'שקט' }
   };
   function lang() { try { return JSON.parse(localStorage.getItem('j8-lang')) === 'he' ? 'he' : 'en'; } catch (e) { return 'en'; } }
   function t(k) { var L = T[lang()]; return L[k] != null ? L[k] : T.en[k] != null ? T.en[k] : k; }
@@ -339,8 +352,87 @@
     return h;
   }
 
+  /* ---------- 15.2 Agents + Receipts (backlog d-1125-02c). Rows come only from public.j8_routines (J8.routines) and public.j8_runs (J8.runs).
+     One status per agent, always glyph + word + colour (never colour alone); a switch only where the routine reads it (switchable);
+     the switch acts at once with Undo (no confirm). Receipts = real runs of the last 7 days by day. ---------- */
+  function nrm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9֐-׿]+/g, ' ').trim().split(' ').filter(Boolean).sort().join(' '); }
+  function rtnList() { var j = J(); return safe(function () { return j.routines.list(); }, []) || []; }
+  function runT(r) { var v = pd(r.ended || r.started); return isNaN(v) ? NaN : v; }
+  function runsAll() { var j = J(); return (safe(function () { return j.runs.list(); }, []) || []).slice().sort(function (a, b) { return (runT(b) || 0) - (runT(a) || 0); }); } /* by parsed time: j8_runs mixes '…Z' and '… +00' text formats */
+  function runSt(r) { var s = String(r.status || '').toLowerCase(); return /fail|error/.test(s) ? 'failed' : /nothing|skip/.test(s) ? 'nothing' : r.started && !r.ended && s !== 'ok' ? 'run' : 'ok'; }
+  function runsOf(rt) { var k = [nrm(rt.arm), nrm(rt.name), nrm(rt.id)].filter(Boolean); return runsAll().filter(function (r) { return k.indexOf(nrm(r.arm)) > -1; }); }
+  function ago(ts) {
+    var d = ts - Date.now(), a = Math.abs(d), L = lang() === 'he' ? 'he' : 'en';
+    if (a < 6e4) return t('now'); if (a >= 864e5) return day(ts) + ' ' + hm(ts);
+    var n = a < 36e5 ? Math.round(a / 6e4) : Math.round(a / 36e5), u = a < 36e5 ? 'minute' : 'hour';
+    if (L === 'he') return (d < 0 ? 'לפני ' : 'בעוד ') + (n === 1 ? (u === 'minute' ? 'דקה' : 'שעה') : n === 2 ? (u === 'minute' ? 'שתי דקות' : 'שעתיים') : n + (u === 'minute' ? ' דקות' : ' שעות')); /* ICU adds "(2)" after the Hebrew dual; write the natural words ourselves */
+    try { return new Intl.RelativeTimeFormat(L, { numeric: 'auto', style: 'short' }).format(d < 0 ? -n : n, u);
+    } catch (e) { return day(ts) + ' ' + hm(ts); }
+  }
+  function agState(rt) {
+    var R = runsOf(rt), last = R[0] || null, lt = last ? runT(last) : NaN, st;
+    var lf = !!(last && runSt(last) === 'failed');
+    if (rt.enabled === false) st = 'off'; else if (!last) st = 'none'; else { st = runSt(last); if (st !== 'failed' && st !== 'run' && Date.now() - lt > 26 * 36e5) st = Date.now() - lt > 7 * 864e5 ? 'none' : 'late'; } /* quiet: no run for over a day (neutral, not an alarm) */
+    var ph = st === 'off' ? t('offW') + (last && !isNaN(lt) ? ' · ' + (lf ? t('offFail') + ' ' : t('lastW').toLowerCase() + ' ') + ago(lt) : '') : st === 'none' ? (last ? t('noRun7') : t('noRun')) : st === 'run' ? t('runningW')
+      : st === 'late' ? t('lastRan') + ' ' + ago(lt) : st === 'failed' ? t('failedAt') + ' ' + ago(lt) : t('ranW') + ' ' + ago(lt) + (st === 'nothing' ? ' · ' + t('nothingW') : '');
+    return { st: st, ph: ph, last: last, lt: lt, bad: st === 'failed' || (st === 'off' && lf) };
+  }
+  function glyph(st) { /* a distinct shape per status, so it reads without colour */
+    var P = { ok: '<path d="m5 12.5 4.2 4.2L19 7"/>', nothing: '<path d="M6 12h12"/>', failed: '<path d="M7 7l10 10M17 7 7 17"/>', run: '<circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>', off: '<path d="M9 6.5v11M15 6.5v11"/>', none: '<circle cx="12" cy="12" r="6"/>', late: '<path d="M12 7v5l3 2"/>' }[st] || '';
+    return '<span class="gl g-' + st + '" aria-hidden="true"><svg viewBox="0 0 24 24">' + P + '</svg></span>';
+  }
+  function stWord(st) { return t({ ok: 'st_ok', nothing: 'st_nothing', failed: 'st_failed', run: 'st_run', off: 'st_off', none: 'st_none', late: 'st_late' }[st] || 'st_ok'); }
+  function dayKey(ts) { try { return new Date(ts).toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' }); } catch (e) { return new Date(ts).toISOString().slice(0, 10); } }
+  function dayName(ts) { var k = dayKey(ts); return k === dayKey(Date.now()) ? t('todayW') : k === dayKey(Date.now() - 864e5) ? t('yestW') : day(ts); }
+  function clean(s) { return String(s || '').replace(/^[\u{1F534}\u{1F7E0}\u{1F7E2}\u{1F7E1}⚪✅❌]\s*/u, ''); }
+  function vAgents() {
+    var RT = rtnList(), all = runsAll(), now = Date.now(), wk = now - 7 * 864e5;
+    var h = '<h1 class="sr">' + esc(t('agents')) + '</h1>';
+    if (!RT.length && !all.length) return h + (failed() ? '<button type="button" class="fail" data-x="retry">' + esc(t('fail')) + '</button>' : !on() ? '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>' : '<p class="empty">' + esc(t('none')) + '</p>');
+    var A = RT.map(function (r) { return { r: r, s: agState(r) }; }), bad = A.filter(function (x) { return x.s.bad; }), en = A.filter(function (x) { return x.r.enabled !== false && !x.s.bad; }), never = en.filter(function (x) { return !x.s.last; }).length, quiet = en.filter(function (x) { return x.s.last && (x.s.st === 'late' || x.s.st === 'none'); }).length, ranOk = en.length - never - quiet, onN = RT.filter(function (r) { return r.enabled !== false; }).length;
+    var d24 = all.filter(function (r) { var v = runT(r); return v >= now - 864e5 && v <= now + 6e4; });
+    var sig = bad.length ? bad.length + ' ' + t(bad.length === 1 ? 'needLook1' : 'needLook') + ': ' + bad.map(function (x) { return x.r.name || x.r.id; }).join(', ') : !en.length ? t('allOff') : !ranOk && !quiet && never ? t('noRunsYet')
+      : (ranOk ? t('allFine') : '') + ((quiet || never) ? (ranOk ? ' ' : '') + [quiet ? t(quiet === 1 ? 'quiet1' : 'quietN').replace('{n}', quiet) : '', never ? t(never === 1 ? 'never1' : 'neverN').replace('{n}', never) : ''].filter(Boolean).join(', ') + '.' : '');
+    var sg = bad.length ? 'failed' : !en.length ? 'off' : quiet || never ? 'late' : 'ok'; /* the tick only when every active agent ran recently and nothing failed */
+    h += '<div class="tick ag"><b>' + onN + '</b><span><em>' + esc(t('agOn')) + '</em><small>' + d24.length + ' ' + esc(t(d24.length === 1 ? 'run1' : 'runs24')) + '</small></span></div>';
+    h += '<p class="sig' + (bad.length ? ' bad' : '') + '">' + glyph(sg) + '<span dir="auto">' + esc(sig) + '</span></p>' + pulse();
+    A = bad.concat(A.filter(function (x) { return !x.s.bad; })); /* what needs a look comes first */
+    h += '<section class="grp agl"><h2>' + esc(t('rtns')) + ' · ' + RT.length + '</h2><p class="meta top0">' + esc(t('rtnSub')) + '</p><div class="rows">' + A.map(function (x) {
+      var r = x.r, s = x.s, op = S.open['a:' + r.id], nid = 'rn-' + String(r.id).replace(/[^a-z0-9_-]/gi, '');
+      var sw = r.switchable ? '<button type="button" class="sw" role="switch" aria-checked="' + (r.enabled !== false) + '" aria-labelledby="' + nid + '" data-x="rsw" data-id="' + esc(r.id) + '"><i aria-hidden="true"></i></button>' : '<span class="fix">' + esc(t('always')) + '</span>';
+      var bd = '';
+      if (op) {
+        var lr = s.last;
+        bd = '<div class="bd ag" id="ab-' + nid + '">' + (r.what ? '<p><b>' + esc(t('whatW')) + ':</b> <span dir="auto">' + esc(cut(r.what, 300)) + '</span></p>' : '') + (r.schedule ? '<p><b>' + esc(t('whenW')) + ':</b> <span dir="auto">' + esc(cut(r.schedule, 120)) + '</span></p>' : '')
+          + (lr ? '<p><b>' + esc(t('lastW')) + ':</b> ' + esc(stWord(runSt(lr))) + ' · ' + esc(ago(runT(lr))) + (lr.summary ? ' · <span dir="auto">' + esc(cut(clean(lr.summary), 240)) + '</span>' : '') + '</p>' : '')
+          + (!r.switchable ? '<p class="meta">' + esc(t('alwaysWhy')) + '</p>' : '') + '</div>';
+      }
+      return '<div class="row rt' + (r.enabled === false ? ' is-off' : '') + '"><div class="rh"><button type="button" class="rx" data-x="aexp" data-id="' + esc(r.id) + '" aria-expanded="' + !!op + '"' + (op ? ' aria-controls="ab-' + nid + '"' : '') + '>' + glyph(s.st)
+        + '<span class="ph"><b dir="auto" id="' + nid + '">' + esc(cut(r.name || r.id, 48)) + '</b><small>' + (s.st !== 'ok' ? '' : '<span class="sr">' + esc(stWord(s.st)) + ': </span>') + '<span dir="auto">' + esc(s.ph) + '</span></small></span>' + chev() + '</button>' + sw + '</div>' + bd + '</div>';
+    }).join('') + '</div></section>';
+    var W7 = all.filter(function (r) { var v = runT(r); return !isNaN(v) && v >= wk && v <= now + 6e4; }), PB = W7.filter(function (r) { return runSt(r) === 'failed'; });
+    var L = S.prob ? PB : W7, n = S.rcN || 30, last = '', body = '', NM = {};
+    RT.forEach(function (r) { [r.arm, r.id, r.name].forEach(function (k) { if (nrm(k)) NM[nrm(k)] = r.name || r.id; }); }); /* a run shows its agent's plain name when it has one */
+    L.slice(0, n).forEach(function (r) {
+      var v = runT(r), dk = dayKey(v), st = runSt(r), op = S.open['r:' + r.id], lk = link(r.link);
+      if (dk !== last) { if (last) body += '</div>'; body += '<h3 class="dh">' + esc(dayName(v)) + '</h3><div class="rows">'; last = dk; }
+      var bd = '';
+      if (op) {
+        var s0 = pd(r.started), e0 = pd(r.ended), mins = !isNaN(s0) && !isNaN(e0) && e0 >= s0 ? Math.max(1, Math.round((e0 - s0) / 6e4)) : 0;
+        bd = '<div class="bd ag">' + (r.summary ? '<p dir="auto" class="full">' + esc(cut(clean(r.summary), 600)) + '</p>' : '') + '<p class="meta">' + esc(stWord(st)) + (!isNaN(s0) ? ' · ' + esc(t('startedW')) + ' ' + esc(hm(s0)) : '') + (mins ? ' · ' + esc(t('tookW')) + ' ' + mins + ' ' + esc(t('minW')) : '') + '</p>'
+          + (lk ? '<div class="sub"><a class="lnk" href="' + esc(lk) + '" target="_blank" rel="noopener noreferrer">' + esc(t('proof')) + '</a></div>' : '') + '</div>';
+      }
+      body += '<details class="row rc' + (st === 'failed' ? ' is-bad' : '') + '"' + (op ? ' open' : '') + ' data-k="r:' + esc(r.id) + '"><summary>' + glyph(st) + '<span class="ph">' + (clean(r.summary) ? '<span class="sr">' + esc(stWord(st)) + ': </span>' : '') + '<b dir="auto">' + esc(cut(NM[nrm(r.arm)] || r.arm || '—', 40)) + '</b><small dir="auto">' + esc(cut(clean(r.summary) || stWord(st), 110)) + '</small></span><time datetime="' + esc(new Date(v).toISOString()) + '">' + esc(hm(v)) + '</time></summary>' + bd + '</details>';
+    });
+    if (last) body += '</div>';
+    h += '<section class="grp"><div class="hd"><h2 class="h2">' + esc(t('rcpts')) + '</h2><span class="seg win" role="group" aria-label="' + esc(t('rcpts')) + '"><button type="button" class="b sm" data-x="prob" data-id="all" aria-pressed="' + !S.prob + '">' + esc(t('allRuns')) + ' ' + W7.length + '</button><button type="button" class="b sm" data-x="prob" data-id="bad" aria-pressed="' + !!S.prob + '">' + esc(t('probOnly')) + ' ' + PB.length + '</button></span></div>'
+      + '<p class="meta top0">' + esc(t('rcptSub')) + '</p>' + (L.length ? body : '<p class="empty">' + esc(t(S.prob ? 'noProb' : 'noRcpt')) + '</p>')
+      + (L.length > n ? '<div class="sub"><button type="button" class="lnk" data-x="rmore">' + esc(t('showMore')) + ' (' + (L.length - n) + ')</button></div>' : '') + '</section>';
+    return h;
+  }
+
   /* ---------- shell ---------- */
-  var SP = [['today', 't-today'], ['queue', 't-queue'], ['eng', 't-eng'], ['score', 't-score'], ['talk', 't-talk'], ['set', 't-set']];
+  var SP = [['today', 't-today'], ['queue', 't-queue'], ['eng', 't-eng'], ['score', 't-score'], ['talk', 't-talk'], ['agents', 't-agents'], ['set', 't-set']];
   function topBar() {
     var j = J(), x = X(), st = safe(function () { return j.status(); }, {}), p = safe(function () { return j.control.paused(); }, false);
     var s = x ? safe(function () { return x.sender ? x.sender() : null; }, null) : null, bad = p || (s && s.ok === false);
@@ -351,7 +443,7 @@
   function tabs() { /* index-card tabs: each space is a coloured card in a file; the open one joins the folder below */
     var n = deck().length;
     return '<nav class="tabs" aria-label="Spaces">' + SP.map(function (s, i) {
-      return '<button type="button" class="tab" data-x="sp" data-id="' + s[0] + '" style="--tc:var(--' + s[1] + ')"' + (S.sp === s[0] ? ' aria-current="page"' : '') + ' aria-keyshortcuts="' + (i + 1) + '">' + esc(t(s[0]))
+      return '<button type="button" class="tab" data-x="sp" data-id="' + s[0] + '" style="--tc:var(--' + s[1] + ')"' + (S.sp === s[0] ? ' aria-current="page"' : '') + ' aria-keyshortcuts="' + (i + 1) + '">' + (s[0] === 'set' ? '<span class="tl">' + esc(t(s[0])) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>' : esc(t(s[0])))
         + (s[0] === 'today' && n ? '<em>' + n + '</em><span class="sr"> (' + n + ' ' + esc(t('waiting')) + ')</span>' : '') + '</button>'; }).join('') + '</nav>';
   }
   function busyTyping() { var a = sr && sr.activeElement; return !!(a && /^(TEXTAREA|INPUT)$/.test(a.tagName)); }
@@ -361,7 +453,7 @@
     pend = false;
     var y = window.scrollY;
     W.setAttribute('data-sp', S.sp); W.setAttribute('dir', lang() === 'he' ? 'rtl' : 'ltr'); W.setAttribute('lang', lang());
-    var body = S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'set' ? vSet() : vToday();
+    var body = S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'agents' ? vAgents() : S.sp === 'set' ? vSet() : vToday();
     C.innerHTML = topBar() + tabs() + '<main class="folder" id="j2main" tabindex="-1"><div class="in">' + body + '</div></main>'; /* the toast sits outside C, so a data refresh never wipes an Undo */
     window.scrollTo(0, y);
     if (S.edit) { var ta = sr.getElementById('j2ed'); if (ta && force === 'edit') { ta.focus(); } }
@@ -370,7 +462,7 @@
   function go(sp) { S.sp = sp; S.edit = null; render(true); window.scrollTo(0, 0); var m = sr.getElementById('j2main'); if (m) try { m.focus({ preventScroll: true }); } catch (e) {} }
   function say(msg, undo) {
     undoFn = undo || null; var el = sr.getElementById('j2t'); if (!el) return;
-    el.setAttribute('dir', lang() === 'he' ? 'rtl' : 'ltr'); el.innerHTML = '<span dir="auto">' + esc(msg) + '</span>' + (undo ? '<button type="button" data-x="undo">' + esc(t('undo')) + '</button>' : '');
+    el.setAttribute('dir', lang() === 'he' ? 'rtl' : 'ltr'); el.innerHTML = '<span dir="' + (lang() === 'he' ? 'rtl' : 'ltr') + '">' + esc(msg) + '</span>' + (undo ? '<button type="button" data-x="undo">' + esc(t('undo')) + '</button>' : '');
     el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
     clearTimeout(toastT); toastT = setTimeout(function () { var e2 = sr.getElementById('j2t'); if (e2) e2.classList.remove('on'); undoFn = null; }, 6000);
   }
@@ -392,6 +484,9 @@
     if (x === 'win') { S.win = id === '7d' ? '7d' : '30d'; try { localStorage.setItem('j8:win', S.win); } catch (e) {} render(true); return; }
     if (x === 'funretry') { S.funAt = 0; S.funErr = false; render(true); return; }
     if (x === 'full') { S.full[id] = 1; render(true); return; }
+    if (x === 'aexp') { S.open['a:' + id] = !S.open['a:' + id]; render(true); var bx = sr.querySelector('[data-x="aexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (bx) bx.focus(); return; }
+    if (x === 'prob') { S.prob = id === 'bad'; S.rcN = 30; render(true); return; }
+    if (x === 'rmore') { S.rcN = (S.rcN || 30) + 30; render(true); return; }
     if (x === 'bprev') { S.bprev = id; render(true); return; }
     if (x === 'ed') { var ea = apById(id); S.edit = id; S.editTx = ea ? textOf(ea) : ''; render('edit'); return; }
     if (x === 'ed-x') { S.edit = null; render(true); return; }
@@ -458,6 +553,12 @@
       if (!armed(x)) { arm(x); return; } delete S.arm[x]; el.disabled = true;
       j.control.setPaused(x === 'pause').then(function () { tone(x === 'pause' ? 'stop' : 'go'); render(true); say(x === 'pause' ? t('paused') : t('resumed')); }, fail); return;
     }
+    if (x === 'rsw') {
+      var rr = rtnList().filter(function (r) { return String(r.id) === id; })[0]; if (!rr || !rr.switchable || !j.routines) return;
+      if (S.swBusy) return; var nv = rr.enabled === false; el.disabled = true; S.swBusy = true; tone(nv ? 'go' : 'stop');
+      j.routines.set(id, nv).then(function () { S.swBusy = false; render(true); var b2 = sr.querySelector('[data-x="rsw"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (b2) b2.focus();
+        say(t(nv ? 'isOn' : 'isOff').replace('{n}', rr.name || id), function () { j.routines.set(id, !nv).then(function () { render(true); say(t(!nv ? 'isOn' : 'isOff').replace('{n}', rr.name || id)); }, fail); }); }, function (e) { S.swBusy = false; fail(e); }); return;
+    }
     if (x === 'apl') {
       var aw = el.getAttribute('data-w'), at = apById(id); if (!at || !APW[aw]) return;
       if (aw === 'hold') { var ak = 'apl-' + id; if (!armed(ak)) { arm(ak); return; } delete S.arm[ak]; }
@@ -473,7 +574,7 @@
     var tgt = e.composedPath ? e.composedPath()[0] : e.target, typing = tgt && /^(TEXTAREA|INPUT|SELECT)$/.test(tgt.tagName);
     if (typing) { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { var b = sr.querySelector(tgt.dataset.say ? '[data-x="say"]' : '[data-x="ed-save"]'); if (b) b.click(); } if (e.key === 'Escape' && S.edit) { S.edit = null; render(true); } return; }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (/^[1-6]$/.test(e.key)) { go(SP[+e.key - 1][0]); e.preventDefault(); return; }
+    if (/^[1-7]$/.test(e.key)) { go(SP[+e.key - 1][0]); e.preventDefault(); return; }
     if (S.sp !== 'today') return;
     var c = sr.querySelector('.deck .card'); if (!c) return;
     var sel = { g: '[data-x="go"],[data-x="batch-go"],[data-x="done"],[data-x="copyopen"]', h: '[data-x="hold"]', x: '[data-x="stop"]', e: '[data-x="ed"]' }[e.key.toLowerCase()];

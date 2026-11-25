@@ -73,3 +73,14 @@ Type: Bricolage Grotesque 800 for titles and numbers, Instrument Sans for text (
 - `j8/j20.js` and `j8/j20w.css` (inside the app's own shadow root) plus `j8/j20.css` (decides which app is in front).
 - Every read and write goes through `window.J8`, the same data engine as 14.1. The 14.1 logic is reused through `window.j8x` (money-first desk order, batches, going out, outcomes, sender line, templates), so 2.0 and classic always agree on what waits.
 - Revert: `git revert` of the 15.0 commit, which brings back index.html and sw.js 14.1.
+
+## 15.2 · Agents space (backlog d-1125-02c, 25 Nov 2026)
+Research: 3 parallel agents. What we took:
+- One status per run, from a small fixed set (Zapier run statuses https://help.zapier.com/hc/en-us/articles/20505304170637 ; Make history https://help.make.com/scenario-history ; Sentry Crons ok/failed/missed https://docs.sentry.io/product/crons/job-monitoring). J8NIX: OK / Nothing to do / Failed / Running, plus Quiet (no run for over a day), No run, Off.
+- "Late" is not a failure (Healthchecks grace time https://healthchecks.io/docs/configuring_checks/): Quiet is a neutral clock, never red.
+- The newest run decides; failures go first and are named in one line at the top (Copilot Studio activity https://learn.microsoft.com/microsoft-copilot-studio/authoring-review-activity ; Claude Code routines https://code.claude.com/docs/en/routines ; NN/g indicators https://www.nngroup.com/articles/indicators-validations-notifications/).
+- Honest signal, no confidence theatre (Google PAIR https://pair.withgoogle.com/chapter/explainability-trust/): the tick shows only when every active agent ran in the last ~26 h and none failed.
+- Switch acts at once, Undo instead of a confirm (NN/g toggles https://www.nngroup.com/articles/toggle-switch-guidelines/); role=switch + aria-checked + fixed label (WAI-ARIA APG https://www.w3.org/WAI/ARIA/apg/patterns/switch/); knob mirrors in RTL (Wikimedia Codex https://doc.wikimedia.org/codex/main/style-guide/bidirectionality.html).
+- Status never by colour alone: a different glyph shape per status + a word (WCAG 1.4.1, 1.4.11). Targets ≥44 px (Apple HIG).
+- Relative times; Hebrew written by hand because ICU prints "שעתיים (2)" (MDN Intl.RelativeTimeFormat).
+- Run history by day, Problems only filter (Sentry daily rollup; Make "hide runs with no data").

@@ -1,4 +1,4 @@
-/* J8NIX 2.0 (15.1.0, 25 Nov 2026: + Engines butter #FFEDC2 and Score #D3EEF8 spaces, six tabs fit at 320 px) — first shipped 15.0.0 · "Card file". Lives inside the #j2 shadow root (j20.js). Document rules: j20.css.
+/* J8NIX 2.0 (15.2.0, 25 Nov 2026: + Agents rose #F8DCEB space, seven tabs fit at 320 px with Settings as a cog under 420 px; 15.1.0: + Engines butter #FFEDC2 and Score #D3EEF8 spaces) — first shipped 15.0.0 · "Card file". Lives inside the #j2 shadow root (j20.js). Document rules: j20.css.
    Idea: J8NIX is a card file on your desk. Each space is a coloured index card with a tab on top (Today, Queue, Talk,
    Settings); the open card is the folder you work in. Decisions are tickets: a big ticket number says how many wait,
    each ticket has a stub number and a tear line, and the decision sits below the tear. Fonts and radius from 3SDS (Bricolage Grotesque + Instrument Sans, 3/6 px).
@@ -8,12 +8,12 @@
 *{box-sizing:border-box}
 .w{--ink:#0C1030;--ink-2:#384064;--ink-3:#565E80;--card:#fff;--line:rgba(12,16,48,.14);--edge:#7E86A6;
   --stop:#A3162A;--stop-bg:#FDE4E8;--wait:#8A5300;--wait-bg:#FFF0D2;--ok:#1D4ED8;--ok-bg:#E3EBFF;
-  --t-today:#D6E6FF;--t-queue:#FFDCD5;--t-eng:#FFEDC2;--t-score:#D3EEF8;--t-talk:#E3DDFF;--t-set:#E4E8EF;
+  --t-today:#D6E6FF;--t-queue:#FFDCD5;--t-eng:#FFEDC2;--t-score:#D3EEF8;--t-talk:#E3DDFF;--t-agents:#F8DCEB;--t-set:#E4E8EF;
   --tint:var(--t-today);--fd:"Bricolage Grotesque","Heebo",system-ui,sans-serif;--fb:"Instrument Sans","Heebo",system-ui,sans-serif;
   --in:cubic-bezier(0,0,.2,1);--out:cubic-bezier(.4,0,1,1);--std:cubic-bezier(.4,0,.2,1);
   --desk:#EEF0F5;min-height:100vh;background:var(--desk);color:var(--ink);font:400 16px/1.5 var(--fb);font-variant-numeric:tabular-nums;
   -webkit-font-smoothing:antialiased;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
-.w[data-sp="queue"]{--tint:var(--t-queue)}.w[data-sp="eng"]{--tint:var(--t-eng)}.w[data-sp="score"]{--tint:var(--t-score)}.w[data-sp="talk"]{--tint:var(--t-talk)}.w[data-sp="set"]{--tint:var(--t-set)}
+.w[data-sp="queue"]{--tint:var(--t-queue)}.w[data-sp="eng"]{--tint:var(--t-eng)}.w[data-sp="score"]{--tint:var(--t-score)}.w[data-sp="talk"]{--tint:var(--t-talk)}.w[data-sp="agents"]{--tint:var(--t-agents)}.w[data-sp="set"]{--tint:var(--t-set)}
 .w[dir="rtl"]{--fd:"Heebo","Bricolage Grotesque",system-ui,sans-serif;--fb:"Heebo","Instrument Sans",system-ui,sans-serif}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -225,3 +225,41 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .w[dir="rtl"] .row .ph b{text-align:right} /* an English name inside a Hebrew row sits at the row's start */
 .tick.sc{margin-bottom:20px}
 .panel,.bd.eng .lad{max-width:640px}
+
+/* 15.2 Agents + Receipts. Status = glyph shape + word + colour (WCAG 1.4.1); glyph strokes and switch edges >= 3:1 (1.4.11). */
+.tab .cog{display:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:419px){.tab .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.tab .cog{display:block}.tab[data-id="set"]{flex:0 0 44px}}
+@media (max-width:339px){.tabs{gap:1px;padding:6px 2px 0}.folder{margin:0 2px}}
+.tick.ag b{font-size:clamp(72px,20vw,112px)}
+.sig{display:flex;align-items:flex-start;gap:8px;margin:10px 0 0;font-weight:600;color:var(--ink);font-size:15px}
+.sig.bad{color:var(--stop)}
+.gl{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:2px solid currentColor;color:var(--ink-2)}
+.gl svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.gl.g-run svg{fill:currentColor;stroke:none}
+.gl.g-ok{color:var(--ok)}.gl.g-failed{color:#fff;background:var(--stop);border-color:var(--stop)}.gl.g-nothing{color:var(--ink-3)}
+.gl.g-off{color:var(--ink-3);border-style:dashed}.gl.g-none,.gl.g-late{color:var(--ink-3)}.gl.g-run{color:var(--wait)}
+.sig .gl{width:22px;height:22px;margin-top:-1px}.sig .gl svg{width:13px;height:13px}
+.top0{margin:-2px 0 10px}
+.rt>.rh{padding:6px 10px 6px 6px;gap:8px;cursor:default}
+.w[dir="rtl"] .rt>.rh{padding:6px 6px 6px 10px}
+.rx{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:48px;padding:4px 8px;border:0;background:none;text-align:start;border-radius:3px}
+.rt.is-off .ph b{color:var(--ink-2)}
+.sw{position:relative;flex:none;width:56px;height:44px;padding:0;border:0;background:none;display:grid;place-items:center}
+.sw i{position:relative;display:block;width:46px;height:28px;border-radius:999px;background:#fff;border:2px solid var(--edge);transition:background .15s var(--std),border-color .15s var(--std)}
+.sw i::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:18px;height:18px;border-radius:50%;background:var(--edge);transition:inset-inline-start .15s var(--std),background .15s var(--std)}
+.sw[aria-checked="true"] i{background:var(--ink);border-color:var(--ink)}
+.sw[aria-checked="true"] i::after{inset-inline-start:21px;background:#fff}
+.sw:disabled{opacity:.5}
+.fix{flex:none;font-size:12px;color:var(--ink-3);padding:0 6px;max-width:84px;text-align:end;line-height:1.2}
+.bd.ag{padding:2px 14px 14px;border-top:1px solid var(--line)}
+.bd.ag>p{margin:10px 0 0;font-size:15px;color:var(--ink-2);overflow-wrap:anywhere}
+.bd.ag>p b{color:var(--ink)}
+.bd.ag>p.full{white-space:pre-wrap;color:var(--ink)}
+.hd .h2{font:700 15px/1.2 var(--fb);color:var(--ink-2);margin:0}
+.dh{font:800 14px/1.2 var(--fd);color:var(--ink);margin:16px 0 6px;letter-spacing:-.01em}
+.w[dir="rtl"] .dh{letter-spacing:0}
+.rc>summary{gap:10px;min-height:52px}
+.rc .ph small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc time{flex:none;font-size:13px;font-weight:600;color:var(--ink-2)}
+.rc.is-bad{border-color:var(--stop)}
+.in>.grp.agl{margin-top:26px}
