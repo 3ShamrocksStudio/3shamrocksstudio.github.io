@@ -20,10 +20,14 @@
    step skippable), then a 4-stop tour you launch yourself; every space has a help line (What / How / When) that folds to "?" once
    used and comes back with a tip where you struggled. Progress in j8_members.prefs.guide; skips + struggles in j8_memory (fact,
    onboarding). Settings → Guide replays it. Revert: git revert of the 15.4 commit.
+   15.5.0 (25 Nov 2026) · slice 4 (backlog d-1125-02d): the sign-in screen in the card-file look (#auth markup in index.html, styles in
+   j20.css, words + step number + EN/עברית switch + focus on step change in authDress here; shell.js and the auth calls are unchanged).
+   Full Hebrew pass: the sender line (senderTx), channel names (chan), the two fixed j13 phrases (whyNow) and the tabs' label now follow
+   the language. Revert: git revert of the 15.5 commit.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.4.0';
+  var VER = '15.5.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -83,6 +87,16 @@
       startedW: 'התחיל', tookW: 'נמשך', minW: 'דק׳', proof: 'פתח הוכחה', showMore: 'הצג עוד', st_ok: 'תקין', st_failed: 'נכשל', st_nothing: 'לא היה מה לעשות', st_run: 'רץ', st_off: 'כבוי', st_none: 'לא רץ', st_late: 'שקט',
       kDesign: 'בחירת עיצוב', pickOne: 'בחר אחד', seeFull: 'לראות בגודל מלא', goPick: 'בחר ב־{n}', pickFirst: 'קודם בוחרים אחד', noneOf: 'אף אחד מאלה', chose: 'נבחר: {n}.' }
   };
+  /* 15.5: words for the sign-in card, the sender line and channel names (full Hebrew pass) */
+  Object.assign(T.en, { spaces: 'Spaces', aTab: 'Sign in', aOf: 'of 2', aWhy: 'We email you a sign-in link and a 6-digit code. No password.', aSent: 'Sent to', aSpam: 'It can take a minute. Check spam too.',
+    aTag: 'Smart operations OS, only smarter', aLang: 'עברית', aFail: 'Could not send. Try again.', aRate: 'Too many tries. Wait a minute, then try again.',
+    sPaused: 'Sending is paused', sNone: 'Sending: no sender run recorded yet', sNot: 'Sending: not loaded', sOk: 'Sending works · last send', sOkC: 'Sending works · last check', sBad: 'Sending stopped', tplWhy: 'Saved message: approve once, used many times', fit: 'Fit', posted: 'posted' });
+  Object.assign(T.he, { spaces: 'מרחבים', aTab: 'כניסה', aOf: 'מתוך 2', aWhy: 'נשלח אליך במייל קישור כניסה וקוד בן 6 ספרות. בלי סיסמה.', aSent: 'נשלח אל', aSpam: 'זה יכול לקחת דקה. כדאי לבדוק גם בספאם.',
+    aTag: 'מערכת התפעול החכמה, רק חכמה יותר', aLang: 'English', aFail: 'לא נשלח. כדאי לנסות שוב.', aRate: 'יותר מדי ניסיונות. כדאי לחכות דקה ולנסות שוב.',
+    sPaused: 'השליחה מושהית', sNone: 'שליחה: עדיין אין ריצת שליחה', sNot: 'שליחה: לא נטען', sOk: 'השליחה עובדת · שליחה אחרונה', sOkC: 'השליחה עובדת · בדיקה אחרונה', sBad: 'השליחה נעצרה', tplWhy: 'הודעה שמורה: מאשרים פעם אחת, נשלחת הרבה פעמים', fit: 'התאמה', posted: 'פורסם' });
+  var SFIX = { 'the last run failed': 'הריצה האחרונה נכשלה', 'J8 retries at the next run': 'J8 ינסה שוב בריצה הבאה', 'the run started without your Mac': 'הריצה התחילה בלי המק שלך', 'keep the Mac on and awake at send time': 'להשאיר את המק דלוק וער בזמן השליחה' };
+  var CHAN = { he: { email: 'מייל', mail: 'מייל', message: 'הודעה', outreach: 'פנייה', phone: 'טלפון', call: 'שיחה', application: 'בקשה', design: 'עיצוב', post: 'פוסט', linkedin: 'LinkedIn', whatsapp: 'WhatsApp', sms: 'SMS' } };
+  function chan(c) { var m = CHAN[lang()], k = String(c || '').trim().toLowerCase(); return (m && m[k]) || String(c || ''); }
   function lang() { try { return JSON.parse(localStorage.getItem('j8-lang')) === 'he' ? 'he' : 'en'; } catch (e) { return 'en'; } }
   function t(k) { var L = T[lang()]; return L[k] != null ? L[k] : T.en[k] != null ? T.en[k] : k; }
   var OUTW = { en: { replied: 'Replied', call: 'Call', proposal: 'Proposal', won: 'Won', lost: 'Lost' }, he: { replied: 'ענו', call: 'שיחה', proposal: 'הצעה', won: 'נסגר', lost: 'לא רלוונטי' } };
@@ -103,8 +117,23 @@
   function aps() { var j = J(); return safe(function () { return j.approvals.list(); }, []); }
   function apById(id) { return aps().filter(function (a) { return String(a.id) === String(id); })[0] || null; }
   function textOf(a) { var j = J(); return String(safe(function () { return j.approvals.textOf(a); }, '') || ''); }
-  function whoOf(a) { return cut(a.to || a.label || a.subject || a.kind || 'Draft', 60); }
-  function whyNow(a) { var x = X(); return x ? safe(function () { return x.whyNow(a); }, '') : ''; }
+  function whoOf(a) { return cut(a.to || a.label || a.subject || a.kind || t('kDraft'), 60); }
+  function whyNow(a) {
+    var x = X(), s = x ? safe(function () { return x.whyNow(a); }, '') : '';
+    if (a && a.kind === 'template' && !(a.gist || a.why_now)) return t('tplWhy'); /* 15.5: the two fixed phrases j13 writes, in the app's language */
+    if (a && a.channel && String(s) === String(a.channel)) return chan(a.channel); /* j13 falls back to the raw channel key */
+    if (a && a.kind === 'application' && !(a.gist || a.why_now)) s = String(s || '').replace(/^Fit (\d+)\/100/, t('fit') + ' $1/100').replace(/(^| · )posted /, '$1' + t('posted') + ' ');
+    return s;
+  }
+  /* 15.5: the sender line in the app's language (j13's senderText is English only) */
+  function senderTx() {
+    var x = X(); if (!x) return '';
+    if (safe(function () { return J().control.paused(); }, false)) return t('sPaused');
+    var s = safe(function () { return x.sender ? x.sender() : null; }, null);
+    if (!s) return safe(function () { return x.failed(); }, false) ? t('sNot') : t('sNone');
+    var tr = function (v) { var m = lang() === 'he' && SFIX[String(v || '')]; return m || v || ''; }; /* j13's fixed reason / fix phrases; the rest comes from the run itself */
+    return s.ok ? (s.sent ? t('sOk') : t('sOkC')) + ' ' + ago(s.t) : t('sBad') + ': ' + tr(s.reason) + (s.fix ? ' · ' + tr(s.fix) : '');
+  }
   function lintOf(a) { var L = X() && X().state && X().state.lint; return (L && a && L[a.id]) || { flags: [], hard: false }; }
   function outcomeOf(a) { return a.outcome || (a.replied_at ? 'replied' : ''); }
   function isTpl(a) { return a && (a.kind === 'template' || a.label === 'Template'); }
@@ -187,7 +216,7 @@
       var ap = c.a, tx = textOf(ap), li = lintOf(ap), plan = !!(ap.no_send || (ap.extra && ap.extra.no_send));
       var why = whyNow(ap), sub = ap.subject && ap.subject !== ap.to ? cut(ap.subject, 90) : '';
       h += '<p class="why" dir="auto">' + esc([why, sub].filter(Boolean).join(' · ')) + '</p>';
-      if (ap.channel) h += '<p class="meta" dir="auto">' + esc(t('where')) + ': ' + esc(cut(ap.channel, 60)) + '</p>';
+      if (ap.channel) h += '<p class="meta" dir="auto">' + esc(t('where')) + ': ' + esc(cut(chan(ap.channel), 60)) + '</p>';
       var hard = (li.flags || []).filter(function (f) { return /^HARD:/.test(f); }).map(function (f) { return f.replace(/^HARD:\s*/, ''); });
       if (li.hard && hard.length) h += '<p class="warn" dir="auto">' + esc(t('blocked')) + ' ' + esc(cut(hard.join(' · '), 160)) + '</p>';
       if (S.edit === ap.id) {
@@ -213,7 +242,7 @@
         + '<button type="button" class="b stop' + (dk ? ' arm' : '') + '" data-x="stop" data-id="' + esc(da.id) + '">' + esc(dk ? t('tapStop') : t('noneOf')) + (inList ? '' : key('X')) + '</button></div>';
     } else if (c.k === 'hand') {
       var ha = c.a, htx = textOf(ha), hl = link(ha.link), hk = armed('hs-' + ha.id);
-      if (ha.channel) h += '<p class="why" dir="auto">' + esc(cut(ha.channel, 60)) + '</p>';
+      if (ha.channel) h += '<p class="why" dir="auto">' + esc(cut(chan(ha.channel), 60)) + '</p>';
       if (htx) h += '<div class="txt" dir="auto">' + esc(htx) + '</div>';
       h += '<div class="acts"><button type="button" class="b go" data-x="copyopen" data-id="' + esc(ha.id) + '">' + esc(hl ? t('copyOpen') : t('copy')) + '</button>' + (hold || '')
         + '<button type="button" class="b' + (hk ? ' arm' : '') + '" data-x="handsent" data-id="' + esc(ha.id) + '">' + esc(hk ? t('tapStop') : t('markSent')) + '</button></div>';
@@ -266,7 +295,7 @@
         + (S.open[c.id] ? '<div class="bd">' + cardHtml(c, true) + '</div>' : '') + '</details>'; }).join('') + '</div>' : '<p class="empty">' + esc(on() ? t('none') : t('loading')) + '</p>') + '</section>';
     if (G.length) h += '<section class="grp"><h2>' + esc(t('goneOut')) + ' · ' + G.length + '</h2><div class="rows">' + G.slice(0, 30).map(function (a) {
       var k = 'kl-' + a.id, ar = armed(k), hu = pd(a.hold_until), left = !isNaN(hu) && hu > Date.now() ? ' · ' + t('soonGo') + ' ' + hm(hu) : '';
-      return '<div class="row"><div class="rh"><span class="ph"><b dir="auto">' + esc(whoOf(a)) + '</b><small dir="auto">' + esc((a.channel || '') + left) + '</small></span><button type="button" class="b sm stop' + (ar ? ' arm' : '') + '" data-x="kill" data-id="' + esc(a.id) + '">' + esc(ar ? t('tapKill') : t('kill')) + '</button></div></div>'; }).join('') + '</div></section>';
+      return '<div class="row"><div class="rh"><span class="ph"><b dir="auto">' + esc(whoOf(a)) + '</b><small dir="auto">' + esc(chan(a.channel) + left) + '</small></span><button type="button" class="b sm stop' + (ar ? ' arm' : '') + '" data-x="kill" data-id="' + esc(a.id) + '">' + esc(ar ? t('tapKill') : t('kill')) + '</button></div></div>'; }).join('') + '</div></section>';
     if (O.length) h += '<section class="grp"><h2>' + esc(t('answer')) + ' · ' + O.length + '</h2><div class="rows">' + O.slice(0, 20).map(function (a) {
       var cur = outcomeOf(a);
       return '<div class="row"><div class="rh" style="flex-wrap:wrap"><span class="ph" style="min-width:60%"><b dir="auto">' + esc(whoOf(a)) + '</b><small>' + esc(t('sentOn')) + ' ' + esc(day(pd(a.sent_at))) + (cur ? ' · ' + esc(ow(cur)) : '') + '</small></span><span class="seg oc">'
@@ -368,7 +397,7 @@
     var TP = x ? safe(function () { return x.templates(); }, []) : [], pk = armed(p ? 'resume' : 'pause');
     var row = function (title, small, right) { return '<div class="row"><div class="rh"><span class="ph"><b>' + title + '</b>' + (small ? '<small>' + small + '</small>' : '') + '</span>' + right + '</div></div>'; };
     var h = '<h1 class="sr">' + esc(t('set')) + '</h1><section class="grp first"><div class="rows">'
-      + row(esc(p ? t('paused') : t('sending')), esc(x ? safe(function () { return x.senderText(); }, '') : ''), '<button type="button" class="b sm' + (pk ? ' arm' : p ? ' go' : '') + '" data-x="' + (p ? 'resume' : 'pause') + '">' + esc(pk ? t('tapStop') : p ? t('resume') : t('pause')) + '</button>')
+      + row(esc(p ? t('paused') : t('sending')), esc(senderTx()), '<button type="button" class="b sm' + (pk ? ' arm' : p ? ' go' : '') + '" data-x="' + (p ? 'resume' : 'pause') + '">' + esc(pk ? t('tapStop') : p ? t('resume') : t('pause')) + '</button>')
       + row(esc(t('lang')), '', '<span class="seg"><button type="button" class="b sm" data-x="lang" data-id="en" aria-pressed="' + (lang() === 'en') + '" lang="en">English</button><button type="button" class="b sm" data-x="lang" data-id="he" aria-pressed="' + (lang() === 'he') + '" lang="he">עברית</button></span>')
       + row(esc(t('sound')), '', '<span class="seg"><button type="button" class="b sm" data-x="snd" data-id="on" aria-pressed="' + soundOn() + '">' + esc(t('on')) + '</button><button type="button" class="b sm" data-x="snd" data-id="off" aria-pressed="' + !soundOn() + '">' + esc(t('off')) + '</button></span>')
       + row(esc(t('classic')), esc(t('classicP')), '<a class="b sm" href="classic/">' + esc(t('open')) + '</a>')
@@ -466,13 +495,13 @@
   function topBar() {
     var j = J(), x = X(), st = safe(function () { return j.status(); }, {}), p = safe(function () { return j.control.paused(); }, false);
     var s = x ? safe(function () { return x.sender ? x.sender() : null; }, null) : null, bad = p || (s && s.ok === false);
-    var txt = !st.connected ? (st.cached ? t('saved2') : t('offline')) : p ? t('paused').split('.')[0] : bad ? cut(safe(function () { return x.senderText(); }, ''), 40) : t('live');
+    var txt = !st.connected ? (st.cached ? t('saved2') : t('offline')) : p ? t('paused').split('.')[0] : bad ? cut(senderTx(), 40) : t('live');
     return '<header class="top"><span class="lock" aria-label="J8NIX 2.0"><span class="tile"><img src="brand/j8nix-mark-8-2026-11-17.svg" alt=""></span><b>J8NIX</b><sup>2.0</sup></span><span class="sp"></span>'
       + '<span class="pill' + (bad ? ' bad' : !st.connected ? ' off' : '') + '" role="status"><i aria-hidden="true"></i>' + esc(txt) + '</span></header>';
   }
   function tabs() { /* index-card tabs: each space is a coloured card in a file; the open one joins the folder below */
     var n = deck().length;
-    return '<nav class="tabs" aria-label="Spaces">' + SP.map(function (s, i) {
+    return '<nav class="tabs" aria-label="' + esc(t('spaces')) + '">' + SP.map(function (s, i) {
       return '<button type="button" class="tab' + (GS.tour > -1 && TOUR[GS.tour] && TOUR[GS.tour].lift.indexOf(s[0]) > -1 ? ' lift' : '') + '" data-x="sp" data-id="' + s[0] + '" style="--tc:var(--' + s[1] + ')"' + (S.sp === s[0] ? ' aria-current="page"' : '') + ' aria-keyshortcuts="' + (i + 1) + '">' + (s[0] === 'set' ? '<span class="tl">' + esc(t(s[0])) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>' : esc(t(s[0])))
         + (s[0] === 'today' && n ? '<em>' + n + '</em><span class="sr"> (' + n + ' ' + esc(t('waiting')) + ')</span>' : '') + '</button>'; }).join('') + '</nav>';
   }
@@ -548,7 +577,7 @@
       if (lintOf(a1).hard) { var hk = 'hb-' + id; if (!armed(hk)) { arm(hk); return; } delete S.arm[hk]; }
       el.disabled = true;
       leave(id, 'go', function () {
-        j.approvals.approve(id).then(function () { S.gone[id] = 1; render(true); say(t('approved') + ' ' + safe(function () { return X8.senderText(); }, ''), function () { j.approvals.undo(id).then(function () { delete S.gone[id]; render(true); say(t('back')); }, fail); }); }, fail);
+        j.approvals.approve(id).then(function () { S.gone[id] = 1; render(true); say(t('approved') + ' ' + senderTx(), function () { j.approvals.undo(id).then(function () { delete S.gone[id]; render(true); say(t('back')); }, fail); }); }, fail);
       }); return;
     }
     if (x === 'dgo') {
@@ -877,7 +906,30 @@
     if (want) { document.body.classList.remove('jx'); document.documentElement.classList.remove('jx'); }
     if (want && !was) render(true);
   }
+  /* ---------- 15.5: the sign-in card (light DOM #auth; shell.js keeps the flow, this only dresses it) ---------- */
+  function authDress() {
+    var g = function (id) { return document.getElementById(id); }, au = g('auth'); if (!au || !g('a2Tab')) return;
+    var he = lang() === 'he', fP = g('fPaste'), am = g('amsg');
+    g('a2Tab').textContent = t('aTab'); g('a2Of').textContent = t('aOf'); g('a2Why').textContent = t('aWhy'); g('a2Tag').textContent = t('aTag');
+    var lb = g('a2Lang'); lb.textContent = t('aLang'); lb.setAttribute('lang', he ? 'en' : 'he');
+    lb.addEventListener('click', function () { try { localStorage.setItem('j8-lang', JSON.stringify(he ? 'en' : 'he')); } catch (e) {} location.reload(); });
+    function step(moved) {
+      var two = fP && !fP.hidden; g('a2No').textContent = two ? '2' : '1';
+      var s = g('a2Sent');
+      if (s) { var em = ''; try { em = localStorage.getItem('j8v4:email') || ''; } catch (e) {} s.innerHTML = (em ? esc(t('aSent')) + ' <bdi dir="ltr">' + esc(em) + '</bdi>. ' : '') + esc(t('aSpam')); }
+      if (moved && !au.hidden) { var f = two ? g('code') : g('email'); if (f) try { f.focus(); } catch (e) {} }
+    }
+    function heMsg() { /* server errors arrive as raw English: rate limits get a plain line in both languages, anything else in Hebrew gets the Hebrew line */
+      if (!am || !am.classList.contains('err')) return; var x = am.textContent;
+      if (/rate limit|too many/i.test(x)) { if (x !== t('aRate')) am.textContent = t('aRate'); } else if (lang() === 'he' && /[A-Za-z]{3,}/.test(x)) am.textContent = t('aFail'); }
+    step(false);
+    if (window.MutationObserver) {
+      if (fP) new MutationObserver(function () { step(true); }).observe(fP, { attributes: true, attributeFilter: ['hidden'] });
+      if (am) new MutationObserver(heMsg).observe(am, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    }
+  }
   function boot() {
+    try { authDress(); } catch (e) {}
     host = document.createElement('div'); host.id = 'j2';
     sr = host.attachShadow ? host.attachShadow({ mode: 'open' }) : host;
     sr.innerHTML = '<link rel="stylesheet" href="j20w.css?v=' + VER + '"><div class="w" id="j2w"><div id="j2c"></div><div class="toast" id="j2t" role="status" aria-live="polite"></div><div class="sr" id="j2live" aria-live="polite"></div></div>';

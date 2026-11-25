@@ -4,3 +4,60 @@ html.j2,body.j2{background:#EEF0F5!important;height:auto!important;min-height:10
 body.j2>*:not(#j2):not(script):not(svg):not(style):not(link){display:none!important}
 body:not(.j2)>#j2{display:none!important}
 body.j2>#j2{display:block}
+/* 15.5.0 (25 Nov 2026, backlog d-1125-02d): the sign-in screen in the 2.0 card-file look. Markup: #auth in index.html (same ids and
+   forms, so shell.js and the auth flow are unchanged); words + step number + language switch: j20.js. One index card ("Sign in" tab,
+   Today blue) on the desk with two card edges under it, a step stub (1 of 2 / 2 of 2), the ticket tear line above the one dark button.
+   Contrast (computed): ink #0C1030 on #D6E6FF 14.18:1; ink-2 #384064 on #D6E6FF 7.70:1; white on ink 18.54:1; stop #A3162A on #D6E6FF 5.9:1;
+   field edge #697191: 4.8:1 on #fff, 3.8:1 on #D6E6FF; focus ring #1D4ED8 (3 px, !important over j11's sky ring) 5.3:1 on the card; #6B4100 on #FFF0D2 8.6:1; #565E80 on #EEF0F5 5.6:1. Revert: git revert. */
+#auth{background:#EEF0F5!important;color:#0C1030;--a2d:"Bricolage Grotesque","Heebo",system-ui,sans-serif;--a2b:"Instrument Sans","Heebo",system-ui,sans-serif}
+html[dir="rtl"] #auth{--a2d:"Heebo","Bricolage Grotesque",system-ui,sans-serif;--a2b:"Heebo","Instrument Sans",system-ui,sans-serif}
+#auth>.a2{max-width:452px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));min-height:100%;display:flex;flex-direction:column;font:400 16px/1.5 var(--a2b)}
+#auth .a2top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px 26px}
+#auth .a2wm{width:116px;height:auto;display:block}
+#auth .a2lang{min-height:44px;min-width:44px;padding:0 14px;border:1.5px solid #697191;border-radius:3px;background:transparent;color:#0C1030;font:600 15px/1 var(--a2b);cursor:pointer}
+#auth .a2lang[lang="he"]{font-family:"Heebo",system-ui,sans-serif}
+#auth .a2lang:hover{background:#fff}
+#auth main.a2card{grid-area:auto!important;max-width:none!important;margin:0!important;padding:0!important;border-radius:0!important;background:none!important;overflow:visible!important;height:auto!important} /* j11's desktop work-area rule styles every main */
+#auth .a2tab{display:inline-flex;align-items:center;min-height:50px;margin:0;padding:0 18px;background:#D6E6FF;border-radius:6px 6px 0 0;font:800 19px/1 var(--a2d);letter-spacing:-.02em;color:#0C1030}
+html[dir="rtl"] #auth .a2tab{letter-spacing:0}
+#auth .a2folder{position:relative;background:#D6E6FF;border-radius:0 6px 6px 6px;padding:18px 18px 20px;
+  box-shadow:0 7px 0 -2px #FFDCD5,0 14px 0 -4px #FFEDC2,0 30px 44px -30px rgba(12,16,48,.4)}
+html[dir="rtl"] #auth .a2folder{border-radius:6px 0 6px 6px}
+#auth .a2stub{display:flex;align-items:flex-end;gap:8px;margin:0 0 14px}
+#auth .a2stub b{font:800 64px/.78 var(--a2d);letter-spacing:-.06em}
+#auth .a2stub span{padding-bottom:3px;font:600 15px/1 var(--a2b);color:#384064}
+#auth .step{display:grid;gap:10px}
+#auth label{font:700 16px/1.3 var(--a2b);color:#0C1030}
+#auth input,#auth textarea{width:100%;min-height:52px;padding:12px 14px;border:1.5px solid #697191!important;border-radius:3px!important;background:#fff!important;color:#0C1030;font:500 17px/1.3 var(--a2b);box-shadow:none!important;outline:none}
+html[dir="rtl"] #auth input,html[dir="rtl"] #auth textarea{text-align:right}
+#auth input::placeholder,#auth textarea::placeholder{color:#565E80;opacity:1}
+#auth input:focus-visible,#auth textarea:focus-visible,#auth input:focus,#auth textarea:focus{border-color:#0C1030!important;outline:3px solid #1D4ED8!important;outline-offset:2px!important}
+#auth #code,html[dir="rtl"] #auth #code{text-align:center;font:700 26px/1 var(--a2b);letter-spacing:.3em;font-variant-numeric:tabular-nums}
+#auth #code::placeholder{letter-spacing:.3em;color:#7E86A6}
+#auth .a2why{margin:0;color:#384064;font-size:15px;line-height:1.45;overflow-wrap:anywhere}
+#auth .a2why bdi{color:#0C1030;font-weight:700}
+#auth .lead{margin:0;font:800 26px/1.1 var(--a2d);letter-spacing:-.02em;color:#0C1030;outline:none}
+html[dir="rtl"] #auth .lead{letter-spacing:0}
+#auth .a2tear{position:relative;margin:10px -18px 8px;border-top:2px dashed #9DA5C2}
+#auth .a2tear::before,#auth .a2tear::after{content:"";position:absolute;top:-10px;width:18px;height:18px;border-radius:50%;background:#EEF0F5}
+#auth .a2tear::before{inset-inline-start:-9px}#auth .a2tear::after{inset-inline-end:-9px}
+#auth .btn.act{width:100%;min-height:54px;padding:0 16px;border:0!important;border-radius:3px!important;background:#0C1030!important;color:#fff!important;box-shadow:none!important;font:700 17px/1.2 var(--a2d);letter-spacing:0;text-transform:none}
+#auth .btn.act:hover{background:#232A5C!important}
+#auth .btn.act:active{transform:translateY(1px)}
+#auth .btn.act:focus-visible,#auth .plain:focus-visible,#auth .a2lang:focus-visible,#auth summary:focus-visible{outline:3px solid #1D4ED8!important;outline-offset:2px!important} /* beats j11's 2 px sky ring (1.75:1) */
+#auth .plain{min-height:44px;justify-self:start;padding:0 2px;border:0;background:none;color:#384064;font:600 15px/1 var(--a2b);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+#auth .alt summary{min-height:44px;display:flex;align-items:center;gap:6px;color:#384064;font:600 15px/1.3 var(--a2b);text-decoration:underline;text-underline-offset:3px;cursor:pointer;list-style:none}
+#auth .alt summary::-webkit-details-marker{display:none}
+#auth .alt summary::before{content:"";width:7px;height:7px;border-inline-end:2px solid currentColor;border-block-end:2px solid currentColor;transform:rotate(-45deg);flex:none}
+html[dir="rtl"] #auth .alt summary::before{transform:rotate(45deg)}
+#auth .alt[open] summary::before{transform:rotate(45deg) translate(-2px,-2px)}
+html[dir="rtl"] #auth .alt[open] summary::before{transform:rotate(-45deg) translate(2px,-2px)} /* RTL corner is inline-start: -45deg points down */
+#auth .alt .hint{margin:0 0 8px;color:#384064;font-size:15px}
+#auth .amsg{margin:12px 0 0;font:600 15px/1.4 var(--a2b);color:#384064}
+#auth .amsg:empty{margin:0}
+#auth .amsg.err{color:#A3162A}
+#auth .ios{margin:22px 0 0;padding:12px 14px;border:0;border-radius:3px;background:#FFF0D2;color:#6B4100;font:500 15px/1.45 var(--a2b)}
+#auth .ios a{color:#6B4100}
+#auth .a2foot{margin:auto 0 0;padding-top:30px;color:#565E80;font:500 14px/1.4 var(--a2b);white-space:normal;overflow:visible}
+@media (min-width:700px){#auth>.a2{padding-top:calc(48px + env(safe-area-inset-top))}#auth .a2top{padding-bottom:32px}}
+@media (prefers-reduced-motion:no-preference){#auth .a2folder{animation:a2in .26s cubic-bezier(0,0,.2,1) both}@keyframes a2in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}}

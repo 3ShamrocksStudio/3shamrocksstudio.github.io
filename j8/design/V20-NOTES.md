@@ -107,3 +107,20 @@ Research (3 parallel agents, 25 Nov):
 - The tour step is a non-modal dialog, not a tooltip. Escape works and focus is moved: https://www.w3.org/WAI/ARIA/apg/patterns/dialogmodal/ · https://www.w3.org/WAI/ARIA/apg/patterns/tooltip
 - Struggle signals: Undo/erase reveals over 80% of severe problems (https://research.google/pubs/undo-and-erase-events-as-indicators-of-usability-problems/). Rage taps are 3 within 1–2 s (https://docs.sentry.io/platforms/javascript/session-replay/issue-types).
 - Caps: 1 tip a session, a tip stops once the feature is used, dismiss = never again (https://chromium.googlesource.com/chromium/src/+/798e59c5275d4131797e8ea2e96e6c6000256b58/components/feature_engagement/README.md). Remember and adapt cautiously (https://www.microsoft.com/en-us/research/blog/guidelines-for-human-ai-interaction-design).
+
+## 15.5.0 · Sign-in in the card-file look + full Hebrew pass (backlog d-1125-02d, 25 Nov 2026)
+Research: 3 parallel agents (passwordless sign-in UX, Hebrew/RTL localization, card-file identity for a sign-in screen).
+What we took:
+- One card, one job: tab "Sign in" on a Today-blue index card, step stub 1 of 2 / 2 of 2, the ticket tear line above one dark button; everything else is a quiet text link. No glow, no banner, no 16–40 px corners, no social-button kit. Two card edges under the card hint at the file.
+- Step 2 says where the code went (address in a bdi) and that it can take a minute (check spam); focus moves to the code field, and back to the email field on "Use another email". One status line (role=status), text changes rather than show/hide.
+- One native code field (inputmode numeric, autocomplete one-time-code), spaced digits by CSS, paste allowed; email/code/link fields are dir=ltr but right-aligned in Hebrew.
+- Hebrew: language switch on the sign-in card (no need to sign in first); a server error in Hebrew mode is shown as a Hebrew line; the sender line, channel names, the template/application phrases from j13 and the tabs' label follow the language. Hebrew times are hand-written (ICU adds "(2)" after the dual).
+- Audit: rendered-text scan of every 2.0 space in Hebrew (text, aria-label, placeholder, title, alt) flags Latin words outside an allowlist (J8NIX, emails, links, data).
+Sources:
+- https://linear.app/docs/login-methods · https://slack.com/help/articles/212681477 · https://notion.com/help/log-in-and-out
+- https://design-system.service.gov.uk/patterns/confirm-an-email-address · https://design-system.service.gov.uk/patterns/confirm-a-phone-number
+- https://web.dev/articles/sms-otp-form · https://cloudfour.com/thinks/simple-one-time-passcode-inputs/
+- https://developer.chrome.com/docs/modern-web-guidance/guides/accessibility/accessible-error-announcement · https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum · https://w3.org/WAI/WCAG22/Understanding/non-text-contrast
+- https://developer.apple.com/design/human-interface-guidelines/wallet · https://www.nngroup.com/articles/skeuomorphism/ · https://www.inverse.com/input/design/the-browser-company-arc-design-interview
+- https://download.microsoft.com/download/a/2/f/a2ff07cc-afca-4db8-9ed7-fd1b706abf1c/heb-isr-StyleGuide.pdf · https://www.w3.org/International/articles/inline-bidi-markup/ · https://firefox-source-docs.mozilla.org/code-quality/coding-style/rtl_guidelines.html · https://www.unicode.org/cldr/charts/46.1/grammar/he.html
+Open question (NEEDS YOUR EYES, not changed): Microsoft's Hebrew guide prefers the gerund on buttons (שליחה, ביטול) over the imperative J8NIX uses today (שלח, בטל). Kept as is to avoid churn.
