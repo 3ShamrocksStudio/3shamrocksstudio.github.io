@@ -1,0 +1,6 @@
+/* J8NIX 2.0 (15.0.0, 25 Nov 2026), document-level rules only: when body has .j2 (signed in, j20.js active) only #j2 shows.
+   The 14.1 app (j13) stays loaded underneath for its data helpers; the old app lives on at /j8/classic/. Revert: git revert. */
+html.j2,body.j2{background:#EEF0F5!important;height:auto!important;min-height:100%;overflow-y:auto!important;overflow-x:hidden!important}
+body.j2>*:not(#j2):not(script):not(svg):not(style):not(link){display:none!important}
+body:not(.j2)>#j2{display:none!important}
+body.j2>#j2{display:block}
