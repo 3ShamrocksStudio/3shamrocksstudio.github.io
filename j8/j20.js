@@ -41,10 +41,12 @@
    real Israel days, today in the middle. Bar = sent that day, blue dot = replies (grey ring = no thanks), diamond = dated step (filled done, hollow due),
    red triangle = late, navy flag = next dated step (edge chip when it is past the window). 2 weeks / 2 months, Earlier / Today / Later, tap = one sentence.
    Read only. The other spaces move one key along (Today = 3 … Settings = 9). Revert: git revert of the 15.12 commit.
+   15.13.1 (27 Nov 2026) · backlog b-1125-03: an Income row with drafts only outside the chosen window now says "Nothing drafted in the
+   last 7 days" instead of "0 drafted, none sent yet". Revert: git revert of the 15.13.1 commit.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.13.0';
+  var VER = '15.13.1';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -67,7 +69,7 @@
       sentBy: 'Marked sent.', approvedN: 'Approved', blocked: 'Blocked by the checker:', hardAgain: 'Tap again: send anyway', why: 'Why now', where: 'Where', sentOn: 'Sent',
       soonGo: 'Goes at {n}', tplOk: 'Approved', tplWait: 'Waits for your OK', moreN: 'more like these', live: 'Live', offline: 'Offline', saved2: 'Saved copy', newV: 'New: J8NIX 2.0',
       eng: 'Income', score: 'Results', window: 'Time window', w7d: '7 days', w30d: '30 days', engSub: 'Each engine, one number: replies.', waitFor: 'wait for you', moving: 'Moving', quiet: 'Quiet',
-      fromSent: 'from {n} sent', noneSent: '{n} drafted, none sent yet', moreEng: 'more with nothing sent yet', call1: 'call', callN: 'calls', prop1: 'proposal', propN: 'proposals', paidW: 'paid', notCounted: 'Not counted yet', notYet: 'not yet', nowW: 'Now:', nextW: 'Next:', ncWhy: 'Counting starts when J8 drafts a message for this engine.',
+      fromSent: 'from {n} sent', noneSent: '{n} drafted, none sent yet', noneWin: 'Nothing drafted in the last {w}', moreEng: 'more with nothing sent yet', call1: 'call', callN: 'calls', prop1: 'proposal', propN: 'proposals', paidW: 'paid', notCounted: 'Not counted yet', notYet: 'not yet', nowW: 'Now:', nextW: 'Next:', ncWhy: 'Counting starts when J8 drafts a message for this engine.',
       seeWait: 'See what waits', resting: 'Resting', restSub: 'Parked or hidden. Their numbers still count.', cohort30: 'Drafts made in the last 30 days, and where they are now.', cohort7: 'Drafts made in the last 7 days, and where they are now.',
       noPaidYet: 'No calls or money yet', early: 'still early', ladder: 'From draft to paid', rateNote: 'Each step shows how many of the step before. Small numbers stay as "X of N"; a percent shows only when the step before has 20 or more and this step has 5 or more.',
       byEng: 'By engine', general: 'General', money: 'Money', booked: 'Booked so far', goal: 'Goal', updated: 'Counted at',
@@ -92,7 +94,7 @@
       sentBy: 'סומן כנשלח.', approvedN: 'אושרו', blocked: 'נחסם בבדיקה:', hardAgain: 'הקש שוב: שלח בכל זאת', why: 'למה עכשיו', where: 'איפה', sentOn: 'נשלח',
       soonGo: 'יוצא ב־{n}', tplOk: 'מאושרת', tplWait: 'מחכה לאישור שלך', moreN: 'עוד כאלה', live: 'מחובר', offline: 'לא מחובר', saved2: 'עותק שמור', newV: 'חדש: J8NIX 2.0',
       eng: 'הכנסה', score: 'תוצאות', window: 'טווח זמן', w7d: '7 ימים', w30d: '30 ימים', engSub: 'לכל מנוע מספר אחד: תשובות.', waitFor: 'מחכים לך', moving: 'בתנועה', quiet: 'שקט',
-      fromSent: 'מתוך {n} שנשלחו', noneSent: 'טיוטות: {n}, עוד לא נשלח', moreEng: 'עוד מנועים שעוד לא שלחו', call1: 'שיחה', callN: 'שיחות', prop1: 'הצעה', propN: 'הצעות', paidW: 'שולמו', notCounted: 'עוד לא נספר', notYet: 'עוד לא', nowW: 'עכשיו:', nextW: 'הבא:', ncWhy: 'הספירה מתחילה כש-J8 מנסח הודעה למנוע הזה.',
+      fromSent: 'מתוך {n} שנשלחו', noneSent: 'טיוטות: {n}, עוד לא נשלח', noneWin: 'לא נוסחו טיוטות בטווח של {w}', moreEng: 'עוד מנועים שעוד לא שלחו', call1: 'שיחה', callN: 'שיחות', prop1: 'הצעה', propN: 'הצעות', paidW: 'שולמו', notCounted: 'עוד לא נספר', notYet: 'עוד לא', nowW: 'עכשיו:', nextW: 'הבא:', ncWhy: 'הספירה מתחילה כש-J8 מנסח הודעה למנוע הזה.',
       seeWait: 'מה מחכה', resting: 'במנוחה', restSub: 'מוקפאים או מוסתרים. המספרים שלהם עדיין נספרים.', cohort30: 'טיוטות מ-30 הימים האחרונים, ואיפה הן עכשיו.', cohort7: 'טיוטות מ-7 הימים האחרונים, ואיפה הן עכשיו.',
       noPaidYet: 'עוד אין שיחות או כסף', early: 'עוד מוקדם', ladder: 'מטיוטה לתשלום', rateNote: 'כל שלב מראה כמה מתוך השלב הקודם. מספרים קטנים נשארים כמו שהם (למשל 2 מתוך 23); אחוז מופיע רק כשבשלב הקודם יש 20 ומעלה ובשלב הזה 5 ומעלה.',
       byEng: 'לפי מנוע', general: 'כללי', money: 'כסף', booked: 'נסגר עד עכשיו', goal: 'יעד', updated: 'נספר בשעה',
@@ -578,7 +580,7 @@
     var row = function (p) {
       var f = fsum(p.id), any = fsum(p.id, '30d').drafted + fsum(p.id, '7d').drafted > 0, wt = WB[p.id] || 0, mv = S7[p.id] || 0, op = S.open['e:' + p.id];
       var stw = wt ? '<span class="stw sw-w">' + wt + ' ' + esc(t('waitFor')) + '</span>' : mv ? '<span class="stw sw-m">' + esc(t('moving')) + '</span>' : '<span class="stw sw-q">' + esc(t('quiet')) + '</span>';
-      var ph = any && !f.sent ? t('noneSent').replace('{n}', f.drafted) : any ? t('fromSent').replace('{n}', f.sent) + (f.calls ? ' · ' + f.calls + '\u00a0' + t(f.calls === 1 ? 'call1' : 'callN') : '') + (f.paid ? ' · ' + f.paid + '\u00a0' + t('paidW') : '') : t('notCounted');
+      var ph = any && !f.drafted ? t('noneWin').replace('{w}', t('w' + win())) : any && !f.sent ? t('noneSent').replace('{n}', f.drafted) : any ? t('fromSent').replace('{n}', f.sent) + (f.calls ? ' · ' + f.calls + '\u00a0' + t(f.calls === 1 ? 'call1' : 'callN') : '') + (f.paid ? ' · ' + f.paid + '\u00a0' + t('paidW') : '') : t('notCounted');
       var kpi = any ? '<span class="kpi"><b>' + f.replied + '</b><small>' + esc(t(f.replied === 1 ? 'repW1' : 'repW')) + '</small></span>' : '<span class="kpi nc"><b aria-hidden="true">–</b></span>';
       var bd = '';
       if (op) {
