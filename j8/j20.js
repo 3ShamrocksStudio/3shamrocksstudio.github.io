@@ -27,10 +27,13 @@
    15.8.0 (26 Nov 2026) · backlog b-1125-25 "Deal room": Warm leads on top of Today (vDeals), one card per positive reply from
    public.j8_deals (J8.deals): stage notches, next step + due (late = red word + clock), tap to open stage, change next step,
    times offered, prep brief, proof pack checklist; every change has Undo. Revert: git revert of the 15.8 commit.
+   15.9.0 (26 Nov 2026) · backlog r-1125-01 "Stall alarm": one line under the Today ticket says how many approved items have not gone
+   out and how old the oldest is (stallLine); 6 h or more = Stuck (red word + clock), tap = Queue. The server side (pg_cron j8_stall_tick,
+   j8private.stall_tick) raises one alert per stuck item and one grouped push. Revert: git revert of the 15.9 commit; SQL in design/sql/j8_stall_alarm.sql.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.8.0';
+  var VER = '15.9.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -139,6 +142,9 @@
     proofW: 'חבילת הוכחות', readyN: '{n} מתוך {d} מוכנים', pf_data_flow: 'תרשים זרימת מידע', pf_privacy: 'מדיניות פרטיות', pf_security: 'מסמך אבטחה ושמירת מידע', pf_accessibility: 'הצהרת נגישות',
     chStep: 'שינוי הצעד הבא או הקישורים', linksW: 'קישורים לחבילת ההוכחות (https בלבד)', linkBad: 'קישור חייב להתחיל ב-https://', stepL: 'הצעד הבא', dueL: 'עד מתי (שעון ישראל)', saveW: 'שמירה', stageSet: 'שלב: {n}.', stepSaved: 'הצעד הבא נשמר.', markLost: 'סימון כלא רלוונטי', openW: 'פתיחה', proofOn: '{n}: מוכן.', proofOff: '{n}: לא מוכן.', needStep: 'קודם כותבים את הצעד הבא.',
     ds_reply: 'לענות ולקבוע הדגמה', ds_prep: 'להכין את ההדגמה', ds_prop: 'מעקב אחרי ההצעה' });
+  /* 15.9 stall alarm (backlog r-1125-01): one line under the ticket in Today */
+  Object.assign(T.en, { stuckW: 'Stuck', stuckN: 'Stuck', stall1: '1 approved, not sent', stallN: '{n} approved, not sent', goingN: 'Going out: {n}', oldestW: 'oldest {n}', stallSee: 'Open Queue to see them' });
+  Object.assign(T.he, { stuckW: 'תקוע', stuckN: 'תקועים', stall1: '1 אושר ולא נשלח', stallN: '{n} אושרו ולא נשלחו', goingN: 'בדרך: {n}', oldestW: 'הישן ביותר: {n}', stallSee: 'פתיחת התור כדי לראות אותם' });
   var SFIX = { 'the last run failed': 'הריצה האחרונה נכשלה', 'J8 retries at the next run': 'J8 ינסה שוב בריצה הבאה', 'the run started without your Mac': 'הריצה התחילה בלי המק שלך', 'keep the Mac on and awake at send time': 'להשאיר את המק דלוק וער בזמן השליחה' };
   var CHAN = { he: { email: 'מייל', mail: 'מייל', message: 'הודעה', outreach: 'פנייה', phone: 'טלפון', call: 'שיחה', application: 'בקשה', design: 'עיצוב', post: 'פוסט', linkedin: 'LinkedIn', whatsapp: 'WhatsApp', sms: 'SMS' } };
   function chan(c) { var m = CHAN[lang()], k = String(c || '').trim().toLowerCase(); return (m && m[k]) || String(c || ''); }
@@ -305,7 +311,32 @@
   function glance() {
     var x = X(), sc = x ? safe(function () { return x.score(); }, null) : null, L = deck().length, none = !on() && !aps().length;
     var se = sc ? sc.sent : 0, re = sc ? sc.rep : 0;
-    return '<div class="tick"><b>' + esc(none ? '…' : L) + '</b><span><em>' + esc(t('waiting')) + '</em><small>' + esc(none ? t('loading') : se + ' ' + t('sentW') + ' · ' + re + ' ' + (re === 1 ? t('repW1') : t('repW')) + ' · ' + t('d7')) + '</small></span></div>' + pulse();
+    return '<div class="tick"><b>' + esc(none ? '…' : L) + '</b><span><em>' + esc(t('waiting')) + '</em><small>' + esc(none ? t('loading') : se + ' ' + t('sentW') + ' · ' + re + ' ' + (re === 1 ? t('repW1') : t('repW')) + ' · ' + t('d7')) + '</small></span></div>' + stallLine() + pulse();
+  }
+  /* 15.9 stall alarm (backlog r-1125-01). Approved by you, not sent yet: counted from approval, or from the end of the hold.
+     Same rule as the server alarm j8private.stall_tick and the MVP bar no_stuck: approved/edited, not a template or design, no sent_at.
+     6 h or more = Stuck (red word + clock glyph); less = Going out (blue, moving). Tap = Queue. */
+  var STALL_MS = 6 * 36e5;
+  function stallItems() {
+    var now = Date.now();
+    return (aps() || []).map(function (a) {
+      if (!a || !/^(approved|edited)$/.test(a.status || '') || a.kind === 'template' || a.kind === 'design' || a.label === 'Template' || a.sent_at) return null;
+      var d = pd(a.decided_at), hu = pd(a.hold_until); if (isNaN(d)) return null;
+      var b = isNaN(hu) ? d : Math.max(d, hu); return b <= now ? b : null; /* still inside its hold = not counted yet */
+    }).filter(function (b) { return b !== null; });
+  }
+  function ageTx(ms) {
+    var m = Math.max(1, Math.floor(ms / 6e4)), h = Math.floor(ms / 36e5), dd = Math.floor(ms / 864e5), he = lang() === 'he';
+    if (m < 60) return he ? (m === 1 ? 'דקה' : m === 2 ? 'שתי דקות' : m + ' דקות') : m + ' min';
+    if (h < 48) return he ? (h === 1 ? 'שעה' : h === 2 ? 'שעתיים' : h + ' שעות') : h + ' h';
+    return he ? (dd === 2 ? 'יומיים' : dd + ' ימים') : dd + ' days';
+  }
+  function stallLine() {
+    var B = stallItems(); if (!B.length) return '';
+    var old = Math.min.apply(null, B), age = Date.now() - old, stuck = age >= STALL_MS, n = B.length;
+    var lead = stuck ? (n === 1 ? t('stall1') : fill(t('stallN'), n)) : fill(t('goingN'), n), when = n === 1 ? ageTx(age) : fill(t('oldestW'), ageTx(age)), sw = t(n === 1 ? 'stuckW' : 'stuckN');
+    return '<button type="button" class="sig stl' + (stuck ? ' bad' : ' mv') + '" data-x="sp" data-id="queue" aria-label="' + esc((stuck ? sw + ': ' : '') + lead + ', ' + when + '. ' + t('stallSee')) + '">'
+      + (stuck ? glyph('late').replace('g-late', 'g-late dl-late') : glyph('run')) + '<span>' + (stuck ? '<b>' + esc(sw) + '</b> · ' : '') + esc(lead + ' · ' + when) + '</span>' + chev() + '</button>';
   }
   function pulse() {
     var j = J(), now = Date.now(), from = now - 864e5, R = safe(function () { return j.runs.list(); }, []), ok = 0, bad = 0;

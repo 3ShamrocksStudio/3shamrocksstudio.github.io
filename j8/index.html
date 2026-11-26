@@ -25,9 +25,10 @@
 <link rel="stylesheet" href="j13.css?v=14.0.0">
 <link rel="preload" href="j13w.css?v=14.1.0" as="style">
 <link rel="stylesheet" href="j20.css?v=15.5.0">
-<link rel="preload" href="j20w.css?v=15.8.0" as="style">
+<link rel="preload" href="j20w.css?v=15.9.0" as="style">
 </head>
 <body>
+<!-- J8NIX 2.0 · 15.9.0 (26 Nov 2026): stall alarm (r-1125-01): Today shows how many approved items have not gone out and the oldest age (Stuck at 6 h, tap = Queue); server: pg_cron j8_stall_tick raises one alert per stuck item + one grouped push. Revert: git revert; SQL rollback in design/sql/j8_stall_alarm.sql. -->
 <!-- J8NIX 2.0 · 15.8.0 (26 Nov 2026): deal room (b-1125-25): "Warm leads" on top of Today, one card per positive reply (public.j8_deals, made by trigger j8_outcomes_deal): stage, next step + due, times offered, prep brief, proof pack; a late step raises one alert (pg_cron j8_deal_tick). Revert: git revert; SQL rollback in design/sql/j8_deal_room.sql. -->
 <!-- J8NIX 2.0 · 15.7.0 (25 Nov 2026): MVP bar (m-1125-00): Score shows "Ready for testing", 10 live PASS/FAIL bars from rpc j8_mvp_gates (J8.gates). Bars + sources: design/MVP-BAR.md. Revert: git revert; drop function public.j8_mvp_gates(uuid). -->
 <!-- J8NIX 2.0 · 15.6.0 (25 Nov 2026): usability pass (d-1125-06): one word per action (Kill is now Stop; Hebrew Stop no longer reads like Undo; Talk tab no longer shares a word with Call; Hold is אחר כך), honest toasts, one colour meaning map (amber = waits for you, blue = moving, red = stop/risk, navy = your decision). List: design/USABILITY-1125.md. Revert: git revert. -->
@@ -257,7 +258,7 @@
 <script src="j11.js?v=12.0.1"></script>
 <script src="shell.js?v=12.0.1"></script>
 <script src="j13.js?v=14.1.0"></script>
-<script src="j20.js?v=15.8.0"></script>
+<script src="j20.js?v=15.9.0"></script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>
