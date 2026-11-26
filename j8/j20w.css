@@ -12,12 +12,12 @@
    money stays ink: the number speaks, no colour. */
 .w{--ink:#0C1030;--ink-2:#384064;--ink-3:#565E80;--card:#fff;--line:rgba(12,16,48,.14);--edge:#7E86A6;
   --stop:#A3162A;--stop-bg:#FDE4E8;--wait:#8A5300;--wait-bg:#FFF0D2;--ok:#1D4ED8;--ok-bg:#E3EBFF;
-  --t-status:#FFFFFF;--t-today:#D6E6FF;--t-queue:#FFDCD5;--t-eng:#FFEDC2;--t-score:#D3EEF8;--t-talk:#E3DDFF;--t-agents:#F8DCEB;--t-set:#E4E8EF;
+  --t-status:#FFFFFF;--t-time:#ECE6F3;--t-today:#D6E6FF;--t-queue:#FFDCD5;--t-eng:#FFEDC2;--t-score:#D3EEF8;--t-talk:#E3DDFF;--t-agents:#F8DCEB;--t-set:#E4E8EF;
   --tint:var(--t-today);--fd:"Bricolage Grotesque","Heebo",system-ui,sans-serif;--fb:"Instrument Sans","Heebo",system-ui,sans-serif;
   --in:cubic-bezier(0,0,.2,1);--out:cubic-bezier(.4,0,1,1);--std:cubic-bezier(.4,0,.2,1);
   --desk:#EEF0F5;min-height:100vh;background:var(--desk);color:var(--ink);font:400 16px/1.5 var(--fb);font-variant-numeric:tabular-nums;
   -webkit-font-smoothing:antialiased;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
-.w[data-sp="status"]{--tint:var(--t-status)}.w[data-sp="queue"]{--tint:var(--t-queue)}.w[data-sp="eng"]{--tint:var(--t-eng)}.w[data-sp="score"]{--tint:var(--t-score)}.w[data-sp="talk"]{--tint:var(--t-talk)}.w[data-sp="agents"]{--tint:var(--t-agents)}.w[data-sp="set"]{--tint:var(--t-set)}
+.w[data-sp="status"]{--tint:var(--t-status)}.w[data-sp="time"]{--tint:var(--t-time)}.w[data-sp="queue"]{--tint:var(--t-queue)}.w[data-sp="eng"]{--tint:var(--t-eng)}.w[data-sp="score"]{--tint:var(--t-score)}.w[data-sp="talk"]{--tint:var(--t-talk)}.w[data-sp="agents"]{--tint:var(--t-agents)}.w[data-sp="set"]{--tint:var(--t-set)}
 .w[dir="rtl"]{--fd:"Heebo","Bricolage Grotesque",system-ui,sans-serif;--fb:"Heebo","Instrument Sans",system-ui,sans-serif}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -231,7 +231,7 @@ details[open]>summary .chev{transform:rotate(90deg)}
 
 /* 15.2 Agents + Receipts. Status = glyph shape + word + colour (WCAG 1.4.1); glyph strokes and switch edges >= 3:1 (1.4.11). */
 .tab .cog{display:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-@media (max-width:419px){.tab .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.tab .cog{display:block}.tab[data-id="set"]{flex:0 0 44px}}
+@media (max-width:419px){.tab .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.tab .cog{display:block}.tab[data-id="set"],.tab[data-id="time"]{flex:0 0 40px}}
 @media (max-width:339px){.tabs{gap:1px;padding:6px 2px 0}.folder{margin:0 2px}}
 .tick.ag b{font-size:clamp(72px,20vw,112px)}
 .sig{display:flex;align-items:flex-start;gap:8px;margin:10px 0 0;font-weight:600;color:var(--ink);font-size:15px}
@@ -475,6 +475,89 @@ details[open]>summary .chev{transform:rotate(90deg)}
   .tab em{min-width:16px;height:16px;padding:0 3px;font-size:10.5px;line-height:16px}
   .folder{margin:0 6px}
 }
-@media (max-width:359px){.tab{font-size:11px;padding:0 1px}.tab[aria-current="page"]{font-size:12px}.tab em{min-width:14px;height:14px;line-height:14px;font-size:10px;padding:0 2px}}
+@media (max-width:359px){.tab[data-id="set"],.tab[data-id="time"]{flex:0 0 28px}.tab{min-width:26px}.tab .cog{width:18px;height:18px}.tab{font-size:11px;padding:0 1px}.tab[aria-current="page"]{font-size:12px}.tab em{min-width:14px;height:14px;line-height:14px;font-size:10px;padding:0 2px}}
 @media (min-width:560px) and (max-width:699px){.tabs{gap:3px}.tab{padding:0 7px;font-size:14px;gap:5px}.tab[aria-current="page"]{font-size:15.5px}}
 .w[dir="rtl"] .sl .nm,.w[dir="rtl"] .sl0 .nm{text-align:right} /* an English name in a Hebrew row starts at the row start */
+
+/* 15.12 Timeline (backlog d-1126-02): a sheet of graph paper in the card file. Label column | plot; past ruled white, future dotted, one ink
+   line for today. Shapes carry the meaning (bar sent, dot reply, ring no thanks, diamond step, triangle late, flag next), colour only repeats it.
+   Every position is a % on inset-inline-start, so Hebrew mirrors the time axis (time runs right to left) with the marks. */
+.w[data-sp="time"] .in{max-width:600px}
+@media (min-width:900px){.w[data-sp="time"] .in{max-width:1000px}}
+.tlc{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin:0 0 10px}
+.tlc .seg .b.sm{min-width:84px}
+.tln2{display:flex;gap:6px}
+.b.sm.ic{min-width:44px;padding:0}
+.b.sm.ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.w[dir="rtl"] .b.sm.ic svg{transform:scaleX(-1)}
+.b[disabled]{opacity:.45;cursor:default}
+.tls{margin:0 0 10px;font-size:14px;color:var(--ink-2)}
+.tls .on{color:var(--ink);font-weight:600}
+.tlw{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:4px 8px 6px;box-shadow:0 18px 40px -30px rgba(12,16,48,.45)}
+.tla,.tlgw,.tll{display:grid;grid-template-columns:104px minmax(0,1fr)}
+.tlx{position:relative;height:26px;border-bottom:1px solid var(--edge)}
+.tlx span{position:absolute;bottom:5px;transform:translateX(-50%);font-size:11.5px;font-weight:600;color:var(--ink-3);white-space:nowrap}
+.tlx span.tdy{color:#fff;background:var(--ink);padding:1px 6px;border-radius:3px;font-weight:700}
+.w[dir="rtl"] .tlx span{transform:translateX(50%)}
+.tlbody{position:relative}
+.tlgw{position:absolute;inset:0;pointer-events:none}
+.tlg{position:relative;grid-column:2}
+.tlg .fut{position:absolute;inset-block:0;inset-inline-end:0;background:radial-gradient(rgba(12,16,48,.16) 1px,transparent 1.3px) 0 0/8px 8px,#F7F8FC}
+.tlg .now{position:absolute;inset-block:0;width:2px;margin-inline-start:-1px;background:var(--ink)}
+.tlls{list-style:none;margin:0;padding:0;position:relative}
+.tll{min-height:64px;border-bottom:1px solid var(--line)}
+.tll.dg{border-top:1px solid var(--edge)}
+.tll:last-child{border-bottom:0}
+.tlname{display:flex;align-items:center;min-width:0;padding-inline:0 6px;font-size:12.5px;font-weight:600;line-height:1.25;color:var(--ink)}
+.tlname>i{flex:none;width:8px;height:8px;margin-inline-end:5px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(12,16,48,.3)} /* project colour as a small dot: the 4 px rail keeps meaning "needs you" (Status) */
+.tlname>span{overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow-wrap:break-word}
+.tlp{position:relative;min-height:64px}
+.tlp>i,.tlp>svg{position:absolute;pointer-events:none}
+.tb{bottom:10px;width:clamp(2px,calc(var(--dpx) * .55),10px);transform:translateX(-50%);background:var(--ink-2);border-radius:1px 1px 0 0}
+.tr{bottom:36px;width:8px;height:8px;border-radius:50%;background:var(--ok);transform:translateX(-50%)} /* one fixed row above the tallest bar (22 px), below the step row */
+.tr.no{background:#fff;box-shadow:inset 0 0 0 2px var(--ink-3)}
+.tdm{top:6px;width:11px;height:11px;transform:translateX(-50%) rotate(45deg);border-radius:1px}
+.tdm.k-done{background:var(--ink)}
+.tdm.k-due{background:#fff;box-shadow:inset 0 0 0 2px var(--ink)}
+.tdm.k-late{background:var(--stop-bg);box-shadow:inset 0 0 0 2px var(--stop)}
+.tf{top:1px;width:20px;height:20px;margin-inline-start:-5px}
+.tlt{top:4px;width:15px;height:15px;transform:translateX(-50%)}
+.tlt path,.tlk .lk-t path{fill:var(--stop);stroke:var(--stop);stroke-width:1;stroke-linejoin:round} /* late = a red warning triangle: a different shape, not only a different colour */
+.tf path,.tme svg path,.tlk svg path{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tf path.fl,.tme svg path.fl,.tlk svg path.fl{fill:var(--ink);stroke:var(--ink);stroke-width:1.2} /* the next step is a navy flag: amber stays "waits for you" */
+.w[dir="rtl"] .tr,.w[dir="rtl"] .tb{transform:translateX(50%)}
+.w[dir="rtl"] .tdm{transform:translateX(50%) rotate(45deg)}
+.w[dir="rtl"] .tlt{transform:translateX(50%)}
+.w[dir="rtl"] .tf,.w[dir="rtl"] .tme svg,.w[dir="rtl"] .tlk svg{transform:scaleX(-1)}
+.tlb{list-style:none;margin:0;padding:0;position:absolute;inset:0}
+.tmb{position:absolute;inset-block:2px;min-width:28px;transform:translateX(-50%);border:0;border-radius:4px;background:transparent;padding:0;cursor:pointer}
+.w[dir="rtl"] .tmb{transform:translateX(50%)}
+.tmb:hover{background:rgba(29,78,216,.07)}
+.tmb[aria-pressed="true"]{background:rgba(29,78,216,.10);box-shadow:inset 0 0 0 2px var(--ok)}
+.tlname{flex-wrap:wrap;align-content:center;row-gap:4px}
+.tlname>span{flex:1 1 calc(100% - 14px)} /* name fills its row, so the after-window chip wraps under it */
+.tme{margin-inline-start:13px;display:inline-flex;align-items:center;gap:3px;min-height:28px;padding:0 6px;border:1px solid var(--edge);border-radius:999px;background:#fff;font:600 12px/1 var(--fb);color:var(--ink);cursor:pointer}
+.tme svg{width:13px;height:13px}
+.tme[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ok);border-color:var(--ok)}
+.tle{position:absolute;top:50%;inset-inline-start:8px;transform:translateY(-50%);font-size:13px;color:var(--ink-3);background:rgba(255,255,255,.85);padding:0 4px;border-radius:2px}
+.tlk{display:flex;flex-wrap:wrap;gap:4px 14px;margin:10px 2px 0;font-size:13px;color:var(--ink-2)}
+.tlk span{display:inline-flex;align-items:center;gap:6px}
+.tlk i{display:inline-block;flex:none}
+.tlk .lk-b{width:4px;height:12px;background:var(--ink-2);border-radius:1px}
+.tlk .lk-r{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.tlk .lk-n{width:8px;height:8px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--ink-3)}
+.tlk .lk-f,.tlk .lk-d{width:9px;height:9px;transform:rotate(45deg);margin:0 2px}
+.tlk .lk-f{background:var(--ink)}.tlk .lk-d{box-shadow:inset 0 0 0 2px var(--ink)}
+.tlk svg.lk-t{width:12px;height:12px;transform:none}
+.tlk svg{width:14px;height:14px}
+.tlslip{position:sticky;bottom:12px;z-index:3;margin-top:12px;padding:12px 14px;border-radius:6px;background:rgba(255,255,255,.7);border:1px dashed var(--edge);color:var(--ink-3);font-size:14px}
+.tlslip p{margin:0;overflow-wrap:anywhere}
+.tlslip.on{position:fixed;z-index:20;inset-inline:12px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:680px;margin:0 auto;display:flex;align-items:center;gap:8px;padding:10px 6px 10px 16px;background:var(--ink);border:1px solid var(--ink);color:#fff;font-size:15px;font-weight:600;box-shadow:0 18px 40px -16px rgba(12,16,48,.7);animation:rise .195s var(--in)}
+.w[dir="rtl"] .tlslip.on{padding:10px 16px 10px 6px}
+.tlslip.on p{flex:1;min-width:0}
+.tlcx{flex:none;width:44px;height:44px;border:0;border-radius:4px;background:transparent;color:#fff;display:grid;place-items:center;cursor:pointer}
+.tlcx svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.tlcx:focus-visible{outline-color:#fff}
+.tlpad{height:112px} /* room so the floating slip never covers the last lane or the legend */
+@media (min-width:900px){.tla,.tlgw,.tll{grid-template-columns:200px minmax(0,1fr)}.tlname{font-size:14px}}
+@media (prefers-reduced-motion:reduce){.tlslip.on{animation:none}}

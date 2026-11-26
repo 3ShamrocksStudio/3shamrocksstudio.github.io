@@ -37,10 +37,14 @@
    15.11.0 (26 Nov 2026) · backlog d-1126-01 "Status": J8NIX opens on one Status screen (vStatus, first tab, key 1): ₪ collected of ₪100,000,
    one line per visible project grouped by department, today's numbers, "You:" (max 3 highlighted), tap for Now / Next / last 3 runs / link,
    Parked and Killed folded at the bottom. Read only. The other spaces move one key along (Today = 2 … Settings = 8). Revert: git revert of the 15.11 commit.
+   15.12.0 (26 Nov 2026) · backlog d-1126-02 "Timeline": a new space (vTime, key 2, a lanes icon under 420 px): every Status project as one lane on
+   real Israel days, today in the middle. Bar = sent that day, blue dot = replies (grey ring = no thanks), diamond = dated step (filled done, hollow due),
+   red triangle = late, navy flag = next dated step (edge chip when it is past the window). 2 weeks / 2 months, Earlier / Today / Later, tap = one sentence.
+   Read only. The other spaces move one key along (Today = 3 … Settings = 9). Revert: git revert of the 15.12 commit.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.11.1';
+  var VER = '15.12.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -792,8 +796,165 @@
     return h + fold('spark', t('parkedW'), park) + fold('skill', t('killedW'), kill);
   }
 
+  /* ---------- 15.12 Timeline (backlog d-1126-02): every visible project (the same lanes as Status) as one lane across real dates.
+     A sheet of graph paper in the card file: past on ruled white, the future dotted, one ink line for today in the middle.
+     Marks, shape first (colour is never the only cue): a bar = messages that went out that Israel day (height = count, one scale for
+     every lane), a blue dot on top = replies that day (a hollow grey dot = no thanks), a diamond = a dated step (filled = done,
+     hollow = due; j8_projects.milestone_at + j8_tasks due / done_at), a red triangle = late, a navy flag = the next dated step. One step mark per
+     tap button, the most urgent state wins (late > next > due > done).
+     Zoom 2 weeks / 2 months; Earlier / Later move half a window; Hebrew runs right to left (logical CSS, % positions).
+     Tap = one plain sentence in a slip floating at the bottom (tap again, × or Esc closes). Marks closer than 28 px join one button (WCAG 2.5.8); arrow keys move
+     between them (roving tabindex). Read only, real rows only: no line is drawn between days, an empty lane says so. ---------- */
+  Object.assign(T.en, { time: 'Timeline', tz_2w: '2 weeks', tz_2m: '2 months', tEarl: 'Earlier', tLat: 'Later', tToday: 'Today', tlZoom: 'Zoom',
+    tlSum: '{s} sent · {r} replies', tlSum1: '{s} sent · 1 reply', tlAhead: '{n} dated steps ahead', tlAhead1: '1 dated step ahead', tlAhead0: 'No dated steps ahead',
+    lgSent: 'sent', lgRep: 'reply', lgNo: 'no thanks', lgDone: 'done', lgStep: 'step', lgLate: 'late', lgNext: 'next',
+    tlEmpty: 'Nothing dated yet', tlNone: 'Nothing on these dates', tlTap: 'Tap a mark to read it.', tlLanes: 'Projects on a timeline',
+    tlSentN: '{n} messages went out', tlSent1: '1 message went out', tlRepN: '{n} people replied', tlRep1: '1 person replied', tlNoN: '{n} said no thanks', tlNo1: '1 said no thanks',
+    tlMs: 'milestone: {x}', tlDone: 'done: {x}', tlDue: 'due: {x}', tlLateX: 'late: {x}', tlNext: 'next step: {x}', tlTo: 'to', tlClose: 'Close', tlMore: '+ {n} more', tlLoad: 'Couldn\'t load the timeline. Tap to retry' });
+  Object.assign(T.he, { time: 'ציר זמן', tz_2w: 'שבועיים', tz_2m: 'חודשיים', tEarl: 'מוקדם יותר', tLat: 'מאוחר יותר', tToday: 'היום', tlZoom: 'טווח',
+    tlSum: '{s} נשלחו · {r} תשובות', tlSum1: '{s} נשלחו · תשובה אחת', tlAhead: '{n} צעדים עם תאריך לפנינו', tlAhead1: 'צעד אחד עם תאריך לפנינו', tlAhead0: 'אין צעדים עם תאריך לפנינו',
+    lgSent: 'נשלח', lgRep: 'תשובה', lgNo: 'לא תודה', lgDone: 'בוצע', lgStep: 'צעד', lgLate: 'באיחור', lgNext: 'הבא',
+    tlEmpty: 'עוד אין תאריכים', tlNone: 'אין כלום בתאריכים האלה', tlTap: 'הקש על סימן כדי לקרוא אותו.', tlLanes: 'הפרויקטים על ציר זמן',
+    tlSentN: 'יצאו {n} הודעות', tlSent1: 'יצאה הודעה אחת', tlRepN: '{n} אנשים ענו', tlRep1: 'אדם אחד ענה', tlNoN: '{n} אמרו לא תודה', tlNo1: 'אחד אמר לא תודה',
+    tlMs: 'אבן דרך: {x}', tlDone: 'בוצע: {x}', tlDue: 'מועד: {x}', tlLateX: 'באיחור: {x}', tlNext: 'הצעד הבא: {x}', tlTo: 'עד', tlClose: 'סגור', tlMore: 'ועוד {n}', tlLoad: 'טעינת ציר הזמן נכשלה. הקש לנסות שוב' });
+  S.tz = (function () { try { return localStorage.getItem('j8:tz') === '2m' ? '2m' : '2w'; } catch (e) { return '2w'; } })(); S.tOff = 0; S.tSel = '';
+  function dkTs(k) { return Date.parse(k + 'T12:00:00Z'); } /* noon UTC of an Israel day key: safe for day arithmetic */
+  function dAdd(k, n) { return new Date(dkTs(k) + n * 864e5).toISOString().slice(0, 10); }
+  function dDiff(a, b) { return Math.round((dkTs(a) - dkTs(b)) / 864e5); }
+  function dkOf(v) { var s = String(v == null ? '' : v).trim(); if (!s) return ''; if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; var x = pd(s); return isNaN(x) ? '' : dayKey(x); }
+  function dLab(k, mon) { var d = new Date(dkTs(k)); try { return d.toLocaleDateString(lang() === 'he' ? 'he-IL' : 'en-GB', mon ? { day: 'numeric', month: 'short', timeZone: 'UTC' } : { day: 'numeric', timeZone: 'UTC' }); } catch (e) { return k.slice(8); } }
+  function dLong(k) { var d = new Date(dkTs(k)); try { return d.toLocaleDateString(lang() === 'he' ? 'he-IL' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }); } catch (e) { return k; } }
+  function tlLanes() { /* the Status lanes: visible, not parked or killed, in department order */
+    var vis = projAll().filter(function (p) { return p.hidden !== true && p.status !== 'parked' && p.status !== 'killed'; }).sort(pOrd);
+    var di = function (p) { var i = DEPTS.indexOf(p.dept); return i < 0 ? 99 : i; };
+    return vis.map(function (p, i) { return { p: p, i: i }; }).sort(function (a, b) { return di(a.p) - di(b.p) || a.i - b.i; }).map(function (x) { return x.p; });
+  }
+  function tlData() {
+    var L = tlLanes(), E = {}, now = Date.now(), k0 = dayKey(now);
+    L.forEach(function (p) { E[p.id] = { p: p, d: {}, any: 0, next: null }; });
+    var put = function (pid, k) { var e = E[pid]; if (!e || !k) return null; e.any++; return e.d[k] || (e.d[k] = { s: 0, r: 0, no: 0, it: [] }); };
+    var nextC = function (pid, it) { var e = E[pid]; if (e && it.k0 >= k0 && (!e.next || it.k0 < e.next.k0)) e.next = it; };
+    aps().forEach(function (a) {
+      if (isTpl(a)) return; var pid = pidOf(a.product); if (!E[pid]) return; var c;
+      var st = pd(a.sent_at); if (a.status === 'sent' && !isNaN(st) && (c = put(pid, dayKey(st)))) c.s++;
+      var rt = pd(a.replied_at); if (!isNaN(rt) && rt <= now + 6e4 && (c = put(pid, dayKey(rt)))) { if (a.outcome === 'rejection') c.no++; else c.r++; }
+    });
+    (safe(function () { return J().tasks.list(); }, []) || []).forEach(function (tk) {
+      var pid = tk.project_id, e = E[pid]; if (!e || tk.status === 'dropped') return;
+      var dn = pd(tk.done_at), done = !isNaN(dn) || tk.status === 'done', dk = dkOf(tk.due), c, it;
+      if (done) { var k = !isNaN(dn) ? dayKey(dn) : dk; if ((c = put(pid, k))) c.it.push({ k: 'done', tx: tk.title || '' }); return; }
+      if (!dk) return; it = { k: dk < k0 ? 'late' : 'due', tx: tk.title || '', k0: dk };
+      if ((c = put(pid, dk))) { c.it.push(it); nextC(pid, it); }
+    });
+    L.forEach(function (p) { var k = dkOf(p.milestone_at), c, it; if (!k || !String(p.milestone || '').trim()) return; it = { k: 'ms', tx: p.milestone, k0: k }; if ((c = put(p.id, k))) { c.it.push(it); nextC(p.id, it); } });
+    L.forEach(function (p) { var n = E[p.id].next; if (n) n.nx = true; });
+    return { L: L, E: E, k0: k0 };
+  }
+  function tlParts(c, it) { /* one plain sentence for a group of days */
+    var P = [], f = function (k, x) { return t(k).replace('{n}', x).replace('{x}', x); };
+    if (c.s) P.push(c.s === 1 ? t('tlSent1') : f('tlSentN', c.s));
+    if (c.r) P.push(c.r === 1 ? t('tlRep1') : f('tlRepN', c.r));
+    if (c.no) P.push(c.no === 1 ? t('tlNo1') : f('tlNoN', c.no));
+    it.forEach(function (x) { P.push(f(x.nx ? 'tlNext' : x.k === 'done' ? 'tlDone' : x.k === 'late' ? 'tlLateX' : x.k === 'due' ? 'tlDue' : 'tlMs', cut(x.tx, 90))); });
+    return P;
+  }
+  function tlGeo() { /* the plot width this screen gives the lanes (same numbers as j20w.css), for grouping marks into 28 px buttons */
+    var vw = Math.max(280, Math.min(window.innerWidth || 375, 1064)), wide = vw >= 900;
+    var fold = vw < 420 ? 12 : 24, pad = 32, card = 2 + 16, lab = wide ? 200 : 104;
+    var inner = Math.min(vw - fold - pad, wide ? 1000 : 600);
+    return Math.max(140, inner - card - lab);
+  }
+  function vTime() {
+    var h = '<h1 class="sr">' + esc(t('time')) + '</h1>';
+    if (!projAll().length && !on()) return h + (failed() ? '<button type="button" class="fail" data-x="retry">' + esc(t('tlLoad')) + '</button>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>');
+    var D = tlData(), span = S.tz === '2m' ? 61 : 15, half = (span - 1) / 2, mid = dAdd(D.k0, S.tOff), ks = dAdd(mid, -half), ke = dAdd(mid, half);
+    var pw = tlGeo(), dpx = pw / span, pos = function (i) { return ((i + 0.5) / span * 100).toFixed(3) + '%'; };
+    var sumS = 0, sumR = 0, mx = 1, ahead = 0, ti = dDiff(D.k0, ks);
+    D.L.forEach(function (p) { var e = D.E[p.id]; Object.keys(e.d).forEach(function (k) { var c = e.d[k]; if (k >= ks && k <= ke) { sumS += c.s; sumR += c.r; if (c.s > mx) mx = c.s; } c.it.forEach(function (x) { if (x.k0 && x.k0 >= D.k0) ahead++; }); }); });
+    /* controls: zoom, earlier / today / later */
+    h += '<div class="tlc"><div class="seg" role="group" aria-label="' + esc(t('tlZoom')) + '">' + ['2w', '2m'].map(function (z) { return '<button type="button" class="b sm" data-x="tz" data-id="' + z + '" aria-pressed="' + (S.tz === z) + '">' + esc(t('tz_' + z)) + '</button>'; }).join('') + '</div>'
+      + '<div class="tln2"><button type="button" class="b sm ic" data-x="tsh" data-id="-1" aria-label="' + esc(t('tEarl')) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>'
+      + '<button type="button" class="b sm" data-x="tsh" data-id="0"' + (S.tOff ? '' : ' disabled') + '>' + esc(t('tToday')) + '</button>'
+      + '<button type="button" class="b sm ic" data-x="tsh" data-id="1" aria-label="' + esc(t('tLat')) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div></div>';
+    h += '<p class="tls"><bdi>' + esc(dLab(ks, 1)) + '</bdi> – <bdi>' + esc(dLab(ke, 1)) + '</bdi> · ' + esc(t(sumR === 1 ? 'tlSum1' : 'tlSum').replace('{s}', sumS).replace('{r}', sumR)) + ' · <span' + (ahead ? ' class="on"' : '') + '>' + esc(ahead === 0 ? t('tlAhead0') : ahead === 1 ? t('tlAhead1') : t('tlAhead').replace('{n}', ahead)) + '</span></p>';
+    var tOn = ti >= 0 && ti < span;
+    /* axis: a label every N days so labels stay >= 38 px apart, always on today */
+    var step = [1, 2, 3, 4, 7, 14, 21, 28].filter(function (s) { return s * dpx >= 46; })[0] || 28, ax = '', bands = '', lastM = '';
+    for (var i = 0; i < span; i++) {
+      var k = dAdd(ks, i);
+      if ((i - ti) % step === 0 && (k === D.k0 || ((i + 0.5) * dpx >= 24 && (span - i - 0.5) * dpx >= 24 && (!tOn || Math.abs(i - ti) * dpx >= 46)))) { /* no label so close to an edge that it would be cut */ var mo = k.slice(0, 7), lab = S.tz === '2m' || mo !== lastM || k.slice(8) === '01' ? dLab(k, 1) : dLab(k, 0); lastM = mo; ax += '<span class="' + (k === D.k0 ? 'tdy' : '') + '" style="inset-inline-start:' + pos(i) + '"><bdi>' + esc(k === D.k0 ? t('tToday') : lab) + '</bdi></span>'; }
+    }
+    var fut = tOn ? ((ti + 0.5) / span * 100) : (ti < 0 ? 0 : 100);
+    var grid = '<div class="tlg" aria-hidden="true">' + bands + (fut < 100 ? '<i class="fut" style="inset-inline-start:' + fut.toFixed(3) + '%"></i>' : '') + (tOn ? '<i class="now" style="inset-inline-start:' + pos(ti) + '"></i>' : '') + '</div>';
+    /* lanes */
+    var sel = null, lanes = '', prevD = null, RANK = { late: 4, nx: 3, due: 2, ms: 2, done: 1 };
+    var rk = function (y) { return y.nx ? 3 : RANK[y.k] || 1; };
+    D.L.forEach(function (p) {
+      var e = D.E[p.id], days = Object.keys(e.d).filter(function (k) { return k >= ks && k <= ke; }).sort(), marks = '', btns = '', G = [];
+      var nmS = cut(p.name || p.id, 60).replace(/\s*\([^)]*\)/g, '');
+      days.forEach(function (k) { var i = dDiff(k, ks), g = G[G.length - 1]; if (g && (i - g.a) * dpx < 28) { g.b = i; g.k.push(k); } else G.push({ a: i, b: i, k: [k] }); });
+      /* buttons are centred and >= 28 px wide: merge neighbours until no two overlap (WCAG 2.5.8 spacing) */
+      var wOf = function (g) { return Math.max(28, (g.b - g.a + 1) * dpx); }, cOf = function (g) { var w = wOf(g); return Math.min(Math.max((g.a + g.b + 1) / 2 * dpx, w / 2), pw - w / 2); }; /* centre kept inside the plot, before the overlap test */
+      for (var mg = true; mg;) { mg = false; for (var q = 1; q < G.length; q++) { if (cOf(G[q]) - cOf(G[q - 1]) < (wOf(G[q]) + wOf(G[q - 1])) / 2 - 0.5) { G[q - 1].b = G[q].b; G[q - 1].k = G[q - 1].k.concat(G[q].k); G.splice(q, 1); mg = true; break; } } }
+      days.forEach(function (k) { /* bars and reply dots per day: bars grow from the floor, dots sit on one fixed row above the tallest bar */
+        var c = e.d[k], i = dDiff(k, ks), x = 'inset-inline-start:' + pos(i), bh = c.s ? Math.round(3 + 19 * c.s / mx) : 0;
+        if (c.s) marks += '<i class="tb" style="' + x + ';height:' + bh + 'px"></i>';
+      });
+      G.forEach(function (g) {
+        var c = { s: 0, r: 0, no: 0 }, it = [], rk1 = '', nk1 = ''; g.k.forEach(function (k) { var d = e.d[k]; c.s += d.s; c.r += d.r; c.no += d.no; if (d.r) rk1 = k; if (d.no) nk1 = k; it = it.concat(d.it.map(function (y) { return Object.assign({ dk: k }, y); })); });
+        it.sort(function (u, v) { return rk(v) - rk(u) || (u.dk < v.dk ? 1 : -1); });
+        var at = function (k) { return 'inset-inline-start:' + pos(dDiff(k, ks)); };
+        if (c.r) marks += '<i class="tr" style="' + at(rk1) + '"></i>'; else if (c.no) marks += '<i class="tr no" style="' + at(nk1) + '"></i>'; /* one dot per button, on the last real day it happened */
+        var pc = cOf(g), ctr = (pc / pw * 100).toFixed(3), bx = 'inset-inline-start:' + ctr + '%', x = it.length ? at(it[0].dk) : bx; /* the button stays inside the plot; the mark stays on its real date */
+        if (it.length) { var top = it[0]; /* one step mark per button, the most urgent state: late > next > due > done */
+          marks += top.nx ? '<svg class="tf" style="' + x + '" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 15V2"/><path class="fl" d="M4.5 2.5h8l-2 3 2 3h-8z"/></svg>'
+            : top.k === 'late' ? '<svg class="tlt" style="' + x + '" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1.5 13 12.5H1z"/></svg>'
+            : '<i class="tdm ' + (top.k === 'done' ? 'k-done' : 'k-due') + '" style="' + x + '"></i>'; }
+        var id = p.id + '|' + g.k[0], when = g.k.length > 1 ? dLong(g.k[0]) + ' ' + t('tlTo') + ' ' + dLong(g.k[g.k.length - 1]) : dLong(g.k[0]);
+        var P = tlParts(c, it.slice(0, 3)); if (it.length > 3) P.push(t('tlMore').replace('{n}', it.length - 3));
+        var rest = when + ': ' + P.join('; ') + '.', line = nmS + ' · ' + rest;
+        if (S.tSel === id) sel = { n: nmS, r: rest };
+        btns += '<li><button type="button" class="tmb" data-x="tpick" data-id="' + esc(id) + '" data-fk="t:' + esc(id) + '" aria-label="' + esc(line) + '" aria-pressed="' + (S.tSel === id) + '" tabindex="-1" style="' + bx + ';width:' + (wOf(g) - 1).toFixed(1) + 'px"></button></li>'; /* drawn 1 px narrower than its slot: neighbours never touch */
+      });
+      var nx = e.next, edge = '';
+      if (nx && nx.k0 > ke) { var eid = p.id + '|' + nx.k0, erest = dLong(nx.k0) + ': ' + t('tlNext').replace('{x}', cut(nx.tx, 90)) + '.'; if (S.tSel === eid) sel = { n: nmS, r: erest };
+        edge = '<button type="button" class="tme" data-x="tpick" data-id="' + esc(eid) + '" data-fk="t:' + esc(eid) + '" aria-label="' + esc(nmS + ' · ' + erest) + '" aria-pressed="' + (S.tSel === eid) + '" tabindex="-1"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 15V2"/><path class="fl" d="M4.5 2.5h8l-2 3 2 3h-8z"/></svg><bdi>' + esc(dLab(nx.k0, 1)) + '</bdi></button>'; } /* the after-window chip sits under the lane name, so it never covers a mark */
+      var col = /^#[0-9a-f]{3,8}$/i.test(String(p.color || '')) ? p.color : '#7E86A6';
+      var nm = cut(String(p.name || p.id).replace(/\s*\([^)]*\)/g, ''), 34);
+      var emp = !G.length && !edge ? '<span class="tle">' + esc(t(e.any ? 'tlNone' : 'tlEmpty')) + '</span>' : '';
+      lanes += '<li class="tll' + (prevD !== null && prevD !== p.dept ? ' dg' : '') + '"><span class="tlname"><i style="background:' + esc(col) + '" aria-hidden="true"></i><span dir="auto">' + esc(nm) + '</span>' + edge + '</span>'
+        + '<div class="tlp">' + marks + emp + '<ul class="tlb" aria-label="' + esc(nm) + '">' + btns + '</ul></div></li>';
+      prevD = p.dept;
+    });
+    var legend = '<p class="tlk" aria-hidden="true"><span><i class="lk-b"></i>' + esc(t('lgSent')) + '</span><span><i class="lk-r"></i>' + esc(t('lgRep')) + '</span><span><i class="lk-n"></i>' + esc(t('lgNo')) + '</span><span><i class="lk-f"></i>' + esc(t('lgDone')) + '</span><span><i class="lk-d"></i>' + esc(t('lgStep')) + '</span><span><svg class="lk-t" viewBox="0 0 14 14"><path d="M7 1.5 13 12.5H1z"/></svg>' + esc(t('lgLate')) + '</span><span><svg viewBox="0 0 16 16"><path d="M4 15V2"/><path class="fl" d="M4.5 2.5h8l-2 3 2 3h-8z"/></svg>' + esc(t('lgNext')) + '</span></p>';
+    h += '<section class="tlw" style="--dpx:' + dpx.toFixed(2) + 'px"><div class="tla" aria-hidden="true"><span class="tlname"></span><div class="tlx">' + ax + '</div></div>'
+      + '<div class="tlbody">' + '<div class="tlgw" aria-hidden="true"><span class="tlname"></span>' + grid + '</div>'
+      + (D.L.length ? '<ul class="tlls" aria-label="' + esc(t('tlLanes')) + '">' + lanes + '</ul>' : '<p class="empty">' + esc(t('noProj')) + '</p>') + '</div></section>' + legend;
+    /* the slip: a hint in the flow; once a mark is picked it floats over the bottom of the screen (body.j2 scrolls, so sticky would not hold).
+       Its paragraph takes the app's direction and the project name is isolated, so a Latin name never flips a Hebrew sentence. The buttons carry
+       the same sentence as their label, so the slip is not a live region (no double reading). */
+    h += sel ? '<div class="tlpad" aria-hidden="true"></div><div class="tlslip on"><p dir="' + (lang() === 'he' ? 'rtl' : 'ltr') + '"><bdi>' + esc(sel.n) + '</bdi> · ' + esc(sel.r) + '</p><button type="button" class="tlcx" data-x="tpick" data-id="' + esc(S.tSel) + '" aria-label="' + esc(t('tlClose')) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>'
+      : '<div class="tlslip"><p>' + esc(t('tlTap')) + '</p></div>';
+    return h;
+  }
+  function tlRove(tgt, key) { /* arrow keys between marks: left / right follow the screen (Hebrew: left = later), up / down change lane */
+    var all = [].concat.apply([], [].map.call(sr.querySelectorAll('.tlls .tll'), function (l) { return [].slice.call(l.querySelectorAll('.tlb [data-x="tpick"]')).concat([].slice.call(l.querySelectorAll('.tme'))); })); if (!all.length) return false;
+    var rtl = lang() === 'he', i = all.indexOf(tgt), lane = function (b) { return b.closest('.tll'); }, n = null;
+    if (key === 'Home') n = all[0]; else if (key === 'End') n = all[all.length - 1];
+    else if (key === 'ArrowRight' || key === 'ArrowLeft') { var fw = (key === 'ArrowRight') !== rtl; n = all[i + (fw ? 1 : -1)] || null; if (n && lane(n) !== lane(tgt)) n = null; }
+    else if (key === 'ArrowDown' || key === 'ArrowUp') { var L = [].slice.call(sr.querySelectorAll('.tlls .tll')), li = L.indexOf(lane(tgt)), dir = key === 'ArrowDown' ? 1 : -1, r0 = tgt.getBoundingClientRect(), cx = r0.left + r0.width / 2;
+      for (var j = li + dir; j >= 0 && j < L.length && !n; j += dir) { var B = [].slice.call(L[j].querySelectorAll('[data-x="tpick"]')); if (B.length) n = B.reduce(function (a, b) { var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); return Math.abs(rb.left + rb.width / 2 - cx) < Math.abs(ra.left + ra.width / 2 - cx) ? b : a; }); } }
+    else return false;
+    if (n) { all.forEach(function (b) { b.tabIndex = -1; }); n.tabIndex = 0; n.focus(); }
+    return true;
+  }
+  function tlTabStop() { /* one tab stop for the marks: the picked one, else the one nearest today */
+    if (S.sp !== 'time' || !sr) return; var all = [].slice.call(sr.querySelectorAll('.tlls [data-x="tpick"]')); if (!all.length) return;
+    var p = all.filter(function (b) { return b.getAttribute('aria-pressed') === 'true'; })[0] || all[0]; p.tabIndex = 0;
+  }
+
   /* ---------- shell ---------- */
-  var SP = [['status', 't-status'], ['today', 't-today'], ['queue', 't-queue'], ['eng', 't-eng'], ['score', 't-score'], ['talk', 't-talk'], ['agents', 't-agents'], ['set', 't-set']];
+  var SP = [['status', 't-status'], ['time', 't-time'], ['today', 't-today'], ['queue', 't-queue'], ['eng', 't-eng'], ['score', 't-score'], ['talk', 't-talk'], ['agents', 't-agents'], ['set', 't-set']];
   function topBar() {
     var j = J(), x = X(), st = safe(function () { return j.status(); }, {}), p = safe(function () { return j.control.paused(); }, false);
     var s = x ? safe(function () { return x.sender ? x.sender() : null; }, null) : null, bad = p || (s && s.ok === false);
@@ -804,7 +965,7 @@
   function tabs() { /* index-card tabs: each space is a coloured card in a file; the open one joins the folder below */
     var n = deck().length;
     return '<nav class="tabs" aria-label="' + esc(t('spaces')) + '">' + SP.map(function (s, i) {
-      return '<button type="button" class="tab' + (GS.tour > -1 && TOUR[GS.tour] && TOUR[GS.tour].lift.indexOf(s[0]) > -1 ? ' lift' : '') + '" data-x="sp" data-id="' + s[0] + '" style="--tc:var(--' + s[1] + ')"' + (S.sp === s[0] ? ' aria-current="page"' : '') + ' aria-keyshortcuts="' + (i + 1) + '">' + (s[0] === 'set' ? '<span class="tl">' + esc(t(s[0])) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>' : esc(t(s[0])))
+      return '<button type="button" class="tab' + (GS.tour > -1 && TOUR[GS.tour] && TOUR[GS.tour].lift.indexOf(s[0]) > -1 ? ' lift' : '') + '" data-x="sp" data-id="' + s[0] + '" style="--tc:var(--' + s[1] + ')"' + (S.sp === s[0] ? ' aria-current="page"' : '') + ' aria-keyshortcuts="' + (i + 1) + '">' + (s[0] === 'time' ? '<span class="tl">' + esc(t('time')) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h9"/><path d="M8 12h10"/><path d="M5 18h7"/><path d="M21 4v16"/></svg>' : s[0] === 'set' ? '<span class="tl">' + esc(t(s[0])) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>' : esc(t(s[0])))
         + (s[0] === 'today' && n ? '<em>' + n + '</em><span class="sr"> (' + n + ' ' + esc(t('waiting')) + ')</span>' : '') + '</button>'; }).join('') + '</nav>';
   }
   function busyTyping() { var a = sr && sr.activeElement; return !!(a && /^(TEXTAREA|INPUT)$/.test(a.tagName)); }
@@ -818,9 +979,11 @@
       W.setAttribute('data-sp', 'start'); if (!GS.start) { GS.start = true; GS.step = 0; idleArm(); }
       C.innerHTML = topBar() + '<main class="folder gsf" id="j2main" tabindex="-1"><div class="in">' + vStart() + '</div></main>'; window.scrollTo(0, y); return;
     }
-    var body = S.sp === 'status' ? vStatus() : S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'agents' ? vAgents() : S.sp === 'set' ? vSet() : vToday();
+    var body = S.sp === 'status' ? vStatus() : S.sp === 'time' ? vTime() : S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'agents' ? vAgents() : S.sp === 'set' ? vSet() : vToday();
+    var fae = sr.activeElement, fk = fae && fae.getAttribute ? fae.getAttribute('data-fk') : null; /* 15.12: a re-render keeps focus on the same timeline mark */
     C.innerHTML = topBar() + tabs() + '<main class="folder" id="j2main" tabindex="-1"><div class="in">' + (GS.tour > -1 ? tourSlip() : S.sp === 'status' ? '' : hintBar(S.sp)) + (S.sp === 'score' ? goalLine() : '') + body + '</div></main>'; /* the toast sits outside C, so a data refresh never wipes an Undo */
     window.scrollTo(0, y);
+    tlTabStop(); if (fk) { var fe = sr.querySelector('[data-fk="' + fk.replace(/["\\]/g, '') + '"]'); if (fe) { fe.tabIndex = 0; [].forEach.call(sr.querySelectorAll('.tlls [data-x="tpick"]'), function (b) { if (b !== fe) b.tabIndex = -1; }); try { fe.focus({ preventScroll: true }); } catch (e) {} } }
     if (S.edit) { var ta = sr.getElementById('j2ed'); if (ta && force === 'edit') { ta.focus(); } }
   }
   function soon() { if (raf) return; raf = requestAnimationFrame(function () { raf = 0; render(false); }); }
@@ -877,6 +1040,9 @@
     if (x === 'undo') { if (undoFn) { struggle(S.sp, 'undo'); var f = undoFn; undoFn = null; var te = sr.getElementById('j2t'); if (te) te.classList.remove('on'); f(); } return; }
     if (x === 'hold') { leave(id, 'hold', function () { S.held[id] = 1; render(true); say(t('heldT2'), function () { delete S.held[id]; render(true); }); }); return; }
     if (x === 'unhold') { S.held = {}; render(true); return; }
+    if (x === 'tz') { S.tz = id === '2m' ? '2m' : '2w'; S.tOff = 0; try { localStorage.setItem('j8:tz', S.tz); } catch (e) {} render(true); return; }
+    if (x === 'tsh') { var hs = S.tz === '2m' ? 30 : 7; S.tOff = +id === 0 ? 0 : S.tOff + (+id > 0 ? hs : -hs); render(true); if (+id === 0) { var tb = sr.querySelector('[data-x="tsh"][data-id="1"]'); if (tb) tb.focus(); } return; }
+    if (x === 'tpick') { var cx = el.classList.contains('tlcx'); S.tSel = S.tSel === id ? '' : id; render(true); if (cx) { var mk = sr.querySelector('[data-fk="t:' + id.replace(/["\\]/g, '') + '"]'); if (mk) { mk.tabIndex = 0; try { mk.focus({ preventScroll: true }); } catch (e) {} } } return; } /* × hands focus back to the mark it came from */
     if (x === 'win') { S.win = id === '7d' ? '7d' : '30d'; try { localStorage.setItem('j8:win', S.win); } catch (e) {} render(true); return; }
     if (x === 'gateretry') { S.gateAt = 0; S.gateFresh = true; S.gateErr = false; render(true); return; }
     if (x === 'gexp') { S.open['g:' + id] = !S.open['g:' + id]; render(true); var gx = sr.querySelector('[data-x="gexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (gx) gx.focus(); return; }
@@ -1039,10 +1205,12 @@
       set: { one: 'השהיה, שפה, צליל, המדריך הזה.', what: 'איך J8NIX עובד בשבילך.', how: ['"השהה שליחה" עוצר כל מה שיוצא.', 'טייס אוטומטי לכל הודעה שמורה.', '"מדריך" מריץ שוב הגדרה, סיור ועזרה.'], when: 'כשצריך לעצור שליחה או לשנות הגדרה.', tip: '"השהה שליחה" הוא הבלם הגדול. זה תמיד בטוח.' }
     }
   };
+  HELP.en.time = { one: 'Every project on real dates, today in the middle.', what: 'What went out, who answered and what is coming, per project.', how: ['A bar is messages sent that day; a dot on top is a reply.', 'A diamond is a dated step, a red triangle is late, the flag is the next one.', 'Tap a mark to read it. 2 weeks or 2 months; Earlier and Later move the dates.'], when: 'When you want to see how each project is moving.', tip: 'A lane with no marks has nothing dated yet: that is real, not a gap in the data.' };
+  HELP.he.time = { one: 'כל פרויקט על תאריכים אמיתיים, היום באמצע.', what: 'מה יצא, מי ענה ומה מגיע, לכל פרויקט.', how: ['עמודה היא הודעות שנשלחו באותו יום; נקודה מעליה היא תשובה.', 'יהלום הוא צעד עם תאריך, משולש אדום הוא איחור, הדגל הוא הצעד הבא.', 'הקש על סימן כדי לקרוא אותו. שבועיים או חודשיים; "מוקדם יותר" ו"מאוחר יותר" מזיזים את התאריכים.'], when: 'כשרוצים לראות איך כל פרויקט מתקדם.', tip: 'נתיב בלי סימנים עוד אין בו תאריכים: זה אמיתי, לא חור בנתונים.' };
   function help(sp) { return (HELP[lang()] || HELP.en)[sp] || HELP.en[sp] || HELP.en.today; }
   var ROLES = ['founder', 'sales', 'ops', 'mkt', 'other'], GOALS = ['replies', 'calls', 'paid', 'time'], CHS = ['email', 'li', 'wa', 'ig', 'phone'];
   var TOUR = [{ sp: 'today', lift: ['today'], h: 't1h', p: 't1' }, { sp: 'queue', lift: ['queue'], h: 't2h', p: 't2' }, { sp: 'eng', lift: ['eng', 'score'], h: 't3h', p: 't3' }, { sp: 'agents', lift: ['talk', 'agents', 'set'], h: 't4h', p: 't4' }];
-  var SPN = { today: 'today', queue: 'queue', eng: 'eng', score: 'score', talk: 'talk', agents: 'agents', set: 'set' };
+  var SPN = { time: 'time', today: 'today', queue: 'queue', eng: 'eng', score: 'score', talk: 'talk', agents: 'agents', set: 'set' };
   var GS = { g: null, uid: '', saveT: 0, autoShown: false, hintN: {}, step: 0, idleT: 0, idleK: '', tour: -1, start: false, fin: false, taps: [] };
   function uidOf() { var u = safe(function () { return J().auth.user(); }, null); return u && u.id ? String(u.id) : ''; }
   function gKey() { return 'j8:guide:' + GS.uid; }
@@ -1070,7 +1238,7 @@
     g.logged[key] = new Date().toISOString(); gSave();
     j.memory.add({ kind: kind || 'fact', text: 'Onboarding: ' + text, tags: ['onboarding'].concat(tags || []) }).catch(function () { delete g.logged[key]; });
   }
-  var SPEN = { today: 'Today', queue: 'Queue', eng: 'Engines', score: 'Score', talk: 'Talk', agents: 'Agents', set: 'Settings' };
+  var SPEN = { time: 'Timeline', today: 'Today', queue: 'Queue', eng: 'Engines', score: 'Score', talk: 'Talk', agents: 'Agents', set: 'Settings' };
   function struggle(sp, why) {
     var g = gLoad(); if (!g || !SPN[sp]) return;
     g.str[sp] = (g.str[sp] || 0) + 1; g.strAt = g.strAt || {}; g.strAt[sp] = Date.now(); delete g.used[sp]; gSave(); /* the help line comes back for this space, with its tip */
@@ -1220,7 +1388,8 @@
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (GS.tour > -1 && e.key === 'Escape') { e.preventDefault(); tourAt(-1); return; }
     if (GS.start || GS.fin) return; /* the guided start owns the screen: no space keys */
-    if (/^[1-8]$/.test(e.key)) { if (GS.tour > -1) { GS.tour = -1; var gk = gLoad(); if (gk) { gk.tour = 'ended'; gSave(); } } go(SP[+e.key - 1][0]); e.preventDefault(); return; }
+    if (/^[1-9]$/.test(e.key)) { if (GS.tour > -1) { GS.tour = -1; var gk = gLoad(); if (gk) { gk.tour = 'ended'; gSave(); } } go(SP[+e.key - 1][0]); e.preventDefault(); return; }
+    if (S.sp === 'time') { if (tgt && tgt.getAttribute && tgt.getAttribute('data-x') === 'tpick' && tlRove(tgt, e.key)) e.preventDefault(); if (e.key === 'Escape' && S.tSel) { var was = S.tSel; S.tSel = ''; render(true); var mk = sr.querySelector('[data-fk="t:' + was.replace(/["\\]/g, '') + '"]'); if (mk) { [].forEach.call(sr.querySelectorAll('.tlls [data-x="tpick"]'), function (b) { b.tabIndex = -1; }); mk.tabIndex = 0; try { mk.focus({ preventScroll: true }); } catch (x) {} } } /* Escape from anywhere (even the ×) returns focus to the mark */ return; }
     if (S.sp !== 'today') return;
     var c = sr.querySelector('.deck .card'); if (!c) return;
     var sel = { g: '[data-x="go"],[data-x="dgo"]:not([disabled]),[data-x="batch-go"],[data-x="done"],[data-x="copyopen"]', h: '[data-x="hold"]', x: '[data-x="stop"]', e: '[data-x="ed"]' }[e.key.toLowerCase()];
@@ -1277,6 +1446,7 @@
     document.body.appendChild(host);
     sr.addEventListener('click', function (e) { var el = e.target.closest && e.target.closest('[data-x]'); if (!el) { var sm = e.target.closest && e.target.closest('summary'); if (sm) { var d = sm.parentNode, k = d.getAttribute('data-k'); if (k) { e.preventDefault(); S.open[k] = !S.open[k]; render(true); } } return; } e.preventDefault(); act(el.getAttribute('data-x'), el); });
     sr.addEventListener('input', function (e) { var tg = e.target; if (tg.dataset.say) { S.talk = tg.value; tg.style.height = 'auto'; tg.style.height = Math.min(160, tg.scrollHeight) + 'px'; } else if (tg.dataset.ed) S.editTx = tg.value; else if (tg.dataset.g) gField(tg.dataset.g, tg.value); else if (tg.dataset.dl && S.dEd) S.dEd[tg.dataset.dl] = tg.value; });
+    var rzT = 0, rzW = window.innerWidth; window.addEventListener('resize', function () { if (S.sp !== 'time' || window.innerWidth === rzW) return; clearTimeout(rzT); rzT = setTimeout(function () { rzW = window.innerWidth; render(false); }, 150); }); /* 15.12: timeline marks regroup for the new width */
     sr.addEventListener('focusout', function () { setTimeout(function () { if (pend && !busyTyping()) render(false); }, 0); });
     swipe();
     var j = J();
