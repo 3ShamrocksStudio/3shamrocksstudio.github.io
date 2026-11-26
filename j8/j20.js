@@ -40,7 +40,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.11.0';
+  var VER = '15.11.1';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -715,11 +715,11 @@
      the last 3 j8_runs touching the project, its link. Parked and Killed fold at the bottom, one line each with the reason. Read only. ---------- */
   var GOAL_ILS = 100000; /* the Focus mode target (19 Nov 2026): ₪100,000 collected */
   var DEPTS = ['Income', 'SH✡MER', 'Side lines', 'Studio systems'];
-  Object.assign(T.en, { status: 'Status', collected: 'collected of', toGo: 'to go', youW: 'You:', sentTd: 'sent today', repWk: 'replies · 7 days', repWk1: 'reply · 7 days',
+  Object.assign(T.en, { status: 'Status', collected: 'collected of', toGo: 'to go', youW: 'You:', sentTd: 'sent today', repWk: 'replies · 7 days', repWk1: 'reply · 7 days', noWk: 'no-thanks · 7 days',
     waitingW: 'Waiting', parkedW: 'Parked', killedW: 'Killed', otherW: 'Other', lastRuns: 'Last 3 runs', noRunsP: 'No runs logged for this yet.', noProj: 'No projects to show.',
     moneyNo: 'Money: no record yet', moneyOff: 'Money: not loaded yet', need1: '1 thing needs you', needN: '{n} things need you', needNone: 'Nothing needs you right now.', ofGoal: 'of the goal',
     d_Income: 'Income', 'd_SH✡MER': 'SH✡MER', 'd_Side lines': 'Side lines', 'd_Studio systems': 'Studio systems', stLoad: 'Couldn\'t load the status. Tap to retry' });
-  Object.assign(T.he, { status: 'מצב', collected: 'נגבו מתוך', toGo: 'נשארו', youW: 'אתה:', sentTd: 'נשלחו היום', repWk: 'תשובות · 7 ימים', repWk1: 'תשובה · 7 ימים',
+  Object.assign(T.he, { status: 'מצב', collected: 'נגבו מתוך', toGo: 'נשארו', youW: 'אתה:', sentTd: 'נשלחו היום', repWk: 'תשובות · 7 ימים', repWk1: 'תשובה · 7 ימים', noWk: 'דחיות · 7 ימים',
     waitingW: 'ממתין', parkedW: 'מוקפאים', killedW: 'נסגרו', otherW: 'אחר', lastRuns: '3 הריצות האחרונות', noRunsP: 'עוד אין ריצות רשומות לזה.', noProj: 'אין פרויקטים להציג.',
     moneyNo: 'כסף: עוד אין רישום', moneyOff: 'כסף: עוד לא נטען', need1: 'דבר אחד מחכה לך', needN: '{n} דברים מחכים לך', needNone: 'כרגע שום דבר לא מחכה לך.', ofGoal: 'מהיעד',
     d_Income: 'הכנסה', 'd_SH✡MER': 'SH✡MER', 'd_Side lines': 'קווים צדדיים', 'd_Studio systems': 'מערכות הסטודיו', stLoad: 'טעינת המצב נכשלה. הקש לנסות שוב' });
@@ -739,9 +739,9 @@
   function stNums() { /* per project: has approvals at all, sent today (Israel day), replies in the last 7 days */
     var o = {}, now = Date.now(), k0 = dayKey(now), from = now - 7 * 864e5;
     aps().forEach(function (a) {
-      if (isTpl(a)) return; var p = pidOf(a.product); if (!p) return; var e = o[p] || (o[p] = { any: 0, sent: 0, rep: 0 }); e.any++;
+      if (isTpl(a)) return; var p = pidOf(a.product); if (!p) return; var e = o[p] || (o[p] = { any: 0, sent: 0, rep: 0, no: 0 }); e.any++;
       var st = pd(a.sent_at); if (a.status === 'sent' && !isNaN(st) && dayKey(st) === k0) e.sent++;
-      var rt = pd(a.replied_at); if (!isNaN(rt) && rt >= from && rt <= now + 6e4) e.rep++;
+      var rt = pd(a.replied_at); if (!isNaN(rt) && rt >= from && rt <= now + 6e4) { if (a.outcome === 'rejection') e.no++; else e.rep++; }
     });
     return o;
   }
@@ -767,7 +767,7 @@
     h += '<p class="need' + (nYou ? ' on' : '') + '">' + esc(nYou ? (nYou === 1 ? t('need1') : t('needN').replace('{n}', nYou)) : t('needNone')) + '</p>';
     var row = function (p) {
       var k = 's:' + p.id, op = !!S.open[k], n = N[p.id], yo = !noYou(p.you), wt = p.status === 'waiting';
-      var nu = n ? '<span class="nu"><span' + (n.sent ? '' : ' class="z"') + '><b>' + n.sent + '</b> ' + esc(t('sentTd')) + '</span><span' + (n.rep ? '' : ' class="z"') + '><b>' + n.rep + '</b> ' + esc(t(n.rep === 1 ? 'repWk1' : 'repWk')) + '</span></span>' : '<span class="nu"></span>';
+      var nu = n ? '<span class="nu"><span' + (n.sent ? '' : ' class="z"') + '><b>' + n.sent + '</b> ' + esc(t('sentTd')) + '</span><span' + (n.rep ? '' : ' class="z"') + '><b>' + n.rep + '</b> ' + esc(t(n.rep === 1 ? 'repWk1' : 'repWk')) + '</span>' + (n.no ? '<span><b>' + n.no + '</b> ' + esc(t('noWk')) + '</span>' : '') + '</span>' : '<span class="nu"></span>';
       var sm = '<summary><b class="nm" dir="auto">' + esc(cut(p.name || p.id, 60)) + '</b><span class="st">' + (wt ? '<span class="stw sw-q">' + esc(t('waitingW')) + '</span> · ' : '') + '<span dir="auto">' + esc(phrase(p.now)) + '</span></span>' + nu + chev()
         + (yo ? '<span class="yl' + (hi[p.id] ? ' hi' : '') + '"><b>' + esc(t('youW')) + '</b> <span dir="auto">' + esc(youShort(p.you)) + '</span></span>' : '') + '</summary>';
       var bd = '';
