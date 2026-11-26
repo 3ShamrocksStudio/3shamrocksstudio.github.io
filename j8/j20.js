@@ -24,10 +24,13 @@
    j20.css, words + step number + EN/עברית switch + focus on step change in authDress here; shell.js and the auth calls are unchanged).
    Full Hebrew pass: the sender line (senderTx), channel names (chan), the two fixed j13 phrases (whyNow) and the tabs' label now follow
    the language. Revert: git revert of the 15.5 commit.
+   15.8.0 (26 Nov 2026) · backlog b-1125-25 "Deal room": Warm leads on top of Today (vDeals), one card per positive reply from
+   public.j8_deals (J8.deals): stage notches, next step + due (late = red word + clock), tap to open stage, change next step,
+   times offered, prep brief, proof pack checklist; every change has Undo. Revert: git revert of the 15.8 commit.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.7.0';
+  var VER = '15.8.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -125,6 +128,17 @@
     w_tracked: 'בלי תוצאה לכל שליחה, אי אפשר לסמוך על התוצאות ועל הכסף.', w_no_dupes: 'פנייה כפולה לאותו אדם נראית כמו ספאם ושורפת את הקשר.',
     w_optout: 'החוק: חובה לכבד בקשות הסרה (CAN-SPAM, ‏GDPR, תיקון 40 לחוק התקשורת).', w_rls: 'בלי הנעילה הזאת, עסק אחד יכול לראות נתונים של עסק אחר (הנחיית Supabase).',
     w_daily_use: 'אם אתה לא משתמש בו ברוב הימים, גם הבודקים לא ישתמשו. קודם להשתמש בעצמך.' });
+  /* 15.8: deal room (backlog b-1125-25): one card per warm reply (public.j8_deals) */
+  Object.assign(T.en, { deals: 'Warm leads', d_reply: 'Replied', d_demo_booked: 'Demo booked', d_demo_done: 'Demo done', d_proposal: 'Proposal', d_procurement: 'Procurement', d_paid: 'Paid', d_lost: 'Lost',
+    lateW: 'Late', todayL: 'today', dueW: 'Due', noDue: 'No due time', stageW: 'Stage', slotsW: 'Times offered', offeredW: 'offered', briefW: 'Before you talk', whoW: 'Who', orgW: 'Where', askedW: 'They asked', weSent: 'We sent',
+    proofW: 'Proof pack', readyN: '{n} of {d} ready', pf_data_flow: 'Data-flow diagram', pf_privacy: 'Privacy policy', pf_security: 'Security and data-retention note', pf_accessibility: 'Accessibility statement',
+    chStep: 'Change next step or links', linksW: 'Proof pack links (https only)', linkBad: 'A link must start with https://', stepL: 'Next step', dueL: 'Due (Israel time)', saveW: 'Save', stageSet: 'Stage: {n}.', stepSaved: 'Next step saved.', markLost: 'Mark lost', openW: 'Open', proofOn: '{n}: ready.', proofOff: '{n}: not ready.', needStep: 'Write the next step first.',
+    ds_reply: 'Reply and book a demo', ds_prep: 'Prepare the demo', ds_prop: 'Follow up on the proposal' });
+  Object.assign(T.he, { deals: 'לידים חמים', d_reply: 'ענו', d_demo_booked: 'הדגמה נקבעה', d_demo_done: 'הדגמה בוצעה', d_proposal: 'הצעה', d_procurement: 'רכש', d_paid: 'שולם', d_lost: 'לא רלוונטי',
+    lateW: 'באיחור', todayL: 'היום', dueW: 'עד', noDue: 'בלי מועד', stageW: 'שלב', slotsW: 'מועדים שהוצעו', offeredW: 'הוצע', briefW: 'לפני השיחה', whoW: 'מי', orgW: 'איפה', askedW: 'מה ביקשו', weSent: 'מה שלחנו',
+    proofW: 'חבילת הוכחות', readyN: '{n} מתוך {d} מוכנים', pf_data_flow: 'תרשים זרימת מידע', pf_privacy: 'מדיניות פרטיות', pf_security: 'מסמך אבטחה ושמירת מידע', pf_accessibility: 'הצהרת נגישות',
+    chStep: 'שינוי הצעד הבא או הקישורים', linksW: 'קישורים לחבילת ההוכחות (https בלבד)', linkBad: 'קישור חייב להתחיל ב-https://', stepL: 'הצעד הבא', dueL: 'עד מתי (שעון ישראל)', saveW: 'שמירה', stageSet: 'שלב: {n}.', stepSaved: 'הצעד הבא נשמר.', markLost: 'סימון כלא רלוונטי', openW: 'פתיחה', proofOn: '{n}: מוכן.', proofOff: '{n}: לא מוכן.', needStep: 'קודם כותבים את הצעד הבא.',
+    ds_reply: 'לענות ולקבוע הדגמה', ds_prep: 'להכין את ההדגמה', ds_prop: 'מעקב אחרי ההצעה' });
   var SFIX = { 'the last run failed': 'הריצה האחרונה נכשלה', 'J8 retries at the next run': 'J8 ינסה שוב בריצה הבאה', 'the run started without your Mac': 'הריצה התחילה בלי המק שלך', 'keep the Mac on and awake at send time': 'להשאיר את המק דלוק וער בזמן השליחה' };
   var CHAN = { he: { email: 'מייל', mail: 'מייל', message: 'הודעה', outreach: 'פנייה', phone: 'טלפון', call: 'שיחה', application: 'בקשה', design: 'עיצוב', post: 'פוסט', linkedin: 'LinkedIn', whatsapp: 'WhatsApp', sms: 'SMS' } };
   function chan(c) { var m = CHAN[lang()], k = String(c || '').trim().toLowerCase(); return (m && m[k]) || String(c || ''); }
@@ -301,9 +315,58 @@
     var lbl = t('pulse') + ': ' + ok + ' ' + t('okW') + ', ' + bad + ' ' + t('failedW');
     return '<div class="pulse" role="img" aria-label="' + esc(lbl) + '">' + ticks + '</div><div class="pl"><span>' + esc(t('h24')) + '</span><span>' + esc(ok + ' ' + t('okW') + (bad ? ' · ' + bad + ' ' + t('failedW') : '')) + '</span><span>' + esc(t('now')) + '</span></div>';
   }
+  /* ---------- 15.8 deal room (backlog b-1125-25). One card per warm reply, from public.j8_deals (J8.deals): a trigger on
+     j8_outcomes makes it, pg_cron raises one alert when the next step is late. Top of Today, late first; tap to open:
+     stage, next step + due, times offered, a prep brief and the proof pack. Late = red word + clock glyph, never colour alone. ---------- */
+  var DSTG = ['reply', 'demo_booked', 'demo_done', 'proposal', 'procurement', 'paid'], PF = ['data_flow', 'privacy', 'security', 'accessibility'];
+  var DSTEP = { 'Reply and book a demo': 'ds_reply', 'Prepare the demo': 'ds_prep', 'Follow up on the proposal': 'ds_prop' };
+  function dealsAll() { var j = J(); return (safe(function () { return j.deals ? j.deals.list() : []; }, []) || []); }
+  function dealById(id) { return dealsAll().filter(function (d) { return String(d.id) === String(id); })[0] || null; }
+  function dealsOpen() { var now = Date.now(); return dealsAll().filter(function (d) { return d.stage !== 'paid' && d.stage !== 'lost'; }).sort(function (a, b) {
+    var x = pd(a.next_due_at), y = pd(b.next_due_at); x = isNaN(x) ? Infinity : x; y = isNaN(y) ? Infinity : y; return (x < now ? 0 : 1) - (y < now ? 0 : 1) || x - y; }); }
+  function dStep(d) { var s = String(d.next_step || ''); return DSTEP[s] ? t(DSTEP[s]) : s; }
+  function dLate(d) { var v = pd(d.next_due_at); return !isNaN(v) && v < Date.now(); }
+  function dWhen(v) { if (isNaN(v)) return ''; var k = dayKey(v); return (k === dayKey(Date.now()) ? t('todayL') : day(v)) + ' ' + hm(v); }
+  function dProof(d) { var P = Array.isArray(d.proof) ? d.proof : []; return PF.map(function (k) { return P.filter(function (p) { return p && p.key === k; })[0] || { key: k, done: false, link: null }; }); }
+  function ilParts(ms) { var o = {}; try { new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jerusalem', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(ms)).forEach(function (p) { o[p.type] = p.value; }); } catch (e) { return null; } return o; }
+  function toIL(ms) { var o = isNaN(ms) ? null : ilParts(ms); return o ? o.year + '-' + o.month + '-' + o.day + 'T' + o.hour + ':' + o.minute : ''; } /* for <input type="datetime-local">: Israel wall clock */
+  function fromIL(v) { var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(String(v || '')); if (!m) return null;
+    var g = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]), o = ilParts(g); if (!o) return null;
+    var off = Date.UTC(+o.year, +o.month - 1, +o.day, +o.hour % 24, +o.minute) - g, ms = g - off, o2 = ilParts(ms); /* second pass for the DST edge */
+    if (o2) { var off2 = Date.UTC(+o2.year, +o2.month - 1, +o2.day, +o2.hour % 24, +o2.minute) - ms; ms = g - off2; }
+    return new Date(ms).toISOString(); }
+  function vDeals() {
+    var D = dealsOpen(); if (!D.length) return '';
+    var h = '<section class="grp dl" aria-labelledby="dlh"><h2 id="dlh">' + esc(t('deals')) + ' · ' + D.length + '</h2><div class="rows">';
+    h += D.map(function (d) {
+      var k = String(d.id), op = S.open['d:' + k], nid = 'dn-' + k.replace(/[^a-z0-9_-]/gi, ''), late = dLate(d), v = pd(d.next_due_at), si = DSTG.indexOf(d.stage), br = d.brief || {};
+      var due = isNaN(v) ? t('noDue') : late ? t('lateW') + ' · ' + dWhen(v) : t('dueW') + ' ' + dWhen(v);
+      var track = '<span class="dtr" aria-hidden="true">' + DSTG.map(function (s, i) { return '<i' + (i <= si ? ' class="on"' : '') + '></i>'; }).join('') + '</span>';
+      var bd = '';
+      if (op) {
+        var ed = S.dEd && S.dEd.id === k, P = dProof(d), nr = P.filter(function (p) { return p.done; }).length, SL = Array.isArray(d.slots) ? d.slots : [];
+        bd = '<div class="bd ag dbd" id="db-' + nid + '">';
+        bd += '<p class="dh2">' + esc(t('stageW')) + '</p><div class="seg dst" role="group" aria-label="' + esc(t('stageW')) + '">' + DSTG.map(function (s) {
+          return '<button type="button" class="b sm" data-x="dstage" data-w="' + s + '" data-id="' + esc(k) + '" aria-pressed="' + (d.stage === s) + '">' + esc(t('d_' + s)) + '</button>'; }).join('') + '</div>';
+        if (ed) bd += '<div class="dform"><label for="dstep-' + nid + '">' + esc(t('stepL')) + '</label><input id="dstep-' + nid + '" type="text" maxlength="200" dir="auto" data-dl="step" value="' + esc(S.dEd.step) + '">'
+          + '<label for="ddue-' + nid + '">' + esc(t('dueL')) + '</label><input id="ddue-' + nid + '" type="datetime-local" data-dl="due" value="' + esc(S.dEd.due) + '">'
+          + '<p class="dh2">' + esc(t('linksW')) + '</p>' + PF.map(function (q) { return '<label for="dlk-' + q + '-' + nid + '">' + esc(t('pf_' + q)) + '</label><input id="dlk-' + q + '-' + nid + '" type="url" inputmode="url" dir="ltr" placeholder="https://" data-dl="lk_' + q + '" value="' + esc(S.dEd['lk_' + q] || '') + '">'; }).join('')
+          + '<div class="acts two"><button type="button" class="b go" data-x="dsave" data-id="' + esc(k) + '">' + esc(t('saveW')) + '</button><button type="button" class="b" data-x="dcancel" data-id="' + esc(k) + '">' + esc(t('cancel')) + '</button></div></div>';
+        else bd += '<p><b>' + esc(t('nextW')) + '</b> <bdi>' + esc(dStep(d) || '—') + '</bdi>' + (isNaN(v) ? '' : ' · <span class="' + (late ? 'dlate' : 'dwait') + '">' + esc(due) + '</span>') + '</p><div class="sub"><button type="button" class="lnk sm" data-x="dedit" data-id="' + esc(k) + '">' + esc(t('chStep')) + '</button></div>';
+        if (SL.length) bd += '<p class="dh2">' + esc(t('slotsW')) + '</p><ul class="dli">' + SL.slice(0, 6).map(function (s) { var sv = pd(s && s.at); return '<li><bdi>' + esc((isNaN(sv) ? String((s && s.at) || '') : dWhen(sv)) + (s && s.where ? ' · ' + s.where : '') + (s && s.state === 'offered' ? ' · ' + t('offeredW') : '')) + '</bdi></li>'; }).join('') + '</ul>';
+        bd += '<p class="dh2">' + esc(t('briefW')) + '</p><dl class="dbr">' + [['whoW', br.who], ['orgW', br.org], ['askedW', br.asked], ['weSent', br.sent]].filter(function (r) { return r[1]; }).map(function (r) { return '<dt>' + esc(t(r[0])) + '</dt><dd><bdi>' + esc(cut(r[1], 400)) + '</bdi></dd>'; }).join('') + '</dl>';
+        bd += '<p class="dh2">' + esc(t('proofW')) + ' · ' + esc(t('readyN').replace('{n}', nr).replace('{d}', P.length)) + '</p><div class="rows dpf">' + P.map(function (p) { var lk = link(p.link);
+          return '<div class="dpr"><button type="button" class="ck" role="checkbox" aria-checked="' + !!p.done + '" data-x="dproof" data-w="' + esc(p.key) + '" data-id="' + esc(k) + '"><i aria-hidden="true"></i><span>' + esc(t('pf_' + p.key)) + '</span></button>' + (lk ? '<a class="lnk sm" href="' + esc(lk) + '" target="_blank" rel="noopener noreferrer">' + esc(t('openW')) + '</a>' : '') + '</div>'; }).join('') + '</div>';
+        var la = armed('dl-' + k); bd += '<div class="sub"><button type="button" class="' + (la ? 'b sm stop arm' : 'lnk sm dlost') + '" data-x="dstage" data-w="lost" data-id="' + esc(k) + '">' + esc(la ? t('tapStop') : t('markLost')) + '</button></div></div>';
+      }
+      return '<div class="row rt dr' + (late ? ' is-late' : '') + '"><div class="rh"><button type="button" class="rx" data-x="dexp" data-id="' + esc(k) + '" aria-expanded="' + !!op + '"' + (op ? ' aria-controls="db-' + nid + '"' : '') + '>' + glyph('late').replace('g-late', late ? 'g-late dl-late' : 'g-late dl-wait')
+        + '<span class="ph"><b id="' + nid + '"><bdi>' + esc(cut(br.org || br.who || t('deals'), 60)) + '</bdi></b><small><span>' + esc(t('d_' + d.stage)) + '</span>' + track + ' · <bdi>' + esc(cut(dStep(d), 70)) + '</bdi> · <span class="' + (late ? 'dlate' : 'dwait') + '">' + esc(due) + '</span></small></span>' + chev() + '</button></div>' + bd + '</div>';
+    }).join('');
+    return h + '</div></section>';
+  }
   function vToday() {
     pull();
-    var L = deck(), h = '<h1 class="sr">' + esc(t('today')) + '</h1>' + glance();
+    var L = deck(), h = '<h1 class="sr">' + esc(t('today')) + '</h1>' + vDeals() + glance();
     var first = L[0];
     h += '<div class="twin"><div><h2 class="sr">' + esc(t('deck')) + '</h2>';
     if (!first) {
@@ -601,6 +664,35 @@
     if (el && S.sp === 'today') { el.classList.add('x-' + how); setTimeout(then, 190); } else then();
   }
 
+  /* 15.8: deal writes go through J8.deals.set (version-checked, RLS member+); every change has Undo */
+  function dealAct(x, id, el) {
+    var j = J(), d = dealById(id); if (!j || !j.deals || !d) return;
+    if (x === 'dstage') {
+      var w = el.getAttribute('data-w') || '', was = d.stage; if (w === was || (DSTG.indexOf(w) < 0 && w !== 'lost')) return;
+      if (w === 'lost') { var lk = 'dl-' + id; if (!armed(lk)) { arm(lk); return; } delete S.arm[lk]; }
+      el.disabled = true; tone(w === 'lost' ? 'stop' : 'go');
+      j.deals.set(id, { stage: w }).then(function () { if (w === 'lost') S.open['d:' + id] = false; render(true); say(t('stageSet').replace('{n}', t('d_' + w)), function () { j.deals.set(id, { stage: was }).then(function () { render(true); say(t('stageSet').replace('{n}', t('d_' + was))); }, fail); }); }, fail); return;
+    }
+    if (x === 'dproof') {
+      var k = el.getAttribute('data-w') || '', P = dProof(d), prev = JSON.parse(JSON.stringify(Array.isArray(d.proof) ? d.proof : P)), on1 = false;
+      if (PF.indexOf(k) < 0) return;
+      var nx = P.map(function (p) { var c = { key: p.key, done: !!p.done, link: p.link || null }; if (p.key === k) { c.done = !c.done; on1 = c.done; } return c; });
+      el.disabled = true; tone(on1 ? 'done' : 'hold');
+      j.deals.set(id, { proof: nx }).then(function () { render(true); var b2 = sr.querySelector('[data-x="dproof"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"][data-w="' + k + '"]'); if (b2) b2.focus();
+        say(t(on1 ? 'proofOn' : 'proofOff').replace('{n}', t('pf_' + k)), function () { j.deals.set(id, { proof: prev }).then(function () { render(true); }, fail); }); }, fail); return;
+    }
+    if (x === 'dsave') {
+      var E = S.dEd; if (!E || E.id !== id) return; var st = String(E.step || '').replace(/\s+/g, ' ').trim().slice(0, 200), due = E.due ? fromIL(E.due) : null;
+      if (!st) { say(t('needStep')); var si = sr.querySelector('input[data-dl="step"]'); if (si) si.focus(); return; }
+      var bad = PF.filter(function (q) { var v = String(E['lk_' + q] || '').trim(); return v && !link(v); });
+      if (bad.length) { say(t('linkBad')); var li = sr.querySelector('input[data-dl="lk_' + bad[0] + '"]'); if (li) li.focus(); return; }
+      var keep = st === dStep(d) ? d.next_step : st, pv = { next_step: d.next_step == null ? null : d.next_step, next_due_at: d.next_due_at == null ? null : d.next_due_at, proof: JSON.parse(JSON.stringify(Array.isArray(d.proof) ? d.proof : dProof(d))) };
+      var npf = dProof(d).map(function (p) { return { key: p.key, done: !!p.done, link: link(String(E['lk_' + p.key] || '').trim()) || null }; });
+      el.disabled = true; tone('go');
+      j.deals.set(id, { next_step: keep, next_due_at: due, proof: npf }).then(function () { S.dEd = null; render(true); say(t('stepSaved'), function () { j.deals.set(id, pv).then(function () { render(true); }, fail); }); }, function (e) { el.disabled = false; fail(e); });
+    }
+  }
+
   /* ---------- actions ---------- */
   function act(x, el) {
     var id = el.getAttribute('data-id') || '', j = J(), X8 = X();
@@ -613,6 +705,10 @@
     if (x === 'win') { S.win = id === '7d' ? '7d' : '30d'; try { localStorage.setItem('j8:win', S.win); } catch (e) {} render(true); return; }
     if (x === 'gateretry') { S.gateAt = 0; S.gateFresh = true; S.gateErr = false; render(true); return; }
     if (x === 'gexp') { S.open['g:' + id] = !S.open['g:' + id]; render(true); var gx = sr.querySelector('[data-x="gexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (gx) gx.focus(); return; }
+    if (x === 'dexp') { S.open['d:' + id] = !S.open['d:' + id]; if (!S.open['d:' + id] && S.dEd && S.dEd.id === id) S.dEd = null; render(true); var dx = sr.querySelector('[data-x="dexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (dx) dx.focus(); return; }
+    if (x === 'dedit') { var de = dealById(id); if (!de) return; S.dEd = { id: id, step: dStep(de), due: toIL(pd(de.next_due_at)) }; dProof(de).forEach(function (p) { S.dEd['lk_' + p.key] = p.link || ''; }); render(true); var di = sr.querySelector('input[data-dl="step"]'); if (di) di.focus(); return; }
+    if (x === 'dcancel') { S.dEd = null; render(true); return; }
+    if (x === 'dsave' || x === 'dstage' || x === 'dproof') { dealAct(x, id, el); return; }
     if (x === 'funretry') { S.funAt = 0; S.funErr = false; render(true); return; }
     if (x === 'full') { S.full[id] = 1; render(true); return; }
     if (x === 'aexp') { S.open['a:' + id] = !S.open['a:' + id]; render(true); var bx = sr.querySelector('[data-x="aexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (bx) bx.focus(); return; }
@@ -1003,7 +1099,7 @@
     W = sr.getElementById('j2w'); C = sr.getElementById('j2c');
     document.body.appendChild(host);
     sr.addEventListener('click', function (e) { var el = e.target.closest && e.target.closest('[data-x]'); if (!el) { var sm = e.target.closest && e.target.closest('summary'); if (sm) { var d = sm.parentNode, k = d.getAttribute('data-k'); if (k) { e.preventDefault(); S.open[k] = !S.open[k]; render(true); } } return; } e.preventDefault(); act(el.getAttribute('data-x'), el); });
-    sr.addEventListener('input', function (e) { var tg = e.target; if (tg.dataset.say) { S.talk = tg.value; tg.style.height = 'auto'; tg.style.height = Math.min(160, tg.scrollHeight) + 'px'; } else if (tg.dataset.ed) S.editTx = tg.value; else if (tg.dataset.g) gField(tg.dataset.g, tg.value); });
+    sr.addEventListener('input', function (e) { var tg = e.target; if (tg.dataset.say) { S.talk = tg.value; tg.style.height = 'auto'; tg.style.height = Math.min(160, tg.scrollHeight) + 'px'; } else if (tg.dataset.ed) S.editTx = tg.value; else if (tg.dataset.g) gField(tg.dataset.g, tg.value); else if (tg.dataset.dl && S.dEd) S.dEd[tg.dataset.dl] = tg.value; });
     sr.addEventListener('focusout', function () { setTimeout(function () { if (pend && !busyTyping()) render(false); }, 0); });
     swipe();
     var j = J();

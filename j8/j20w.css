@@ -363,3 +363,35 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .mvp .sig{margin:0 0 10px}
 .gt .gw{font-weight:700}.gt .gw.g-ok{color:var(--ok)}.gt .gw.g-failed{color:var(--stop)}.gt .gw.g-none{color:var(--ink-3)}
 .gt .ph b{overflow-wrap:anywhere}
+
+/* 15.8 deal room on Today (backlog b-1125-25): one row per warm lead. The six notches are the stage, filled up to where the deal is.
+   Late = red word + red clock; due = amber word + clock (amber = waits for you). Proof pack = four checkboxes. */
+.dl{margin:0 0 18px}
+.dr.is-late{border-color:var(--stop)}
+.gl.dl-late{color:#fff;background:var(--stop);border-color:var(--stop)}.gl.dl-wait{color:var(--wait)}
+.dlate{color:var(--stop);font-weight:700}.dwait{color:var(--wait);font-weight:600}
+.dtr{display:inline-flex;gap:2px;margin-inline-start:6px;vertical-align:middle}
+.dtr i{display:block;width:8px;height:8px;border-radius:2px;border:1.5px solid var(--edge);background:#fff}
+.dtr i.on{background:var(--ink);border-color:var(--ink)}
+.dbd .dh2{margin:14px 0 6px;font-size:13px;font-weight:700;color:var(--ink-2)}
+.dbd .dst{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+@media (min-width:560px){.dbd .dst{grid-template-columns:repeat(6,1fr)}}
+.dbd .dst .b.sm{padding:0 4px;font-size:13px;line-height:1.15;text-align:center}
+.dform{display:grid;gap:6px;margin-top:12px}
+.dform label{font-size:13px;font-weight:700;color:var(--ink-2)}
+.dform input{width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--edge);border-radius:3px;background:#fff;font-size:16px}
+.dform .acts{margin-top:6px}
+.dli{margin:0;padding-inline-start:18px;color:var(--ink);font-size:15px}
+.dbr{margin:0;display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;font-size:15px}
+.dbr dt{font-weight:700;color:var(--ink)}.dbr dd{margin:0;color:var(--ink-2);overflow-wrap:anywhere}
+@media (max-width:420px){.dbr{grid-template-columns:1fr}.dbr dd{margin-bottom:6px}}
+.dpf{gap:4px}
+.dpr{display:flex;align-items:center;gap:8px}
+.ck{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:44px;padding:4px 6px;border:0;background:none;text-align:start;border-radius:3px;font-size:15px}
+.ck i{flex:none;width:22px;height:22px;border:2px solid var(--edge);border-radius:3px;background:#fff;position:relative}
+.ck[aria-checked="true"] i{background:var(--ink);border-color:var(--ink)}
+.ck[aria-checked="true"] i::after{content:"";position:absolute;left:6px;top:2px;width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+.ck:disabled{opacity:.5}
+.dlost{color:var(--stop)}
+.dpr .lnk.sm{min-width:44px;justify-content:center}
+.dform .dh2{margin:8px 0 0}

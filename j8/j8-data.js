@@ -11,6 +11,7 @@
    7.1 adds:       later (j8_later: Dave's Later with a come-back time, Not needed and Done on a Today item)
    8.0 adds:       prefs (j8_members.prefs via j8_prefs_set: the member's Home layout)
    15.1 adds:      funnel() (read-only view j8_funnel: drafted → paid per engine + template, 7d / 30d; RLS via security_invoker)
+   15.8 adds:      deals (j8_deals: deal room, one card per warm reply; deals.set for stage, next step, due, proof pack)
    15.7 adds:      gates() (rpc j8_mvp_gates: the MVP bar, 10 live PASS/FAIL gates; read-only)
    14.1 adds:      approvals.setAutopilot(id, 'ask'|'hold'|'off') (j8_template_autopilot: templates only, extra.autopilot only)
    Writes are optimistic and return Promises; on failure they reject with {code}.
@@ -20,8 +21,8 @@ var J8 = (function () {
   'use strict';
   var SB_URL = 'https://otkvebgrdiayjnqrytrn.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im90a3ZlYmdyZGlheWpucXJ5dHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExOTEzMzQsImV4cCI6MjEwNjc2NzMzNH0.-A1KuUXMBx9NMBwUnZx0cS4TwJkjDz86yok5BcEcKsE'; // public anon key; RLS guards every row
-  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout', 'tasks', 'later', 'calendar', 'memory', 'day', 'plans', 'routines'];
-  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout', tasks: 'j8_tasks', later: 'j8_later', calendar: 'j8_calendar', day: 'j8_day', memory: 'j8_memory', plans: 'j8_plans', routines: 'j8_routines' };
+  var COLS = ['todo', 'comments', 'approvals', 'projects', 'runs', 'money', 'control', 'units', 'schedule', 'optout', 'tasks', 'later', 'calendar', 'memory', 'day', 'plans', 'routines', 'deals'];
+  var TABLE = { todo: 'j8_todo', comments: 'j8_messages', approvals: 'j8_approvals', projects: 'j8_projects', runs: 'j8_runs', money: 'j8_money', control: 'j8_control', units: 'j8_units', schedule: 'j8_schedule', optout: 'j8_optout', tasks: 'j8_tasks', later: 'j8_later', calendar: 'j8_calendar', day: 'j8_day', memory: 'j8_memory', plans: 'j8_plans', routines: 'j8_routines', deals: 'j8_deals' };
   /* v6 speed: sent/killed drafts load without their bodies (the biggest part of the data); open drafts load in full */
   var OPEN_AP = 'status.is.null,status.in.(pending,approved,edited,queued),kind.eq.template'; /* templates load in full: Control shows their text */
   var LIGHT_AP = 'org_id,id,kind,label,to,channel,product,created,status,template_id,decided_at,decided_by,sent_at,result,rank,batch,batch_label,blocked_by,version,updated_at,link,extra'; /* 11.7: link + extra (replied_at, outcome) for the reply loop */
@@ -55,7 +56,7 @@ var J8 = (function () {
       var qq = sb.from(TABLE[c]).select(c === 'todo' ? TODO_COLS : '*').eq('org_id', state.org);
       if (c === 'day') qq = qq.gte('day', new Date(Date.now() - 2 * 864e5).toISOString().slice(0, 10)); /* 11.3: only the last days of the plan */
       var r = await qq;
-      if (r.error) { if (c === 'day' || c === 'calendar' || c === 'memory' || c === 'plans' || c === 'routines') missing[c] = Date.now(); if (c === 'tasks' || c === 'later' || c === 'calendar' || c === 'memory' || c === 'day' || c === 'plans' || c === 'routines') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks / later: a backend without the table still works */
+      if (r.error) { if (c === 'day' || c === 'calendar' || c === 'memory' || c === 'plans' || c === 'routines' || c === 'deals') missing[c] = Date.now(); if (c === 'tasks' || c === 'later' || c === 'calendar' || c === 'memory' || c === 'day' || c === 'plans' || c === 'routines' || c === 'deals') { data[c] = {}; emit(c); return; } throw r.error; } /* tasks / later: a backend without the table still works */
       rows = r.data || []; delete missing[c];
     }
     var o = {}, v = {};
@@ -253,6 +254,12 @@ var J8 = (function () {
     routines: {
       list: function () { return Object.keys(data.routines || {}).map(function (k) { return Object.assign({ id: k }, data.routines[k]); }).sort(function (a, b) { return (a.sort || 50) - (b.sort || 50); }); },
       set: function (id, on) { return update('routines', id, { enabled: !!on }); }
+    },
+    /* 15.8: deal room (public.j8_deals): one card per warm reply, made by a trigger on j8_outcomes. set() changes stage,
+       next_step, next_due_at or proof only (column grants), version-checked; members only (RLS). */
+    deals: {
+      list: function () { return Object.keys(data.deals || {}).map(function (k) { return Object.assign({ id: k }, data.deals[k]); }); },
+      set: function (id, patch) { var ok = {}; ['stage', 'next_step', 'next_due_at', 'proof'].forEach(function (k) { if (k in patch) ok[k] = patch[k]; }); return update('deals', id, ok); }
     },
     plans: {
       list: function () { return Object.keys(data.plans || {}).map(function (k) { return Object.assign({ id: k }, data.plans[k]); }); },
