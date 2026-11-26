@@ -12,6 +12,7 @@
    8.0 adds:       prefs (j8_members.prefs via j8_prefs_set: the member's Home layout)
    15.1 adds:      funnel() (read-only view j8_funnel: drafted → paid per engine + template, 7d / 30d; RLS via security_invoker)
    15.8 adds:      deals (j8_deals: deal room, one card per warm reply; deals.set for stage, next step, due, proof pack)
+   15.10 adds:     approvals.followup(id, 'done'|'snooze'|'none'|'undo') (j8_followup_mark: the follow-up timer on sent items)
    15.7 adds:      gates() (rpc j8_mvp_gates: the MVP bar, 10 live PASS/FAIL gates; read-only)
    14.1 adds:      approvals.setAutopilot(id, 'ask'|'hold'|'off') (j8_template_autopilot: templates only, extra.autopilot only)
    Writes are optimistic and return Promises; on failure they reject with {code}.
@@ -378,6 +379,15 @@ var J8 = (function () {
         if (['replied', 'call', 'proposal', 'won', 'lost', 'clear'].indexOf(what) < 0) return rej('bad_value'); /* 14.0: call + proposal (j8_reply_mark also stamps outcome_at) */
         if (!state.org) return rej('offline');
         var r = await sb.rpc('j8_reply_mark', { p_org: state.org, p_id: String(id), p_what: what });
+        if (r.error) return rej('denied', { message: r.error.message });
+        await loadCol('approvals').catch(function () {}); return true;
+      },
+      /* 15.10: follow-up timer (public.j8_followup_mark, member only, sent items only): 'done' = next check in 7 days,
+         'snooze' = 2 days, 'none' = no follow-up, 'undo' = the step before. Dates are Israel days; Fri/Sat move to Sunday. */
+      followup: async function (id, what) {
+        if (['done', 'snooze', 'none', 'undo'].indexOf(what) < 0) return rej('bad_value');
+        if (!state.org) return rej('offline');
+        var r = await sb.rpc('j8_followup_mark', { p_org: state.org, p_id: String(id), p_what: what });
         if (r.error) return rej('denied', { message: r.error.message });
         await loadCol('approvals').catch(function () {}); return true;
       },

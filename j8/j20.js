@@ -30,10 +30,14 @@
    15.9.0 (26 Nov 2026) · backlog r-1125-01 "Stall alarm": one line under the Today ticket says how many approved items have not gone
    out and how old the oldest is (stallLine); 6 h or more = Stuck (red word + clock), tap = Queue. The server side (pg_cron j8_stall_tick,
    j8private.stall_tick) raises one alert per stuck item and one grouped push. Revert: git revert of the 15.9 commit; SQL in design/sql/j8_stall_alarm.sql.
+   15.10.0 (26 Nov 2026) · backlog b-1125-24 "Time engine", slice 1: every sent item gets a follow-up date from the server (trigger
+   j8_approvals_followup: council 5 days, application 7, referral 5, other outreach 5; Israel days, Fri/Sat move to Sunday). Due and
+   late follow-ups come first in Today (vFollow, 5 + link) and Queue (all), most late first: Followed up (+7) · In 2 days · They replied ·
+   No follow-up, each with Undo (J8.approvals.followup → j8_followup_mark). Revert: git revert of the 15.10 commit; SQL in design/sql/j8_followup_timer.sql.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.9.0';
+  var VER = '15.10.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -145,6 +149,13 @@
   /* 15.9 stall alarm (backlog r-1125-01): one line under the ticket in Today */
   Object.assign(T.en, { stuckW: 'Stuck', stuckN: 'Stuck', stall1: '1 approved, not sent', stallN: '{n} approved, not sent', goingN: 'Going out: {n}', oldestW: 'oldest {n}', stallSee: 'Open Queue to see them' });
   Object.assign(T.he, { stuckW: 'תקוע', stuckN: 'תקועים', stall1: '1 אושר ולא נשלח', stallN: '{n} אושרו ולא נשלחו', goingN: 'בדרך: {n}', oldestW: 'הישן ביותר: {n}', stallSee: 'פתיחת התור כדי לראות אותם' });
+  /* 15.10 follow-up timer (backlog b-1125-24) */
+  Object.assign(T.en, { fuW: 'Follow up', fuLate: 'Late {n}', fuToday: 'Due today', fuDid: 'Followed up', fuHold: 'In 2 days', fuRep: 'They replied', fuNone: 'No follow-up', fuMore: '{n} more in Queue',
+    fuDidT: 'Next check in a week.', fuHoldT: 'Back in 2 days.', fuNoneT: 'No follow-up for this one.', fuRepT: 'Marked replied.', fuBack: 'Back on the follow-up list.', fuSent: 'Sent {n} ago', fuHow: 'Sent items come back here when it is time to follow up: council 5 days, application 7, referral 5, other outreach 5. Friday and Saturday move to Sunday.',
+    fr_council: 'Council', fr_application: 'Application', fr_referral: 'Referral', fr_outreach: 'Outreach' });
+  Object.assign(T.he, { fuW: 'מעקב', fuLate: 'באיחור של {n}', fuToday: 'היום', fuDid: 'עשיתי מעקב', fuHold: 'בעוד יומיים', fuRep: 'הם ענו', fuNone: 'בלי מעקב', fuMore: 'עוד {n} בתור',
+    fuDidT: 'בדיקה הבאה בעוד שבוע.', fuHoldT: 'יחזור בעוד יומיים.', fuNoneT: 'בלי מעקב לזה.', fuRepT: 'סומן שענו.', fuBack: 'חזר לרשימת המעקב.', fuSent: 'נשלח לפני {n}', fuHow: 'פריטים שנשלחו חוזרים לכאן כשהגיע זמן מעקב: מועצה 5 ימים, מועמדות 7, הפניה 5, פנייה אחרת 5. שישי ושבת עוברים לראשון.',
+    fr_council: 'מועצה', fr_application: 'מועמדות', fr_referral: 'הפניה', fr_outreach: 'פנייה' });
   var SFIX = { 'the last run failed': 'הריצה האחרונה נכשלה', 'J8 retries at the next run': 'J8 ינסה שוב בריצה הבאה', 'the run started without your Mac': 'הריצה התחילה בלי המק שלך', 'keep the Mac on and awake at send time': 'להשאיר את המק דלוק וער בזמן השליחה' };
   var CHAN = { he: { email: 'מייל', mail: 'מייל', message: 'הודעה', outreach: 'פנייה', phone: 'טלפון', call: 'שיחה', application: 'בקשה', design: 'עיצוב', post: 'פוסט', linkedin: 'LinkedIn', whatsapp: 'WhatsApp', sms: 'SMS' } };
   function chan(c) { var m = CHAN[lang()], k = String(c || '').trim().toLowerCase(); return (m && m[k]) || String(c || ''); }
@@ -395,9 +406,54 @@
     }).join('');
     return h + '</div></section>';
   }
+  /* ---------- 15.10 follow-up timer (backlog b-1125-24). The server stamps extra.followup_after (Israel date) on every sent
+     item that needs one (trigger j8_approvals_followup, rule j8private.followup_rule). Due = that day has come, no answer or
+     outcome yet, not switched off. Most late first, on top of Today (5, then a link to Queue) and Queue (all). Late = red word
+     + clock glyph, never colour alone. Every action has Undo (j8_followup_mark 'undo', or reply 'clear'). ---------- */
+  function fuDays(n) { var he = lang() === 'he'; return he ? (n === 1 ? 'יום' : n === 2 ? 'יומיים' : n + ' ימים') : n + (n === 1 ? ' day' : ' days'); }
+  function fuDue() {
+    var today = dayKey(Date.now()), t0 = Date.parse(today + 'T00:00:00Z');
+    return (aps() || []).filter(function (a) {
+      var f = String(a.followup_after || '');
+      return a.status === 'sent' && /^\d{4}-\d{2}-\d{2}$/.test(f) && f <= today && a.followup !== 'none' && !a.replied_at && !a.outcome
+    }).map(function (a) { return { a: a, late: Math.round((t0 - Date.parse(a.followup_after + 'T00:00:00Z')) / 864e5) }; })
+      .sort(function (x, y) { return y.late - x.late || String(x.a.followup_after).localeCompare(String(y.a.followup_after)) || (pd(x.a.sent_at) || 0) - (pd(y.a.sent_at) || 0); });
+  }
+  function vFollow(max) {
+    var F = fuDue(); if (!F.length) return '';
+    var show = max ? F.slice(0, max) : F;
+    var h = '<section class="grp dl fu" aria-labelledby="fuh"><h2 id="fuh">' + esc(t('fuW')) + ' · ' + F.length + '</h2>' + (max ? '' : '<p class="meta top0">' + esc(t('fuHow')) + '</p>') + '<div class="rows">';
+    h += show.map(function (it) {
+      var a = it.a, k = String(a.id), op = S.open['f:' + k], nid = 'fn-' + k.replace(/[^a-z0-9_-]/gi, ''), late = it.late > 0;
+      var when = late ? fill(t('fuLate'), fuDays(it.late)) : t('fuToday'), rule = a.followup_rule ? t('fr_' + a.followup_rule) : chan(a.kind || '');
+      var bd = '';
+      if (op) {
+        var s = pd(a.sent_at), lk = link(a.link);
+        bd = '<div class="bd ag dbd" id="fb-' + nid + '"><p><bdi>' + esc(cut(a.channel || '', 160)) + '</bdi></p>'
+          + (isNaN(s) ? '' : '<p class="dh2">' + esc(fill(t('fuSent'), ageTx(Date.now() - s))) + ' · ' + esc(day(s)) + '</p>')
+          + (lk ? '<div class="sub"><a class="lnk sm" href="' + esc(lk) + '" target="_blank" rel="noopener noreferrer">' + esc(t('openW')) + '</a></div>' : '')
+          + '<div class="acts fua"><button type="button" class="b go" data-x="fu" data-w="done" data-id="' + esc(k) + '">' + esc(t('fuDid')) + '</button>'
+          + '<button type="button" class="b" data-x="fu" data-w="snooze" data-id="' + esc(k) + '">' + esc(t('fuHold')) + '</button>'
+          + '<button type="button" class="b" data-x="fu" data-w="replied" data-id="' + esc(k) + '">' + esc(t('fuRep')) + '</button>'
+          + '<button type="button" class="b" data-x="fu" data-w="none" data-id="' + esc(k) + '">' + esc(t('fuNone')) + '</button></div></div>';
+      }
+      return '<div class="row rt dr' + (late ? ' is-late' : '') + '"><div class="rh"><button type="button" class="rx" data-x="fexp" data-id="' + esc(k) + '" aria-expanded="' + !!op + '"' + (op ? ' aria-controls="fb-' + nid + '"' : '') + '>' + glyph('late').replace('g-late', late ? 'g-late dl-late' : 'g-late dl-wait')
+        + '<span class="ph"><b id="' + nid + '"><bdi>' + esc(cut(whoOf(a), 70)) + '</bdi></b><small><span>' + esc(rule) + '</span> · <span class="' + (late ? 'dlate' : 'dwait') + '">' + esc(when) + '</span></small></span>' + chev() + '</button></div>' + bd + '</div>';
+    }).join('');
+    h += '</div>' + (max && F.length > max ? '<div class="sub"><button type="button" class="lnk sm" data-x="sp" data-id="queue">' + esc(fill(t('fuMore'), F.length - max)) + '</button></div>' : '');
+    return h + '</section>';
+  }
+  function fuAct(id, w, el) {
+    var j = J(), a = apById(id); if (!j || !a || !j.approvals.followup) return;
+    el.disabled = true; tone(w === 'none' || w === 'snooze' ? 'hold' : 'done');
+    var op = w === 'replied' ? j.approvals.reply(id, 'replied') : j.approvals.followup(id, w);
+    var back = function () { (w === 'replied' ? j.approvals.reply(id, 'clear') : j.approvals.followup(id, 'undo')).then(function () { render(true); say(t('fuBack')); }, fail); };
+    op.then(function () { S.open['f:' + id] = false; render(true); say(t({ done: 'fuDidT', snooze: 'fuHoldT', none: 'fuNoneT', replied: 'fuRepT' }[w]), back);
+      var hh = sr.getElementById('fuh') || sr.getElementById('j2main'); if (hh) try { hh.setAttribute('tabindex', '-1'); hh.focus({ preventScroll: true }); } catch (e) {} }, function (e) { el.disabled = false; fail(e); });
+  }
   function vToday() {
     pull();
-    var L = deck(), h = '<h1 class="sr">' + esc(t('today')) + '</h1>' + vDeals() + glance();
+    var L = deck(), h = '<h1 class="sr">' + esc(t('today')) + '</h1>' + vFollow(5) + vDeals() + glance();
     var first = L[0];
     h += '<div class="twin"><div><h2 class="sr">' + esc(t('deck')) + '</h2>';
     if (!first) {
@@ -415,6 +471,7 @@
     var x = X(), L = deck(true), G = x ? safe(function () { return x.goingOut(); }, []).filter(function (a) { return a.kind !== 'design'; }) : [], O = x ? safe(function () { return x.sent30(); }, []) : [];
     var h = '<h1 class="sr">' + esc(t('queue')) + '</h1>';
     if (failed()) h += '<button type="button" class="fail" data-x="retry">' + esc(t('fail')) + '</button>';
+    h += vFollow(0);
     h += '<section class="grp"><h2>' + esc(t('waitingQ')) + ' · ' + L.length + '</h2>' + (L.length ? '<div class="rows">' + L.map(function (c) {
       return '<details class="row"' + (S.open[c.id] ? ' open' : '') + ' data-k="' + esc(c.id) + '"><summary><span class="ph"><b dir="auto">' + esc(cardTitle(c)) + '</b><small>' + kindChip(c).replace(/<[^>]+>/g, '') + '</small></span>' + chev() + '</summary>'
         + (S.open[c.id] ? '<div class="bd">' + cardHtml(c, true) + '</div>' : '') + '</details>'; }).join('') + '</div>' : '<p class="empty">' + esc(on() ? t('none') : t('loading')) + '</p>') + '</section>';
@@ -739,6 +796,8 @@
     if (x === 'dexp') { S.open['d:' + id] = !S.open['d:' + id]; if (!S.open['d:' + id] && S.dEd && S.dEd.id === id) S.dEd = null; render(true); var dx = sr.querySelector('[data-x="dexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (dx) dx.focus(); return; }
     if (x === 'dedit') { var de = dealById(id); if (!de) return; S.dEd = { id: id, step: dStep(de), due: toIL(pd(de.next_due_at)) }; dProof(de).forEach(function (p) { S.dEd['lk_' + p.key] = p.link || ''; }); render(true); var di = sr.querySelector('input[data-dl="step"]'); if (di) di.focus(); return; }
     if (x === 'dcancel') { S.dEd = null; render(true); return; }
+    if (x === 'fexp') { S.open['f:' + id] = !S.open['f:' + id]; render(true); var fx = sr.querySelector('[data-x="fexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (fx) fx.focus(); return; }
+    if (x === 'fu') { fuAct(id, el.getAttribute('data-w'), el); return; }
     if (x === 'dsave' || x === 'dstage' || x === 'dproof') { dealAct(x, id, el); return; }
     if (x === 'funretry') { S.funAt = 0; S.funErr = false; render(true); return; }
     if (x === 'full') { S.full[id] = 1; render(true); return; }
