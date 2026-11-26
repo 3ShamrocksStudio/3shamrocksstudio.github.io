@@ -235,6 +235,19 @@ var J8 = (function () {
       rankC = { org: state.org, t: Date.now(), v: r.data || [] }; return rankC.v;
     },
     /* 15.1: the outcome funnel (public.j8_funnel, security_invoker, read-only), cached for a minute; null when offline */
+    /* 15.13: Dave's requests register (public.j8_requests, RLS viewer read / member update): every ask from chats, memory and J8NIX */
+    asks: async function () {
+      if (!state.org) return null;
+      var r = await sb.from('j8_requests').select('id,asked_on,product,kind,text,quote,status,evidence,sources,asked_times,version,updated_at').eq('org_id', state.org).order('asked_on', { ascending: false, nullsFirst: false }).limit(3000);
+      return r.error ? null : (r.data || []);
+    },
+    askSet: async function (id, status, version) {
+      if (!state.org) return rej('offline');
+      var r = await sb.from('j8_requests').update({ status: status }).eq('org_id', state.org).eq('id', String(id)).eq('version', version).select('id,status,version');
+      if (r.error) return rej('error', { message: r.error.message });
+      if (!r.data || !r.data.length) return rej('conflict', { message: 'Changed elsewhere. Pull to refresh.' });
+      return r.data[0];
+    },
     funnel: async function () {
       if (!state.org) return null;
       if (funC && funC.org === state.org && Date.now() - funC.t < 6e4) return funC.v;

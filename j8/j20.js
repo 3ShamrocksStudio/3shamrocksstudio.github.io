@@ -44,7 +44,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.12.0';
+  var VER = '15.13.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -53,7 +53,7 @@
 
   /* ---------- words (EN / HE) ---------- */
   var T = {
-    en: { today: 'Today', queue: 'Queue', talk: 'Talk', set: 'Settings', waiting: 'Waiting for you', sent7: 'Sent · 7 days', rep7: 'Replies · 7 days',
+    en: { today: 'Today', queue: 'Outbox', talk: 'Chat', set: 'Settings', waiting: 'Waiting for you', sent7: 'Sent · 7 days', rep7: 'Replies · 7 days',
       pulse: 'Agent runs · last 24 h', now: 'now', h24: '24 h ago', deck: 'One at a time', of: 'of', go: 'Go', hold: 'Hold', sentW: 'sent', repW: 'replies', repW1: 'reply', d7: 'last 7 days', leftOut: 'blocked, left out', resumed: 'Sending is on.', heldT2: 'Held for later.', tplLine: 'sent', tplRep: 'replies', sending: 'Sending', okW: 'ok', failedW: 'failed', stop: 'Stop', tapStop: 'Tap again', change: 'Change',
       save: 'Save and send', cancel: 'Cancel', readAll: 'Read all', goAll: 'Go all', seeAll: 'See 3 first', done: 'Done', copyOpen: 'Copy & open', copy: 'Copy', markSent: 'Mark sent',
       open: 'Open', kReply: 'Replied', kDraft: 'To approve', kBatch: 'Same message, many people', kStep: 'Your step', kHand: 'Send by hand', kTpl: 'Saved message', people: 'people', once: 'approve once, all go',
@@ -66,19 +66,19 @@
       saved: 'Saved', doneT: 'Done. Nice.', notConn: 'Not connected. Try again in a moment.', couldnt: 'Could not save. Nothing changed.', copied: 'Copied. Paste and send.',
       sentBy: 'Marked sent.', approvedN: 'Approved', blocked: 'Blocked by the checker:', hardAgain: 'Tap again: send anyway', why: 'Why now', where: 'Where', sentOn: 'Sent',
       soonGo: 'Goes at {n}', tplOk: 'Approved', tplWait: 'Waits for your OK', moreN: 'more like these', live: 'Live', offline: 'Offline', saved2: 'Saved copy', newV: 'New: J8NIX 2.0',
-      eng: 'Engines', score: 'Score', window: 'Time window', w7d: '7 days', w30d: '30 days', engSub: 'Each engine, one number: replies.', waitFor: 'wait for you', moving: 'Moving', quiet: 'Quiet',
+      eng: 'Income', score: 'Results', window: 'Time window', w7d: '7 days', w30d: '30 days', engSub: 'Each engine, one number: replies.', waitFor: 'wait for you', moving: 'Moving', quiet: 'Quiet',
       fromSent: 'from {n} sent', noneSent: '{n} drafted, none sent yet', moreEng: 'more with nothing sent yet', call1: 'call', callN: 'calls', prop1: 'proposal', propN: 'proposals', paidW: 'paid', notCounted: 'Not counted yet', notYet: 'not yet', nowW: 'Now:', nextW: 'Next:', ncWhy: 'Counting starts when J8 drafts a message for this engine.',
       seeWait: 'See what waits', resting: 'Resting', restSub: 'Parked or hidden. Their numbers still count.', cohort30: 'Drafts made in the last 30 days, and where they are now.', cohort7: 'Drafts made in the last 7 days, and where they are now.',
       noPaidYet: 'No calls or money yet', early: 'still early', ladder: 'From draft to paid', rateNote: 'Each step shows how many of the step before. Small numbers stay as "X of N"; a percent shows only when the step before has 20 or more and this step has 5 or more.',
       byEng: 'By engine', general: 'General', money: 'Money', booked: 'Booked so far', goal: 'Goal', updated: 'Counted at',
       s_drafted: 'Drafted', s_approved: 'Approved', s_sent: 'Sent', s_replied: 'Replied', s_calls: 'Call', s_proposals: 'Proposal', s_paid: 'Paid',
-      agents: 'Agents', agOn: 'agents on', allFine: 'Nothing failed on its last run.', quietN: '{n} quiet for over a day', quiet1: '1 quiet for over a day', never1: '1 never ran', neverN: '{n} never ran', noRunsYet: 'No active agent has run yet.', allOff: 'All agents are off.', run1: 'run in 24 h', quietW: 'Quiet', lastRan: 'Last ran', offFail: 'last run failed', needLook: 'need a look', needLook1: 'needs a look', runs24: 'runs in 24 h', failed24: 'failed',
+      agents: 'Workers', agOn: 'agents on', allFine: 'Nothing failed on its last run.', quietN: '{n} quiet for over a day', quiet1: '1 quiet for over a day', never1: '1 never ran', neverN: '{n} never ran', noRunsYet: 'No active agent has run yet.', allOff: 'All agents are off.', run1: 'run in 24 h', quietW: 'Quiet', lastRan: 'Last ran', offFail: 'last run failed', needLook: 'need a look', needLook1: 'needs a look', runs24: 'runs in 24 h', failed24: 'failed',
       rtns: 'Your agents', rtnSub: 'Each one runs by itself on its schedule. Switch one off and it skips its next runs.', ranW: 'Ran', failedAt: 'Failed', offW: 'Off', noRun: 'No run yet', noRun7: 'No run in 7 days', runningW: 'Running…', nothingW: 'nothing to do',
       always: 'Always on', alwaysWhy: 'This one cannot be switched off here. Pause sending in Settings stops everything.', whatW: 'What it does', whenW: 'When', lastW: 'Last run', isOn: '{n} is on.', isOff: '{n} is off.',
       rcpts: 'What ran', rcptSub: 'Every run in the last 7 days, newest first.', probOnly: 'Problems only', allRuns: 'All', noRcpt: 'No runs in the last 7 days.', noProb: 'No problems in the last 7 days.', todayW: 'Today', yestW: 'Yesterday',
       startedW: 'Started', tookW: 'took', minW: 'min', proof: 'Open proof', showMore: 'Show more', st_ok: 'OK', st_failed: 'Failed', st_nothing: 'Nothing to do', st_run: 'Running', st_off: 'Off', st_none: 'No run', st_late: 'Quiet',
       kDesign: 'Pick a design', pickOne: 'Pick one', seeFull: 'See it full size', goPick: 'Go with {n}', pickFirst: 'Pick one first', noneOf: 'None of these', chose: 'Chosen: {n}.', fresh: 'Up to date.', opened: 'Opened.', noneT: 'None chosen.', sentJ8: 'Sent to J8.' },
-    he: { today: 'היום', queue: 'בתור', talk: 'הודעות', set: 'הגדרות', waiting: 'מחכים לך', sent7: 'נשלחו · 7 ימים', rep7: 'תשובות · 7 ימים',
+    he: { today: 'היום', queue: 'לשליחה', talk: 'הודעות', set: 'הגדרות', waiting: 'מחכים לך', sent7: 'נשלחו · 7 ימים', rep7: 'תשובות · 7 ימים',
       pulse: 'ריצות סוכנים · 24 שעות', now: 'עכשיו', h24: 'לפני 24 שעות', deck: 'אחד בכל פעם', of: 'מתוך', go: 'שלח', hold: 'אחר כך', sentW: 'נשלחו', repW: 'תשובות', repW1: 'תשובה', d7: '7 ימים אחרונים', leftOut: 'נחסמו ולא נכללו', resumed: 'השליחה פועלת.', heldT2: 'הועבר לאחר כך.', tplLine: 'נשלחו', tplRep: 'תשובות', sending: 'שליחה', okW: 'תקינות', failedW: 'נכשלו', stop: 'עצור', tapStop: 'הקש שוב', change: 'שנה',
       save: 'שמור ושלח', cancel: 'ביטול', readAll: 'קרא הכול', goAll: 'שלח הכול', seeAll: 'הצג 3 קודם', done: 'בוצע', copyOpen: 'העתק ופתח', copy: 'העתק', markSent: 'סמן כנשלח',
       open: 'פתח', kReply: 'ענו לך', kDraft: 'לאישור', kBatch: 'אותה הודעה, הרבה אנשים', kStep: 'הצעד שלך', kHand: 'לשלוח ידנית', kTpl: 'הודעה שמורה', people: 'אנשים', once: 'אישור אחד, כולם יוצאים',
@@ -91,13 +91,13 @@
       saved: 'נשמר', doneT: 'בוצע. יפה.', notConn: 'אין חיבור. נסה שוב עוד רגע.', couldnt: 'לא נשמר. שום דבר לא השתנה.', copied: 'הועתק. הדבק ושלח.',
       sentBy: 'סומן כנשלח.', approvedN: 'אושרו', blocked: 'נחסם בבדיקה:', hardAgain: 'הקש שוב: שלח בכל זאת', why: 'למה עכשיו', where: 'איפה', sentOn: 'נשלח',
       soonGo: 'יוצא ב־{n}', tplOk: 'מאושרת', tplWait: 'מחכה לאישור שלך', moreN: 'עוד כאלה', live: 'מחובר', offline: 'לא מחובר', saved2: 'עותק שמור', newV: 'חדש: J8NIX 2.0',
-      eng: 'מנועים', score: 'תוצאות', window: 'טווח זמן', w7d: '7 ימים', w30d: '30 ימים', engSub: 'לכל מנוע מספר אחד: תשובות.', waitFor: 'מחכים לך', moving: 'בתנועה', quiet: 'שקט',
+      eng: 'הכנסה', score: 'תוצאות', window: 'טווח זמן', w7d: '7 ימים', w30d: '30 ימים', engSub: 'לכל מנוע מספר אחד: תשובות.', waitFor: 'מחכים לך', moving: 'בתנועה', quiet: 'שקט',
       fromSent: 'מתוך {n} שנשלחו', noneSent: 'טיוטות: {n}, עוד לא נשלח', moreEng: 'עוד מנועים שעוד לא שלחו', call1: 'שיחה', callN: 'שיחות', prop1: 'הצעה', propN: 'הצעות', paidW: 'שולמו', notCounted: 'עוד לא נספר', notYet: 'עוד לא', nowW: 'עכשיו:', nextW: 'הבא:', ncWhy: 'הספירה מתחילה כש-J8 מנסח הודעה למנוע הזה.',
       seeWait: 'מה מחכה', resting: 'במנוחה', restSub: 'מוקפאים או מוסתרים. המספרים שלהם עדיין נספרים.', cohort30: 'טיוטות מ-30 הימים האחרונים, ואיפה הן עכשיו.', cohort7: 'טיוטות מ-7 הימים האחרונים, ואיפה הן עכשיו.',
       noPaidYet: 'עוד אין שיחות או כסף', early: 'עוד מוקדם', ladder: 'מטיוטה לתשלום', rateNote: 'כל שלב מראה כמה מתוך השלב הקודם. מספרים קטנים נשארים כמו שהם (למשל 2 מתוך 23); אחוז מופיע רק כשבשלב הקודם יש 20 ומעלה ובשלב הזה 5 ומעלה.',
       byEng: 'לפי מנוע', general: 'כללי', money: 'כסף', booked: 'נסגר עד עכשיו', goal: 'יעד', updated: 'נספר בשעה',
       s_drafted: 'טיוטות', s_approved: 'אושרו', s_sent: 'נשלחו', s_replied: 'ענו', s_calls: 'שיחה', s_proposals: 'הצעה', s_paid: 'שולם',
-      agents: 'סוכנים', agOn: 'סוכנים פועלים', allFine: 'אף סוכן לא נכשל בריצה האחרונה שלו.', quietN: '{n} לא רצו כבר יותר מיממה', quiet1: 'אחד לא רץ כבר יותר מיממה', neverN: '{n} עוד לא רצו', never1: 'אחד עוד לא רץ', noRunsYet: 'אף סוכן פעיל עוד לא רץ.', allOff: 'כל הסוכנים כבויים.', run1: 'ריצה ב-24 שעות', quietW: 'שקט', lastRan: 'רץ לאחרונה', offFail: 'הריצה האחרונה נכשלה', needLook: 'צריכים בדיקה', needLook1: 'צריך בדיקה', runs24: 'ריצות ב-24 שעות', failed24: 'נכשלו',
+      agents: 'עובדים', agOn: 'סוכנים פועלים', allFine: 'אף סוכן לא נכשל בריצה האחרונה שלו.', quietN: '{n} לא רצו כבר יותר מיממה', quiet1: 'אחד לא רץ כבר יותר מיממה', neverN: '{n} עוד לא רצו', never1: 'אחד עוד לא רץ', noRunsYet: 'אף סוכן פעיל עוד לא רץ.', allOff: 'כל הסוכנים כבויים.', run1: 'ריצה ב-24 שעות', quietW: 'שקט', lastRan: 'רץ לאחרונה', offFail: 'הריצה האחרונה נכשלה', needLook: 'צריכים בדיקה', needLook1: 'צריך בדיקה', runs24: 'ריצות ב-24 שעות', failed24: 'נכשלו',
       rtns: 'הסוכנים שלך', rtnSub: 'כל אחד רץ לבד לפי הלוח שלו. כיבוי סוכן מדלג על הריצות הבאות שלו.', ranW: 'רץ', failedAt: 'נכשל', offW: 'כבוי', noRun: 'עוד לא רץ', noRun7: 'לא רץ 7 ימים', runningW: 'רץ עכשיו…', nothingW: 'לא היה מה לעשות',
       always: 'תמיד פועל', alwaysWhy: 'את הסוכן הזה אי אפשר לכבות כאן. השהיית שליחה בהגדרות עוצרת הכול.', whatW: 'מה הוא עושה', whenW: 'מתי', lastW: 'ריצה אחרונה', isOn: '{n} פועל.', isOff: '{n} כבוי.',
       rcpts: 'מה רץ', rcptSub: 'כל ריצה ב-7 הימים האחרונים, החדשה למעלה.', probOnly: 'רק בעיות', allRuns: 'הכול', noRcpt: 'אין ריצות ב-7 הימים האחרונים.', noProb: 'אין בעיות ב-7 הימים האחרונים.', todayW: 'היום', yestW: 'אתמול',
@@ -124,7 +124,7 @@
     w_runs_ok: 'A tester must be able to trust the agents. Google\u00a0SRE: set a reliability target over a 4-week window (their worked example is 97%).',
     w_no_stuck: 'An approved item that never goes out breaks trust faster than a bad draft.', w_go_no_edit: 'How often a suggestion is used as is is the best single signal of AI help (GitHub Copilot study; ZoomInfo saw 33%).',
     w_stop_rate: 'Most stops mean the agents draft the wrong things. Each stop costs your time.', w_reply_rate: 'Cold email averages about 5% replies (Instantly) and under 1% in large studies (Belkins). 2% is the floor.',
-    w_tracked: 'Without an outcome on every send, Score and the money numbers cannot be trusted.', w_no_dupes: 'Pitching the same person twice looks like spam and burns the lead.',
+    w_tracked: 'Without an outcome on every send, Results and the money numbers cannot be trusted.', w_no_dupes: 'Pitching the same person twice looks like spam and burns the lead.',
     w_optout: 'The law: opt-outs must be honoured (CAN-SPAM, GDPR, Israeli Communications Law Amendment 40).', w_rls: 'Without this lock, one business could see another\'s data (Supabase guidance).',
     w_daily_use: 'If you do not use it most days, testers will not either. Dogfood first.' });
   Object.assign(T.he, { mvp: 'מוכן לבדיקה', mvpSub: 'עשרה רפים ש-J8NIX צריך לעבור לפני שאחרים בודקים אותו. נספר בזמן אמת מהנתונים שלך.', mvpAll: 'כל 10 הרפים עברו.',
@@ -154,13 +154,13 @@
     chStep: 'שינוי הצעד הבא או הקישורים', linksW: 'קישורים לחבילת ההוכחות (https בלבד)', linkBad: 'קישור חייב להתחיל ב-https://', stepL: 'הצעד הבא', dueL: 'עד מתי (שעון ישראל)', saveW: 'שמירה', stageSet: 'שלב: {n}.', stepSaved: 'הצעד הבא נשמר.', markLost: 'סימון כלא רלוונטי', openW: 'פתיחה', proofOn: '{n}: מוכן.', proofOff: '{n}: לא מוכן.', needStep: 'קודם כותבים את הצעד הבא.',
     ds_reply: 'לענות ולקבוע הדגמה', ds_prep: 'להכין את ההדגמה', ds_prop: 'מעקב אחרי ההצעה' });
   /* 15.9 stall alarm (backlog r-1125-01): one line under the ticket in Today */
-  Object.assign(T.en, { stuckW: 'Stuck', stuckN: 'Stuck', stall1: '1 approved, not sent', stallN: '{n} approved, not sent', goingN: 'Going out: {n}', oldestW: 'oldest {n}', stallSee: 'Open Queue to see them' });
+  Object.assign(T.en, { stuckW: 'Stuck', stuckN: 'Stuck', stall1: '1 approved, not sent', stallN: '{n} approved, not sent', goingN: 'Going out: {n}', oldestW: 'oldest {n}', stallSee: 'Open Outbox to see them' });
   Object.assign(T.he, { stuckW: 'תקוע', stuckN: 'תקועים', stall1: '1 אושר ולא נשלח', stallN: '{n} אושרו ולא נשלחו', goingN: 'בדרך: {n}', oldestW: 'הישן ביותר: {n}', stallSee: 'פתיחת התור כדי לראות אותם' });
   /* 15.10 follow-up timer (backlog b-1125-24) */
-  Object.assign(T.en, { fuW: 'Follow up', fuLate: 'Late {n}', fuToday: 'Due today', fuDid: 'Followed up', fuHold: 'In 2 days', fuRep: 'They replied', fuNone: 'No follow-up', fuMore: '{n} more in Queue',
+  Object.assign(T.en, { fuW: 'Follow up', fuLate: 'Late {n}', fuToday: 'Due today', fuDid: 'Followed up', fuHold: 'In 2 days', fuRep: 'They replied', fuNone: 'No follow-up', fuMore: '{n} more in Outbox',
     fuDidT: 'Next check in a week.', fuHoldT: 'Back in 2 days.', fuNoneT: 'No follow-up for this one.', fuRepT: 'Marked replied.', fuBack: 'Back on the follow-up list.', fuSent: 'Sent {n} ago', fuHow: 'Sent items come back here when it is time to follow up: council 5 days, application 7, referral 5, other outreach 5. Friday and Saturday move to Sunday.',
     fr_council: 'Council', fr_application: 'Application', fr_referral: 'Referral', fr_outreach: 'Outreach' });
-  Object.assign(T.he, { fuW: 'מעקב', fuLate: 'באיחור של {n}', fuToday: 'היום', fuDid: 'עשיתי מעקב', fuHold: 'בעוד יומיים', fuRep: 'הם ענו', fuNone: 'בלי מעקב', fuMore: 'עוד {n} בתור',
+  Object.assign(T.he, { fuW: 'מעקב', fuLate: 'באיחור של {n}', fuToday: 'היום', fuDid: 'עשיתי מעקב', fuHold: 'בעוד יומיים', fuRep: 'הם ענו', fuNone: 'בלי מעקב', fuMore: 'עוד {n} לשליחה',
     fuDidT: 'בדיקה הבאה בעוד שבוע.', fuHoldT: 'יחזור בעוד יומיים.', fuNoneT: 'בלי מעקב לזה.', fuRepT: 'סומן שענו.', fuBack: 'חזר לרשימת המעקב.', fuSent: 'נשלח לפני {n}', fuHow: 'פריטים שנשלחו חוזרים לכאן כשהגיע זמן מעקב: מועצה 5 ימים, מועמדות 7, הפניה 5, פנייה אחרת 5. שישי ושבת עוברים לראשון.',
     fr_council: 'מועצה', fr_application: 'מועמדות', fr_referral: 'הפניה', fr_outreach: 'פנייה' });
   var SFIX = { 'the last run failed': 'הריצה האחרונה נכשלה', 'J8 retries at the next run': 'J8 ינסה שוב בריצה הבאה', 'the run started without your Mac': 'הריצה התחילה בלי המק שלך', 'keep the Mac on and awake at send time': 'להשאיר את המק דלוק וער בזמן השליחה' };
@@ -768,7 +768,7 @@
       h += '<section class="mon" aria-label="' + esc(ils(bk) + ' ' + t('collected') + ' ' + ils(GOAL_ILS)) + '"><p class="mbig"><b>' + esc(ils(bk)) + '</b><span>' + esc(t('collected')) + ' <bdi>' + esc(ils(GOAL_ILS)) + '</bdi></span></p>'
         + '<div class="mbar" aria-hidden="true"><i style="width:' + pc.toFixed(2) + '%"></i></div>'
         + '<p class="msub"><span>' + esc(pt + '% ' + t('ofGoal')) + '</span><span>' + esc(ils(Math.max(0, GOAL_ILS - bk)) + ' ' + t('toGo')) + '</span></p></section>'; }
-    h += '<p class="need' + (nYou ? ' on' : '') + '">' + esc(nYou ? (nYou === 1 ? t('need1') : t('needN').replace('{n}', nYou)) : t('needNone')) + '</p>';
+    h += '<p class="need' + (nYou ? ' on' : '') + '">' + esc(nYou ? (nYou === 1 ? t('need1') : t('needN').replace('{n}', nYou)) : t('needNone')) + '</p>' + askEntry();
     var row = function (p) {
       var k = 's:' + p.id, op = !!S.open[k], n = N[p.id], yo = !noYou(p.you), wt = p.status === 'waiting';
       var nu = n ? '<span class="nu"><span' + (n.sent ? '' : ' class="z"') + '><b>' + n.sent + '</b> ' + esc(t('sentTd')) + '</span><span' + (n.rep ? '' : ' class="z"') + '><b>' + n.rep + '</b> ' + esc(t(n.rep === 1 ? 'repWk1' : 'repWk')) + '</span>' + (n.no ? '<span><b>' + n.no + '</b> ' + esc(t('noWk')) + '</span>' : '') + '</span>' : '<span class="nu"></span>';
@@ -953,6 +953,77 @@
     var p = all.filter(function (b) { return b.getAttribute('aria-pressed') === 'true'; })[0] || all[0]; p.tabIndex = 0;
   }
 
+  /* ---------- 15.13 Your requests (26 Nov 2026, Dave: "store all … quesitons and all demands and requests I have had from all chats
+     and projects, arrange them and sync with J8NIX"). One list from public.j8_requests, grouped by product, open first. Opened from a line
+     on Status (no new tab: the phone tab row is full). Tap a request = your words, the note behind its status, the chat it came from,
+     and Done / Open again / Not needed (version-checked, with Undo). ---------- */
+  Object.assign(T.en, { asks: 'Your requests', asksLine: 'Your requests', asksOpenN: '{n} open', asksDoneN: '{n} done', asksAll: 'All', asksOpen: 'Open', asksDone: 'Done', asksRules: 'Rules',
+    asksNone: 'Nothing here yet.', asksLoad: 'Couldn\'t load your requests. Tap to retry', asksBack: 'Back to Status', asksWords: 'Your words:', asksNote: 'Note:',
+    asksAsked: 'Asked', asksTimes: 'asked {n} times', asksChat: 'Open the chat', asksMkDone: 'Mark done', asksMkOpen: 'Open again', asksMkDrop: 'Not needed',
+    asksDidDone: 'Marked done', asksDidOpen: 'Open again', asksDidDrop: 'Marked not needed', asksMore: 'Show all {n}', asksSum: '{o} open · {d} done · {t} in total',
+    ak_request: 'Request', ak_question: 'Question', ak_rule: 'Rule', ak_decision: 'Decision', ak_idea: 'Idea', as_open: 'Open', as_done: 'Done', as_dropped: 'Not needed', as_unclear: 'To check', as_active: 'In force', asksSumR: '{o} open · {r} rules in force · {d} done · {t} in total' });
+  Object.assign(T.he, { asks: 'הבקשות שלך', asksLine: 'הבקשות שלך', asksOpenN: '{n} פתוחות', asksDoneN: '{n} בוצעו', asksAll: 'הכול', asksOpen: 'פתוחות', asksDone: 'בוצעו', asksRules: 'כללים',
+    asksNone: 'עוד אין כאן כלום.', asksLoad: 'טעינת הבקשות נכשלה. הקש לנסות שוב', asksBack: 'חזרה למצב', asksWords: 'במילים שלך:', asksNote: 'הערה:',
+    asksAsked: 'ביקשת ב־', asksTimes: 'ביקשת {n} פעמים', asksChat: 'לפתוח את השיחה', asksMkDone: 'סמן כבוצע', asksMkOpen: 'לפתוח מחדש', asksMkDrop: 'לא צריך',
+    asksDidDone: 'סומן כבוצע', asksDidOpen: 'נפתח מחדש', asksDidDrop: 'סומן כלא צריך', asksMore: 'להציג את כל ה־{n}', asksSum: '{o} פתוחות · {d} בוצעו · {t} בסך הכול',
+    ak_request: 'בקשה', ak_question: 'שאלה', ak_rule: 'כלל', ak_decision: 'החלטה', ak_idea: 'רעיון', as_open: 'פתוח', as_done: 'בוצע', as_dropped: 'לא צריך', as_unclear: 'לבדיקה', as_active: 'בתוקף', asksSumR: '{o} פתוחות · {r} כללים בתוקף · {d} בוצעו · {t} בסך הכול' });
+  S.ask = null; S.askAt = 0; S.askBusy = false; S.askErr = false; S.askF = 'open';
+  function askLoad(force) {
+    var j = J(); if (!j || !j.asks || !on() || S.askBusy || (!force && Date.now() - S.askAt < 6e4)) return;
+    S.askBusy = true;
+    j.asks().then(function (R) { S.askBusy = false; S.askAt = Date.now(); if (Array.isArray(R)) { S.ask = R; S.askErr = false; } else S.askErr = !S.ask; soon(); },
+      function () { S.askBusy = false; S.askAt = Date.now(); S.askErr = !S.ask; soon(); });
+  }
+  function askOpen(a) { return a.status === 'open' || a.status === 'unclear'; }
+  function askRule(a) { return a.status === 'active'; }
+  function askCounts() { var o = 0, d = 0, r = 0; (S.ask || []).forEach(function (a) { if (askOpen(a)) o++; else if (askRule(a)) r++; else if (a.status === 'done') d++; }); return { o: o, d: d, r: r, t: (S.ask || []).length }; }
+  function askEntry() { /* the line on Status that opens the list */
+    askLoad(); if (!S.ask || !S.ask.length) return '';
+    var c = askCounts();
+    return '<button type="button" class="aske" data-x="sp" data-id="asks"><b>' + esc(t('asksLine')) + '</b><span>' + esc(t('asksOpenN').replace('{n}', c.o)) + ' · ' + esc(t('asksDoneN').replace('{n}', c.d)) + '</span>' + chev() + '</button>';
+  }
+  function askChat(a) { var s = (a.sources || []).filter(function (x) { return /^chat:https:\/\/claude\.ai\/chat\//.test(x); })[0]; return s ? link(s.slice(5)) : ''; }
+  function vAsks() {
+    askLoad(); var h = '<h1 class="sr">' + esc(t('asks')) + '</h1><button type="button" class="b sm askb" data-x="sp" data-id="status">' + esc(t('asksBack')) + '</button>';
+    if (!S.ask) return h + (S.askErr ? '<button type="button" class="fail" data-x="askretry">' + esc(t('asksLoad')) + '</button>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>');
+    var c = askCounts();
+    h += '<div class="hd askh"><h2 class="asks-t">' + esc(t('asks')) + '</h2><span class="seg win" role="group" aria-label="' + esc(t('asks')) + '">' + [['open', 'asksOpen', c.o], ['rules', 'asksRules', c.r], ['done', 'asksDone', c.d], ['all', 'asksAll', c.t]].map(function (f) {
+      return '<button type="button" class="b sm" data-x="askf" data-id="' + f[0] + '" aria-pressed="' + (S.askF === f[0]) + '">' + esc(t(f[1])) + ' ' + f[2] + '</button>'; }).join('') + '</span></div>'
+      + '<p class="meta top0">' + esc(t('asksSumR').replace('{o}', c.o).replace('{r}', c.r).replace('{d}', c.d).replace('{t}', c.t)) + '</p>';
+    var L = S.ask.filter(function (a) { return S.askF === 'all' ? true : S.askF === 'done' ? a.status === 'done' : S.askF === 'rules' ? askRule(a) : askOpen(a); });
+    if (!L.length) return h + '<p class="empty">' + esc(t('asksNone')) + '</p>';
+    var G = {}; L.forEach(function (a) { var p = a.product || 'Other'; (G[p] = G[p] || []).push(a); });
+    var keys = Object.keys(G).sort(function (x, y) { return G[y].length - G[x].length || x.localeCompare(y); });
+    var rnk = { open: 0, unclear: 1, active: 2, done: 3, dropped: 4 };
+    keys.forEach(function (p) {
+      var A = G[p].sort(function (x, y) { return (rnk[x.status] - rnk[y.status]) || String(y.asked_on || '').localeCompare(String(x.asked_on || '')); });
+      var gk = 'ag:' + p, all = !!S.full[gk], show = all ? A : A.slice(0, 25);
+      h += '<section class="grp sg"><h2><span dir="auto">' + esc(p) + '</span><span class="cn">' + A.length + '</span></h2><div class="led">' + show.map(function (a) {
+        var k = 'ak:' + a.id, op = !!S.open[k], dt = a.asked_on ? day(a.asked_on + 'T12:00:00Z') : '', ch = askChat(a);
+        var meta = esc(t('ak_' + a.kind) || a.kind) + (dt ? ' · <bdi>' + esc(dt) + '</bdi>' : '') + (a.asked_times > 1 ? ' · ' + esc(t('asksTimes').replace('{n}', a.asked_times)) : '');
+        var sm = '<summary><b class="nm" dir="auto">' + esc(cut(a.text, 160)) + '</b><span class="st">' + meta + '</span><span class="nu"><span class="apill ap-' + esc(a.status) + '">' + esc(t('as_' + a.status)) + '</span></span>' + chev() + '</summary>';
+        var bd = '';
+        if (op) {
+          bd = '<div class="bd stx">' + (a.quote ? '<p><b>' + esc(t('asksWords')) + '</b> <q dir="auto">' + esc(cut(a.quote, 300)) + '</q></p>' : '') + (a.evidence ? '<p><b>' + esc(t('asksNote')) + '</b> <span dir="auto">' + esc(cut(a.evidence, 240)) + '</span></p>' : '')
+            + (ch ? '<p class="lk"><a class="lnk" href="' + esc(ch) + '" target="_blank" rel="noopener">' + esc(t('asksChat')) + '</a></p>' : '')
+            + '<div class="seg aska">' + (a.status !== 'done' && a.status !== 'active' ? '<button type="button" class="b sm" data-x="askset" data-id="' + esc(a.id) + '" data-w="done">' + esc(t('asksMkDone')) + '</button>' : '')
+            + (a.status !== 'open' && a.status !== 'active' ? '<button type="button" class="b sm" data-x="askset" data-id="' + esc(a.id) + '" data-w="open">' + esc(t('asksMkOpen')) + '</button>' : '')
+            + (a.status !== 'dropped' ? '<button type="button" class="b sm" data-x="askset" data-id="' + esc(a.id) + '" data-w="dropped">' + esc(t('asksMkDrop')) + '</button>' : '') + '</div></div>';
+        }
+        return '<details class="row sl asl"' + (op ? ' open' : '') + ' data-k="' + esc(k) + '">' + sm + bd + '</details>';
+      }).join('') + '</div>' + (!all && A.length > show.length ? '<button type="button" class="b sm askm" data-x="full" data-id="' + esc(gk) + '">' + esc(t('asksMore').replace('{n}', A.length)) + '</button>' : '') + '</section>';
+    });
+    return h;
+  }
+  function askAct(id, w) {
+    var j = J(), a = (S.ask || []).filter(function (x) { return x.id === id; })[0]; if (!j || !j.askSet || !a) return;
+    var was = a.status;
+    var setTo = function (st, msg, undo) {
+      return j.askSet(a.id, st, a.version).then(function (r) { a.status = r.status; a.version = r.version; render(true); say(t(msg), undo); }, function (e) { S.askAt = 0; askLoad(true); fail(e); });
+    };
+    setTo(w, w === 'done' ? 'asksDidDone' : w === 'open' ? 'asksDidOpen' : 'asksDidDrop', function () { setTo(was, 'back'); });
+  }
+
   /* ---------- shell ---------- */
   var SP = [['status', 't-status'], ['time', 't-time'], ['today', 't-today'], ['queue', 't-queue'], ['eng', 't-eng'], ['score', 't-score'], ['talk', 't-talk'], ['agents', 't-agents'], ['set', 't-set']];
   function topBar() {
@@ -965,7 +1036,7 @@
   function tabs() { /* index-card tabs: each space is a coloured card in a file; the open one joins the folder below */
     var n = deck().length;
     return '<nav class="tabs" aria-label="' + esc(t('spaces')) + '">' + SP.map(function (s, i) {
-      return '<button type="button" class="tab' + (GS.tour > -1 && TOUR[GS.tour] && TOUR[GS.tour].lift.indexOf(s[0]) > -1 ? ' lift' : '') + '" data-x="sp" data-id="' + s[0] + '" style="--tc:var(--' + s[1] + ')"' + (S.sp === s[0] ? ' aria-current="page"' : '') + ' aria-keyshortcuts="' + (i + 1) + '">' + (s[0] === 'time' ? '<span class="tl">' + esc(t('time')) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h9"/><path d="M8 12h10"/><path d="M5 18h7"/><path d="M21 4v16"/></svg>' : s[0] === 'set' ? '<span class="tl">' + esc(t(s[0])) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>' : esc(t(s[0])))
+      return '<button type="button" class="tab' + (GS.tour > -1 && TOUR[GS.tour] && TOUR[GS.tour].lift.indexOf(s[0]) > -1 ? ' lift' : '') + '" data-x="sp" data-id="' + s[0] + '" style="--tc:var(--' + s[1] + ')"' + (S.sp === s[0] || (S.sp === 'asks' && s[0] === 'status') ? ' aria-current="page"' : '') + ' aria-keyshortcuts="' + (i + 1) + '">' + (s[0] === 'time' ? '<span class="tl">' + esc(t('time')) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h9"/><path d="M8 12h10"/><path d="M5 18h7"/><path d="M21 4v16"/></svg>' : s[0] === 'set' ? '<span class="tl">' + esc(t(s[0])) + '</span><svg class="cog" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>' : esc(t(s[0])))
         + (s[0] === 'today' && n ? '<em>' + n + '</em><span class="sr"> (' + n + ' ' + esc(t('waiting')) + ')</span>' : '') + '</button>'; }).join('') + '</nav>';
   }
   function busyTyping() { var a = sr && sr.activeElement; return !!(a && /^(TEXTAREA|INPUT)$/.test(a.tagName)); }
@@ -979,9 +1050,9 @@
       W.setAttribute('data-sp', 'start'); if (!GS.start) { GS.start = true; GS.step = 0; idleArm(); }
       C.innerHTML = topBar() + '<main class="folder gsf" id="j2main" tabindex="-1"><div class="in">' + vStart() + '</div></main>'; window.scrollTo(0, y); return;
     }
-    var body = S.sp === 'status' ? vStatus() : S.sp === 'time' ? vTime() : S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'agents' ? vAgents() : S.sp === 'set' ? vSet() : vToday();
+    var body = S.sp === 'asks' ? vAsks() : S.sp === 'status' ? vStatus() : S.sp === 'time' ? vTime() : S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'agents' ? vAgents() : S.sp === 'set' ? vSet() : vToday();
     var fae = sr.activeElement, fk = fae && fae.getAttribute ? fae.getAttribute('data-fk') : null; /* 15.12: a re-render keeps focus on the same timeline mark */
-    C.innerHTML = topBar() + tabs() + '<main class="folder" id="j2main" tabindex="-1"><div class="in">' + (GS.tour > -1 ? tourSlip() : S.sp === 'status' ? '' : hintBar(S.sp)) + (S.sp === 'score' ? goalLine() : '') + body + '</div></main>'; /* the toast sits outside C, so a data refresh never wipes an Undo */
+    C.innerHTML = topBar() + tabs() + '<main class="folder" id="j2main" tabindex="-1"><div class="in">' + (GS.tour > -1 ? tourSlip() : S.sp === 'status' || S.sp === 'asks' ? '' : hintBar(S.sp)) + (S.sp === 'score' ? goalLine() : '') + body + '</div></main>'; /* the toast sits outside C, so a data refresh never wipes an Undo */
     window.scrollTo(0, y);
     tlTabStop(); if (fk) { var fe = sr.querySelector('[data-fk="' + fk.replace(/["\\]/g, '') + '"]'); if (fe) { fe.tabIndex = 0; [].forEach.call(sr.querySelectorAll('.tlls [data-x="tpick"]'), function (b) { if (b !== fe) b.tabIndex = -1; }); try { fe.focus({ preventScroll: true }); } catch (e) {} } }
     if (S.edit) { var ta = sr.getElementById('j2ed'); if (ta && force === 'edit') { ta.focus(); } }
@@ -1053,6 +1124,9 @@
     if (x === 'fu') { fuAct(id, el.getAttribute('data-w'), el); return; }
     if (x === 'dsave' || x === 'dstage' || x === 'dproof') { dealAct(x, id, el); return; }
     if (x === 'funretry') { S.funAt = 0; S.funErr = false; render(true); return; }
+    if (x === 'askretry') { S.askAt = 0; S.askErr = false; askLoad(true); render(true); return; }
+    if (x === 'askf') { S.askF = id; render(true); var af = sr.querySelector('[data-x="askf"][aria-pressed="true"]'); if (af) af.focus(); return; }
+    if (x === 'askset') { askAct(id, el.getAttribute('data-w')); return; }
     if (x === 'full') { S.full[id] = 1; render(true); return; }
     if (x === 'aexp') { S.open['a:' + id] = !S.open['a:' + id]; render(true); var bx = sr.querySelector('[data-x="aexp"][data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (bx) bx.focus(); return; }
     if (x === 'prob') { S.prob = id === 'bad'; S.rcN = 30; render(true); return; }
@@ -1155,15 +1229,15 @@
     en: { welcome: 'Welcome to J8NIX', wsub: '3 quick questions so J8 works your way. About a minute.', stepOf: 'Step {n} of 3', skipAll: 'Skip setup', skipStep: 'Skip this', next: 'Next', back: 'Back', finish: 'Finish',
       s1: 'Who you are', s2: 'Your goal', s3: 'Your channels', name: 'Your name', role: 'What you do', why1: 'So J8 writes like you and puts your work first.',
       r_founder: 'Founder', r_sales: 'Sales', r_ops: 'Operations', r_mkt: 'Marketing', r_other: 'Other',
-      g_replies: 'More replies', g_calls: 'Book calls', g_paid: 'Get paid', g_time: 'Save my time', own: 'In your words (optional)', why2: 'J8 puts what moves this goal first, and Score tracks it.',
-      c_email: 'Email', c_li: 'LinkedIn', c_wa: 'WhatsApp', c_ig: 'Instagram', c_phone: 'Phone', why3: 'Pick the ones you use. J8 only says connected when it really is.', setupNeeded: 'Picked · not set up yet', emailOk: 'Connected · sending works', emailBad: 'Connected · sending stopped, see Agents', emailNone: 'No send recorded yet',
+      g_replies: 'More replies', g_calls: 'Book calls', g_paid: 'Get paid', g_time: 'Save my time', own: 'In your words (optional)', why2: 'J8 puts what moves this goal first, and Results tracks it.',
+      c_email: 'Email', c_li: 'LinkedIn', c_wa: 'WhatsApp', c_ig: 'Instagram', c_phone: 'Phone', why3: 'Pick the ones you use. J8 only says connected when it really is.', setupNeeded: 'Picked · not set up yet', emailOk: 'Connected · sending works', emailBad: 'Connected · sending stopped, see Workers', emailNone: 'No send recorded yet',
       setT: 'You are set.', setP: 'J8 has your answers. Want a quick look around?', tourGo: 'Show me around · 1 minute', startW: 'Start working', askTeam: 'Ask the team to set up {c}',
       askMsg: 'Please set up {c} for J8NIX sending.', yourGoal: 'Your goal', yourCh: 'Channels', skipped: 'Skipped',
       stop: '{n} of 4', endTour: 'End tour', tourDone: 'Tour done. Tap ? on any space for help.',
       t1h: 'Today', t1: 'The next thing that needs you, one card at a time. Go sends it, Hold moves it back, Stop drops it.',
-      t2h: 'Queue', t2: 'Everything waiting, what is going out now, and who answered.',
-      t3h: 'Engines and Score', t3: 'Engines: one number per line of work. Score: from draft to paid, with real counts only.',
-      t4h: 'Talk, Agents and Settings', t4: 'Talk to J8 and the team, see every agent run, pause anything. This guide lives in Settings.',
+      t2h: 'To send', t2: 'Everything waiting, what is going out now, and who answered.',
+      t3h: 'Income and Results', t3: 'Income: one number per line of work. Results: from draft to paid, with real counts only.',
+      t4h: 'Chat, Workers and Settings', t4: 'Chat with J8 and the team, see every worker run, pause anything. This guide lives in Settings.',
       how: 'How it works', hide: 'Hide', help: 'Help', hWhat: 'What', hHow: 'How', hWhen: 'When', tip: 'Tip',
       guide: 'Guide', redo: 'Set up again', redoP: 'Who you are, your goal, your channels.', tourOnly: 'Show me around', tourP: 'Four short steps, about a minute.', hintsAgain: 'Show help lines again', hintsP: 'Brings back every help line you hid.',
       tipsOn: 'Help lines on screens', resetT: 'Help lines are back.', notSet: 'Not set yet', goalLine: 'Your goal: {g}', inW: 'in {w}' },
@@ -1171,14 +1245,14 @@
       s1: 'מי אתה', s2: 'המטרה שלך', s3: 'הערוצים שלך', name: 'השם שלך', role: 'מה אתה עושה', why1: 'כדי ש-J8 יכתוב כמוך וישים את העבודה שלך קודם.',
       r_founder: 'מייסד', r_sales: 'מכירות', r_ops: 'תפעול', r_mkt: 'שיווק', r_other: 'אחר',
       g_replies: 'יותר תשובות', g_calls: 'לקבוע שיחות', g_paid: 'לקבל תשלום', g_time: 'לחסוך לי זמן', own: 'במילים שלך (לא חובה)', why2: 'J8 ישים קודם את מה שמקדם את המטרה, והתוצאות יעקבו אחריה.',
-      c_email: 'אימייל', c_li: 'לינקדאין', c_wa: 'וואטסאפ', c_ig: 'אינסטגרם', c_phone: 'טלפון', why3: 'בחר את מה שאתה משתמש בו. J8 יגיד "מחובר" רק כשזה באמת מחובר.', setupNeeded: 'נבחר · עוד לא הוגדר', emailOk: 'מחובר · השליחה עובדת', emailBad: 'מחובר · השליחה נעצרה, ראה סוכנים', emailNone: 'עוד לא נרשמה שליחה',
+      c_email: 'אימייל', c_li: 'לינקדאין', c_wa: 'וואטסאפ', c_ig: 'אינסטגרם', c_phone: 'טלפון', why3: 'בחר את מה שאתה משתמש בו. J8 יגיד "מחובר" רק כשזה באמת מחובר.', setupNeeded: 'נבחר · עוד לא הוגדר', emailOk: 'מחובר · השליחה עובדת', emailBad: 'מחובר · השליחה נעצרה, ראה עובדים', emailNone: 'עוד לא נרשמה שליחה',
       setT: 'הכול מוכן.', setP: 'J8 קיבל את התשובות שלך. רוצה סיור קצר?', tourGo: 'תראה לי · דקה', startW: 'להתחיל לעבוד', askTeam: 'לבקש מהצוות להגדיר: {c}',
       askMsg: 'בבקשה להגדיר את {c} לשליחה מ-J8NIX.', yourGoal: 'המטרה שלך', yourCh: 'ערוצים', skipped: 'דילגת',
       stop: '{n} מתוך 4', endTour: 'סיום הסיור', tourDone: 'הסיור הסתיים. הקש ? בכל מסך לעזרה.',
       t1h: 'היום', t1: 'הדבר הבא שמחכה לך, כרטיס אחד בכל פעם. "שלח" שולח, "אחר כך" מעביר לסוף, "עצור" מוריד.',
-      t2h: 'בתור', t2: 'כל מה שמחכה, מה יוצא עכשיו ומי ענה.',
-      t3h: 'מנועים ותוצאות', t3: 'מנועים: מספר אחד לכל תחום עבודה. תוצאות: מטיוטה ועד תשלום, רק מספרים אמיתיים.',
-      t4h: 'הודעות, סוכנים והגדרות', t4: 'לדבר עם J8 והצוות, לראות כל ריצה של סוכן, להשהות כל דבר. המדריך הזה נמצא בהגדרות.',
+      t2h: 'לשליחה', t2: 'כל מה שמחכה, מה יוצא עכשיו ומי ענה.',
+      t3h: 'הכנסה ותוצאות', t3: 'הכנסה: מספר אחד לכל תחום עבודה. תוצאות: מטיוטה ועד תשלום, רק מספרים אמיתיים.',
+      t4h: 'הודעות, עובדים והגדרות', t4: 'לדבר עם J8 והצוות, לראות כל ריצה של סוכן, להשהות כל דבר. המדריך הזה נמצא בהגדרות.',
       how: 'איך זה עובד', hide: 'הסתר', help: 'עזרה', hWhat: 'מה', hHow: 'איך', hWhen: 'מתי', tip: 'טיפ',
       guide: 'מדריך', redo: 'להגדיר מחדש', redoP: 'מי אתה, המטרה, הערוצים.', tourOnly: 'תראה לי', tourP: 'ארבעה צעדים קצרים, בערך דקה.', hintsAgain: 'להחזיר את שורות העזרה', hintsP: 'מחזיר כל שורת עזרה שהסתרת.',
       tipsOn: 'שורות עזרה במסכים', resetT: 'שורות העזרה חזרו.', notSet: 'עוד לא הוגדר', goalLine: 'המטרה שלך: {g}', inW: 'ב-{w}' }
@@ -1187,7 +1261,7 @@
   /* help slip per space: one phrase, then What / How (≤3 steps) / When, and a tip shown only where you struggled */
   var HELP = {
     en: {
-      today: { one: 'The next decision, one card at a time.', what: 'Everything that needs you, money first.', how: ['Read the card.', 'Go sends it, Hold puts it at the back, Stop drops it.', 'Undo shows for 6 seconds at the top.'], when: 'Each morning, and when the Today tab shows a number.', tip: 'Not sure? Tap Hold. Nothing is sent and the card waits in Queue.' },
+      today: { one: 'The next decision, one card at a time.', what: 'Everything that needs you, money first.', how: ['Read the card.', 'Go sends it, Hold puts it at the back, Stop drops it.', 'Undo shows for 6 seconds at the top.'], when: 'Each morning, and when the Today tab shows a number.', tip: 'Not sure? Tap Hold. Nothing is sent and the card waits in Outbox.' },
       queue: { one: 'Everything waiting, going out and answered.', what: 'The full list behind Today.', how: ['Tap a row to open it.', 'Going out: Stop catches a send in time.', 'Did they answer? Mark Replied, Call, Won or Lost.'], when: 'When you want the whole picture or to log a reply.', tip: 'Mark answers here: it teaches J8 what works.' },
       eng: { one: 'One number per engine: replies.', what: 'Each line of work and how it moves.', how: ['The word says the state: waits for you, Moving or Quiet.', 'Tap a row for now, next and its steps.', 'Resting engines are folded at the bottom.'], when: 'Weekly, to see which engine to push.', tip: 'Quiet just means nothing went out in 7 days, not that it broke.' },
       score: { one: 'From draft to paid, real counts only.', what: 'Drafts made in the window and where they are now.', how: ['Pick 7 or 30 days.', 'Each step shows how many of the step before.', 'Money booked is at the bottom.'], when: 'Weekly, to check the goal.', tip: 'Small numbers show as "X of N" on purpose: a percent would look surer than it is.' },
@@ -1196,7 +1270,7 @@
       set: { one: 'Pause, language, sound, this guide.', what: 'How J8NIX works for you.', how: ['Pause sending stops everything going out.', 'Autopilot decides per saved message.', 'Guide replays the setup, the tour and the help lines.'], when: 'When you need to stop sending or change a setting.', tip: 'Pause sending is the one big brake. It is always safe.' }
     },
     he: {
-      today: { one: 'ההחלטה הבאה, כרטיס אחד בכל פעם.', what: 'כל מה שמחכה לך, כסף קודם.', how: ['קרא את הכרטיס.', '"שלח" שולח, "אחר כך" מעביר לסוף, "עצור" מוריד.', '"בטל" מופיע למעלה ל-6 שניות.'], when: 'כל בוקר, וכשעל לשונית "היום" יש מספר.', tip: 'לא בטוח? הקש "אחר כך". שום דבר לא נשלח והכרטיס מחכה בתור.' },
+      today: { one: 'ההחלטה הבאה, כרטיס אחד בכל פעם.', what: 'כל מה שמחכה לך, כסף קודם.', how: ['קרא את הכרטיס.', '"שלח" שולח, "אחר כך" מעביר לסוף, "עצור" מוריד.', '"בטל" מופיע למעלה ל-6 שניות.'], when: 'כל בוקר, וכשעל לשונית "היום" יש מספר.', tip: 'לא בטוח? הקש "אחר כך". שום דבר לא נשלח והכרטיס מחכה ב"לשליחה".' },
       queue: { one: 'כל מה שמחכה, יוצא וענה.', what: 'הרשימה המלאה שמאחורי "היום".', how: ['הקש על שורה כדי לפתוח.', 'יוצא עכשיו: "עצור" תופס שליחה בזמן.', 'הם ענו? סמן ענו, שיחה, נסגר או לא רלוונטי.'], when: 'כשרוצים את התמונה המלאה או לרשום תשובה.', tip: 'סמן כאן תשובות: זה מלמד את J8 מה עובד.' },
       eng: { one: 'מספר אחד לכל מנוע: תשובות.', what: 'כל תחום עבודה ואיך הוא מתקדם.', how: ['המילה אומרת את המצב: מחכה לך, בתנועה או שקט.', 'הקש על שורה לראות עכשיו, הבא והשלבים.', 'מנועים במנוחה מקופלים למטה.'], when: 'פעם בשבוע, לבחור איזה מנוע לדחוף.', tip: '"שקט" רק אומר ששום דבר לא יצא 7 ימים, לא שמשהו נשבר.' },
       score: { one: 'מטיוטה ועד תשלום, רק מספרים אמיתיים.', what: 'טיוטות מהטווח ואיפה הן עכשיו.', how: ['בחר 7 או 30 ימים.', 'כל שלב מראה כמה מתוך השלב הקודם.', 'הכסף שנסגר מופיע למטה.'], when: 'פעם בשבוע, לבדוק את המטרה.', tip: 'מספרים קטנים מוצגים "X מתוך N" בכוונה: אחוז היה נראה בטוח יותר ממה שהוא.' },
@@ -1238,7 +1312,7 @@
     g.logged[key] = new Date().toISOString(); gSave();
     j.memory.add({ kind: kind || 'fact', text: 'Onboarding: ' + text, tags: ['onboarding'].concat(tags || []) }).catch(function () { delete g.logged[key]; });
   }
-  var SPEN = { time: 'Timeline', today: 'Today', queue: 'Queue', eng: 'Engines', score: 'Score', talk: 'Talk', agents: 'Agents', set: 'Settings' };
+  var SPEN = { time: 'Timeline', today: 'Today', queue: 'Outbox', eng: 'Income', score: 'Results', talk: 'Chat', agents: 'Workers', set: 'Settings' };
   function struggle(sp, why) {
     var g = gLoad(); if (!g || !SPN[sp]) return;
     g.str[sp] = (g.str[sp] || 0) + 1; g.strAt = g.strAt || {}; g.strAt[sp] = Date.now(); delete g.used[sp]; gSave(); /* the help line comes back for this space, with its tip */
