@@ -34,14 +34,17 @@
    j8_approvals_followup: council 5 days, application 7, referral 5, other outreach 5; Israel days, Fri/Sat move to Sunday). Due and
    late follow-ups come first in Today (vFollow, 5 + link) and Queue (all), most late first: Followed up (+7) · In 2 days · They replied ·
    No follow-up, each with Undo (J8.approvals.followup → j8_followup_mark). Revert: git revert of the 15.10 commit; SQL in design/sql/j8_followup_timer.sql.
+   15.11.0 (26 Nov 2026) · backlog d-1126-01 "Status": J8NIX opens on one Status screen (vStatus, first tab, key 1): ₪ collected of ₪100,000,
+   one line per visible project grouped by department, today's numbers, "You:" (max 3 highlighted), tap for Now / Next / last 3 runs / link,
+   Parked and Killed folded at the bottom. Read only. The other spaces move one key along (Today = 2 … Settings = 8). Revert: git revert of the 15.11 commit.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.10.0';
+  var VER = '15.11.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
-  var S = { sp: 'today', pick: {}, held: {}, gone: {}, arm: {}, open: {}, edit: null, editTx: '', talk: '', full: {}, bprev: null, busy: false, rankAt: 0, lintAt: 0, win: (function () { try { return localStorage.getItem('j8:win') === '7d' ? '7d' : '30d'; } catch (e) { return '30d'; } })(), fun: null, funAt: 0, funBusy: false, funErr: false, gates: null, gateAt: 0, gateBusy: false, gateErr: false };
+  var S = { sp: 'status', pick: {}, held: {}, gone: {}, arm: {}, open: {}, edit: null, editTx: '', talk: '', full: {}, bprev: null, busy: false, rankAt: 0, lintAt: 0, win: (function () { try { return localStorage.getItem('j8:win') === '7d' ? '7d' : '30d'; } catch (e) { return '30d'; } })(), fun: null, funAt: 0, funBusy: false, funErr: false, gates: null, gateAt: 0, gateBusy: false, gateErr: false };
   var host, sr, W, C, undoFn = null, toastT = 0, raf = 0, pend = false;
 
   /* ---------- words (EN / HE) ---------- */
@@ -705,8 +708,92 @@
     return h;
   }
 
+  /* ---------- 15.11 Status (backlog d-1126-01): the one screen J8NIX opens on. Every visible project (j8_projects, hidden false) as one
+     line, grouped by extra.dept (Income, SH✡MER, Side lines, Studio systems; anything else under Other), with one short phrase from "now",
+     today's numbers where the project has approvals (sent today, Israel day; replies in 7 days from extra.replied_at) and "You:" when the
+     "you" field is not Nothing. The first 3 You lines on the screen get the orange rail (BRAND v6: never more than 3). Tap = Now, Next,
+     the last 3 j8_runs touching the project, its link. Parked and Killed fold at the bottom, one line each with the reason. Read only. ---------- */
+  var GOAL_ILS = 100000; /* the Focus mode target (19 Nov 2026): ₪100,000 collected */
+  var DEPTS = ['Income', 'SH✡MER', 'Side lines', 'Studio systems'];
+  Object.assign(T.en, { status: 'Status', collected: 'collected of', toGo: 'to go', youW: 'You:', sentTd: 'sent today', repWk: 'replies · 7 days', repWk1: 'reply · 7 days',
+    waitingW: 'Waiting', parkedW: 'Parked', killedW: 'Killed', otherW: 'Other', lastRuns: 'Last 3 runs', noRunsP: 'No runs logged for this yet.', noProj: 'No projects to show.',
+    moneyNo: 'Money: no record yet', moneyOff: 'Money: not loaded yet', need1: '1 thing needs you', needN: '{n} things need you', needNone: 'Nothing needs you right now.', ofGoal: 'of the goal',
+    d_Income: 'Income', 'd_SH✡MER': 'SH✡MER', 'd_Side lines': 'Side lines', 'd_Studio systems': 'Studio systems', stLoad: 'Couldn\'t load the status. Tap to retry' });
+  Object.assign(T.he, { status: 'מצב', collected: 'נגבו מתוך', toGo: 'נשארו', youW: 'אתה:', sentTd: 'נשלחו היום', repWk: 'תשובות · 7 ימים', repWk1: 'תשובה · 7 ימים',
+    waitingW: 'ממתין', parkedW: 'מוקפאים', killedW: 'נסגרו', otherW: 'אחר', lastRuns: '3 הריצות האחרונות', noRunsP: 'עוד אין ריצות רשומות לזה.', noProj: 'אין פרויקטים להציג.',
+    moneyNo: 'כסף: עוד אין רישום', moneyOff: 'כסף: עוד לא נטען', need1: 'דבר אחד מחכה לך', needN: '{n} דברים מחכים לך', needNone: 'כרגע שום דבר לא מחכה לך.', ofGoal: 'מהיעד',
+    d_Income: 'הכנסה', 'd_SH✡MER': 'SH✡MER', 'd_Side lines': 'קווים צדדיים', 'd_Studio systems': 'מערכות הסטודיו', stLoad: 'טעינת המצב נכשלה. הקש לנסות שוב' });
+  function noYou(s) { s = String(s || '').trim(); return !s || /^nothing\b/i.test(s); }
+  function phrase(s, n) { /* one short phrase: no leading date, no brackets, the first sentence */
+    s = String(s || '').replace(/\s+/g, ' ').trim().replace(/^(\d{1,2}\s+[A-Z][a-z]{2}|[A-Z][a-z]{2}\s+\d{1,2})(\s+\d{1,2}:\d{2})?\s*[:–—-]\s*/, '').replace(/\s*\([^)]*\)/g, '');
+    var m = /^(.+?[.!?])(\s|$)/.exec(s); if (m && m[1].length >= 12) s = m[1];
+    return cut(s.replace(/\.$/, ''), n || 80);
+  }
+  function reason(s) { /* "Parked 26 Nov: crowded market." -> "Crowded market" */
+    var r = String(s || '').replace(/\s+/g, ' ').trim().replace(/^(parked|killed|removed|merged)\b[^:]{0,40}:\s*/i, '');
+    r = phrase(r, 100); return r ? r.charAt(0).toUpperCase() + r.slice(1) : '';
+  }
+  function youShort(s) { return cut(String(s || '').replace(/^\s*NEEDS YOUR EYES\s*[,:–—-]?\s*/, ''), 90); }
+  function projAll() { var P = safe(function () { return J().raw('projects'); }, {}) || {}; return Object.keys(P).map(function (id) { return Object.assign({ id: id }, P[id]); }); }
+  function pOrd(a, b) { var x = Number(a.order), y = Number(b.order); return (isNaN(x) || a.order == null ? 99 : x) - (isNaN(y) || b.order == null ? 99 : y) || String(a.name || '').localeCompare(String(b.name || '')); }
+  function stNums() { /* per project: has approvals at all, sent today (Israel day), replies in the last 7 days */
+    var o = {}, now = Date.now(), k0 = dayKey(now), from = now - 7 * 864e5;
+    aps().forEach(function (a) {
+      if (isTpl(a)) return; var p = pidOf(a.product); if (!p) return; var e = o[p] || (o[p] = { any: 0, sent: 0, rep: 0 }); e.any++;
+      var st = pd(a.sent_at); if (a.status === 'sent' && !isNaN(st) && dayKey(st) === k0) e.sent++;
+      var rt = pd(a.replied_at); if (!isNaN(rt) && rt >= from && rt <= now + 6e4) e.rep++;
+    });
+    return o;
+  }
+  function runsFor(pid) { return runsAll().filter(function (r) { return r.project === pid || (Array.isArray(r.projects) && r.projects.indexOf(pid) > -1); }).slice(0, 3); }
+  function vStatus() {
+    var j = J(), all = projAll(), m = safe(function () { return j.money.summary(); }, null), h = '<h1 class="sr">' + esc(t('status')) + '</h1>';
+    if (!all.length && !on()) return h + (failed() ? '<button type="button" class="fail" data-x="retry">' + esc(t('stLoad')) + '</button>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>');
+    var vis = all.filter(function (p) { return p.hidden !== true && p.status !== 'parked' && p.status !== 'killed'; }).sort(pOrd);
+    var park = all.filter(function (p) { return p.status === 'parked' || (p.hidden && p.dept === 'Parked' && p.status !== 'killed' && p.status !== 'done'); }).sort(pOrd);
+    var kill = all.filter(function (p) { return p.status === 'killed'; }).sort(pOrd);
+    var G = DEPTS.map(function (d) { return { d: d, L: vis.filter(function (p) { return p.dept === d; }) }; });
+    var oth = vis.filter(function (p) { return DEPTS.indexOf(p.dept) < 0; }); if (oth.length) G.push({ d: '', L: oth });
+    G = G.filter(function (g) { return g.L.length; });
+    var N = stNums(), hi = {}, nHi = 0, nYou = 0;
+    G.forEach(function (g) { g.L.forEach(function (p) { if (!noYou(p.you)) { nYou++; if (nHi < 3) { hi[p.id] = 1; nHi++; } } }); }); /* screen order = money first; max 3 highlighted */
+    /* money */
+    var bk = m && m.booked_ils != null && !isNaN(Number(m.booked_ils)) ? Number(m.booked_ils) : null;
+    if (bk == null) h += '<section class="mon"><p class="mno">' + esc(t(on() ? 'moneyNo' : 'moneyOff')) + '</p></section>';
+    else { var pc = Math.max(0, Math.min(100, bk / GOAL_ILS * 100)), pt = pc < 10 ? (Math.round(pc * 10) / 10) : Math.round(pc);
+      h += '<section class="mon" aria-label="' + esc(ils(bk) + ' ' + t('collected') + ' ' + ils(GOAL_ILS)) + '"><p class="mbig"><b>' + esc(ils(bk)) + '</b><span>' + esc(t('collected')) + ' <bdi>' + esc(ils(GOAL_ILS)) + '</bdi></span></p>'
+        + '<div class="mbar" aria-hidden="true"><i style="width:' + pc.toFixed(2) + '%"></i></div>'
+        + '<p class="msub"><span>' + esc(pt + '% ' + t('ofGoal')) + '</span><span>' + esc(ils(Math.max(0, GOAL_ILS - bk)) + ' ' + t('toGo')) + '</span></p></section>'; }
+    h += '<p class="need' + (nYou ? ' on' : '') + '">' + esc(nYou ? (nYou === 1 ? t('need1') : t('needN').replace('{n}', nYou)) : t('needNone')) + '</p>';
+    var row = function (p) {
+      var k = 's:' + p.id, op = !!S.open[k], n = N[p.id], yo = !noYou(p.you), wt = p.status === 'waiting';
+      var nu = n ? '<span class="nu"><span' + (n.sent ? '' : ' class="z"') + '><b>' + n.sent + '</b> ' + esc(t('sentTd')) + '</span><span' + (n.rep ? '' : ' class="z"') + '><b>' + n.rep + '</b> ' + esc(t(n.rep === 1 ? 'repWk1' : 'repWk')) + '</span></span>' : '<span class="nu"></span>';
+      var sm = '<summary><b class="nm" dir="auto">' + esc(cut(p.name || p.id, 60)) + '</b><span class="st">' + (wt ? '<span class="stw sw-q">' + esc(t('waitingW')) + '</span> · ' : '') + '<span dir="auto">' + esc(phrase(p.now)) + '</span></span>' + nu + chev()
+        + (yo ? '<span class="yl' + (hi[p.id] ? ' hi' : '') + '"><b>' + esc(t('youW')) + '</b> <span dir="auto">' + esc(youShort(p.you)) + '</span></span>' : '') + '</summary>';
+      var bd = '';
+      if (op) {
+        var R = runsFor(p.id), lk = link(p.link);
+        bd = '<div class="bd stx">' + (p.now ? '<p><b>' + esc(t('nowW')) + '</b> <span dir="auto">' + esc(cut(p.now, 400)) + '</span></p>' : '') + (p.next ? '<p><b>' + esc(t('nextW')) + '</b> <span dir="auto">' + esc(cut(p.next, 300)) + '</span></p>' : '')
+          + (yo ? '<p><b>' + esc(t('youW')) + '</b> <span dir="auto">' + esc(cut(p.you, 400)) + '</span></p>' : '')
+          + '<h3>' + esc(t('lastRuns')) + '</h3>' + (R.length ? '<ul class="rl">' + R.map(function (r) { var tt = runT(r), rk = link(r.link);
+            return '<li><span class="rt"><bdi>' + esc(isNaN(tt) ? '' : dayName(tt) + ' ' + hm(tt)) + '</bdi> · <span dir="auto">' + esc(cut(r.arm || '', 40)) + '</span>' + (runSt(r) === 'failed' ? ' · <span class="bad">' + esc(t('st_failed')) + '</span>' : '') + '</span><span class="rs" dir="auto">' + esc(cut(r.summary || '', 160)) + '</span>'
+              + (rk ? '<a class="lnk" href="' + esc(rk) + '" target="_blank" rel="noopener">' + esc(t('proof')) + '</a>' : '') + '</li>'; }).join('') + '</ul>' : '<p class="meta top0">' + esc(t('noRunsP')) + '</p>')
+          + (lk ? '<p class="lk"><a class="lnk" href="' + esc(lk) + '" target="_blank" rel="noopener" dir="auto">' + esc(cut(p.link_text || lk, 60)) + '</a></p>' : '') + '</div>';
+      }
+      return '<details class="row sl' + (hi[p.id] ? ' hi' : '') + '"' + (op ? ' open' : '') + ' data-k="' + esc(k) + '">' + sm + bd + '</details>';
+    };
+    if (!G.length) h += '<p class="empty">' + esc(t('noProj')) + '</p>';
+    G.forEach(function (g) { h += '<section class="grp sg"><h2><span>' + esc(g.d ? t('d_' + g.d) : t('otherW')) + '</span><span class="cn">' + g.L.length + '</span></h2><div class="led">' + g.L.map(row).join('') + '</div></section>'; });
+    var fold = function (key, title, L) {
+      if (!L.length) return ''; var op = !!S.open[key];
+      return '<details class="grp fold sf"' + (op ? ' open' : '') + ' data-k="' + key + '"><summary><h2>' + esc(title) + ' · ' + L.length + '</h2>' + chev() + '</summary>' + (op ? '<div class="led">' + L.map(function (p) {
+        return '<div class="row sl0"><b class="nm" dir="auto">' + esc(cut(p.name || p.id, 60)) + '</b><span class="st" dir="auto">' + esc(reason(p.now)) + '</span></div>'; }).join('') + '</div>' : '') + '</details>';
+    };
+    return h + fold('spark', t('parkedW'), park) + fold('skill', t('killedW'), kill);
+  }
+
   /* ---------- shell ---------- */
-  var SP = [['today', 't-today'], ['queue', 't-queue'], ['eng', 't-eng'], ['score', 't-score'], ['talk', 't-talk'], ['agents', 't-agents'], ['set', 't-set']];
+  var SP = [['status', 't-status'], ['today', 't-today'], ['queue', 't-queue'], ['eng', 't-eng'], ['score', 't-score'], ['talk', 't-talk'], ['agents', 't-agents'], ['set', 't-set']];
   function topBar() {
     var j = J(), x = X(), st = safe(function () { return j.status(); }, {}), p = safe(function () { return j.control.paused(); }, false);
     var s = x ? safe(function () { return x.sender ? x.sender() : null; }, null) : null, bad = p || (s && s.ok === false);
@@ -731,8 +818,8 @@
       W.setAttribute('data-sp', 'start'); if (!GS.start) { GS.start = true; GS.step = 0; idleArm(); }
       C.innerHTML = topBar() + '<main class="folder gsf" id="j2main" tabindex="-1"><div class="in">' + vStart() + '</div></main>'; window.scrollTo(0, y); return;
     }
-    var body = S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'agents' ? vAgents() : S.sp === 'set' ? vSet() : vToday();
-    C.innerHTML = topBar() + tabs() + '<main class="folder" id="j2main" tabindex="-1"><div class="in">' + (GS.tour > -1 ? tourSlip() : hintBar(S.sp)) + (S.sp === 'score' ? goalLine() : '') + body + '</div></main>'; /* the toast sits outside C, so a data refresh never wipes an Undo */
+    var body = S.sp === 'status' ? vStatus() : S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'agents' ? vAgents() : S.sp === 'set' ? vSet() : vToday();
+    C.innerHTML = topBar() + tabs() + '<main class="folder" id="j2main" tabindex="-1"><div class="in">' + (GS.tour > -1 ? tourSlip() : S.sp === 'status' ? '' : hintBar(S.sp)) + (S.sp === 'score' ? goalLine() : '') + body + '</div></main>'; /* the toast sits outside C, so a data refresh never wipes an Undo */
     window.scrollTo(0, y);
     if (S.edit) { var ta = sr.getElementById('j2ed'); if (ta && force === 'edit') { ta.focus(); } }
   }
@@ -1045,7 +1132,7 @@
   function focusG() { setTimeout(function () { var e = sr.getElementById('gsT') || sr.getElementById('gtH'); if (e) try { e.focus({ preventScroll: true }); } catch (x) {} }, 30); }
   function tourAt(i) {
     GS.tour = i; GS.start = false; GS.fin = false;
-    if (i < 0 || i >= TOUR.length) { GS.tour = -1; var g = gLoad(); if (g) { g.tour = i >= TOUR.length ? 'done' : 'ended'; gSave(); } go('today'); say(gt('tourDone')); return; }
+    if (i < 0 || i >= TOUR.length) { GS.tour = -1; var g = gLoad(); if (g) { g.tour = i >= TOUR.length ? 'done' : 'ended'; gSave(); } go('status'); say(gt('tourDone')); return; }
     S.sp = TOUR[i].sp; S.edit = null; render(true); window.scrollTo(0, 0); focusG();
     var lv = sr.getElementById('j2live'); if (lv) lv.textContent = gt('stop').replace('{n}', i + 1) + ': ' + gt(TOUR[i].h);
   }
@@ -1102,7 +1189,7 @@
     }
     if (x === 'g-back') { if (GS.step) GS.step--; render(true); focusG(); return true; }
     if (x === 'g-skipall') { g.skip = { s1: !(g.who && g.who.role), s2: !(g.goal && (g.goal.pick || g.goal.own)), s3: !(g.ch && g.ch.length) }; if (!g.skip.s1 && !g.skip.s2 && !g.skip.s3) g.skip = { s1: true, s2: true, s3: true }; g.skipAll = true; gFinish(); gLearn('skipall', 'skipped the guided start', 'fact', ['skip']); GS.fin = false; GS.start = false; render(true); return true; }
-    if (x === 'g-done') { GS.fin = false; GS.start = false; clearTimeout(GS.idleT); go('today'); return true; }
+    if (x === 'g-done') { GS.fin = false; GS.start = false; clearTimeout(GS.idleT); go('status'); return true; }
     if (x === 'g-tour') { clearTimeout(GS.idleT); if (!g.start) { g.start = 'skipped'; gSave(); } tourAt(0); return true; }
     if (x === 'g-ask') { var need = (g.ch || []).filter(function (c) { return c !== 'email'; }); GS.fin = false; GS.start = false; S.talk = gt('askMsg').replace('{c}', need.map(function (c) { return gt('c_' + c); }).join(', ')); go('talk'); setTimeout(function () { var ta = sr.querySelector('textarea[data-say]'); if (ta) { ta.value = S.talk; ta.focus(); } }, 40); return true; }
     if (x === 'g-again') { gStartOver(); return true; }
@@ -1133,7 +1220,7 @@
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (GS.tour > -1 && e.key === 'Escape') { e.preventDefault(); tourAt(-1); return; }
     if (GS.start || GS.fin) return; /* the guided start owns the screen: no space keys */
-    if (/^[1-7]$/.test(e.key)) { if (GS.tour > -1) { GS.tour = -1; var gk = gLoad(); if (gk) { gk.tour = 'ended'; gSave(); } } go(SP[+e.key - 1][0]); e.preventDefault(); return; }
+    if (/^[1-8]$/.test(e.key)) { if (GS.tour > -1) { GS.tour = -1; var gk = gLoad(); if (gk) { gk.tour = 'ended'; gSave(); } } go(SP[+e.key - 1][0]); e.preventDefault(); return; }
     if (S.sp !== 'today') return;
     var c = sr.querySelector('.deck .card'); if (!c) return;
     var sel = { g: '[data-x="go"],[data-x="dgo"]:not([disabled]),[data-x="batch-go"],[data-x="done"],[data-x="copyopen"]', h: '[data-x="hold"]', x: '[data-x="stop"]', e: '[data-x="ed"]' }[e.key.toLowerCase()];

@@ -12,12 +12,12 @@
    money stays ink: the number speaks, no colour. */
 .w{--ink:#0C1030;--ink-2:#384064;--ink-3:#565E80;--card:#fff;--line:rgba(12,16,48,.14);--edge:#7E86A6;
   --stop:#A3162A;--stop-bg:#FDE4E8;--wait:#8A5300;--wait-bg:#FFF0D2;--ok:#1D4ED8;--ok-bg:#E3EBFF;
-  --t-today:#D6E6FF;--t-queue:#FFDCD5;--t-eng:#FFEDC2;--t-score:#D3EEF8;--t-talk:#E3DDFF;--t-agents:#F8DCEB;--t-set:#E4E8EF;
+  --t-status:#FFFFFF;--t-today:#D6E6FF;--t-queue:#FFDCD5;--t-eng:#FFEDC2;--t-score:#D3EEF8;--t-talk:#E3DDFF;--t-agents:#F8DCEB;--t-set:#E4E8EF;
   --tint:var(--t-today);--fd:"Bricolage Grotesque","Heebo",system-ui,sans-serif;--fb:"Instrument Sans","Heebo",system-ui,sans-serif;
   --in:cubic-bezier(0,0,.2,1);--out:cubic-bezier(.4,0,1,1);--std:cubic-bezier(.4,0,.2,1);
   --desk:#EEF0F5;min-height:100vh;background:var(--desk);color:var(--ink);font:400 16px/1.5 var(--fb);font-variant-numeric:tabular-nums;
   -webkit-font-smoothing:antialiased;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
-.w[data-sp="queue"]{--tint:var(--t-queue)}.w[data-sp="eng"]{--tint:var(--t-eng)}.w[data-sp="score"]{--tint:var(--t-score)}.w[data-sp="talk"]{--tint:var(--t-talk)}.w[data-sp="agents"]{--tint:var(--t-agents)}.w[data-sp="set"]{--tint:var(--t-set)}
+.w[data-sp="status"]{--tint:var(--t-status)}.w[data-sp="queue"]{--tint:var(--t-queue)}.w[data-sp="eng"]{--tint:var(--t-eng)}.w[data-sp="score"]{--tint:var(--t-score)}.w[data-sp="talk"]{--tint:var(--t-talk)}.w[data-sp="agents"]{--tint:var(--t-agents)}.w[data-sp="set"]{--tint:var(--t-set)}
 .w[dir="rtl"]{--fd:"Heebo","Bricolage Grotesque",system-ui,sans-serif;--fb:"Heebo","Instrument Sans",system-ui,sans-serif}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -403,3 +403,78 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .stl.mv{color:var(--ink)}
 /* 15.10 follow-up timer (b-1125-24): four equal actions, two by two */
 .acts.fua{grid-template-columns:1fr 1fr}
+
+/* 15.11 Status (backlog d-1126-01): the front sheet. A white ledger page in the card file: hairline rows, no boxed cards.
+   Money stays ink (the number speaks). Orange #FF9700 is a 4 px rail on at most 3 "You" lines (BRAND v6); the You words use --wait on --wait-bg (AA).
+   Mobile: name, phrase, numbers stacked; >= 900 px: name | phrase | numbers columns. RTL: logical properties only. */
+.tab[data-id="status"]{box-shadow:inset 0 -1px 0 rgba(12,16,48,.12),inset 0 0 0 1px rgba(12,16,48,.10)}
+.tab[data-id="status"][aria-current="page"]{box-shadow:inset 1px 1px 0 rgba(12,16,48,.10),inset -1px 0 0 rgba(12,16,48,.10)}
+.w[data-sp="status"] .folder{box-shadow:0 0 0 1px rgba(12,16,48,.10),0 24px 48px -32px rgba(12,16,48,.35)}
+.mon{margin:0 0 4px}
+.mbig{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0}
+.mbig b{font:800 clamp(48px,13vw,72px)/.95 var(--fd);letter-spacing:-.045em}
+.mbig span{font-size:17px;font-weight:600;color:var(--ink-2)}
+.w[dir="rtl"] .mbig b{letter-spacing:0}
+.mbar{position:relative;height:6px;margin:14px 0 8px;background:#E4E8F3;border-radius:3px;overflow:hidden}
+.mbar i{position:absolute;inset-block:0;inset-inline-start:0;min-width:3px;background:var(--ink);border-radius:3px}
+.msub{display:flex;justify-content:space-between;gap:12px;margin:0;font-size:14px;color:var(--ink-3)}
+.mno{margin:0;font-weight:600;color:var(--ink-2)}
+.need{margin:18px 0 0;font-size:15px;font-weight:600;color:var(--ink-2)}
+.need.on{color:var(--wait)}
+.sg{margin-top:26px}
+.sg>h2{justify-content:flex-start;gap:8px;margin:0 0 2px;font:800 19px/1.2 var(--fd);letter-spacing:-.02em;color:var(--ink)}
+.w[dir="rtl"] .sg>h2{letter-spacing:0}
+.sg>h2 .cn{font:600 14px/1 var(--fb);color:var(--ink-3)}
+.led{border-top:2px solid var(--ink)}
+.led>.row{background:none;border:0;border-bottom:1px solid var(--line);border-radius:0}
+.sl>summary{display:grid;grid-template-columns:minmax(0,1fr) auto 18px;grid-template-areas:"nm nu ch" "st nu ch" "yl yl yl";column-gap:12px;row-gap:2px;align-items:center;min-height:60px;padding:10px 4px 10px 0}
+.w[dir="rtl"] .sl>summary{padding:10px 0 10px 4px}
+.sl .nm{grid-area:nm;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.sl .st{grid-area:st;font-size:14px;color:var(--ink-2);line-height:1.4;overflow-wrap:anywhere}
+.sl .nu{grid-area:nu;display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:12.5px;color:var(--ink-2);white-space:nowrap;text-align:end}
+.sl .nu b{font:800 17px/1 var(--fd);color:var(--ink)}
+.sl .nu .z,.sl .nu .z b{color:var(--ink-3)}
+.sl .chev{grid-area:ch}
+.sl .yl{grid-area:yl;justify-self:start;margin-top:6px;padding:4px 8px;border-radius:3px;font-size:14px;line-height:1.4;color:var(--ink-2);background:rgba(12,16,48,.04)}
+.sl .yl b{color:var(--ink)}
+.sl.hi .yl{color:var(--wait);background:var(--wait-bg);font-weight:600}
+.sl.hi .yl b{color:var(--wait)}
+.sl{position:relative}
+.sl.hi::before{content:"";position:absolute;inset-block:6px;inset-inline-start:-11px;width:4px;border-radius:2px;background:#FF9700} /* the rail sits in the folder gutter, so columns stay aligned */
+.led>.row>summary{padding-inline-start:0}
+.bd.stx{padding:0 0 16px;max-width:720px}
+.bd.stx>p{margin:8px 0 0;font-size:15px;color:var(--ink-2);overflow-wrap:anywhere}
+.bd.stx>p b{color:var(--ink)}
+.bd.stx h3{margin:14px 0 4px;font:700 14px/1.2 var(--fb);color:var(--ink)}
+.rl{list-style:none;margin:0;padding:0}
+.rl li{display:flex;flex-direction:column;gap:2px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.rl .rt{color:var(--ink-3);font-size:13px}
+.rl .rs{color:var(--ink-2);overflow-wrap:anywhere}
+.rl .bad{color:var(--stop);font-weight:700}
+.rl .lnk,.bd.stx .lk .lnk{align-self:flex-start;color:var(--ok);font-weight:600;text-decoration:underline;text-underline-offset:3px;min-height:32px;display:inline-flex;align-items:center}
+.bd.stx .lk{margin-top:10px}
+.top0{margin-top:0}
+.sf{margin-top:20px}
+.sf .led{border-top-width:1px;border-top-color:var(--line)}
+.sl0{display:flex;flex-direction:column;gap:2px;padding:10px 0}
+.sl0 .nm{font-weight:600}
+.sl0 .st{font-size:14px;color:var(--ink-3)}
+@media (min-width:900px){
+  .w[data-sp="status"] .in{max-width:1000px}
+  .sl>summary{grid-template-columns:minmax(180px,260px) minmax(0,1fr) auto 18px;grid-template-areas:"nm st nu ch" ". yl yl yl";column-gap:20px}
+  .sl .nu{flex-direction:row;gap:16px}
+  .sl .yl{margin-top:4px}
+  .bd.stx{margin-inline-start:280px}
+  .sl0{display:grid;grid-template-columns:minmax(180px,260px) minmax(0,1fr);gap:20px;align-items:baseline}
+}
+/* 15.11: eight tabs. Under 420 px each tab takes the width its word needs (no clipping), tighter gaps and padding */
+@media (max-width:419px){
+  .tabs{gap:2px;padding:6px 6px 0}
+  .tab{flex:1 1 auto;padding:0 2px;font-size:12px;gap:2px;letter-spacing:-.015em}
+  .tab[aria-current="page"]{font-size:13px}
+  .tab em{min-width:16px;height:16px;padding:0 3px;font-size:10.5px;line-height:16px}
+  .folder{margin:0 6px}
+}
+@media (max-width:359px){.tab{font-size:11px;padding:0 1px}.tab[aria-current="page"]{font-size:12px}.tab em{min-width:14px;height:14px;line-height:14px;font-size:10px;padding:0 2px}}
+@media (min-width:560px) and (max-width:699px){.tabs{gap:3px}.tab{padding:0 7px;font-size:14px;gap:5px}.tab[aria-current="page"]{font-size:15.5px}}
+.w[dir="rtl"] .sl .nm,.w[dir="rtl"] .sl0 .nm{text-align:right} /* an English name in a Hebrew row starts at the row start */

@@ -25,9 +25,10 @@
 <link rel="stylesheet" href="j13.css?v=14.0.0">
 <link rel="preload" href="j13w.css?v=14.1.0" as="style">
 <link rel="stylesheet" href="j20.css?v=15.5.0">
-<link rel="preload" href="j20w.css?v=15.10.0" as="style">
+<link rel="preload" href="j20w.css?v=15.11.0" as="style">
 </head>
 <body>
+<!-- J8NIX 2.0 · 15.11.0 (26 Nov 2026): Status (d-1126-01): J8NIX opens on one Status screen: ₪ collected of ₪100,000, one line per visible project by department (phrase, sent today, replies 7 days, You: with max 3 highlighted), tap for Now / Next / last 3 runs / link; Parked and Killed folded. Other spaces one key along. Revert: git revert. -->
 <!-- J8NIX 2.0 · 15.10.0 (26 Nov 2026): follow-up timer (b-1125-24): every sent item gets a follow-up date (server trigger); due and late follow-ups come first in Today and Queue: Followed up / In 2 days / They replied / No follow-up, each with Undo. Revert: git revert; SQL in design/sql/j8_followup_timer.sql. -->
 <!-- J8NIX 2.0 · 15.9.0 (26 Nov 2026): stall alarm (r-1125-01): Today shows how many approved items have not gone out and the oldest age (Stuck at 6 h, tap = Queue); server: pg_cron j8_stall_tick raises one alert per stuck item + one grouped push. Revert: git revert; SQL rollback in design/sql/j8_stall_alarm.sql. -->
 <!-- J8NIX 2.0 · 15.8.0 (26 Nov 2026): deal room (b-1125-25): "Warm leads" on top of Today, one card per positive reply (public.j8_deals, made by trigger j8_outcomes_deal): stage, next step + due, times offered, prep brief, proof pack; a late step raises one alert (pg_cron j8_deal_tick). Revert: git revert; SQL rollback in design/sql/j8_deal_room.sql. -->
@@ -259,7 +260,7 @@
 <script src="j11.js?v=12.0.1"></script>
 <script src="shell.js?v=12.0.1"></script>
 <script src="j13.js?v=14.1.0"></script>
-<script src="j20.js?v=15.10.0"></script>
+<script src="j20.js?v=15.11.0"></script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>
