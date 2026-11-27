@@ -14,6 +14,7 @@
    15.8 adds:      deals (j8_deals: deal room, one card per warm reply; deals.set for stage, next step, due, proof pack)
    15.10 adds:     approvals.followup(id, 'done'|'snooze'|'none'|'undo') (j8_followup_mark: the follow-up timer on sent items)
    15.7 adds:      gates() (rpc j8_mvp_gates: the MVP bar, 10 live PASS/FAIL gates; read-only)
+   16.4 adds:      workerDays(days) (rpc j8_worker_days, read-only): results per worker per Israel day, live from runs, items, outcomes
    16.2 adds:      lanes(days) (rpc j8_lanes, read-only) + approvals.reason(id, code) (rpc j8_kill_reason: why Dave stopped it)
    14.1 adds:      approvals.setAutopilot(id, 'ask'|'hold'|'off') (j8_template_autopilot: templates only, extra.autopilot only)
    Writes are optimistic and return Promises; on failure they reject with {code}.
@@ -32,7 +33,7 @@ var J8 = (function () {
   var DROP = ['org_id', 'extra']; // updated_at stays on docs: the app's "since you last looked" line reads it
   var sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'j8nix-v4-auth' } });
   var data = {}, ver = {}, subs = { status: [], orgs: [], auth: [] }, state = { connected: false, error: null, org: null, role: null, user: null };
-  var orgs = [], channel = null, poll = null, rankC = null, lintC = null, funC = null, gateC = null, laneC = null;
+  var orgs = [], channel = null, poll = null, rankC = null, lintC = null, funC = null, gateC = null, laneC = null, wdC = null;
   COLS.forEach(function (c) { data[c] = {}; ver[c] = {}; subs[c] = []; });
 
   function now() { return new Date().toISOString(); }
@@ -263,6 +264,14 @@ var J8 = (function () {
       if (!fresh && laneC && laneC.org === state.org && laneC.d === d && Date.now() - laneC.t < 6e4) return laneC.v;
       var r = await sb.rpc('j8_lanes', { p_org: state.org, p_days: d }); if (r.error) return null;
       laneC = { org: state.org, d: d, t: Date.now(), v: r.data || [] }; return laneC.v;
+    },
+    /* 16.4 (u-1126-06): daily results per worker (public.j8_worker_days, security invoker, viewer+, read-only): one row per
+       j8_routines worker per Israel day: runs, failed, made, sent, replied, calls, paid_ils, fail_note. Cached for a minute; null when offline or refused. */
+    workerDays: async function (days, fresh) {
+      if (!state.org) return null; var d = Math.min(Math.max(parseInt(days, 10) || 30, 1), 60);
+      if (!fresh && wdC && wdC.org === state.org && wdC.d === d && Date.now() - wdC.t < 6e4) return wdC.v;
+      var r = await sb.rpc('j8_worker_days', { p_org: state.org, p_days: d }); if (r.error) return null;
+      wdC = { org: state.org, d: d, t: Date.now(), v: r.data || [] }; return wdC.v;
     },
     /* 15.7: the MVP bar (public.j8_mvp_gates, security invoker, viewer+, read-only): 10 live ready-for-testing gates,
        ok null = not enough data yet. Cached for a minute; null when offline or refused. */

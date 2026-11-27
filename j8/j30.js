@@ -8,6 +8,7 @@
    Built as a fork of the 2.0 view logic (j20.js 15.14.0), so every read and write still goes through window.J8 / window.j8x on
    the same code paths. Styles: j30w.css (shadow root). Loader: index.html (?ui=3 / ?ui=2). Research + plan:
    research_notes/J8NIX 3 mobile UX/. Revert: index.html back to j20.js, or open ?ui=2.
+   16.4.0 (u-1126-06): Workers rows show yesterday's results per worker, amber "No results for 7 days", a 7-day card on tap (J8.workerDays).
    16.2.0 (r-1125-02): after Stop, the toast asks why (five one-tap reasons, saved by public.j8_kill_reason); Results > Overall
    gets "Lanes": per template or kind + project, how many get stopped and why, good replies, last 14 days vs the 14 before,
    losing lanes first (public.j8_lanes). Revert: git revert.
@@ -15,7 +16,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '16.3.0';
+  var VER = '16.4.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -700,8 +701,57 @@
   function dayKey(ts) { try { return new Date(ts).toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' }); } catch (e) { return new Date(ts).toISOString().slice(0, 10); } }
   function dayName(ts) { var k = dayKey(ts); return k === dayKey(Date.now()) ? t('todayW') : k === dayKey(Date.now() - 864e5) ? t('yestW') : day(ts); }
   function clean(s) { return String(s || '').replace(/^[\u{1F534}\u{1F7E0}\u{1F7E2}\u{1F7E1}⚪✅❌]\s*/u, ''); }
+  /* ---------- 16.4 Daily results per worker (backlog u-1126-06). Read-only from public.j8_worker_days (J8.workerDays): computed live from
+     j8_runs, j8_approvals and j8_outcomes per Israel day, never stored, so it always matches the database. Each worker row adds one short
+     phrase (yesterday's results) and, when a worker that made results in the last 30 days made none in the last 7, an amber "No results
+     for 7 days". Tap the row for the last 7 days, one line per day. ---------- */
+  Object.assign(T.en, { wdYest: 'Yesterday', wd7: 'Last 7 days', wdDry: 'No results for 7 days', wdRuns: '{n} runs', wdRun1: '1 run', wdFail: '{n} failed', wdFail1: '1 failed',
+    wdMade: '{n} made', wdSent: '{n} sent', wdRep: '{n} replies', wdRep1: '1 reply', wdCall: '{n} calls', wdCall1: '1 call', wdPaid: '₪{n} paid', wdNoRun: 'no runs', wdNoRes: 'no results',
+    wdLoad: 'Loading results…', wdErr: 'Results didn\'t load. Pull to refresh.', wdFailW: 'Last failure' });
+  Object.assign(T.he, { wdYest: 'אתמול', wd7: '7 הימים האחרונים', wdDry: 'אין תוצאות 7 ימים', wdRuns: '{n} ריצות', wdRun1: 'ריצה אחת', wdFail: '{n} נכשלו', wdFail1: 'אחת נכשלה',
+    wdMade: '{n} הוכנו', wdSent: '{n} נשלחו', wdRep: '{n} תשובות', wdRep1: 'תשובה אחת', wdCall: '{n} שיחות', wdCall1: 'שיחה אחת', wdPaid: '₪{n} שולמו', wdNoRun: 'לא רץ', wdNoRes: 'בלי תוצאות',
+    wdLoad: 'טוען תוצאות…', wdErr: 'התוצאות לא נטענו. משכו לרענון.', wdFailW: 'כשל אחרון' });
+  S.wd = null; S.wdAt = 0; S.wdBusy = false; S.wdErr = false;
+  function pullWd() {
+    var j = J(); if (!j || !j.workerDays || !on() || S.wdBusy || Date.now() - S.wdAt < 6e4) return;
+    S.wdBusy = true;
+    j.workerDays(30).then(function (R) { S.wdBusy = false; S.wdAt = Date.now(); if (Array.isArray(R)) { var M = {}; R.forEach(function (r) { (M[r.routine_id] = M[r.routine_id] || []).push(r); }); Object.keys(M).forEach(function (k) { M[k].sort(function (a, b) { return a.day < b.day ? 1 : a.day > b.day ? -1 : 0; }); }); S.wd = M; S.wdErr = false; } else S.wdErr = !S.wd; soon(); },
+      function () { S.wdBusy = false; S.wdAt = Date.now(); S.wdErr = !S.wd; soon(); });
+  }
+  function wdN(v) { var n = Number(v); return isFinite(n) && n > 0 ? n : 0; }
+  function wdRes(d) { return d ? wdN(d.made) + wdN(d.sent) + wdN(d.replied) + wdN(d.calls) + wdN(d.paid_ils) : 0; }
+  function wdParts(d, runs) { /* only the non-zero numbers, in plain words */
+    var P = [];
+    if (runs) { var rn = wdN(d.runs); P.push(rn === 1 ? t('wdRun1') : t('wdRuns').replace('{n}', rn)); if (wdN(d.failed)) P.push(wdN(d.failed) === 1 ? t('wdFail1') : t('wdFail').replace('{n}', wdN(d.failed))); }
+    if (wdN(d.made)) P.push(t('wdMade').replace('{n}', wdN(d.made))); if (wdN(d.sent)) P.push(t('wdSent').replace('{n}', wdN(d.sent)));
+    if (wdN(d.replied)) P.push(wdN(d.replied) === 1 ? t('wdRep1') : t('wdRep').replace('{n}', wdN(d.replied)));
+    if (wdN(d.calls)) P.push(wdN(d.calls) === 1 ? t('wdCall1') : t('wdCall').replace('{n}', wdN(d.calls)));
+    if (wdN(d.paid_ils)) P.push(t('wdPaid').replace('{n}', Math.round(wdN(d.paid_ils)).toLocaleString('en-US')));
+    return P;
+  }
+  function wdOf(rt) { /* {y: yesterday row, w7: last 7 days incl. today, dry: amber flag} or null while loading */
+    var D = S.wd && S.wd[rt.id]; if (!D) return null;
+    var yk = dayKey(Date.now() - 864e5), y = D.filter(function (d) { return d.day === yk; })[0] || null, w7 = D.slice(0, 7), r7 = 0, r30 = 0;
+    w7.forEach(function (d) { r7 += wdRes(d); }); D.forEach(function (d) { r30 += wdRes(d); });
+    return { y: y, w7: w7, dry: rt.enabled !== false && r30 > 0 && r7 === 0 };
+  }
+  function wdLine(rt) { /* the short phrase on the collapsed row */
+    var o = wdOf(rt); if (!o) return '';
+    if (o.dry) return ' · <span class="wd-dry">' + esc(t('wdDry')) + '</span>';
+    var P = o.y ? wdParts(o.y, false) : []; return P.length ? ' · <span dir="auto">' + esc(t('wdYest') + ': ' + P.join(', ')) + '</span>' : '';
+  }
+  function wdCard(rt) { /* the 7-day card inside the opened row */
+    if (!S.wd) return '<p class="meta">' + esc(t(S.wdErr ? 'wdErr' : 'wdLoad')) + '</p>';
+    var o = wdOf(rt); if (!o || !o.w7.length) return '';
+    var fl = o.w7.filter(function (d) { return d.fail_note; })[0];
+    return '<div class="wd"><p class="wd-h"><b>' + esc(t('wd7')) + '</b>' + (o.dry ? ' · <span class="wd-dry">' + esc(t('wdDry')) + '</span>' : '') + '</p><ul class="wd-l">' + o.w7.map(function (d) {
+      var ts = Date.parse(d.day + 'T12:00:00Z'), P = wdN(d.runs) ? wdParts(d, true) : [], res = wdRes(d);
+      return '<li><span class="wd-d">' + esc(dayName(ts)) + '</span><span dir="auto">' + esc(P.length ? P.join(' · ') : t('wdNoRun')) + (wdN(d.runs) && !res ? ' · ' + esc(t('wdNoRes')) : '') + '</span></li>';
+    }).join('') + '</ul>' + (fl ? '<p><b>' + esc(t('wdFailW')) + ' (' + esc(dayName(Date.parse(fl.day + 'T12:00:00Z'))) + '):</b> <span dir="auto">' + esc(cut(clean(fl.fail_note), 160)) + '</span></p>' : '') + '</div>';
+  }
   function vAgents() {
     var RT = rtnList(), all = runsAll(), now = Date.now(), wk = now - 7 * 864e5;
+    pullWd();
     var h = '<h1 class="sr">' + esc(t('agents')) + '</h1>';
     if (!RT.length && !all.length) return h + (failed() ? '<button type="button" class="fail" data-x="retry">' + esc(t('fail')) + '</button>' : !on() ? '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>' : '<p class="empty">' + esc(t('none')) + '</p>');
     var A = RT.map(function (r) { return { r: r, s: agState(r) }; }), bad = A.filter(function (x) { return x.s.bad; }), en = A.filter(function (x) { return x.r.enabled !== false && !x.s.bad; }), never = en.filter(function (x) { return !x.s.last; }).length, quiet = en.filter(function (x) { return x.s.last && (x.s.st === 'late' || x.s.st === 'none'); }).length, ranOk = en.length - never - quiet, onN = RT.filter(function (r) { return r.enabled !== false; }).length;
@@ -721,10 +771,10 @@
         bd = '<div class="bd ag" id="ab-' + nid + '">' + (r.what ? '<p><b>' + esc(t('whatW')) + ':</b> <span dir="auto">' + esc(cut(r.what, 300)) + '</span></p>' : '') + (r.schedule ? '<p><b>' + esc(t('whenW')) + ':</b> <span dir="auto">' + esc(cut(r.schedule, 120)) + '</span></p>' : '')
           + (s.ms && s.ms.length ? '<p><b>' + esc(t('missedW')) + ':</b> ' + s.ms.slice(0, 5).map(function (v) { return esc(day(v) + ' ' + hm(v)); }).join(', ') + (s.ms.length > 5 ? ' · ' + esc(t('missMore').replace('{n}', s.ms.length - 5)) : '') + '</p>' : '')
           + (lr ? '<p><b>' + esc(t('lastW')) + ':</b> ' + esc(stWord(runSt(lr))) + ' · ' + esc(ago(runT(lr))) + (lr.summary ? ' · <span dir="auto">' + esc(cut(clean(lr.summary), 240)) + '</span>' : '') + '</p>' : '')
-          + (!r.switchable ? '<p class="meta">' + esc(t('alwaysWhy')) + '</p>' : '') + '</div>';
+          + wdCard(r) + (!r.switchable ? '<p class="meta">' + esc(t('alwaysWhy')) + '</p>' : '') + '</div>';
       }
       return '<div class="row rt' + (r.enabled === false ? ' is-off' : '') + '"><div class="rh"><button type="button" class="rx" data-x="aexp" data-id="' + esc(r.id) + '" aria-expanded="' + !!op + '"' + (op ? ' aria-controls="ab-' + nid + '"' : '') + '>' + glyph(s.st)
-        + '<span class="ph"><b dir="auto" id="' + nid + '">' + esc(cut(r.name || r.id, 48)) + '</b><small>' + (s.st !== 'ok' ? '' : '<span class="sr">' + esc(stWord(s.st)) + ': </span>') + '<span dir="auto">' + esc(s.ph) + '</span></small></span>' + chev() + '</button>' + sw + '</div>' + bd + '</div>';
+        + '<span class="ph"><b dir="auto" id="' + nid + '">' + esc(cut(r.name || r.id, 48)) + '</b><small>' + (s.st !== 'ok' ? '' : '<span class="sr">' + esc(stWord(s.st)) + ': </span>') + '<span dir="auto">' + esc(s.ph) + '</span>' + wdLine(r) + '</small></span>' + chev() + '</button>' + sw + '</div>' + bd + '</div>';
     }).join('') + '</div></section>';
     var W7 = all.filter(function (r) { var v = runT(r); return !isNaN(v) && v >= wk && v <= now + 6e4; }), PB = W7.filter(function (r) { return runSt(r) === 'failed'; });
     var L = S.prob ? PB : W7, n = S.rcN || 30, last = '', body = '', NM = {};
