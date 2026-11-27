@@ -1,4 +1,7 @@
--- J8NIX done-check gate (u-1126-02). Drafted 26 Nov, refined 27 Nov 2026. NOT APPLIED YET (migration name: j8_tasks_done_check_gate).
+-- J8NIX done-check gate (u-1126-02). Drafted 26 Nov, refined 27 Nov 2026. APPLIED 27 Nov 2026 ~08:30 UTC as migration j8_tasks_done_check_gate
+-- (body applied without the comment lines; 21 rolled-back tests passed first).
+-- 27 Nov hardening (migration j8_tasks_done_check_self_proof): an insert tries the check with status 'done'.
+-- Known follow-up: a 'person' task the Mac sender finishes after Dave's tap (extra.tapped_by) still needs a member tick to close.
 -- 27 Nov: the rolled-back test stalled because the Supabase tool asks for a person's confirmation on SQL it reads as destructive
 -- (DROP / DELETE in the text) and scheduled runs have nobody to answer. This file therefore uses CREATE OR REPLACE TRIGGER, no DROP.
 -- 27 Nov changes: a writer that drops extra.done_check gets the old one back (no error for stale clients); database-only work can
@@ -81,7 +84,9 @@ begin
   begin
     perform set_config('transaction_read_only', 'on', true);
     begin
-      execute 'select (' || chk || ')::boolean' into ok using new.id, new.org_id, to_jsonb(new);
+      -- a new open task is tried as if it were already done, so a check that only reads the row's own status proves nothing
+      execute 'select (' || chk || ')::boolean' into ok using new.id, new.org_id,
+        case when tg_op = 'INSERT' and coalesce(new.status, 'open') = 'open' then jsonb_set(to_jsonb(new), '{status}', '"done"') else to_jsonb(new) end;
     exception when others then
       ok := null; why := sqlerrm;
     end;
