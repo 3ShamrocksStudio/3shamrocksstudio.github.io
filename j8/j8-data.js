@@ -14,6 +14,7 @@
    15.8 adds:      deals (j8_deals: deal room, one card per warm reply; deals.set for stage, next step, due, proof pack)
    15.10 adds:     approvals.followup(id, 'done'|'snooze'|'none'|'undo') (j8_followup_mark: the follow-up timer on sent items)
    15.7 adds:      gates() (rpc j8_mvp_gates: the MVP bar, 10 live PASS/FAIL gates; read-only)
+   16.2 adds:      lanes(days) (rpc j8_lanes, read-only) + approvals.reason(id, code) (rpc j8_kill_reason: why Dave stopped it)
    14.1 adds:      approvals.setAutopilot(id, 'ask'|'hold'|'off') (j8_template_autopilot: templates only, extra.autopilot only)
    Writes are optimistic and return Promises; on failure they reject with {code}.
    Needs vendor/supabase.js loaded first. Shapes: ops/brain/ARMS-CONTRACT.md.
@@ -31,7 +32,7 @@ var J8 = (function () {
   var DROP = ['org_id', 'extra']; // updated_at stays on docs: the app's "since you last looked" line reads it
   var sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'j8nix-v4-auth' } });
   var data = {}, ver = {}, subs = { status: [], orgs: [], auth: [] }, state = { connected: false, error: null, org: null, role: null, user: null };
-  var orgs = [], channel = null, poll = null, rankC = null, lintC = null, funC = null, gateC = null;
+  var orgs = [], channel = null, poll = null, rankC = null, lintC = null, funC = null, gateC = null, laneC = null;
   COLS.forEach(function (c) { data[c] = {}; ver[c] = {}; subs[c] = []; });
 
   function now() { return new Date().toISOString(); }
@@ -254,6 +255,15 @@ var J8 = (function () {
       var r = await sb.from('j8_funnel').select('engine,template_id,window,drafted,approved,sent,replied,calls,proposals,paid,value_ils').eq('org_id', state.org); if (r.error) return null;
       funC = { org: state.org, t: Date.now(), v: r.data || [] }; return funC.v;
     },
+    /* 16.2 (r-1125-02): lanes (public.j8_lanes, security invoker, viewer+, read-only): per template or kind + product:
+       made, decided, killed, sent, replies, good replies, kill reasons, kill rate last 14 days vs the 14 before, losing flag.
+       Cached for a minute per window; null when offline or refused. */
+    lanes: async function (days, fresh) {
+      if (!state.org) return null; var d = days === 7 ? 7 : 30;
+      if (!fresh && laneC && laneC.org === state.org && laneC.d === d && Date.now() - laneC.t < 6e4) return laneC.v;
+      var r = await sb.rpc('j8_lanes', { p_org: state.org, p_days: d }); if (r.error) return null;
+      laneC = { org: state.org, d: d, t: Date.now(), v: r.data || [] }; return laneC.v;
+    },
     /* 15.7: the MVP bar (public.j8_mvp_gates, security invoker, viewer+, read-only): 10 live ready-for-testing gates,
        ok null = not enough data yet. Cached for a minute; null when offline or refused. */
     gates: async function (fresh) {
@@ -387,6 +397,15 @@ var J8 = (function () {
         var r = await sb.rpc('j8_hand_sent', { p_org: state.org, p_id: String(id) });
         if (r.error) return rej('denied', { message: r.error.message });
         await loadCol('approvals').catch(function () {}); return true;
+      },
+      /* 16.2 (r-1125-02): why Dave stopped an item (public.j8_kill_reason: signed-in member, stopped items only; writes
+         extra.kill_code / kill_by / kill_reason_at). Codes: who, channel, words, dup, closed, worth, timing, other. */
+      reason: async function (id, code) {
+        if (['who', 'channel', 'words', 'dup', 'closed', 'worth', 'timing', 'other'].indexOf(code) < 0) return rej('bad_value');
+        if (!state.org) return rej('offline');
+        var r = await sb.rpc('j8_kill_reason', { p_org: state.org, p_id: String(id), p_code: code });
+        if (r.error) return rej('denied', { message: r.error.message });
+        laneC = null; await loadCol('approvals').catch(function () {}); return true;
       },
       reply: async function (id, what) {
         if (['replied', 'call', 'proposal', 'won', 'lost', 'clear'].indexOf(what) < 0) return rej('bad_value'); /* 14.0: call + proposal (j8_reply_mark also stamps outcome_at) */

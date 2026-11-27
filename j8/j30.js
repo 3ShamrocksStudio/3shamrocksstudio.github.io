@@ -8,11 +8,14 @@
    Built as a fork of the 2.0 view logic (j20.js 15.14.0), so every read and write still goes through window.J8 / window.j8x on
    the same code paths. Styles: j30w.css (shadow root). Loader: index.html (?ui=3 / ?ui=2). Research + plan:
    research_notes/J8NIX 3 mobile UX/. Revert: index.html back to j20.js, or open ?ui=2.
+   16.2.0 (r-1125-02): after Stop, the toast asks why (five one-tap reasons, saved by public.j8_kill_reason); Results > Overall
+   gets "Lanes": per template or kind + project, how many get stopped and why, good replies, last 14 days vs the 14 before,
+   losing lanes first (public.j8_lanes). Revert: git revert.
    ---- 2.0 history (j20.js) is kept in that file. ----
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '16.1.0';
+  var VER = '16.2.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -562,6 +565,62 @@
     if (rest.length) h += '<details class="grp fold"' + (S.open.rest ? ' open' : '') + ' data-k="rest"><summary><h2>' + esc(t('resting')) + ' · ' + rest.length + '</h2>' + chev() + '</summary>' + (S.open.rest ? '<p class="meta">' + esc(t('restSub')) + '</p><div class="rows">' + rest.map(row).join('') + '</div>' : '') + '</details>';
     return h;
   }
+  /* ---------- 16.2 Lanes (r-1125-02). Rows come only from public.j8_lanes (J8.lanes): one lane = a template, or a kind of draft,
+     inside one project. Losing = 10 or more decided and 6 in 10 stopped (server rule). Small counts stay "X of N". Read only. ---------- */
+  Object.assign(T.en, { lanes: 'Lanes: what gets stopped', lnSub: 'Each template or kind of draft, per project. Losing lanes first.', lnLose: 'Losing', lnStop: 'stopped', lnOf: '{k} of {d} stopped',
+    lnGood: '{p} good replies of {s} sent', lnGood1: '1 good reply of {s} sent', lnWhy: 'Why stopped', lnNoKill: 'Nothing stopped here.', lnL14: 'Last 14 days', lnP14: '14 days before', lnNoDec: 'nothing decided',
+    lnLoseP: 'Most drafts in this lane get stopped. Fix the words, or stop making this kind.', lnMore: 'more lanes', lnFail: 'Lanes could not load. Pull to refresh.', lnNone: 'No lanes in this window yet.', lnTpl: 'Template',
+    why: 'Why?', noted: 'Noted: {n}.',
+    kr_who: 'Wrong person', kr_channel: 'Wrong channel', kr_words: 'Words not right', kr_dup: 'Already done', kr_closed: 'Gone or closed', kr_worth: 'Not worth it', kr_timing: 'Bad timing', kr_other: 'Other', kr_unsaid: 'No reason given' });
+  Object.assign(T.he, { lanes: 'מסלולים: מה נעצר', lnSub: 'כל תבנית או סוג טיוטה, לפי פרויקט. המסלולים המפסידים קודם.', lnLose: 'מפסיד', lnStop: 'נעצרו', lnOf: '{k} מתוך {d} נעצרו',
+    lnGood: '{p} תשובות טובות מתוך {s} שנשלחו', lnGood1: 'תשובה טובה אחת מתוך {s} שנשלחו', lnWhy: 'למה נעצרו', lnNoKill: 'שום דבר לא נעצר כאן.', lnL14: '14 הימים האחרונים', lnP14: '14 הימים שלפני', lnNoDec: 'לא הוחלט כלום',
+    lnLoseP: 'רוב הטיוטות במסלול הזה נעצרות. לתקן את הניסוח, או להפסיק להכין מהסוג הזה.', lnMore: 'מסלולים נוספים', lnFail: 'המסלולים לא נטענו. משכו לרענון.', lnNone: 'עוד אין מסלולים בטווח הזה.', lnTpl: 'תבנית',
+    why: 'למה?', noted: 'נרשם: {n}.',
+    kr_who: 'האדם הלא נכון', kr_channel: 'הערוץ הלא נכון', kr_words: 'הניסוח לא טוב', kr_dup: 'כבר נעשה', kr_closed: 'נסגר או נעלם', kr_worth: 'לא שווה', kr_timing: 'תזמון לא טוב', kr_other: 'אחר', kr_unsaid: 'בלי סיבה' });
+  var KR = ['who', 'channel', 'words', 'dup', 'worth']; /* the five one-tap reasons after Stop; closed / timing / other come from the workers */
+  var KINDW = { email: 'Email', outreach: 'Outreach', linkedin: 'LinkedIn', post: 'Post', application: 'Application', message: 'Message', other: 'Other', invoice: 'Invoice' };
+  S.lanes = {}; S.laneAt = {}; S.laneBusy = false; S.laneErr = false;
+  function pullLanes() {
+    var j = J(), d = win() === '7d' ? 7 : 30; if (!j || !j.lanes || !on() || S.laneBusy || Date.now() - (S.laneAt[d] || 0) < 6e4) return;
+    S.laneBusy = true;
+    j.lanes(d).then(function (R) { S.laneBusy = false; S.laneAt[d] = Date.now(); if (Array.isArray(R)) { S.lanes[d] = R; S.laneErr = false; } else S.laneErr = !S.lanes[d]; soon(); },
+      function () { S.laneBusy = false; S.laneAt[d] = Date.now(); S.laneErr = !S.lanes[d]; soon(); });
+  }
+  function laneName(r) {
+    var P = safe(function () { return J().raw('projects'); }, {}) || {}, pn = r.product_name || (P[r.product] && P[r.product].name) || (r.product === 'p-general' ? t('general') : r.product) || t('general');
+    var w; if (r.template_id) { w = r.label && r.label !== 'Template' ? r.label : String(r.template_id).replace(/^tpl-t\d+-/i, '').replace(/-/g, ' '); w = w.charAt(0).toUpperCase() + w.slice(1); if (/^t[\w-]{0,8}$/i.test(String(r.template_id))) w = t('lnTpl') + ' ' + r.template_id; }
+    else { var k = String(r.kind || 'other').toLowerCase(); w = lang() === 'he' ? chan(k) : KINDW[k] || k.charAt(0).toUpperCase() + k.slice(1); }
+    return pn + ' · ' + w;
+  }
+  function pct(v) { return v == null ? '' : Math.round(Number(v) * 100) + '%'; }
+  function vLanes() {
+    pullLanes();
+    var d = win() === '7d' ? 7 : 30, R = S.lanes[d];
+    var h = '<section class="grp lns" aria-labelledby="lnh"><h2 id="lnh">' + esc(t('lanes')) + '</h2>';
+    if (!R) return h + (S.laneErr ? '<p class="meta top0">' + esc(t('lnFail')) + '</p>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>') + '</section>';
+    R = R.filter(function (r) { return Number(r.made) > 0; });
+    if (!R.length) return h + '<p class="meta top0">' + esc(t('lnNone')) + '</p></section>';
+    h += '<p class="meta top0">' + esc(t('lnSub')) + '</p>';
+    var row = function (r) {
+      var k = 'ln:' + r.lane, op = !!S.open[k], dd = Number(r.decided) || 0, kk = Number(r.killed) || 0, sn = Number(r.sent) || 0, pp = Number(r.positive) || 0, lose = r.losing === true;
+      var sub = '<span class="nw">' + esc(t('lnOf').replace('{k}', kk).replace('{d}', dd)) + '</span>' + (sn ? ' · <span class="nw">' + esc((pp === 1 ? t('lnGood1') : t('lnGood').replace('{p}', pp)).replace('{s}', sn)) + '</span>' : ''); /* nothing sent: no replies line */
+      var kpi = dd >= 10 ? '<span class="kpi"><b>' + esc(pct(r.kill_rate)) + '</b><small>' + esc(t('lnStop')) + '</small></span>' : '';
+      var tag = lose ? '<span class="lnl">' + glyph('failed') + '<span>' + esc(t('lnLose')) + '</span></span>' : ''; /* glyph + word, never colour alone */
+      var bd = '';
+      if (op) {
+        var RS = r.reasons && typeof r.reasons === 'object' ? Object.keys(r.reasons).map(function (c) { return [c, Number(r.reasons[c]) || 0]; }).filter(function (x) { return x[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; }) : [];
+        var tr = function (lab, rate, n) { n = Number(n) || 0; return '<li><b>' + esc(lab) + '</b> <span dir="auto">' + esc(n ? t('lnOf').replace('{k}', Math.round((Number(rate) || 0) * n)).replace('{d}', n) + (n >= 10 ? ' (' + pct(rate) + ')' : '') : t('lnNoDec')) + '</span></li>'; };
+        bd = '<div class="bd">' + (lose ? '<p class="sig bad">' + glyph('failed') + '<span>' + esc(t('lnLoseP')) + '</span></p>' : '')
+          + '<p class="meta"><b>' + esc(t('lnWhy')) + ':</b> ' + (RS.length ? RS.map(function (x) { return esc(t('kr_' + x[0])) + ' ' + x[1]; }).join(' · ') : esc(t('lnNoKill'))) + '</p>'
+          + '<ul class="lnt">' + tr(t('lnL14'), r.kill_rate_14, r.decided_14) + tr(t('lnP14'), r.kill_rate_prev_14, r.decided_prev_14) + '</ul></div>';
+      }
+      return '<details class="row ln' + (lose ? ' is-bad' : '') + '"' + (op ? ' open' : '') + ' data-k="' + esc(k) + '"><summary><span class="ph"><b dir="auto">' + esc(cut(laneName(r), 64)) + '</b><small>' + tag + sub + '</small></span>' + kpi + chev() + '</summary>' + bd + '</details>';
+    };
+    var top = R.slice(0, 5), rest = R.slice(5);
+    h += '<div class="rows">' + top.map(row).join('') + '</div>';
+    if (rest.length) h += '<details class="fold in2"' + (S.open.lnr ? ' open' : '') + ' data-k="lnr"><summary><h2>+ ' + rest.length + ' ' + esc(t('lnMore')) + '</h2>' + chev() + '</summary>' + (S.open.lnr ? '<div class="rows">' + rest.map(row).join('') + '</div>' : '') + '</details>';
+    return h + '</section>';
+  }
   function vScore() {
     pullFun();
     var h = '<h1 class="sr">' + esc(t('score')) + '</h1><div class="hd"><p class="lead">' + esc(cohortLine()) + '</p>' + winSeg() + '</div>', st = funState();
@@ -579,6 +638,7 @@
     var ES = EL.filter(function (x) { return x.f.sent > 0; }), EN = EL.filter(function (x) { return !x.f.sent; });
     if (EL.length) h += '<section class="grp"><h2>' + esc(t('byEng')) + '</h2><div class="rows">' + ES.map(erow).join('') + '</div>'
       + (EN.length ? '<details class="fold in2"' + (S.open.ens ? ' open' : '') + ' data-k="ens"><summary><h2>+ ' + EN.length + ' ' + esc(t('moreEng')) + '</h2>' + chev() + '</summary>' + (S.open.ens ? '<div class="rows">' + EN.map(erow).join('') + '</div>' : '') + '</details>' : '') + '</section>';
+    h += vLanes();
     if (m) h += '<section class="grp"><h2>' + esc(t('money')) + '</h2><div class="rows"><div class="row"><div class="rh"><span class="ph"><b>' + esc(t('booked')) + '</b><small>' + esc(m.goal_usd ? t('goal') + ' ' + usd(m.goal_usd) + (m.goal_date ? ' · ' + day(String(m.goal_date).slice(0, 10) + 'T12:00:00Z') + ' ' + String(m.goal_date).slice(0, 4) : '') : '') + '</small></span><span class="kpi"><b>' + esc(ils(m.booked_ils) + (m.booked_usd ? ' + ' + usd(m.booked_usd) : '')) + '</b></span></div></div></div></section>';
     return h + '<p class="meta foot">' + esc(t('updated')) + ' ' + esc(hm(S.funAt)) + '</p>';
   }
@@ -1144,11 +1204,13 @@
   }
   function soon() { if (raf) return; raf = requestAnimationFrame(function () { raf = 0; render(false); }); }
   function go(sp) { if (sp === 'today') sp = 'home'; if (sp === 'status' || sp === 'time') { LAST.plan = sp; try { localStorage.setItem('j8:p3', sp); } catch (e) {} } if (sp === 'score' || sp === 'eng') { LAST.results = sp; try { localStorage.setItem('j8:r3', sp); } catch (e) {} } S.sp = sp; S.edit = null; render(true); window.scrollTo(0, 0); var m = sr.getElementById('j2main'); if (m) try { m.focus({ preventScroll: true }); } catch (e) {} }
-  function say(msg, undo) {
+  function say(msg, undo, why) {
     undoFn = undo || null; var el = sr.getElementById('j2t'); if (!el) return;
-    el.setAttribute('dir', lang() === 'he' ? 'rtl' : 'ltr'); el.innerHTML = '<span dir="' + (lang() === 'he' ? 'rtl' : 'ltr') + '">' + esc(msg) + '</span>' + (undo ? '<button type="button" data-x="undo">' + esc(t('undo')) + '</button>' : '');
+    el.setAttribute('dir', lang() === 'he' ? 'rtl' : 'ltr'); el.innerHTML = '<span dir="' + (lang() === 'he' ? 'rtl' : 'ltr') + '">' + esc(msg) + '</span>' + (undo ? '<button type="button" data-x="undo">' + esc(t('undo')) + '</button>' : '')
+      + (why ? '<div class="why" role="group" aria-label="' + esc(t('why')) + '"><em>' + esc(t('why')) + '</em>' + KR.map(function (c) { return '<button type="button" data-x="kwhy" data-id="' + esc(why) + '" data-w="' + c + '">' + esc(t('kr_' + c)) + '</button>'; }).join('') + '</div>' : ''); /* 16.2: one tap says why it was stopped */
+    el.classList.toggle('wy', !!why);
     el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
-    clearTimeout(toastT); toastT = setTimeout(function () { var e2 = sr.getElementById('j2t'); if (e2) e2.classList.remove('on'); undoFn = null; }, 6000);
+    clearTimeout(toastT); toastT = setTimeout(function () { var e2 = sr.getElementById('j2t'); if (e2) e2.classList.remove('on'); undoFn = null; }, why ? 12000 : 6000);
   }
   function fail(e) { render(true); say(t('couldnt') + (e && (e.message || e.code) ? ' (' + cut(e.message || e.code, 60) + ')' : '')); }
   /* the top card leaves in the direction of the decision, then the deck re-renders */
@@ -1198,6 +1260,8 @@
     if (x === 'look') { try { localStorage.setItem('j8:look', id === 'dark' || id === 'auto' ? id : 'light'); } catch (e) {} paint(); render(true); return; }
     if (x === 'ui2') { location.href = './?ui=2'; return; }
     if (x === 'sp') { if (GS.tour > -1) { GS.tour = -1; var gg = gLoad(); if (gg) { gg.tour = 'ended'; gSave(); } } go(id); return; }
+    if (x === 'kwhy') { var kw = el.getAttribute('data-w'), ku2 = undoFn; [].forEach.call(sr.querySelectorAll('#j2t .why button'), function (b) { b.disabled = true; });
+      J().approvals.reason(id, kw).then(function () { say(t('noted').replace('{n}', t('kr_' + kw)), ku2); }, fail); return; }
     if (x === 'undo') { if (undoFn) { struggle(S.sp, 'undo'); var f = undoFn; undoFn = null; var te = sr.getElementById('j2t'); if (te) te.classList.remove('on'); f(); } return; }
     if (x === 'hold') { leave(id, 'hold', function () { S.held[id] = 1; render(true); say(t('heldT2'), function () { delete S.held[id]; render(true); }); }); return; }
     if (x === 'unhold') { S.held = {}; render(true); return; }
@@ -1260,7 +1324,8 @@
       var sk = (x === 'stop' ? 'st-' : 'kl-') + id; if (!armed(sk)) { arm(sk); return; } delete S.arm[sk]; el.disabled = true;
       leave(id, 'stop', function () {
         var kd = (apById(id) || {}).kind === 'design';
-        j.approvals.kill(id).then(function () { S.gone[id] = 1; render(true); say(t(kd ? 'noneT' : 'stopped'), function () { j.approvals.undo(id).then(function () { delete S.gone[id]; render(true); say(t('back')); }, fail); }); }, fail);
+        var ku = function () { j.approvals.undo(id).then(function () { delete S.gone[id]; render(true); say(t('back')); }, fail); };
+        j.approvals.kill(id).then(function () { S.gone[id] = 1; render(true); say(t(kd ? 'noneT' : 'stopped'), ku, kd || !j.approvals.reason ? null : id); }, fail); /* 16.2: the toast asks why (r-1125-02) */
       }); return;
     }
     if (x === 'ed-save') {

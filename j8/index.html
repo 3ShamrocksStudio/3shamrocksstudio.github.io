@@ -25,9 +25,10 @@
 <link rel="stylesheet" href="j13.css?v=14.0.0">
 <link rel="preload" href="j13w.css?v=14.1.0" as="style">
 <link rel="stylesheet" href="j20.css?v=15.5.0">
-<link rel="preload" href="j30w.css?v=16.1.0" as="style">
+<link rel="preload" href="j30w.css?v=16.2.0" as="style">
 </head>
 <body>
+<!-- J8NIX 3.0 · 16.2.0 (27 Nov 2026, r-1125-02): Stop asks why (five one-tap reasons, j8_kill_reason); Results > Overall shows Lanes (what gets stopped and why, good replies, 14-day trend, losing first; j8_lanes). Revert: git revert. -->
 <!-- J8NIX 3.0 · 16.1.0 (27 Nov 2026): Home opens on "the road to ₪100,000" (navy band, stations ₪25k–₪100k, the 8 at the real ₪ collected); rows named from the item id (never a bare "application"); "What happened?" above reply buttons; one Classic view entry; sign-in in the 3.0 look (j30.css). Revert: git revert. -->
 <!-- J8NIX 3.0 · 16.0.0 (27 Nov 2026): five destinations instead of nine tabs (j30.js + j30w.css): Home (one ranked stream: money goal, warm leads, the one decision, follow-ups, your steps, today at a glance), Plan (Projects | Timeline), Outbox, Results (Overall | By income line), More (Chat, Workers, Your requests, Settings, Classic view). Bottom bar on phones, header nav from 960 px; Light / Dark / Match phone. 2.0 at ?ui=2. Notes: design/V30-NOTES.md. Revert: git revert. -->
 <!-- J8NIX 2.0 · 15.12.0 (26 Nov 2026): Timeline (d-1126-02): a new space (key 2): every Status project as one lane on real dates, today in the middle; bar = sent that day, blue dot = replies, diamond = dated step (filled done, hollow due), red triangle = late, navy flag = next step; 2 weeks / 2 months, Earlier / Today / Later; tap a mark for one sentence; Hebrew runs right to left. Read only. Revert: git revert. -->
@@ -257,13 +258,13 @@
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="toastMsg"></span><button id="undo" hidden><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg><span id="undoL">Undo</span></button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=15.13.0"></script>
+<script src="j8-data.js?v=16.2.0"></script>
 <script src="app.js?v=12.0.1"></script>
 <script src="alerts.js?v=12.0.1"></script>
 <script src="j11.js?v=12.0.1"></script>
 <script src="shell.js?v=12.0.1"></script>
 <script src="j13.js?v=14.1.0"></script>
-<script>/* J8NIX 3.0 (16.0.0, 27 Nov 2026) is the default (j30.js). ?ui=2 (Settings → Classic view) opens 2.0 (j20.js) for that visit; localStorage j8:ui = 2 keeps 2.0 on this device; ?ui=3 clears that. Revert: load j20.js only. */(function(){var q=/[?&]ui=([23])\b/.exec(location.search),v=q?q[1]:'';try{if(v==='3')localStorage.removeItem('j8:ui');if(!v)v=localStorage.getItem('j8:ui')||'';}catch(e){}if(v==='2')document.write('<script src="j20.js?v=15.14.0"><\/script>');else{document.documentElement.classList.add('j3');document.write('<link rel="stylesheet" href="j30.css?v=16.1.0"><script src="j30.js?v=16.1.0"><\/script>');}})();</script>
+<script>/* J8NIX 3.0 (16.0.0, 27 Nov 2026) is the default (j30.js). ?ui=2 (Settings → Classic view) opens 2.0 (j20.js) for that visit; localStorage j8:ui = 2 keeps 2.0 on this device; ?ui=3 clears that. Revert: load j20.js only. */(function(){var q=/[?&]ui=([23])\b/.exec(location.search),v=q?q[1]:'';try{if(v==='3')localStorage.removeItem('j8:ui');if(!v)v=localStorage.getItem('j8:ui')||'';}catch(e){}if(v==='2')document.write('<script src="j20.js?v=15.14.0"><\/script>');else{document.documentElement.classList.add('j3');document.write('<link rel="stylesheet" href="j30.css?v=16.1.0"><script src="j30.js?v=16.2.0"><\/script>');}})();</script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>
