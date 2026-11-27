@@ -15,7 +15,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '16.2.0';
+  var VER = '16.3.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -1151,6 +1151,7 @@
     var w = n.split(/[\s/–—-]+/).filter(function (x) { return /[A-Za-z0-9֐-׿]/.test(x); });
     if (!w.length) return '·';
     var caps = w[0].replace(/[^A-Z0-9]/g, '');
+    if (/^[A-Z][0-9]/.test(w[0])) return w[0].slice(0, 2); /* J8NIX → J8 */
     if (w.length === 1 || (caps.length >= 2 && /[a-z]/.test(w[0]))) return (caps.length >= 2 ? caps : w[0]).slice(0, 2).toUpperCase();
     return (w[0].charAt(0) + w[1].charAt(0)).toUpperCase();
   }
@@ -1166,9 +1167,10 @@
   }
   function pLast(p) { var v = pd(p.last || p.updated_at); return isNaN(v) ? '' : ago(v); }
   function pStale(p) { var v = pd(p.last || p.updated_at), s = pState(p); return (s === 'focus' || s === 'running') && !isNaN(v) && Date.now() - v > 14 * 864e5; } /* research rule 8: a live line with no activity in 14 days says so */
-  function pQ(p) { return (String(p.name || '') + ' ' + String(p.tag || '') + ' ' + t('pk_' + (p.kind || 'product')) + ' ' + t('ps_' + pState(p))).toLowerCase(); }
+  function pNq(s) { return String(s || '').toLowerCase().replace(/\u2721/g, 'o'); } /* SH\u2721MER is found by typing shomer */
+  function pQ(p) { return pNq(String(p.name || '') + ' ' + String(p.tag || '') + ' ' + t('pk_' + (p.kind || 'product')) + ' ' + t('ps_' + pState(p))); }
   function pVisible(L) { /* chip filter + search */
-    var q = String(S.pq || '').trim().toLowerCase();
+    var q = pNq(S.pq).trim();
     return L.filter(function (p) { if (S.pf === 'need' ? !pNeeds(p) : S.pf !== 'all' && pState(p) !== S.pf) return false; return !q || pQ(p).indexOf(q) > -1; });
   }
   function pChips(L) {
@@ -1199,7 +1201,7 @@
     pGroups(V).forEach(function (g) {
       var op = pGroupOpen(g.s);
       h += '<section class="pgrp" data-s="' + g.s + '"><h2><button type="button" class="pgh" data-x="pgt" data-id="' + g.s + '" aria-expanded="' + op + '">' + pBadge(g.s) + '<span class="pgp">' + esc(t('psP_' + g.s)) + '</span><span class="cn">' + g.L.length + '</span>' + chev() + '</button></h2>'
-        + (op ? '<div class="pgrid">' + g.L.map(pTile).join('') + '</div>' : '') + '</section>';
+        + '<div class="pgrid"' + (op ? '' : ' hidden data-fold="1"') + '>' + g.L.map(pTile).join('') + '</div></section>';
     });
     return h;
   }
@@ -1228,7 +1230,7 @@
     pGroups(V).forEach(function (g) {
       var op = pGroupOpen(g.s);
       h += '<section class="pbg" data-s="' + g.s + '"><h2><button type="button" class="pgh" data-x="pgt" data-id="' + g.s + '" aria-expanded="' + op + '">' + pBadge(g.s) + '<span class="cn">' + g.L.length + '</span>' + pSpread(g.L) + chev() + '</button></h2>'
-        + (op ? '<div class="pbt">' + head + g.L.map(row).join('') + '</div>' : '') + '</section>';
+        + '<div class="pbt"' + (op ? '' : ' hidden data-fold="1"') + '>' + head + g.L.map(row).join('') + '</div></section>';
     });
     return h;
   }
@@ -1238,7 +1240,7 @@
   }
   function pLinks(p) {
     var L = [], seen = {}, add = function (u, lab) { var k = link(u); if (k && !seen[k]) { seen[k] = 1; L.push({ u: k, l: String(lab || '').trim() || k.replace(/^https:\/\//, '').replace(/\/$/, '') }); } };
-    add(p.link, p.link_text); (Array.isArray(p.links) ? p.links : []).forEach(function (x) { if (typeof x === 'string') add(x, ''); else if (x) add(x.url || x.href, x.label || x.text); });
+    add(p.link, p.link_text); (Array.isArray(p.links) ? p.links : []).forEach(function (x) { if (typeof x === 'string') add(x, ''); else if (x) add(x.url || x.href || x.u, x.label || x.text || x.t); }); /* rows store links as {t, u} */
     if (!noYou(p.you)) add(p.you_link, p.you_link_text);
     return L;
   }
@@ -1281,9 +1283,11 @@
       + PST.filter(function (s) { return n[s]; }).map(function (s) { return '<button type="button" class="pyc" data-x="pf" data-id="' + s + '" data-w="go">' + pBadge(s) + '<b>' + n[s] + '</b></button>'; }).join('') + '</div></section>';
   }
   function pqApply() { /* search filters in place, so the phone keyboard never closes mid-word */
-    var q = String(S.pq || '').trim().toLowerCase(), k = 0;
+    var q = pNq(S.pq).trim(), k = 0;
     [].forEach.call(sr.querySelectorAll('[data-x="pj"][data-q]'), function (el) { var hit = !q || String(el.getAttribute('data-q')).indexOf(q) > -1; el.hidden = !hit; if (hit) k++; });
-    [].forEach.call(sr.querySelectorAll('.pgrp,.pbg'), function (g) { var any = g.querySelector('[data-x="pj"][data-q]:not([hidden])'); var folded = !g.querySelector('[data-x="pj"][data-q]'); g.hidden = !folded && !any; });
+    [].forEach.call(sr.querySelectorAll('.pgrp,.pbg'), function (g) { /* folded groups (Stopped, Done) open while a search is typed, so nothing hides from it */
+      var b = g.querySelector('[data-fold]'), hb = g.querySelector('.pgh'); if (b) { b.hidden = !q; if (hb) hb.setAttribute('aria-expanded', String(!!q)); }
+      g.hidden = !g.querySelector('[data-x="pj"][data-q]:not([hidden])'); });
     var c = sr.getElementById('j8pqn'); if (c) c.textContent = k === 1 ? t('pCount1') : fill(t('pCountN'), k);
   }
   function look() { try { var v = localStorage.getItem('j8:look'); return v === 'dark' || v === 'auto' ? v : 'light'; } catch (e) { return 'light'; } }
