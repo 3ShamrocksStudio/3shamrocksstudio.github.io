@@ -41,12 +41,14 @@
    real Israel days, today in the middle. Bar = sent that day, blue dot = replies (grey ring = no thanks), diamond = dated step (filled done, hollow due),
    red triangle = late, navy flag = next dated step (edge chip when it is past the window). 2 weeks / 2 months, Earlier / Today / Later, tap = one sentence.
    Read only. The other spaces move one key along (Today = 3 … Settings = 9). Revert: git revert of the 15.12 commit.
+   15.14.0 (27 Nov 2026) · backlog b-1125-24 slice 2: a worker whose planned run never logged (extra.missed, written by
+   j8private.time_tick every 15 min) shows the red cross + "Missed its run <time>" and lists the missed times when opened. Revert: git revert.
    15.13.1 (27 Nov 2026) · backlog b-1125-03: an Income row with drafts only outside the chosen window now says "Nothing drafted in the
    last 7 days" instead of "0 drafted, none sent yet". Revert: git revert of the 15.13.1 commit.
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '15.13.1';
+  var VER = '15.14.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -78,7 +80,7 @@
       rtns: 'Your agents', rtnSub: 'Each one runs by itself on its schedule. Switch one off and it skips its next runs.', ranW: 'Ran', failedAt: 'Failed', offW: 'Off', noRun: 'No run yet', noRun7: 'No run in 7 days', runningW: 'Running…', nothingW: 'nothing to do',
       always: 'Always on', alwaysWhy: 'This one cannot be switched off here. Pause sending in Settings stops everything.', whatW: 'What it does', whenW: 'When', lastW: 'Last run', isOn: '{n} is on.', isOff: '{n} is off.',
       rcpts: 'What ran', rcptSub: 'Every run in the last 7 days, newest first.', probOnly: 'Problems only', allRuns: 'All', noRcpt: 'No runs in the last 7 days.', noProb: 'No problems in the last 7 days.', todayW: 'Today', yestW: 'Yesterday',
-      startedW: 'Started', tookW: 'took', minW: 'min', proof: 'Open proof', showMore: 'Show more', st_ok: 'OK', st_failed: 'Failed', st_nothing: 'Nothing to do', st_run: 'Running', st_off: 'Off', st_none: 'No run', st_late: 'Quiet',
+      startedW: 'Started', tookW: 'took', minW: 'min', proof: 'Open proof', showMore: 'Show more', st_ok: 'OK', st_failed: 'Failed', st_nothing: 'Nothing to do', st_run: 'Running', st_off: 'Off', st_none: 'No run', st_late: 'Quiet', st_missed: 'Missed', missedAt: 'Missed its run', missedW: 'Missed runs', missMore: '{n} more',
       kDesign: 'Pick a design', pickOne: 'Pick one', seeFull: 'See it full size', goPick: 'Go with {n}', pickFirst: 'Pick one first', noneOf: 'None of these', chose: 'Chosen: {n}.', fresh: 'Up to date.', opened: 'Opened.', noneT: 'None chosen.', sentJ8: 'Sent to J8.' },
     he: { today: 'היום', queue: 'לשליחה', talk: 'הודעות', set: 'הגדרות', waiting: 'מחכים לך', sent7: 'נשלחו · 7 ימים', rep7: 'תשובות · 7 ימים',
       pulse: 'ריצות סוכנים · 24 שעות', now: 'עכשיו', h24: 'לפני 24 שעות', deck: 'אחד בכל פעם', of: 'מתוך', go: 'שלח', hold: 'אחר כך', sentW: 'נשלחו', repW: 'תשובות', repW1: 'תשובה', d7: '7 ימים אחרונים', leftOut: 'נחסמו ולא נכללו', resumed: 'השליחה פועלת.', heldT2: 'הועבר לאחר כך.', tplLine: 'נשלחו', tplRep: 'תשובות', sending: 'שליחה', okW: 'תקינות', failedW: 'נכשלו', stop: 'עצור', tapStop: 'הקש שוב', change: 'שנה',
@@ -103,7 +105,7 @@
       rtns: 'הסוכנים שלך', rtnSub: 'כל אחד רץ לבד לפי הלוח שלו. כיבוי סוכן מדלג על הריצות הבאות שלו.', ranW: 'רץ', failedAt: 'נכשל', offW: 'כבוי', noRun: 'עוד לא רץ', noRun7: 'לא רץ 7 ימים', runningW: 'רץ עכשיו…', nothingW: 'לא היה מה לעשות',
       always: 'תמיד פועל', alwaysWhy: 'את הסוכן הזה אי אפשר לכבות כאן. השהיית שליחה בהגדרות עוצרת הכול.', whatW: 'מה הוא עושה', whenW: 'מתי', lastW: 'ריצה אחרונה', isOn: '{n} פועל.', isOff: '{n} כבוי.',
       rcpts: 'מה רץ', rcptSub: 'כל ריצה ב-7 הימים האחרונים, החדשה למעלה.', probOnly: 'רק בעיות', allRuns: 'הכול', noRcpt: 'אין ריצות ב-7 הימים האחרונים.', noProb: 'אין בעיות ב-7 הימים האחרונים.', todayW: 'היום', yestW: 'אתמול',
-      startedW: 'התחיל', tookW: 'נמשך', minW: 'דק׳', proof: 'פתח הוכחה', showMore: 'הצג עוד', st_ok: 'תקין', st_failed: 'נכשל', st_nothing: 'לא היה מה לעשות', st_run: 'רץ', st_off: 'כבוי', st_none: 'לא רץ', st_late: 'שקט',
+      startedW: 'התחיל', tookW: 'נמשך', minW: 'דק׳', proof: 'פתח הוכחה', showMore: 'הצג עוד', st_ok: 'תקין', st_failed: 'נכשל', st_nothing: 'לא היה מה לעשות', st_run: 'רץ', st_off: 'כבוי', st_none: 'לא רץ', st_late: 'שקט', st_missed: 'פוספס', missedAt: 'פספס ריצה', missedW: 'ריצות שפוספסו', missMore: 'ועוד {n}',
       kDesign: 'בחירת עיצוב', pickOne: 'בחר אחד', seeFull: 'לראות בגודל מלא', goPick: 'בחר ב־{n}', pickFirst: 'קודם בוחרים אחד', noneOf: 'אף אחד מאלה', chose: 'נבחר: {n}.', fresh: 'מעודכן.', opened: 'נפתח.', noneT: 'לא נבחר אף אחד.', sentJ8: 'נשלח ל־J8.' }
   };
   /* 15.5: words for the sign-in card, the sender line and channel names (full Hebrew pass) */
@@ -658,13 +660,16 @@
     if (rt.enabled === false) st = 'off'; else if (!last) st = 'none'; else { st = runSt(last); if (st !== 'failed' && st !== 'run' && Date.now() - lt > 26 * 36e5) st = Date.now() - lt > 7 * 864e5 ? 'none' : 'late'; } /* quiet: no run for over a day (neutral, not an alarm) */
     var ph = st === 'off' ? t('offW') + (last && !isNaN(lt) ? ' · ' + (lf ? t('offFail') + ' ' : t('lastW').toLowerCase() + ' ') + ago(lt) : '') : st === 'none' ? (last ? t('noRun7') : t('noRun')) : st === 'run' ? t('runningW')
       : st === 'late' ? t('lastRan') + ' ' + ago(lt) : st === 'failed' ? t('failedAt') + ' ' + ago(lt) : t('ranW') + ' ' + ago(lt) + (st === 'nothing' ? ' · ' + t('nothingW') : '');
-    return { st: st, ph: ph, last: last, lt: lt, bad: st === 'failed' || (st === 'off' && lf) };
+    var ms = rt.enabled !== false && Array.isArray(rt.missed) ? rt.missed.map(pd).filter(function (v) { return !isNaN(v); }).sort(function (a, b) { return b - a; }) : [];
+    if (ms.length) { st = 'missed'; ph = t('missedAt') + ' ' + ago(ms[0]) + (ms.length > 1 ? ' · ' + t('missMore').replace('{n}', ms.length - 1) : ''); } /* 15.14: extra.missed from j8private.time_tick (a planned run with no run row) */
+    return { st: st, ph: ph, last: last, lt: lt, ms: ms, bad: st === 'failed' || st === 'missed' || (st === 'off' && lf) };
   }
   function glyph(st) { /* a distinct shape per status, so it reads without colour */
+    if (st === 'missed') st = 'failed'; /* a missed run reads as a failure: same cross, same red */
     var P = { ok: '<path d="m5 12.5 4.2 4.2L19 7"/>', nothing: '<path d="M6 12h12"/>', failed: '<path d="M7 7l10 10M17 7 7 17"/>', run: '<circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>', off: '<path d="M9 6.5v11M15 6.5v11"/>', none: '<circle cx="12" cy="12" r="6"/>', late: '<path d="M12 7v5l3 2"/>' }[st] || '';
     return '<span class="gl g-' + st + '" aria-hidden="true"><svg viewBox="0 0 24 24">' + P + '</svg></span>';
   }
-  function stWord(st) { return t({ ok: 'st_ok', nothing: 'st_nothing', failed: 'st_failed', run: 'st_run', off: 'st_off', none: 'st_none', late: 'st_late' }[st] || 'st_ok'); }
+  function stWord(st) { return t({ ok: 'st_ok', nothing: 'st_nothing', failed: 'st_failed', run: 'st_run', off: 'st_off', none: 'st_none', late: 'st_late', missed: 'st_missed' }[st] || 'st_ok'); }
   function dayKey(ts) { try { return new Date(ts).toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' }); } catch (e) { return new Date(ts).toISOString().slice(0, 10); } }
   function dayName(ts) { var k = dayKey(ts); return k === dayKey(Date.now()) ? t('todayW') : k === dayKey(Date.now() - 864e5) ? t('yestW') : day(ts); }
   function clean(s) { return String(s || '').replace(/^[\u{1F534}\u{1F7E0}\u{1F7E2}\u{1F7E1}⚪✅❌]\s*/u, ''); }
@@ -687,6 +692,7 @@
       if (op) {
         var lr = s.last;
         bd = '<div class="bd ag" id="ab-' + nid + '">' + (r.what ? '<p><b>' + esc(t('whatW')) + ':</b> <span dir="auto">' + esc(cut(r.what, 300)) + '</span></p>' : '') + (r.schedule ? '<p><b>' + esc(t('whenW')) + ':</b> <span dir="auto">' + esc(cut(r.schedule, 120)) + '</span></p>' : '')
+          + (s.ms && s.ms.length ? '<p><b>' + esc(t('missedW')) + ':</b> ' + s.ms.slice(0, 5).map(function (v) { return esc(day(v) + ' ' + hm(v)); }).join(', ') + (s.ms.length > 5 ? ' · ' + esc(t('missMore').replace('{n}', s.ms.length - 5)) : '') + '</p>' : '')
           + (lr ? '<p><b>' + esc(t('lastW')) + ':</b> ' + esc(stWord(runSt(lr))) + ' · ' + esc(ago(runT(lr))) + (lr.summary ? ' · <span dir="auto">' + esc(cut(clean(lr.summary), 240)) + '</span>' : '') + '</p>' : '')
           + (!r.switchable ? '<p class="meta">' + esc(t('alwaysWhy')) + '</p>' : '') + '</div>';
       }
