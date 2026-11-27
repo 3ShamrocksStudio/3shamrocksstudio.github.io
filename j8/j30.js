@@ -832,9 +832,9 @@
     it.forEach(function (x) { P.push(f(x.nx ? 'tlNext' : x.k === 'done' ? 'tlDone' : x.k === 'late' ? 'tlLateX' : x.k === 'due' ? 'tlDue' : 'tlMs', cut(x.tx, 90))); });
     return P;
   }
-  function tlGeo() { /* 3.0: the plot width = the content column (measured from the last render) minus the label column and lane padding (j30w.css) */
-    var vw = Math.max(280, window.innerWidth || 375), wide = vw >= 900, m = sr && sr.querySelector('.pg .in'), cw = m ? m.clientWidth : 0;
-    var inner = cw > 200 ? cw : Math.min(vw - 32, wide ? 1040 : 720), lab = wide ? 200 : 104, card = 18;
+  function tlGeo() { /* 3.0: the plot width = the content column (same numbers as j30w.css .pg / .in) minus the label column and lane padding (j30w.css) */
+    var vw = Math.max(280, document.documentElement.clientWidth || window.innerWidth || 375), wide = vw >= 900, desk = vw >= 960;
+    var inner = desk ? Math.min(vw - 64, 1040) : Math.min(vw - 32, 720), lab = wide ? 200 : 104, card = 18;
     return Math.max(140, inner - card - lab);
   }
   function vTime() {
@@ -1024,13 +1024,13 @@
     old: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/>'
   };
   Object.assign(T.en, { home: 'Home', plan: 'Plan', results: 'Results', more: 'More', p_proj: 'Projects', p_time: 'Timeline', r_all: 'Overall', r_line: 'By income line', views: 'Views',
-    needsN: '{n} things need you', needs1: '1 thing needs you', needs0: 'Nothing needs you right now', needsL: 'Loading what needs you…', doFirst: 'Do this first', alsoW: 'Also waiting', seeAll: 'See all in Outbox',
+    needsN: '{n} things need you', needs1: '1 thing needs you', needs0: 'Nothing needs you right now', needsL: 'Loading what needs you…', needsF: 'Couldn\'t load what needs you', clearT: 'All clear.', doFirst: 'Do this first', alsoW: 'Also waiting', seeAll: 'See all in Outbox',
     stepsW: 'Your steps', stepsP: 'From your projects. Tap to open the project.', glanceW: 'Today at a glance', moneyW: 'Money goal', chatB: 'Chat', backW: 'Back', moreSub: 'Everything else, in one place.',
     m_talk: 'Chat', m_talkP: 'Talk to J8 and the team', m_talkN: 'Last message {w}', m_agents: 'Workers', m_agentsP: 'What runs for you, and how it went', m_agOk: 'All fine', m_agBad: '{n} need a look', m_agBad1: '1 needs a look',
     m_asks: 'Your requests', m_asksP: 'Everything you asked for, and where it stands', m_set: 'Settings', m_setP: 'Sending, language, look, sign out', m_old: 'Classic view', m_oldP: 'The J8NIX 2.0 screens, as they were',
     look: 'Look', lkLight: 'Light', lkDark: 'Dark', lkAuto: 'Match phone', ui2: 'Classic view (J8NIX 2.0)', ui2P: 'Opens the old tabbed screens. Close and reopen J8NIX to come back.', skip: 'Skip to content', chatOpen: 'Open chat', noneSteps: 'No steps for you on any project.' });
   Object.assign(T.he, { home: 'בית', plan: 'תוכנית', results: 'תוצאות', more: 'עוד', p_proj: 'פרויקטים', p_time: 'ציר זמן', r_all: 'סיכום', r_line: 'לפי ערוץ הכנסה', views: 'תצוגות',
-    needsN: '{n} דברים מחכים לך', needs1: 'דבר אחד מחכה לך', needs0: 'שום דבר לא מחכה לך עכשיו', needsL: 'טוען מה מחכה לך…', doFirst: 'זה קודם', alsoW: 'מחכים גם', seeAll: 'כל מה שמחכה לשליחה',
+    needsN: '{n} דברים מחכים לך', needs1: 'דבר אחד מחכה לך', needs0: 'שום דבר לא מחכה לך עכשיו', needsL: 'טוען מה מחכה לך…', needsF: 'לא הצלחנו לטעון מה מחכה לך', doFirst: 'זה קודם', alsoW: 'מחכים גם', seeAll: 'כל מה שמחכה לשליחה',
     stepsW: 'הצעדים שלך', stepsP: 'מתוך הפרויקטים. הקש כדי לפתוח את הפרויקט.', glanceW: 'היום במבט אחד', moneyW: 'יעד הכסף', chatB: 'הודעות', backW: 'חזרה', moreSub: 'כל השאר, במקום אחד.',
     m_talk: 'הודעות', m_talkP: 'לדבר עם J8 והצוות', m_talkN: 'הודעה אחרונה {w}', m_agents: 'עובדים', m_agentsP: 'מה רץ בשבילך ואיך זה הלך', m_agOk: 'הכול תקין', m_agBad: '{n} צריכים בדיקה', m_agBad1: 'אחד צריך בדיקה',
     m_asks: 'הבקשות שלך', m_asksP: 'כל מה שביקשת ואיפה זה עומד', m_set: 'הגדרות', m_setP: 'שליחה, שפה, מראה, יציאה', m_old: 'תצוגה קלאסית', m_oldP: 'המסכים של J8NIX 2.0, כמו שהיו',
@@ -1089,7 +1089,7 @@
     pull();
     var L = deck(), first = L[0], none = !on() && !aps().length, n = none ? -1 : needCount(), x = X(), sc = x ? safe(function () { return x.score(); }, null) : null;
     var d = new Date(), dt = ''; try { dt = d.toLocaleDateString(lang() === 'he' ? 'he-IL' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Asia/Jerusalem' }); } catch (e) {}
-    var h = '<section class="hello"><p class="dt">' + esc(dt) + '</p><p class="need3' + (n > 0 ? ' on' : '') + '">' + esc(n < 0 ? t('needsL') : n === 0 ? t('needs0') : n === 1 ? t('needs1') : fill(t('needsN'), n)) + '</p></section>';
+    var h = '<section class="hello"><p class="dt">' + esc(dt) + '</p><p class="need3' + (n > 0 ? ' on' : '') + '">' + esc(n < 0 ? (failed() ? t('needsF') : t('needsL')) : n === 0 ? t('needs0') : n === 1 ? t('needs1') : fill(t('needsN'), n)) + '</p></section>';
     var main = vDeals();
     main += '<section class="blk first"><h2 class="hh">' + esc(t('doFirst')) + (L.length ? ' <span class="cn">1 ' + esc(t('of')) + ' ' + L.length + '</span>' : '') + '</h2>';
     if (!first) {
@@ -1102,7 +1102,7 @@
       return '<button type="button" class="li" data-x="sp" data-id="queue"><span class="lid o" aria-hidden="true"></span><span class="lit"><b dir="auto">' + esc(cardTitle(c)) + '</b><small>' + kindChip(c).replace(/<[^>]+>/g, '') + '</small></span>' + chev() + '</button>'; }).join('')
       + '</div><div class="sub"><button type="button" class="lnk" data-x="sp" data-id="queue">' + esc(t('seeAll')) + ' (' + (L.length - 1) + ')</button></div></section>';
     main += vFollow(5);
-    var side = stepsBlock() + '<section class="blk glance"><h2 class="hh">' + esc(t('glanceW')) + '</h2><p class="glx"><span><b>' + (sc ? sc.sent : 0) + '</b> ' + esc(t('sentW')) + '</span><span><b>' + (sc ? sc.rep : 0) + '</b> ' + esc((sc && sc.rep === 1) ? t('repW1') : t('repW')) + '</span><span>' + esc(t('d7')) + '</span></p>' + stallLine() + pulse() + '</section>' + askEntry();
+    var side = stepsBlock() + (none ? '' : '<section class="blk glance"><h2 class="hh">' + esc(t('glanceW')) + '</h2><p class="glx"><span><b>' + (sc ? sc.sent : 0) + '</b> ' + esc(t('sentW')) + '</span><span><b>' + (sc ? sc.rep : 0) + '</b> ' + esc((sc && sc.rep === 1) ? t('repW1') : t('repW')) + '</span><span>' + esc(t('d7')) + '</span></p>' + stallLine() + pulse() + '</section>') + askEntry();
     return '<h1 class="sr">' + esc(t('home')) + '</h1>' + h + '<div class="hm">' + moneyBlock() + '<div class="hmain">' + main + '</div><aside class="hside" aria-label="' + esc(t('glanceW')) + '">' + side + '</aside></div>';
   }
   function vMore() {
