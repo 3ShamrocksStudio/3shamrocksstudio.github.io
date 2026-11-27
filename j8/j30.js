@@ -1096,7 +1096,7 @@
     m_talk: 'הודעות', m_talkP: 'לדבר עם J8 והצוות', m_talkN: 'הודעה אחרונה {w}', m_agents: 'עובדים', m_agentsP: 'מה רץ בשבילך ואיך זה הלך', m_agOk: 'הכול תקין', m_agBad: '{n} צריכים בדיקה', m_agBad1: 'אחד צריך בדיקה',
     m_asks: 'הבקשות שלך', m_asksP: 'כל מה שביקשת ואיפה זה עומד', m_set: 'הגדרות', m_setP: 'שליחה, שפה, מראה, יציאה', m_old: 'תצוגה קלאסית', m_oldP: 'המסכים של J8NIX 2.0, כמו שהיו',
     look: 'מראה', lkLight: 'בהיר', lkDark: 'כהה', lkAuto: 'כמו בטלפון', ui2: 'תצוגה קלאסית', ui2P: 'המסכים של J8NIX 2.0. סגור ופתח את J8NIX כדי לחזור.', ocQ: 'מה קרה?', lead1: 'ליד חם', runW: 'הדרך ל-₪100,000', youHere: 'אתה כאן', skip: 'דלג לתוכן', chatOpen: 'פתח הודעות', noneSteps: 'אין צעדים שמחכים לך באף פרויקט.' });
-  /* ---------- 16.2 Projects command center (Dave, 27 Nov 2026: "list All our products and projects, ideas and concepts … a control panel
+  /* ---------- 16.3 Projects command center (Dave, 27 Nov 2026: "list All our products and projects, ideas and concepts … a control panel
      similar to Google Play … a generalised view similar to Monday.com … easily navigate between projects, current step, necessities").
      Every j8_projects row (hidden ones too) in one place, three ways in:
        Overview = the Play Console "All apps" idea: state chips that filter, a search box, one tile per project (icon, name, what it is,
@@ -1169,8 +1169,8 @@
   function pStale(p) { var v = pd(p.last || p.updated_at), s = pState(p); return (s === 'focus' || s === 'running') && !isNaN(v) && Date.now() - v > 14 * 864e5; } /* research rule 8: a live line with no activity in 14 days says so */
   function pNq(s) { return String(s || '').toLowerCase().replace(/\u2721/g, 'o'); } /* SH\u2721MER is found by typing shomer */
   function pQ(p) { return pNq(String(p.name || '') + ' ' + String(p.tag || '') + ' ' + t('pk_' + (p.kind || 'product')) + ' ' + t('ps_' + pState(p))); }
-  function pVisible(L) { /* chip filter + search */
-    var q = pNq(S.pq).trim();
+  function pVisible(L, all) { /* chip filter + search; screens pass all=1 and draw every tile, so clearing the search can always bring them back (pqApply filters in place) */
+    var q = all ? '' : pNq(S.pq).trim();
     return L.filter(function (p) { if (S.pf === 'need' ? !pNeeds(p) : S.pf !== 'all' && pState(p) !== S.pf) return false; return !q || pQ(p).indexOf(q) > -1; });
   }
   function pChips(L) {
@@ -1196,7 +1196,7 @@
   function vPAll() {
     var all = pList(), h = '<h1 class="sr">' + esc(t('plan')) + '</h1>';
     if (!all.length) return h + (on() ? '<p class="empty">' + esc(t('noProj')) + '</p>' : failed() ? '<button type="button" class="fail" data-x="retry">' + esc(t('stLoad')) + '</button>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>');
-    var V = pVisible(all); h += '<div class="ptop">' + pFindBox(V.length) + pChips(all) + '</div>';
+    var V = pVisible(all, 1); h += '<div class="ptop">' + pFindBox(V.length) + pChips(all) + '</div>';
     if (!V.length) return h + '<p class="empty">' + esc(t('pNone')) + '</p>';
     pGroups(V).forEach(function (g) {
       var op = pGroupOpen(g.s);
@@ -1213,7 +1213,7 @@
   function vPBoard() {
     var all = pList(), h = '<h1 class="sr">' + esc(t('plan')) + ' · ' + esc(t('p_board')) + '</h1>';
     if (!all.length) return h + (on() ? '<p class="empty">' + esc(t('noProj')) + '</p>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>');
-    var V = pVisible(all), N = stNums(); h += '<div class="ptop">' + pFindBox(V.length) + pChips(all) + '</div>';
+    var V = pVisible(all, 1), N = stNums(); h += '<div class="ptop">' + pFindBox(V.length) + pChips(all) + '</div>';
     if (!V.length) return h + '<p class="empty">' + esc(t('pNone')) + '</p>';
     var head = '<div class="pbh" aria-hidden="true"><span>' + esc(t('pCol_p')) + '</span><span>' + esc(t('pCol_s')) + '</span><span>' + esc(t('pCol_l')) + '</span><span>' + esc(t('pCol_n')) + '</span><span class="cx">' + esc(t('pCol_x')) + '</span><span>' + esc(t('pCol_y')) + '</span><span>' + esc(t('pCol_d')) + '</span></div>';
     var row = function (p) {
@@ -1395,6 +1395,7 @@
     window.scrollTo(0, y);
     tlTabStop(); if (fk) { var fe = sr.querySelector('[data-fk="' + fk.replace(/["\\]/g, '') + '"]'); if (fe) { fe.tabIndex = 0; [].forEach.call(sr.querySelectorAll('.tlls [data-x="tpick"]'), function (b) { if (b !== fe) b.tabIndex = -1; }); try { fe.focus({ preventScroll: true }); } catch (e) {} } }
     if (S.edit) { var ta = sr.getElementById('j2ed'); if (ta && force === 'edit') { ta.focus(); } }
+    if ((S.sp === 'pall' || S.sp === 'pboard') && String(S.pq || '').trim()) pqApply(); /* 16.3: a redraw mid-search keeps the search applied */
   }
   function soon() { if (raf) return; raf = requestAnimationFrame(function () { raf = 0; render(false); }); }
   function go(sp) { if (sp === 'today') sp = 'home'; if (sp === 'status') sp = 'pboard'; if (sp === 'pall' || sp === 'pboard' || sp === 'time') { LAST.plan = sp; try { localStorage.setItem('j8:p3', sp); } catch (e) {} } if (sp === 'score' || sp === 'eng') { LAST.results = sp; try { localStorage.setItem('j8:r3', sp); } catch (e) {} } S.sp = sp; S.edit = null; render(true); window.scrollTo(0, 0); var m = sr.getElementById('j2main'); if (m) try { m.focus({ preventScroll: true }); } catch (e) {} }
