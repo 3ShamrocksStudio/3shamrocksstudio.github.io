@@ -1065,14 +1065,14 @@
   var SP = [['status'], ['time'], ['today'], ['queue'], ['eng'], ['score'], ['talk'], ['agents'], ['set']]; /* kept for the guide's space names */
   var DEST = [
     { id: 'home', sp: ['home', 'today'], ic: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>' },
-    { id: 'plan', sp: ['status', 'time'], ic: '<path d="M4 6h10"/><path d="M8 12h12"/><path d="M4 18h8"/><circle cx="17" cy="6" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="15" cy="18" r="2"/>' },
+    { id: 'plan', sp: ['pall', 'pboard', 'time', 'status', 'pj'], ic: '<path d="M4 6h10"/><path d="M8 12h12"/><path d="M4 18h8"/><circle cx="17" cy="6" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="15" cy="18" r="2"/>' },
     { id: 'queue', sp: ['queue'], ic: '<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>' },
     { id: 'results', sp: ['score', 'eng'], ic: '<path d="M3 20h18"/><path d="M6 16v-4"/><path d="M11 16V8"/><path d="M16 16v-6"/><path d="m4 9 5-4 5 3 6-5"/>' },
     { id: 'more', sp: ['more', 'talk', 'agents', 'set', 'asks'], ic: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>' }
   ];
-  var SUB = { plan: [['status', 'p_proj'], ['time', 'p_time']], results: [['score', 'r_all'], ['eng', 'r_line']] };
-  var LAST = { plan: 'status', results: 'score' };
-  try { var lp = localStorage.getItem('j8:p3'), lr = localStorage.getItem('j8:r3'); if (lp === 'time') LAST.plan = 'time'; if (lr === 'eng') LAST.results = 'eng'; } catch (e) {}
+  var SUB = { plan: [['pall', 'p_over'], ['pboard', 'p_board'], ['time', 'p_time']], results: [['score', 'r_all'], ['eng', 'r_line']] };
+  var LAST = { plan: 'pall', results: 'score' };
+  try { var lp = localStorage.getItem('j8:p3'), lr = localStorage.getItem('j8:r3'); if (lp === 'time' || lp === 'pboard' || lp === 'pall') LAST.plan = lp; if (lr === 'eng') LAST.results = 'eng'; } catch (e) {}
   function destOf(sp) { for (var i = 0; i < DEST.length; i++) if (DEST[i].sp.indexOf(sp) > -1) return DEST[i].id; return 'home'; }
   function spOf(d) { return d === 'plan' || d === 'results' ? LAST[d] : d; }
   function ico(path, cls) { return '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + path + '</svg>'; }
@@ -1084,24 +1084,214 @@
     cog: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
     old: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/>'
   };
-  Object.assign(T.en, { home: 'Home', plan: 'Plan', results: 'Results', more: 'More', p_proj: 'Projects', p_time: 'Timeline', r_all: 'Overall', r_line: 'By income line', views: 'Views',
+  Object.assign(T.en, { home: 'Home', plan: 'Projects', results: 'Results', more: 'More', p_proj: 'Projects', p_time: 'Timeline', r_all: 'Overall', r_line: 'By income line', views: 'Views',
     needsN: '{n} things need you', needs1: '1 thing needs you', needs0: 'Nothing needs you right now', needsL: 'Loading what needs you…', needsF: 'Couldn\'t load what needs you', clearT: 'All clear.', doFirst: 'Do this first', alsoW: 'Also waiting', seeAll: 'See all in Outbox',
     stepsW: 'Your steps', stepsP: 'From your projects. Tap to open the project.', glanceW: 'Today at a glance', moneyW: 'Money goal', chatB: 'Chat', backW: 'Back', moreSub: 'Everything else, in one place.',
     m_talk: 'Chat', m_talkP: 'Talk to J8 and the team', m_talkN: 'Last message {w}', m_agents: 'Workers', m_agentsP: 'What runs for you, and how it went', m_agOk: 'All fine', m_agBad: '{n} need a look', m_agBad1: '1 needs a look',
     m_asks: 'Your requests', m_asksP: 'Everything you asked for, and where it stands', m_set: 'Settings', m_setP: 'Sending, language, look, sign out', m_old: 'Classic view', m_oldP: 'The J8NIX 2.0 screens, as they were',
     look: 'Look', lkLight: 'Light', lkDark: 'Dark', lkAuto: 'Match phone', ui2: 'Classic view', ui2P: 'The J8NIX 2.0 screens. Close and reopen J8NIX to come back.', ocQ: 'What happened?', lead1: 'Warm lead', runW: 'The road to ₪100,000', youHere: 'You are here', skip: 'Skip to content', chatOpen: 'Open chat', noneSteps: 'No steps for you on any project.' });
-  Object.assign(T.he, { home: 'בית', plan: 'תוכנית', results: 'תוצאות', more: 'עוד', p_proj: 'פרויקטים', p_time: 'ציר זמן', r_all: 'סיכום', r_line: 'לפי ערוץ הכנסה', views: 'תצוגות',
+  Object.assign(T.he, { home: 'בית', plan: 'פרויקטים', results: 'תוצאות', more: 'עוד', p_proj: 'פרויקטים', p_time: 'ציר זמן', r_all: 'סיכום', r_line: 'לפי ערוץ הכנסה', views: 'תצוגות',
     needsN: '{n} דברים מחכים לך', needs1: 'דבר אחד מחכה לך', needs0: 'שום דבר לא מחכה לך עכשיו', needsL: 'טוען מה מחכה לך…', needsF: 'לא הצלחנו לטעון מה מחכה לך', doFirst: 'זה קודם', alsoW: 'מחכים גם', seeAll: 'כל מה שמחכה לשליחה',
     stepsW: 'הצעדים שלך', stepsP: 'מתוך הפרויקטים. הקש כדי לפתוח את הפרויקט.', glanceW: 'היום במבט אחד', moneyW: 'יעד הכסף', chatB: 'הודעות', backW: 'חזרה', moreSub: 'כל השאר, במקום אחד.',
     m_talk: 'הודעות', m_talkP: 'לדבר עם J8 והצוות', m_talkN: 'הודעה אחרונה {w}', m_agents: 'עובדים', m_agentsP: 'מה רץ בשבילך ואיך זה הלך', m_agOk: 'הכול תקין', m_agBad: '{n} צריכים בדיקה', m_agBad1: 'אחד צריך בדיקה',
     m_asks: 'הבקשות שלך', m_asksP: 'כל מה שביקשת ואיפה זה עומד', m_set: 'הגדרות', m_setP: 'שליחה, שפה, מראה, יציאה', m_old: 'תצוגה קלאסית', m_oldP: 'המסכים של J8NIX 2.0, כמו שהיו',
     look: 'מראה', lkLight: 'בהיר', lkDark: 'כהה', lkAuto: 'כמו בטלפון', ui2: 'תצוגה קלאסית', ui2P: 'המסכים של J8NIX 2.0. סגור ופתח את J8NIX כדי לחזור.', ocQ: 'מה קרה?', lead1: 'ליד חם', runW: 'הדרך ל-₪100,000', youHere: 'אתה כאן', skip: 'דלג לתוכן', chatOpen: 'פתח הודעות', noneSteps: 'אין צעדים שמחכים לך באף פרויקט.' });
+  /* ---------- 16.2 Projects command center (Dave, 27 Nov 2026: "list All our products and projects, ideas and concepts … a control panel
+     similar to Google Play … a generalised view similar to Monday.com … easily navigate between projects, current step, necessities").
+     Every j8_projects row (hidden ones too) in one place, three ways in:
+       Overview = the Play Console "All apps" idea: state chips that filter, a search box, one tile per project (icon, name, what it is,
+                  state, stage, what it needs from you). Grouped by state, Focus first; Stopped folds.
+       Board    = the Monday main-table idea: one group per state with a stage-spread bar, columns Project · State · Stage · Now · Next · You
+                  · Last activity. Under 760 px each row folds to two lines; under 1100 px the Next column hides.
+       Project  = the inner screen: lifecycle track (Idea → Paying), now, next, what you must do, links, open tasks, open requests,
+                  recent runs, stop rule. Previous / Next project arrows; Esc goes back.
+     Data, read only: j8_projects columns + extra.kind · extra.state · extra.life (0-6) · extra.tag · extra.last · extra.req
+     (j8_requests product groups). State is never colour alone: every badge has a glyph and a word. ---------- */
+  var PST = ['focus', 'running', 'low', 'paused', 'idea', 'done', 'stopped'];
+  var PFOLD = { stopped: 1, done: 1 };
+  var PGL = {
+    focus: '<circle cx="8" cy="8" r="4.5" fill="currentColor" stroke="none"/>',
+    running: '<path d="M5 3.5v9l7.5-4.5z" fill="currentColor" stroke="none"/>',
+    low: '<path d="M8 2.5c.6 2.4 3.5 3.6 3.5 7a3.5 3.5 0 0 1-7 0c0-1.6.8-2.6 1.6-3.4.2 1.2.8 1.8 1.4 2 .2-2-.4-3.8.5-5.6z"/>',
+    paused: '<path d="M5.5 3.5v9M10.5 3.5v9"/>',
+    idea: '<circle cx="8" cy="8" r="4.8" stroke-dasharray="2.2 2"/>',
+    done: '<path d="m3.5 8.5 3 3 6-7"/>',
+    stopped: '<path d="m4.5 4.5 7 7M11.5 4.5l-7 7"/>'
+  };
+  Object.assign(T.en, { plan: 'Projects', p_over: 'Overview', p_board: 'Board',
+    ps_focus: 'Focus', ps_running: 'Running', ps_low: 'Low flame', ps_paused: 'Paused', ps_idea: 'Idea', ps_done: 'Done', ps_stopped: 'Stopped',
+    psP_focus: 'Worked on now', psP_running: 'Live, left running', psP_low: 'Kept, on low flame', psP_paused: 'Frozen for now', psP_idea: 'Not built yet', psP_done: 'Finished', psP_stopped: 'Closed, with the reason',
+    pl0: 'Idea', pl1: 'Research', pl2: 'Design', pl3: 'Build', pl4: 'Testing', pl5: 'Live', pl6: 'Paying',
+    pk_product: 'Product', pk_client: 'Client', pk_service: 'Service', pk_income: 'Income', pk_studio: 'Studio system', pk_grant: 'Grant', pk_content: 'Content', pk_idea: 'Idea',
+    pAll: 'All', pNeed: 'Needs you', pFind: 'Find a project', pCountN: '{n} projects', pCount1: '1 project', pNone: 'No project matches. Clear the search or pick All.',
+    stageOf: 'stage {n} of 7', pNow: 'Now', pNext: 'Next step', pYou: 'What you need to do', pNothing: 'Nothing from you.', pLinks: 'Links', pTasks: 'Open tasks', pTasks0: 'No open tasks.',
+    pReq: 'Your open requests', pReq0: 'No open requests.', pRuns: 'Recent work', pRules: 'Rules', pKill: 'Stop rule', pRev: 'Look again', pLast: 'Last activity', pMile: 'Next milestone',
+    pPrev: 'Previous project', pNextP: 'Next project', pGone: 'This project is not in the list any more.', pCol_p: 'Project', pCol_s: 'State', pCol_l: 'Stage', pCol_n: 'Now', pCol_x: 'Next', pCol_y: 'Needs you', pCol_d: 'Last activity',
+    pSpread: 'Stages in this group', pYourP: 'Your projects', pYourS: 'All {n} at a glance. Tap a state to see them.', pSentT: '{n} sent today', pRepW: '{n} replies in 7 days', pType: 'Type', pDue: 'due {d}', pOpenL: 'Open', pQuiet: 'quiet' });
+  Object.assign(T.he, { plan: 'פרויקטים', p_over: 'סקירה', p_board: 'לוח',
+    ps_focus: 'בפוקוס', ps_running: 'רץ לבד', ps_low: 'על אש קטנה', ps_paused: 'מוקפא', ps_idea: 'רעיון', ps_done: 'הושלם', ps_stopped: 'נעצר',
+    psP_focus: 'עובדים עליו עכשיו', psP_running: 'באוויר, בלי עבודה חדשה', psP_low: 'נשמר, על אש קטנה', psP_paused: 'מוקפא בינתיים', psP_idea: 'עוד לא נבנה', psP_done: 'הסתיים', psP_stopped: 'נסגר, עם הסיבה',
+    pl0: 'רעיון', pl1: 'מחקר', pl2: 'עיצוב', pl3: 'בנייה', pl4: 'בדיקות', pl5: 'באוויר', pl6: 'משלמים',
+    pk_product: 'מוצר', pk_client: 'לקוח', pk_service: 'שירות', pk_income: 'הכנסה', pk_studio: 'מערכת סטודיו', pk_grant: 'מענק', pk_content: 'תוכן', pk_idea: 'רעיון',
+    pAll: 'הכול', pNeed: 'מחכה לך', pFind: 'חיפוש פרויקט', pCountN: '{n} פרויקטים', pCount1: 'פרויקט אחד', pNone: 'אין פרויקט שמתאים. נקה את החיפוש או בחר הכול.',
+    stageOf: 'שלב {n} מתוך 7', pNow: 'עכשיו', pNext: 'הצעד הבא', pYou: 'מה אתה צריך לעשות', pNothing: 'שום דבר ממך.', pLinks: 'קישורים', pTasks: 'משימות פתוחות', pTasks0: 'אין משימות פתוחות.',
+    pReq: 'הבקשות הפתוחות שלך', pReq0: 'אין בקשות פתוחות.', pRuns: 'עבודה אחרונה', pRules: 'כללים', pKill: 'כלל עצירה', pRev: 'לבדוק שוב', pLast: 'פעילות אחרונה', pMile: 'אבן הדרך הבאה',
+    pPrev: 'הפרויקט הקודם', pNextP: 'הפרויקט הבא', pGone: 'הפרויקט הזה כבר לא ברשימה.', pCol_p: 'פרויקט', pCol_s: 'מצב', pCol_l: 'שלב', pCol_n: 'עכשיו', pCol_x: 'הבא', pCol_y: 'מחכה לך', pCol_d: 'פעילות אחרונה',
+    pSpread: 'השלבים בקבוצה', pYourP: 'הפרויקטים שלך', pYourS: 'כל ה-{n} במבט אחד. הקש על מצב כדי לראות.', pSentT: '{n} נשלחו היום', pRepW: '{n} תשובות ב-7 ימים', pType: 'סוג', pDue: 'עד {d}', pOpenL: 'פתיחה', pQuiet: 'שקט' });
+  S.pf = (function () { try { var v = localStorage.getItem('j8:pf'); return v === 'need' || PST.indexOf(v) > -1 ? v : 'all'; } catch (e) { return 'all'; } })();
+  S.pq = ''; S.pj = '';
+  function pState(p) { var s = String(p.state || '').toLowerCase(); if (PST.indexOf(s) > -1) return s; return p.status === 'killed' ? 'stopped' : p.status === 'parked' ? 'low' : p.status === 'done' ? 'done' : 'focus'; }
+  function pLife(p) { var n = Number(p.life); return p.life == null || p.life === '' || isNaN(n) ? null : Math.max(0, Math.min(6, Math.round(n))); }
+  function pList() { return projAll(); } /* every row, hidden ones too: Focus Mode hid frozen lines on 19 Nov, they still belong in the full list */
+  function pSort(a, b) { return PST.indexOf(pState(a)) - PST.indexOf(pState(b)) || pOrd(a, b); }
+  function pNeeds(p) { var s = pState(p); return !noYou(p.you) && (s === 'focus' || s === 'running'); } /* Focus Mode: frozen lines never ask Dave for anything */
+  function pById(id) { var L = pList(); for (var i = 0; i < L.length; i++) if (L[i].id === id) return L[i]; return null; }
+  function pIni(n) {
+    n = String(n || '').replace(/\([^)]*\)/g, ' ').replace(/[✡]/g, 'O').trim();
+    var w = n.split(/[\s/–—-]+/).filter(function (x) { return /[A-Za-z0-9֐-׿]/.test(x); });
+    if (!w.length) return '·';
+    var caps = w[0].replace(/[^A-Z0-9]/g, '');
+    if (w.length === 1 || (caps.length >= 2 && /[a-z]/.test(w[0]))) return (caps.length >= 2 ? caps : w[0]).slice(0, 2).toUpperCase();
+    return (w[0].charAt(0) + w[1].charAt(0)).toUpperCase();
+  }
+  var PCOL = ['#3249C2', '#0F766E', '#9D174D', '#B45309', '#4D7C0F', '#6D28D9', '#0E7490', '#BE123C'];
+  function pColor(p) { var c = String(p.color || ''); if (/^#[0-9a-f]{6}$/i.test(c)) return c; var h = 0, s = String(p.id || p.name || ''); for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return PCOL[h % PCOL.length]; }
+  function pInk(hex) { var r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16); return (0.299 * r + 0.587 * g + 0.114 * b) > 165 ? '#0C1030' : '#FFFFFF'; }
+  function pIcon(p, big) { var c = pColor(p); return '<span class="pic' + (big ? ' big' : '') + '" style="background:' + c + ';color:' + pInk(c) + '" aria-hidden="true">' + esc(pIni(p.name || p.id)) + '</span>'; }
+  function pBadge(s) { return '<span class="pb pb-' + s + '"><svg viewBox="0 0 16 16" aria-hidden="true">' + PGL[s] + '</svg>' + esc(t('ps_' + s)) + '</span>'; }
+  function pTrack(l, wide) {
+    if (l == null) return '';
+    var h = '<span class="ptr' + (wide ? ' w' : '') + '" aria-hidden="true">'; for (var i = 0; i < 7; i++) h += '<i class="' + (i < l ? 'd' : i === l ? 'c' : '') + '"></i>';
+    return h + '</span><span class="ptl"><b>' + esc(t('pl' + l)) + '</b><span class="sr"> · ' + esc(fill(t('stageOf'), l + 1)) + '</span></span>';
+  }
+  function pLast(p) { var v = pd(p.last || p.updated_at); return isNaN(v) ? '' : ago(v); }
+  function pStale(p) { var v = pd(p.last || p.updated_at), s = pState(p); return (s === 'focus' || s === 'running') && !isNaN(v) && Date.now() - v > 14 * 864e5; } /* research rule 8: a live line with no activity in 14 days says so */
+  function pQ(p) { return (String(p.name || '') + ' ' + String(p.tag || '') + ' ' + t('pk_' + (p.kind || 'product')) + ' ' + t('ps_' + pState(p))).toLowerCase(); }
+  function pVisible(L) { /* chip filter + search */
+    var q = String(S.pq || '').trim().toLowerCase();
+    return L.filter(function (p) { if (S.pf === 'need' ? !pNeeds(p) : S.pf !== 'all' && pState(p) !== S.pf) return false; return !q || pQ(p).indexOf(q) > -1; });
+  }
+  function pChips(L) {
+    var n = {}, nd = 0; L.forEach(function (p) { var s = pState(p); n[s] = (n[s] || 0) + 1; if (pNeeds(p)) nd++; });
+    var c = function (id, lab, k, cls) { return '<button type="button" class="pch' + (cls ? ' ' + cls : '') + '" data-x="pf" data-id="' + id + '" aria-pressed="' + (S.pf === id) + '">' + lab + '<span class="pcn">' + k + '</span></button>'; };
+    return '<div class="pchs" role="group" aria-label="' + esc(t('pCol_s')) + '">' + c('all', esc(t('pAll')), L.length) + (nd ? c('need', esc(t('pNeed')), nd, 'nd') : '')
+      + PST.filter(function (s) { return n[s]; }).map(function (s) { return c(s, '<svg class="pgl pg-' + s + '" viewBox="0 0 16 16" aria-hidden="true">' + PGL[s] + '</svg>' + esc(t('ps_' + s)), n[s]); }).join('') + '</div>';
+  }
+  function pFindBox(nv) {
+    return '<div class="pfind"><label class="sr" for="j8pq">' + esc(t('pFind')) + '</label><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>'
+      + '<input id="j8pq" type="search" data-pq="1" autocomplete="off" spellcheck="false" placeholder="' + esc(t('pFind')) + '" value="' + esc(S.pq || '') + '">'
+      + '<span class="pqn" id="j8pqn" aria-live="polite">' + esc(nv === 1 ? t('pCount1') : fill(t('pCountN'), nv)) + '</span></div>';
+  }
+  function pYouLine(p) { return pNeeds(p) ? '<span class="pyou"><b>' + esc(t('youW')) + '</b> <span dir="auto">' + esc(youShort(p.you)) + '</span></span>' : ''; }
+  function pTile(p) {
+    var s = pState(p), l = pLife(p);
+    return '<button type="button" class="pt' + (pNeeds(p) ? ' nd' : '') + '" data-x="pj" data-id="' + esc(p.id) + '" data-q="' + esc(pQ(p)) + '">' + pIcon(p)
+      + '<span class="ptx"><b class="pnm" dir="auto">' + esc(cut(p.name || p.id, 48)) + '</b><small class="ptg" dir="auto">' + esc(cut(p.tag || phrase(p.now, 70), 70)) + '</small>'
+      + '<span class="pmeta">' + pBadge(s) + (l != null ? '<span class="pst">' + pTrack(l) + '</span>' : '') + '</span>' + pYouLine(p) + '</span>' + chev() + '</button>';
+  }
+  function pGroups(L) { return PST.map(function (s) { return { s: s, L: L.filter(function (p) { return pState(p) === s; }).sort(function (a, b) { return (pNeeds(b) ? 1 : 0) - (pNeeds(a) ? 1 : 0) || pOrd(a, b); }) }; }).filter(function (g) { return g.L.length; }); } /* needs-you first inside each group (research rule 3) */
+  function pGroupOpen(s) { var k = 'pg:' + s; return k in S.open ? !!S.open[k] : !PFOLD[s] || S.pf === s || !!String(S.pq || '').trim(); }
+  function vPAll() {
+    var all = pList(), h = '<h1 class="sr">' + esc(t('plan')) + '</h1>';
+    if (!all.length) return h + (on() ? '<p class="empty">' + esc(t('noProj')) + '</p>' : failed() ? '<button type="button" class="fail" data-x="retry">' + esc(t('stLoad')) + '</button>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>');
+    var V = pVisible(all); h += '<div class="ptop">' + pFindBox(V.length) + pChips(all) + '</div>';
+    if (!V.length) return h + '<p class="empty">' + esc(t('pNone')) + '</p>';
+    pGroups(V).forEach(function (g) {
+      var op = pGroupOpen(g.s);
+      h += '<section class="pgrp" data-s="' + g.s + '"><h2><button type="button" class="pgh" data-x="pgt" data-id="' + g.s + '" aria-expanded="' + op + '">' + pBadge(g.s) + '<span class="pgp">' + esc(t('psP_' + g.s)) + '</span><span class="cn">' + g.L.length + '</span>' + chev() + '</button></h2>'
+        + (op ? '<div class="pgrid">' + g.L.map(pTile).join('') + '</div>' : '') + '</section>';
+    });
+    return h;
+  }
+  function pSpread(L) { /* Monday's battery: how the group spreads over the 7 stages, each part labelled for screen readers */
+    var n = [0, 0, 0, 0, 0, 0, 0], k = 0; L.forEach(function (p) { var l = pLife(p); if (l != null) { n[l]++; k++; } }); if (!k) return '';
+    return '<span class="pspr" role="img" aria-label="' + esc(t('pSpread') + ': ' + n.map(function (v, i) { return v ? v + ' ' + t('pl' + i) : ''; }).filter(Boolean).join(', ')) + '">'
+      + n.map(function (v, i) { return v ? '<i class="l' + i + '" style="flex:' + v + '" title="' + esc(v + ' ' + t('pl' + i)) + '"></i>' : ''; }).join('') + '</span>';
+  }
+  function vPBoard() {
+    var all = pList(), h = '<h1 class="sr">' + esc(t('plan')) + ' · ' + esc(t('p_board')) + '</h1>';
+    if (!all.length) return h + (on() ? '<p class="empty">' + esc(t('noProj')) + '</p>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>');
+    var V = pVisible(all), N = stNums(); h += '<div class="ptop">' + pFindBox(V.length) + pChips(all) + '</div>';
+    if (!V.length) return h + '<p class="empty">' + esc(t('pNone')) + '</p>';
+    var head = '<div class="pbh" aria-hidden="true"><span>' + esc(t('pCol_p')) + '</span><span>' + esc(t('pCol_s')) + '</span><span>' + esc(t('pCol_l')) + '</span><span>' + esc(t('pCol_n')) + '</span><span class="cx">' + esc(t('pCol_x')) + '</span><span>' + esc(t('pCol_y')) + '</span><span>' + esc(t('pCol_d')) + '</span></div>';
+    var row = function (p) {
+      var s = pState(p), l = pLife(p), n = N[p.id], nu = n && (n.sent || n.rep) ? '<small class="pnu">' + [n.sent ? fill(t('pSentT'), n.sent) : '', n.rep ? fill(t('pRepW'), n.rep) : ''].filter(Boolean).map(esc).join(' · ') + '</small>' : '';
+      return '<button type="button" class="pbr' + (pNeeds(p) ? ' nd' : '') + '" data-x="pj" data-id="' + esc(p.id) + '" data-q="' + esc(pQ(p)) + '">'
+        + '<span class="c1">' + pIcon(p) + '<span class="pbn"><b dir="auto">' + esc(cut(p.name || p.id, 44)) + '</b><small dir="auto">' + esc(t('pk_' + (p.kind || 'product'))) + '</small></span></span>'
+        + '<span class="c2"><span class="sr">' + esc(t('pCol_s')) + ': </span>' + pBadge(s) + '</span>'
+        + '<span class="c3"><span class="sr">' + esc(t('pCol_l')) + ': </span>' + (l != null ? pTrack(l) : '<span class="pz">–</span>') + '</span>'
+        + '<span class="c4"><span class="sr">' + esc(t('pCol_n')) + ': </span><span dir="auto">' + esc(phrase(s === 'stopped' ? reason(p.now) : p.now, 110)) + '</span>' + nu + '</span>'
+        + '<span class="c5 cx"><span class="sr">' + esc(t('pCol_x')) + ': </span><span dir="auto">' + esc(phrase(p.next, 110)) + '</span></span>'
+        + '<span class="c6"><span class="sr">' + esc(t('pCol_y')) + ': </span>' + (pNeeds(p) ? '<span class="pyb" dir="auto">' + esc(youShort(p.you)) + '</span>' : '<span class="pz">–</span>') + '</span>'
+        + '<span class="c7' + (pStale(p) ? ' old' : '') + '"><span class="sr">' + esc(t('pCol_d')) + ': </span>' + esc(pLast(p)) + (pStale(p) ? ' · ' + esc(t('pQuiet')) : '') + '</span>' + chev() + '</button>';
+    };
+    pGroups(V).forEach(function (g) {
+      var op = pGroupOpen(g.s);
+      h += '<section class="pbg" data-s="' + g.s + '"><h2><button type="button" class="pgh" data-x="pgt" data-id="' + g.s + '" aria-expanded="' + op + '">' + pBadge(g.s) + '<span class="cn">' + g.L.length + '</span>' + pSpread(g.L) + chev() + '</button></h2>'
+        + (op ? '<div class="pbt">' + head + g.L.map(row).join('') + '</div>' : '') + '</section>';
+    });
+    return h;
+  }
+  function pOrder() { /* the order arrows walk: the list as you last saw it (filter + search), else everything */
+    var V = pVisible(pList()); if (!V.length || !pById(S.pj) || V.every(function (p) { return p.id !== S.pj; })) V = pList();
+    var o = []; pGroups(V).forEach(function (g) { o = o.concat(g.L); }); return o;
+  }
+  function pLinks(p) {
+    var L = [], seen = {}, add = function (u, lab) { var k = link(u); if (k && !seen[k]) { seen[k] = 1; L.push({ u: k, l: String(lab || '').trim() || k.replace(/^https:\/\//, '').replace(/\/$/, '') }); } };
+    add(p.link, p.link_text); (Array.isArray(p.links) ? p.links : []).forEach(function (x) { if (typeof x === 'string') add(x, ''); else if (x) add(x.url || x.href, x.label || x.text); });
+    if (!noYou(p.you)) add(p.you_link, p.you_link_text);
+    return L;
+  }
+  function vPj() {
+    var p = pById(S.pj), back = '<div class="pjbar"><button type="button" class="back pjb" data-x="sp" data-id="' + esc(LAST.plan) + '">' + ico(IC.back, 'flip') + '<span>' + esc(t('plan')) + '</span></button>';
+    if (!p) return back + '</div>' + (pList().length || !on() ? '<p class="empty">' + esc(t(pList().length ? 'pGone' : 'loading')) + '</p>' : '');
+    var O = pOrder(), i = -1; O.forEach(function (x, k) { if (x.id === p.id) i = k; });
+    var pv = i > 0 ? O[i - 1] : null, nx = i > -1 && i < O.length - 1 ? O[i + 1] : null;
+    back += '<span class="sp"></span><span class="pjn">' + (i > -1 ? (i + 1) + ' / ' + O.length : '') + '</span>'
+      + '<button type="button" class="b sm ic" data-x="pj" data-id="' + esc(pv ? pv.id : '') + '"' + (pv ? '' : ' disabled') + ' aria-label="' + esc(t('pPrev') + (pv ? ': ' + pv.name : '')) + '">' + ico(IC.back, 'flip') + '</button>'
+      + '<button type="button" class="b sm ic" data-x="pj" data-id="' + esc(nx ? nx.id : '') + '"' + (nx ? '' : ' disabled') + ' aria-label="' + esc(t('pNextP') + (nx ? ': ' + nx.name : '')) + '">' + ico('<path d="m9 18 6-6-6-6"/>', 'flip') + '</button></div>';
+    var s = pState(p), l = pLife(p), ls = pLast(p), h = back;
+    h += '<header class="pjh">' + pIcon(p, true) + '<div class="pjt"><h1 dir="auto">' + esc(p.name || p.id) + '</h1>' + (p.tag ? '<p class="ptg" dir="auto">' + esc(p.tag) + '</p>' : '')
+      + '<p class="pmeta">' + pBadge(s) + '<span class="pk">' + esc(t('pk_' + (p.kind || 'product'))) + '</span>' + (ls ? '<span class="pk">' + esc(t('pLast')) + ': ' + esc(ls) + '</span>' : '') + '</p></div></header>';
+    if (l != null) h += '<ol class="plife" aria-label="' + esc(t('pCol_l')) + '">' + [0, 1, 2, 3, 4, 5, 6].map(function (k) { return '<li class="' + (k < l ? 'd' : k === l ? 'c' : '') + '"' + (k === l ? ' aria-current="step"' : '') + '><i aria-hidden="true"></i><span>' + esc(t('pl' + k)) + '</span></li>'; }).join('') + '</ol>';
+    var you = pNeeds(p), card = function (cls, ttl, body) { return '<section class="pcard ' + cls + '"><h2>' + esc(ttl) + '</h2>' + body + '</section>'; };
+    var main = '';
+    main += card('py' + (you ? ' on' : ''), t('pYou'), '<p dir="auto">' + esc(you ? String(p.you).replace(/^\s*NEEDS YOUR EYES\s*[,:–—-]?\s*/, '') : t('pNothing')) + '</p>' + (you && link(p.you_link) ? '<p><a class="b sm go" href="' + esc(link(p.you_link)) + '" target="_blank" rel="noopener">' + esc(cut(p.you_link_text || t('pOpenL'), 40)) + '</a></p>' : ''));
+    main += card('pn', t('pNow'), '<p dir="auto">' + esc(p.now || '–') + '</p>');
+    main += card('px', t('pNext'), '<p dir="auto">' + esc(p.next || '–') + '</p>' + (String(p.milestone || '').trim() ? '<p class="meta"><b>' + esc(t('pMile')) + ':</b> <span dir="auto">' + esc(p.milestone) + '</span>' + (p.milestone_at ? ' · ' + esc(p.milestone_at) : '') + '</p>' : ''));
+    var TK = (safe(function () { return J().tasks.open(); }, []) || []).filter(function (k) { return k.project_id === p.id; });
+    main += card('ptk', t('pTasks') + (TK.length ? ' · ' + TK.length : ''), TK.length ? '<ul class="pul">' + TK.slice(0, 8).map(function (k) { var lk = link(k.link);
+      return '<li><span dir="auto">' + esc(cut(k.title || k.action || '', 140)) + '</span>' + (k.due ? ' <small class="meta">' + esc(fill(t('pDue'), k.due)) + '</small>' : '') + (lk ? ' <a class="lnk sm" href="' + esc(lk) + '" target="_blank" rel="noopener">' + esc(t('openW')) + '</a>' : '') + '</li>'; }).join('') + '</ul>' : '<p class="meta top0">' + esc(t('pTasks0')) + '</p>');
+    askLoad();
+    var RG = Array.isArray(p.req) ? p.req : p.req ? [p.req] : [], RQ = RG.length && S.ask ? S.ask.filter(function (a) { return RG.indexOf(a.product) > -1 && askOpen(a); }) : [];
+    if (RG.length) main += card('prq', t('pReq') + (RQ.length ? ' · ' + RQ.length : ''), S.ask ? (RQ.length ? '<ul class="pul">' + RQ.slice(0, 6).map(function (a) { return '<li dir="auto">' + esc(cut(a.text || a.title || a.summary || '', 160)) + '</li>'; }).join('') + '</ul>'
+      + (RQ.length > 6 ? '<div class="sub"><button type="button" class="lnk" data-x="sp" data-id="asks">+ ' + (RQ.length - 6) + '</button></div>' : '') : '<p class="meta top0">' + esc(t('pReq0')) + '</p>') : '<p class="meta top0">' + esc(t('loading')) + '</p>');
+    var side = '', LK = pLinks(p);
+    if (LK.length) side += card('plk', t('pLinks'), '<ul class="plks">' + LK.map(function (x) { return '<li><a class="lnk" href="' + esc(x.u) + '" target="_blank" rel="noopener" dir="auto">' + esc(cut(x.l, 50)) + '</a></li>'; }).join('') + '</ul>');
+    var R = runsFor(p.id);
+    side += card('prn', t('pRuns'), R.length ? '<ul class="rl">' + R.map(function (r) { var tt = runT(r), rk = link(r.link);
+      return '<li><span class="rt"><bdi>' + esc(isNaN(tt) ? '' : dayName(tt) + ' ' + hm(tt)) + '</bdi> · <span dir="auto">' + esc(cut(r.arm || '', 40)) + '</span></span><span class="rs" dir="auto">' + esc(cut(r.summary || '', 160)) + '</span>' + (rk ? '<a class="lnk" href="' + esc(rk) + '" target="_blank" rel="noopener">' + esc(t('proof')) + '</a>' : '') + '</li>'; }).join('') + '</ul>' : '<p class="meta top0">' + esc(t('noRunsP')) + '</p>');
+    if (String(p.kill_rule || '').trim() || String(p.revisit || '').trim()) side += card('prl', t('pRules'), (p.kill_rule ? '<p><b>' + esc(t('pKill')) + ':</b> <span dir="auto">' + esc(p.kill_rule) + '</span></p>' : '') + (p.revisit ? '<p><b>' + esc(t('pRev')) + ':</b> <span dir="auto">' + esc(p.revisit) + '</span></p>' : ''));
+    return h + '<div class="pjg"><div class="pjm">' + main + '</div><div class="pjs">' + side + '</div></div>';
+  }
+  function pHomeBlock() { /* Home: every project in one line of state counts; a tap opens Overview filtered to that state */
+    var L = pList(); if (!L.length) return '';
+    var n = {}; L.forEach(function (p) { var s = pState(p); n[s] = (n[s] || 0) + 1; });
+    return '<section class="blk pyh"><h2 class="hh">' + esc(t('pYourP')) + ' <span class="cn">' + L.length + '</span></h2><p class="meta top0">' + esc(fill(t('pYourS'), L.length)) + '</p><div class="pyg">'
+      + PST.filter(function (s) { return n[s]; }).map(function (s) { return '<button type="button" class="pyc" data-x="pf" data-id="' + s + '" data-w="go">' + pBadge(s) + '<b>' + n[s] + '</b></button>'; }).join('') + '</div></section>';
+  }
+  function pqApply() { /* search filters in place, so the phone keyboard never closes mid-word */
+    var q = String(S.pq || '').trim().toLowerCase(), k = 0;
+    [].forEach.call(sr.querySelectorAll('[data-x="pj"][data-q]'), function (el) { var hit = !q || String(el.getAttribute('data-q')).indexOf(q) > -1; el.hidden = !hit; if (hit) k++; });
+    [].forEach.call(sr.querySelectorAll('.pgrp,.pbg'), function (g) { var any = g.querySelector('[data-x="pj"][data-q]:not([hidden])'); var folded = !g.querySelector('[data-x="pj"][data-q]'); g.hidden = !folded && !any; });
+    var c = sr.getElementById('j8pqn'); if (c) c.textContent = k === 1 ? t('pCount1') : fill(t('pCountN'), k);
+  }
   function look() { try { var v = localStorage.getItem('j8:look'); return v === 'dark' || v === 'auto' ? v : 'light'; } catch (e) { return 'light'; } }
   function dark() { var l = look(); return l === 'dark' || (l === 'auto' && !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)); }
   function paint() { var d = dark(); if (W) W.setAttribute('data-look', d ? 'dark' : 'light'); try { document.documentElement.style.background = d ? '#0A0F22' : '#F3F5FA'; var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', d ? '#0A0F22' : '#F3F5FA'); } catch (e) {} }
   function needCount() { /* the one number on Home: decisions + follow-ups due + late warm leads + project steps for you */
     var n = deck().length + fuDue().length + dealsOpen().filter(dLate).length;
-    projAll().forEach(function (p) { if (p.hidden !== true && p.status !== 'parked' && p.status !== 'killed' && !noYou(p.you)) n++; });
+    pList().forEach(function (p) { if (pNeeds(p)) n++; }); /* 16.2: same rule as the Projects screens */
     return n;
   }
   function liveDot() {
@@ -1127,8 +1317,8 @@
       + (S.sp === 'talk' ? '' : '<button type="button" class="ib" data-x="sp" data-id="talk" aria-label="' + esc(t('chatOpen')) + '">' + ico(IC.chat) + '</button>') + '</div></header>';
   }
   function subSwitch() {
-    var d = destOf(S.sp), L = SUB[d]; if (!L) return '';
-    return '<div class="subs" role="group" aria-label="' + esc(t('views')) + '">' + L.map(function (s) { return '<button type="button" data-x="sp" data-id="' + s[0] + '" aria-pressed="' + (S.sp === s[0]) + '">' + esc(t(s[1])) + '</button>'; }).join('') + '</div>';
+    var d = destOf(S.sp), L = SUB[d]; if (!L || S.sp === 'pj') return '';
+    return '<div class="subs' + (L.length === 3 ? ' n3' : '') + '" role="group" aria-label="' + esc(t('views')) + '">' + L.map(function (s) { return '<button type="button" data-x="sp" data-id="' + s[0] + '" aria-pressed="' + (S.sp === s[0]) + '">' + esc(t(s[1])) + '</button>'; }).join('') + '</div>';
   }
   function tabs() { return navItems('bnav'); }
   function kIls(n) { return '₪' + (n >= 1000 ? Math.round(n / 1000) + 'k' : n); }
@@ -1146,7 +1336,7 @@
     return h;
   }
   function stepsBlock() {
-    var L = projAll().filter(function (p) { return p.hidden !== true && p.status !== 'parked' && p.status !== 'killed' && !noYou(p.you); }).sort(pOrd);
+    var L = pList().filter(pNeeds).sort(pOrd);
     if (!L.length) return on() ? '<section class="blk steps"><h2 class="hh">' + esc(t('stepsW')) + '</h2><p class="meta">' + esc(t('noneSteps')) + '</p></section>' : '';
     return '<section class="blk steps"><h2 class="hh">' + esc(t('stepsW')) + ' <span class="cn">' + L.length + '</span></h2><p class="meta top0">' + esc(t('stepsP')) + '</p><div class="lst">' + L.slice(0, 5).map(function (p) {
       return '<button type="button" class="li" data-x="pjopen" data-id="' + esc(p.id) + '"><span class="lid" aria-hidden="true"></span><span class="lit"><b dir="auto">' + esc(youShort(p.you)) + '</b><small dir="auto">' + esc(cut(p.name || p.id, 50)) + '</small></span>' + chev() + '</button>';
@@ -1169,7 +1359,7 @@
       return '<button type="button" class="li" data-x="sp" data-id="queue"><span class="lid o" aria-hidden="true"></span><span class="lit"><b dir="auto">' + esc(cardTitle(c)) + '</b><small>' + kindChip(c).replace(/<[^>]+>/g, '') + '</small></span>' + chev() + '</button>'; }).join('')
       + '</div><div class="sub"><button type="button" class="lnk" data-x="sp" data-id="queue">' + esc(t('seeAll')) + ' (' + (L.length - 1) + ')</button></div></section>';
     main += vFollow(5);
-    var side = stepsBlock() + (none ? '' : '<section class="blk glance"><h2 class="hh">' + esc(t('glanceW')) + '</h2><p class="glx"><span><b>' + (sc ? sc.sent : 0) + '</b> ' + esc(t('sentW')) + '</span><span><b>' + (sc ? sc.rep : 0) + '</b> ' + esc((sc && sc.rep === 1) ? t('repW1') : t('repW')) + '</span><span>' + esc(t('d7')) + '</span></p>' + stallLine() + pulse() + '</section>') + askEntry();
+    var side = stepsBlock() + pHomeBlock() + (none ? '' : '<section class="blk glance"><h2 class="hh">' + esc(t('glanceW')) + '</h2><p class="glx"><span><b>' + (sc ? sc.sent : 0) + '</b> ' + esc(t('sentW')) + '</span><span><b>' + (sc ? sc.rep : 0) + '</b> ' + esc((sc && sc.rep === 1) ? t('repW1') : t('repW')) + '</span><span>' + esc(t('d7')) + '</span></p>' + stallLine() + pulse() + '</section>') + askEntry();
     return '<h1 class="sr">' + esc(t('home')) + '</h1>' + h + '<div class="hm"><div class="hmain">' + main + '</div><aside class="hside" aria-label="' + esc(t('glanceW')) + '">' + side + '</aside></div>';
   }
   function vMore() {
@@ -1194,16 +1384,16 @@
       W.setAttribute('data-sp', 'start'); if (!GS.start) { GS.start = true; GS.step = 0; idleArm(); }
       C.innerHTML = '<header class="top"><div class="topin"><span class="lock"><img class="mk" src="brand/j8nix-mark-8-2026-11-17.svg" alt="" width="14" height="28"><b>J8NIX</b></span></div></header><main class="pg gsf" id="j2main" tabindex="-1"><div class="in">' + vStart() + '</div></main>'; window.scrollTo(0, y); return;
     }
-    var body = S.sp === 'home' || S.sp === 'today' ? vHome() : S.sp === 'more' ? vMore() : S.sp === 'asks' ? vAsks() : S.sp === 'status' ? vStatus() : S.sp === 'time' ? vTime() : S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'agents' ? vAgents() : S.sp === 'set' ? vSet() : vHome();
+    var body = S.sp === 'home' || S.sp === 'today' ? vHome() : S.sp === 'more' ? vMore() : S.sp === 'asks' ? vAsks() : S.sp === 'status' || S.sp === 'pboard' ? vPBoard() : S.sp === 'pall' ? vPAll() : S.sp === 'pj' ? vPj() : S.sp === 'time' ? vTime() : S.sp === 'queue' ? vQueue() : S.sp === 'eng' ? vEng() : S.sp === 'score' ? vScore() : S.sp === 'talk' ? vTalk() : S.sp === 'agents' ? vAgents() : S.sp === 'set' ? vSet() : vHome();
     var fae = sr.activeElement, fk = fae && fae.getAttribute ? fae.getAttribute('data-fk') : null; /* 15.12: a re-render keeps focus on the same timeline mark */
     W.setAttribute('data-dest', destOf(S.sp));
-    C.innerHTML = topBar() + '<main class="pg" id="j2main" tabindex="-1"><div class="in">' + subSwitch() + (GS.tour > -1 ? tourSlip() : S.sp === 'status' || S.sp === 'asks' || S.sp === 'more' ? '' : hintBar(S.sp === 'home' ? 'today' : S.sp)) + (S.sp === 'score' ? goalLine() : '') + body + '</div></main>' + tabs(); /* the toast sits outside C, so a data refresh never wipes an Undo */
+    C.innerHTML = topBar() + '<main class="pg" id="j2main" tabindex="-1"><div class="in">' + subSwitch() + (GS.tour > -1 ? tourSlip() : S.sp === 'status' || S.sp === 'asks' || S.sp === 'more' || S.sp === 'pall' || S.sp === 'pboard' || S.sp === 'pj' ? '' : hintBar(S.sp === 'home' ? 'today' : S.sp)) + (S.sp === 'score' ? goalLine() : '') + body + '</div></main>' + tabs(); /* the toast sits outside C, so a data refresh never wipes an Undo */
     window.scrollTo(0, y);
     tlTabStop(); if (fk) { var fe = sr.querySelector('[data-fk="' + fk.replace(/["\\]/g, '') + '"]'); if (fe) { fe.tabIndex = 0; [].forEach.call(sr.querySelectorAll('.tlls [data-x="tpick"]'), function (b) { if (b !== fe) b.tabIndex = -1; }); try { fe.focus({ preventScroll: true }); } catch (e) {} } }
     if (S.edit) { var ta = sr.getElementById('j2ed'); if (ta && force === 'edit') { ta.focus(); } }
   }
   function soon() { if (raf) return; raf = requestAnimationFrame(function () { raf = 0; render(false); }); }
-  function go(sp) { if (sp === 'today') sp = 'home'; if (sp === 'status' || sp === 'time') { LAST.plan = sp; try { localStorage.setItem('j8:p3', sp); } catch (e) {} } if (sp === 'score' || sp === 'eng') { LAST.results = sp; try { localStorage.setItem('j8:r3', sp); } catch (e) {} } S.sp = sp; S.edit = null; render(true); window.scrollTo(0, 0); var m = sr.getElementById('j2main'); if (m) try { m.focus({ preventScroll: true }); } catch (e) {} }
+  function go(sp) { if (sp === 'today') sp = 'home'; if (sp === 'status') sp = 'pboard'; if (sp === 'pall' || sp === 'pboard' || sp === 'time') { LAST.plan = sp; try { localStorage.setItem('j8:p3', sp); } catch (e) {} } if (sp === 'score' || sp === 'eng') { LAST.results = sp; try { localStorage.setItem('j8:r3', sp); } catch (e) {} } S.sp = sp; S.edit = null; render(true); window.scrollTo(0, 0); var m = sr.getElementById('j2main'); if (m) try { m.focus({ preventScroll: true }); } catch (e) {} }
   function say(msg, undo, why) {
     undoFn = undo || null; var el = sr.getElementById('j2t'); if (!el) return;
     el.setAttribute('dir', lang() === 'he' ? 'rtl' : 'ltr'); el.innerHTML = '<span dir="' + (lang() === 'he' ? 'rtl' : 'ltr') + '">' + esc(msg) + '</span>' + (undo ? '<button type="button" data-x="undo">' + esc(t('undo')) + '</button>' : '')
@@ -1256,7 +1446,9 @@
     if (gAct(x, el)) return;
     if (x === 'dest') { if (GS.tour > -1) { GS.tour = -1; var g3 = gLoad(); if (g3) { g3.tour = 'ended'; gSave(); } } go(spOf(id)); return; }
     if (x === 'skip') { var mm = sr.getElementById('j2main'); if (mm) try { mm.focus(); } catch (e) {} return; }
-    if (x === 'pjopen') { S.open['s:' + id] = true; go('status'); setTimeout(function () { var r = sr.querySelector('[data-k="s:' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (r) { try { r.scrollIntoView({ block: 'start', behavior: 'auto' }); } catch (e) {} var sm = r.querySelector('summary'); if (sm) try { sm.focus({ preventScroll: true }); } catch (e) {} } }, 30); return; }
+    if (x === 'pjopen' || x === 'pj') { if (!id) return; S.pj = id; go('pj'); return; }
+    if (x === 'pf') { S.pf = id === 'need' || PST.indexOf(id) > -1 ? id : 'all'; try { localStorage.setItem('j8:pf', S.pf); } catch (e) {} if (el.getAttribute('data-w') === 'go') { go(LAST.plan === 'pboard' ? 'pboard' : 'pall'); return; } render(true); var pc = sr.querySelector('[data-x="pf"][aria-pressed="true"]'); if (pc) pc.focus(); return; }
+    if (x === 'pgt') { S.open['pg:' + id] = !pGroupOpen(id); render(true); var pg = sr.querySelector('[data-x="pgt"][data-id="' + id + '"]'); if (pg) pg.focus(); return; }
     if (x === 'look') { try { localStorage.setItem('j8:look', id === 'dark' || id === 'auto' ? id : 'light'); } catch (e) {} paint(); render(true); return; }
     if (x === 'ui2') { location.href = './?ui=2'; return; }
     if (x === 'sp') { if (GS.tour > -1) { GS.tour = -1; var gg = gLoad(); if (gg) { gg.tour = 'ended'; gSave(); } } go(id); return; }
@@ -1620,6 +1812,7 @@
     if (GS.tour > -1 && e.key === 'Escape') { e.preventDefault(); tourAt(-1); return; }
     if (GS.start || GS.fin) return; /* the guided start owns the screen: no space keys */
     if (/^[1-9]$/.test(e.key)) { if (GS.tour > -1) { GS.tour = -1; var gk = gLoad(); if (gk) { gk.tour = 'ended'; gSave(); } } if (+e.key <= DEST.length) { go(spOf(DEST[+e.key - 1].id)); e.preventDefault(); } return; }
+    if (S.sp === 'pj' && e.key === 'Escape') { e.preventDefault(); go(LAST.plan); return; }
     if (S.sp === 'time') { if (tgt && tgt.getAttribute && tgt.getAttribute('data-x') === 'tpick' && tlRove(tgt, e.key)) e.preventDefault(); if (e.key === 'Escape' && S.tSel) { var was = S.tSel; S.tSel = ''; render(true); var mk = sr.querySelector('[data-fk="t:' + was.replace(/["\\]/g, '') + '"]'); if (mk) { [].forEach.call(sr.querySelectorAll('.tlls [data-x="tpick"]'), function (b) { b.tabIndex = -1; }); mk.tabIndex = 0; try { mk.focus({ preventScroll: true }); } catch (x) {} } } /* Escape from anywhere (even the ×) returns focus to the mark */ return; }
     if (S.sp !== 'home' && S.sp !== 'today') return;
     var c = sr.querySelector('.deck .card'); if (!c) return;
@@ -1677,7 +1870,7 @@
     try { if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { paint(); }); } catch (e) {}
     document.body.appendChild(host);
     sr.addEventListener('click', function (e) { var el = e.target.closest && e.target.closest('[data-x]'); if (!el) { var sm = e.target.closest && e.target.closest('summary'); if (sm) { var d = sm.parentNode, k = d.getAttribute('data-k'); if (k) { e.preventDefault(); S.open[k] = !S.open[k]; render(true); } } return; } e.preventDefault(); act(el.getAttribute('data-x'), el); });
-    sr.addEventListener('input', function (e) { var tg = e.target; if (tg.dataset.say) { S.talk = tg.value; tg.style.height = 'auto'; tg.style.height = Math.min(160, tg.scrollHeight) + 'px'; } else if (tg.dataset.ed) S.editTx = tg.value; else if (tg.dataset.g) gField(tg.dataset.g, tg.value); else if (tg.dataset.dl && S.dEd) S.dEd[tg.dataset.dl] = tg.value; });
+    sr.addEventListener('input', function (e) { var tg = e.target; if (tg.dataset.say) { S.talk = tg.value; tg.style.height = 'auto'; tg.style.height = Math.min(160, tg.scrollHeight) + 'px'; } else if (tg.dataset.ed) S.editTx = tg.value; else if (tg.dataset.g) gField(tg.dataset.g, tg.value); else if (tg.dataset.dl && S.dEd) S.dEd[tg.dataset.dl] = tg.value; else if (tg.dataset.pq) { S.pq = tg.value; pqApply(); } });
     var rzT = 0, rzW = window.innerWidth; window.addEventListener('resize', function () { if (S.sp !== 'time' || window.innerWidth === rzW) return; clearTimeout(rzT); rzT = setTimeout(function () { rzW = window.innerWidth; render(false); }, 150); }); /* 15.12: timeline marks regroup for the new width */
     sr.addEventListener('focusout', function () { setTimeout(function () { if (pend && !busyTyping()) render(false); }, 0); });
     swipe();
