@@ -12,7 +12,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '16.0.0';
+  var VER = '16.1.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -154,7 +154,9 @@
   function aps() { var j = J(); return safe(function () { return j.approvals.list(); }, []); }
   function apById(id) { return aps().filter(function (a) { return String(a.id) === String(id); })[0] || null; }
   function textOf(a) { var j = J(); return String(safe(function () { return j.approvals.textOf(a); }, '') || ''); }
-  function whoOf(a) { var ch = /\bto\s+([^\s@]+@[^\s,;)]+)/i.exec(String(a.channel || '')); return cut(a.to || a.label || a.subject || (ch && ch[1]) || a.kind || t('kDraft'), 60); } /* 15.6: a row with no name shows its address, never just "email" */
+  var IDN = { jfrog: 'JFrog', sysaid: 'SysAid', maptiler: 'MapTiler', sensiai: 'Sensi.ai', paloalto: 'Palo Alto Networks', sqlink: 'SQLink', roboticimaging: 'Robotic Imaging', framesecurity: 'Frame Security', waysecurity: 'Way Security', plutosecurity: 'Pluto Security', superplay: 'SuperPlay', sciplay: 'SciPlay', realplay: 'RealPlay', cato: 'Cato Networks', hio: 'HiO' };
+  function idName(a) { var m = /^[a-z]+-\d{3,4}-([a-z0-9]+)/i.exec(String((a && a.id) || '')); if (!m) return ''; var k = m[1].toLowerCase(); return IDN[k] || k.charAt(0).toUpperCase() + k.slice(1); } /* 16.1: app-1118-jfrog -> JFrog */
+  function whoOf(a) { var ch = /\bto\s+([^\s@]+@[^\s,;)]+)/i.exec(String(a.channel || '')); return cut(a.to || a.label || a.subject || (ch && ch[1]) || idName(a) || (a.kind ? chan(a.kind) : '') || t('kDraft'), 60); } /* 15.6: a row with no name shows its address, never just "email" */
   function whyNow(a) {
     var x = X(), s = x ? safe(function () { return x.whyNow(a); }, '') : '';
     if (a && a.kind === 'template' && !(a.gist || a.why_now)) return t('tplWhy'); /* 15.5: the two fixed phrases j13 writes, in the app's language */
@@ -240,7 +242,7 @@
     if (c.k === 'rep') {
       var a = c.a, cur = outcomeOf(a);
       h += '<p class="why">' + esc(t('sentOn')) + ' ' + esc(day(pd(a.sent_at))) + ' · ' + esc(ow(cur || 'replied')) + '</p>';
-      h += '<div class="acts four">' + ['call', 'proposal', 'won', 'lost'].map(function (w) { return '<button type="button" class="b sm" data-x="oc" data-w="' + w + '" data-id="' + esc(a.id) + '" aria-pressed="' + (cur === w) + '">' + esc(ow(w)) + '</button>'; }).join('') + '</div>';
+      h += '<div class="acts-q"><p class="ocq">' + esc(t('ocQ')) + '</p></div><div class="acts four">' + ['call', 'proposal', 'won', 'lost'].map(function (w) { return '<button type="button" class="b sm" data-x="oc" data-w="' + w + '" data-id="' + esc(a.id) + '" aria-pressed="' + (cur === w) + '">' + esc(ow(w)) + '</button>'; }).join('') + '</div>';
       if (!inList) h += '<div class="sub"><button type="button" class="lnk" data-x="hold" data-id="' + esc(c.id) + '">' + esc(t('hold')) + '</button></div>';
     } else if (c.k === 'batch') {
       var b = c.b, n = b.L.length, op = S.bprev === b.k;
@@ -377,7 +379,7 @@
         var la = armed('dl-' + k); bd += '<div class="sub"><button type="button" class="' + (la ? 'b sm stop arm' : 'lnk sm dlost') + '" data-x="dstage" data-w="lost" data-id="' + esc(k) + '">' + esc(la ? t('tapStop') : t('markLost')) + '</button></div></div>';
       }
       return '<div class="row rt dr' + (late ? ' is-late' : '') + '"><div class="rh"><button type="button" class="rx" data-x="dexp" data-id="' + esc(k) + '" aria-expanded="' + !!op + '"' + (op ? ' aria-controls="db-' + nid + '"' : '') + '>' + glyph('late').replace('g-late', late ? 'g-late dl-late' : 'g-late dl-wait')
-        + '<span class="ph"><b id="' + nid + '"><bdi>' + esc(cut(br.org || br.who || t('deals'), 60)) + '</bdi></b><small><span>' + esc(t('d_' + d.stage)) + '</span>' + track + ' · <bdi>' + esc(cut(dStep(d), 70)) + '</bdi> · <span class="' + (late ? 'dlate' : 'dwait') + '">' + esc(due) + '</span></small></span>' + chev() + '</button></div>' + bd + '</div>';
+        + '<span class="ph"><b id="' + nid + '"><bdi>' + esc(cut(br.org || br.who || (d.approval_id && apById(d.approval_id) ? whoOf(apById(d.approval_id)) : '') || t('lead1'), 60)) + '</bdi></b><small><span>' + esc(t('d_' + d.stage)) + '</span>' + track + ' · <bdi>' + esc(cut(dStep(d), 70)) + '</bdi> · <span class="' + (late ? 'dlate' : 'dwait') + '">' + esc(due) + '</span></small></span>' + chev() + '</button></div>' + bd + '</div>';
     }).join('');
     return h + '</div></section>';
   }
@@ -592,7 +594,6 @@
       + row(esc(t('sound')), '', '<span class="seg"><button type="button" class="b sm" data-x="snd" data-id="on" aria-pressed="' + soundOn() + '">' + esc(t('on')) + '</button><button type="button" class="b sm" data-x="snd" data-id="off" aria-pressed="' + !soundOn() + '">' + esc(t('off')) + '</button></span>')
       + row(esc(t('look')), '', '<span class="seg">' + ['light', 'dark', 'auto'].map(function (k) { return '<button type="button" class="b sm" data-x="look" data-id="' + k + '" aria-pressed="' + (look() === k) + '">' + esc(t(k === 'light' ? 'lkLight' : k === 'dark' ? 'lkDark' : 'lkAuto')) + '</button>'; }).join('') + '</span>')
       + row(esc(t('ui2')), esc(t('ui2P')), '<a class="b sm" href="./?ui=2">' + esc(t('open')) + '</a>')
-      + row(esc(t('classic')), esc(t('classicP')), '<a class="b sm" href="classic/">' + esc(t('open')) + '</a>')
       + row(esc(t('refresh')), '', '<button type="button" class="b sm" data-x="refresh">' + esc(t('refresh')) + '</button>')
       + row(esc(t('signout')), esc((u ? u.email : '') + (o && o.name ? ' · ' + o.name : '')), '<button type="button" class="b sm" data-x="signout">' + esc(t('signout')) + '</button>')
       + row(esc(t('version')), 'J8NIX ' + VER, '') + '</div></section>' + guideSet();
@@ -1028,13 +1029,13 @@
     stepsW: 'Your steps', stepsP: 'From your projects. Tap to open the project.', glanceW: 'Today at a glance', moneyW: 'Money goal', chatB: 'Chat', backW: 'Back', moreSub: 'Everything else, in one place.',
     m_talk: 'Chat', m_talkP: 'Talk to J8 and the team', m_talkN: 'Last message {w}', m_agents: 'Workers', m_agentsP: 'What runs for you, and how it went', m_agOk: 'All fine', m_agBad: '{n} need a look', m_agBad1: '1 needs a look',
     m_asks: 'Your requests', m_asksP: 'Everything you asked for, and where it stands', m_set: 'Settings', m_setP: 'Sending, language, look, sign out', m_old: 'Classic view', m_oldP: 'The J8NIX 2.0 screens, as they were',
-    look: 'Look', lkLight: 'Light', lkDark: 'Dark', lkAuto: 'Match phone', ui2: 'Classic view (J8NIX 2.0)', ui2P: 'Opens the old tabbed screens. Close and reopen J8NIX to come back.', skip: 'Skip to content', chatOpen: 'Open chat', noneSteps: 'No steps for you on any project.' });
+    look: 'Look', lkLight: 'Light', lkDark: 'Dark', lkAuto: 'Match phone', ui2: 'Classic view', ui2P: 'The J8NIX 2.0 screens. Close and reopen J8NIX to come back.', ocQ: 'What happened?', lead1: 'Warm lead', runW: 'The road to ₪100,000', youHere: 'You are here', skip: 'Skip to content', chatOpen: 'Open chat', noneSteps: 'No steps for you on any project.' });
   Object.assign(T.he, { home: 'בית', plan: 'תוכנית', results: 'תוצאות', more: 'עוד', p_proj: 'פרויקטים', p_time: 'ציר זמן', r_all: 'סיכום', r_line: 'לפי ערוץ הכנסה', views: 'תצוגות',
     needsN: '{n} דברים מחכים לך', needs1: 'דבר אחד מחכה לך', needs0: 'שום דבר לא מחכה לך עכשיו', needsL: 'טוען מה מחכה לך…', needsF: 'לא הצלחנו לטעון מה מחכה לך', doFirst: 'זה קודם', alsoW: 'מחכים גם', seeAll: 'כל מה שמחכה לשליחה',
     stepsW: 'הצעדים שלך', stepsP: 'מתוך הפרויקטים. הקש כדי לפתוח את הפרויקט.', glanceW: 'היום במבט אחד', moneyW: 'יעד הכסף', chatB: 'הודעות', backW: 'חזרה', moreSub: 'כל השאר, במקום אחד.',
     m_talk: 'הודעות', m_talkP: 'לדבר עם J8 והצוות', m_talkN: 'הודעה אחרונה {w}', m_agents: 'עובדים', m_agentsP: 'מה רץ בשבילך ואיך זה הלך', m_agOk: 'הכול תקין', m_agBad: '{n} צריכים בדיקה', m_agBad1: 'אחד צריך בדיקה',
     m_asks: 'הבקשות שלך', m_asksP: 'כל מה שביקשת ואיפה זה עומד', m_set: 'הגדרות', m_setP: 'שליחה, שפה, מראה, יציאה', m_old: 'תצוגה קלאסית', m_oldP: 'המסכים של J8NIX 2.0, כמו שהיו',
-    look: 'מראה', lkLight: 'בהיר', lkDark: 'כהה', lkAuto: 'כמו בטלפון', ui2: 'תצוגה קלאסית (J8NIX 2.0)', ui2P: 'פותח את המסכים הישנים עם הלשוניות. סגור ופתח את J8NIX כדי לחזור.', skip: 'דלג לתוכן', chatOpen: 'פתח הודעות', noneSteps: 'אין צעדים שמחכים לך באף פרויקט.' });
+    look: 'מראה', lkLight: 'בהיר', lkDark: 'כהה', lkAuto: 'כמו בטלפון', ui2: 'תצוגה קלאסית', ui2P: 'המסכים של J8NIX 2.0. סגור ופתח את J8NIX כדי לחזור.', ocQ: 'מה קרה?', lead1: 'ליד חם', runW: 'הדרך ל-₪100,000', youHere: 'אתה כאן', skip: 'דלג לתוכן', chatOpen: 'פתח הודעות', noneSteps: 'אין צעדים שמחכים לך באף פרויקט.' });
   function look() { try { var v = localStorage.getItem('j8:look'); return v === 'dark' || v === 'auto' ? v : 'light'; } catch (e) { return 'light'; } }
   function dark() { var l = look(); return l === 'dark' || (l === 'auto' && !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)); }
   function paint() { var d = dark(); if (W) W.setAttribute('data-look', d ? 'dark' : 'light'); try { document.documentElement.style.background = d ? '#0A0F22' : '#F3F5FA'; var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', d ? '#0A0F22' : '#F3F5FA'); } catch (e) {} }
@@ -1070,13 +1071,19 @@
     return '<div class="subs" role="group" aria-label="' + esc(t('views')) + '">' + L.map(function (s) { return '<button type="button" data-x="sp" data-id="' + s[0] + '" aria-pressed="' + (S.sp === s[0]) + '">' + esc(t(s[1])) + '</button>'; }).join('') + '</div>';
   }
   function tabs() { return navItems('bnav'); }
-  function moneyBlock() {
+  function kIls(n) { return '₪' + (n >= 1000 ? Math.round(n / 1000) + 'k' : n); }
+  function heroBlock(n, dt) { /* 16.1 signature: the road to ₪100,000. One navy band: date, how many things need you, and the money road with the J8 mark at the real ₪ collected. */
     var m = safe(function () { return J().money.summary(); }, null), bk = m && m.booked_ils != null && !isNaN(Number(m.booked_ils)) ? Number(m.booked_ils) : null;
-    if (bk == null) return '<section class="run"><h2 class="hh">' + esc(t('moneyW')) + '</h2><p class="mno">' + esc(t(on() ? 'moneyNo' : 'moneyOff')) + '</p></section>';
+    var h = '<section class="hero" aria-labelledby="j3need"><p class="dt">' + esc(dt) + '</p><h2 class="need3' + (n > 0 ? ' on' : '') + '" id="j3need">' + esc(n < 0 ? (failed() ? t('needsF') : t('needsL')) : n === 0 ? t('needs0') : n === 1 ? t('needs1') : fill(t('needsN'), n)) + '</h2>';
+    if (bk == null) return h + '<p class="mno">' + esc(t(on() ? 'moneyNo' : 'moneyOff')) + '</p></section>';
     var pc = Math.max(0, Math.min(100, bk / GOAL_ILS * 100)), pt = pc < 10 ? (Math.round(pc * 10) / 10) : Math.round(pc);
-    return '<section class="run" aria-label="' + esc(ils(bk) + ' ' + t('collected') + ' ' + ils(GOAL_ILS)) + '"><h2 class="hh">' + esc(t('moneyW')) + '</h2><p class="rbig"><b>' + esc(ils(bk)) + '</b><span>' + esc(t('collected')) + ' <bdi>' + esc(ils(GOAL_ILS)) + '</bdi></span></p>'
-      + '<div class="rbar" aria-hidden="true"><i style="width:' + Math.max(pc, .6).toFixed(2) + '%"></i><s style="inset-inline-start:25%"></s><s style="inset-inline-start:50%"></s><s style="inset-inline-start:75%"></s></div>'
-      + '<p class="rsub"><span>' + esc(pt + '% ' + t('ofGoal')) + '</span><span>' + esc(ils(Math.max(0, GOAL_ILS - bk)) + ' ' + t('toGo')) + '</span></p></section>';
+    h += '<div class="road" role="img" aria-label="' + esc(ils(bk) + ' ' + t('collected') + ' ' + ils(GOAL_ILS) + ', ' + pt + '% ' + t('ofGoal')) + '"><p class="rw">' + esc(t('runW')) + '</p>'
+      + '<p class="rbig"><b>' + esc(ils(bk)) + '</b><span>' + esc(t('collected')) + ' <bdi>' + esc(ils(GOAL_ILS)) + '</bdi></span></p>'
+      + '<div class="rtrack" aria-hidden="true"><i class="rdone" style="width:' + pc.toFixed(2) + '%"></i>'
+      + [25, 50, 75].map(function (q) { return '<span class="rst' + (pc >= q ? ' on' : '') + '" style="inset-inline-start:' + q + '%"><em>' + kIls(GOAL_ILS * q / 100) + '</em></span>'; }).join('')
+      + '<span class="rend"><em>' + kIls(GOAL_ILS) + '</em></span><span class="rme" style="inset-inline-start:' + pc.toFixed(2) + '%"><img src="brand/j8nix-mark-8-2026-11-17.svg" alt="" width="9" height="18"></span></div>'
+      + '<p class="rsub"><span>' + esc(pt + '% ' + t('ofGoal')) + '</span><span>' + esc(ils(Math.max(0, GOAL_ILS - bk)) + ' ' + t('toGo')) + '</span></p></div></section>';
+    return h;
   }
   function stepsBlock() {
     var L = projAll().filter(function (p) { return p.hidden !== true && p.status !== 'parked' && p.status !== 'killed' && !noYou(p.you); }).sort(pOrd);
@@ -1089,7 +1096,7 @@
     pull();
     var L = deck(), first = L[0], none = !on() && !aps().length, n = none ? -1 : needCount(), x = X(), sc = x ? safe(function () { return x.score(); }, null) : null;
     var d = new Date(), dt = ''; try { dt = d.toLocaleDateString(lang() === 'he' ? 'he-IL' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Asia/Jerusalem' }); } catch (e) {}
-    var h = '<section class="hello"><p class="dt">' + esc(dt) + '</p><p class="need3' + (n > 0 ? ' on' : '') + '">' + esc(n < 0 ? (failed() ? t('needsF') : t('needsL')) : n === 0 ? t('needs0') : n === 1 ? t('needs1') : fill(t('needsN'), n)) + '</p></section>';
+    var h = heroBlock(n, dt);
     var main = vDeals();
     main += '<section class="blk first"><h2 class="hh">' + esc(t('doFirst')) + (L.length ? ' <span class="cn">1 ' + esc(t('of')) + ' ' + L.length + '</span>' : '') + '</h2>';
     if (!first) {
@@ -1103,7 +1110,7 @@
       + '</div><div class="sub"><button type="button" class="lnk" data-x="sp" data-id="queue">' + esc(t('seeAll')) + ' (' + (L.length - 1) + ')</button></div></section>';
     main += vFollow(5);
     var side = stepsBlock() + (none ? '' : '<section class="blk glance"><h2 class="hh">' + esc(t('glanceW')) + '</h2><p class="glx"><span><b>' + (sc ? sc.sent : 0) + '</b> ' + esc(t('sentW')) + '</span><span><b>' + (sc ? sc.rep : 0) + '</b> ' + esc((sc && sc.rep === 1) ? t('repW1') : t('repW')) + '</span><span>' + esc(t('d7')) + '</span></p>' + stallLine() + pulse() + '</section>') + askEntry();
-    return '<h1 class="sr">' + esc(t('home')) + '</h1>' + h + '<div class="hm">' + moneyBlock() + '<div class="hmain">' + main + '</div><aside class="hside" aria-label="' + esc(t('glanceW')) + '">' + side + '</aside></div>';
+    return '<h1 class="sr">' + esc(t('home')) + '</h1>' + h + '<div class="hm"><div class="hmain">' + main + '</div><aside class="hside" aria-label="' + esc(t('glanceW')) + '">' + side + '</aside></div>';
   }
   function vMore() {
     var j = J(), RT = rtnList(), bad = RT.map(function (r) { return agState(r); }).filter(function (s) { return s.bad; }).length, M = safe(function () { return j.inbox.list(30); }, []) || [], c = S.ask ? askCounts() : null; askLoad();

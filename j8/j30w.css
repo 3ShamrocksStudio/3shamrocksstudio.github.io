@@ -702,7 +702,7 @@ details[open]>summary .chev{transform:rotate(90deg)}
   .in{max-width:760px}
   .w[data-dest="home"] .in{max-width:1120px}
   .w[data-sp="time"] .in,.w[data-sp="status"] .in{max-width:1040px}
-  .hm{display:grid;grid-template-columns:minmax(0,1fr) 340px;grid-template-areas:"main run" "main side";grid-template-rows:auto 1fr;gap:0 56px;align-items:start}
+  .hm{display:grid;grid-template-columns:minmax(0,1fr) 340px;grid-template-areas:"main side";gap:0 56px;align-items:start}
   .hm>.run{grid-area:run}.hmain{grid-area:main}.hside{grid-area:side}
   .hello{margin-bottom:26px}
   .toast{bottom:24px}
@@ -720,3 +720,47 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .tick b{font-size:clamp(64px,18vw,104px)}
 .top{max-width:none;margin:0}
 .w[data-look="dark"] .lock .mk{filter:brightness(1.7) saturate(.9)}
+
+/* ================= 16.1: one signature, everything else quiet =================
+   The signature is "the road to ₪100,000": a navy band (J8NIX ink) that opens Home, with the money as a road. Stations at ₪25k / ₪50k /
+   ₪75k / ₪100k, the travelled part in the J8 mark's sky gradient, and the J8 "8" riding at the real ₪ collected. The Home line starts
+   under it, so the whole page reads as one road. Real data only: no pace or forecast is drawn. Contrast on #0C1030: #FFFFFF 18.5:1,
+   #BFC8EC 10.6:1, #8FD0FF 10.9:1. */
+.hero{position:relative;margin:-14px -16px 26px;padding:20px 20px 22px;background:#0C1030;color:#FFFFFF;overflow:hidden;isolation:isolate}
+.hero::before{content:"";position:absolute;z-index:-1;inset-block-start:-120px;inset-inline-end:-90px;width:300px;height:300px;border-radius:50%;background:radial-gradient(closest-side,rgba(91,182,249,.32),rgba(64,117,216,.12) 60%,transparent)}
+.w[data-look="dark"] .hero{background:#121A3E;box-shadow:inset 0 -1px 0 rgba(237,240,250,.1)}
+.hero .dt{margin:0;font-size:14px;font-weight:600;color:#BFC8EC}
+.hero .need3{color:#FFFFFF;margin:4px 0 0}
+.hero .need3.on::after{background:#F6C46E}
+.hero .mno{margin:14px 0 0;color:#BFC8EC;font-weight:600}
+.road{margin-top:22px}
+.road .rw{margin:0 0 2px;font-size:14px;font-weight:600;color:#BFC8EC}
+.road .rbig b{color:#FFFFFF}
+.road .rbig span{color:#BFC8EC}
+.rtrack{position:relative;height:46px;margin:14px 10px 0}
+.rtrack::before{content:"";position:absolute;inset-inline:0;top:13px;border-top:2px dashed rgba(191,200,236,.45)}
+.rdone{position:absolute;inset-inline-start:0;top:11px;height:6px;min-width:6px;border-radius:3px;background:linear-gradient(90deg,#8FD0FF,#5BB6F9 60%,#4075D8)}
+.w[dir="rtl"] .rdone{background:linear-gradient(270deg,#8FD0FF,#5BB6F9 60%,#4075D8)}
+.rst,.rend{position:absolute;top:8px;width:12px;height:12px;margin-inline-start:-6px;border-radius:50%;background:#0C1030;box-shadow:inset 0 0 0 2px rgba(191,200,236,.7)}
+.w[data-look="dark"] .rst,.w[data-look="dark"] .rend{background:#121A3E}
+.rst.on{background:#8FD0FF;box-shadow:none}
+.rend{inset-inline-start:100%;width:16px;height:16px;top:6px;margin-inline-start:-8px;box-shadow:inset 0 0 0 2px #FFFFFF}
+.rst em,.rend em{position:absolute;top:20px;inset-inline-start:50%;transform:translateX(-50%);font:600 12px/1 var(--fb);font-style:normal;color:#BFC8EC;white-space:nowrap}
+.w[dir="rtl"] .rst em,.w[dir="rtl"] .rend em{transform:translateX(50%)}
+.rend em{color:#FFFFFF;font-weight:700}
+.rme{position:absolute;top:-1px;display:grid;place-items:center;width:30px;height:30px;margin-inline-start:-15px;border-radius:50%;background:#FFFFFF;box-shadow:0 0 0 4px rgba(91,182,249,.35),0 6px 16px -4px rgba(0,0,0,.5)}
+.rme img{width:9px;height:18px;display:block}
+.road .rsub{margin-top:2px;color:#BFC8EC}
+@media (prefers-reduced-motion:no-preference){.rdone{animation:rd .7s var(--in) both}.rme{animation:rm .7s var(--in) both}@keyframes rd{from{width:0}}@keyframes rm{from{opacity:0;transform:scale(.6)}}}
+@media (min-width:960px){.hero{margin:-28px 0 34px;padding:28px 32px 30px;border-radius:0 0 6px 6px}.road{max-width:760px}.rtrack{margin-inline:12px 24px}}
+@media (max-width:959px){.hside{margin-top:4px}}
+
+/* quiet parts: plain bar, plain view switch, decision question, Hebrew buttons on one line */
+.nv[aria-current="page"] .nvi{background:none}
+.subs{background:none;padding:0;gap:0;border-radius:0;border-bottom:1px solid var(--line)}
+.subs button{position:relative;border-radius:0;min-height:46px;color:var(--ink-3)}
+.subs button[aria-pressed="true"]{background:none;box-shadow:none;color:var(--ink)}
+.subs button[aria-pressed="true"]::after{content:"";position:absolute;inset-inline:20%;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--ink)}
+.ocq{margin:14px 0 -4px;font-weight:700;font-size:15px;color:var(--ink)}
+.acts.four .b{white-space:nowrap;padding:0 6px}
+@media (max-width:479px){.acts.four{grid-template-columns:1fr 1fr}}

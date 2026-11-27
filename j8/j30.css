@@ -1,0 +1,29 @@
+/* J8NIX 3.0 (16.1.0, 27 Nov 2026), document level, loaded only with j30.js (index.html loader adds html.j3).
+   The sign-in screen in the 3.0 look: the same navy band that opens Home (J8NIX ink #0C1030 with the mark's sky glow), the wordmark in
+   white, and one white card with the J8 gradient edge holding the same forms and ids (shell.js and the auth flow are unchanged).
+   Contrast: white on #0C1030 18.5:1, #BFC8EC on #0C1030 10.6:1, ink #0C1030 on white 18.5:1, #384064 on white 10.1:1, field edge #697191 4.9:1.
+   Revert: drop this file and the loader line. */
+html.j3,html.j3 body{background:#F3F5FA!important}
+html.j3 #auth{background:#F3F5FA!important;color:#0C1030}
+html.j3 #auth>.a2{max-width:none;padding:0 0 calc(24px + env(safe-area-inset-bottom));position:relative;isolation:isolate}
+html.j3 #auth>.a2::before{content:"";position:absolute;z-index:-1;inset-inline:0;top:0;height:calc(236px + env(safe-area-inset-top));background:radial-gradient(300px 300px at 88% -10%,rgba(91,182,249,.34),rgba(64,117,216,.1) 60%,transparent 75%),#0C1030}
+html.j3[dir="rtl"] #auth>.a2::before{background:radial-gradient(300px 300px at 12% -10%,rgba(91,182,249,.34),rgba(64,117,216,.1) 60%,transparent 75%),#0C1030}
+html.j3 #auth .a2top,html.j3 #auth main.a2card,html.j3 #auth .ios,html.j3 #auth .a2foot{width:100%;max-width:452px;margin-inline:auto!important;padding-inline:16px}
+html.j3 #auth .a2top{padding-top:calc(18px + env(safe-area-inset-top));padding-bottom:22px}
+html.j3 #auth .a2wm{width:120px;filter:brightness(0) invert(1)}
+html.j3 #auth .a2lang{border-color:rgba(191,200,236,.7);color:#FFFFFF;border-radius:22px}
+html.j3 #auth .a2lang:hover{background:rgba(255,255,255,.1)}
+html.j3 #auth main.a2card{padding-inline:16px!important}
+html.j3 #auth .a2tab{display:block;min-height:0;margin:0 0 14px;padding:0;background:none;border-radius:0;color:#FFFFFF;font:800 30px/1.1 var(--a2d);letter-spacing:-.03em}
+html.j3[dir="rtl"] #auth .a2tab{letter-spacing:0}
+html.j3 #auth .a2folder{background:#FFFFFF;border-radius:6px;padding:20px 18px 20px;overflow:hidden;box-shadow:0 1px 2px rgba(12,16,48,.06),0 22px 44px -24px rgba(12,16,48,.45)}
+html.j3 #auth .a2folder::before{content:"";position:absolute;inset-inline:0;top:0;height:3px;background:linear-gradient(90deg,#5BB6F9,#4075D8 52%,#3249C2)}
+html.j3 #auth .a2stub{display:inline-flex;align-items:center;gap:4px;margin:0 0 14px;padding:4px 10px;border-radius:12px;background:#EBEEF6}
+html.j3 #auth .a2stub b,html.j3 #auth .a2stub span{font:700 13px/1 var(--a2b);letter-spacing:0;padding:0;color:#384064}
+html.j3 #auth input,html.j3 #auth textarea{border-radius:6px!important}
+html.j3 #auth .a2tear{margin:8px 0 4px;border-top:1px solid rgba(12,16,48,.12)}
+html.j3 #auth .a2tear::before,html.j3 #auth .a2tear::after{display:none}
+html.j3 #auth .btn.act{border-radius:6px!important}
+html.j3 #auth .ios{border-radius:6px;margin-top:18px}
+html.j3 #auth .a2foot{padding-top:28px}
+@media (min-width:700px){html.j3 #auth>.a2::before{height:calc(300px + env(safe-area-inset-top))}html.j3 #auth .a2top{padding-top:calc(40px + env(safe-area-inset-top))}}
