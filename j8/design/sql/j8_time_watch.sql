@@ -145,8 +145,13 @@ revoke all on function j8private.cron_ok(text, timestamptz) from public, anon, a
 revoke all on function j8private.missed_fires(uuid, timestamptz) from public, anon, authenticated;
 revoke all on function j8private.time_tick(timestamptz) from public, anon, authenticated;
 
--- NOT YET APPLIED (26 Nov 12:30 UTC run): the functions above are live but untested; schedule only after rolled-back tests pass.
--- select cron.schedule('j8_time_tick', '9,24,39,54 * * * *', 'select j8private.time_tick()');
+-- APPLIED 27 Nov 2026 06:3x UTC (migration j8_time_tick_schedule) after rolled-back tests T1-T26 passed
+-- (cron parse incl. CRON_TZ/steps/lists/dow 7, missed vs logged run, watch_from, disabled + when_work skipped,
+--  one push per tick, dedupe, Friday-evening quiet, missed clears when covered, no follow-up push on Saturday, no client-role execute):
+select cron.schedule('j8_time_tick', '9,24,39,54 * * * *', 'select j8private.time_tick()');
+-- Rollback: select cron.unschedule('j8_time_tick');
 
--- Data (3shamrocks org, run separately with execute_sql, 26 Nov 2026): cron copied from the live scheduled tasks.
+-- Data (3shamrocks org, applied 27 Nov 2026 with execute_sql): cron copied read-only from the live scheduled tasks;
+--   logs 'always' = focus, income-hunter, learn-study (write a run row every fire); 'when_work' = builder, sender, client-hunter, inbox-keeper
+--   (only display, never alarmed); health + inbox have no matching scheduled task found, so no cron. watch_from = apply time (no backfill alarms).
 -- update public.j8_routines set extra = extra || jsonb_build_object('cron', <cron>, 'logs', <'always'|'when_work'|'never'>, 'watch_from', now()::text) where org_id = <org> and id = <id>;
