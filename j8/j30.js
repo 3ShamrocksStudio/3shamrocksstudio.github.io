@@ -1438,10 +1438,10 @@
     return { on: false, m: m };
   }
   function restHide() { return !S.restShow && restNow().on; }
-  var DM1 = /whatsapp|\bdm\b|direct message|linkedin message|tester message|\bcall (him|her|them)\b|phone call|\breply to\b|follow up with|\bmessage (him|her|them)\b|\bemail (him|her|them)\b|הודעה|וואטסאפ|ווטסאפ|להתקשר/i, DM2 = /\b(Send|Email|Message|Call|Text|Ping|Reply to) [A-Z][a-z]+/;
-  function dmText(s) { s = String(s || ''); return DM1.test(s) || DM2.test(s); }
+  var DM1 = /whatsapp|\bdm\b|direct message|linkedin message|tester message|\bcall (him|her|them)\b|phone call|\breply to\b|follow up with|\bmessage (him|her|them)\b|\bemail (him|her|them)\b|הודעה|וואטסאפ|ווטסאפ|להתקשר/i, DM2 = /\b(Send|Message|Call|Text|Ping) [A-Z][a-z]+ (your|a|the|back|about)\b|\bReply to [A-Z][a-z]+/; /* a named person: "Send Joe your WhatsApp", "Reply to Benny"; not "Email Supabase support" */
+  function dmText(s) { s = String(s || ''); if (/\btemplate|automat/i.test(s)) return false; /* approving an automation is rest-day work */ return DM1.test(s) || DM2.test(s); }
   function isDMa(a) { /* an approval item that reaches a person directly; posts, templates, designs and job-form applications are not */
-    if (!a) return false; var k = String(a.kind || '').toLowerCase();
+    if (!a) return false; var k = String(a.kind || '').toLowerCase(); if (safe(function () { return isTpl(a); }, false)) return false;
     if (k === 'post' || k === 'template' || k === 'design' || k === 'application') return false;
     if (k === 'email' || k === 'outreach' || k === 'message' || k === 'reply' || k === 'followup' || k === 'dm') return true;
     return dmText(a.channel) || /^email from /i.test(String(a.channel || ''));
