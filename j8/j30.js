@@ -21,7 +21,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '16.7.0';
+  var VER = '16.8.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -213,6 +213,7 @@
     var D = safe(function () { return x.desk(); }, null); if (!D) return [];
     var L = D.top.concat(D.rest).concat((D.ready || []).map(function (a) { return { k: 'hand', id: 'h:' + a.id, a: a }; })).concat((D.steps || []).map(function (tk) { return { k: 'tk', id: tk.id, t: tk }; }));
     L = L.filter(function (c) { return !S.gone[c.id]; });
+    if (restHide()) L = L.filter(function (c) { return !isDMc(c); }); /* 16.8 rest day: nothing that messages a person */
     var isD = function (c) { return c.k === 'ap' && c.a && c.a.kind === 'design'; }, pn = function (a) { var v = Number(a.pin != null ? a.pin : a.priority); return isNaN(v) ? 99 : v; };
     L = L.filter(isD).map(function (c) { return { k: 'design', id: c.id, a: c.a }; }).sort(function (a, b) { return pn(a.a) - pn(b.a) || String(a.a.created || '').localeCompare(String(b.a.created || '')); }).concat(L.filter(function (c) { return !isD(c); })); /* 15.3: design choices first */
     var A = L.filter(function (c) { return !S.held[c.id]; });
@@ -398,6 +399,7 @@
      + clock glyph, never colour alone. Every action has Undo (j8_followup_mark 'undo', or reply 'clear'). ---------- */
   function fuDays(n) { var he = lang() === 'he'; return he ? (n === 1 ? 'יום' : n === 2 ? 'יומיים' : n + ' ימים') : n + (n === 1 ? ' day' : ' days'); }
   function fuDue() {
+    if (restHide()) return []; /* 16.8 rest day */
     var today = dayKey(Date.now()), t0 = Date.parse(today + 'T00:00:00Z');
     return (aps() || []).filter(function (a) {
       var f = String(a.followup_after || '');
@@ -455,7 +457,7 @@
   function vQueue() {
     pull();
     var x = X(), L = deck(true), G = x ? safe(function () { return x.goingOut(); }, []).filter(function (a) { return a.kind !== 'design'; }) : [], O = x ? safe(function () { return x.sent30(); }, []) : [];
-    var h = '<h1 class="sr">' + esc(t('queue')) + '</h1>';
+    var h = '<h1 class="sr">' + esc(t('queue')) + '</h1>' + restBand();
     if (failed()) h += '<button type="button" class="fail" data-x="retry">' + esc(t('fail')) + '</button>';
     h += vFollow(0);
     h += '<section class="grp"><h2>' + esc(t('waitingQ')) + ' · ' + L.length + '</h2>' + (L.length ? '<div class="rows">' + L.map(function (c) {
@@ -687,6 +689,7 @@
       + row(esc(t('lang')), '', '<span class="seg"><button type="button" class="b sm" data-x="lang" data-id="en" aria-pressed="' + (lang() === 'en') + '" lang="en">English</button><button type="button" class="b sm" data-x="lang" data-id="he" aria-pressed="' + (lang() === 'he') + '" lang="he">עברית</button></span>')
       + row(esc(t('sound')), '', '<span class="seg"><button type="button" class="b sm" data-x="snd" data-id="on" aria-pressed="' + soundOn() + '">' + esc(t('on')) + '</button><button type="button" class="b sm" data-x="snd" data-id="off" aria-pressed="' + !soundOn() + '">' + esc(t('off')) + '</button></span>')
       + row(esc(t('look')), '', '<span class="seg">' + ['light', 'dark', 'auto'].map(function (k) { return '<button type="button" class="b sm" data-x="look" data-id="' + k + '" aria-pressed="' + (look() === k) + '">' + esc(t(k === 'light' ? 'lkLight' : k === 'dark' ? 'lkDark' : 'lkAuto')) + '</button>'; }).join('') + '</span>')
+      + restSetRow()
       + row(esc(t('ui2')), esc(t('ui2P')), '<a class="b sm" href="./?ui=2">' + esc(t('open')) + '</a>')
       + row(esc(t('refresh')), '', '<button type="button" class="b sm" data-x="refresh">' + esc(t('refresh')) + '</button>')
       + row(esc(t('signout')), esc((u ? u.email : '') + (o && o.name ? ' · ' + o.name : '')), '<button type="button" class="b sm" data-x="signout">' + esc(t('signout')) + '</button>')
@@ -1390,12 +1393,90 @@
       g.hidden = !g.querySelector('[data-x="pj"][data-q]:not([hidden])'); });
     var c = sr.getElementById('j8pqn'); if (c) c.textContent = k === 1 ? t('pCount1') : fill(t('pCountN'), k);
   }
+  /* ---------- 16.8 Rest day (Dave, 28 Nov 2026, rq-1128-restday): J8NIX knows the user's rest day and shows only the work that fits it.
+     On a rest day nothing that contacts a person directly is shown (drafts to send, replies, follow-ups, warm leads, "message X" steps);
+     reading updates, approving posts / templates / automations, planning next week and hands-free income steps stay.
+     Modes (Settings): shabbat = auto, Friday 13:00 Israel time (Dave's contact cut-off, 27 Nov) until Saturday nightfall, computed from the
+     sun at Modi'in (sun 8.5° below the horizon); frisat = all of Friday and Saturday; sun = Sunday; off. Saved on this device and in
+     j8_members.prefs.rest so the workers can read it. "Show everything" lifts the filter for this visit only. ---------- */
+  var REST_M = ['shabbat', 'frisat', 'sun', 'off'];
+  Object.assign(T.en, { rest: 'Rest day', restP: 'On a rest day, Home and Outbox hide anything that messages a person.', rs_shabbat: 'Shabbat (auto)', rs_frisat: 'Fri + Sat', rs_sun: 'Sunday', rs_off: 'Off',
+    restT_shabbat: 'Shabbat · rest day', restT: 'Rest day', restU: 'Until {d}.', restW: 'Messages to people wait until then', restN: '{n} waiting', restDo: 'Today: read updates, approve posts and automations, plan next week.',
+    restAll: 'Show everything', restHide: 'Hide messages again', restShown: 'Showing everything, messages to people included.', restPlan: 'Plan next week', restRes: 'Results' });
+  Object.assign(T.he, { rest: 'יום מנוחה', restP: 'ביום מנוחה, הבית ו"לשליחה" מסתירים כל מה ששולח הודעה לאדם.', rs_shabbat: 'שבת (אוטומטי)', rs_frisat: 'שישי + שבת', rs_sun: 'ראשון', rs_off: 'כבוי',
+    restT_shabbat: 'שבת · יום מנוחה', restT: 'יום מנוחה', restU: 'עד {d}.', restW: 'הודעות לאנשים מחכות עד אז', restN: '{n} ממתינות', restDo: 'היום: לקרוא עדכונים, לאשר פוסטים ואוטומציות, לתכנן את השבוע הבא.',
+    restAll: 'להציג הכול', restHide: 'להסתיר שוב הודעות', restShown: 'מוצג הכול, כולל הודעות לאנשים.', restPlan: 'לתכנן את השבוע הבא', restRes: 'תוצאות' });
+  function restMode() {
+    var v = null; try { v = localStorage.getItem('j8:rest'); } catch (e) {}
+    if (REST_M.indexOf(v) < 0) v = safe(function () { return J().prefs.get().rest; }, null);
+    return REST_M.indexOf(v) > -1 ? v : 'shabbat';
+  }
+  function restIl(ms) { /* Israel wall clock for a moment: weekday 0–6, hour, and the y-m-d */
+    var o = {}; try { new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jerusalem', weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(ms)).forEach(function (p) { o[p.type] = p.value; }); } catch (e) { return null; }
+    return { wd: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(o.weekday), h: Number(o.hour), mi: Number(o.minute), ymd: o.year + '-' + o.month + '-' + o.day };
+  }
+  function sunDown(ymd, depth) { /* UTC ms when the sun is `depth` degrees below the horizon after noon at Modi'in (sunrise equation, ±2 min) */
+    var R = Math.PI / 180, lat = 31.898, lon = 35.010, jd = Date.parse(ymd + 'T12:00:00Z') / 864e5 + 2440587.5, n = Math.round(jd - 2451545 + 0.0008);
+    var js = n - lon / 360, M = (357.5291 + 0.98560028 * js) % 360, C = 1.9148 * Math.sin(M * R) + 0.02 * Math.sin(2 * M * R) + 0.0003 * Math.sin(3 * M * R);
+    var L = (M + C + 180 + 102.9372) % 360, jt = 2451545 + js + 0.0053 * Math.sin(M * R) - 0.0069 * Math.sin(2 * L * R), d = Math.asin(Math.sin(L * R) * Math.sin(23.44 * R));
+    var w = Math.acos((Math.sin(-depth * R) - Math.sin(lat * R) * Math.sin(d)) / (Math.cos(lat * R) * Math.cos(d))) / R;
+    return (jt + w / 360 - 2440587.5) * 864e5;
+  }
+  function restAdd(ymd, k) { var d = new Date(Date.parse(ymd + 'T12:00:00Z') + k * 864e5); return d.toISOString().slice(0, 10); }
+  function restMid(ymd) { /* UTC ms of 00:00 Israel time on ymd (Israel is UTC+2 or +3) */
+    var g = Date.parse(ymd + 'T00:00:00Z'); for (var off = 2; off <= 3; off++) { var c = g - off * 36e5, p = restIl(c); if (p && p.ymd === ymd && p.h === 0) return c; } return g - 2 * 36e5;
+  }
+  function restNow() { /* {on, until(ms), m} */
+    var m = restMode(), now = Date.now(), p = restIl(now); if (m === 'off' || !p) return { on: false, m: m };
+    if (m === 'shabbat') {
+      if (p.wd === 5 && p.h >= 13) return { on: true, until: sunDown(restAdd(p.ymd, 1), 8.5), m: m };
+      if (p.wd === 6) { var e = sunDown(p.ymd, 8.5); return now < e ? { on: true, until: e, m: m } : { on: false, m: m }; }
+      return { on: false, m: m };
+    }
+    if (m === 'frisat' && (p.wd === 5 || p.wd === 6)) return { on: true, until: restMid(restAdd(p.ymd, p.wd === 5 ? 2 : 1)), m: m };
+    if (m === 'sun' && p.wd === 0) return { on: true, until: restMid(restAdd(p.ymd, 1)), m: m };
+    return { on: false, m: m };
+  }
+  function restHide() { return !S.restShow && restNow().on; }
+  var DM1 = /whatsapp|\bdm\b|direct message|linkedin message|tester message|\bcall (him|her|them)\b|phone call|\breply to\b|follow up with|\bmessage (him|her|them)\b|\bemail (him|her|them)\b|הודעה|וואטסאפ|ווטסאפ|להתקשר/i, DM2 = /\b(Send|Email|Message|Call|Text|Ping|Reply to) [A-Z][a-z]+/;
+  function dmText(s) { s = String(s || ''); return DM1.test(s) || DM2.test(s); }
+  function isDMa(a) { /* an approval item that reaches a person directly; posts, templates, designs and job-form applications are not */
+    if (!a) return false; var k = String(a.kind || '').toLowerCase();
+    if (k === 'post' || k === 'template' || k === 'design' || k === 'application') return false;
+    if (k === 'email' || k === 'outreach' || k === 'message' || k === 'reply' || k === 'followup' || k === 'dm') return true;
+    return dmText(a.channel) || /^email from /i.test(String(a.channel || ''));
+  }
+  function isDMc(c) {
+    if (!c) return false; if (c.k === 'rep') return true; if (c.k === 'design') return false;
+    if (c.k === 'batch') return !!(c.b && c.b.L && c.b.L.some(isDMa)); if (c.k === 'tk') return dmText((c.t && (c.t.title || '')) + ' ' + (c.t && c.t.action || ''));
+    return isDMa(c.a);
+  }
+  function pToday(p) { return pNeeds(p) && !(restHide() && dmText(p.you)); }
+  function restWhen(ms) { var d = new Date(ms); try { return d.toLocaleString(lang() === 'he' ? 'he-IL' : 'en-GB', { weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Jerusalem' }); } catch (e) { return hm(ms); } }
+  function restCount() { /* how many items the rest day is holding back right now */
+    var keep = S.restShow; S.restShow = true;
+    var n = safe(function () { return deck(true).filter(isDMc).length + fuDue().length + dealsOpen().length + pList().filter(function (p) { return pNeeds(p) && dmText(p.you); }).length; }, 0);
+    S.restShow = keep; return n;
+  }
+  function restBand() {
+    var r = restNow(); if (!r.on) return '';
+    var n = restCount(), ttl = r.m === 'shabbat' ? t('restT_shabbat') : t('restT');
+    if (S.restShow) return '<section class="rest on" aria-label="' + esc(ttl) + '"><p class="rt1"><b>' + esc(ttl) + '</b> <span>' + esc(t('restShown')) + '</span></p><div class="rta"><button type="button" class="b sm" data-x="restshow">' + esc(t('restHide')) + '</button></div></section>';
+    return '<section class="rest" aria-label="' + esc(ttl) + '"><p class="rt1"><b>' + esc(ttl) + '</b> <span>' + esc(t('restU').replace('{d}', restWhen(r.until))) + '</span></p>'
+      + '<p class="rt2">' + esc(t('restW')) + (n ? ' · ' + esc(fill(t('restN'), n)) : '') + '. ' + esc(t('restDo')) + '</p>'
+      + '<div class="rta"><button type="button" class="b sm" data-x="sp" data-id="score">' + esc(t('restRes')) + '</button><button type="button" class="b sm" data-x="sp" data-id="time">' + esc(t('restPlan')) + '</button>'
+      + (n ? '<button type="button" class="lnk" data-x="restshow">' + esc(t('restAll')) + '</button>' : '') + '</div></section>';
+  }
+  function restSetRow() {
+    var m = restMode();
+    return '<div class="row"><div class="rh rw"><span class="ph"><b>' + esc(t('rest')) + '</b><small>' + esc(t('restP')) + '</small></span><span class="seg wr">' + REST_M.map(function (k) { return '<button type="button" class="b sm" data-x="rest" data-id="' + k + '" aria-pressed="' + (m === k) + '">' + esc(t('rs_' + k)) + '</button>'; }).join('') + '</span></div></div>'; /* wraps: label on top, four choices under it on phones */
+  }
   function look() { try { var v = localStorage.getItem('j8:look'); return v === 'dark' || v === 'auto' ? v : 'light'; } catch (e) { return 'light'; } }
   function dark() { var l = look(); return l === 'dark' || (l === 'auto' && !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)); }
   function paint() { var d = dark(); if (W) W.setAttribute('data-look', d ? 'dark' : 'light'); try { document.documentElement.style.background = d ? '#0A0F22' : '#F3F5FA'; var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', d ? '#0A0F22' : '#F3F5FA'); } catch (e) {} }
   function needCount() { /* the one number on Home: decisions + follow-ups due + late warm leads + project steps for you */
-    var n = deck().length + fuDue().length + dealsOpen().filter(dLate).length;
-    pList().forEach(function (p) { if (pNeeds(p)) n++; }); /* 16.2: same rule as the Projects screens */
+    var n = deck().length + fuDue().length + (restHide() ? 0 : dealsOpen().filter(dLate).length);
+    pList().forEach(function (p) { if (pToday(p)) n++; }); /* 16.8: rest day drops message steps */ /* 16.2: same rule as the Projects screens */
     return n;
   }
   function liveDot() {
@@ -1440,7 +1521,7 @@
     return h;
   }
   function stepsBlock() {
-    var L = pList().filter(pNeeds).sort(pOrd);
+    var L = pList().filter(pToday).sort(pOrd);
     if (!L.length) return on() ? '<section class="blk steps"><h2 class="hh">' + esc(t('stepsW')) + '</h2><p class="meta">' + esc(t('noneSteps')) + '</p></section>' : '';
     return '<section class="blk steps"><h2 class="hh">' + esc(t('stepsW')) + ' <span class="cn">' + L.length + '</span></h2><p class="meta top0">' + esc(t('stepsP')) + '</p><div class="lst">' + L.slice(0, 5).map(function (p) {
       return '<button type="button" class="li" data-x="pjopen" data-id="' + esc(p.id) + '"><span class="lid" aria-hidden="true"></span><span class="lit"><b dir="auto">' + esc(youShort(p.you)) + '</b><small dir="auto">' + esc(cut(p.name || p.id, 50)) + '</small></span>' + chev() + '</button>';
@@ -1450,8 +1531,8 @@
     pull();
     var L = deck(), first = L[0], none = !on() && !aps().length, n = none ? -1 : needCount(), x = X(), sc = x ? safe(function () { return x.score(); }, null) : null;
     var d = new Date(), dt = ''; try { dt = d.toLocaleDateString(lang() === 'he' ? 'he-IL' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Asia/Jerusalem' }); } catch (e) {}
-    var h = heroBlock(n, dt);
-    var main = vDeals();
+    var h = heroBlock(n, dt) + restBand();
+    var main = restHide() ? '' : vDeals();
     main += '<section class="blk first"><h2 class="hh">' + esc(t('doFirst')) + (L.length ? ' <span class="cn">1 ' + esc(t('of')) + ' ' + L.length + '</span>' : '') + '</h2>';
     if (!first) {
       if (none) main += failed() ? '<button type="button" class="fail" data-x="retry">' + esc(t('fail')) + '</button>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>';
@@ -1566,6 +1647,8 @@
     if (x === 'pjopen' || x === 'pj') { if (!id) return; S.pj = id; go('pj'); return; }
     if (x === 'pf') { S.pf = id === 'need' || PST.indexOf(id) > -1 ? id : 'all'; try { localStorage.setItem('j8:pf', S.pf); } catch (e) {} if (el.getAttribute('data-w') === 'go') { go(LAST.plan === 'pboard' ? 'pboard' : 'pall'); return; } render(true); var pc = sr.querySelector('[data-x="pf"][aria-pressed="true"]'); if (pc) pc.focus(); return; }
     if (x === 'pgt') { S.open['pg:' + id] = !pGroupOpen(id); render(true); var pg = sr.querySelector('[data-x="pgt"][data-id="' + id + '"]'); if (pg) pg.focus(); return; }
+    if (x === 'rest') { var rm = REST_M.indexOf(id) > -1 ? id : 'shabbat'; try { localStorage.setItem('j8:rest', rm); } catch (e) {} S.restShow = false; var jj = J(); if (jj && jj.prefs && on()) jj.prefs.set({ rest: rm }).catch(function () {}); render(true); return; }
+    if (x === 'restshow') { S.restShow = !S.restShow; render(true); return; }
     if (x === 'look') { try { localStorage.setItem('j8:look', id === 'dark' || id === 'auto' ? id : 'light'); } catch (e) {} paint(); render(true); return; }
     if (x === 'ui2') { location.href = './?ui=2'; return; }
     if (x === 'sp') { if (GS.tour > -1) { GS.tour = -1; var gg = gLoad(); if (gg) { gg.tour = 'ended'; gSave(); } } go(id); return; }

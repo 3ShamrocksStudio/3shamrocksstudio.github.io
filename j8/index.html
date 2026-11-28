@@ -26,9 +26,10 @@
 <link rel="stylesheet" href="j13.css?v=14.0.0">
 <link rel="preload" href="j13w.css?v=14.1.0" as="style">
 <link rel="stylesheet" href="j20.css?v=15.5.0">
-<link rel="preload" href="j30w.css?v=16.7.0" as="style">
+<link rel="preload" href="j30w.css?v=16.8.0" as="style">
 </head>
 <body>
+<!-- J8NIX 3.0 · 16.8.0 (28 Nov 2026, rq-1128-restday): Rest day. J8NIX knows the rest day (Settings: Shabbat auto = Fri 13:00 until Sat nightfall at Modi'in, Fri + Sat, Sunday, Off; saved in prefs.rest). On a rest day Home and Outbox hide anything that messages a person (drafts, replies, follow-ups, warm leads, "message X" steps); posts, templates, designs, applications, updates and planning stay. A band says until when and offers Results, Plan next week, Show everything. Revert: git revert. -->
 <!-- J8NIX 3.0 · 16.7.0 (28 Nov 2026, b-1127-01): Workers shows a worker the scheduler paused (j8_schedule.suspension_reason, synced by j8private.schedule_sync) as amber "Paused · your Mac is away" with why + fix on tap; the stall alarm push says "Mac away". Revert: git revert. -->
 <!-- J8NIX 3.0 · 16.6.0 (28 Nov 2026, r-1125-03 slice 1): trust baseline. Content-Security-Policy on this page (scripts only from this site + the 3 inline scripts by hash; data only to the J8NIX database; no plugins, no frames); "How J8NIX handles your data" under sign-in opens privacy.html (staging, noindex, EN/HE); push key readable only when signed in (migration j8_vapid_public_signed_in_only). Isolation plan: design/ISOLATION-PLAN.md. Revert: git revert; SQL: grant execute on function public.j8_vapid_public() to anon. -->
 <!-- J8NIX 3.0 · 16.5.0 (28 Nov 2026, r-1125-02 slice 2): losing lanes pause themselves. Server (pg_cron j8_lane_tick, hourly, quiet hours): a lane with 10+ decided, 6 in 10 stopped and no good reply gets a j8_lane_pauses row + one push; new automated drafts there are refused (trigger j8_approvals_lane_pause). Results > Lanes shows paused lanes first with Keep paused / Resume (rpc j8_lane_decide), Undo. Revert: git revert; SQL rollback in design/sql/j8_lane_autopause.sql. -->
@@ -271,7 +272,7 @@
 <script src="j11.js?v=12.0.1"></script>
 <script src="shell.js?v=12.0.1"></script>
 <script src="j13.js?v=14.1.0"></script>
-<script>/* J8NIX 3.0 (16.0.0, 27 Nov 2026) is the default (j30.js). ?ui=2 (Settings → Classic view) opens 2.0 (j20.js) for that visit; localStorage j8:ui = 2 keeps 2.0 on this device; ?ui=3 clears that. Revert: load j20.js only. */(function(){var q=/[?&]ui=([23])\b/.exec(location.search),v=q?q[1]:'';try{if(v==='3')localStorage.removeItem('j8:ui');if(!v)v=localStorage.getItem('j8:ui')||'';}catch(e){}if(v==='2')document.write('<script src="j20.js?v=15.14.0"><\/script>');else{document.documentElement.classList.add('j3');document.write('<link rel="stylesheet" href="j30.css?v=16.6.0"><script src="j30.js?v=16.7.0"><\/script>');}})();</script>
+<script>/* J8NIX 3.0 (16.0.0, 27 Nov 2026) is the default (j30.js). ?ui=2 (Settings → Classic view) opens 2.0 (j20.js) for that visit; localStorage j8:ui = 2 keeps 2.0 on this device; ?ui=3 clears that. Revert: load j20.js only. */(function(){var q=/[?&]ui=([23])\b/.exec(location.search),v=q?q[1]:'';try{if(v==='3')localStorage.removeItem('j8:ui');if(!v)v=localStorage.getItem('j8:ui')||'';}catch(e){}if(v==='2')document.write('<script src="j20.js?v=15.14.0"><\/script>');else{document.documentElement.classList.add('j3');document.write('<link rel="stylesheet" href="j30.css?v=16.6.0"><script src="j30.js?v=16.8.0"><\/script>');}})();</script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>
