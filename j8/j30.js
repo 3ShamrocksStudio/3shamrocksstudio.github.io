@@ -8,6 +8,8 @@
    Built as a fork of the 2.0 view logic (j20.js 15.14.0), so every read and write still goes through window.J8 / window.j8x on
    the same code paths. Styles: j30w.css (shadow root). Loader: index.html (?ui=3 / ?ui=2). Research + plan:
    research_notes/J8NIX 3 mobile UX/. Revert: index.html back to j20.js, or open ?ui=2.
+   16.7.0 (b-1127-01): a worker whose scheduled task the system paused (j8_schedule.suspension_reason, synced from the task list by
+   j8private.schedule_sync) shows amber "Paused · your Mac is away" and needs a look; open it for why and the fix. Revert: git revert.
    16.6.0 (r-1125-03 slice 1): sign-in shows "How J8NIX handles your data" (privacy.html) in English or Hebrew.
    16.5.0 (r-1125-02 slice 2): Results > Lanes shows lanes the server paused first (amber: new drafts there stop), each with
    Keep paused / Resume (Undo); a losing lane can be paused by hand (J8.lanePauses, J8.laneDecide).
@@ -19,7 +21,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '16.6.0';
+  var VER = '16.7.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -720,15 +722,30 @@
     var ph = st === 'off' ? t('offW') + (last && !isNaN(lt) ? ' · ' + (lf ? t('offFail') + ' ' : t('lastW').toLowerCase() + ' ') + ago(lt) : '') : st === 'none' ? (last ? t('noRun7') : t('noRun')) : st === 'run' ? t('runningW')
       : st === 'late' ? t('lastRan') + ' ' + ago(lt) : st === 'failed' ? t('failedAt') + ' ' + ago(lt) : t('ranW') + ' ' + ago(lt) + (st === 'nothing' ? ' · ' + t('nothingW') : '');
     var ms = rt.enabled !== false && Array.isArray(rt.missed) ? rt.missed.map(pd).filter(function (v) { return !isNaN(v); }).sort(function (a, b) { return b - a; }) : [];
-    if (ms.length) { st = 'missed'; ph = t('missedAt') + ' ' + ago(ms[0]) + (ms.length > 1 ? ' · ' + t('missMore').replace('{n}', ms.length - 1) : ''); } /* 15.14: extra.missed from j8private.time_tick (a planned run with no run row) */
-    return { st: st, ph: ph, last: last, lt: lt, ms: ms, bad: st === 'failed' || st === 'missed' || (st === 'off' && lf) };
+    var hd = rt.enabled !== false ? heldOf(rt) : '';
+    if (hd) { st = 'held'; ph = hd === 'device_absent' ? t('heldMac') : t('heldGen'); } /* 16.7: the scheduler paused it (b-1127-01) */
+    else if (ms.length) { st = 'missed'; ph = t('missedAt') + ' ' + ago(ms[0]) + (ms.length > 1 ? ' · ' + t('missMore').replace('{n}', ms.length - 1) : ''); } /* 15.14: extra.missed from j8private.time_tick (a planned run with no run row) */
+    return { st: st, ph: ph, last: last, lt: lt, ms: ms, hd: hd, bad: st === 'failed' || st === 'missed' || st === 'held' || (st === 'off' && lf) };
   }
+  /* 16.7 (b-1127-01): the scheduler's own pause, read from public.j8_schedule (row id = j8_routines.trigger_id). Only a row the
+     sync saw in the last 48 h counts, so an old snapshot never shows a pause that has ended. */
+  function heldOf(rt) {
+    var j = J(), s = rt && rt.trigger_id ? safe(function () { return j.schedule.get(rt.trigger_id); }, null) : null;
+    if (!s || s.hidden || !s.suspension_reason) return '';
+    var at = pd(s.synced_at); return !isNaN(at) && Date.now() - at < 48 * 36e5 ? String(s.suspension_reason) : '';
+  }
+  Object.assign(T.en, { st_held: 'Paused', heldMac: 'Paused · your Mac is away', heldGen: 'Paused by the system', whyW: 'Why',
+    heldMacWhy: 'This one runs on your Mac. The Mac is off, asleep or offline, so its runs are skipped.', heldMacFix: 'Open the Claude app on the Mac and it starts again by itself.',
+    heldGenWhy: 'The scheduler paused this one ({r}). Its runs are skipped until that clears.' });
+  Object.assign(T.he, { st_held: 'מושהה', heldMac: 'מושהה · המק שלך לא זמין', heldGen: 'מושהה על ידי המערכת', whyW: 'למה',
+    heldMacWhy: 'הסוכן הזה רץ על המק שלך. המק כבוי, ישן או לא מחובר, ולכן הריצות שלו מדלגות.', heldMacFix: 'פתח את אפליקציית Claude במק והוא יחזור לרוץ לבד.',
+    heldGenWhy: 'מתזמן המשימות השהה את הסוכן הזה ({r}). הריצות מדלגות עד שזה ייפתר.' });
   function glyph(st) { /* a distinct shape per status, so it reads without colour */
     if (st === 'missed') st = 'failed'; /* a missed run reads as a failure: same cross, same red */
-    var P = { ok: '<path d="m5 12.5 4.2 4.2L19 7"/>', nothing: '<path d="M6 12h12"/>', failed: '<path d="M7 7l10 10M17 7 7 17"/>', run: '<circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>', off: '<path d="M9 6.5v11M15 6.5v11"/>', none: '<circle cx="12" cy="12" r="6"/>', late: '<path d="M12 7v5l3 2"/>' }[st] || '';
+    var P = { ok: '<path d="m5 12.5 4.2 4.2L19 7"/>', nothing: '<path d="M6 12h12"/>', failed: '<path d="M7 7l10 10M17 7 7 17"/>', run: '<circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>', off: '<path d="M9 6.5v11M15 6.5v11"/>', held: '<path d="M9 7v10M15 7v10"/>', none: '<circle cx="12" cy="12" r="6"/>', late: '<path d="M12 7v5l3 2"/>' }[st] || '';
     return '<span class="gl g-' + st + '" aria-hidden="true"><svg viewBox="0 0 24 24">' + P + '</svg></span>';
   }
-  function stWord(st) { return t({ ok: 'st_ok', nothing: 'st_nothing', failed: 'st_failed', run: 'st_run', off: 'st_off', none: 'st_none', late: 'st_late', missed: 'st_missed' }[st] || 'st_ok'); }
+  function stWord(st) { return t({ ok: 'st_ok', nothing: 'st_nothing', failed: 'st_failed', run: 'st_run', off: 'st_off', none: 'st_none', late: 'st_late', missed: 'st_missed', held: 'st_held' }[st] || 'st_ok'); }
   function dayKey(ts) { try { return new Date(ts).toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' }); } catch (e) { return new Date(ts).toISOString().slice(0, 10); } }
   function dayName(ts) { var k = dayKey(ts); return k === dayKey(Date.now()) ? t('todayW') : k === dayKey(Date.now() - 864e5) ? t('yestW') : day(ts); }
   function clean(s) { return String(s || '').replace(/^[\u{1F534}\u{1F7E0}\u{1F7E2}\u{1F7E1}⚪✅❌]\s*/u, ''); }
@@ -789,9 +806,10 @@
     var d24 = all.filter(function (r) { var v = runT(r); return v >= now - 864e5 && v <= now + 6e4; });
     var sig = bad.length ? bad.length + ' ' + t(bad.length === 1 ? 'needLook1' : 'needLook') + ': ' + bad.map(function (x) { return x.r.name || x.r.id; }).join(', ') : !en.length ? t('allOff') : !ranOk && !quiet && never ? t('noRunsYet')
       : (ranOk ? t('allFine') : '') + ((quiet || never) ? (ranOk ? ' ' : '') + [quiet ? t(quiet === 1 ? 'quiet1' : 'quietN').replace('{n}', quiet) : '', never ? t(never === 1 ? 'never1' : 'neverN').replace('{n}', never) : ''].filter(Boolean).join(', ') + '.' : '');
-    var sg = bad.length ? 'failed' : !en.length ? 'off' : quiet || never ? 'late' : 'ok'; /* the tick only when every active agent ran recently and nothing failed */
+    var hOnly = bad.length && bad.every(function (x) { return x.s.st === 'held'; }); /* 16.7: only scheduler pauses → amber, not red */
+    var sg = hOnly ? 'held' : bad.length ? 'failed' : !en.length ? 'off' : quiet || never ? 'late' : 'ok'; /* the tick only when every active agent ran recently and nothing failed */
     h += '<div class="tick ag"><b>' + onN + '</b><span><em>' + esc(t('agOn')) + '</em><small>' + d24.length + ' ' + esc(t(d24.length === 1 ? 'run1' : 'runs24')) + '</small></span></div>';
-    h += '<p class="sig' + (bad.length ? ' bad' : '') + '">' + glyph(sg) + '<span dir="auto">' + esc(sig) + '</span></p>' + pulse();
+    h += '<p class="sig' + (hOnly ? ' wait' : bad.length ? ' bad' : '') + '">' + glyph(sg) + '<span dir="auto">' + esc(sig) + '</span></p>' + pulse();
     A = bad.concat(A.filter(function (x) { return !x.s.bad; })); /* what needs a look comes first */
     h += '<section class="grp agl"><h2>' + esc(t('rtns')) + ' · ' + RT.length + '</h2><p class="meta top0">' + esc(t('rtnSub')) + '</p><div class="rows">' + A.map(function (x) {
       var r = x.r, s = x.s, op = S.open['a:' + r.id], nid = 'rn-' + String(r.id).replace(/[^a-z0-9_-]/gi, '');
@@ -799,7 +817,8 @@
       var bd = '';
       if (op) {
         var lr = s.last;
-        bd = '<div class="bd ag" id="ab-' + nid + '">' + (r.what ? '<p><b>' + esc(t('whatW')) + ':</b> <span dir="auto">' + esc(cut(r.what, 300)) + '</span></p>' : '') + (r.schedule ? '<p><b>' + esc(t('whenW')) + ':</b> <span dir="auto">' + esc(cut(r.schedule, 120)) + '</span></p>' : '')
+        bd = '<div class="bd ag" id="ab-' + nid + '">' + (s.hd ? '<p class="held"><b>' + esc(t('whyW')) + ':</b> ' + esc(s.hd === 'device_absent' ? t('heldMacWhy') + ' ' + t('heldMacFix') : t('heldGenWhy').replace('{r}', s.hd)) + '</p>' : '')
+          + (r.what ? '<p><b>' + esc(t('whatW')) + ':</b> <span dir="auto">' + esc(cut(r.what, 300)) + '</span></p>' : '') + (r.schedule ? '<p><b>' + esc(t('whenW')) + ':</b> <span dir="auto">' + esc(cut(r.schedule, 120)) + '</span></p>' : '')
           + (s.ms && s.ms.length ? '<p><b>' + esc(t('missedW')) + ':</b> ' + s.ms.slice(0, 5).map(function (v) { return esc(day(v) + ' ' + hm(v)); }).join(', ') + (s.ms.length > 5 ? ' · ' + esc(t('missMore').replace('{n}', s.ms.length - 5)) : '') + '</p>' : '')
           + (lr ? '<p><b>' + esc(t('lastW')) + ':</b> ' + esc(stWord(runSt(lr))) + ' · ' + esc(ago(runT(lr))) + (lr.summary ? ' · <span dir="auto">' + esc(cut(clean(lr.summary), 240)) + '</span>' : '') + '</p>' : '')
           + wdCard(r) + (!r.switchable ? '<p class="meta">' + esc(t('alwaysWhy')) + '</p>' : '') + '</div>';

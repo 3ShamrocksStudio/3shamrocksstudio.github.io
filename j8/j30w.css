@@ -202,12 +202,12 @@ details[open]>summary .chev{transform:rotate(90deg)}
 /* 15.2 Agents + Receipts. Status = glyph shape + word + colour (WCAG 1.4.1); glyph strokes and switch edges >= 3:1 (1.4.11). */
 .tick.ag b{font-size:clamp(72px,20vw,112px)}
 .sig{display:flex;align-items:flex-start;gap:8px;margin:10px 0 0;font-weight:600;color:var(--ink);font-size:15px}
-.sig.bad{color:var(--stop)}
+.sig.bad{color:var(--stop)}.sig.wait{color:var(--wait)}
 .gl{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:2px solid currentColor;color:var(--ink-2)}
 .gl svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .gl.g-run svg{fill:currentColor;stroke:none}
 .gl.g-ok{color:var(--ok)}.gl.g-failed{color:var(--on);background:var(--stop);border-color:var(--stop)}.gl.g-nothing{color:var(--ink-3)}
-.gl.g-off{color:var(--ink-3);border-style:dashed}.gl.g-none,.gl.g-late{color:var(--ink-3)}.gl.g-run{color:var(--ok)}
+.gl.g-off{color:var(--ink-3);border-style:dashed}.gl.g-held{color:var(--wait);background:var(--wait-bg);border-color:var(--wait)}.bd.ag .held{color:var(--wait)}.gl.g-none,.gl.g-late{color:var(--ink-3)}.gl.g-run{color:var(--ok)}
 .sig .gl{width:22px;height:22px;margin-top:-1px}.sig .gl svg{width:13px;height:13px}
 .top0{margin:-2px 0 10px}
 .rt>.rh{padding:6px 10px 6px 6px;gap:8px;cursor:default}
