@@ -1,4 +1,4 @@
-/* J8NIX 16.4.0 service worker: daily results per worker (j30.js, j30w.css, j8-data.js; u-1126-06). 16.3.0 service worker: Projects command center (j30.js, j30w.css). 16.2.0 service worker: Stop asks why + Lanes on Results (j30.js, j30w.css, j8-data.js; r-1125-02). 16.1.0 service worker: road to ₪100,000 on Home, 3.0 sign-in (j30.css). 16.0.0 service worker: J8NIX 3.0 files (j30.js, j30w.css), 2.0 kept for ?ui=2. Revert: git revert.
+/* J8NIX 16.5.0 service worker: paused lanes on Results (j30.js, j30w.css, j8-data.js; r-1125-02 slice 2). 16.4.0 service worker: daily results per worker (j30.js, j30w.css, j8-data.js; u-1126-06). 16.3.0 service worker: Projects command center (j30.js, j30w.css). 16.2.0 service worker: Stop asks why + Lanes on Results (j30.js, j30w.css, j8-data.js; r-1125-02). 16.1.0 service worker: road to ₪100,000 on Home, 3.0 sign-in (j30.css). 16.0.0 service worker: J8NIX 3.0 files (j30.js, j30w.css), 2.0 kept for ?ui=2. Revert: git revert.
    15.14.0 service worker (missed runs on Workers, b-1125-24). 15.13.1: Income row wording. 15.13.0: Your requests list + plain screen names (j20.js, j20w.css, j8-data.js). Revert: git revert.
    15.12.0: Timeline space (j20.js, j20w.css).
    15.11.0: Status screen first (j20.js, j20w.css).
@@ -18,8 +18,8 @@
    11.5.0: phone alerts follow Dave's rules (alerts.js): titles only, at most 3 a day bundled into one notification,
    quiet 22:00–08:00 and Shabbat, a seen alert never comes back. Revert: sw-11.4.0.js. */
 importScripts('alerts.js?v=12.0.1');
-var CACHE = 'j8nix-v16.4.0-1', ASTATE = 'j8alerts-v1';
-var SHELL = ['./', 'index.html', 'app.css?v=12.0.1', 'v11.css?v=12.0.1', 'j11.css?v=12.0.1', 'app.js?v=12.0.1', 'j11.js?v=12.0.1', 'shell.js?v=12.0.1', 'j8-data.js?v=16.4.0', 'j13.js?v=14.1.0', 'j13.css?v=14.0.0', 'j13w.css?v=14.1.0', 'j20.js?v=15.14.0', 'j20.css?v=15.5.0', 'j20w.css?v=15.13.0', 'j30.js?v=16.4.0', 'j30w.css?v=16.4.0', 'j30.css?v=16.1.0', 'alerts.js?v=12.0.1', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
+var CACHE = 'j8nix-v16.5.0-1', ASTATE = 'j8alerts-v1';
+var SHELL = ['./', 'index.html', 'app.css?v=12.0.1', 'v11.css?v=12.0.1', 'j11.css?v=12.0.1', 'app.js?v=12.0.1', 'j11.js?v=12.0.1', 'shell.js?v=12.0.1', 'j8-data.js?v=16.5.0', 'j13.js?v=14.1.0', 'j13.css?v=14.0.0', 'j13w.css?v=14.1.0', 'j20.js?v=15.14.0', 'j20.css?v=15.5.0', 'j20w.css?v=15.13.0', 'j30.js?v=16.5.0', 'j30w.css?v=16.5.0', 'j30.css?v=16.1.0', 'alerts.js?v=12.0.1', 'vendor/fonts/heebo-latin.woff2', 'vendor/fonts/heebo-hebrew.woff2', 'vendor/supabase.js?v=2.45.4', 'manifest.webmanifest',
   'brand/shomer.png', 'brand/nature.png', 'brand/lickpick.png', 'brand/th.png', 'brand/chore.png', 'brand/milo.png', 'brand/media.png', 'brand/studio.png',
   'brand/j8nix-wordmark-2026-11-17.svg', 'brand/j8nix-mark-8-2026-11-17.svg', 'brand/j8nix-2026-11-17.png', 'icons/j8-icon-2026-11-17.svg', 'icons/j8-192-2026-11-17.png', 'icons/badge-96.png', 'icons/j8-touch-180-2026-11-17.png'];
 

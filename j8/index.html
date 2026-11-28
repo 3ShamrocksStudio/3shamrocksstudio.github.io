@@ -25,9 +25,10 @@
 <link rel="stylesheet" href="j13.css?v=14.0.0">
 <link rel="preload" href="j13w.css?v=14.1.0" as="style">
 <link rel="stylesheet" href="j20.css?v=15.5.0">
-<link rel="preload" href="j30w.css?v=16.4.0" as="style">
+<link rel="preload" href="j30w.css?v=16.5.0" as="style">
 </head>
 <body>
+<!-- J8NIX 3.0 · 16.5.0 (28 Nov 2026, r-1125-02 slice 2): losing lanes pause themselves. Server (pg_cron j8_lane_tick, hourly, quiet hours): a lane with 10+ decided, 6 in 10 stopped and no good reply gets a j8_lane_pauses row + one push; new automated drafts there are refused (trigger j8_approvals_lane_pause). Results > Lanes shows paused lanes first with Keep paused / Resume (rpc j8_lane_decide), Undo. Revert: git revert; SQL rollback in design/sql/j8_lane_autopause.sql. -->
 <!-- J8NIX 3.0 · 16.4.0 (27 Nov 2026, u-1126-06): daily results per worker on More → Workers: each worker row adds yesterday's results (made, sent, replies, calls, ₪) or an amber "No results for 7 days"; tap for the last 7 days and the last failure. Read-only from public.j8_worker_days (live, never stored). Revert: git revert. -->
 <!-- J8NIX 3.0 · 16.3.0 (27 Nov 2026): Projects command center: Overview (grid of all projects by state), Board (table: state, stage, now, next, needs you, last activity), full project screen with stage track; search + state filters; Home shows project counts. Revert: git revert. -->
 <!-- J8NIX 3.0 · 16.2.0 (27 Nov 2026, r-1125-02): Stop asks why (five one-tap reasons, j8_kill_reason); Results > Overall shows Lanes (what gets stopped and why, good replies, 14-day trend, losing first; j8_lanes). Revert: git revert. -->
@@ -260,13 +261,13 @@
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span id="toastMsg"></span><button id="undo" hidden><svg class="ico" aria-hidden="true"><use href="#i-undo"/></svg><span id="undoL">Undo</span></button></div>
 <script src="vendor/supabase.js?v=2.45.4"></script>
-<script src="j8-data.js?v=16.4.0"></script>
+<script src="j8-data.js?v=16.5.0"></script>
 <script src="app.js?v=12.0.1"></script>
 <script src="alerts.js?v=12.0.1"></script>
 <script src="j11.js?v=12.0.1"></script>
 <script src="shell.js?v=12.0.1"></script>
 <script src="j13.js?v=14.1.0"></script>
-<script>/* J8NIX 3.0 (16.0.0, 27 Nov 2026) is the default (j30.js). ?ui=2 (Settings → Classic view) opens 2.0 (j20.js) for that visit; localStorage j8:ui = 2 keeps 2.0 on this device; ?ui=3 clears that. Revert: load j20.js only. */(function(){var q=/[?&]ui=([23])\b/.exec(location.search),v=q?q[1]:'';try{if(v==='3')localStorage.removeItem('j8:ui');if(!v)v=localStorage.getItem('j8:ui')||'';}catch(e){}if(v==='2')document.write('<script src="j20.js?v=15.14.0"><\/script>');else{document.documentElement.classList.add('j3');document.write('<link rel="stylesheet" href="j30.css?v=16.1.0"><script src="j30.js?v=16.4.0"><\/script>');}})();</script>
+<script>/* J8NIX 3.0 (16.0.0, 27 Nov 2026) is the default (j30.js). ?ui=2 (Settings → Classic view) opens 2.0 (j20.js) for that visit; localStorage j8:ui = 2 keeps 2.0 on this device; ?ui=3 clears that. Revert: load j20.js only. */(function(){var q=/[?&]ui=([23])\b/.exec(location.search),v=q?q[1]:'';try{if(v==='3')localStorage.removeItem('j8:ui');if(!v)v=localStorage.getItem('j8:ui')||'';}catch(e){}if(v==='2')document.write('<script src="j20.js?v=15.14.0"><\/script>');else{document.documentElement.classList.add('j3');document.write('<link rel="stylesheet" href="j30.css?v=16.1.0"><script src="j30.js?v=16.5.0"><\/script>');}})();</script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>

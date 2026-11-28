@@ -8,6 +8,8 @@
    Built as a fork of the 2.0 view logic (j20.js 15.14.0), so every read and write still goes through window.J8 / window.j8x on
    the same code paths. Styles: j30w.css (shadow root). Loader: index.html (?ui=3 / ?ui=2). Research + plan:
    research_notes/J8NIX 3 mobile UX/. Revert: index.html back to j20.js, or open ?ui=2.
+   16.5.0 (r-1125-02 slice 2): Results > Lanes shows lanes the server paused first (amber: new drafts there stop), each with
+   Keep paused / Resume (Undo); a losing lane can be paused by hand (J8.lanePauses, J8.laneDecide).
    16.4.0 (u-1126-06): Workers rows show yesterday's results per worker, amber "No results for 7 days", a 7-day card on tap (J8.workerDays).
    16.2.0 (r-1125-02): after Stop, the toast asks why (five one-tap reasons, saved by public.j8_kill_reason); Results > Overall
    gets "Lanes": per template or kind + project, how many get stopped and why, good replies, last 14 days vs the 14 before,
@@ -16,7 +18,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '16.4.0';
+  var VER = '16.5.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -572,15 +574,30 @@
     lnGood: '{p} good replies of {s} sent', lnGood1: '1 good reply of {s} sent', lnWhy: 'Why stopped', lnNoKill: 'Nothing stopped here.', lnL14: 'Last 14 days', lnP14: '14 days before', lnNoDec: 'nothing decided',
     lnLoseP: 'Most drafts in this lane get stopped. Fix the words, or stop making this kind.', lnMore: 'more lanes', lnFail: 'Lanes could not load. Pull to refresh.', lnNone: 'No lanes in this window yet.', lnTpl: 'Template',
     why: 'Why?', noted: 'Noted: {n}.',
+    lnPaused: 'Paused', lnKept: 'Kept paused', lnPausedN: '{n} lanes paused: new drafts there stop.', lnPaused1: '1 lane paused: new drafts there stop.',
+    lnPauseP: 'Paused {d}: most drafts here got stopped and none got a good reply, so new drafts here stop.', lnKeptP: 'Kept paused {d}. New drafts here stop.',
+    lnResP: 'Resumed {d}. If it keeps losing, it can pause again after 14 days.', lnKeep: 'Keep paused', lnResume: 'Resume', lnPause: 'Pause this lane',
+    lnKeptT: 'Kept paused.', lnResT: 'Resumed. New drafts can come in again.', lnPauseT: 'Paused. New drafts here stop.', lnOld: 'Numbers from when it was paused.', lnBack: 'Undone. The lane is back as it was.',
     kr_who: 'Wrong person', kr_channel: 'Wrong channel', kr_words: 'Words not right', kr_dup: 'Already done', kr_closed: 'Gone or closed', kr_worth: 'Not worth it', kr_timing: 'Bad timing', kr_other: 'Other', kr_unsaid: 'No reason given' });
   Object.assign(T.he, { lanes: 'מסלולים: מה נעצר', lnSub: 'כל תבנית או סוג טיוטה, לפי פרויקט. המסלולים המפסידים קודם.', lnLose: 'מפסיד', lnStop: 'נעצרו', lnOf: '{k} מתוך {d} נעצרו',
     lnGood: '{p} תשובות טובות מתוך {s} שנשלחו', lnGood1: 'תשובה טובה אחת מתוך {s} שנשלחו', lnWhy: 'למה נעצרו', lnNoKill: 'שום דבר לא נעצר כאן.', lnL14: '14 הימים האחרונים', lnP14: '14 הימים שלפני', lnNoDec: 'לא הוחלט כלום',
     lnLoseP: 'רוב הטיוטות במסלול הזה נעצרות. לתקן את הניסוח, או להפסיק להכין מהסוג הזה.', lnMore: 'מסלולים נוספים', lnFail: 'המסלולים לא נטענו. משכו לרענון.', lnNone: 'עוד אין מסלולים בטווח הזה.', lnTpl: 'תבנית',
     why: 'למה?', noted: 'נרשם: {n}.',
+    lnPaused: 'מושהה', lnKept: 'נשאר מושהה', lnPausedN: '{n} מסלולים מושהים: טיוטות חדשות שם נעצרות.', lnPaused1: 'מסלול אחד מושהה: טיוטות חדשות שם נעצרות.',
+    lnPauseP: 'הושהה ב-{d}: רוב הטיוטות כאן נעצרו ואף אחת לא קיבלה תשובה טובה, אז טיוטות חדשות כאן נעצרות.', lnKeptP: 'נשאר מושהה מ-{d}. טיוטות חדשות כאן נעצרות.',
+    lnResP: 'חודש ב-{d}. אם ימשיך להפסיד, הוא יכול להיות מושהה שוב אחרי 14 יום.', lnKeep: 'להשאיר מושהה', lnResume: 'לחדש', lnPause: 'להשהות מסלול',
+    lnKeptT: 'נשאר מושהה.', lnResT: 'חודש. טיוטות חדשות יכולות להגיע שוב.', lnPauseT: 'הושהה. טיוטות חדשות כאן נעצרות.', lnOld: 'המספרים מהרגע שהושהה.', lnBack: 'בוטל. המסלול חזר למצב הקודם.',
     kr_who: 'האדם הלא נכון', kr_channel: 'הערוץ הלא נכון', kr_words: 'הניסוח לא טוב', kr_dup: 'כבר נעשה', kr_closed: 'נסגר או נעלם', kr_worth: 'לא שווה', kr_timing: 'תזמון לא טוב', kr_other: 'אחר', kr_unsaid: 'בלי סיבה' });
   var KR = ['who', 'channel', 'words', 'dup', 'worth']; /* the five one-tap reasons after Stop; closed / timing / other come from the workers */
   var KINDW = { email: 'Email', outreach: 'Outreach', linkedin: 'LinkedIn', post: 'Post', application: 'Application', message: 'Message', other: 'Other', invoice: 'Invoice' };
-  S.lanes = {}; S.laneAt = {}; S.laneBusy = false; S.laneErr = false;
+  S.lanes = {}; S.laneAt = {}; S.laneBusy = false; S.laneErr = false; S.lp = null; S.lpAt = 0; S.lpBusy = false;
+  function pullLP() { /* 16.5: paused lanes (j8_lane_pauses); if it fails the list simply shows no pause state */
+    var j = J(); if (!j || !j.lanePauses || !on() || S.lpBusy || Date.now() - S.lpAt < 6e4) return;
+    S.lpBusy = true;
+    j.lanePauses().then(function (R) { S.lpBusy = false; S.lpAt = Date.now(); if (Array.isArray(R)) S.lp = R; soon(); }, function () { S.lpBusy = false; S.lpAt = Date.now(); soon(); });
+  }
+  function lpMap() { var M = {}; (S.lp || []).forEach(function (p) { if (p && p.lane) M[p.lane] = p; }); return M; }
+  function lpOn(p) { return !!p && (p.status === 'paused' || p.status === 'kept'); }
   function pullLanes() {
     var j = J(), d = win() === '7d' ? 7 : 30; if (!j || !j.lanes || !on() || S.laneBusy || Date.now() - (S.laneAt[d] || 0) < 6e4) return;
     S.laneBusy = true;
@@ -595,27 +612,40 @@
   }
   function pct(v) { return v == null ? '' : Math.round(Number(v) * 100) + '%'; }
   function vLanes() {
-    pullLanes();
-    var d = win() === '7d' ? 7 : 30, R = S.lanes[d];
+    pullLanes(); pullLP();
+    var d = win() === '7d' ? 7 : 30, R = S.lanes[d], LP = lpMap();
     var h = '<section class="grp lns" aria-labelledby="lnh"><h2 id="lnh">' + esc(t('lanes')) + '</h2>';
     if (!R) return h + (S.laneErr ? '<p class="meta top0">' + esc(t('lnFail')) + '</p>' : '<div class="skel" aria-label="' + esc(t('loading')) + '"></div>') + '</section>';
-    R = R.filter(function (r) { return Number(r.made) > 0; });
+    R = R.filter(function (r) { return Number(r.made) > 0 || lpOn(LP[r.lane]); });
+    var seen = {}; R.forEach(function (r) { seen[r.lane] = 1; });
+    Object.keys(LP).forEach(function (ln) { var p = LP[ln], w = p.why || {}; if (!lpOn(p) || seen[ln]) return; /* paused but out of this window: show the numbers saved at pause time */
+      R.push({ lane: ln, template_id: w.template_id || null, kind: w.kind || null, product: w.product || null, label: w.label || null, product_name: w.product_name || null,
+        made: w.made, decided: w.decided, killed: w.killed, sent: w.sent, positive: w.positive, kill_rate: w.kill_rate, reasons: w.reasons || {}, losing: true, snap: true }); });
+    var rk = function (r) { var p = LP[r.lane]; return p && p.status === 'paused' ? 0 : p && p.status === 'kept' ? 1 : 2; };
+    R = R.map(function (r, i) { return [r, i]; }).sort(function (a, b) { return rk(a[0]) - rk(b[0]) || a[1] - b[1]; }).map(function (x) { return x[0]; }); /* waiting-for-you pauses first, then kept, then the server order */
     if (!R.length) return h + '<p class="meta top0">' + esc(t('lnNone')) + '</p></section>';
-    h += '<p class="meta top0">' + esc(t('lnSub')) + '</p>';
+    var np = R.filter(function (r) { return lpOn(LP[r.lane]); }).length;
+    h += '<p class="meta top0">' + esc(t('lnSub')) + '</p>' + (np ? '<p class="sig wait lnps">' + glyph('off') + '<span>' + esc(np === 1 ? t('lnPaused1') : t('lnPausedN').replace('{n}', np)) + '</span></p>' : '');
     var row = function (r) {
       var k = 'ln:' + r.lane, op = !!S.open[k], dd = Number(r.decided) || 0, kk = Number(r.killed) || 0, sn = Number(r.sent) || 0, pp = Number(r.positive) || 0, lose = r.losing === true;
       var sub = '<span class="nw">' + esc(t('lnOf').replace('{k}', kk).replace('{d}', dd)) + '</span>' + (sn ? ' · <span class="nw">' + esc((pp === 1 ? t('lnGood1') : t('lnGood').replace('{p}', pp)).replace('{s}', sn)) + '</span>' : ''); /* nothing sent: no replies line */
       var kpi = dd >= 10 ? '<span class="kpi"><b>' + esc(pct(r.kill_rate)) + '</b><small>' + esc(t('lnStop')) + '</small></span>' : '';
-      var tag = lose ? '<span class="lnl">' + glyph('failed') + '<span>' + esc(t('lnLose')) + '</span></span>' : ''; /* glyph + word, never colour alone */
+      var p = LP[r.lane], ps = p ? p.status : '', paused = ps === 'paused' || ps === 'kept';
+      var tag = paused ? '<span class="lnl lnw">' + glyph('off') + '<span>' + esc(t(ps === 'kept' ? 'lnKept' : 'lnPaused')) + '</span></span>'
+        : lose ? '<span class="lnl">' + glyph('failed') + '<span>' + esc(t('lnLose')) + '</span></span>' : ''; /* glyph + word, never colour alone */
       var bd = '';
       if (op) {
+        var lid = esc(r.lane), pb = function (w, lab, go) { return '<button type="button" class="b sm' + (go ? ' go' : '') + '" data-x="lane" data-id="' + lid + '" data-w="' + w + '">' + esc(t(lab)) + '</button>'; };
+        var pz = ps === 'paused' ? '<p class="sig wait">' + glyph('off') + '<span>' + esc(t('lnPauseP').replace('{d}', day(p.paused_at))) + '</span></p><div class="acts two">' + pb('keep', 'lnKeep', true) + pb('resume', 'lnResume') + '</div>'
+          : ps === 'kept' ? '<p class="sig wait">' + glyph('off') + '<span>' + esc(t('lnKeptP').replace('{d}', day(p.decided_at || p.paused_at))) + '</span></p><div class="acts two">' + pb('resume', 'lnResume', true) + '<span></span></div>'
+          : (ps === 'resumed' ? '<p class="meta">' + esc(t('lnResP').replace('{d}', day(p.decided_at))) + '</p>' : '') + (lose && S.lp ? '<div class="acts two">' + pb('pause', 'lnPause') + '<span></span></div>' : '');
         var RS = r.reasons && typeof r.reasons === 'object' ? Object.keys(r.reasons).map(function (c) { return [c, Number(r.reasons[c]) || 0]; }).filter(function (x) { return x[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; }) : [];
         var tr = function (lab, rate, n) { n = Number(n) || 0; return '<li><b>' + esc(lab) + '</b> <span dir="auto">' + esc(n ? t('lnOf').replace('{k}', Math.round((Number(rate) || 0) * n)).replace('{d}', n) + (n >= 10 ? ' (' + pct(rate) + ')' : '') : t('lnNoDec')) + '</span></li>'; };
-        bd = '<div class="bd">' + (lose ? '<p class="sig bad">' + glyph('failed') + '<span>' + esc(t('lnLoseP')) + '</span></p>' : '')
+        bd = '<div class="bd">' + (lose && !paused ? '<p class="sig bad">' + glyph('failed') + '<span>' + esc(t('lnLoseP')) + '</span></p>' : '')
           + '<p class="meta"><b>' + esc(t('lnWhy')) + ':</b> ' + (RS.length ? RS.map(function (x) { return esc(t('kr_' + x[0])) + ' ' + x[1]; }).join(' · ') : esc(t('lnNoKill'))) + '</p>'
-          + '<ul class="lnt">' + tr(t('lnL14'), r.kill_rate_14, r.decided_14) + tr(t('lnP14'), r.kill_rate_prev_14, r.decided_prev_14) + '</ul></div>';
+          + (r.snap ? '<p class="meta">' + esc(t('lnOld')) + '</p>' : '<ul class="lnt">' + tr(t('lnL14'), r.kill_rate_14, r.decided_14) + tr(t('lnP14'), r.kill_rate_prev_14, r.decided_prev_14) + '</ul>') + pz + '</div>';
       }
-      return '<details class="row ln' + (lose ? ' is-bad' : '') + '"' + (op ? ' open' : '') + ' data-k="' + esc(k) + '"><summary><span class="ph"><b dir="auto">' + esc(cut(laneName(r), 64)) + '</b><small>' + tag + sub + '</small></span>' + kpi + chev() + '</summary>' + bd + '</details>';
+      return '<details class="row ln' + (paused ? ' is-wait' : lose ? ' is-bad' : '') + '"' + (op ? ' open' : '') + ' data-k="' + esc(k) + '"><summary><span class="ph"><b dir="auto">' + esc(cut(laneName(r), 64)) + '</b><small>' + tag + sub + '</small></span>' + kpi + chev() + '</summary>' + bd + '</details>';
     };
     var top = R.slice(0, 5), rest = R.slice(5);
     h += '<div class="rows">' + top.map(row).join('') + '</div>';
@@ -1494,6 +1524,18 @@
     }
   }
 
+  /* 16.5: Keep paused / Resume / Pause this lane, each with Undo (back to the state it was in) */
+  function laneAct(ln, w, el) {
+    var j = J(); if (!j || !j.laneDecide || !on()) { say(t('notConn')); return; }
+    var p = lpMap()[ln], was = p ? p.status : '';
+    var back = was === 'paused' || was === 'kept' ? 'pause' : 'resume';
+    var done = function () { S.lpAt = 0; S.laneAt = {}; pullLP(); render(true); };
+    el.disabled = true; tone('go');
+    j.laneDecide(ln, w).then(function () {
+      done(); say(t(w === 'keep' ? 'lnKeptT' : w === 'resume' ? 'lnResT' : 'lnPauseT'), function () {
+        j.laneDecide(ln, back).then(function (st) { if (was === 'kept' && st === 'paused') return j.laneDecide(ln, 'keep'); }).then(function () { done(); say(t('lnBack')); }, fail); });
+    }, function (e) { el.disabled = false; fail(e); });
+  }
   /* ---------- actions ---------- */
   function act(x, el) {
     var id = el.getAttribute('data-id') || '', j = J(), X8 = X();
@@ -1507,6 +1549,7 @@
     if (x === 'look') { try { localStorage.setItem('j8:look', id === 'dark' || id === 'auto' ? id : 'light'); } catch (e) {} paint(); render(true); return; }
     if (x === 'ui2') { location.href = './?ui=2'; return; }
     if (x === 'sp') { if (GS.tour > -1) { GS.tour = -1; var gg = gLoad(); if (gg) { gg.tour = 'ended'; gSave(); } } go(id); return; }
+    if (x === 'lane') { laneAct(id, el.getAttribute('data-w'), el); return; }
     if (x === 'kwhy') { var kw = el.getAttribute('data-w'), ku2 = undoFn; [].forEach.call(sr.querySelectorAll('#j2t .why button'), function (b) { b.disabled = true; });
       J().approvals.reason(id, kw).then(function () { say(t('noted').replace('{n}', t('kr_' + kw)), ku2); }, fail); return; }
     if (x === 'undo') { if (undoFn) { struggle(S.sp, 'undo'); var f = undoFn; undoFn = null; var te = sr.getElementById('j2t'); if (te) te.classList.remove('on'); f(); } return; }

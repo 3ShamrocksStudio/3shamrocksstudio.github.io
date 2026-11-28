@@ -1,0 +1,31 @@
+-- r-1125-02 slice 2 (28 Nov 2026): losing lanes pause themselves. Applied as 3 migrations (full text in
+-- supabase_migrations.schema_migrations): j8_lane_pauses_core, j8_lane_autopause_tick, j8_lane_autopause_guard,
+-- plus: select cron.schedule('j8_lane_tick', '11 * * * *', 'select j8private.lane_tick()');
+--
+-- What it does
+--   public.j8_lane_pauses (org_id, lane PK; status paused|kept|resumed; why = numbers at pause time). RLS: viewer+ read, no client writes.
+--   j8private.lanes_core(org, days) = the j8_lanes body without the role check (invoker, so RLS still applies for app callers);
+--     public.j8_lanes keeps its role check and calls it (output hash identical before/after: 30d 10a020c0…, 36 rows; 7d 6108edc5…).
+--   j8private.lane_tick(now) definer, hourly, quiet hours like stall_tick (23-07 IL, Fri 16:00 - Sat 19:00):
+--     lane losing (>=10 decided, >=60% stopped) with 0 good replies -> paused row + one grouped push per org.
+--     A lane Dave resumed is not paused again for 14 days.
+--   trigger j8_approvals_lane_pause (BEFORE INSERT): an automated (no auth.uid()) new draft in a paused or kept lane is refused (P0001).
+--     Templates, designs, app rows, warm-/reply-/re- ids, -f1 / -r follow-ups and stopped records always pass.
+--   public.j8_lane_decide(org, lane, keep|resume|pause) definer, signed-in member only.
+--
+-- Rolled-back tests run 28 Nov 02:30 UTC (all pass): A j8_lanes hash identical · B quiet hours -> 0 · C Sun 12:00 IL tick paused 5
+--   (= 5 losing, 0 good replies) + exactly 1 push · D second tick 0 · E automated insert in paused lane P0001 · F warm-/-f1/other product pass
+--   · G anon 42501, outsider 42501, bad choice 22023, unknown lane P0002 x2 · H resume -> automated insert passes
+--   · I resumed not re-paused within 14 days, re-paused after · J manual pause of non-losing lane -> kept, refuses automated insert
+--   · K member reads rows, client update refused 42501.
+--
+-- Rollback
+--   select cron.unschedule('j8_lane_tick');
+--   drop trigger if exists j8_approvals_lane_pause on public.j8_approvals;
+--   drop function if exists j8private.lane_pause_guard();
+--   drop function if exists public.j8_lane_decide(uuid, text, text);
+--   drop function if exists j8private.lane_tick(timestamptz);
+--   drop function if exists j8private.lane_name(text, text, text, text, text);
+--   -- restore public.j8_lanes body from migration j8_lanes_rpc (its own body, with the role check), then:
+--   drop function if exists j8private.lanes_core(uuid, integer);
+--   drop table if exists public.j8_lane_pauses;

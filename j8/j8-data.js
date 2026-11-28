@@ -16,6 +16,7 @@
    15.7 adds:      gates() (rpc j8_mvp_gates: the MVP bar, 10 live PASS/FAIL gates; read-only)
    16.4 adds:      workerDays(days) (rpc j8_worker_days, read-only): results per worker per Israel day, live from runs, items, outcomes
    16.2 adds:      lanes(days) (rpc j8_lanes, read-only) + approvals.reason(id, code) (rpc j8_kill_reason: why Dave stopped it)
+   16.5 adds:      lanePauses() (j8_lane_pauses, read-only: lanes the server paused) + laneDecide(lane, 'keep'|'resume'|'pause') (rpc j8_lane_decide)
    14.1 adds:      approvals.setAutopilot(id, 'ask'|'hold'|'off') (j8_template_autopilot: templates only, extra.autopilot only)
    Writes are optimistic and return Promises; on failure they reject with {code}.
    Needs vendor/supabase.js loaded first. Shapes: ops/brain/ARMS-CONTRACT.md.
@@ -33,7 +34,7 @@ var J8 = (function () {
   var DROP = ['org_id', 'extra']; // updated_at stays on docs: the app's "since you last looked" line reads it
   var sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'j8nix-v4-auth' } });
   var data = {}, ver = {}, subs = { status: [], orgs: [], auth: [] }, state = { connected: false, error: null, org: null, role: null, user: null };
-  var orgs = [], channel = null, poll = null, rankC = null, lintC = null, funC = null, gateC = null, laneC = null, wdC = null;
+  var orgs = [], channel = null, poll = null, rankC = null, lintC = null, funC = null, gateC = null, laneC = null, wdC = null, lpC = null;
   COLS.forEach(function (c) { data[c] = {}; ver[c] = {}; subs[c] = []; });
 
   function now() { return new Date().toISOString(); }
@@ -264,6 +265,23 @@ var J8 = (function () {
       if (!fresh && laneC && laneC.org === state.org && laneC.d === d && Date.now() - laneC.t < 6e4) return laneC.v;
       var r = await sb.rpc('j8_lanes', { p_org: state.org, p_days: d }); if (r.error) return null;
       laneC = { org: state.org, d: d, t: Date.now(), v: r.data || [] }; return laneC.v;
+    },
+    /* 16.5 (r-1125-02 slice 2): paused lanes (public.j8_lane_pauses, RLS viewer+, read-only; written only by pg_cron j8_lane_tick
+       and rpc j8_lane_decide): lane, status paused|kept|resumed, why (snapshot of the numbers at pause time), paused_at, decided_at.
+       Cached for a minute; null when offline or refused. */
+    lanePauses: async function (fresh) {
+      if (!state.org) return null;
+      if (!fresh && lpC && lpC.org === state.org && Date.now() - lpC.t < 6e4) return lpC.v;
+      var r = await sb.from('j8_lane_pauses').select('lane,status,why,paused_at,decided_at').eq('org_id', state.org); if (r.error) return null;
+      lpC = { org: state.org, t: Date.now(), v: r.data || [] }; return lpC.v;
+    },
+    /* 16.5: keep a paused lane paused, resume it, or pause a lane by hand (rpc j8_lane_decide: signed-in member only). Resolves to the new status. */
+    laneDecide: async function (lane, what) {
+      if (['keep', 'resume', 'pause'].indexOf(what) < 0 || !lane) return Promise.reject({ code: 'bad_value' });
+      if (!state.org) return Promise.reject({ code: 'offline' });
+      var r = await sb.rpc('j8_lane_decide', { p_org: state.org, p_lane: String(lane), p_what: what });
+      if (r.error) return Promise.reject({ code: 'denied', message: r.error.message });
+      lpC = null; laneC = null; return r.data;
     },
     /* 16.4 (u-1126-06): daily results per worker (public.j8_worker_days, security invoker, viewer+, read-only): one row per
        j8_routines worker per Israel day: runs, failed, made, sent, replied, calls, paid_ils, fail_note. Cached for a minute; null when offline or refused. */
