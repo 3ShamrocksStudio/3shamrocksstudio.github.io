@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Nirb81ozEKfLrkXOS9ecfVmodMbHR6fW84WCZkU55bE='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>J8NIX · Your data</title>
+<link rel="icon" type="image/svg+xml" href="icons/j8-icon-2026-11-17.svg">
+<!-- J8NIX 16.6.0 (28 Nov 2026, r-1125-03): staging privacy page, linked from sign-in. DRAFT · NEEDS YOUR EYES (Dave) before any customer sees it. Facts checked against the J8NIX database on 28 Nov 2026. -->
+<style>
+@font-face{font-family:"Heebo";src:url(vendor/fonts/heebo-latin.woff2) format("woff2");font-weight:400 800;font-display:swap;unicode-range:U+0000-00FF,U+2000-206F,U+20AA}
+@font-face{font-family:"Heebo";src:url(vendor/fonts/heebo-hebrew.woff2) format("woff2");font-weight:400 800;font-display:swap;unicode-range:U+0590-05FF,U+FB1D-FB4F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#F3F5FA;color:#0C1030;font:400 17px/1.55 "Heebo",system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{background:#0C1030;color:#fff;padding:calc(20px + env(safe-area-inset-top)) 16px 28px}
+.in{max-width:640px;margin:0 auto}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.bar img{display:block;filter:brightness(0) invert(1)}
+.lang{min-height:44px;min-width:44px;padding:0 14px;border:1.5px solid rgba(255,255,255,.55);border-radius:22px;background:transparent;color:#fff;font-family:inherit;font-size:15px;font-weight:600;line-height:1;cursor:pointer}
+.lang:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #5BB6F9;outline-offset:2px}
+h1{margin:0 0 8px;font-size:30px;line-height:1.15;font-weight:800;letter-spacing:-.02em}
+.lede{margin:0;color:#DCE0F2;font-size:17px}
+main{padding:20px 16px 40px}
+.list{background:#fff;border-radius:8px;box-shadow:0 1px 2px rgba(12,16,48,.06),0 18px 36px -26px rgba(12,16,48,.4);overflow:hidden}
+details{border-top:1px solid #E3E6F0}
+details:first-child{border-top:0}
+summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;min-height:56px;padding:12px 18px;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";flex:none;margin-inline-start:auto;width:9px;height:9px;border-right:2px solid #565E80;border-bottom:2px solid #565E80;transform:translateY(-2px) rotate(45deg);transition:transform .15s}
+details[open] summary::after{transform:translateY(2px) rotate(-135deg)}
+details p,details ul{margin:0;padding:0 18px 16px;color:#2A3050}
+details ul{padding-inline-start:38px}
+details li{margin:4px 0}
+.dot{flex:none;width:8px;height:8px;border-radius:50%;background:#4075D8}
+.note{margin:18px 2px 0;color:#454C6E;font-size:15px}
+a{color:#3249C2;text-underline-offset:3px}
+.back{display:inline-flex;align-items:center;min-height:44px;margin-top:14px;font-weight:600}
+[lang=he] .en,[lang=en] .he{display:none}
+@media (prefers-reduced-motion:reduce){summary::after{transition:none}}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="in">
+  <div class="bar"><img src="brand/j8nix-wordmark-2026-11-17.svg" alt="J8NIX" width="112" height="39"><button class="lang" id="lang" type="button"><span class="en" lang="he">עברית</span><span class="he" lang="en">English</span></button></div>
+  <h1><span class="en">Your data in J8NIX</span><span class="he">המידע שלך ב-J8NIX</span></h1>
+  <p class="lede"><span class="en">What we keep, why, and who can see it. Tap a line to read more.</span><span class="he">מה נשמר, למה, ומי יכול לראות. אפשר להקיש על שורה כדי לקרוא עוד.</span></p>
+ </div>
+</header>
+<main>
+ <div class="in">
+  <div class="list">
+   <details>
+    <summary><span class="dot" aria-hidden="true"></span><span class="en">What we keep</span><span class="he">מה נשמר</span></summary>
+    <div class="en"><ul>
+     <li>Your work email, to sign you in with a code we email you.</li>
+     <li>Your name, your team, your role and your settings.</li>
+     <li>Your projects, tasks, plans, calendar items and chat with the team.</li>
+     <li>Notes J8NIX keeps on how you like to work, and your money figures.</li>
+     <li>Messages you approve, the people they go to (name, work email or profile link, company) and their replies.</li>
+     <li>A log of what each worker did and when.</li>
+     <li>If you turn on phone alerts: the address your phone gives us to send them, and your browser and phone model.</li>
+    </ul></div>
+    <div class="he"><ul>
+     <li>כתובת המייל שלך בעבודה, כדי להכניס אותך עם קוד שנשלח במייל.</li>
+     <li>השם שלך, הצוות שלך, התפקיד שלך וההגדרות שלך.</li>
+     <li>הפרויקטים, המשימות, התוכניות, פריטי היומן והצ׳אט עם הצוות.</li>
+     <li>הערות ש-J8NIX שומר על איך נוח לך לעבוד, ונתוני הכסף שלך.</li>
+     <li>הודעות שאישרת, למי הן נשלחות (שם, מייל בעבודה או קישור לפרופיל, חברה) והתשובות שלהם.</li>
+     <li>יומן של מה שכל עובד עשה ומתי.</li>
+     <li>אם הפעלת התראות בטלפון: הכתובת שהטלפון נותן לנו כדי לשלוח אותן, והדפדפן ודגם הטלפון.</li>
+    </ul></div>
+   </details>
+   <details>
+    <summary><span class="dot" aria-hidden="true"></span><span class="en">Why we keep it</span><span class="he">למה זה נשמר</span></summary>
+    <p class="en">Only to run your work: draft messages, wait for your OK, send them, follow up and count the results. We do not sell data and we show no ads.</p>
+    <p class="he">רק כדי להריץ את העבודה שלך: לנסח הודעות, לחכות לאישור שלך, לשלוח, לעקוב ולספור תוצאות. אנחנו לא מוכרים מידע ואין פרסומות.</p>
+   </details>
+   <details>
+    <summary><span class="dot" aria-hidden="true"></span><span class="en">Who can see it</span><span class="he">מי יכול לראות</span></summary>
+    <p class="en">Signed-in members of your team. Every read and write from the app is checked against your team, so another team cannot see your rows. Signed out, the app can read nothing. J8NIX's workers and the studio team that runs J8NIX can also see your data, to run your work.</p>
+    <p class="he">חברי הצוות שלך שנכנסו לחשבון. כל קריאה וכתיבה מהאפליקציה נבדקת מול הצוות שלך, כך שצוות אחר לא רואה את השורות שלך. בלי כניסה האפליקציה לא יכולה לקרוא כלום. גם העובדים של J8NIX וצוות הסטודיו שמפעיל את J8NIX יכולים לראות את המידע שלך, כדי להריץ את העבודה שלך.</p>
+   </details>
+   <details>
+    <summary><span class="dot" aria-hidden="true"></span><span class="en">Services we use</span><span class="he">שירותים שאנחנו משתמשים בהם</span></summary>
+    <div class="en"><ul>
+     <li>Supabase stores the data and runs sign-in (servers in Singapore).</li>
+     <li>Claude, by Anthropic, runs the workers that read your tasks and write drafts.</li>
+     <li>Google Fonts serves the app's fonts, so Google sees your device's address when the app loads.</li>
+     <li>GitHub Pages hosts the app's files.</li>
+     <li>Phone alerts go through your phone's own push service (Apple or Google).</li>
+    </ul></div>
+    <div class="he"><ul>
+     <li>Supabase שומר את המידע ומפעיל את הכניסה (שרתים בסינגפור).</li>
+     <li>Claude של Anthropic מריץ את העובדים שקוראים את המשימות וכותבים טיוטות.</li>
+     <li>Google Fonts מגיש את הגופנים של האפליקציה, ולכן Google רואה את כתובת המכשיר כשהאפליקציה נטענת.</li>
+     <li>GitHub Pages מארח את קבצי האפליקציה.</li>
+     <li>התראות לטלפון עוברות דרך שירות ההתראות של הטלפון (Apple או Google).</li>
+    </ul></div>
+   </details>
+   <details>
+    <summary><span class="dot" aria-hidden="true"></span><span class="en">People who say stop</span><span class="he">אנשים שביקשו להפסיק</span></summary>
+    <p class="en">When someone asks not to be contacted, J8NIX adds their email address to your stop list (an admin can also add a whole company domain), new email drafts to it are blocked, and drafts already waiting for them are stopped.</p>
+    <p class="he">כשמישהו מבקש לא לפנות אליו, J8NIX מוסיף את כתובת המייל שלו לרשימת העצירה שלך (מנהל יכול להוסיף גם דומיין של חברה שלמה), טיוטות מייל חדשות אליו נחסמות, וטיוטות שכבר מחכות לו נעצרות.</p>
+   </details>
+   <details>
+    <summary><span class="dot" aria-hidden="true"></span><span class="en">How long we keep it</span><span class="he">כמה זמן זה נשמר</span></summary>
+    <p class="en">There is no set period yet. Until there is, your data stays until you ask us to delete it.</p>
+    <p class="he">עדיין אין תקופה קבועה. עד שתהיה, המידע נשמר עד שתבקש/י למחוק אותו.</p>
+   </details>
+   <details>
+    <summary><span class="dot" aria-hidden="true"></span><span class="en">See, fix or delete your data</span><span class="he">לראות, לתקן או למחוק</span></summary>
+    <p class="en">Write to <a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a>.</p>
+    <p class="he">אפשר לכתוב אל <a href="mailto:dave@3shamrocks.com">dave@3shamrocks.com</a>.</p>
+   </details>
+  </div>
+  <p class="note"><span class="en">J8NIX is in testing. Last updated 28 Nov 2026.</span><span class="he">J8NIX בשלב בדיקות. עודכן לאחרונה ב-28 בנובמבר 2026.</span></p>
+  <a class="back" href="./"><span class="en">Back to sign in</span><span class="he">חזרה לכניסה</span></a>
+ </div>
+</main>
+<script>(function(d){var he=false;try{he=JSON.parse(localStorage.getItem('j8-lang'))==='he';}catch(e){}function set(h){d.lang=h?'he':'en';d.dir=h?'rtl':'ltr';document.title=h?'J8NIX · המידע שלך':'J8NIX · Your data';}set(he);document.getElementById('lang').addEventListener('click',function(){he=!he;set(he);try{localStorage.setItem('j8-lang',JSON.stringify(he?'he':'en'));}catch(e){}});})(document.documentElement);</script>
+</body>
+</html>

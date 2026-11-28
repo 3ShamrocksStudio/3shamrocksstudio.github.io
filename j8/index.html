@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-gKqSBOz2hoXI7/D/sh/0LBKa2mam4Cu+04erzJgmTTU=' 'sha256-2fEkMFjnbQDVdPpd4hce6KDRTzBTRx5zl84mNGsSx7E=' 'sha256-tRFgLAbc9wZ78m0vzzrtpLr0qsIfPK+CjCHeohmkAvA='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://otkvebgrdiayjnqrytrn.supabase.co wss://otkvebgrdiayjnqrytrn.supabase.co; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>J8NIX</title>
@@ -28,6 +29,7 @@
 <link rel="preload" href="j30w.css?v=16.5.0" as="style">
 </head>
 <body>
+<!-- J8NIX 3.0 · 16.6.0 (28 Nov 2026, r-1125-03 slice 1): trust baseline. Content-Security-Policy on this page (scripts only from this site + the 3 inline scripts by hash; data only to the J8NIX database; no plugins, no frames); "How J8NIX handles your data" under sign-in opens privacy.html (staging, noindex, EN/HE); push key readable only when signed in (migration j8_vapid_public_signed_in_only). Isolation plan: design/ISOLATION-PLAN.md. Revert: git revert; SQL: grant execute on function public.j8_vapid_public() to anon. -->
 <!-- J8NIX 3.0 · 16.5.0 (28 Nov 2026, r-1125-02 slice 2): losing lanes pause themselves. Server (pg_cron j8_lane_tick, hourly, quiet hours): a lane with 10+ decided, 6 in 10 stopped and no good reply gets a j8_lane_pauses row + one push; new automated drafts there are refused (trigger j8_approvals_lane_pause). Results > Lanes shows paused lanes first with Keep paused / Resume (rpc j8_lane_decide), Undo. Revert: git revert; SQL rollback in design/sql/j8_lane_autopause.sql. -->
 <!-- J8NIX 3.0 · 16.4.0 (27 Nov 2026, u-1126-06): daily results per worker on More → Workers: each worker row adds yesterday's results (made, sent, replies, calls, ₪) or an amber "No results for 7 days"; tap for the last 7 days and the last failure. Read-only from public.j8_worker_days (live, never stored). Revert: git revert. -->
 <!-- J8NIX 3.0 · 16.3.0 (27 Nov 2026): Projects command center: Overview (grid of all projects by state), Board (table: state, stage, now, next, needs you, last activity), full project screen with stage track; search + state filters; Home shows project counts. Revert: git revert. -->
@@ -192,6 +194,7 @@
   <p class="ios" id="iosHint" hidden>iPhone: tap Share → <b>Add to Home Screen</b> first, then open J8NIX from there.</p>
   <p class="ios" id="apkHint" hidden>Android: <a href="app/"><b>get the J8NIX app</b></a>, then sign in there.</p>
   <p class="a2foot tsub" id="a2Tag">Smart operations OS, only smarter</p>
+  <p class="a2priv"><a id="a2Priv" href="privacy.html">How J8NIX handles your data</a></p>
  </div>
 </div>
 <div id="app" class="app" hidden>
@@ -267,7 +270,7 @@
 <script src="j11.js?v=12.0.1"></script>
 <script src="shell.js?v=12.0.1"></script>
 <script src="j13.js?v=14.1.0"></script>
-<script>/* J8NIX 3.0 (16.0.0, 27 Nov 2026) is the default (j30.js). ?ui=2 (Settings → Classic view) opens 2.0 (j20.js) for that visit; localStorage j8:ui = 2 keeps 2.0 on this device; ?ui=3 clears that. Revert: load j20.js only. */(function(){var q=/[?&]ui=([23])\b/.exec(location.search),v=q?q[1]:'';try{if(v==='3')localStorage.removeItem('j8:ui');if(!v)v=localStorage.getItem('j8:ui')||'';}catch(e){}if(v==='2')document.write('<script src="j20.js?v=15.14.0"><\/script>');else{document.documentElement.classList.add('j3');document.write('<link rel="stylesheet" href="j30.css?v=16.1.0"><script src="j30.js?v=16.5.0"><\/script>');}})();</script>
+<script>/* J8NIX 3.0 (16.0.0, 27 Nov 2026) is the default (j30.js). ?ui=2 (Settings → Classic view) opens 2.0 (j20.js) for that visit; localStorage j8:ui = 2 keeps 2.0 on this device; ?ui=3 clears that. Revert: load j20.js only. */(function(){var q=/[?&]ui=([23])\b/.exec(location.search),v=q?q[1]:'';try{if(v==='3')localStorage.removeItem('j8:ui');if(!v)v=localStorage.getItem('j8:ui')||'';}catch(e){}if(v==='2')document.write('<script src="j20.js?v=15.14.0"><\/script>');else{document.documentElement.classList.add('j3');document.write('<link rel="stylesheet" href="j30.css?v=16.6.0"><script src="j30.js?v=16.6.0"><\/script>');}})();</script>
 <script>/* Android, not in the app yet: show the app download link (sign-in screen + settings). */(function(){try{if(!/android/i.test(navigator.userAgent))return;if(matchMedia('(display-mode: standalone)').matches||document.referrer.indexOf('android-app://')===0)return;['apkHint','apkRow'].forEach(function(i){var e=document.getElementById(i);if(e)e.hidden=false;});}catch(e){}})();</script>
 </body>
 </html>

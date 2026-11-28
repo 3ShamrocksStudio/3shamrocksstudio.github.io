@@ -8,6 +8,7 @@
    Built as a fork of the 2.0 view logic (j20.js 15.14.0), so every read and write still goes through window.J8 / window.j8x on
    the same code paths. Styles: j30w.css (shadow root). Loader: index.html (?ui=3 / ?ui=2). Research + plan:
    research_notes/J8NIX 3 mobile UX/. Revert: index.html back to j20.js, or open ?ui=2.
+   16.6.0 (r-1125-03 slice 1): sign-in shows "How J8NIX handles your data" (privacy.html) in English or Hebrew.
    16.5.0 (r-1125-02 slice 2): Results > Lanes shows lanes the server paused first (amber: new drafts there stop), each with
    Keep paused / Resume (Undo); a losing lane can be paused by hand (J8.lanePauses, J8.laneDecide).
    16.4.0 (u-1126-06): Workers rows show yesterday's results per worker, amber "No results for 7 days", a 7-day card on tap (J8.workerDays).
@@ -18,7 +19,7 @@
    ===================================================================== */
 (function () {
   'use strict';
-  var VER = '16.5.0';
+  var VER = '16.6.0';
   try { localStorage.setItem('j8x:splash', String(Date.now())); } catch (e) {} /* the 14.x black splash stays off under 2.0 */
   var J = function () { return window.J8 || null; };
   var X = function () { return window.j8x || null; };
@@ -1942,6 +1943,7 @@
     var g = function (id) { return document.getElementById(id); }, au = g('auth'); if (!au || !g('a2Tab')) return;
     var he = lang() === 'he', fP = g('fPaste'), am = g('amsg');
     g('a2Tab').textContent = t('aTab'); g('a2Of').textContent = t('aOf'); g('a2Why').textContent = t('aWhy'); g('a2Tag').textContent = t('aTag');
+    var pv = g('a2Priv'); if (pv) pv.textContent = he ? 'איך J8NIX מטפל במידע שלך' : 'How J8NIX handles your data';
     var lb = g('a2Lang'); lb.textContent = t('aLang'); lb.setAttribute('lang', he ? 'en' : 'he');
     lb.addEventListener('click', function () { try { localStorage.setItem('j8-lang', JSON.stringify(he ? 'en' : 'he')); } catch (e) {} location.reload(); });
     function step(moved) {
